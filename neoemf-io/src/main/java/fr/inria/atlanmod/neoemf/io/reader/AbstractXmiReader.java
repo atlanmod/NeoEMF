@@ -86,7 +86,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param localName  the name of the element
      * @param attributes the attributes of the element
      */
-    protected void processStartElement(String uri, String localName, Iterable<Attribute> attributes) {
+    protected void readStartElement(String uri, String localName, Iterable<Attribute> attributes) {
         RawClassifier element = new RawClassifier(RawNamespace.Registry.getInstance().getFromUri(uri), localName);
 
         Collection<RawFeature> allFeatures = new ArrayList<>();
@@ -123,6 +123,18 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     /**
+     * Processes the end of an element.
+     */
+    protected void readEndElement() {
+        if (!ignoreElement) {
+            notifyEndElement();
+        }
+        else {
+            ignoreElement = false;
+        }
+    }
+
+    /**
      * Processes a feature, which can be an attribute or a reference.
      *
      * @param classifier the classifier representing the feature
@@ -132,7 +144,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return a list of {@link RawFeature} that can be empty.
      *
-     * @see #processAttributes(String, String)
+     * @see #processAttribute(String, String)
      * @see #processReferences(String, Collection)
      */
     @Nonnull
@@ -145,7 +157,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 features = processReferences(localName, references);
             }
             else {
-                features = processAttributes(localName, value);
+                features = processAttribute(localName, value);
             }
         }
         else {
@@ -250,7 +262,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @return a singleton list of {@link RawFeature} containing the processed attribute.
      */
     @Nonnull
-    private Collection<RawFeature> processAttributes(String localName, String value) {
+    private Collection<RawFeature> processAttribute(String localName, String value) {
         RawAttribute attribute = new RawAttribute(localName);
         attribute.index(0);
         attribute.value(value);
@@ -296,26 +308,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
         if (m.find()) {
             RawNamespace ns = RawNamespace.Registry.getInstance().getFromPrefix(m.group(1));
             String localName = m.group(2);
+
             RawMetaClassifier metaClassifier = new RawMetaClassifier(ns, localName);
             element.metaClassifier(metaClassifier);
         }
         else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
-        }
-    }
-
-    /**
-     * Processes the end of an element.
-     *
-     * @param uri       the URI of the element
-     * @param localName the name of the element
-     */
-    protected void processEndElement(String uri, String localName) {
-        if (!ignoreElement) {
-            notifyEndElement();
-        }
-        else {
-            ignoreElement = false;
         }
     }
 }

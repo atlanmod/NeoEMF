@@ -37,7 +37,7 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
     /**
      * Processes the start of the document.
      */
-    protected void processStartDocument() {
+    protected void readStartDocument() {
         notifyStartDocument();
         progress(0);
     }
@@ -50,14 +50,14 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      *
      * @see RawNamespace.Registry#register(String, String)
      */
-    protected void processNamespace(String prefix, String uri) {
+    protected void readNamespace(String prefix, String uri) {
         RawNamespace.Registry.getInstance().register(prefix, uri);
     }
 
     /**
      * Processes the end of the current document.
      */
-    protected void processEndDocument() {
+    protected void readEndDocument() {
         progress(100);
         notifyEndDocument();
     }

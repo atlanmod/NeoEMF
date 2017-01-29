@@ -55,17 +55,17 @@ public class XmiSAXReader extends AbstractXmiReader {
 
         @Override
         public void startDocument() throws SAXException {
-            processStartDocument();
+            readStartDocument();
         }
 
         @Override
         public void endDocument() throws SAXException {
-            processEndDocument();
+            readEndDocument();
         }
 
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
-            processNamespace(prefix, uri);
+            readNamespace(prefix, uri);
         }
 
         @Override
@@ -85,12 +85,12 @@ public class XmiSAXReader extends AbstractXmiReader {
                 attributes = Collections.emptyList();
             }
 
-                processStartElement(uri, name, attributes);
+            readStartElement(uri, name, attributes);
         }
 
         @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
-            processEndElement(uri, name);
+            readEndElement();
         }
 
         @Override

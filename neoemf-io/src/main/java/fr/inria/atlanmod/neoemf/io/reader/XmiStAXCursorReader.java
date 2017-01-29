@@ -53,13 +53,13 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
             int event = reader.next();
 
             if (event == XMLStreamReader.START_DOCUMENT) {
-                processStartDocument();
+                readStartDocument();
             }
             else if (event == XMLStreamReader.START_ELEMENT) {
                 int namespaceCount = reader.getNamespaceCount();
                 if (namespaceCount > 0) {
                     IntStream.range(0, namespaceCount).forEach(i ->
-                            processNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
+                            readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
                 }
 
                 Iterable<Attribute> attributes;
@@ -76,13 +76,14 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
                 else {
                     attributes = Collections.emptyList();
                 }
-                processStartElement(reader.getNamespaceURI(), reader.getLocalName(), attributes);
+
+                readStartElement(reader.getNamespaceURI(), reader.getLocalName(), attributes);
             }
             else if (event == XMLStreamReader.END_ELEMENT) {
-                processEndElement(reader.getNamespaceURI(), reader.getLocalName());
+                readEndElement();
             }
             else if (event == XMLStreamReader.END_DOCUMENT) {
-                processEndDocument();
+                readEndDocument();
             }
             else if (event == XMLStreamReader.CHARACTERS) {
                 if (reader.getTextLength() > 0 && !reader.isWhiteSpace()) {

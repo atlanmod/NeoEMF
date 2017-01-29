@@ -50,26 +50,26 @@ public class XmiStAXIteratorReader extends AbstractXmiReader {
             XMLEvent event = reader.nextEvent();
 
             if (event.isStartDocument()) {
-                processStartDocument();
+                readStartDocument();
             }
             else if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
 
                 Iterable<Namespace> namespaces = element::getNamespaces;
                 for (Namespace ns : namespaces) {
-                    processNamespace(ns.getPrefix(), ns.getNamespaceURI());
+                    readNamespace(ns.getPrefix(), ns.getNamespaceURI());
                 }
 
                 QName qName = element.getName();
-                processStartElement(qName.getNamespaceURI(), qName.getLocalPart(), element::getAttributes);
+                readStartElement(qName.getNamespaceURI(), qName.getLocalPart(), element::getAttributes);
             }
             else if (event.isEndElement()) {
                 EndElement element = event.asEndElement();
                 QName qName = element.getName();
-                processEndElement(qName.getNamespaceURI(), qName.getLocalPart());
+                readEndElement();
             }
             else if (event.isEndDocument()) {
-                processEndDocument();
+                readEndDocument();
             }
             else if (event.isCharacters()) {
                 Characters characters = event.asCharacters();
