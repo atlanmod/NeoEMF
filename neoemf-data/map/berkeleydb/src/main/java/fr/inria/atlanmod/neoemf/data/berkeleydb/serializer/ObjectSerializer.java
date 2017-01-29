@@ -22,6 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * ???
  */
@@ -30,6 +31,8 @@ public class ObjectSerializer implements Serializer<Object> {
 
     @Override
     public byte[] serialize(Object value) {
+        checkNotNull(value);
+
         byte[] data;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
@@ -46,6 +49,8 @@ public class ObjectSerializer implements Serializer<Object> {
 
     @Override
     public Object deserialize(byte[] data) {
+        checkNotNull(data);
+
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         Object value = null;
         try {

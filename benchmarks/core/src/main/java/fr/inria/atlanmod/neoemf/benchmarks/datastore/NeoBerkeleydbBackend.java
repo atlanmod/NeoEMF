@@ -8,15 +8,13 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
-
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -24,29 +22,29 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
-public class NeoMapdbBackend extends AbstractNeoBackend {
+public class NeoBerkeleydbBackend extends AbstractNeoBackend {
 
-    public static final String NAME = "neo-mapdb";
+    public static final String NAME = "neo-berkeleydb";
 
-    private static final String STORE_EXTENSION = "mapdb.resource"; // -> neoemf.mapdb.resource
+    private static final String STORE_EXTENSION = "berkeleydb.resource"; // -> neoemf.mapdb.resource
 
-    public NeoMapdbBackend() {
+    public NeoBerkeleydbBackend() {
         super(NAME, STORE_EXTENSION);
     }
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbPersistenceBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = MapDbURI.createFileURI(file);
+        URI uri = BerkeleyDbURI.createFileURI(file);
 
         return resourceSet.createResource(uri);
     }
 
     @Override
     public Map<String, Object> getOptions() {
-        return MapDbOptionsBuilder.newBuilder()
+        return BerkeleyDbOptionsBuilder.newBuilder()
                 .directWriteIndices()
                 .autocommit()
                 .asMap();
