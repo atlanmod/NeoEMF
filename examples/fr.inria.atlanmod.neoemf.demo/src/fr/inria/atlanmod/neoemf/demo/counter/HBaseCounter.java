@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 
 public class HBaseCounter {
@@ -36,7 +38,7 @@ public class HBaseCounter {
         ResourceSet rSet = new ResourceSetImpl();
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        long begin = System.currentTimeMillis();
+        Instant start = Instant.now();
 
         try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
@@ -44,7 +46,7 @@ public class HBaseCounter {
             NeoLogger.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 
-        long end = System.currentTimeMillis();
-        NeoLogger.info("Query computed in {0} ms", end - begin);
+        Instant end = Instant.now();
+        NeoLogger.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
     }
 }

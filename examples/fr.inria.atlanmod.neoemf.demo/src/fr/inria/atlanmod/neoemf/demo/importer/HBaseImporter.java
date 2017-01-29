@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.demo.importer;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
@@ -56,7 +58,7 @@ public class HBaseImporter {
             Map<String, Object> options = HBaseOptionsBuilder.noOption();
             persistentResource.save(options);
 
-            long begin = System.currentTimeMillis();
+            Instant start = Instant.now();
 
             Resource xmiResource = rSet.createResource(URI.createURI("models/sample.xmi"));
             xmiResource.load(Collections.emptyMap());
@@ -64,8 +66,8 @@ public class HBaseImporter {
             persistentResource.getContents().addAll(xmiResource.getContents());
             persistentResource.save(options);
 
-            long end = System.currentTimeMillis();
-            NeoLogger.info("HBase Model created in {0} seconds", (end - begin) / 1000);
+            Instant end = Instant.now();
+            NeoLogger.info("HBase Model created in {0} seconds", Duration.between(start, end).getSeconds());
             
             /*
              * Checks that NeoEMF model contains the same elements as the input XMI.
