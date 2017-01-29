@@ -52,8 +52,8 @@ public class RawIdentifier {
     }
 
     /**
-     * Creates a new {@code RawIdentifier} which has a generated {@code value}, for example: a value processed from another
-     * value.
+     * Creates a new {@code RawIdentifier} which has a generated {@code value}, for example: a value processed from
+     * another value.
      *
      * @param value the literal representation of this identifier
      *

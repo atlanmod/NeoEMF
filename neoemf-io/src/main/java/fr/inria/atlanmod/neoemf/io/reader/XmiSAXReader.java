@@ -88,9 +88,9 @@ public class XmiSAXReader extends AbstractXmiReader {
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             String characters = String.valueOf(ch, start, length).trim();
-                if (!characters.isEmpty()) {
-                    processCharacters(characters);
-                }
+            if (!characters.isEmpty()) {
+                processCharacters(characters);
+            }
         }
 
         /**

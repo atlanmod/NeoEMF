@@ -37,7 +37,7 @@ public final class Importer {
     /**
      * Imports a XMI file into persistence handlers.
      *
-     * @param stream              the stream of XMI data
+     * @param stream       the stream of XMI data
      * @param inputHandler persistence handlers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
