@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Static methods to import data into NeoEMF.
  */
-public class Importer {
+public final class Importer {
 
     /**
      * This class should not be instantiated.
@@ -46,7 +46,7 @@ public class Importer {
      * @throws IOException              if an error occurred during the import
      */
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {
-        checkArgument(persistenceHandlers.length > 0);
+        checkArgument(persistenceHandlers.length > 0, "At least one handler must be defined");
 
         Reader reader = new XmiStAXCursorReader();
         Processor processor = reader.defaultProcessor();
