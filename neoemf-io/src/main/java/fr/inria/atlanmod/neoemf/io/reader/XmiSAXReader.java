@@ -18,10 +18,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLEventFactory;
@@ -70,22 +67,17 @@ public class XmiSAXReader extends AbstractXmiReader {
 
         @Override
         public void startElement(String uri, String name, String qName, Attributes attributesRaw) throws SAXException {
-            Iterable<Attribute> attributes;
+            readStartElement(uri, name);
+
             int attributeCount = attributesRaw.getLength();
-            if (attributeCount > 0) {
-                attributes = IntStream.range(0, attributeCount)
-                        .mapToObj(i -> factory.createAttribute(
-                                getPrefix(attributesRaw.getQName(i)),
-                                attributesRaw.getURI(i),
-                                attributesRaw.getLocalName(i),
-                                attributesRaw.getValue(i)))
-                        .collect(Collectors.toList());
-            }
-            else {
-                attributes = Collections.emptyList();
+            for (int i = 0; i < attributeCount; i++) {
+                readAttribute(
+                        getPrefix(attributesRaw.getQName(i)),
+                        attributesRaw.getLocalName(i),
+                        attributesRaw.getValue(i));
             }
 
-            readStartElement(uri, name, attributes);
+            flushStartElement();
         }
 
         @Override

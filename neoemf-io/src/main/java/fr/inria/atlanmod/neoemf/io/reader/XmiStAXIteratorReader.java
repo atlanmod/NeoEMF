@@ -19,8 +19,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
-import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -60,12 +60,21 @@ public class XmiStAXIteratorReader extends AbstractXmiReader {
                     readNamespace(ns.getPrefix(), ns.getNamespaceURI());
                 }
 
-                QName qName = element.getName();
-                readStartElement(qName.getNamespaceURI(), qName.getLocalPart(), element::getAttributes);
+                QName elementName = element.getName();
+                readStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
+
+                Iterable<Attribute> attributes = element::getAttributes;
+                for (Attribute attribute : attributes) {
+                    QName attributeName = attribute.getName();
+                    readAttribute(
+                            attributeName.getPrefix(),
+                            attributeName.getLocalPart(),
+                            attribute.getValue());
+                }
+
+                flushStartElement();
             }
             else if (event.isEndElement()) {
-                EndElement element = event.asEndElement();
-                QName qName = element.getName();
                 readEndElement();
             }
             else if (event.isEndDocument()) {

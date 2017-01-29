@@ -15,15 +15,12 @@ import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.evt.XMLEventFactory2;
 
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.Attribute;
 
 /**
  * A {@link Reader} that uses a StAX implementation with cursors for reading and parsing XMI files.
@@ -62,22 +59,17 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
                             readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
                 }
 
-                Iterable<Attribute> attributes;
+                readStartElement(reader.getNamespaceURI(), reader.getLocalName());
+
                 int attributeCount = reader.getAttributeCount();
-                if (attributeCount > 0) {
-                    attributes = IntStream.range(0, attributeCount)
-                            .mapToObj(i -> eventFactory.createAttribute(
-                                    reader.getAttributePrefix(i),
-                                    reader.getAttributeNamespace(i),
-                                    reader.getAttributeLocalName(i),
-                                    reader.getAttributeValue(i)))
-                            .collect(Collectors.toList());
-                }
-                else {
-                    attributes = Collections.emptyList();
+                for (int i = 0; i < attributeCount; i++) {
+                    readAttribute(
+                            reader.getAttributePrefix(i),
+                            reader.getAttributeLocalName(i),
+                            reader.getAttributeValue(i));
                 }
 
-                readStartElement(reader.getNamespaceURI(), reader.getLocalName(), attributes);
+                flushStartElement();
             }
             else if (event == XMLStreamReader.END_ELEMENT) {
                 readEndElement();
