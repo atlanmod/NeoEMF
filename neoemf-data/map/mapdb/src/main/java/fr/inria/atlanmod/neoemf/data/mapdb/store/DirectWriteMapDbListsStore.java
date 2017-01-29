@@ -11,30 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.MapStoreWithLists;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
-
-import static java.util.Objects.isNull;
 
 /**
  * A {@link DirectWriteMapDbStore} that uses Java {@link List}s instead of arrays to persist multi-valued
@@ -53,7 +41,7 @@ import static java.util.Objects.isNull;
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class DirectWriteMapDbListsStore extends MapStoreWithLists<MapBackend> {
+public class DirectWriteMapDbListsStore extends DirectWriteMapStoreWithLists<MapBackend> {
 
     /**
      * Constructs a new {@code DirectWriteMapDbListsStore} between the given {@code resource} and the

@@ -11,26 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.CachedMapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
 
 /**
  * A {@link DirectWriteMapDbStore} that uses an internal cache to store persisted {@link Object}s that are part
@@ -47,7 +39,7 @@ import static java.util.Objects.isNull;
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class DirectWriteMapDbCacheManyStore extends CachedMapStore<MapBackend> {
+public class DirectWriteMapDbCacheManyStore extends DirectWriteCachedMapStore<MapBackend> {
 
     /**
      * Constructs a new {@code DirectWriteMapDbCacheManyStore} between the given {@code resource} and the

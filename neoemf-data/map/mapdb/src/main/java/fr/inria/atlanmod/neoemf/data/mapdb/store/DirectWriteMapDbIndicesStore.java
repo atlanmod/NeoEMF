@@ -11,27 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.MapStoreWithIndices;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link DirectWriteMapDbStore} that persists {@link Collection} indices instead of serialized arrays.
@@ -51,7 +41,7 @@ import static java.util.Objects.nonNull;
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class DirectWriteMapDbIndicesStore extends MapStoreWithIndices<MapBackend> {
+public class DirectWriteMapDbIndicesStore extends DirectWriteMapStoreWithIndices<MapBackend> {
 
     /**
      * Constructs a new {@code DirectWriteMapDbIndicesStore} between the given {@code resource} and the

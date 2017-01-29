@@ -13,14 +13,14 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.store;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.MapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * ???
  */
 @Experimental
-public class DirectWriteBerkeleyDbStore extends MapStore<MapBackend> {
+public class DirectWriteBerkeleyDbStore extends DirectWriteMapStore<MapBackend> {
 
     /**
      * Constructs a new {@code DirectWriteBerkeleyDbStore} between the given {@code resource} and the {@code backend}.

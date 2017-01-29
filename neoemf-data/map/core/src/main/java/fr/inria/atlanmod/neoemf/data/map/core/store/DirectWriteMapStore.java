@@ -48,7 +48,7 @@ import static java.util.Objects.nonNull;
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
-public abstract class MapStore<P extends MapBackend> extends AbstractDirectWriteStore<P> {
+public abstract class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWriteStore<P> {
 
     /**
      * The default cache size (10 000).
@@ -63,12 +63,12 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
             .maximumSize(DEFAULT_CACHE_SIZE).build();
 
     /**
-     * Constructs a new {@code MapStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public MapStore(Resource.Internal resource, P backend) {
+    public DirectWriteMapStore(Resource.Internal resource, P backend) {
         super(resource, backend);
     }
 
@@ -92,7 +92,7 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
 
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("MapStore::contains({1}, {2})", new Object[] {
+        NeoLogger.debug("DirectWriteMapStore::contains({1}, {2})", new Object[] {
                 feature.getName(), value});
         checkNotNull(internalObject);
         checkNotNull(feature);
@@ -249,7 +249,7 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
 
         int index;
         PersistentEObject object = PersistentEObject.from(internalObject);
-        NeoLogger.debug("MapStore::indexOf({})");
+        NeoLogger.debug("DirectWriteMapStore::indexOf({})");
 
         Object[] array = (Object[]) getFromMap(object, feature);
         if (isNull(array)) {
@@ -541,7 +541,7 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject object;
-            EClass eClass = MapStore.this.resolveInstanceOf(id);
+            EClass eClass = DirectWriteMapStore.this.resolveInstanceOf(id);
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {

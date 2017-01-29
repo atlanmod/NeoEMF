@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link MapStore} that uses Java {@link List}s instead of arrays to persist multi-valued
+ * A {@link DirectWriteMapStore} that uses Java {@link List}s instead of arrays to persist multi-valued
  * {@link EAttribute}s and {@link EReference}s.
  * <p>
  * Using a {@link List}-based implementation allows to benefit from the rich Java {@link Collection} API, with the cost
@@ -47,11 +47,11 @@ import static java.util.Objects.isNull;
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
  * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  *
- * @see MapStore
+ * @see DirectWriteMapStore
  * @see MapBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class MapStoreWithLists<P extends MapBackend> extends MapStore<P> {
+public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWriteMapStore<P> {
     /**
      * In-memory cache that holds multi-valued {@link EStructuralFeature}s wrapped in a {@link List}, identified by
      * their associated {@link FeatureKey}.
@@ -60,12 +60,12 @@ public class MapStoreWithLists<P extends MapBackend> extends MapStore<P> {
             .maximumSize(DEFAULT_CACHE_SIZE).build();
 
     /**
-     * Constructs a new {@code MapStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public MapStoreWithLists(Resource.Internal resource, P backend) {
+    public DirectWriteMapStoreWithLists(Resource.Internal resource, P backend) {
         super(resource, backend);
     }
 

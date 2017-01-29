@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link MapStore} that uses an internal cache to store persisted {@link Object}s that are part
+ * A {@link DirectWriteMapStore} that uses an internal cache to store persisted {@link Object}s that are part
  * of multi-valued {@link EReference}s to speed-up their access.
  * <p>
  * Using a cache avoids multiple {@link java.util.List} deserialization to retrieve the same element, which can be an important
@@ -36,12 +36,12 @@ import static java.util.Objects.isNull;
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
  * fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  *
- * @see MapStore
+ * @see DirectWriteMapStore
  * @see MapBackend
  *
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
-public class CachedMapStore<P extends MapBackend> extends MapStore<P> {
+public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWriteMapStore<P> {
 
     /**
      * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
@@ -50,12 +50,12 @@ public class CachedMapStore<P extends MapBackend> extends MapStore<P> {
             .maximumSize(DEFAULT_CACHE_SIZE).build();;
 
     /**
-     * Constructs a new {@code MapStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public CachedMapStore(Resource.Internal resource, P backend) {
+    public DirectWriteCachedMapStore(Resource.Internal resource, P backend) {
         super(resource, backend);
     }
 

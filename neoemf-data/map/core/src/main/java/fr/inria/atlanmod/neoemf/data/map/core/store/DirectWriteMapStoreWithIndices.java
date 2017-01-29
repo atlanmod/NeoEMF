@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -35,7 +34,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link MapStore} that persists {@link Collection} indices instead of serialized arrays.
+ * A {@link DirectWriteMapStore} that persists {@link Collection} indices instead of serialized arrays.
  * <p>
  * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to
  * store. Using this approach avoid to deserialize entire {@link Collection}s to retrieve a single
@@ -48,18 +47,18 @@ import static java.util.Objects.nonNull;
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
  * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  *
- * @see MapStore
+ * @see DirectWriteMapStore
  * @see MapBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class MapStoreWithIndices<P extends MapBackend> extends MapStore<P> {
+public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends DirectWriteMapStore<P> {
     /**
-     * Constructs a new {@code MapStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public MapStoreWithIndices(Resource.Internal resource, P backend) {
+    public DirectWriteMapStoreWithIndices(Resource.Internal resource, P backend) {
         super(resource, backend);
     }
 
@@ -117,7 +116,7 @@ public class MapStoreWithIndices<P extends MapBackend> extends MapStore<P> {
 
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("MapStoreWithIndices::indexOf({1}, {2})", new Object[] {
+        NeoLogger.debug("DirectWriteMapStoreWithIndices::indexOf({1}, {2})", new Object[] {
                 feature.getName(), value});
 
         return ArrayUtils.indexOf(toArray(internalObject, feature), value);
@@ -125,7 +124,7 @@ public class MapStoreWithIndices<P extends MapBackend> extends MapStore<P> {
 
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("MapStoreWithIndices::lastIndexOf({1}, {2})", new Object[] {
+        NeoLogger.debug("DirectWriteMapStoreWithIndices::lastIndexOf({1}, {2})", new Object[] {
                 feature.getName(), value});
 
         return indexOf(internalObject, feature, value);

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.MapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.resource.Resource;
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class DirectWriteMapDbStore extends MapStore<MapBackend> {
+public class DirectWriteMapDbStore extends DirectWriteMapStore<MapBackend> {
 
     /**
      * Constructs a new {@code DirectWriteMapDbStore} between the given {@code resource} and
