@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
  * A object that handles events notified by a {@link Notifier}.
@@ -27,16 +27,16 @@ public interface Handler {
      *
      * @see Notifier#notifyStartDocument()
      */
-    void processStartDocument();
+    void handleStartDocument();
 
     /**
      * Process the start of an element.
      *
-     * @param classifier the classifier of the new element
+     * @param element the element of the new element
      *
-     * @see Notifier#notifyStartElement(RawClassifier)
+     * @see Notifier#notifyStartElement(Element)
      */
-    void processStartElement(RawClassifier classifier);
+    void handleStartElement(Element element);
 
     /**
      * Process an attribute in the current element.
@@ -45,9 +45,9 @@ public interface Handler {
      *
      * @param attribute the new attribute
      *
-     * @see Notifier#notifyAttribute(RawAttribute)
+     * @see Notifier#notifyAttribute(Attribute)
      */
-    void processAttribute(RawAttribute attribute);
+    void handleAttribute(Attribute attribute);
 
     /**
      * Process a reference from the current element to another element.
@@ -56,23 +56,23 @@ public interface Handler {
      *
      * @param reference the new reference
      *
-     * @see Notifier#notifyReference(RawReference)
+     * @see Notifier#notifyReference(Reference)
      */
-    void processReference(RawReference reference);
+    void handleReference(Reference reference);
 
     /**
      * Process the end of the current element.
      *
      * @see Notifier#notifyEndElement()
      */
-    void processEndElement();
+    void handleEndElement();
 
     /**
      * Process the end of a document.
      *
      * @see Notifier#notifyEndDocument()
      */
-    void processEndDocument();
+    void handleEndDocument();
 
     /**
      * Process a set of characters.
@@ -81,5 +81,5 @@ public interface Handler {
      *
      * @see Notifier#notifyCharacters(String)
      */
-    void processCharacters(String characters);
+    void handleCharacters(String characters);
 }

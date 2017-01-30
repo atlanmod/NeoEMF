@@ -12,12 +12,12 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -46,12 +46,12 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Stack containing previous identifier.
      */
-    private final Deque<RawIdentifier> idsStack;
+    private final Deque<RawId> idsStack;
 
     /**
-     * Attribute waiting a value (via {@link #processCharacters(String)}.
+     * Attribute waiting a value (via {@link #handleCharacters(String)}.
      */
-    private RawAttribute waitingAttribute;
+    private Attribute waitingAttribute;
 
     /**
      * Defines if the previous element was an attribute, or not.
@@ -71,9 +71,9 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     /**
-     * Returns the {@link EClass} associated with the given {@code classifier}.
+     * Returns the {@link EClass} associated with the given {@code element}.
      *
-     * @param classifier the classifier representing the class
+     * @param element the element representing the class
      * @param ns         the namespace of the {@code superClass}
      * @param superClass the super-type of the sought class
      * @param ePackage   the package where to find the class
@@ -82,11 +82,11 @@ public class EcoreProcessor extends AbstractProcessor {
      *
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */
-    private static EClass getEClass(RawClassifier classifier, RawNamespace ns, EClass superClass, EPackage ePackage) {
-        RawMetaClassifier metaClassifier = classifier.metaClassifier();
+    private static EClass getEClass(Element element, Namespace ns, EClass superClass, EPackage ePackage) {
+        MetaClass metaClass = element.metaClass();
 
-        if (nonNull(metaClassifier)) {
-            EClass subEClass = (EClass) ePackage.getEClassifier(metaClassifier.localName());
+        if (nonNull(metaClass)) {
+            EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.name());
 
             // Checks that the metaclass is a subtype of the reference type.
             // If true, use it instead of supertype
@@ -100,8 +100,8 @@ public class EcoreProcessor extends AbstractProcessor {
 
         // If not present, create the metaclass from the current class
         else {
-            metaClassifier = new RawMetaClassifier(ns, superClass.getName());
-            classifier.metaClassifier(metaClassifier);
+            metaClass = new MetaClass(ns, superClass.getName());
+            element.metaClass(metaClass);
         }
 
         return superClass;
@@ -109,61 +109,61 @@ public class EcoreProcessor extends AbstractProcessor {
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
-    public void processStartElement(RawClassifier classifier) {
+    public void handleStartElement(Element element) {
         // Is root
         if (classesStack.isEmpty()) {
-            createRootObject(classifier);
+            createRootObject(element);
         }
         // Is a feature of parent
         else {
-            processFeature(classifier);
+            processFeature(element);
         }
     }
 
     @Override
-    public void processAttribute(RawAttribute attribute) {
+    public void handleAttribute(Attribute attribute) {
         EClass eClass = classesStack.getLast();
-        EStructuralFeature feature = eClass.getEStructuralFeature(attribute.localName());
+        EStructuralFeature feature = eClass.getEStructuralFeature(attribute.name());
 
         // Checks that the attribute is well a attribute
         if (feature instanceof EAttribute) {
             EAttribute eAttribute = (EAttribute) feature;
             attribute.many(eAttribute.isMany());
-            super.processAttribute(attribute);
+            super.handleAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
         else if (feature instanceof EReference) {
-            processReference(RawReference.from(attribute));
+            handleReference(Reference.from(attribute));
         }
     }
 
     @Override
-    public void processReference(RawReference reference) {
+    public void handleReference(Reference reference) {
         EClass eClass = classesStack.getLast();
-        EStructuralFeature feature = eClass.getEStructuralFeature(reference.localName());
+        EStructuralFeature feature = eClass.getEStructuralFeature(reference.name());
 
         // Checks that the reference is well a reference
         if (feature instanceof EReference) {
             EReference eReference = (EReference) feature;
             reference.containment(eReference.isContainment());
             reference.many(eReference.isMany());
-            super.processReference(reference);
+            super.handleReference(reference);
         }
 
         // Otherwise redirect to the attribute handler
         else if (feature instanceof EAttribute) {
-            processAttribute(RawAttribute.from(reference));
+            handleAttribute(Attribute.from(reference));
         }
     }
 
     @Override
-    public void processEndElement() {
+    public void handleEndElement() {
         if (!previousWasAttribute) {
             classesStack.removeLast();
             idsStack.removeLast();
 
-            super.processEndElement();
+            super.handleEndElement();
         }
         else {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
@@ -174,122 +174,122 @@ public class EcoreProcessor extends AbstractProcessor {
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
-    public void processCharacters(String characters) {
+    public void handleCharacters(String characters) {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(waitingAttribute)) {
             waitingAttribute.value(characters);
-            processAttribute(waitingAttribute);
+            handleAttribute(waitingAttribute);
 
             waitingAttribute = null;
         }
     }
 
     /**
-     * Creates the root element from the given {@code classifier}.
+     * Creates the root element from the given {@code element}.
      *
-     * @param classifier the classifier representing the root element
+     * @param element the element representing the root element
      *
-     * @throws NullPointerException if the {@code classifier} does not have a namespace
+     * @throws NullPointerException if the {@code element} does not have a namespace
      */
-    private void createRootObject(RawClassifier classifier) {
-        RawNamespace ns = checkNotNull(classifier.namespace(), "The root element must have a namespace");
+    private void createRootObject(Element element) {
+        Namespace ns = checkNotNull(element.ns(), "The root element must have a namespace");
 
         // Retrieves the EPackage from NS prefix
         EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.uri()),
                 "EPackage %s is not registered.", ns.uri());
 
         // Gets the current EClass
-        EClass eClass = (EClass) ePackage.getEClassifier(classifier.localName());
+        EClass eClass = (EClass) ePackage.getEClassifier(element.name());
 
         // Defines the metaclass of the current element if not present
-        if (isNull(classifier.metaClassifier())) {
-            classifier.metaClassifier(new RawMetaClassifier(ns, eClass.getName()));
+        if (isNull(element.metaClass())) {
+            element.metaClass(new MetaClass(ns, eClass.getName()));
         }
 
         // Defines the element as root node
-        classifier.root(true);
+        element.root(true);
 
         // Notifies next handlers
-        super.processStartElement(classifier);
+        super.handleStartElement(element);
 
         // Saves the current EClass
         classesStack.addLast(eClass);
 
         // Gets the identifier of the element created by next handlers, and save it
-        idsStack.addLast(classifier.id());
+        idsStack.addLast(element.id());
     }
 
     /**
      * Processes a feature and redirects the processing to the associated method according to its type (attribute or
      * reference).
      *
-     * @param classifier the classifier representing the feature
+     * @param element the element representing the feature
      *
-     * @see #processAttribute(RawClassifier, EAttribute)
-     * @see #processReference(RawClassifier, RawNamespace, EReference, EPackage)
+     * @see #processAttribute(Element, EAttribute)
+     * @see #processReference(Element, Namespace, EReference, EPackage)
      */
-    private void processFeature(RawClassifier classifier) {
+    private void processFeature(Element element) {
         // Retrieve the parent EClass
         EClass parentEClass = classesStack.getLast();
 
         // Gets the EPackage from it
         EPackage ePackage = parentEClass.getEPackage();
-        RawNamespace ns = RawNamespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
+        Namespace ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
 
         // Gets the structural feature from the parent, according the its local name (the attr/ref name)
-        EStructuralFeature feature = parentEClass.getEStructuralFeature(classifier.localName());
+        EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
 
         if (feature instanceof EAttribute) {
-            processAttribute(classifier, (EAttribute) feature);
+            processAttribute(element, (EAttribute) feature);
         }
         else if (feature instanceof EReference) {
-            processReference(classifier, ns, (EReference) feature, ePackage);
+            processReference(element, ns, (EReference) feature, ePackage);
         }
     }
 
     /**
      * Processes an attribute.
      *
-     * @param classifier the classifier representing the attribute
+     * @param element the element representing the attribute
      * @param attribute  the associated EMF attribute
      */
-    private void processAttribute(@SuppressWarnings("unused") RawClassifier classifier, EAttribute attribute) {
+    private void processAttribute(@SuppressWarnings("unused") Element element, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
         }
 
         // Waiting a plain text value
-        waitingAttribute = new RawAttribute(attribute.getName());
+        waitingAttribute = new Attribute(attribute.getName());
         previousWasAttribute = true;
     }
 
     /**
      * Processes a reference.
      *
-     * @param classifier the classifier representing the reference
+     * @param element the element representing the reference
      * @param ns         the namespace of the class of the reference
      * @param reference  the associated EMF reference
      * @param ePackage   the package where to find the class of the reference
      */
-    private void processReference(RawClassifier classifier, RawNamespace ns, EReference reference, EPackage ePackage) {
+    private void processReference(Element element, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass
-        EClass eClass = getEClass(classifier, ns, (EClass) reference.getEType(), ePackage);
+        EClass eClass = getEClass(element, ns, (EClass) reference.getEType(), ePackage);
 
-        classifier.namespace(ns);
+        element.ns(ns);
 
         // Notify next handlers of new element, and retrieve its identifier
-        super.processStartElement(classifier);
-        RawIdentifier currentId = classifier.id();
+        super.handleStartElement(element);
+        RawId currentId = element.id();
 
         // Create a reference from the parent to this element, with the given local name
         if (reference.isContainment()) {
-            NeoLogger.debug("{0}#{1} is a containment : creating the reverse reference.", classifier.metaClassifier(), reference.getName());
+            NeoLogger.debug("{0}#{1} is a containment : creating the reverse reference.", element.metaClass(), reference.getName());
 
-            RawReference ref = new RawReference(reference.getName());
+            Reference ref = new Reference(reference.getName());
             ref.id(idsStack.getLast());
             ref.idReference(currentId);
 
-            processReference(ref);
+            handleReference(ref);
         }
 
         // Save EClass and identifier

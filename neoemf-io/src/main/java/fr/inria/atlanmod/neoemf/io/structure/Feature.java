@@ -16,12 +16,12 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 /**
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
-public abstract class RawFeature extends RawElement {
+public abstract class Feature extends NamedElement {
 
     /**
      * The identifier of the feature.
      */
-    private RawIdentifier id;
+    private RawId id;
 
     /**
      * The index of the feature.
@@ -34,13 +34,13 @@ public abstract class RawFeature extends RawElement {
     private boolean many;
 
     /**
-     * Constructs a new {@code RawFeature} with the given {@code name}. Its index is initialized to
+     * Constructs a new {@code Feature} with the given {@code name}. Its index is initialized to
      * {@link PersistentStore#NO_INDEX}.
      *
-     * @param localName the name of this feature
+     * @param name the name of this feature
      */
-    public RawFeature(String localName) {
-        super(localName);
+    public Feature(String name) {
+        super(name);
         this.index = PersistentStore.NO_INDEX;
     }
 
@@ -49,7 +49,7 @@ public abstract class RawFeature extends RawElement {
      *
      * @return the identifier
      */
-    public RawIdentifier id() {
+    public RawId id() {
         return id;
     }
 
@@ -58,7 +58,7 @@ public abstract class RawFeature extends RawElement {
      *
      * @param id the identifier
      */
-    public void id(RawIdentifier id) {
+    public void id(RawId id) {
         this.id = id;
     }
 
@@ -99,7 +99,7 @@ public abstract class RawFeature extends RawElement {
     }
 
     /**
-     * Defines whether this feature is a {@link RawReference}.
+     * Defines whether this feature is a {@link Reference}.
      *
      * @return {@code true} if this feature is a reference.
      */
@@ -108,7 +108,7 @@ public abstract class RawFeature extends RawElement {
     }
 
     /**
-     * Defines whether this feature is an {@link RawAttribute}.
+     * Defines whether this feature is an {@link Attribute}.
      *
      * @return {@code true} if this feature is an attribute.
      */

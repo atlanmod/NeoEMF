@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,40 +43,40 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
     public void testElementsAndChildrenWithId() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
-        ClassifierMock mock;
-        ClassifierMock mockChild;
+        ElementMock mock;
+        ElementMock mockChild;
 
-        ClassifierMock root = persistanceHandler.getElements().get(0);
+        ElementMock root = persistanceHandler.getElements().get(0);
         assertValidElement(root, "Model", 5, "themodel", "jbk", true); // Assert that 'xmi' elements don't exist
         {
             //@Model/@packagedElement.0
-            mock = ClassifierMock.getChildFrom(root, 0);
+            mock = ElementMock.childFrom(root, 0);
             assertValidElement(mock, "packagedElement", 4, "0x81_22", "jbk", false);
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
-                mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
+                mockChild = ElementMock.childFrom(mock, 0, 4);
                 assertValidElement(mockChild, "ownedAttribute", 0, "0x1f402_1", "attribute1", false);
 
                 //@Model/@packagedElement.0/@packagedElement.3
-                mock = ClassifierMock.getChildFrom(mock, 3);
+                mock = ElementMock.childFrom(mock, 3);
                 assertValidElement(mock, "packagedElement", 3, "COLLABORATION_0x1f402_12", "machine", false);
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
-                    mock = ClassifierMock.getChildFrom(mock, 0);
+                    mock = ElementMock.childFrom(mock, 0);
                     assertValidElement(mock, "ownedBehavior", 6, "INTERACTION_0x1f402_12", "machine", false);
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
-                        mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
+                        mockChild = ElementMock.childFrom(mock, 3, 0);
                         assertValidElement(mockChild, "operand", 5, "OPERAND1_0x1f402_12", null, false);
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
-                        mockChild = ClassifierMock.getChildFrom(mock, 4);
+                        mockChild = ElementMock.childFrom(mock, 4);
                         assertValidElement(mockChild, "message", 0, "MSG2_0x1f402_12", "answer", false);
                     }
                 }
             }
             //@Model/@packagedElement.2
-            mock = ClassifierMock.getChildFrom(root, 2);
+            mock = ElementMock.childFrom(root, 2);
             assertValidElement(mock, "packagedElement", 0, "RECOPEREVT1_0x81_22", "answer", false);
         }
     }
@@ -86,51 +86,51 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      */
     @Test
     public void testAttributesWithId() {
-        ClassifierMock mock;
-        ClassifierMock mockChild;
+        ElementMock mock;
+        ElementMock mockChild;
 
-        List<RawAttribute> attributeList;
+        List<Attribute> attributeList;
 
-        ClassifierMock root = persistanceHandler.getElements().get(0);
-        attributeList = root.getAttributes();
+        ElementMock root = persistanceHandler.getElements().get(0);
+        attributeList = root.attributes();
         assertThat(attributeList).isEmpty();
         {
             //@Model/@packagedElement.0
-            mock = ClassifierMock.getChildFrom(root, 0);
-            attributeList = mock.getAttributes();
+            mock = ElementMock.childFrom(root, 0);
+            attributeList = mock.attributes();
             assertThat(attributeList).isEmpty();
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
-                mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
-                attributeList = mockChild.getAttributes();
+                mockChild = ElementMock.childFrom(mock, 0, 4);
+                attributeList = mockChild.attributes();
                 assertThat(attributeList).hasSize(1);
                 assertValidAttribute(attributeList.get(0), "visibility", 0, "private");
 
                 //@Model/@packagedElement.0/@packagedElement.3
-                mock = ClassifierMock.getChildFrom(mock, 3);
-                attributeList = mock.getAttributes();
+                mock = ElementMock.childFrom(mock, 3);
+                attributeList = mock.attributes();
                 assertThat(attributeList).isEmpty();
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
-                    mock = ClassifierMock.getChildFrom(mock, 0);
-                    attributeList = mock.getAttributes();
+                    mock = ElementMock.childFrom(mock, 0);
+                    attributeList = mock.attributes();
                     assertThat(attributeList).isEmpty();
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
-                        mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
-                        assertThat(mockChild.getAttributes()).isEmpty();
+                        mockChild = ElementMock.childFrom(mock, 3, 0);
+                        assertThat(mockChild.attributes()).isEmpty();
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
-                        mockChild = ClassifierMock.getChildFrom(mock, 4);
-                        attributeList = mockChild.getAttributes();
+                        mockChild = ElementMock.childFrom(mock, 4);
+                        attributeList = mockChild.attributes();
                         assertThat(attributeList).hasSize(1);
                         assertValidAttribute(attributeList.get(0), "messageSort", 0, "synchCall");
                     }
                 }
             }
             //@Model/@packagedElement.2
-            mock = ClassifierMock.getChildFrom(root, 2);
-            attributeList = mock.getAttributes();
+            mock = ElementMock.childFrom(root, 2);
+            attributeList = mock.attributes();
             assertThat(attributeList).isEmpty();
         }
     }
@@ -143,50 +143,50 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      */
     @Test
     public void testReferencesWithId() {
-        ClassifierMock mock;
-        ClassifierMock mockChild;
+        ElementMock mock;
+        ElementMock mockChild;
 
-        List<RawReference> referenceList;
+        List<Reference> referenceList;
 
-        ClassifierMock root = persistanceHandler.getElements().get(0);
-        referenceList = root.getReferences();
+        ElementMock root = persistanceHandler.getElements().get(0);
+        referenceList = root.references();
         assertThat(referenceList).hasSize(5); // Now contains containment
         assertValidReference(referenceList.get(0), "packagedElement", UNKNOWN_INDEX, "0x81_22", true, true);
         assertValidReference(referenceList.get(2), "packagedElement", UNKNOWN_INDEX, "RECOPEREVT1_0x81_22", true, true);
         {
             //@Model/@packagedElement.0
-            mock = ClassifierMock.getChildFrom(root, 0);
-            referenceList = mock.getReferences();
+            mock = ElementMock.childFrom(root, 0);
+            referenceList = mock.references();
             assertThat(referenceList).hasSize(4); // Now contains containment
             assertValidReference(referenceList.get(1), "packagedElement", UNKNOWN_INDEX, "0x1f582_4", true, true);
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
-                mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
-                referenceList = mockChild.getReferences();
+                mockChild = ElementMock.childFrom(mock, 0, 4);
+                referenceList = mockChild.references();
                 assertThat(referenceList).hasSize(1);
                 assertValidReference(referenceList.get(0), "type", UNKNOWN_INDEX, "0x1f582_4", false, false);
 
                 //@Model/@packagedElement.0/@packagedElement.3
-                mock = ClassifierMock.getChildFrom(mock, 3);
-                referenceList = mock.getReferences();
+                mock = ElementMock.childFrom(mock, 3);
+                referenceList = mock.references();
                 assertThat(referenceList).hasSize(3); // Now contains containment
                 assertValidReference(referenceList.get(0), "ownedBehavior", UNKNOWN_INDEX, "INTERACTION_0x1f402_12", true, true);
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
-                    mock = ClassifierMock.getChildFrom(mock, 0);
-                    referenceList = mock.getReferences();
+                    mock = ElementMock.childFrom(mock, 0);
+                    referenceList = mock.references();
                     assertThat(referenceList).hasSize(6); // Now contains containment
                     assertValidReference(referenceList.get(4), "message", UNKNOWN_INDEX, "MSG2_0x1f402_12", true, true);
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
-                        mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
-                        referenceList = mockChild.getReferences();
+                        mockChild = ElementMock.childFrom(mock, 3, 0);
+                        referenceList = mockChild.references();
                         assertThat(referenceList).hasSize(5); // Now contains containment
                         assertValidReference(referenceList.get(2), "fragment", UNKNOWN_INDEX, "BEHEXECSPEC2_0x1f402_12", true, true);
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
-                        mockChild = ClassifierMock.getChildFrom(mock, 4);
-                        referenceList = mockChild.getReferences();
+                        mockChild = ElementMock.childFrom(mock, 4);
+                        referenceList = mockChild.references();
                         assertThat(referenceList).hasSize(3);
                         assertValidReference(referenceList.get(0), "sendEvent", 0, "MSGOCCSPECSEND2_0x1f402_12", false, false); // New reference
                         assertValidReference(referenceList.get(1), "receiveEvent", 0, "MSGOCCSPECREC2_0x1f402_12", false, false); // New reference
@@ -196,8 +196,8 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
             }
 
             //@Model/@packagedElement.2
-            mock = ClassifierMock.getChildFrom(root, 2);
-            referenceList = mock.getReferences();
+            mock = ElementMock.childFrom(root, 2);
+            referenceList = mock.references();
             assertThat(referenceList).hasSize(1);
             assertValidReference(referenceList.get(0), "operation", 0, "0x1f582_2", false, false); // New reference
         }
@@ -208,42 +208,42 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      */
     @Test
     public void testMetaClassesWithId() {
-        ClassifierMock mock;
-        ClassifierMock mockChild;
+        ElementMock mock;
+        ElementMock mockChild;
 
-        ClassifierMock root = persistanceHandler.getElements().get(0);
-        RawNamespace ns = root.getNamespace();
-        assertValidMetaClass(root.getMetaClassifier(), "Model", ns);
+        ElementMock root = persistanceHandler.getElements().get(0);
+        Namespace ns = root.ns();
+        assertValidMetaClass(root.metaClass(), "Model", ns);
         {
             //@Model/@packagedElement.0
-            mock = ClassifierMock.getChildFrom(root, 0);
-            assertValidMetaClass(mock.getMetaClassifier(), "Package", ns);
+            mock = ElementMock.childFrom(root, 0);
+            assertValidMetaClass(mock.metaClass(), "Package", ns);
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
-                mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
-                assertValidMetaClass(mockChild.getMetaClassifier(), "Property", ns);
+                mockChild = ElementMock.childFrom(mock, 0, 4);
+                assertValidMetaClass(mockChild.metaClass(), "Property", ns);
 
                 //@Model/@packagedElement.0/@packagedElement.3
-                mock = ClassifierMock.getChildFrom(mock, 3);
-                assertValidMetaClass(mock.getMetaClassifier(), "Collaboration", ns);
+                mock = ElementMock.childFrom(mock, 3);
+                assertValidMetaClass(mock.metaClass(), "Collaboration", ns);
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
-                    mock = ClassifierMock.getChildFrom(mock, 0);
-                    assertValidMetaClass(mock.getMetaClassifier(), "Interaction", ns);
+                    mock = ElementMock.childFrom(mock, 0);
+                    assertValidMetaClass(mock.metaClass(), "Interaction", ns);
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
-                        mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
-                        assertValidMetaClass(mockChild.getMetaClassifier(), "InteractionOperand", ns);
+                        mockChild = ElementMock.childFrom(mock, 3, 0);
+                        assertValidMetaClass(mockChild.metaClass(), "InteractionOperand", ns);
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
-                        mockChild = ClassifierMock.getChildFrom(mock, 4);
-                        assertValidMetaClass(mockChild.getMetaClassifier(), "Message", ns);
+                        mockChild = ElementMock.childFrom(mock, 4);
+                        assertValidMetaClass(mockChild.metaClass(), "Message", ns);
                     }
                 }
             }
             //@Model/@packagedElement.2
-            mock = ClassifierMock.getChildFrom(root, 2);
-            assertValidMetaClass(mock.getMetaClassifier(), "ReceiveOperationEvent", ns);
+            mock = ElementMock.childFrom(root, 2);
+            assertValidMetaClass(mock.metaClass(), "ReceiveOperationEvent", ns);
         }
     }
 }

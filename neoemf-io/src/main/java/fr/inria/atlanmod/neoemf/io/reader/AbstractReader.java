@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.io.IOException;
@@ -47,27 +47,27 @@ public abstract class AbstractReader extends AbstractNotifier<Processor> impleme
     /**
      * Processes the start of the document.
      */
-    protected void readStartDocument() {
+    protected final void readStartDocument() {
         notifyStartDocument();
         progress(0);
     }
 
     /**
-     * Processes a {@link RawNamespace} declaration.
+     * Processes a {@link Namespace} declaration.
      *
      * @param prefix the prefix
      * @param uri    the URI associated with the {@code prefix}
      *
-     * @see RawNamespace.Registry#register(String, String)
+     * @see Namespace.Registry#register(String, String)
      */
-    protected void readNamespace(String prefix, String uri) {
-        RawNamespace.Registry.getInstance().register(prefix, uri);
+    protected final void readNamespace(String prefix, String uri) {
+        Namespace.Registry.getInstance().register(prefix, uri);
     }
 
     /**
      * Processes the end of the current document.
      */
-    protected void readEndDocument() {
+    protected final void readEndDocument() {
         progress(100);
         notifyEndDocument();
     }
@@ -77,7 +77,7 @@ public abstract class AbstractReader extends AbstractNotifier<Processor> impleme
      *
      * @param characters a set of characters, as {@link String}
      */
-    protected void processCharacters(String characters) {
+    protected void readCharacters(String characters) {
         notifyCharacters(characters);
     }
 

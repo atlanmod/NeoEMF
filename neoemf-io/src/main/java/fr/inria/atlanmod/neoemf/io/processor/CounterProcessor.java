@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
@@ -55,32 +55,32 @@ public class CounterProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartElement(RawClassifier classifier) {
+    public void handleStartElement(Element element) {
         elementCount++;
 
-        super.processStartElement(classifier);
+        super.handleStartElement(element);
     }
 
     @Override
-    public void processAttribute(RawAttribute attribute) {
+    public void handleAttribute(Attribute attribute) {
         attributeCount++;
 
-        super.processAttribute(attribute);
+        super.handleAttribute(attribute);
     }
 
     @Override
-    public void processReference(RawReference reference) {
+    public void handleReference(Reference reference) {
         referenceCount++;
 
-        super.processReference(reference);
+        super.handleReference(reference);
     }
 
     @Override
-    public void processEndDocument() {
+    public void handleEndDocument() {
         NeoLogger.info("Elements   : {0}", elementCount);
         NeoLogger.info("Attributes : {0}", attributeCount);
         NeoLogger.info("References : {0}", referenceCount);
 
-        super.processEndDocument();
+        super.handleEndDocument();
     }
 }

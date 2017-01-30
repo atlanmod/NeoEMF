@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link RawFeature} representing a reference, which links several {@link RawClassifier}s.
+ * A {@link Feature} representing a reference, which links several {@link Element}s.
  */
-public class RawReference extends RawFeature {
+public class Reference extends Feature {
 
     /**
      * The identifier of the referenced element.
      */
-    private RawIdentifier idReference;
+    private RawId idReference;
 
     /**
      * Whether this reference is a containment.
@@ -27,27 +27,27 @@ public class RawReference extends RawFeature {
     private boolean containment;
 
     /**
-     * Constructs a new {@code RawReference} with the given {@code localName}.
+     * Constructs a new {@code Reference} with the given {@code name}.
      *
-     * @param localName the name of this reference
+     * @param name the name of this reference
      */
-    public RawReference(String localName) {
-        super(localName);
+    public Reference(String name) {
+        super(name);
         this.containment = false;
     }
 
     /**
-     * Converts an {@link RawAttribute} to a {@code RawReference}.
+     * Converts an {@link Attribute} to a {@code Reference}.
      *
      * @param attribute the attribute to convert
      *
      * @return a new reference
      */
-    public static RawReference from(RawAttribute attribute) {
-        RawReference reference = new RawReference(attribute.localName());
+    public static Reference from(Attribute attribute) {
+        Reference reference = new Reference(attribute.name());
         reference.id(attribute.id());
         reference.index(attribute.index());
-        reference.idReference(RawIdentifier.original(attribute.value().toString()));
+        reference.idReference(RawId.original(attribute.value().toString()));
         return reference;
     }
 
@@ -56,7 +56,7 @@ public class RawReference extends RawFeature {
      *
      * @return the identifier
      */
-    public RawIdentifier idReference() {
+    public RawId idReference() {
         return idReference;
     }
 
@@ -65,7 +65,7 @@ public class RawReference extends RawFeature {
      *
      * @param idReference the identifier
      */
-    public void idReference(RawIdentifier idReference) {
+    public void idReference(RawId idReference) {
         this.idReference = idReference;
     }
 

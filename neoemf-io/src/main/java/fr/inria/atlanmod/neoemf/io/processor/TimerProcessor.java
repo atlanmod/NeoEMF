@@ -16,8 +16,6 @@ import com.google.common.base.Stopwatch;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import static java.util.Objects.nonNull;
-
 /**
  * An {@link Processor} that measures elapsed time between the start and the end of an I/O process.
  */
@@ -38,22 +36,17 @@ public class TimerProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartDocument() {
+    public void handleStartDocument() {
         NeoLogger.info("Document analysis in progress...");
         stopWatch = Stopwatch.createStarted();
 
-        super.processStartDocument();
+        super.handleStartDocument();
     }
 
     @Override
-    public void processEndDocument() {
-        if (nonNull(stopWatch)) {
-            NeoLogger.info("Document analysis done in {0}", stopWatch.stop());
-        }
-        else {
-            NeoLogger.info("Document analysis done");
-        }
+    public void handleEndDocument() {
+        NeoLogger.info("Document analysis done in {0}", stopWatch.stop());
 
-        super.processEndDocument();
+        super.handleEndDocument();
     }
 }

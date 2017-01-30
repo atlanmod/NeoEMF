@@ -13,13 +13,13 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
-import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
+import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.processor.PersistenceProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,34 +40,34 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
 
     @After
     public final void unregisterNamespaces() {
-        RawNamespace.Registry.getInstance().clean();
+        Namespace.Registry.getInstance().clean();
     }
 
-    protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id) {
-        assertThat(mock.getLocalName()).isEqualTo(name);
-        assertThat(mock.getElements()).hasSize(size);
+    protected void assertValidElement(final ElementMock mock, final String name, final int size, final String id) {
+        assertThat(mock.name()).isEqualTo(name);
+        assertThat(mock.elements()).hasSize(size);
 
         if (isNull(id)) {
-            assertThat(mock.getId()).isNull();
+            assertThat(mock.id()).isNull();
         }
         else {
-            assertThat(mock.getId().value()).isEqualTo(id);
+            assertThat(mock.id().value()).isEqualTo(id);
         }
     }
 
-    protected void assertValidMetaClass(final RawMetaClassifier metaClassifier, final String name, final RawNamespace ns) {
-        assertThat(metaClassifier.localName()).isEqualTo(name);
-        assertThat(metaClassifier.namespace()).isEqualTo(ns);
+    protected void assertValidMetaClass(final MetaClass metaClass, final String name, final Namespace ns) {
+        assertThat(metaClass.name()).isEqualTo(name);
+        assertThat(metaClass.ns()).isEqualTo(ns);
     }
 
-    protected void assertValidReference(final RawReference reference, final String name, final int index, final String idReference) {
-        assertThat(reference.localName()).isEqualTo(name);
+    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference) {
+        assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
     }
 
-    protected void assertValidAttribute(final RawAttribute attribute, final String name, final Object value) {
-        assertThat(attribute.localName()).isEqualTo(name);
+    protected void assertValidAttribute(final Attribute attribute, final String name, final Object value) {
+        assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
     }
 

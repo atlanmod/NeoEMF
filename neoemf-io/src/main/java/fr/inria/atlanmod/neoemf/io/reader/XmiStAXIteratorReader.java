@@ -57,13 +57,13 @@ public class XmiStAXIteratorReader extends AbstractXmiReader {
      * @throws XMLStreamException if there is an error with the underlying XML
      */
     private void read(XMLEventReader reader) throws XMLStreamException {
+
+        readStartDocument();
+
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
 
-            if (event.isStartDocument()) {
-                readStartDocument();
-            }
-            else if (event.isStartElement()) {
+            if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
 
                 Iterable<Namespace> namespaces = element::getNamespaces;
@@ -88,16 +88,15 @@ public class XmiStAXIteratorReader extends AbstractXmiReader {
             else if (event.isEndElement()) {
                 readEndElement();
             }
-            else if (event.isEndDocument()) {
-                readEndDocument();
-            }
             else if (event.isCharacters()) {
                 Characters characters = event.asCharacters();
 
                 if (!characters.isWhiteSpace() && !characters.isIgnorableWhiteSpace()) {
-                    processCharacters(characters.getData());
+                    readCharacters(characters.getData());
                 }
             }
         }
+
+        readEndDocument();
     }
 }

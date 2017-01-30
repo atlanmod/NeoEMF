@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
@@ -35,43 +35,43 @@ public class AbstractProcessor extends AbstractNotifier<Handler> implements Proc
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processStartDocument() {
+    public void handleStartDocument() {
         notifyStartDocument();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processStartElement(RawClassifier classifier) {
-        notifyStartElement(classifier);
+    public void handleStartElement(Element element) {
+        notifyStartElement(element);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processAttribute(RawAttribute attribute) {
+    public void handleAttribute(Attribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processReference(RawReference reference) {
+    public void handleReference(Reference reference) {
         notifyReference(reference);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processEndElement() {
+    public void handleEndElement() {
         notifyEndElement();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processEndDocument() {
+    public void handleEndDocument() {
         notifyEndDocument();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void processCharacters(String characters) {
+    public void handleCharacters(String characters) {
         notifyCharacters(characters);
     }
 }

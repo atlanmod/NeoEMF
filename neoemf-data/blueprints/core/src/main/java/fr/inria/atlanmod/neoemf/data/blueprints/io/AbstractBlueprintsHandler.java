@@ -24,9 +24,9 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
 
 import java.util.NoSuchElementException;
 
@@ -95,17 +95,17 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      * Updates the containment identified by its {@code name} between the {@code parentVertex} and the {@code
      * childVertex}.
      *
-     * @param localName    the name of the property identifying the reference (parent -&gt; child)
+     * @param name    the name of the property identifying the reference (parent -&gt; child)
      * @param parentVertex the parent vertex
      * @param childVertex  the child vertex
      */
-    private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
+    private static void updateContainment(final String name, final Vertex parentVertex, final Vertex childVertex) {
         for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
             edge.remove();
         }
 
         Edge edge = childVertex.addEdge(CONTAINER, parentVertex);
-        edge.setProperty(CONTAINING_FEATURE, localName);
+        edge.setProperty(CONTAINING_FEATURE, name);
     }
 
     /**
@@ -219,10 +219,10 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartDocument() {
+    public void handleStartDocument() {
         createRootVertex();
 
-        super.processStartDocument();
+        super.handleStartDocument();
     }
 
     /**
@@ -252,17 +252,17 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      */
     private void createRootVertex() {
         // Create the 'ROOT' node with the default metaclass
-        RawMetaClassifier metaClassifier = RawMetaClassifier.getDefault();
+        MetaClass metaClass = MetaClass.getDefault();
 
-        RawClassifier rootClassifier = new RawClassifier(metaClassifier.namespace(), metaClassifier.localName());
+        Element rootElement = new Element(metaClass.ns(), metaClass.name());
 
-        rootClassifier.id(RawIdentifier.generated(ROOT_ID.toString()));
-        rootClassifier.className(metaClassifier.localName());
-        rootClassifier.root(false);
-        rootClassifier.metaClassifier(metaClassifier);
+        rootElement.id(RawId.generated(ROOT_ID.toString()));
+        rootElement.className(metaClass.name());
+        rootElement.root(false);
+        rootElement.metaClass(metaClass);
 
-        Id id = createElement(rootClassifier, ROOT_ID);
-        Id metaClassId = getOrCreateMetaClass(metaClassifier);
+        Id id = createElement(rootElement, ROOT_ID);
+        Id metaClassId = getOrCreateMetaClass(metaClass);
 
         setMetaClass(id, metaClassId);
     }

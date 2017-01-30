@@ -15,9 +15,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -96,17 +96,18 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartElement(RawClassifier classifier) {
-        if (nonNull(classifier.id())) {
+    public void handleStartElement(Element element) {
+        // If the first element has an identifier, we assume that the file is ID-based.
+        if (nonNull(element.id())) {
             hasIds = true;
         }
 
         if (!hasIds) {
             // Processes the id from the path of the element in XML tree
-            String path = paths.getPath(classifier.localName());
+            String path = paths.getPath(element.name());
 
             // Increments the number of occurrence for this path
-            Integer count = paths.createOrIncrement(classifier.localName());
+            Integer count = paths.createOrIncrement(element.name());
 
             // Defines the id as '<path>.<index>'
             String id = path + XPATH_INDEX_SEPARATOR + count;
@@ -117,36 +118,36 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             // Defines the new identifier as identifier of the classifier if it not already exist
-            if (isNull(classifier.id())) {
-                classifier.id(RawIdentifier.generated(id));
+            if (isNull(element.id())) {
+                element.id(RawId.generated(id));
             }
         }
 
-        super.processStartElement(classifier);
+        super.handleStartElement(element);
     }
 
     @Override
-    public void processReference(RawReference reference) {
+    public void handleReference(Reference reference) {
         if (!hasIds) {
             // Format the reference according internal XPath management
-            reference.idReference(RawIdentifier.generated(formatPath(reference.idReference().value())));
+            reference.idReference(RawId.generated(formatPath(reference.idReference().value())));
         }
 
-        super.processReference(reference);
+        super.handleReference(reference);
     }
 
     @Override
-    public void processEndElement() {
+    public void handleEndElement() {
         if (!hasIds) {
             // Removes children of the last element
             paths.clearLast();
         }
 
-        super.processEndElement();
+        super.handleEndElement();
     }
 
     @Override
-    public void processEndDocument() {
+    public void handleEndDocument() {
         if (!hasIds) {
             long size = paths.estimatedSize();
             if (size > 1) {
@@ -154,7 +155,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
         }
 
-        super.processEndDocument();
+        super.handleEndDocument();
     }
 
     /**

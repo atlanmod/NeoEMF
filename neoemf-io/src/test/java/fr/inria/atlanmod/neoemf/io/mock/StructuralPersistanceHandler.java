@@ -14,11 +14,11 @@ package fr.inria.atlanmod.neoemf.io.mock;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
+import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ import static java.util.Objects.nonNull;
  */
 public class StructuralPersistanceHandler implements PersistenceHandler {
 
-    private final Cache<String, ClassifierMock> classifierMockCache;
+    private final Cache<String, ElementMock> classifierMockCache;
 
-    private final Deque<ClassifierMock> classifierStack;
+    private final Deque<ElementMock> classifierStack;
 
-    private final List<ClassifierMock> elements;
+    private final List<ElementMock> elements;
 
     public StructuralPersistanceHandler() {
         this.classifierMockCache = Caffeine.newBuilder().build();
@@ -46,41 +46,41 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
         this.elements = new ArrayList<>();
     }
 
-    public List<ClassifierMock> getElements() {
+    public List<ElementMock> getElements() {
         return elements;
     }
 
     @Override
-    public void processStartDocument() {
+    public void handleStartDocument() {
         // Do nothing
     }
 
     @Override
-    public void processStartElement(RawClassifier classifier) {
-        ClassifierMock mock = new ClassifierMock(classifier);
+    public void handleStartElement(Element element) {
+        ElementMock mock = new ElementMock(element);
 
         if (!classifierStack.isEmpty()) {
-            classifierStack.getLast().getElements().add(mock);
+            classifierStack.getLast().elements().add(mock);
         }
         else {
             elements.add(mock);
         }
 
-        if (nonNull(classifier.id())) {
-            classifierMockCache.put(classifier.id().value(), mock);
+        if (nonNull(element.id())) {
+            classifierMockCache.put(element.id().value(), mock);
         }
         classifierStack.addLast(mock);
     }
 
     @Override
-    public void processAttribute(RawAttribute attribute) {
-        if (isNull(attribute.id()) || attribute.id().equals(classifierStack.getLast().getId())) {
-            classifierStack.getLast().getAttributes().add(attribute);
+    public void handleAttribute(Attribute attribute) {
+        if (isNull(attribute.id()) || attribute.id().equals(classifierStack.getLast().id())) {
+            classifierStack.getLast().attributes().add(attribute);
         }
         else {
-            ClassifierMock mock = classifierMockCache.getIfPresent(attribute.id().value());
-            if (nonNull(mock) && Objects.equals(mock.getId(), attribute.id())) {
-                mock.getAttributes().add(attribute);
+            ElementMock mock = classifierMockCache.getIfPresent(attribute.id().value());
+            if (nonNull(mock) && Objects.equals(mock.id(), attribute.id())) {
+                mock.attributes().add(attribute);
             }
             else {
                 throw new IllegalArgumentException();
@@ -89,14 +89,14 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void processReference(RawReference reference) {
-        if (isNull(reference.id()) || reference.id().equals(classifierStack.getLast().getId())) {
-            classifierStack.getLast().getReferences().add(reference);
+    public void handleReference(Reference reference) {
+        if (isNull(reference.id()) || reference.id().equals(classifierStack.getLast().id())) {
+            classifierStack.getLast().references().add(reference);
         }
         else {
-            ClassifierMock mock = classifierMockCache.getIfPresent(reference.id().value());
-            if (nonNull(mock) && Objects.equals(mock.getId(), reference.id())) {
-                mock.getReferences().add(reference);
+            ElementMock mock = classifierMockCache.getIfPresent(reference.id().value());
+            if (nonNull(mock) && Objects.equals(mock.id(), reference.id())) {
+                mock.references().add(reference);
             }
             else {
                 throw new IllegalArgumentException();
@@ -105,17 +105,17 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void processEndElement() {
+    public void handleEndElement() {
         classifierStack.removeLast();
     }
 
     @Override
-    public void processEndDocument() {
+    public void handleEndDocument() {
         // Do nothing
     }
 
     @Override
-    public void processCharacters(String characters) {
+    public void handleCharacters(String characters) {
         // Do nothing
     }
 }

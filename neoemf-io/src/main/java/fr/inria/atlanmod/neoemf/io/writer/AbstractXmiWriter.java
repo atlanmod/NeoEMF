@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,37 +31,37 @@ public abstract class AbstractXmiWriter extends AbstractWriter {
     }
 
     @Override
-    public void processStartDocument() {
+    public void handleStartDocument() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processStartElement(RawClassifier classifier) {
+    public void handleStartElement(Element element) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processAttribute(RawAttribute attribute) {
+    public void handleAttribute(Attribute attribute) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processReference(RawReference reference) {
+    public void handleReference(Reference reference) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processEndElement() {
+    public void handleEndElement() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processEndDocument() {
+    public void handleEndDocument() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processCharacters(String characters) {
+    public void handleCharacters(String characters) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

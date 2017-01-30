@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A identifiable {@link RawMetaClassifier} which can be typed.
+ * A identifiable {@link MetaClass} which can be typed.
  */
-public class RawClassifier extends RawMetaClassifier {
+public class Element extends MetaClass {
 
     /**
      * The identifier of this classifier.
      */
-    private RawIdentifier id;
+    private RawId id;
 
     /**
      * The name of the class of this classifier.
@@ -29,7 +29,7 @@ public class RawClassifier extends RawMetaClassifier {
     /**
      * The metaclassifier of this classifier.
      */
-    private RawMetaClassifier metaClassifier;
+    private MetaClass metaClass;
 
     /**
      * Whether this classifier is the root element of a structure.
@@ -37,13 +37,13 @@ public class RawClassifier extends RawMetaClassifier {
     private boolean root;
 
     /**
-     * Constructs a new {@code RawClassifier} with the given {@code namespace} and {@code localName}.
+     * Constructs a new {@code Element} with the given {@code ns} and {@code name}.
      *
-     * @param namespace the namespace of this classifier
-     * @param localName the name of this classifier
+     * @param ns the ns of this classifier
+     * @param name the name of this classifier
      */
-    public RawClassifier(RawNamespace namespace, String localName) {
-        super(namespace, localName);
+    public Element(Namespace ns, String name) {
+        super(ns, name);
         this.root = false;
     }
 
@@ -52,7 +52,7 @@ public class RawClassifier extends RawMetaClassifier {
      *
      * @return the identifier
      */
-    public RawIdentifier id() {
+    public RawId id() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class RawClassifier extends RawMetaClassifier {
      *
      * @param id the identifier
      */
-    public void id(RawIdentifier id) {
+    public void id(RawId id) {
         this.id = id;
     }
 
@@ -88,17 +88,17 @@ public class RawClassifier extends RawMetaClassifier {
      *
      * @return the metaclassifier
      */
-    public RawMetaClassifier metaClassifier() {
-        return metaClassifier;
+    public MetaClass metaClass() {
+        return metaClass;
     }
 
     /**
      * Defines the metaclassifier of this classifier.
      *
-     * @param metaClassifier the metaclassifier
+     * @param metaClass the metaclassifier
      */
-    public void metaClassifier(RawMetaClassifier metaClassifier) {
-        this.metaClassifier = metaClassifier;
+    public void metaClass(MetaClass metaClass) {
+        this.metaClass = metaClass;
     }
 
     /**

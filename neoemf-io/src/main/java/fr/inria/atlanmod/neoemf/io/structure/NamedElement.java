@@ -14,20 +14,20 @@ package fr.inria.atlanmod.neoemf.io.structure;
 /**
  * A simple element that has a name.
  */
-public class RawElement {
+public abstract class NamedElement {
 
     /**
      * The name of the element.
      */
-    private final String localName;
+    private final String name;
 
     /**
-     * Constructs a new {@code RawElement} with the given {@code localName}.
+     * Constructs a new {@code NamedElement} with the given {@code name}.
      *
-     * @param localName the name of this element
+     * @param name the name of this element
      */
-    public RawElement(String localName) {
-        this.localName = localName;
+    public NamedElement(String name) {
+        this.name = name;
     }
 
     /**
@@ -35,12 +35,12 @@ public class RawElement {
      *
      * @return the name
      */
-    public String localName() {
-        return localName;
+    public String name() {
+        return name;
     }
 
     @Override
     public String toString() {
-        return localName;
+        return name;
     }
 }

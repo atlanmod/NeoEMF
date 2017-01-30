@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
@@ -35,22 +35,22 @@ public interface Notifier<T extends Handler> {
      * Notifies all registered handlers of the start of a document.
      *
      * @see #notifyEndDocument()
-     * @see Handler#processStartDocument()
+     * @see Handler#handleStartDocument()
      */
     default void notifyStartDocument() {
-        next().processStartDocument();
+        next().handleStartDocument();
     }
 
     /**
      * Notifies all registered handlers of the start of a new element.
      *
-     * @param classifier the classifier of the new element
+     * @param element the element of the new element
      *
      * @see #notifyEndElement()
-     * @see Handler#processStartElement(RawClassifier)
+     * @see Handler#handleStartElement(Element)
      */
-    default void notifyStartElement(RawClassifier classifier) {
-        next().processStartElement(classifier);
+    default void notifyStartElement(Element element) {
+        next().handleStartElement(element);
     }
 
     /**
@@ -58,10 +58,10 @@ public interface Notifier<T extends Handler> {
      *
      * @param attribute the new attribute
      *
-     * @see Handler#processAttribute(RawAttribute)
+     * @see Handler#handleAttribute(Attribute)
      */
-    default void notifyAttribute(RawAttribute attribute) {
-        next().processAttribute(attribute);
+    default void notifyAttribute(Attribute attribute) {
+        next().handleAttribute(attribute);
     }
 
     /**
@@ -69,10 +69,10 @@ public interface Notifier<T extends Handler> {
      *
      * @param reference the new reference
      *
-     * @see Handler#processReference(RawReference)
+     * @see Handler#handleReference(Reference)
      */
-    default void notifyReference(RawReference reference) {
-        next().processReference(reference);
+    default void notifyReference(Reference reference) {
+        next().handleReference(reference);
     }
 
     /**
@@ -80,29 +80,29 @@ public interface Notifier<T extends Handler> {
      *
      * @param characters the new characters
      *
-     * @see Handler#processCharacters(String)
+     * @see Handler#handleCharacters(String)
      */
     default void notifyCharacters(String characters) {
-        next().processCharacters(characters);
+        next().handleCharacters(characters);
     }
 
     /**
      * Notifies all registered handlers of the end of the current element.
      *
-     * @see #notifyStartElement(RawClassifier)
-     * @see Handler#processEndElement()
+     * @see #notifyStartElement(Element)
+     * @see Handler#handleEndElement()
      */
     default void notifyEndElement() {
-        next().processEndElement();
+        next().handleEndElement();
     }
 
     /**
      * Notifies all registered handlers of the end of the current document.
      *
      * @see #notifyStartDocument()
-     * @see Handler#processEndDocument()
+     * @see Handler#handleEndDocument()
      */
     default void notifyEndDocument() {
-        next().processEndDocument();
+        next().handleEndDocument();
     }
 }

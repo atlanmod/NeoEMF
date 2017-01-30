@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -34,7 +34,7 @@ public class LoggingProcessor extends AbstractProcessor {
     /**
      * The current identifier, used to replace a full reference by "this".
      */
-    private RawIdentifier currentId;
+    private RawId currentId;
 
     /**
      * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
@@ -46,51 +46,51 @@ public class LoggingProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartDocument() {
-        log.info("Starting document");
+    public void handleStartDocument() {
+        log.debug("[#] Starting document");
 
-        super.processStartDocument();
+        super.handleStartDocument();
     }
 
     @Override
-    public void processStartElement(RawClassifier classifier) {
-        log.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
-                classifier.namespace().prefix(),
-                classifier.localName(),
-                classifier.className(),
-                classifier.metaClassifier().localName(),
-                classifier.id());
+    public void handleStartElement(Element element) {
+        log.debug("[E] {0}:{1} \"{2}\" : {3} = {4}",
+                element.ns().prefix(),
+                element.name(),
+                element.className(),
+                element.metaClass().name(),
+                element.id());
 
-        currentId = classifier.id();
+        currentId = element.id();
 
-        super.processStartElement(classifier);
+        super.handleStartElement(element);
     }
 
     @Override
-    public void processAttribute(RawAttribute attribute) {
-        log.info("[A]    {0} ({1}) = {2}",
-                attribute.localName(),
+    public void handleAttribute(Attribute attribute) {
+        log.debug("[A]    {0} ({1}) = {2}",
+                attribute.name(),
                 attribute.index(),
                 attribute.value());
 
-        super.processAttribute(attribute);
+        super.handleAttribute(attribute);
     }
 
     @Override
-    public void processReference(RawReference reference) {
-        log.info("[R]    {0} ({1}) = {2} -> {3}",
-                reference.localName(),
+    public void handleReference(Reference reference) {
+        log.debug("[R]    {0} ({1}) = {2} -> {3}",
+                reference.name(),
                 reference.index(),
                 Objects.isNull(reference.id()) ? "this" : reference.id(),
                 Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
 
-        super.processReference(reference);
+        super.handleReference(reference);
     }
 
     @Override
-    public void processEndDocument() {
-        log.info("Ending document");
+    public void handleEndDocument() {
+        log.debug("[#] Ending document");
 
-        super.processEndDocument();
+        super.handleEndDocument();
     }
 }

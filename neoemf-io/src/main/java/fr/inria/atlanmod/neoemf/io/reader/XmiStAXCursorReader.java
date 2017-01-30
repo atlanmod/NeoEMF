@@ -17,7 +17,6 @@ import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.evt.XMLEventFactory2;
 
 import java.io.InputStream;
-import java.util.stream.IntStream;
 
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -54,20 +53,17 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
      * @throws XMLStreamException if there is an error with the underlying XML
      */
     private void read(XMLStreamReader reader) throws XMLStreamException {
-
         XMLEventFactory eventFactory = XMLEventFactory2.newFactory();
+
+        readStartDocument();
 
         while (reader.hasNext()) {
             int event = reader.next();
 
-            if (event == XMLStreamReader.START_DOCUMENT) {
-                readStartDocument();
-            }
-            else if (event == XMLStreamReader.START_ELEMENT) {
+            if (event == XMLStreamReader.START_ELEMENT) {
                 int namespaceCount = reader.getNamespaceCount();
-                if (namespaceCount > 0) {
-                    IntStream.range(0, namespaceCount).forEach(i ->
-                            readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
+                for (int i = 0; i < namespaceCount; i++) {
+                    readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
                 }
 
                 readStartElement(reader.getNamespaceURI(), reader.getLocalName());
@@ -85,14 +81,13 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
             else if (event == XMLStreamReader.END_ELEMENT) {
                 readEndElement();
             }
-            else if (event == XMLStreamReader.END_DOCUMENT) {
-                readEndDocument();
-            }
             else if (event == XMLStreamReader.CHARACTERS) {
                 if (reader.getTextLength() > 0 && !reader.isWhiteSpace()) {
-                    processCharacters(reader.getText());
+                    readCharacters(reader.getText());
                 }
             }
         }
+
+        readEndDocument();
     }
 }

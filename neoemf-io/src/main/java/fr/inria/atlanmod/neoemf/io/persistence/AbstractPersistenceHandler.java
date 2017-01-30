@@ -19,11 +19,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -202,14 +202,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     protected abstract void setMetaClass(Id id, Id metaClassId);
 
     @Override
-    public void processStartDocument() {
+    public void handleStartDocument() {
         // Do nothing
     }
 
     @Override
-    public void processStartElement(final RawClassifier classifier) {
-        Id id = createElement(classifier);
-        Id metaClassId = getOrCreateMetaClass(classifier.metaClassifier());
+    public void handleStartElement(final Element element) {
+        Id id = createElement(element);
+        Id metaClassId = getOrCreateMetaClass(element.metaClass());
 
         setMetaClass(id, metaClassId);
 
@@ -217,7 +217,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processAttribute(final RawAttribute attribute) {
+    public void handleAttribute(final Attribute attribute) {
         Id id;
         if (isNull(attribute.id())) {
             id = elementIdStack.getLast();
@@ -227,7 +227,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         }
 
         addAttribute(id,
-                attribute.localName(),
+                attribute.name(),
                 attribute.index(),
                 attribute.many(),
                 attribute.value());
@@ -236,7 +236,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processReference(final RawReference reference) {
+    public void handleReference(final Reference reference) {
         Id id;
         if (isNull(reference.id())) {
             id = elementIdStack.getLast();
@@ -249,7 +249,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         try {
             addReference(id,
-                    reference.localName(),
+                    reference.name(),
                     reference.index(),
                     reference.many(),
                     reference.containment(),
@@ -264,12 +264,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processEndElement() {
+    public void handleEndElement() {
         elementIdStack.removeLast();
     }
 
     @Override
-    public void processEndDocument() {
+    public void handleEndDocument() {
         long unlinkedNumber = unlinkedElementsMap.size();
         if (unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
@@ -289,63 +289,63 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processCharacters(String characters) {
+    public void handleCharacters(String characters) {
         // Do nothing
     }
 
     /**
-     * Creates an element from the given {@code classifier} with the given {@code id}.
+     * Creates an element from the given {@code element} with the given {@code id}.
      * <p>
      * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
      *
-     * @param classifier the information about the new element
+     * @param element the information about the new element
      * @param id         the identifier of the element
      *
      * @return the given {@code id}
      *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
-    protected Id createElement(@Nonnull final RawClassifier classifier, @Nonnull final Id id) {
-        checkNotNull(classifier);
+    protected Id createElement(@Nonnull final Element element, @Nonnull final Id id) {
+        checkNotNull(element);
         checkNotNull(id);
 
         addElement(id,
-                classifier.namespace().uri(),
-                classifier.className(),
-                classifier.root());
+                element.ns().uri(),
+                element.className(),
+                element.root());
 
         incrementAndCommit();
 
-        tryLink(classifier.id().value(), id);
+        tryLink(element.id().value(), id);
 
         return id;
     }
 
     /**
-     * Creates an element from the given {@code classifier}, and creates its {@link Id}.
+     * Creates an element from the given {@code element}, and creates its {@link Id}.
      *
-     * @param classifier the information about the new element
+     * @param element the information about the new element
      *
      * @return the {@link Id} of the created element
      *
-     * @throws NullPointerException if the {@code classifier} is {@code null} or if it does not have an {@link Id}
+     * @throws NullPointerException if the {@code element} is {@code null} or if it does not have an {@link Id}
      */
-    private Id createElement(@Nonnull final RawClassifier classifier) {
-        checkNotNull(classifier.id());
+    private Id createElement(@Nonnull final Element element) {
+        checkNotNull(element.id());
 
-        String idValue = classifier.id().value();
+        String idValue = element.id().value();
 
-        Id id = createId(classifier.id());
+        Id id = createId(element.id());
         boolean conflict = false;
 
         do {
             try {
-                createElement(classifier, id);
+                createElement(element, id);
                 elementIdCache.put(idValue, id);
             }
             catch (AlreadyExistingIdException e) {
                 // Id already exists in the back-end : try another
-                id = createId(RawIdentifier.generated(id.toString()));
+                id = createId(RawId.generated(id.toString()));
                 conflictElementIdCache.put(idValue, id);
                 conflict = true;
             }
@@ -356,36 +356,36 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Creates a metaclass form the given {@code metaClassifier} and returns its {@link Id}.
+     * Creates a metaclass form the given {@code metaClass} and returns its {@link Id}.
      *
-     * @param metaClassifier the meta classifier
+     * @param metaClass the meta classifier
      *
      * @return the {@link Id} of the created metaclass
      *
-     * @throws NullPointerException if the {@code metaClassifier} is {@code null}
+     * @throws NullPointerException if the {@code metaClass} is {@code null}
      */
-    protected Id getOrCreateMetaClass(@Nonnull final RawMetaClassifier metaClassifier) {
-        String idValue = metaClassifier.namespace().uri() + ':' + metaClassifier.localName();
+    protected Id getOrCreateMetaClass(@Nonnull final MetaClass metaClass) {
+        String idValue = metaClass.ns().uri() + ':' + metaClass.name();
 
         // Gets from cache
         Id id = metaclassIdCache.getIfPresent(idValue);
 
         // If metaclass doesn't already exist, we create it
         if (isNull(id)) {
-            id = createId(RawIdentifier.generated(idValue));
+            id = createId(RawId.generated(idValue));
             boolean conflict = false;
 
             do {
                 try {
                     addElement(id,
-                            metaClassifier.namespace().uri(),
-                            metaClassifier.localName(),
+                            metaClass.ns().uri(),
+                            metaClass.name(),
                             false);
 
                     metaclassIdCache.put(idValue, id);
                 }
                 catch (AlreadyExistingIdException e) {
-                    id = createId(RawIdentifier.generated(id.toString()));
+                    id = createId(RawId.generated(id.toString()));
                     conflict = true;
                 }
             }
@@ -405,7 +405,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
     @Nullable
-    private Id getOrCreateId(final RawIdentifier identifier) {
+    private Id getOrCreateId(final RawId identifier) {
         Id id = conflictElementIdCache.getIfPresent(identifier.value());
         if (isNull(id)) {
             id = elementIdCache.get(identifier.value(), value -> createId(identifier));
@@ -420,7 +420,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @return the {@link Id}
      */
-    private Id createId(final RawIdentifier identifier) {
+    private Id createId(final RawId identifier) {
         String idValue = identifier.value();
 
         // If identifier has been generated we hash it, otherwise we use the original
@@ -486,7 +486,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         /**
          * Constructs a new {@code UnlinkedElement} with the given {@code id} and information about the {@link
-         * RawReference}.
+         * Reference}.
          *
          * @param id          the identifier of the unlinked element
          * @param name        the name of the reference
@@ -508,8 +508,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
          * @param id        the identifier of the unlinked element
          * @param reference the concerned reference
          */
-        public UnlinkedElement(Id id, RawReference reference) {
-            this(id, reference.localName(), reference.index(), reference.many(), reference.containment());
+        public UnlinkedElement(Id id, Reference reference) {
+            this(id, reference.name(), reference.index(), reference.many(), reference.containment());
         }
     }
 }
