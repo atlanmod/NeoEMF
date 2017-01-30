@@ -15,12 +15,12 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -97,16 +97,16 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
 
         // Store
         if (storeOptions.isEmpty() || storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
-            store = new DirectWriteMapDbStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapStore<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteMapDbCacheManyStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteCachedMapStore<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            store = new DirectWriteMapDbListsStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithLists<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            store = new DirectWriteMapDbIndicesStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithIndices<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(store)) {
@@ -150,7 +150,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         checkArgument(backend instanceof MapDbPersistenceBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteMapDbStore(resource, (MapDbPersistenceBackend) backend);
+        return new DirectWriteMapStore<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
     }
 
     @Override
