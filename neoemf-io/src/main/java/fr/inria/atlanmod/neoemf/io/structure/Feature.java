@@ -21,7 +21,7 @@ public abstract class Feature extends NamedElement {
     /**
      * The identifier of the feature.
      */
-    private RawId id;
+    private Identifier id;
 
     /**
      * The index of the feature.
@@ -49,7 +49,7 @@ public abstract class Feature extends NamedElement {
      *
      * @return the identifier
      */
-    public RawId id() {
+    public Identifier id() {
         return id;
     }
 
@@ -58,7 +58,7 @@ public abstract class Feature extends NamedElement {
      *
      * @param id the identifier
      */
-    public void id(RawId id) {
+    public void id(Identifier id) {
         this.id = id;
     }
 

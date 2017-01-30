@@ -21,8 +21,8 @@ import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -345,7 +345,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             }
             catch (AlreadyExistingIdException e) {
                 // Id already exists in the back-end : try another
-                id = createId(RawId.generated(id.toString()));
+                id = createId(Identifier.generated(id.toString()));
                 conflictElementIdCache.put(idValue, id);
                 conflict = true;
             }
@@ -372,7 +372,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         // If metaclass doesn't already exist, we create it
         if (isNull(id)) {
-            id = createId(RawId.generated(idValue));
+            id = createId(Identifier.generated(idValue));
             boolean conflict = false;
 
             do {
@@ -385,7 +385,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     metaclassIdCache.put(idValue, id);
                 }
                 catch (AlreadyExistingIdException e) {
-                    id = createId(RawId.generated(id.toString()));
+                    id = createId(Identifier.generated(id.toString()));
                     conflict = true;
                 }
             }
@@ -405,7 +405,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
     @Nullable
-    private Id getOrCreateId(final RawId identifier) {
+    private Id getOrCreateId(final Identifier identifier) {
         Id id = conflictElementIdCache.getIfPresent(identifier.value());
         if (isNull(id)) {
             id = elementIdCache.get(identifier.value(), value -> createId(identifier));
@@ -420,7 +420,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @return the {@link Id}
      */
-    private Id createId(final RawId identifier) {
+    private Id createId(final Identifier identifier) {
         String idValue = identifier.value();
 
         // If identifier has been generated we hash it, otherwise we use the original

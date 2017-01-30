@@ -17,9 +17,9 @@ import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
 import fr.inria.atlanmod.neoemf.io.structure.Feature;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -209,13 +209,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // xmi:id
-                currentElement.id(RawId.original(value));
+                currentElement.id(Identifier.original(value));
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // xmi:idref
                 // It's not a feature of the current element, but a reference of the previous
                 Reference reference = new Reference(currentElement.name());
-                reference.idReference(RawId.original(value));
+                reference.idReference(Identifier.original(value));
                 notifyReference(reference);
                 ignoreElement = true;
                 isSpecialFeature = true;
@@ -307,7 +307,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         for (String rawReference : references) {
             Reference ref = new Reference(name);
             ref.index(index);
-            ref.idReference(RawId.generated(rawReference));
+            ref.idReference(Identifier.generated(rawReference));
             features.add(ref);
             index++;
         }

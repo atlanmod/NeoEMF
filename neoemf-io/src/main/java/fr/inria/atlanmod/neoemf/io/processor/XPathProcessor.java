@@ -16,7 +16,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -119,7 +119,7 @@ public class XPathProcessor extends AbstractProcessor {
 
             // Defines the new identifier as identifier of the classifier if it not already exist
             if (isNull(element.id())) {
-                element.id(RawId.generated(id));
+                element.id(Identifier.generated(id));
             }
         }
 
@@ -130,7 +130,7 @@ public class XPathProcessor extends AbstractProcessor {
     public void handleReference(Reference reference) {
         if (!hasIds) {
             // Format the reference according internal XPath management
-            reference.idReference(RawId.generated(formatPath(reference.idReference().value())));
+            reference.idReference(Identifier.generated(formatPath(reference.idReference().value())));
         }
 
         super.handleReference(reference);

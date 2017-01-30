@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class ElementMock {
         return element.className();
     }
 
-    public RawId id() {
+    public Identifier id() {
         return element.id();
     }
 

@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -34,7 +34,7 @@ public class LoggingProcessor extends AbstractProcessor {
     /**
      * The current identifier, used to replace a full reference by "this".
      */
-    private RawId currentId;
+    private Identifier currentId;
 
     /**
      * Constructs a new {@code LoggingProcessor} with the given {@code handler}.

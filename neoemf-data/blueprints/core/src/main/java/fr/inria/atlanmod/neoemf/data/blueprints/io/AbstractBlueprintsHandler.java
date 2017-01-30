@@ -25,8 +25,8 @@ import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
 
 import java.util.NoSuchElementException;
 
@@ -256,7 +256,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
         Element rootElement = new Element(metaClass.ns(), metaClass.name());
 
-        rootElement.id(RawId.generated(ROOT_ID.toString()));
+        rootElement.id(Identifier.generated(ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.root(false);
         rootElement.metaClass(metaClass);

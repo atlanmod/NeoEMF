@@ -19,7 +19,7 @@ public class Element extends MetaClass {
     /**
      * The identifier of this classifier.
      */
-    private RawId id;
+    private Identifier id;
 
     /**
      * The name of the class of this classifier.
@@ -52,7 +52,7 @@ public class Element extends MetaClass {
      *
      * @return the identifier
      */
-    public RawId id() {
+    public Identifier id() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class Element extends MetaClass {
      *
      * @param id the identifier
      */
-    public void id(RawId id) {
+    public void id(Identifier id) {
         this.id = id;
     }
 

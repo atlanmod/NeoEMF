@@ -19,7 +19,7 @@ public class Reference extends Feature {
     /**
      * The identifier of the referenced element.
      */
-    private RawId idReference;
+    private Identifier idReference;
 
     /**
      * Whether this reference is a containment.
@@ -47,7 +47,7 @@ public class Reference extends Feature {
         Reference reference = new Reference(attribute.name());
         reference.id(attribute.id());
         reference.index(attribute.index());
-        reference.idReference(RawId.original(attribute.value().toString()));
+        reference.idReference(Identifier.original(attribute.value().toString()));
         return reference;
     }
 
@@ -56,7 +56,7 @@ public class Reference extends Feature {
      *
      * @return the identifier
      */
-    public RawId idReference() {
+    public Identifier idReference() {
         return idReference;
     }
 
@@ -65,7 +65,7 @@ public class Reference extends Feature {
      *
      * @param idReference the identifier
      */
-    public void idReference(RawId idReference) {
+    public void idReference(Identifier idReference) {
         this.idReference = idReference;
     }
 

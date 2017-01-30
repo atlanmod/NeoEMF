@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -46,7 +46,7 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Stack containing previous identifier.
      */
-    private final Deque<RawId> idsStack;
+    private final Deque<Identifier> idsStack;
 
     /**
      * Attribute waiting a value (via {@link #handleCharacters(String)}.
@@ -279,7 +279,7 @@ public class EcoreProcessor extends AbstractProcessor {
 
         // Notify next handlers of new element, and retrieve its identifier
         super.handleStartElement(element);
-        RawId currentId = element.id();
+        Identifier currentId = element.id();
 
         // Create a reference from the parent to this element, with the given local name
         if (reference.isContainment()) {
