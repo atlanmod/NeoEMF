@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -84,21 +83,21 @@ public class Namespace {
     public static class Registry {
 
         /**
-         * In-memory cache that holds registered {@link Namespace}, identified by their prefix.
+         * A map that holds registered {@link Namespace}, identified by their prefix.
          */
-        private final Cache<String, Namespace> nsByPrefixCache;
+        private final Map<String, Namespace> namespacesByPrefix;
 
         /**
-         * In-memory cache that holds registered {@link Namespace}, identified by their URI.
+         * A map that holds registered {@link Namespace}, identified by their URI.
          */
-        private final Cache<String, Namespace> nsByUriCache;
+        private final Map<String, Namespace> namespacesByUri;
 
         /**
          * Constructs a new {@code Registry}.
          */
         private Registry() {
-            nsByPrefixCache = Caffeine.newBuilder().build();
-            nsByUriCache = Caffeine.newBuilder().build();
+            namespacesByPrefix = new HashMap<>();
+            namespacesByUri = new HashMap<>();
         }
 
         /**
@@ -117,7 +116,7 @@ public class Namespace {
          * @return a immutable collection
          */
         public Iterable<String> getPrefixes() {
-            return Collections.unmodifiableSet(nsByPrefixCache.asMap().keySet());
+            return Collections.unmodifiableSet(namespacesByPrefix.keySet());
         }
 
         /**
@@ -133,7 +132,7 @@ public class Namespace {
             if (isNull(prefix)) {
                 return null;
             }
-            return nsByPrefixCache.getIfPresent(prefix);
+            return namespacesByPrefix.get(prefix);
         }
 
         /**
@@ -149,7 +148,7 @@ public class Namespace {
             if (isNull(uri)) {
                 return null;
             }
-            return nsByUriCache.getIfPresent(uri);
+            return namespacesByUri.get(uri);
         }
 
         /**
@@ -160,16 +159,16 @@ public class Namespace {
          */
         public void register(String prefix, String uri) {
             Namespace ns = new Namespace(prefix, uri);
-            nsByPrefixCache.put(prefix, ns);
-            nsByUriCache.put(uri, ns);
+            namespacesByPrefix.put(prefix, ns);
+            namespacesByUri.put(uri, ns);
         }
 
         /**
          * Cleans the registry.
          */
         public void clean() {
-            nsByPrefixCache.invalidateAll();
-            nsByUriCache.invalidateAll();
+            namespacesByPrefix.clear();
+            namespacesByUri.clear();
         }
 
         /**

@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
@@ -22,6 +19,8 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -288,10 +287,11 @@ public class XPathProcessor extends AbstractProcessor {
              * The name of this node.
              */
             private final String name;
+
             /**
              * In-memory cache that holds all children of this node, identified by their name.
              */
-            private final Cache<String, XPathNode> childrenCache;
+            private final Map<String, XPathNode> children;
             /**
              * The index of this node.
              */
@@ -305,7 +305,7 @@ public class XPathProcessor extends AbstractProcessor {
             public XPathNode(String name) {
                 this.name = name;
                 this.index = 0;
-                this.childrenCache = Caffeine.newBuilder().build();
+                this.children = new HashMap<>();
             }
 
             /**
@@ -344,7 +344,7 @@ public class XPathProcessor extends AbstractProcessor {
              */
             @Nonnull
             public XPathNode getChild(@Nonnull String id) {
-                XPathNode child = childrenCache.getIfPresent(id);
+                XPathNode child = children.get(id);
                 if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + id + "' in the element '" + this.name + "'");
                 }
@@ -360,7 +360,7 @@ public class XPathProcessor extends AbstractProcessor {
              */
             @Nonnull
             public XPathNode addChild(@Nonnull XPathNode child) {
-                childrenCache.put(child.getName(), child);
+                children.put(child.getName(), child);
                 return child;
             }
 
@@ -368,7 +368,7 @@ public class XPathProcessor extends AbstractProcessor {
              * Removes all children of this node.
              */
             public void removeChildren() {
-                childrenCache.invalidateAll();
+                children.clear();
             }
 
             /**
@@ -379,7 +379,7 @@ public class XPathProcessor extends AbstractProcessor {
              * @return {@code true} if a child node has the specified {@code name}
              */
             public boolean hasChild(@Nonnull String name) {
-                return nonNull(childrenCache.getIfPresent(name));
+                return nonNull(children.get(name));
             }
 
             /**
@@ -390,7 +390,7 @@ public class XPathProcessor extends AbstractProcessor {
              */
             @Nonnegative
             public long estimatedSize() {
-                return childrenCache.estimatedSize() + childrenCache.asMap().values().stream().mapToLong(XPathNode::estimatedSize).sum();
+                return children.size() + children.values().stream().mapToLong(XPathNode::estimatedSize).sum();
             }
         }
     }
