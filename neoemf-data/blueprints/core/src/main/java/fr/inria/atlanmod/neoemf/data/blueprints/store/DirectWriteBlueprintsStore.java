@@ -177,11 +177,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
             Vertex newReferencedVertex = backend.getOrCreateVertex(value);
-
-            // Update the containment reference if needed
-            if (reference.isContainment()) {
-                updateContainment(reference, vertex, newReferencedVertex);
-            }
+            updateContainment(object, reference, value);
 
             if (!reference.isMany()) {
                 Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, reference.getName()), null);
@@ -365,10 +361,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         Vertex vertex = backend.getOrCreateVertex(object);
 
         Vertex referencedVertex = backend.getOrCreateVertex(value);
-        // Update the containment reference if needed
-        if (reference.isContainment()) {
-            updateContainment(reference, vertex, referencedVertex);
-        }
+        updateContainment(object, reference, value);
 
         Integer size = getSize(vertex, reference);
         int newSize = size + 1;
@@ -502,8 +495,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         Vertex vertex = backend.getVertex(object.id());
         if(feature instanceof EReference) {
             if(feature.isMany()) {
-                Comparator<Edge> byPosition = (e1, e2) -> Integer.compare(e1.getProperty(POSITION),
-                        e2.getProperty(POSITION));
+                Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.getProperty(POSITION));
                 Object[] result = StreamSupport.stream(
                         vertex.query()
                             .labels(feature.getName())
@@ -625,23 +617,32 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Creates a new container edge between {@code parentVertex} and {@code childVertex}, and deletes any
-     * container edge previously linked to {@code childVertex}.
+     * Creates a new container edge between {@code object} and {@code referencedObject}, and deletes any
+     * container edge previously linked to {@code referencedObject}.
      *
-     * @param reference    the containment {@link EReference}. This parameter is used to set the containing feature
-     *                     property in the create edge.
-     * @param parentVertex the {@link Vertex} representing the container element
-     * @param childVertex  the {@link Vertex} representing the contained element
+     * @param object           the container {@link PersistentEObject}
+     * @param reference        the containment {@link EReference}. This parameter is used to set the containing feature
+     *                         property in the create edge.
+     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
      *
      * @see DirectWriteBlueprintsStore#CONTAINER
      * @see DirectWriteBlueprintsStore#CONTAINING_FEATURE
      */
-    private void updateContainment(EReference reference, Vertex parentVertex, Vertex childVertex) {
-        for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
-            edge.remove();
+    private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        checkNotNull(object);
+        checkNotNull(reference);
+        checkNotNull(referencedObject);
+
+        if (reference.isContainment()) {
+            Vertex vertex = backend.getVertex(object.id());
+            Vertex containmentVertex = backend.getVertex(referencedObject.id());
+
+            for (Edge edge : containmentVertex.getEdges(Direction.OUT, CONTAINER)) {
+                edge.remove();
+            }
+            Edge edge = containmentVertex.addEdge(CONTAINER, vertex);
+            edge.setProperty(CONTAINING_FEATURE, reference.getName());
         }
-        Edge edge = childVertex.addEdge(CONTAINER, parentVertex);
-        edge.setProperty(CONTAINING_FEATURE, reference.getName());
     }
 
     /**
