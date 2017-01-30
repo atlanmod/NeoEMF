@@ -15,8 +15,6 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
-import static java.util.Objects.nonNull;
-
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
  *
@@ -31,23 +29,7 @@ public interface Notifier<T extends Handler> {
      *
      * @return the handler to notify
      */
-    T handler();
-
-    /**
-     * Defines the {@link Handler} that will be notified by this {@code Notifier}.
-     *
-     * @param handler the handler to notify
-     */
-    void andThen(T handler);
-
-    /**
-     * Defines if this {@code Notifier} has a {@link Handler} to notify.
-     *
-     * @return {@code true} if this notifier has a handler to notify.
-     */
-    default boolean hasHandler() {
-        return nonNull(handler());
-    }
+    T next();
 
     /**
      * Notifies all registered handlers of the start of a document.
@@ -56,7 +38,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processStartDocument()
      */
     default void notifyStartDocument() {
-        handler().processStartDocument();
+        next().processStartDocument();
     }
 
     /**
@@ -68,7 +50,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processStartElement(RawClassifier)
      */
     default void notifyStartElement(RawClassifier classifier) {
-        handler().processStartElement(classifier);
+        next().processStartElement(classifier);
     }
 
     /**
@@ -79,7 +61,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processAttribute(RawAttribute)
      */
     default void notifyAttribute(RawAttribute attribute) {
-        handler().processAttribute(attribute);
+        next().processAttribute(attribute);
     }
 
     /**
@@ -90,7 +72,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processReference(RawReference)
      */
     default void notifyReference(RawReference reference) {
-        handler().processReference(reference);
+        next().processReference(reference);
     }
 
     /**
@@ -101,7 +83,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processCharacters(String)
      */
     default void notifyCharacters(String characters) {
-        handler().processCharacters(characters);
+        next().processCharacters(characters);
     }
 
     /**
@@ -111,7 +93,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processEndElement()
      */
     default void notifyEndElement() {
-        handler().processEndElement();
+        next().processEndElement();
     }
 
     /**
@@ -121,6 +103,6 @@ public interface Notifier<T extends Handler> {
      * @see Handler#processEndDocument()
      */
     default void notifyEndDocument() {
-        handler().processEndDocument();
+        next().processEndDocument();
     }
 }

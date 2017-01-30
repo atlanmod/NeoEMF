@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import com.google.common.base.Stopwatch;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import static java.util.Objects.nonNull;
@@ -23,44 +24,22 @@ import static java.util.Objects.nonNull;
 public class TimerProcessor extends AbstractProcessor {
 
     /**
-     * The current number of created {@code TimerProcessor}s, used for name generation.
-     */
-    private static int id = 0;
-
-    /**
-     * The name of this handler.
-     */
-    private final String name;
-
-    /**
      * The stopwatch.
      */
     private Stopwatch stopWatch;
 
     /**
-     * Constructs a new {@code TimerProcessor} with the given {@code name} on the underlying
-     * {@code processor}.
+     * Constructs a new {@code TimerProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
-     * @param name    the name of this processor
+     * @param handler the handler to notify
      */
-    public TimerProcessor(Processor processor, String name) {
-        super(processor);
-        this.name = name;
-    }
-
-    /**
-     * Constructs a new {@code TimerProcessor} on the underlying {@code processor}.
-     *
-     * @param processor the processor to notify
-     */
-    public TimerProcessor(Processor processor) {
-        this(processor, "timer-" + ++id);
+    public TimerProcessor(Handler handler) {
+        super(handler);
     }
 
     @Override
     public void processStartDocument() {
-        NeoLogger.info("[{0}] Document analysis in progress...", name);
+        NeoLogger.info("Document analysis in progress...");
         stopWatch = Stopwatch.createStarted();
 
         super.processStartDocument();
@@ -69,10 +48,10 @@ public class TimerProcessor extends AbstractProcessor {
     @Override
     public void processEndDocument() {
         if (nonNull(stopWatch)) {
-            NeoLogger.info("[{0}] Document analysis done in {1}", name, stopWatch.stop());
+            NeoLogger.info("Document analysis done in {0}", stopWatch.stop());
         }
         else {
-            NeoLogger.info("[{0}] Document analysis done", name);
+            NeoLogger.info("Document analysis done");
         }
 
         super.processEndDocument();

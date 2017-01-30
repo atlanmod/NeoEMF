@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link Reader} that notifies {@link Processor} and provides overall behavior for the management of
@@ -33,6 +34,15 @@ public abstract class AbstractReader extends AbstractNotifier<Processor> impleme
      * The timer to log reading progress.
      */
     private Timer progressTimer;
+
+    /**
+     * Constructs a new {@code AbstractReader} with the given {@code processor}.
+     *
+     * @param processor the processor to notify
+     */
+    public AbstractReader(Processor processor) {
+        super(processor);
+    }
 
     /**
      * Processes the start of the document.
@@ -73,7 +83,7 @@ public abstract class AbstractReader extends AbstractNotifier<Processor> impleme
 
     @Override
     public final void read(InputStream stream) throws IOException {
-        if (!hasHandler()) {
+        if (isNull(next())) {
             throw new IllegalStateException("This notifier hasn't any handler");
         }
 

@@ -16,11 +16,19 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  *
  */
 @Experimental
 public abstract class AbstractXmiWriter extends AbstractWriter {
+
+    @Override
+    public void write(OutputStream stream) throws IOException {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     @Override
     public void processStartDocument() {

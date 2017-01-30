@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
 
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -30,6 +32,15 @@ import static java.util.Objects.nonNull;
  * A {@link Reader} that uses streams for reading and parsing XMI files.
  */
 public class XmiSAXReader extends AbstractXmiReader {
+
+    /**
+     * Constructs a new {@code XmiSAXReader} with the given {@code processor}.
+     *
+     * @param processor the processor to notify
+     */
+    public XmiSAXReader(Processor processor) {
+        super(processor);
+    }
 
     @Override
     public void run(InputStream stream) throws Exception {

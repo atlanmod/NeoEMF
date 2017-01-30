@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
@@ -58,12 +59,12 @@ public class EcoreProcessor extends AbstractProcessor {
     private boolean previousWasAttribute;
 
     /**
-     * Constructs a new {@code EcoreProcessor} on the given {@code processor}.
+     * Constructs a new {@code EcoreProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public EcoreProcessor(Processor processor) {
-        super(processor);
+    public EcoreProcessor(Handler handler) {
+        super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
         this.previousWasAttribute = false;

@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -84,12 +85,12 @@ public class XPathProcessor extends AbstractProcessor {
     private boolean hasIds;
 
     /**
-     * Constructs a new {@code XPathProcessor} on the given {@code processor}.
+     * Constructs a new {@code XPathProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public XPathProcessor(Processor processor) {
-        super(processor);
+    public XPathProcessor(Handler handler) {
+        super(handler);
         this.paths = new XPathTree();
         this.hasIds = false;
     }

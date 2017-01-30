@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
@@ -21,23 +22,16 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 /**
  * A {@link Processor} that delegates all methods to its underlying processor.
  */
-public class AbstractProcessor implements Processor {
+public class AbstractProcessor extends AbstractNotifier<Handler> implements Processor {
 
     /**
-     * The processor to notify.
-     */
-    private final Processor processor;
-
-    /**
-     * Constructs a new {@code AbstractProcessor} with the given {@code processor}.
+     * Constructs a new {@code AbstractProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    protected AbstractProcessor(Processor processor) {
-        this.processor = processor;
+    public AbstractProcessor(Handler handler) {
+        super(handler);
     }
-
-    // Handler methods
 
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -79,57 +73,5 @@ public class AbstractProcessor implements Processor {
     @OverridingMethodsMustInvokeSuper
     public void processCharacters(String characters) {
         notifyCharacters(characters);
-    }
-
-    // Notifier methods
-
-    @Override
-    public final Handler handler() {
-        return processor.handler();
-    }
-
-    @Override
-    public final void andThen(Handler inputHandler) {
-        processor.andThen(inputHandler);
-    }
-
-    @Override
-    public final boolean hasHandler() {
-        return processor.hasHandler();
-    }
-
-    @Override
-    public final void notifyStartDocument() {
-        processor.processStartDocument();
-    }
-
-    @Override
-    public final void notifyStartElement(RawClassifier classifier) {
-        processor.processStartElement(classifier);
-    }
-
-    @Override
-    public final void notifyAttribute(RawAttribute attribute) {
-        processor.processAttribute(attribute);
-    }
-
-    @Override
-    public final void notifyReference(RawReference reference) {
-        processor.processReference(reference);
-    }
-
-    @Override
-    public final void notifyCharacters(String characters) {
-        processor.processCharacters(characters);
-    }
-
-    @Override
-    public final void notifyEndElement() {
-        processor.processEndElement();
-    }
-
-    @Override
-    public final void notifyEndDocument() {
-        processor.processEndDocument();
     }
 }

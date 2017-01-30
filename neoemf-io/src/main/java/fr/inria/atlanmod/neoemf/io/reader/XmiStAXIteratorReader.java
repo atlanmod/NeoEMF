@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+
 import org.codehaus.stax2.XMLInputFactory2;
 
 import java.io.InputStream;
@@ -29,6 +31,15 @@ import javax.xml.stream.events.XMLEvent;
  * A {@link Reader} that uses a StAX implementation with iterators for reading and parsing XMI files.
  */
 public class XmiStAXIteratorReader extends AbstractXmiReader {
+
+    /**
+     * Constructs a new {@code XmiStAXIteratorReader} with the given {@code processor}.
+     *
+     * @param processor the processor to notify
+     */
+    public XmiStAXIteratorReader(Processor processor) {
+        super(processor);
+    }
 
     @Override
     public void run(InputStream stream) throws Exception {

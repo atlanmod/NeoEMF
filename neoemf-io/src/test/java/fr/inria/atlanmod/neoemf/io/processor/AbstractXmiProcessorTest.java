@@ -79,17 +79,13 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
     private StructuralPersistanceHandler read(File filePath) throws IOException {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
-        Reader reader = new XmiStAXCursorReader();
-
-        Processor processor = new DefaultProcessor();
-//        processor = new CounterProcessor(processor);
-//        processor = new TimerProcessor(processor);
-//        processor = new LoggingProcessor(processor);
-        processor = new XPathProcessor(processor);
+        Processor processor = new PersistenceProcessor(persistanceHandler);
+        processor = new TimerProcessor(processor);
+        processor = new CounterProcessor(processor);
         processor = new EcoreProcessor(processor);
-        processor.andThen(persistanceHandler);
+        processor = new XPathProcessor(processor);
 
-        reader.andThen(processor);
+        Reader reader = new XmiStAXCursorReader(processor);
         reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;

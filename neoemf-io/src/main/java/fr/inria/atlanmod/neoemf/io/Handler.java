@@ -17,8 +17,6 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * A object that handles events notified by a {@link Notifier}.
- * <p>
- * It must be previously registered with the {@link Notifier#andThen(Handler)}.
  *
  * @see Notifier
  */

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
  * <p>
  * Using for basic tests.
  */
-public class DummyPersistenceHandler implements Handler {
+public class DummyPersistenceHandler implements PersistenceHandler {
 
     @Override
     public void processStartDocument() {

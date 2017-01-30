@@ -13,10 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
 
-import fr.inria.atlanmod.neoemf.io.processor.DefaultProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawFeature;
@@ -77,15 +74,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     private Collection<RawFeature> currentFeatures;
 
-    @Override
-    public Processor defaultProcessor() {
-        Processor defaultProcessor;
-
-        defaultProcessor = new DefaultProcessor();
-        defaultProcessor = new XPathProcessor(defaultProcessor);
-        defaultProcessor = new EcoreProcessor(defaultProcessor);
-
-        return defaultProcessor;
+    /**
+     * Constructs a new {@code AbstractXmiReader} with the given {@code processor}.
+     *
+     * @param processor the processor to notify
+     */
+    public AbstractXmiReader(Processor processor) {
+        super(processor);
     }
 
     /**

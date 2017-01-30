@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -25,11 +26,6 @@ public class CounterProcessor extends AbstractProcessor {
      * The current number of created {@code CounterProcessor}s, used for name generation.
      */
     private static int id = 0;
-
-    /**
-     * The name of this handler.
-     */
-    private final String name;
 
     /**
      * The current number of element.
@@ -47,24 +43,12 @@ public class CounterProcessor extends AbstractProcessor {
     private long referenceCount;
 
     /**
-     * Constructs a new {@code CounterProcessor} on the underlying {@code processor}.
+     * Constructs a new {@code CounterProcessor} with the given {@code handler}.
      *
-     * @param processor the underlying processor
+     * @param handler the handler to notify
      */
-    public CounterProcessor(Processor processor) {
-        this(processor, "counter-" + ++id);
-    }
-
-    /**
-     * Constructs a new {@code CounterProcessor} with the given {@code name} on the underlying
-     * {@code processor}.
-     *
-     * @param processor the underlying processor
-     * @param name    the name of this processor
-     */
-    public CounterProcessor(Processor processor, String name) {
-        super(processor);
-        this.name = name;
+    public CounterProcessor(Handler handler) {
+        super(handler);
         this.elementCount = 0;
         this.attributeCount = 0;
         this.referenceCount = 0;
@@ -93,9 +77,9 @@ public class CounterProcessor extends AbstractProcessor {
 
     @Override
     public void processEndDocument() {
-        NeoLogger.info("[{0}] Elements   : {1}", name, elementCount);
-        NeoLogger.info("[{0}] Attributes : {1}", name, attributeCount);
-        NeoLogger.info("[{0}] References : {1}", name, referenceCount);
+        NeoLogger.info("Elements   : {0}", elementCount);
+        NeoLogger.info("Attributes : {0}", attributeCount);
+        NeoLogger.info("References : {0}", referenceCount);
 
         super.processEndDocument();
     }

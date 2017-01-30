@@ -24,27 +24,16 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
     private H handler;
 
     /**
-     * Constructs a new {@code AbstractNotifier}.
-     */
-    protected AbstractNotifier() {
-    }
-
-    /**
      * Constructs a new {@code AbstractNotifier} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    protected AbstractNotifier(H handler) {
+    public AbstractNotifier(H handler) {
         this.handler = handler;
     }
 
     @Override
-    public H handler() {
+    public H next() {
         return handler;
-    }
-
-    @Override
-    public void andThen(H handler) {
-        this.handler = handler;
     }
 }

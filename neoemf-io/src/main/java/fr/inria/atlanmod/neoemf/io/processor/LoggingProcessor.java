@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
@@ -36,12 +37,12 @@ public class LoggingProcessor extends AbstractProcessor {
     private RawIdentifier currentId;
 
     /**
-     * Constructs a new {@code LoggingProcessor}.
+     * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public LoggingProcessor(Processor processor) {
-        super(processor);
+    public LoggingProcessor(Handler handler) {
+        super(handler);
     }
 
     @Override
