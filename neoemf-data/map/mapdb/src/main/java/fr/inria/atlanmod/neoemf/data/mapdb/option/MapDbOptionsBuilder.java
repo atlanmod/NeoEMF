@@ -11,10 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
@@ -66,7 +62,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#DIRECT_WRITE
-     * @see DirectWriteMapDbStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWrite() {
@@ -79,7 +75,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#DIRECT_WRITE_LISTS
-     * @see DirectWriteMapDbListsStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteLists() {
@@ -92,7 +88,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#DIRECT_WRITE_INDICES
-     * @see DirectWriteMapDbIndicesStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteIndices() {
@@ -105,7 +101,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#CACHE_MANY
-     * @see DirectWriteMapDbCacheManyStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteCacheMany() {

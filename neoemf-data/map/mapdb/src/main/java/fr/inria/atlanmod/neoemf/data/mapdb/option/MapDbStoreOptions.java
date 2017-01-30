@@ -11,10 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -30,10 +26,10 @@ import java.util.List;
  * usage of raw arrays or {@link List}s.
  *
  * @see AutocommitStoreDecorator
- * @see DirectWriteMapDbStore
- * @see DirectWriteMapDbListsStore
- * @see DirectWriteMapDbIndicesStore
- * @see DirectWriteMapDbCacheManyStore
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 public enum MapDbStoreOptions implements PersistentStoreOptions {
 
@@ -47,7 +43,7 @@ public enum MapDbStoreOptions implements PersistentStoreOptions {
     /**
      * Translates model-level operations to MapDB calls <i>(default {@link DirectWriteStore})</i>.
      *
-     * @see DirectWriteMapDbStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
      */
     DIRECT_WRITE,
 
@@ -55,7 +51,7 @@ public enum MapDbStoreOptions implements PersistentStoreOptions {
      * Translates model-level operations to MapDB calls, and uses {@link List}s instead of arrays to persist
      * multi-valued {@link EAttribute}s and {@link EReference}s.
      *
-     * @see DirectWriteMapDbListsStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
      */
     DIRECT_WRITE_LISTS,
 
@@ -63,7 +59,7 @@ public enum MapDbStoreOptions implements PersistentStoreOptions {
      * Translates model-level operations to MapDB calls, and persists {@link Collection} indices instead of serialized
      * arrays.
      *
-     * @see DirectWriteMapDbIndicesStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
      */
     DIRECT_WRITE_INDICES,
 
@@ -71,7 +67,7 @@ public enum MapDbStoreOptions implements PersistentStoreOptions {
      * Translates model-level operations to Blueprints calls, and uses an internal cache to store elements that are
      * part of multi-valued {@link EReference}s to speed-up their access.
      *
-     * @see DirectWriteMapDbCacheManyStore
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
      */
     CACHE_MANY
 }
