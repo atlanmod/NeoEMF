@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -25,10 +25,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract {@link Reader} that notifies {@link Processor} and provides overall behavior for the management of
+ * An abstract {@link Reader} that notifies {@link Handler} and provides overall behavior for the management of
  * namespaces.
  */
-public abstract class AbstractReader extends AbstractNotifier<Processor> implements Reader {
+public abstract class AbstractReader extends AbstractNotifier<Handler> implements Reader {
 
     /**
      * The timer to log reading progress.
@@ -36,12 +36,12 @@ public abstract class AbstractReader extends AbstractNotifier<Processor> impleme
     private Timer progressTimer;
 
     /**
-     * Constructs a new {@code AbstractReader} with the given {@code processor}.
+     * Constructs a new {@code AbstractReader} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public AbstractReader(Processor processor) {
-        super(processor);
+    public AbstractReader(Handler handler) {
+        super(handler);
     }
 
     /**

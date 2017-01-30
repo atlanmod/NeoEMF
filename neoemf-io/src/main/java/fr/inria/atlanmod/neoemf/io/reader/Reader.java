@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,10 +22,10 @@ import java.io.InputStream;
  *
  * @note It correspond to the head of the parsing process in case of an import.
  */
-public interface Reader extends Notifier<Processor> {
+public interface Reader extends Notifier<Handler> {
 
     /**
-     * Reads a stream and notifies registered {@link Processor}.
+     * Reads a stream and notifies registered {@link Handler}.
      *
      * @param stream the stream to read
      *

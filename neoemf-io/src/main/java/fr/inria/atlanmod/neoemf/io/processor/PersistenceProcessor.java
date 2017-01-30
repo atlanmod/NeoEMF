@@ -19,11 +19,11 @@ import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 public final class PersistenceProcessor extends AbstractProcessor implements Processor {
 
     /**
-     * Constructs a new {@code PersistenceProcessor} with the given {@code handler}.
+     * Constructs a new {@code PersistenceProcessor} with the given {@code handlers}.
      *
-     * @param handler the handler to notify
+     * @param handlers the handlers to notify
      */
-    public PersistenceProcessor(PersistenceHandler handler) {
-        super(handler);
+    public PersistenceProcessor(PersistenceHandler... handlers) {
+        super(handlers);
     }
 }

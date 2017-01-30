@@ -41,16 +41,16 @@ public final class Importer {
     /**
      * Imports a XMI file into persistence handlers.
      *
-     * @param stream             the stream of XMI data
-     * @param persistenceHandler persistence handlers where to store the read data
+     * @param stream   the stream of XMI data
+     * @param handlers the persistence handlers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException              if an error occurred during the import
      */
-    public static void fromXmi(InputStream stream, PersistenceHandler persistenceHandler) throws IOException {
-        checkNotNull(persistenceHandler, "The handler must be defined");
+    public static void fromXmi(InputStream stream, PersistenceHandler... handlers) throws IOException {
+        checkNotNull(handlers, "The handler must be defined");
 
-        Processor processor = new PersistenceProcessor(persistenceHandler);
+        Processor processor = new PersistenceProcessor(handlers);
         processor = new XPathProcessor(processor);
         processor = new EcoreProcessor(processor);
 

@@ -29,7 +29,7 @@ public class AbstractProcessor extends AbstractNotifier<Handler> implements Proc
      *
      * @param handler the handler to notify
      */
-    public AbstractProcessor(Handler handler) {
+    public AbstractProcessor(Handler... handler) {
         super(handler);
     }
 

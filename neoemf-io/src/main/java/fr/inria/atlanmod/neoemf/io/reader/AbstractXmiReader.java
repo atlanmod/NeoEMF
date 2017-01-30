@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
 
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
 import fr.inria.atlanmod.neoemf.io.structure.Feature;
@@ -75,12 +75,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private Collection<Feature> currentFeatures;
 
     /**
-     * Constructs a new {@code AbstractXmiReader} with the given {@code processor}.
+     * Constructs a new {@code AbstractXmiReader} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public AbstractXmiReader(Processor processor) {
-        super(processor);
+    public AbstractXmiReader(Handler handler) {
+        super(handler);
     }
 
     /**
