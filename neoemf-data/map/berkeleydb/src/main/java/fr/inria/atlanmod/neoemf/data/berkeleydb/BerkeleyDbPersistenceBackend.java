@@ -459,12 +459,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     /**
-     * Copies all the contents of this back-end to the target one.
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
      *
-     * @param target ???
+     * @param target the {@code PersistenceBackend} to copy the database contents to
      */
     public void copyTo(BerkeleyDbPersistenceBackend target) {
-
         try {
             this.copyDatabaseTo(instances, target.instances);
             this.copyDatabaseTo(features, target.features);

@@ -97,16 +97,16 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
 
         // Store
         if (storeOptions.isEmpty() || storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
-            store = new DirectWriteMapStore<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapStore<>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteCachedMapStore<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteCachedMapStore<>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            store = new DirectWriteMapStoreWithLists<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithLists<>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            store = new DirectWriteMapStoreWithIndices<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithIndices<>(resource, (MapDbPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(store)) {
@@ -150,7 +150,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         checkArgument(backend instanceof MapDbPersistenceBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteMapStore<MapDbPersistenceBackend>(resource, (MapDbPersistenceBackend) backend);
+        return new DirectWriteMapStore<>(resource, (MapDbPersistenceBackend) backend);
     }
 
     @Override

@@ -92,8 +92,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
 
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("DirectWriteMapStore::contains({1}, {2})", new Object[] {
-                feature.getName(), value});
+        NeoLogger.debug("DirectWriteMapStore::contains({1}, {2})", feature.getName(), value);
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -177,12 +176,9 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     public EObject eObject(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = null;
-        if (nonNull(id)) {
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
-            if (object.resource() != resource()) {
-                object.resource(resource());
-            }
+        PersistentEObject object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
+        if (object.resource() != resource()) {
+            object.resource(resource());
         }
         return object;
     }
@@ -219,13 +215,12 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     public InternalEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
-        InternalEObject container = null;
         PersistentEObject object = PersistentEObject.from(internalObject);
         ContainerInfo info = backend.containerFor(object.id());
         if (nonNull(info)) {
-            container = (InternalEObject) eObject(info.id());
+            return  (InternalEObject) eObject(info.id());
         }
-        return container;
+        return null;
     }
 
     @Override

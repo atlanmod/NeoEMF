@@ -81,16 +81,16 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
 
         // Store
         if (storeOptions.isEmpty() || storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
-            store = new DirectWriteMapStore<BerkeleyDbPersistenceBackend>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteCachedMapStore<BerkeleyDbPersistenceBackend>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteCachedMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            store = new DirectWriteMapStoreWithLists<BerkeleyDbPersistenceBackend>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithLists<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            store = new DirectWriteMapStoreWithIndices<BerkeleyDbPersistenceBackend>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithIndices<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(store)) {
@@ -151,7 +151,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
         checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteMapStore<BerkeleyDbPersistenceBackend>(resource, (BerkeleyDbPersistenceBackend) backend);
+        return new DirectWriteMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
     }
 
     @Override

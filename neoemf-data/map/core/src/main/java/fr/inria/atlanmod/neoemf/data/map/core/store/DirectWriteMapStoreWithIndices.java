@@ -66,7 +66,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
-        NeoLogger.debug("add({0}, {1}, {2}, {3})", new Object[]{object.id(), feature.getName(), index, value});
+        NeoLogger.debug("add({0}, {1}, {2}, {3})", object.id(), feature.getName(), index, value);
 
         FeatureKey featureKey = FeatureKey.from(object, feature);
         // Make space for the new element
@@ -78,7 +78,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
             Object movingValue = backend.valueAtIndex(featureKey.withPosition(i));
             backend.storeValueAtIndex(featureKey.withPosition(i + 1), movingValue);
         }
-        backend.storeValue(featureKey, new Integer(size + 1));
+        backend.storeValue(featureKey, size + 1);
 
         // Add element
         MultivaluedFeatureKey multivaluedFeatureKey = featureKey.withPosition(index);
@@ -99,7 +99,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        NeoLogger.debug("remove({0}, {1})", new Object[] {feature.getName(), index});
+        NeoLogger.debug("remove({0}, {1})", feature.getName(), index);
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         Integer size = (Integer) backend.valueOf(featureKey);
@@ -110,22 +110,20 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
             Object movingValue = backend.valueAtIndex(featureKey.withPosition(i));
             backend.storeValueAtIndex(featureKey.withPosition(i - 1), movingValue);
         }
-        backend.storeValue(featureKey, new Integer(size - 1));
+        backend.storeValue(featureKey, size - 1);
         return old;
     }
 
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("DirectWriteMapStoreWithIndices::indexOf({1}, {2})", new Object[] {
-                feature.getName(), value});
+        NeoLogger.debug("DirectWriteMapStoreWithIndices::indexOf({0}, {1})", feature.getName(), value);
 
         return ArrayUtils.indexOf(toArray(internalObject, feature), value);
     }
 
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("DirectWriteMapStoreWithIndices::lastIndexOf({1}, {2})", new Object[] {
-                feature.getName(), value});
+        NeoLogger.debug("DirectWriteMapStoreWithIndices::lastIndexOf({0}, {1})", feature.getName(), value);
 
         return indexOf(internalObject, feature, value);
     }
@@ -138,7 +136,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
     @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        NeoLogger.debug("getAttribute({0}, {1}, {2})", new Object[]{object.id(), attribute.getName(), index});
+        NeoLogger.debug("getAttribute({0}, {1}, {2})", object.id(), attribute.getName(), index);
 
         Object result;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
@@ -153,7 +151,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
     @Override
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        NeoLogger.debug("setAttribute({0}, {1}, {2}, {3})", new Object[]{object.id(), attribute.getName(), index, value});
+        NeoLogger.debug("setAttribute({0}, {1}, {2}, {3})", object.id(), attribute.getName(), index, value);
 
         Object old;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
@@ -170,7 +168,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
     @Override
     protected Object getReference(PersistentEObject object, EReference reference, int index) {
-        NeoLogger.debug("getReference({0}, {1}, {2})", new Object[]{object.id(), reference.getName(), index});
+        NeoLogger.debug("getReference({0}, {1}, {2})", object.id(), reference.getName(), index);
 
         Id result;
         FeatureKey featureKey = FeatureKey.from(object, reference);
@@ -185,7 +183,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
     @Override
     protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        NeoLogger.debug("setReference({0}, {1}, {2}, {3})", new Object[]{object.id(), reference.getName(), index, value});
+        NeoLogger.debug("setReference({0}, {1}, {2}, {3})", object.id(), reference.getName(), index, value);
 
         Id old;
         FeatureKey featureKey = FeatureKey.from(object, reference);
@@ -208,7 +206,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        NeoLogger.debug("size({0}, {1})", new Object[]{object.id(), feature.getName()});
+        NeoLogger.debug("size({0}, {1})", object.id(), feature.getName());
 
         FeatureKey featureKey = FeatureKey.from(object, feature);
         Object value = backend.valueOf(featureKey);

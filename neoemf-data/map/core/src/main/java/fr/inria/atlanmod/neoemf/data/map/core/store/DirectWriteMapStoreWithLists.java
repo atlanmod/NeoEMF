@@ -181,7 +181,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
             result = null;
         } else {
             if (reference.isMany()) {
-                List<Object> aList = (List<Object>) value;
+                List<Object> aList = manyValueFrom(value);
                 checkPositionIndex(index, aList.size(), "Invalid get index " + index);
                 Id id = (Id) aList.get(index);
                 result = eObject(id);

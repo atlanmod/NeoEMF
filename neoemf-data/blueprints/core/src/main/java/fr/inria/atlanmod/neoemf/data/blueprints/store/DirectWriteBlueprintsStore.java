@@ -48,6 +48,7 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 
 /**
  * A {@link DirectWriteStore} that translates model-level operations to Blueprints calls.
@@ -565,31 +566,27 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     public InternalEObject getContainer(InternalEObject internalObject) {
-        InternalEObject container = null;
+        checkNotNull(internalObject);
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Vertex vertex = backend.getVertex(object.id());
-        Vertex containerVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, CONTAINER), null);
-        if (nonNull(containerVertex)) {
-            container = reifyVertex(containerVertex);
+        ContainerInfo info = backend.containerFor(object.id());
+        if (nonNull(info)) {
+            return  (InternalEObject) eObject(info.id());
         }
-        return container;
+        return null;
     }
 
     @Override
     public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        EStructuralFeature feature = null;
+        checkNotNull(internalObject);
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Vertex vertex = backend.getVertex(object.id());
-        Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, CONTAINER), null);
-        if (nonNull(edge)) {
-            String featureName = edge.getProperty(CONTAINING_FEATURE);
-            Vertex containerVertex = edge.getVertex(Direction.IN);
-            if (nonNull(featureName)) {
-                EObject container = reifyVertex(containerVertex);
-                feature = container.eClass().getEStructuralFeature(featureName);
-            }
+        ContainerInfo info = backend.containerFor(object.id());
+        if (nonNull(info)) {
+            EObject container = eObject(info.id());
+            return container.eClass().getEStructuralFeature(info.name());
         }
-        return feature;
+        return null;
     }
 
     /**
@@ -628,20 +625,16 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * @see DirectWriteBlueprintsStore#CONTAINER
      * @see DirectWriteBlueprintsStore#CONTAINING_FEATURE
      */
-    private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         checkNotNull(object);
         checkNotNull(reference);
         checkNotNull(referencedObject);
 
         if (reference.isContainment()) {
-            Vertex vertex = backend.getVertex(object.id());
-            Vertex containmentVertex = backend.getVertex(referencedObject.id());
-
-            for (Edge edge : containmentVertex.getEdges(Direction.OUT, CONTAINER)) {
-                edge.remove();
+            ContainerInfo info = backend.containerFor(referencedObject.id());
+            if (isNull(info) || !Objects.equals(info.id(), object.id())) {
+                backend.storeContainer(referencedObject.id(), ContainerInfo.from(object, reference));
             }
-            Edge edge = containmentVertex.addEdge(CONTAINER, vertex);
-            edge.setProperty(CONTAINING_FEATURE, reference.getName());
         }
     }
 

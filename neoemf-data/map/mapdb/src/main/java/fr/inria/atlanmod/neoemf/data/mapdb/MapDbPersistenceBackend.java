@@ -231,8 +231,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
         return multivaluedFeatures.get(key);
     }
 
-    //@Override
-    @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
+    /**
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     *
+     * @param target the {@code PersistenceBackend} to copy the database contents to
+     */
     public void copyTo(MapDbPersistenceBackend target) {
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();

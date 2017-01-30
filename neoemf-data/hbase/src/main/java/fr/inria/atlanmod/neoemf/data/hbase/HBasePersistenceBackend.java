@@ -11,10 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
+import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 /**
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
@@ -44,19 +49,71 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public boolean isClosed() {
-        return true;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void close() {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void save() {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
-    
+
     @Override
     public boolean isDistributed() {
         return true;
+    }
+
+    @Override
+    public ContainerInfo containerFor(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void storeContainer(Id id, ContainerInfo container) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public ClassInfo metaclassFor(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void storeMetaclass(Id id, ClassInfo metaclass) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object storeValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object valueOf(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object removeFeature(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean isFeatureSet(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object valueAtIndex(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

@@ -32,6 +32,9 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
@@ -101,6 +104,36 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * The index key used to retrieve metaclass {@link Vertex}s.
      */
     public static final String KEY_NAME = "name";
+
+    /**
+     * The string used as a separator between values of multi-valued attributes.
+     */
+    protected static final String SEPARATOR = ":";
+
+    /**
+     * The property key used to define the index of an edge.
+     */
+    protected static final String POSITION = "position";
+
+    /**
+     * The label used to define container {@link Edge}s.
+     */
+    protected static final String CONTAINER = "eContainer";
+
+    /**
+     * The label used to link root vertex to top-level elements.
+     */
+    protected static final String CONTENTS = "eContents";
+
+    /**
+     * The property key used to define the opposite containing feature in container {@link Edge}s.
+     */
+    protected static final String CONTAINING_FEATURE = "containingFeature";
+
+    /**
+     * The property key used to define the number of edges with a specific label.
+     */
+    protected static final String SIZE_LITERAL = "size";
 
     /**
      * The default cache size (10 000).
@@ -200,10 +233,77 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             graph.shutdown();
         }
     }
-    
+
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    @Override
+    public ContainerInfo containerFor(Id id) {
+        Vertex containmentVertex = getVertex(id);
+        Edge edge = Iterables.getOnlyElement(containmentVertex.getEdges(Direction.OUT, CONTAINER), null);
+
+        if (nonNull(edge)) {
+            String featureName = edge.getProperty(CONTAINING_FEATURE);
+            Vertex containerVertex = edge.getVertex(Direction.IN);
+            return ContainerInfo.of(new StringId(containerVertex.getId().toString()), featureName);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void storeContainer(Id id, ContainerInfo container) {
+        Vertex containmentVertex = getVertex(id);
+        Vertex containerVertex = getVertex(container.id());
+
+        for (Edge edge : containmentVertex.getEdges(Direction.OUT, CONTAINER)) {
+            edge.remove();
+        }
+
+        Edge edge = containmentVertex.addEdge(CONTAINER, containerVertex);
+        edge.setProperty(CONTAINING_FEATURE, container.name());
+    }
+
+    @Override
+    public ClassInfo metaclassFor(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void storeMetaclass(Id id, ClassInfo metaclass) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object storeValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object valueOf(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object removeFeature(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean isFeatureSet(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object valueAtIndex(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -409,9 +509,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this back-end to the target one.
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
      *
-     * @param target the {@code BlueprintsPersistenceBackend} to copy the elements to
+     * @param target the {@code PersistenceBackend} to copy the database contents to
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
