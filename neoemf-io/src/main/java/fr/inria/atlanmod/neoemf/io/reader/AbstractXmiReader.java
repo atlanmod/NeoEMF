@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayList;
@@ -225,7 +226,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
         }
-        else if (Objects.equals(XmiConstants.PROXY, name)) {
+        else if (Objects.equals(XmiConstants.HREF, name)) {
             NeoLogger.warn(
                     "{0} is an external reference to {1}. This feature is not supported yet.",
                     currentElement.name(), value);
