@@ -142,11 +142,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
-     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
-     */
-    private final Cache<Id, PersistentEObject> persistentObjectsCache;
-
-    /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
      */
     private final Cache<Id, Vertex> verticesCache;
@@ -184,7 +179,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedEClasses = new ArrayList<>();
 
@@ -423,67 +417,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     private void setMappedVertex(Vertex vertex, PersistentEObject object) {
         object.setMapped(true);
-        persistentObjectsCache.put(object.id(), object);
         verticesCache.put(object.id(), vertex);
-    }
-
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
-     *
-     * @param vertex the {@link Vertex} of the model element to compute the {@link EClass} from
-     *
-     * @return an {@link EClass} representing the metaclass of the element
-     */
-    public EClass resolveInstanceOf(Vertex vertex) {
-        EClass eClass = null;
-        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
-        if (nonNull(eClassVertex)) {
-            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
-            eClass = classInfo.eClass();
-        }
-        return eClass;
-    }
-
-    /**
-     * Reifies the given {@link Vertex} as a {@link PersistentEObject}.
-     * <p>
-     * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
-     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
-     * collected.
-     * <p>
-     * This method behaves like {@code reifyVertex(vertex, null)}.
-     *
-     * @param vertex the {@link Vertex} to reify
-     *
-     * @return a {@link PersistentEObject} representing the given vertex
-     */
-    public PersistentEObject reifyVertex(Vertex vertex) {
-        return reifyVertex(vertex, null);
-    }
-
-    /**
-     * Reifies the given {@link Vertex} as an {@link PersistentEObject}.
-     * <p>
-     * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
-     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
-     * collected.
-     *
-     * @param vertex the {@link Vertex} to reify
-     * @param eClass the expected {@link EClass} of the reified object. Can be set to {@code null} if not known.
-     *
-     * @return a {@link PersistentEObject} representing the given vertex
-     */
-    public PersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
-        PersistentEObject object = null;
-
-        Id id = new StringId(vertex.getId().toString());
-        try {
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(vertex, eClass));
-        }
-        catch (Exception e) {
-            NeoLogger.error(e);
-        }
-        return object;
     }
 
     /**
@@ -540,61 +474,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         for (EClass eClass : eClassList) {
             checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())), "Index is not consistent");
             metaclassIndex.put(KEY_NAME, eClass.getName(), getVertex(eClass));
-        }
-    }
-
-    /**
-     * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
-     */
-    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
-
-        /**
-         * The vertex associated with the object to retrieve.
-         */
-        private final Vertex vertex;
-        /**
-         * The class associated with the object to retrieve.
-         */
-        private EClass eClass;
-
-        /**
-         * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
-         *
-         * @param vertex the vertex associated with the object to retrieve
-         * @param eClass the class associated with the object to retrieve
-         */
-        private PersistentEObjectCacheLoader(Vertex vertex, EClass eClass) {
-            this.vertex = vertex;
-            this.eClass = eClass;
-        }
-
-        @Override
-        public PersistentEObject apply(Id id) {
-            PersistentEObject object;
-            if(isNull(eClass)) {
-                /*
-                 *  Use the embedded vertex to compute the eClass instead of the id to avoid
-                 *  a backend query to retrieve the vertex
-                 */
-                eClass = BlueprintsPersistenceBackend.this.resolveInstanceOf(vertex);
-            }
-            if (nonNull(eClass)) {
-                EObject eObject;
-                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
-                    // Dynamic EMF
-                    eObject = PersistenceFactory.getInstance().create(eClass);
-                }
-                else {
-                    eObject = EcoreUtil.create(eClass);
-                }
-                object = PersistentEObject.from(eObject);
-                object.id(id);
-                object.setMapped(true);
-            }
-            else {
-                throw new RuntimeException("Element " + id + " does not have an associated EClass");
-            }
-            return object;
         }
     }
 

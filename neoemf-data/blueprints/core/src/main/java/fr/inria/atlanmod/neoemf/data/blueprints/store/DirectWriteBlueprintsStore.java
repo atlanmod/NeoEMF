@@ -11,12 +11,34 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.store;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkElementIndex;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import com.google.common.collect.Iterables;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Vertex;
+
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -25,30 +47,12 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
-
-import com.google.common.collect.Iterables;
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Vertex;
-
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link DirectWriteStore} that translates model-level operations to Blueprints calls.
@@ -66,6 +70,21 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
  * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
+
+    /**
+     * The property key used to set metaclass name in metaclass {@link Vertex}s.
+     */
+    public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+
+    /**
+     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex}s.
+     */
+    public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+
+    /**
+     * The label of type conformance {@link Edge}s.
+     */
+    public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
 
     /**
      * The string used as a separator between values of multi-valued attributes.
@@ -153,6 +172,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         }
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
+            persistentObjectsCache.put(object.id(), object);
+
             String propertyName = attribute.getName();
             if (!attribute.isMany()) {
                 Object property = vertex.getProperty(propertyName);
@@ -177,7 +198,11 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         }
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
+            persistentObjectsCache.put(object.id(), object);
+
             Vertex newReferencedVertex = backend.getOrCreateVertex(value);
+            persistentObjectsCache.put(value.id(), value);
+
             updateContainment(object, reference, value);
 
             if (!reference.isMany()) {
@@ -272,6 +297,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @Override
     protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         Vertex v = backend.getOrCreateVertex(object);
+        persistentObjectsCache.put(object.id(), object);
+
         for (Vertex vOut : v.getVertices(Direction.OUT, reference.getName())) {
             if (Objects.equals(vOut.getId(), value.id().toString())) {
                 return true;
@@ -338,6 +365,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             index = size(object, attribute);
         }
         Vertex vertex = backend.getOrCreateVertex(object);
+        persistentObjectsCache.put(object.id(), object);
+
         Integer size = getSize(vertex, attribute);
         size++;
         setSize(vertex, attribute, size);
@@ -360,8 +389,10 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             index = size(object, reference);
         }
         Vertex vertex = backend.getOrCreateVertex(object);
+        persistentObjectsCache.put(object.id(), object);
 
         Vertex referencedVertex = backend.getOrCreateVertex(value);
+        persistentObjectsCache.put(value.id(), value);
         updateContainment(object, reference, value);
 
         Integer size = getSize(vertex, reference);
@@ -455,6 +486,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @Override
     protected void clearReference(PersistentEObject object, EReference reference) {
         Vertex vertex = backend.getOrCreateVertex(object);
+        persistentObjectsCache.put(object.id(), object);
+
         for (Edge edge : vertex.query().labels(reference.getName()).direction(Direction.OUT).edges()) {
             edge.remove();
         }
@@ -554,8 +587,31 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             }
         }
     }
-    
-    
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
+     *
+     * @param id id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the metaclass of the element
+     */
+    @Override
+    public EClass resolveInstanceOf(Id id) {
+        EClass eClass = null;
+        Vertex vertex = backend.getVertex(id);
+        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
+        if (nonNull(eClassVertex)) {
+            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
+            eClass = classInfo.eClass();
+        }
+        return eClass;
+    }
+
+    @Override
+    protected void updateInstanceOf(PersistentEObject object) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
@@ -571,7 +627,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         PersistentEObject object = PersistentEObject.from(internalObject);
         ContainerInfo info = backend.containerFor(object.id());
         if (nonNull(info)) {
-            return  (InternalEObject) eObject(info.id());
+            return eObject(info.id());
         }
         return null;
     }
@@ -583,7 +639,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         PersistentEObject object = PersistentEObject.from(internalObject);
         ContainerInfo info = backend.containerFor(object.id());
         if (nonNull(info)) {
-            EObject container = eObject(info.id());
+            PersistentEObject container = eObject(info.id());
             return container.eClass().getEStructuralFeature(info.name());
         }
         return null;
@@ -621,10 +677,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * @param reference        the containment {@link EReference}. This parameter is used to set the containing feature
      *                         property in the create edge.
      * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
-     *
-     * @see DirectWriteBlueprintsStore#CONTAINER
-     * @see DirectWriteBlueprintsStore#CONTAINING_FEATURE
      */
+    @Override
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         checkNotNull(object);
         checkNotNull(reference);
@@ -647,7 +701,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      *
      * @see DirectWriteBlueprintsStore#reifyVertex(Vertex, EClass)
      */
-    protected InternalEObject reifyVertex(Vertex vertex) {
+    protected PersistentEObject reifyVertex(Vertex vertex) {
         return reifyVertex(vertex, null);
     }
 
@@ -656,27 +710,31 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * {@link EClass}.
      * <p>
      * This method speeds-up the reification for objects with a known {@link EClass} by avoiding unnecessary database
-     * accesses.
+     * accesses. It guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
+     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
+     * collected.
      *
      * @param vertex the {@link Vertex} to reify
      * @param eClass the {@link EClass} representing the type of the element to create
      *
      * @return an {@link InternalEObject} build from the provided {@link Vertex}
      */
-    protected InternalEObject reifyVertex(Vertex vertex, @Nullable EClass eClass) {
-        PersistentEObject internalEObject = backend.reifyVertex(vertex, eClass);
-        if (internalEObject.resource() != resource()) {
+    protected PersistentEObject reifyVertex(Vertex vertex, @Nullable EClass eClass) {
+        Id id = new StringId(vertex.getId().toString());
+        PersistentEObject object = persistentObjectsCache.get(id);
+
+        if (object.resource() != resource()) {
             if (Iterables.isEmpty(vertex.getEdges(Direction.OUT, CONTAINER))) {
                 if (!Iterables.isEmpty(vertex.getVertices(Direction.IN, CONTENTS))) {
-                    internalEObject.resource(resource());
+                    object.resource(resource());
                 }
                 // else : not part of the resource
             }
             else {
-                internalEObject.resource(resource());
+                object.resource(resource());
             }
         }
-        return internalEObject;
+        return object;
     }
 
     /**
@@ -688,7 +746,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * null} otherwise
      */
     @Override
-    public EObject eObject(Id id) {
+    public PersistentEObject eObject(Id id) {
         Vertex vertex = backend.getVertex(id);
         return isNull(vertex) ? null : reifyVertex(vertex);
     }

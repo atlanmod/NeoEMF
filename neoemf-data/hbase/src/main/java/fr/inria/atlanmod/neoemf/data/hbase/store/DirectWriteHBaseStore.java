@@ -11,11 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackend;
@@ -44,20 +40,15 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -86,12 +77,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * The column family holding properties.
      */
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
-
-    /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    protected static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
      * ???
@@ -134,11 +119,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     private static final long SLEEP_DEFAULT = 1L;
 
     /**
-     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
-     */
-    private final Cache<Id, PersistentEObject> persistentObjectsCache;
-
-    /**
      * The HBase table used to access the model.
      */
     protected Table table;
@@ -152,8 +132,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      */
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
-
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
         Configuration configuration = HBaseConfiguration.create();
         configuration.set("hbase.zookeeper.quorum", resource.getURI().host());
@@ -233,7 +211,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
             if (nonNull(containerId) && nonNull(containingFeatureName)) {
-                return (InternalEObject) eObject(new StringId(containerId));
+                return eObject(new StringId(containerId));
             }
         }
         catch (IOException e) {
@@ -252,7 +230,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
             if (nonNull(containerId) && nonNull(containingFeatureName)) {
-                EObject container = eObject(new StringId(containerId));
+                PersistentEObject container = eObject(new StringId(containerId));
                 return container.eClass().getEStructuralFeature(containingFeatureName);
             }
         }
@@ -263,10 +241,10 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    public EObject eObject(Id id) {
+    public PersistentEObject eObject(Id id) {
         PersistentEObject object = null;
         if(nonNull(id)) {
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
+            object = persistentObjectsCache.get(id);
             if (object.resource() != resource()) {
                 object.resource(resource());
             }
@@ -281,7 +259,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
-    private EClass resolveInstanceOf(Id id) {
+    @Override
+    protected EClass resolveInstanceOf(Id id) {
         try {
             Result result = table.get(new Get(Bytes.toBytes(id.toString())));
             String nsURI = Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER));
@@ -304,6 +283,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * @param reference        the containment {@link EReference}
      * @param referencedObject the element to add to {@code object}'s containment list
      */
+    @Override
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         if (reference.isContainment()) {
             try {
@@ -324,6 +304,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      *
      * @param object the {@link PersistentEObject} to persist the metaclass of
      */
+    @Override
     protected void updateInstanceOf(PersistentEObject object) {
         try {
             Put put = new Put(Bytes.toBytes(object.id().toString()));
@@ -490,21 +471,21 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             Object[] storedArray = (Object[])value;
             if(feature instanceof EReference) {
                 for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T)eObject(new StringId((String) storedArray[i]));
+                    output[i] = (T) eObject(new StringId((String) storedArray[i]));
                 }
             }
             else { // EAttribute
                 for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T)parseProperty((EAttribute)feature, storedArray[i]);
+                    output[i] = (T) parseProperty((EAttribute)feature, storedArray[i]);
                 }
             }
         }
         else {
             if(feature instanceof EReference) {
-                output[0] = (T)eObject((Id)value);
+                output[0] = (T) eObject((Id)value);
             }
             else { // EAttribute
-                output[0] = (T)parseProperty((EAttribute)feature, value);
+                output[0] = (T) parseProperty((EAttribute)feature, value);
             }
         }
         return output;
@@ -797,34 +778,5 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         }
 
         return old;
-    }
-
-    /**
-     * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
-     */
-    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
-
-        @Override
-        public PersistentEObject apply(Id id) {
-            PersistentEObject object;
-            EClass eClass = DirectWriteHBaseStore.this.resolveInstanceOf(id);
-            if (nonNull(eClass)) {
-                EObject eObject;
-                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
-                    // Dynamic EMF
-                    eObject = PersistenceFactory.getInstance().create(eClass);
-                }
-                else {
-                    eObject = EcoreUtil.create(eClass);
-                }
-                object = PersistentEObject.from(eObject);
-                object.id(id);
-                object.setMapped(true);
-            }
-            else {
-                throw new RuntimeException("Element " + id + " does not have an associated EClass");
-            }
-            return object;
-        }
     }
 }

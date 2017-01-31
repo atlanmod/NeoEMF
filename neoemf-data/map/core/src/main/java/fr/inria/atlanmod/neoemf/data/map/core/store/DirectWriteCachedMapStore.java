@@ -47,7 +47,8 @@ public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWrite
      * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Object> objectsCache = Caffeine.newBuilder()
-            .maximumSize(DEFAULT_CACHE_SIZE).build();;
+            .initialCapacity(1_000)
+            .maximumSize(10_000).build();
 
     /**
      * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.

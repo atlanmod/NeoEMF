@@ -11,8 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -21,12 +28,17 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link DirectWriteStore} that redirects certain methods according to the instance of the encountered
@@ -36,6 +48,15 @@ import static java.util.Objects.isNull;
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
 public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
+
+    /**
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
+     */
+    protected final LoadingCache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
+            .softValues()
+            .initialCapacity(1_000)
+            .maximumSize(10_000)
+            .build(new PersistentObjectLoader());
 
     /**
      * The persistence back-end used to store the model.
@@ -597,6 +618,35 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     /**
+     * Tells the underlying database to put the {@code referencedObject} in the containment list of the {@code object}.
+     * <p>
+     * The method checks if an existing container is stored and update it if needed.
+     *
+     * @param object           the container {@link PersistentEObject}
+     * @param reference        the containment {@link EReference}
+     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
+     */
+    protected abstract void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject);
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
+     *
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the metaclass of the element
+     */
+    protected abstract EClass resolveInstanceOf(Id id);
+
+    /**
+     * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.
+     *
+     * @param object the {@link PersistentEObject} to store the instance-of information from
+     *
+     * @note The type is not updated if {@code object} was previously mapped to another type.
+     */
+    protected abstract void updateInstanceOf(PersistentEObject object);
+
+    /**
      * Creates an instance of the {@code attribute}.
      *
      * @param attribute the attribute to instantiate
@@ -622,5 +672,36 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     protected Object serializeToProperty(EAttribute attribute, Object value) {
         return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
+    }
+
+    /**
+     * A {@link CacheLoader} to retrieve a {@link PersistentEObject} stored in the database.
+     */
+    private class PersistentObjectLoader implements CacheLoader<Id, PersistentEObject> {
+
+        @Override
+        public PersistentEObject load(@Nonnull Id id) throws Exception {
+            PersistentEObject persistentObject;
+
+            EClass eClass = resolveInstanceOf(id);
+            if (nonNull(eClass)) {
+                EObject eObject;
+                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
+                    // Dynamic EMF
+                    eObject = PersistenceFactory.getInstance().create(eClass);
+                }
+                else {
+                    eObject = EcoreUtil.create(eClass);
+                }
+                persistentObject = PersistentEObject.from(eObject);
+                persistentObject.id(id);
+                persistentObject.setMapped(true);
+            }
+            else {
+                throw new RuntimeException("Element " + id + " does not have an associated EClass");
+            }
+
+            return persistentObject;
+        }
     }
 }

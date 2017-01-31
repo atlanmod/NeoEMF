@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -140,7 +141,7 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
-    public EObject eObject(Id id) {
+    public PersistentEObject eObject(Id id) {
         return store.eObject(id);
     }
 

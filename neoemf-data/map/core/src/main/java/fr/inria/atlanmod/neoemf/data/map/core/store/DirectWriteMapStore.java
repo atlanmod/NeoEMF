@@ -11,10 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.map.core.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
@@ -24,16 +21,18 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -49,18 +48,6 @@ import static java.util.Objects.nonNull;
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
 public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWriteStore<P> {
-
-    /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    protected static final int DEFAULT_CACHE_SIZE = 10000;
-
-    /**
-     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
-     */
-    protected final Cache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
-            .maximumSize(DEFAULT_CACHE_SIZE).build();
 
     /**
      * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
@@ -100,7 +87,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     }
 
     /**
-     * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.
+     * {@inheritDoc}
      * <p>
      * As for {@link #updateContainment(PersistentEObject, EReference, PersistentEObject)}, instance-of information are
      * handled in a dedicated {@link Map}, easing their access. The method checks that the {@link Map} doesn't contain
@@ -109,6 +96,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
      * @param object the {@link PersistentEObject} to store the instance-of information from
      * @note The type is not updated if {@code object} was previously mapped to another type.
      */
+    @Override
     protected void updateInstanceOf(PersistentEObject object) {
         checkNotNull(object);
 
@@ -119,15 +107,15 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     }
 
     /**
-     * Tells the underlying database to put the {@code referencedObject} in the containment list of the {@code object}.
+     * {@inheritDoc}
      * <p>
-     * Containment and containers information are persisted in a dedicated {@link Map}. The method checks if an existing
-     * container is stored and update it if needed.
+     * Containment and containers information are persisted in a dedicated {@link Map}.
      *
      * @param object           the container {@link PersistentEObject}
      * @param reference        the containment {@link EReference}
      * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
      */
+    @Override
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         checkNotNull(object);
         checkNotNull(reference);
@@ -173,22 +161,17 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     }
 
     @Override
-    public EObject eObject(Id id) {
+    public PersistentEObject eObject(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
+        PersistentEObject object = persistentObjectsCache.get(id);
         if (object.resource() != resource()) {
             object.resource(resource());
         }
         return object;
     }
 
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
-     *
-     * @param id the {@link Id} of the model element to compute the {@link EClass} from
-     * @return an {@link EClass} representing the metaclass of the element
-     */
+    @Override
     protected EClass resolveInstanceOf(Id id) {
         checkNotNull(id);
 
@@ -218,7 +201,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         PersistentEObject object = PersistentEObject.from(internalObject);
         ContainerInfo info = backend.containerFor(object.id());
         if (nonNull(info)) {
-            return  (InternalEObject) eObject(info.id());
+            return eObject(info.id());
         }
         return null;
     }
@@ -230,7 +213,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         PersistentEObject object = PersistentEObject.from(internalObject);
         ContainerInfo info = backend.containerFor(object.id());
         if (nonNull(info)) {
-            EObject container = eObject(info.id());
+            PersistentEObject container = eObject(info.id());
             return container.eClass().getEStructuralFeature(info.name());
         }
         return null;
@@ -345,21 +328,21 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
             Object[] storedArray = (Object[])value;
             if(feature instanceof EReference) {
                 for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T)eObject((Id)storedArray[i]);
+                    output[i] = (T) eObject((Id)storedArray[i]);
                 }
             }
             else { // EAttribute
                 for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T)parseProperty((EAttribute)feature, storedArray[i]);
+                    output[i] = (T) parseProperty((EAttribute)feature, storedArray[i]);
                 }
             }
         }
         else {
             if(feature instanceof EReference) {
-                output[0] = (T)eObject((Id)value);
+                output[0] = (T) eObject((Id)value);
             }
             else { // EAttribute
-                output[0] = (T)parseProperty((EAttribute)feature, value);
+                output[0] = (T) parseProperty((EAttribute)feature, value);
             }
         }
         return output;
@@ -386,7 +369,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         checkNotNull(object);
         checkNotNull(reference);
 
-        Object result;
+        PersistentEObject result;
         Object value = getFromMap(object, reference);
         if (isNull(value)) {
             result = null;
@@ -525,35 +508,5 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         array = ArrayUtils.remove(array, index);
         backend.storeValue(featureKey, array);
         return eObject((Id) oldId);
-    }
-
-
-    /**
-     * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
-     */
-    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
-
-        @Override
-        public PersistentEObject apply(Id id) {
-            PersistentEObject object;
-            EClass eClass = DirectWriteMapStore.this.resolveInstanceOf(id);
-            if (nonNull(eClass)) {
-                EObject eObject;
-                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
-                    // Dynamic EMF
-                    eObject = PersistenceFactory.getInstance().create(eClass);
-                }
-                else {
-                    eObject = EcoreUtil.create(eClass);
-                }
-                object = PersistentEObject.from(eObject);
-                object.id(id);
-                object.setMapped(true);
-            }
-            else {
-                throw new RuntimeException("Element " + id + " does not have an associated EClass");
-            }
-            return object;
-        }
     }
 }

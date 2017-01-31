@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.common.util.EList;
@@ -142,7 +143,7 @@ public class InvalidStore implements PersistentStore {
     }
 
     @Override
-    public EObject eObject(Id id) {
+    public PersistentEObject eObject(Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 

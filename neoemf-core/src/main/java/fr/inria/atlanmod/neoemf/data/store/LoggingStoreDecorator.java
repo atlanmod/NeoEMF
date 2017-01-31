@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
@@ -155,7 +156,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
     }
 
     @Override
-    public EObject eObject(Id id) {
+    public PersistentEObject eObject(Id id) {
         NeoLogger.info("Called getEObject with value {0}", id);
         return super.eObject(id);
     }

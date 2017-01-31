@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -38,13 +39,13 @@ public interface PersistentStore extends EStore {
     Resource resource();
 
     /**
-     * Returns the resolved {@link EObject} identified by the given {@code id} or {@code null}.
+     * Returns the resolved {@link PersistentEObject} identified by the given {@code id} or {@code null}.
      *
-     * @param id the identifier of the {@link EObject} to resolve
+     * @param id the identifier of the {@link PersistentEObject} to resolve
      *
-     * @return the resolved {@link EObject}, or {@code null} if no {@link EObject} can be resolved
+     * @return the resolved {@link PersistentEObject}, or {@code null} if no {@link PersistentEObject} can be resolved
      */
-    EObject eObject(Id id);
+    PersistentEObject eObject(Id id);
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.

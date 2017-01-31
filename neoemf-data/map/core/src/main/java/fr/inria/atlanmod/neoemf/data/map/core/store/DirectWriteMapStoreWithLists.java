@@ -52,12 +52,14 @@ import static java.util.Objects.isNull;
  * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWriteMapStore<P> {
+
     /**
      * In-memory cache that holds multi-valued {@link EStructuralFeature}s wrapped in a {@link List}, identified by
      * their associated {@link FeatureKey}.
      */
     protected final Cache<FeatureKey, Object> objectsCache = Caffeine.newBuilder()
-            .maximumSize(DEFAULT_CACHE_SIZE).build();
+            .initialCapacity(1_000)
+            .maximumSize(10_000).build();
 
     /**
      * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
@@ -246,11 +248,6 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
      */
     public class FeatureKeyCacheLoader implements Function<FeatureKey, Object> {
 
-        /**
-         * ???
-         */
-        private static final int ARRAY_SIZE_OFFSET = 10;
-
         @Override
         public Object apply(FeatureKey key) {
             Object value = backend.valueOf(key);
@@ -258,7 +255,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
                 value = new ArrayList<>();
             } else if (value instanceof Object[]) {
                 Object[] array = (Object[]) value;
-                List<Object> list = new ArrayList<>(array.length + ARRAY_SIZE_OFFSET);
+                List<Object> list = new ArrayList<>(array.length + 10);
                 CollectionUtils.addAll(list, array);
                 value = list;
             }
