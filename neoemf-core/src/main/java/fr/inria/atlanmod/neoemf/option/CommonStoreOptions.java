@@ -60,5 +60,12 @@ public enum CommonStoreOptions implements PersistentStoreOptions {
      *
      * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
      */
-    READ_ONLY
+    READ_ONLY,
+
+    /**
+     * Automatically saves modifications as calls are made.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
+     */
+    AUTOCOMMIT
 }

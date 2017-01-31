@@ -54,33 +54,6 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Adds the {@code autocommit} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see BlueprintsStoreOptions#AUTOCOMMIT
-     * @see AutocommitStoreDecorator
-     */
-    public B autocommit() {
-        return storeOption(BlueprintsStoreOptions.AUTOCOMMIT);
-    }
-
-    /**
-     * Adds the {@code autocommit} feature with the given {@code chunk} size in the created options.
-     *
-     * @param chunk the number of database operations between each commit
-     *
-     * @return this builder (for chaining)
-     *
-     * @see BlueprintsStoreOptions#AUTOCOMMIT
-     * @see AutocommitStoreDecorator
-     */
-    public B autocommit(int chunk) {
-        storeOption(BlueprintsStoreOptions.AUTOCOMMIT);
-        return option(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK, chunk);
-    }
-
-    /**
      * Adds the {@code direct-write} feature in the created options.
      *
      * @return this builder (for chaining)

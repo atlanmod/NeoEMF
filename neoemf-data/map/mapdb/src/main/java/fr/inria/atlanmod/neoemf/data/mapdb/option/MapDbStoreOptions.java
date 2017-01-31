@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * {@link PersistentStoreOptions} that hold MapDB related database access features, such as autocommit, direct write,
- * usage of raw arrays or {@link List}s.
+ * {@link PersistentStoreOptions} that hold MapDB related database access features, such as direct write, usage of raw
+ * arrays or {@link List}s.
  *
  * @see AutocommitStoreDecorator
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
@@ -32,13 +32,6 @@ import java.util.List;
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 public enum MapDbStoreOptions implements PersistentStoreOptions {
-
-    /**
-     * Automatically saves modifications as calls are made.
-     *
-     * @see AutocommitStoreDecorator
-     */
-    AUTOCOMMIT,
 
     /**
      * Translates model-level operations to MapDB calls <i>(default {@link DirectWriteStore})</i>.

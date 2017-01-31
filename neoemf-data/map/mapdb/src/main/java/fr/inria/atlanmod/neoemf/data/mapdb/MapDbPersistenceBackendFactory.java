@@ -92,14 +92,11 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         checkArgument(backend instanceof MapDbPersistenceBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        PersistentStore store = null;
+        PersistentStore store;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (storeOptions.isEmpty() || storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
-            store = new DirectWriteMapStore<>(resource, (MapDbPersistenceBackend) backend);
-        }
-        else if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
+        if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
             store = new DirectWriteCachedMapStore<>(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_LISTS)) {
@@ -108,12 +105,8 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_INDICES)) {
             store = new DirectWriteMapStoreWithIndices<>(resource, (MapDbPersistenceBackend) backend);
         }
-        // Autocommit
-        if (isNull(store)) {
-            throw new InvalidDataStoreException();
-        }
-        else if (storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
-            store = new AutocommitStoreDecorator(store);
+        else { // Default store
+            store = new DirectWriteMapStore<>(resource, (MapDbPersistenceBackend) backend);
         }
         return store;
     }

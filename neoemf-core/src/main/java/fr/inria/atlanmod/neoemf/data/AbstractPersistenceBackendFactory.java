@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
@@ -18,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.option.CommonResourceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -117,6 +119,15 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
             }
             if (storeOptions.contains(CommonStoreOptions.READ_ONLY)) {
                 store = new ReadOnlyStoreDecorator(store);
+            }
+            if (storeOptions.contains(CommonStoreOptions.AUTOCOMMIT)) {
+                if (options.containsKey(CommonResourceOptions.AUTOCOMMIT_CHUNK)) {
+                    int autoCommitChunk = Integer.parseInt((String) options.get(CommonResourceOptions.AUTOCOMMIT_CHUNK));
+                    store = new AutocommitStoreDecorator(store, autoCommitChunk);
+                }
+                else {
+                    store = new AutocommitStoreDecorator(store);
+                }
             }
         }
         return store;

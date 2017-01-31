@@ -23,11 +23,6 @@ public enum BerkeleyDbStoreOptions implements PersistentStoreOptions {
     /**
      * ???
      */
-    AUTOCOMMIT,
-
-    /**
-     * ???
-     */
     DIRECT_WRITE,
 
     /**

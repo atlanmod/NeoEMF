@@ -44,19 +44,6 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     * Adds the {@code autocommit} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see MapDbStoreOptions#AUTOCOMMIT
-     * @see AutocommitStoreDecorator
-     */
-    @Nonnull
-    public MapDbOptionsBuilder autocommit() {
-        return storeOption(MapDbStoreOptions.AUTOCOMMIT);
-    }
-
-    /**
      * Adds the {@code direct-write} feature in the created options.
      *
      * @return this builder (for chaining)

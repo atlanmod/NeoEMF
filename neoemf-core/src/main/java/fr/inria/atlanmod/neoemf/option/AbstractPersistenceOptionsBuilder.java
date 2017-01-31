@@ -17,7 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link PersistenceOptionsBuilder} that manages the assembly and the construction of
@@ -97,7 +101,10 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @return this builder (for chaining)
      */
-    protected B storeOption(PersistentStoreOptions storeOption) {
+    @Nonnull
+    protected B storeOption(@Nonnull PersistentStoreOptions storeOption) {
+        checkNotNull(storeOption);
+
         this.storeOptions.add(storeOption);
         return me();
     }
@@ -110,7 +117,11 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @return this builder (for chaining)
      */
-    public B option(String key, Object value) {
+    @Nonnull
+    public B option(@Nonnull String key, @Nonnull Object value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         options.put(key, value);
         return me();
     }
@@ -122,6 +133,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
      */
+    @Nonnull
     public B cacheIsSet() {
         return storeOption(CommonStoreOptions.CACHE_IS_SET);
     }
@@ -133,6 +145,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
      */
+    @Nonnull
     public B cacheSizes() {
         return storeOption(CommonStoreOptions.CACHE_SIZE);
     }
@@ -144,6 +157,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
      */
+    @Nonnull
     public B cacheFeatures() {
         return storeOption(CommonStoreOptions.CACHE_STRUCTURAL_FEATURE);
     }
@@ -155,6 +169,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
      */
+    @Nonnull
     public B log() {
         return storeOption(CommonStoreOptions.LOG);
     }
@@ -166,6 +181,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
      */
+    @Nonnull
     public B countLoadedObjects() {
         return storeOption(CommonStoreOptions.COUNT_LOADED_OBJECT);
     }
@@ -177,7 +193,37 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
      */
+    @Nonnull
     public B readOnly() {
         return storeOption(CommonStoreOptions.READ_ONLY);
+    }
+
+    /**
+     * Adds the {@code autocommit} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
+     */
+    @Nonnull
+    public B autocommit() {
+        return storeOption(CommonStoreOptions.AUTOCOMMIT);
+    }
+
+    /**
+     * Adds the {@code autocommit} feature with the given {@code chunk} size in the created options.
+     *
+     * @param chunk the number of database operations between each commit
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
+     */
+    @Nonnull
+    public B autocommit(@Nonnegative int chunk) {
+        checkArgument(chunk >= 0);
+
+        storeOption(CommonStoreOptions.AUTOCOMMIT);
+        return option(CommonResourceOptions.AUTOCOMMIT_CHUNK, chunk);
     }
 }

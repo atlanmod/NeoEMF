@@ -49,16 +49,6 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * @return this builder (for chaining)
      */
     @Nonnull
-    public BerkeleyDbOptionsBuilder autocommit() {
-        return storeOption(BerkeleyDbStoreOptions.AUTOCOMMIT);
-    }
-
-    /**
-     * ???
-     *
-     * @return this builder (for chaining)
-     */
-    @Nonnull
     public BerkeleyDbOptionsBuilder directWrite() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE);
     }

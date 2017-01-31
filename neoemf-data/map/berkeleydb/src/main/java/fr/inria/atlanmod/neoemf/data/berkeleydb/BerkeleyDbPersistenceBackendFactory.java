@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import com.sleepycat.je.EnvironmentConfig;
+
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
@@ -23,21 +24,20 @@ import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 
 /**
  * ???
@@ -76,14 +76,11 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
         checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        PersistentStore store = null;
+        PersistentStore store;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (storeOptions.isEmpty() || storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
-            store = new DirectWriteMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
-        }
-        else if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
+        if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
             store = new DirectWriteCachedMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS)) {
@@ -92,12 +89,8 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES)) {
             store = new DirectWriteMapStoreWithIndices<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
-        // Autocommit
-        if (isNull(store)) {
-            throw new InvalidDataStoreException();
-        }
-        else if (storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
-            store = new AutocommitStoreDecorator(store);
+        else { // Default store
+            store = new DirectWriteMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         return store;
     }

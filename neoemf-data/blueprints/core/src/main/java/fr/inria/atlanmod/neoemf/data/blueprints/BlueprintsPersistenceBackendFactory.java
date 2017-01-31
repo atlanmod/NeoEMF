@@ -27,7 +27,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -115,25 +114,11 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
         PersistentStore store;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
-        // Store
-        if (storeOptions.isEmpty() || storeOptions.contains(BlueprintsStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
-            store = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
-        }
-        else if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
+        if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
             store = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
-        else {
-            throw new InvalidDataStoreException("No valid base EStore found in the options");
-        }
-        // Autocommit
-        if (storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
-            if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
-                int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
-                store = new AutocommitStoreDecorator(store, autoCommitChunk);
-            }
-            else {
-                store = new AutocommitStoreDecorator(store);
-            }
+        else { // Default store
+            store = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         return store;
     }
