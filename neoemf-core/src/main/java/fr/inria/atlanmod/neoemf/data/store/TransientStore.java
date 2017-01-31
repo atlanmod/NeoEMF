@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -19,4 +21,9 @@ import org.eclipse.emf.ecore.resource.Resource;
  * when storing data in memory.
  */
 public interface TransientStore extends EStore {
+
+    @Override
+    default EObject create(EClass eClass) {
+        throw new IllegalStateException("This method should not be called");
+    }
 }
