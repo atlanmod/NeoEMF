@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -36,7 +35,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link AbstractDirectWriteStore} that redirects certain methods according to the instance of the
@@ -144,18 +142,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
             object.resource(resource());
         }
         return object;
-    }
-
-    @Override
-    protected EClass resolveInstanceOf(Id id) {
-        checkNotNull(id);
-
-        EClass eClass = null;
-        ClassInfo classInfo = backend.metaclassFor(id);
-        if (nonNull(classInfo)) {
-            eClass = classInfo.eClass();
-        }
-        return eClass;
     }
 
     @Override

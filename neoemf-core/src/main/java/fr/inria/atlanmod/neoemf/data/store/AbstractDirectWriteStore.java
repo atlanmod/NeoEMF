@@ -384,7 +384,15 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
-    protected abstract EClass resolveInstanceOf(Id id);
+    protected EClass resolveInstanceOf(Id id) {
+        checkNotNull(id);
+
+        ClassInfo classInfo = backend.metaclassFor(id);
+        if (nonNull(classInfo)) {
+            return classInfo.eClass();
+        }
+        return null;
+    }
 
     /**
      * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.

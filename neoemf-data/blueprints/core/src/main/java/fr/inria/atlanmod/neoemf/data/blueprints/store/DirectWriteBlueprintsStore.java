@@ -24,7 +24,6 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -32,10 +31,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -69,21 +66,6 @@ import static java.util.Objects.nonNull;
  * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
-
-    /**
-     * The property key used to set metaclass name in metaclass {@link Vertex}s.
-     */
-    public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-
-    /**
-     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex}s.
-     */
-    public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
-
-    /**
-     * The label of type conformance {@link Edge}s.
-     */
-    public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
 
     /**
      * The string used as a separator between values of multi-valued attributes.
@@ -218,25 +200,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 }
             }
         }
-    }
-
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
-     *
-     * @param id id the {@link Id} of the model element to compute the {@link EClass} from
-     *
-     * @return an {@link EClass} representing the metaclass of the element
-     */
-    @Override
-    public EClass resolveInstanceOf(Id id) {
-        EClass eClass = null;
-        Vertex vertex = backend.getVertex(id);
-        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
-        if (nonNull(eClassVertex)) {
-            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
-            eClass = classInfo.eClass();
-        }
-        return eClass;
     }
 
     @Override
