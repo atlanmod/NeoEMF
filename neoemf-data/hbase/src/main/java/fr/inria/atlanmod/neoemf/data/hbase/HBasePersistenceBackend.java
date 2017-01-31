@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -24,15 +23,12 @@ import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 /**
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
  * <p>
- * This class does not access HBase database, but is here to fit the requirement of the
- * core architecture. For historical reasons the real access to the HBase Table
- * is done in {@link DirectWriteHBaseStore} and {@link ReadOnlyHBaseStore}.
+ * This class does not access HBase database, but is here to fit the requirement of the core architecture. For
+ * historical reasons the real access to the HBase Table is done in {@link DirectWriteHBaseStore}.
  * <p>
- * Moving HBase access to this class to fit NeoEMF back-end architecture is planned in
- * a future release.
+ * Moving HBase access to this class to fit NeoEMF back-end architecture is planned in a future release.
  *
  * @see DirectWriteHBaseStore
- * @see ReadOnlyHBaseStore
  */
 public class HBasePersistenceBackend extends AbstractPersistenceBackend {
 
@@ -48,7 +44,7 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public boolean isClosed() {
+    public void save() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -58,7 +54,7 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public void save() {
+    public boolean isClosed() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

@@ -169,4 +169,15 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     public B countLoadedObjects() {
         return storeOption(CommonStoreOptions.COUNT_LOADED_OBJECT);
     }
+
+    /**
+     * Adds the {@code read-only} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
+     */
+    public B readOnly() {
+        return storeOption(CommonStoreOptions.READ_ONLY);
+    }
 }

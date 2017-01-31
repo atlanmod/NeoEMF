@@ -18,18 +18,14 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
 import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
-import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -81,14 +77,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
-            if (options.containsKey(HBaseResourceOptions.READ_ONLY) && Objects.equals(Boolean.TRUE, options.get(HBaseResourceOptions.READ_ONLY))) {
-                // Create a read-only EStore
-                return embedInDefaultWrapper(new ReadOnlyHBaseStore(resource));
-            }
-            else {
-                // Create a default EStore
-                return embedInDefaultWrapper(new DirectWriteHBaseStore(resource));
-            }
+            return new DirectWriteHBaseStore(resource);
         }
         catch (IOException e) {
             throw new InvalidDataStoreException(e);
@@ -114,17 +103,6 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
-    }
-
-    /**
-     * Wraps the given {@code store} in the default {@link PersistentStore}.
-     *
-     * @param store the store to wrap
-     *
-     * @return the {@code store} wrapped in another
-     */
-    private PersistentStore embedInDefaultWrapper(PersistentStore store) {
-        return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(store));
     }
 
     /**

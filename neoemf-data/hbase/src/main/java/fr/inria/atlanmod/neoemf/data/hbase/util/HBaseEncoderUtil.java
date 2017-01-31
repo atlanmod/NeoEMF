@@ -50,6 +50,9 @@ public class HBaseEncoderUtil {
      */
     public static final char VALUE_SEPERATOR_DEFAULT = ',';
 
+    private HBaseEncoderUtil() {
+    }
+
     /**
      * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
      *
@@ -61,20 +64,17 @@ public class HBaseEncoderUtil {
      * @throws IllegalArgumentException if the length of {@code value} is not a multiple of {@code UUID_LENGTH}
      * @see HBaseEncoderUtil#toBytesReferences(String[])
      */
-    public static String[] toStringsReferences(byte[] value) {
+    public static String[] toStringsReferences(byte... value) {
         if (nonNull(value)) {
             checkArgument(value.length % (UUID_LENGTH + 1) == UUID_LENGTH);
             int length = (value.length + 1) / (UUID_LENGTH + 1);
 
             Iterator<String> iterator = Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(value)).iterator();
-//            List<String>  strings = new LinkedList<String>();
             String[] strings = new String[length];
             int index = 0;
             while (iterator.hasNext()) {
-//                strings.add(iterator.next());
                 strings[index++] = iterator.next();
             }
-//            return strings.toArray(new String[strings.size()]);
             return strings;
         }
         return null;
@@ -90,7 +90,7 @@ public class HBaseEncoderUtil {
      * @throws NullPointerException if the value to encode is {@code null}
      * @see HBaseEncoderUtil#toStringsReferences(byte[])
      */
-    public static byte[] toBytesReferences(String[] strings) {
+    public static byte[] toBytesReferences(String... strings) {
         if (nonNull(strings)) {
             return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes(Charsets.UTF_8);
         }
@@ -106,7 +106,7 @@ public class HBaseEncoderUtil {
      *
      * @see HBaseEncoderUtil#toStrings(byte[])
      */
-    public static byte[] toBytes(String[] strings) {
+    public static byte[] toBytes(String... strings) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -131,7 +131,7 @@ public class HBaseEncoderUtil {
      * @throws NullPointerException if the given array is {@code null}
      * @see HBaseEncoderUtil#toBytes(String[])
      */
-    public static String[] toStrings(byte[] bytes) {
+    public static String[] toStrings(byte... bytes) {
         if (isNull(bytes)) {
             return null;
         }

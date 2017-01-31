@@ -180,6 +180,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      */
     protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
+            // FIXME Don't initialize this table in READ ONLY.
             HTableDescriptor desc = new HTableDescriptor(tableName);
             HColumnDescriptor propertyFamily = new HColumnDescriptor(PROPERTY_FAMILY);
             HColumnDescriptor typeFamily = new HColumnDescriptor(TYPE_FAMILY);
@@ -443,7 +444,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject object = PersistentEObject.from(internalObject);
         try {
             Put put = new Put(Bytes.toBytes(object.id().toString()));
-            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), HBaseEncoderUtil.toBytes(new String[]{}));
+            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), HBaseEncoderUtil.toBytes());
             table.put(put);
         }
         catch (IOException e) {

@@ -53,5 +53,12 @@ public enum CommonStoreOptions implements PersistentStoreOptions {
      *
      * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
      */
-    COUNT_LOADED_OBJECT
+    COUNT_LOADED_OBJECT,
+
+    /**
+     * Only allows read operations.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
+     */
+    READ_ONLY
 }

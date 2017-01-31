@@ -31,9 +31,7 @@ public class InvalidStore implements PersistentStore {
     /**
      * The message of the exceptions thrown when calling methods.
      */
-    private static final String MSG =
-            "The backend you are using does not provide a transient layer. " +
-                    "You must save/load your resource before using it";
+    private static final String MSG = "The backend you are using does not provide a transient layer. You must save/load your resource before using it";
 
     /**
      * Constructs a new {@code InvalidStore}.

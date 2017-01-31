@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
@@ -113,6 +114,9 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
             }
             if (storeOptions.contains(CommonStoreOptions.COUNT_LOADED_OBJECT)) {
                 store = new LoadedObjectCounterStoreDecorator(store);
+            }
+            if (storeOptions.contains(CommonStoreOptions.READ_ONLY)) {
+                store = new ReadOnlyStoreDecorator(store);
             }
         }
         return store;
