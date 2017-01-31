@@ -15,8 +15,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -141,12 +139,6 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
     public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         NeoLogger.info("Called getContainingFeature for {0}", internalObject);
         return super.getContainingFeature(internalObject);
-    }
-
-    @Override
-    public EObject create(EClass eClass) {
-        NeoLogger.info("Called create for {0}", eClass.getName());
-        return super.create(eClass);
     }
 
     @Override

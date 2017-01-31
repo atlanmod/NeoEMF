@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -207,11 +205,6 @@ public abstract class AbstractTransientStore implements TransientStore {
 
     @Override
     public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        throw new IllegalStateException("This method should not be called");
-    }
-
-    @Override
-    public EObject create(EClass eClass) {
         throw new IllegalStateException("This method should not be called");
     }
 

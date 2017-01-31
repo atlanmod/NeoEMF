@@ -25,7 +25,6 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -125,6 +124,124 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      */
     public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * that takes benefit of the underlying backend to get all the linked elements once and return
+     * it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
+    @Override
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        return toArray(internalObject, feature, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * that takes benefit of the underlying backend to get all the linked elements once and return
+     * it as an array, avoiding multiple {@code get()}
+     * operations.
+     * <p>
+     * Returns the given {@code array} reference if it is not {@code null}.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Vertex vertex = backend.getVertex(object.id());
+        if (feature instanceof EReference) {
+            if (feature.isMany()) {
+                Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.getProperty(POSITION));
+                Object[] result = StreamSupport.stream(
+                        vertex.query()
+                                .labels(feature.getName())
+                                .direction(Direction.OUT)
+                                .edges()
+                                .spliterator(), false)
+                        .sorted(byPosition)
+                        .map(ee -> reifyVertex(ee.getVertex(Direction.IN)))
+                        .toArray();
+                if (isNull(array)) {
+                    return (T[]) result;
+                }
+                else {
+                    System.arraycopy(result, 0, array, 0, result.length);
+                    return array;
+                }
+            }
+            else {
+                Vertex referencedVertex = Iterables.getOnlyElement(
+                        vertex.getVertices(Direction.OUT, feature.getName()), null);
+                InternalEObject referencedEObject = reifyVertex(referencedVertex);
+                if (isNull(array)) {
+                    return (T[]) new Object[]{referencedEObject};
+                }
+                else {
+                    array[0] = (T) referencedEObject;
+                    return array;
+                }
+            }
+        }
+        else {
+            String propertyName = feature.getName();
+            if (feature.isMany()) {
+                int size = getSize(vertex, feature);
+                T[] output = array;
+                if (isNull(array)) {
+                    output = (T[]) new Object[size];
+                }
+                for (int i = 0; i < size; i++) {
+                    Object parsedProperty = parseProperty((EAttribute) feature, vertex.getProperty(propertyName + SEPARATOR + i));
+                    output[i] = (T) parsedProperty;
+                }
+                // Return array if it as been provided to ensure the reference does not change
+                return isNull(array) ? output : array;
+            }
+            else {
+                Object property = vertex.getProperty(propertyName);
+                if (isNull(array)) {
+                    return (T[]) new Object[]{parseProperty((EAttribute) feature, property)};
+                }
+                else {
+                    array[0] = (T) parseProperty((EAttribute) feature, property);
+                    return array;
+                }
+            }
+        }
+    }
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
+     *
+     * @param id id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the metaclass of the element
+     */
+    @Override
+    public EClass resolveInstanceOf(Id id) {
+        EClass eClass = null;
+        Vertex vertex = backend.getVertex(id);
+        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
+        if (nonNull(eClassVertex)) {
+            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
+            eClass = classInfo.eClass();
+        }
+        return eClass;
+    }
+
+    @Override
+    protected void updateInstanceOf(PersistentEObject object) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -493,124 +610,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         }
         setSize(vertex, reference, 0);
     }
-    
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
-     * that takes benefit of the underlying backend to get all the linked elements once and return 
-     * it as an array, avoiding multiple {@code get()}
-     * operations.
-     */
-    @Override
-    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        return toArray(internalObject, feature, null);
-    }
-    
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
-     * that takes benefit of the underlying backend to get all the linked elements once and return 
-     * it as an array, avoiding multiple {@code get()}
-     * operations.
-     * <p>
-     * Returns the given {@code array} reference if it is not {@code null}.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
-                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
-                feature.getName(), feature.getClass().getSimpleName());
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        Vertex vertex = backend.getVertex(object.id());
-        if(feature instanceof EReference) {
-            if(feature.isMany()) {
-                Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.getProperty(POSITION));
-                Object[] result = StreamSupport.stream(
-                        vertex.query()
-                            .labels(feature.getName())
-                            .direction(Direction.OUT)
-                            .edges()
-                            .spliterator(),false)
-                            .sorted(byPosition)
-                            .map(ee -> reifyVertex(ee.getVertex(Direction.IN)))
-                            .toArray();
-                if(isNull(array)) {
-                    return (T[]) result;
-                }
-                else {
-                    System.arraycopy(result, 0, array, 0, result.length);
-                    return array;
-                }
-            }
-            else {
-                Vertex referencedVertex = Iterables.getOnlyElement(
-                        vertex.getVertices(Direction.OUT, feature.getName()), null);
-                InternalEObject referencedEObject =  reifyVertex(referencedVertex);
-                if(isNull(array)) {
-                    return (T[]) new Object[]{referencedEObject};
-                }
-                else {
-                    array[0] = (T) referencedEObject;
-                    return array;
-                }
-            }
-        }
-        else {
-            String propertyName = feature.getName();
-            if(feature.isMany()) {
-                int size = getSize(vertex, feature);
-                T[] output = array;
-                if(isNull(array)) {
-                    output = (T[]) new Object[size];
-                }
-                for(int i = 0; i < size; i++) {
-                    Object parsedProperty = parseProperty((EAttribute) feature, vertex.getProperty(propertyName + SEPARATOR + i));
-                    output[i] = (T) parsedProperty;
-                }
-                // Return array if it as been provided to ensure the reference does not change
-                return isNull(array) ? output : array;
-            }
-            else {
-                Object property = vertex.getProperty(propertyName);
-                if(isNull(array)) {
-                    return (T[]) new Object[]{parseProperty((EAttribute) feature, property)};
-                }
-                else {
-                    array[0] = (T) parseProperty((EAttribute) feature, property);
-                    return array;
-                }
-            }
-        }
-    }
-
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
-     *
-     * @param id id the {@link Id} of the model element to compute the {@link EClass} from
-     *
-     * @return an {@link EClass} representing the metaclass of the element
-     */
-    @Override
-    public EClass resolveInstanceOf(Id id) {
-        EClass eClass = null;
-        Vertex vertex = backend.getVertex(id);
-        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
-        if (nonNull(eClassVertex)) {
-            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
-            eClass = classInfo.eClass();
-        }
-        return eClass;
-    }
-
-    @Override
-    protected void updateInstanceOf(PersistentEObject object) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
@@ -618,31 +617,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         PersistentEObject object = PersistentEObject.from(internalObject);
         Vertex vertex = backend.getVertex(object.id());
         return isNull(vertex) ? 0 : getSize(vertex, feature);
-    }
-
-    @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        checkNotNull(internalObject);
-
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerInfo info = backend.containerFor(object.id());
-        if (nonNull(info)) {
-            return eObject(info.id());
-        }
-        return null;
-    }
-
-    @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        checkNotNull(internalObject);
-
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerInfo info = backend.containerFor(object.id());
-        if (nonNull(info)) {
-            PersistentEObject container = eObject(info.id());
-            return container.eClass().getEStructuralFeature(info.name());
-        }
-        return null;
     }
 
     /**
@@ -667,29 +641,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      */
     private void setSize(Vertex vertex, EStructuralFeature feature, int size) {
         vertex.setProperty(feature.getName() + SEPARATOR + SIZE_LITERAL, size);
-    }
-
-    /**
-     * Creates a new container edge between {@code object} and {@code referencedObject}, and deletes any
-     * container edge previously linked to {@code referencedObject}.
-     *
-     * @param object           the container {@link PersistentEObject}
-     * @param reference        the containment {@link EReference}. This parameter is used to set the containing feature
-     *                         property in the create edge.
-     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
-     */
-    @Override
-    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        checkNotNull(object);
-        checkNotNull(reference);
-        checkNotNull(referencedObject);
-
-        if (reference.isContainment()) {
-            ContainerInfo info = backend.containerFor(referencedObject.id());
-            if (isNull(info) || !Objects.equals(info.id(), object.id())) {
-                backend.storeContainer(referencedObject.id(), ContainerInfo.from(object, reference));
-            }
-        }
     }
 
     /**

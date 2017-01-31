@@ -65,4 +65,9 @@ public interface PersistentStore extends EStore {
      * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
      */
     void save();
+
+    @Override
+    default EObject create(EClass eClass) {
+        throw new IllegalStateException("This method should not be called");
+    }
 }

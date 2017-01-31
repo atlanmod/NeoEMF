@@ -133,11 +133,6 @@ public class InvalidStore implements PersistentStore {
     }
 
     @Override
-    public EObject create(EClass eClass) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
     public Resource resource() {
         throw new UnsupportedOperationException(MSG);
     }

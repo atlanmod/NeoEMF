@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -32,7 +31,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -107,29 +105,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * Containment and containers information are persisted in a dedicated {@link Map}.
-     *
-     * @param object           the container {@link PersistentEObject}
-     * @param reference        the containment {@link EReference}
-     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
-     */
-    @Override
-    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        checkNotNull(object);
-        checkNotNull(reference);
-        checkNotNull(referencedObject);
-
-        if (reference.isContainment()) {
-            ContainerInfo info = backend.containerFor(referencedObject.id());
-            if (isNull(info) || !Objects.equals(info.id(), object.id())) {
-                backend.storeContainer(referencedObject.id(), ContainerInfo.from(object, reference));
-            }
-        }
-    }
-
-    /**
      * Returns the value associated to the {@code featureKey} in the underlying database.
      *
      * @param featureKey the {@link FeatureKey} to look for
@@ -192,31 +167,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         PersistentEObject object = PersistentEObject.from(internalObject);
         Object[] array = (Object[]) getFromMap(object, feature);
         return isNull(array) ? 0 : array.length;
-    }
-
-    @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        checkNotNull(internalObject);
-
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerInfo info = backend.containerFor(object.id());
-        if (nonNull(info)) {
-            return eObject(info.id());
-        }
-        return null;
-    }
-
-    @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        checkNotNull(internalObject);
-
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerInfo info = backend.containerFor(object.id());
-        if (nonNull(info)) {
-            PersistentEObject container = eObject(info.id());
-            return container.eClass().getEStructuralFeature(info.name());
-        }
-        return null;
     }
 
     @Override

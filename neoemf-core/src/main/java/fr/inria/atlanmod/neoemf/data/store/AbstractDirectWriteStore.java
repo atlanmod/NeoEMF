@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -37,6 +38,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -327,8 +329,98 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     @Override
-    public EObject create(EClass eClass) {
-        throw new IllegalStateException("This method should not be called");
+    public InternalEObject getContainer(InternalEObject internalObject) {
+        checkNotNull(internalObject);
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        ContainerInfo info = backend.containerFor(object.id());
+        if (nonNull(info)) {
+            return eObject(info.id());
+        }
+        return null;
+    }
+
+    @Override
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        checkNotNull(internalObject);
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        ContainerInfo info = backend.containerFor(object.id());
+        if (nonNull(info)) {
+            PersistentEObject container = eObject(info.id());
+            return container.eClass().getEStructuralFeature(info.name());
+        }
+        return null;
+    }
+
+    /**
+     * Creates a new container edge between {@code object} and {@code referencedObject}, and deletes any
+     * container edge previously linked to {@code referencedObject}. Tells the underlying database to put the
+     * {@code referencedObject} in the containment list of the {@code object}.
+     * <p>
+     * The method checks if an existing container is stored and update it if needed.
+     *
+     * @param object           the container {@link PersistentEObject}
+     * @param reference        the containment {@link EReference}
+     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
+     */
+    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        checkNotNull(object);
+        checkNotNull(reference);
+        checkNotNull(referencedObject);
+
+        if (reference.isContainment()) {
+            ContainerInfo info = backend.containerFor(referencedObject.id());
+            if (isNull(info) || !Objects.equals(info.id(), object.id())) {
+                backend.storeContainer(referencedObject.id(), ContainerInfo.from(object, reference));
+            }
+        }
+    }
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
+     *
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the metaclass of the element
+     */
+    protected abstract EClass resolveInstanceOf(Id id);
+
+    /**
+     * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.
+     *
+     * @param object the {@link PersistentEObject} to store the instance-of information from
+     *
+     * @note The type is not updated if {@code object} was previously mapped to another type.
+     */
+    protected abstract void updateInstanceOf(PersistentEObject object);
+
+    /**
+     * Creates an instance of the {@code attribute}.
+     *
+     * @param attribute the attribute to instantiate
+     * @param property  the string value of the attribute
+     *
+     * @return an instance of the attribute
+     *
+     * @see EcoreUtil#createFromString(EDataType, String)
+     */
+    protected Object parseProperty(EAttribute attribute, Object property) {
+        return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
+    }
+
+    /**
+     * Converts an instance of the {@code attribute} to a string literal representation.
+     *
+     * @param attribute the attribute to instantiate
+     * @param value     a value of the attribute
+     *
+     * @return the string literal representation of the value
+     *
+     * @see EcoreUtil#convertToString(EDataType, Object)
+     */
+    protected Object serializeToProperty(EAttribute attribute, Object value) {
+        return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 
     /**
@@ -615,63 +707,6 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     protected void clearReference(PersistentEObject object, EReference reference) {
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Tells the underlying database to put the {@code referencedObject} in the containment list of the {@code object}.
-     * <p>
-     * The method checks if an existing container is stored and update it if needed.
-     *
-     * @param object           the container {@link PersistentEObject}
-     * @param reference        the containment {@link EReference}
-     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
-     */
-    protected abstract void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject);
-
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
-     *
-     * @param id the {@link Id} of the model element to compute the {@link EClass} from
-     *
-     * @return an {@link EClass} representing the metaclass of the element
-     */
-    protected abstract EClass resolveInstanceOf(Id id);
-
-    /**
-     * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.
-     *
-     * @param object the {@link PersistentEObject} to store the instance-of information from
-     *
-     * @note The type is not updated if {@code object} was previously mapped to another type.
-     */
-    protected abstract void updateInstanceOf(PersistentEObject object);
-
-    /**
-     * Creates an instance of the {@code attribute}.
-     *
-     * @param attribute the attribute to instantiate
-     * @param property  the string value of the attribute
-     *
-     * @return an instance of the attribute
-     *
-     * @see EcoreUtil#createFromString(EDataType, String)
-     */
-    protected Object parseProperty(EAttribute attribute, Object property) {
-        return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
-    }
-
-    /**
-     * Converts an instance of the {@code attribute} to a string literal representation.
-     *
-     * @param attribute the attribute to instantiate
-     * @param value     a value of the attribute
-     *
-     * @return the string literal representation of the value
-     *
-     * @see EcoreUtil#convertToString(EDataType, Object)
-     */
-    protected Object serializeToProperty(EAttribute attribute, Object value) {
-        return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 
     /**

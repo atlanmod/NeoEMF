@@ -131,11 +131,6 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
-    public EObject create(EClass eClass) {
-        return store.create(eClass);
-    }
-
-    @Override
     public Resource resource() {
         return store.resource();
     }
