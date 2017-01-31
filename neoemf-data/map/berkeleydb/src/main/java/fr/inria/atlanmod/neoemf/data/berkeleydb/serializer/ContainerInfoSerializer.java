@@ -16,19 +16,27 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * ???
+ * A {@link Serializer} for {@link ContainerInfo}.
  */
 @Experimental
 public class ContainerInfoSerializer implements Serializer<ContainerInfo> {
 
     @Override
-    public byte[] serialize(ContainerInfo value) {
+    public byte[] serialize(@Nonnull ContainerInfo value) {
+        checkNotNull(value);
+
         return SerializationUtils.serialize(value);
     }
 
     @Override
-    public ContainerInfo deserialize(byte[] data) {
+    public ContainerInfo deserialize(@Nonnull byte[] data) {
+        checkNotNull(data);
+
         return (ContainerInfo) SerializationUtils.deserialize(data);
     }
 }

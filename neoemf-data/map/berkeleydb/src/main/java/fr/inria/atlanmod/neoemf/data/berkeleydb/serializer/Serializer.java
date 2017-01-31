@@ -13,29 +13,31 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
+import javax.annotation.Nonnull;
+
 /**
- * ???
+ * Simple class to serialize/deserialize objects to byte arrays.
  *
- * @param <T> ???
+ * @param <T> the type of {@link Object} to serialize/deserialize
  */
 @Experimental
 public interface Serializer<T> {
 
     /**
-     * ???
+     * Serializes an {@code Object} to a byte array for storage/serialization.
      *
-     * @param value ???
+     * @param value the object to serialize to bytes
      *
-     * @return ???
+     * @return the serialized object as a byte array
      */
-    byte[] serialize(T value);
+    byte[] serialize(@Nonnull T value);
 
     /**
-     * ???
+     * Deserializes a single {@code Object} from an array of bytes.
      *
-     * @param data ???
+     * @param data the serialized object as a byte array
      *
-     * @return ???
+     * @return the deserialized object
      */
-    T deserialize(byte[] data);
+    T deserialize(@Nonnull byte[] data);
 }

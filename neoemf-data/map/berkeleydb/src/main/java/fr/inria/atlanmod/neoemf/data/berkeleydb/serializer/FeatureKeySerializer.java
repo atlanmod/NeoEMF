@@ -16,19 +16,27 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * ???
+ * A {@link Serializer} for {@link FeatureKey}.
  */
 @Experimental
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
     @Override
-    public byte[] serialize(FeatureKey value) {
+    public byte[] serialize(@Nonnull FeatureKey value) {
+        checkNotNull(value);
+
         return SerializationUtils.serialize(value);
     }
 
     @Override
-    public FeatureKey deserialize(byte[] data) {
+    public FeatureKey deserialize(@Nonnull byte[] data) {
+        checkNotNull(data);
+
         return (FeatureKey) SerializationUtils.deserialize(data);
     }
 }

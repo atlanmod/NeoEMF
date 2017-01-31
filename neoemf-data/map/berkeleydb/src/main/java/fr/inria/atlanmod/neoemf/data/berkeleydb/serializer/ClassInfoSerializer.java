@@ -16,19 +16,27 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * ???
+ * A {@link Serializer} for {@link ClassInfo}.
  */
 @Experimental
 public class ClassInfoSerializer implements Serializer<ClassInfo> {
 
     @Override
-    public byte[] serialize(ClassInfo value) {
+    public byte[] serialize(@Nonnull ClassInfo value) {
+        checkNotNull(value);
+
         return SerializationUtils.serialize(value);
     }
 
     @Override
-    public ClassInfo deserialize(byte[] data) {
-        return (ClassInfo) SerializationUtils.deserialize(data);
+    public ClassInfo deserialize(@Nonnull byte[] data) {
+        checkNotNull(data);
+
+        return SerializationUtils.deserialize(data);
     }
 }

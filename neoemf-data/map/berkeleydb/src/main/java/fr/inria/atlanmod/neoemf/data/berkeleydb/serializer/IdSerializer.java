@@ -17,19 +17,27 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * ???
+ * A {@link Serializer} for {@link Id}.
  */
 @Experimental
 public class IdSerializer implements Serializer<Id> {
 
     @Override
-    public byte[] serialize(Id id) {
+    public byte[] serialize(@Nonnull Id id) {
+        checkNotNull(id);
+
         return SerializationUtils.serialize(id.toString());
     }
 
     @Override
-    public Id deserialize(byte[] data) {
+    public Id deserialize(@Nonnull byte[] data) {
+        checkNotNull(data);
+
         return new StringId(SerializationUtils.deserialize(data));
     }
 }

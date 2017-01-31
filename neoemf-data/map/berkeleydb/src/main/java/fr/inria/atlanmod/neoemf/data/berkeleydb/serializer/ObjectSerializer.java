@@ -22,15 +22,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+import javax.annotation.Nonnull;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * ???
+ * A {@link Serializer} for {@link Object}.
  */
 @Experimental
 public class ObjectSerializer implements Serializer<Object> {
 
     @Override
-    public byte[] serialize(Object value) {
+    public byte[] serialize(@Nonnull Object value) {
         checkNotNull(value);
 
         byte[] data;
@@ -48,7 +51,7 @@ public class ObjectSerializer implements Serializer<Object> {
     }
 
     @Override
-    public Object deserialize(byte[] data) {
+    public Object deserialize(@Nonnull byte[] data) {
         checkNotNull(data);
 
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
