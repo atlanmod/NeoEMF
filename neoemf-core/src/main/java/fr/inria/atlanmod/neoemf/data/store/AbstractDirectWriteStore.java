@@ -413,7 +413,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      *
      * @note The type is not updated if {@code object} was previously mapped to another type.
      */
-    protected abstract void updateInstanceOf(PersistentEObject object);
+    protected void updateInstanceOf(PersistentEObject object) {
+        checkNotNull(object);
+
+        ClassInfo info = backend.metaclassFor(object.id());
+        if (isNull(info)) {
+            backend.storeMetaclass(object.id(), ClassInfo.from(object));
+        }
+    }
 
     /**
      * Creates an instance of the {@code attribute}.

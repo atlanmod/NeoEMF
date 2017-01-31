@@ -193,11 +193,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     @Override
-    protected void updateInstanceOf(PersistentEObject object) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         Vertex vertex = backend.getVertex(object.id());
         String propertyName = attribute.getName();
@@ -243,6 +238,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
             persistentObjectsCache.put(object.id(), object);
+            updateInstanceOf(object);
 
             String propertyName = attribute.getName();
             if (!attribute.isMany()) {
@@ -269,9 +265,11 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
             persistentObjectsCache.put(object.id(), object);
+            updateInstanceOf(object);
 
             Vertex newReferencedVertex = backend.getOrCreateVertex(value);
             persistentObjectsCache.put(value.id(), value);
+            updateInstanceOf(value);
 
             updateContainment(object, reference, value);
 
@@ -368,6 +366,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         Vertex v = backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
+        updateInstanceOf(object);
 
         for (Vertex vOut : v.getVertices(Direction.OUT, reference.getName())) {
             if (Objects.equals(vOut.getId(), value.id().toString())) {
@@ -436,6 +435,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         }
         Vertex vertex = backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
+        updateInstanceOf(object);
 
         Integer size = getSize(vertex, attribute);
         size++;
@@ -460,10 +460,12 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         }
         Vertex vertex = backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
+        updateInstanceOf(object);
 
         Vertex referencedVertex = backend.getOrCreateVertex(value);
         persistentObjectsCache.put(value.id(), value);
         updateContainment(object, reference, value);
+        updateInstanceOf(value);
 
         Integer size = getSize(vertex, reference);
         int newSize = size + 1;
@@ -557,6 +559,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected void clearReference(PersistentEObject object, EReference reference) {
         Vertex vertex = backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
+        updateInstanceOf(object);
 
         for (Edge edge : vertex.query().labels(reference.getName()).direction(Direction.OUT).edges()) {
             edge.remove();

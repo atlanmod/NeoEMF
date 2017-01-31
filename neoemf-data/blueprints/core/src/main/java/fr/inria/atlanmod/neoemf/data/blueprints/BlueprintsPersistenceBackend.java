@@ -142,9 +142,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private final Cache<Id, Vertex> verticesCache;
 
     /**
-     * List that holds indexed {@link EClass}es.
+     * List that holds indexed {@link ClassInfo}.
      */
-    private final List<EClass> indexedEClasses;
+    private final List<ClassInfo> indexedMetaclasses;
 
     /**
      * Index containing metaclasses.
@@ -175,7 +175,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
-        this.indexedEClasses = new ArrayList<>();
+        this.indexedMetaclasses = new ArrayList<>();
 
         Index<Vertex> metaclasses = graph.getIndex(KEY_METACLASSES, Vertex.class);
         if (isNull(metaclasses)) {
@@ -187,14 +187,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Builds the {@link Id} used to identify an {@link EClass} {@link Vertex}.
+     * Builds the {@link Id} used to identify a {@link ClassInfo} {@link Vertex}.
      *
-     * @param eClass the {@link EClass} to build an {@link Id} from
+     * @param metaclass the {@link ClassInfo} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
-    private static Id buildId(EClass eClass) {
-        return isNull(eClass) ? null : new StringId(eClass.getName() + '@' + eClass.getEPackage().getNsURI());
+    private static Id buildId(ClassInfo metaclass) {
+        return isNull(metaclass) ? null : new StringId(metaclass.name() + '@' + metaclass.uri());
     }
 
     @Override
@@ -267,7 +267,16 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public void storeMetaclass(Id id, ClassInfo metaclass) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Vertex metaclassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, metaclass.name()), null);
+
+        if (isNull(metaclassVertex)) {
+            metaclassVertex = addVertex(metaclass);
+            metaclassIndex.put(KEY_NAME, metaclass.name(), metaclassVertex);
+            indexedMetaclasses.add(metaclass);
+        }
+
+        Vertex vertex = getVertex(id);
+        vertex.addEdge(KEY_INSTANCE_OF, metaclassVertex);
     }
 
     @Override
@@ -352,14 +361,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * Create a new vertex, add it to the graph, and return the newly created vertex. The issued {@link EClass} is used
      * to calculate the {@link Vertex} {@code id}.
      *
-     * @param eClass The corresponding {@link EClass}
+     * @param metaclass The corresponding {@link EClass}
      *
      * @return the newly created vertex
      */
-    private Vertex addVertex(EClass eClass) {
-        Vertex vertex = addVertex(buildId(eClass));
-        vertex.setProperty(KEY_ECLASS_NAME, eClass.getName());
-        vertex.setProperty(KEY_EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
+    private Vertex addVertex(ClassInfo metaclass) {
+        Vertex vertex = addVertex(buildId(metaclass));
+        vertex.setProperty(KEY_ECLASS_NAME, metaclass.name());
+        vertex.setProperty(KEY_EPACKAGE_NSURI, metaclass.uri());
         return vertex;
     }
 
@@ -376,15 +385,15 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@link EClass}. If no vertex corresponds to that {@link EClass},
-     * then return {@code null}.
+     * Returns the vertex corresponding to the provided {@link ClassInfo}. If no vertex corresponds to that
+     * {@link ClassInfo}, then return {@code null}.
      *
-     * @param eClass the {@link EClass} to find
+     * @param metaclass the {@link ClassInfo} to find
      *
-     * @return the vertex corresponding to the provided {@link EClass} or {@code null} when no such vertex exists
+     * @return the vertex corresponding to the provided {@link ClassInfo} or {@code null} when no such vertex exists
      */
-    private Vertex getVertex(EClass eClass) {
-        return getVertex(buildId(eClass));
+    private Vertex getVertex(ClassInfo metaclass) {
+        return getVertex(buildId(metaclass));
     }
 
     /**
@@ -429,15 +438,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     private Vertex createVertex(PersistentEObject object) {
         Vertex vertex = addVertex(object.id());
-        EClass eClass = object.eClass();
-
-        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
-        if (isNull(eClassVertex)) {
-            eClassVertex = addVertex(eClass);
-            metaclassIndex.put(KEY_NAME, eClass.getName(), eClassVertex);
-            indexedEClasses.add(eClass);
-        }
-        vertex.addEdge(KEY_INSTANCE_OF, eClassVertex);
         setMappedVertex(vertex, object);
         return vertex;
     }
@@ -449,7 +449,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
-        target.initMetaClassesIndex(indexedEClasses);
+        target.initMetaClassesIndex(indexedMetaclasses);
     }
 
     /**
@@ -468,12 +468,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * ???
      *
-     * @param eClassList ???
+     * @param metaclasses ???
      */
-    private void initMetaClassesIndex(List<EClass> eClassList) {
-        for (EClass eClass : eClassList) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())), "Index is not consistent");
-            metaclassIndex.put(KEY_NAME, eClass.getName(), getVertex(eClass));
+    private void initMetaClassesIndex(Iterable<ClassInfo> metaclasses) {
+        for (ClassInfo metaclass : metaclasses) {
+            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, metaclass.name())), "Index is not consistent");
+            metaclassIndex.put(KEY_NAME, metaclass.name(), getVertex(metaclass));
         }
     }
 

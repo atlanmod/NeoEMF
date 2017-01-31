@@ -83,26 +83,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * As for {@link #updateContainment(PersistentEObject, EReference, PersistentEObject)}, instance-of information are
-     * handled in a dedicated {@link Map}, easing their access. The method checks that the {@link Map} doesn't contain
-     * another type information for {@code object} and save it.
-     *
-     * @param object the {@link PersistentEObject} to store the instance-of information from
-     * @note The type is not updated if {@code object} was previously mapped to another type.
-     */
-    @Override
-    protected void updateInstanceOf(PersistentEObject object) {
-        checkNotNull(object);
-
-        ClassInfo info = backend.metaclassFor(object.id());
-        if (isNull(info)) {
-            backend.storeMetaclass(object.id(), ClassInfo.from(object));
-        }
-    }
-
-    /**
      * Returns the value associated to the {@code featureKey} in the underlying database.
      *
      * @param featureKey the {@link FeatureKey} to look for
