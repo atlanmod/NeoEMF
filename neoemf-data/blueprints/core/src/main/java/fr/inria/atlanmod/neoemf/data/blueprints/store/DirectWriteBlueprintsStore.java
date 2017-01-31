@@ -83,16 +83,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected static final String CONTAINER = "eContainer";
 
     /**
-     * The label used to link root vertex to top-level elements.
-     */
-    protected static final String CONTENTS = "eContents";
-
-    /**
-     * The property key used to define the opposite containing feature in container {@link Edge}s.
-     */
-    protected static final String CONTAINING_FEATURE = "containingFeature";
-
-    /**
      * The property key used to define the number of edges with a specific label.
      */
     protected static final String SIZE_LITERAL = "size";
@@ -638,31 +628,9 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         PersistentEObject object = persistentObjectsCache.get(id);
 
         if (object.resource() != resource()) {
-            if (Iterables.isEmpty(vertex.getEdges(Direction.OUT, CONTAINER))) {
-                if (!Iterables.isEmpty(vertex.getVertices(Direction.IN, CONTENTS))) {
-                    object.resource(resource());
-                }
-                // else : not part of the resource
-            }
-            else {
-                object.resource(resource());
-            }
+            object.resource(resource());
         }
         return object;
-    }
-
-    /**
-     * Search in the database the {@link Vertex} corresponding to the given {@code id} and reifies it.
-     *
-     * @param id the {@link Id} to search
-     *
-     * @return a reified {@link EObject} if the corresponding {@link Vertex} has been found in the database, {@code
-     * null} otherwise
-     */
-    @Override
-    public PersistentEObject eObject(Id id) {
-        Vertex vertex = backend.getVertex(id);
-        return isNull(vertex) ? null : reifyVertex(vertex);
     }
 
     /**

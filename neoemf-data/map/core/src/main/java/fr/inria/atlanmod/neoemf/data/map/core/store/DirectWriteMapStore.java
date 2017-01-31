@@ -134,17 +134,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     }
 
     @Override
-    public PersistentEObject eObject(Id id) {
-        checkNotNull(id);
-
-        PersistentEObject object = persistentObjectsCache.get(id);
-        if (object.resource() != resource()) {
-            object.resource(resource());
-        }
-        return object;
-    }
-
-    @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
         checkNotNull(feature);

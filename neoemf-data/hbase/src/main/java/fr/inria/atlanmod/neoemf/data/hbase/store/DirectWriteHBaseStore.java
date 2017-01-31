@@ -240,18 +240,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return null;
     }
 
-    @Override
-    public PersistentEObject eObject(Id id) {
-        PersistentEObject object = null;
-        if(nonNull(id)) {
-            object = persistentObjectsCache.get(id);
-            if (object.resource() != resource()) {
-                object.resource(resource());
-            }
-        }
-        return object;
-    }
-
     /**
      * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
      *
