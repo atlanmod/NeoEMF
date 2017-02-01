@@ -198,8 +198,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
+    public void save() {
+        if (graph.getFeatures().supportsTransactions) {
+            graph.commit();
+        }
+        else {
+            graph.shutdown();
+        }
     }
 
     @Override
@@ -214,13 +219,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public void save() {
-        if (graph.getFeatures().supportsTransactions) {
-            graph.commit();
-        }
-        else {
-            graph.shutdown();
-        }
+    public boolean isClosed() {
+        return isClosed;
     }
 
     @Override
@@ -449,7 +449,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
-        target.initMetaClassesIndex(indexedMetaclasses);
+
+        for (ClassInfo metaclass : indexedMetaclasses) {
+            checkArgument(Iterables.isEmpty(target.metaclassIndex.get(KEY_NAME_LITERAL, metaclass.name())), "Index is not consistent");
+            target.metaclassIndex.put(KEY_NAME_LITERAL, metaclass.name(), getVertex(metaclass));
+        }
     }
 
     /**
@@ -466,19 +470,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * ???
-     *
-     * @param metaclasses ???
-     */
-    private void initMetaClassesIndex(Iterable<ClassInfo> metaclasses) {
-        for (ClassInfo metaclass : metaclasses) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME_LITERAL, metaclass.name())), "Index is not consistent");
-            metaclassIndex.put(KEY_NAME_LITERAL, metaclass.name(), getVertex(metaclass));
-        }
-    }
-
-    /**
-     * ???
+     * An {@link IdGraph} that automatically removes unused {@link Vertex}.
      */
     private static class AutoCleanerIdGraph extends IdGraph<KeyIndexableGraph> {
 
@@ -502,18 +494,18 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         }
 
         /**
-         * ???
+         * Creates a new {@link AutoCleanerIdEdge} from another {@link Edge}.
          *
-         * @param edge ???
+         * @param edge the base edge
          *
-         * @return ???
+         * @return an {@link AutoCleanerIdEdge}
          */
         private Edge createFrom(Edge edge) {
             return isNull(edge) ? null : new AutoCleanerIdEdge(edge);
         }
 
         /**
-         * ???
+         * An {@link IdEdge} that automatically removes {@link Vertex} that are no longer referenced.
          */
         private class AutoCleanerIdEdge extends IdEdge {
 
