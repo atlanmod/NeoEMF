@@ -23,11 +23,6 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 public class CounterProcessor extends AbstractProcessor {
 
     /**
-     * The current number of created {@code CounterProcessor}s, used for name generation.
-     */
-    private static int id = 0;
-
-    /**
      * The current number of element.
      */
     private long elementCount;

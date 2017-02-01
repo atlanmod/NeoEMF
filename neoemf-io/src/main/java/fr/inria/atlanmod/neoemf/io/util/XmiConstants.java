@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.reader;
+package fr.inria.atlanmod.neoemf.io.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,17 +20,17 @@ import static java.util.Objects.isNull;
 /**
  * A utility class that contains all the constants used in an XMI file.
  */
-public interface XmiConstants {
-
-    /**
-     * The namespace prefix of XSI.
-     */
-    String XSI_NS = "xsi";
+public interface XmiConstants extends XmlConstants {
 
     /**
      * The namespace prefix of XMI.
      */
     String XMI_NS = "xmi";
+
+    /**
+     * The namespace URI of XMI.
+     */
+    String XMI_URI = "http://www.omg.org/XMI";
 
     /**
      * The attribute key representing the identifier of an element.
@@ -47,17 +47,12 @@ public interface XmiConstants {
     /**
      * The attribute key representing the metaclass of an element.
      */
-    String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", "type");
+    String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", TYPE);
 
     /**
      * The attribute key representing the version of the parsed XMI file.
      */
     String XMI_VERSION_ATTR = format(XMI_NS, "version");
-
-    /**
-     * The attribute key representing a link to another document.
-     */
-    String PROXY = "href";
 
     /**
      * The attribute key representing a name of an element.

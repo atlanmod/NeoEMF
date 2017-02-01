@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -28,6 +28,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -70,49 +72,12 @@ public class EcoreProcessor extends AbstractProcessor {
         this.previousWasAttribute = false;
     }
 
-    /**
-     * Returns the {@link EClass} associated with the given {@code element}.
-     *
-     * @param element the element representing the class
-     * @param ns         the namespace of the {@code superClass}
-     * @param superClass the super-type of the sought class
-     * @param ePackage   the package where to find the class
-     *
-     * @return a class
-     *
-     * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
-     */
-    private static EClass getEClass(Element element, Namespace ns, EClass superClass, EPackage ePackage) {
-        MetaClass metaClass = element.metaClass();
-
-        if (nonNull(metaClass)) {
-            EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.name());
-
-            // Checks that the metaclass is a subtype of the reference type.
-            // If true, use it instead of supertype
-            if (superClass.isSuperTypeOf(subEClass)) {
-                superClass = subEClass;
-            }
-            else {
-                throw new IllegalArgumentException(subEClass.getName() + " is not a subclass of " + superClass.getName());
-            }
-        }
-
-        // If not present, create the metaclass from the current class
-        else {
-            metaClass = new MetaClass(ns, superClass.getName());
-            element.metaClass(metaClass);
-        }
-
-        return superClass;
-    }
-
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
     public void handleStartElement(Element element) {
         // Is root
         if (classesStack.isEmpty()) {
-            createRootObject(element);
+            processRootElement(element);
         }
         // Is a feature of parent
         else {
@@ -191,7 +156,7 @@ public class EcoreProcessor extends AbstractProcessor {
      *
      * @throws NullPointerException if the {@code element} does not have a namespace
      */
-    private void createRootObject(Element element) {
+    private void processRootElement(Element element) {
         Namespace ns = checkNotNull(element.ns(), "The root element must have a namespace");
 
         // Retrieves the EPackage from NS prefix
@@ -295,5 +260,43 @@ public class EcoreProcessor extends AbstractProcessor {
         // Save EClass and identifier
         classesStack.addLast(eClass);
         idsStack.addLast(currentId);
+    }
+
+    /**
+     * Returns the {@link EClass} associated with the given {@code element}.
+     *
+     * @param element    the element representing the class
+     * @param ns         the namespace of the {@code superClass}
+     * @param superClass the super-type of the sought class
+     * @param ePackage   the package where to find the class
+     *
+     * @return a class
+     *
+     * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
+     */
+    @Nonnull
+    private EClass getEClass(Element element, Namespace ns, EClass superClass, EPackage ePackage) {
+        MetaClass metaClass = element.metaClass();
+
+        if (nonNull(metaClass)) {
+            EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.name());
+
+            // Checks that the metaclass is a subtype of the reference type.
+            // If true, use it instead of supertype
+            if (superClass.isSuperTypeOf(subEClass)) {
+                superClass = subEClass;
+            }
+            else {
+                throw new IllegalArgumentException(subEClass.getName() + " is not a subclass of " + superClass.getName());
+            }
+        }
+
+        // If not present, create the metaclass from the current class
+        else {
+            metaClass = new MetaClass(ns, superClass.getName());
+            element.metaClass(metaClass);
+        }
+
+        return superClass;
     }
 }

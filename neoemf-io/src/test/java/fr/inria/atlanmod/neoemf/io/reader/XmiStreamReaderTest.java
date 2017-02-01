@@ -264,6 +264,6 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     public void testReaderWithoutHandler() {
         Throwable thrown = catchThrowable(() -> new XmiStAXCursorReader(null).read(null));
-        assertThat(thrown).isInstanceOf(IllegalStateException.class);
+        assertThat(thrown).isInstanceOf(NullPointerException.class);
     }
 }

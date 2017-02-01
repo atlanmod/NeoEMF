@@ -11,6 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An abstract {@link Notifier} that provides overall behavior for the management of handlers.
  *
@@ -19,21 +25,24 @@ package fr.inria.atlanmod.neoemf.io;
 public abstract class AbstractNotifier<H extends Handler> implements Notifier<H> {
 
     /**
-     * The handler to notify.
+     * The handlers to notify.
      */
-    private H handler;
+    private Set<H> handlers;
 
     /**
-     * Constructs a new {@code AbstractNotifier} with the given {@code handler}.
+     * Constructs a new {@code AbstractNotifier} with the given {@code handlers}.
      *
-     * @param handler the handler to notify
+     * @param handlers the handlers to notify
      */
-    public AbstractNotifier(H handler) {
-        this.handler = handler;
+    @SafeVarargs
+    public AbstractNotifier(H... handlers) {
+        checkNotNull(handlers);
+
+        this.handlers = new HashSet<>(Arrays.asList(handlers));
     }
 
     @Override
-    public H next() {
-        return handler;
+    public Iterable<H> next() {
+        return handlers;
     }
 }

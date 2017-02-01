@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
 
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.Handler;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -34,12 +34,12 @@ import static java.util.Objects.nonNull;
 public class XmiSAXReader extends AbstractXmiReader {
 
     /**
-     * Constructs a new {@code XmiSAXReader} with the given {@code processor}.
+     * Constructs a new {@code XmiSAXReader} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public XmiSAXReader(Processor processor) {
-        super(processor);
+    public XmiSAXReader(Handler handler) {
+        super(handler);
     }
 
     @Override

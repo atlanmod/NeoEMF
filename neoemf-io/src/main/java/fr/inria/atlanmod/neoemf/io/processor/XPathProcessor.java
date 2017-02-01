@@ -11,17 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Element;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.util.XPathConstants;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,26 +37,6 @@ import static java.util.Objects.nonNull;
  * A {@link Processor} that analyses XML elements in order to create and to process XPath references.
  */
 public class XPathProcessor extends AbstractProcessor {
-
-    /**
-     * The string representing the start of a XPath expression.
-     */
-    private static final String XPATH_START_EXPR = "//@";
-
-    /**
-     * The string representing the start of a XPath segment.
-     */
-    private static final String XPATH_START_ELT = "/@";
-
-    /**
-     * The string representing the end of a XPath segment.
-     */
-    private static final String XPATH_END_EXPR = "/";
-
-    /**
-     * The character used as separator between the name and the index of a XPath segment.
-     */
-    private static final String XPATH_INDEX_SEPARATOR = ".";
 
     /**
      * Pattern for detecting nodes which have no index in their path.
@@ -104,17 +84,17 @@ public class XPathProcessor extends AbstractProcessor {
 
         if (!hasIds) {
             // Processes the id from the path of the element in XML tree
-            String path = paths.getPath(element.name());
+            String path = paths.path(element.name());
 
             // Increments the number of occurrence for this path
-            Integer count = paths.createOrIncrement(element.name());
+            int count = paths.createOrIncrement(element.name());
 
             // Defines the id as '<path>.<index>'
-            String id = path + XPATH_INDEX_SEPARATOR + count;
+            String id = path + XPathConstants.INDEX_SEPARATOR + count;
 
             // Defines the XPath start of all elements from the root element
             if (isNull(expressionStart)) {
-                expressionStart = id + XPATH_START_ELT;
+                expressionStart = id + XPathConstants.START_ELT;
             }
 
             // Defines the new identifier as identifier of the classifier if it not already exist
@@ -149,7 +129,7 @@ public class XPathProcessor extends AbstractProcessor {
     @Override
     public void handleEndDocument() {
         if (!hasIds) {
-            long size = paths.estimatedSize();
+            long size = paths.size();
             if (size > 1) {
                 NeoLogger.warn("Some elements have not been cleaned ({0})", size);
             }
@@ -167,7 +147,7 @@ public class XPathProcessor extends AbstractProcessor {
      */
     private String formatPath(String path) {
         // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
-        String modifiedReference = path.replaceFirst(XPATH_START_EXPR, expressionStart);
+        String modifiedReference = path.replaceFirst(XPathConstants.START_EXPR, expressionStart);
 
         // Replace elements which has not index : all elements must have an index (default = 0)
         Matcher matcher = PATTERN_NODE_WITHOUT_INDEX.matcher(modifiedReference);
@@ -176,8 +156,8 @@ public class XPathProcessor extends AbstractProcessor {
         }
 
         // Remove the latest '/' character if present
-        if (modifiedReference.endsWith(XPATH_END_EXPR)) {
-            modifiedReference = modifiedReference.substring(0, modifiedReference.length() - XPATH_END_EXPR.length());
+        if (modifiedReference.endsWith(XPathConstants.END_EXPR)) {
+            modifiedReference = modifiedReference.substring(0, modifiedReference.length() - XPathConstants.END_EXPR.length());
         }
 
         return modifiedReference;
@@ -219,18 +199,19 @@ public class XPathProcessor extends AbstractProcessor {
          *
          * @return a string representing the XPath of the element
          */
-        public String getPath(String name) {
+        public String path(String name) {
             checkNotNull(name);
-            StringBuilder str = new StringBuilder(XPATH_START_ELT);
+
+            StringBuilder str = new StringBuilder(XPathConstants.START_ELT);
             boolean first = true;
             for (XPathNode node : currentPath) {
                 if (!first) {
-                    str.append(XPATH_START_ELT);
+                    str.append(XPathConstants.START_ELT);
                 }
-                str.append(node.getName()).append(XPATH_INDEX_SEPARATOR).append(node.getIndex());
+                str.append(node.name()).append(XPathConstants.INDEX_SEPARATOR).append(node.index());
                 first = false;
             }
-            str.append(first ? "" : XPATH_START_ELT).append(name);
+            str.append(first ? "" : XPathConstants.START_ELT).append(name);
             return str.toString();
         }
 
@@ -249,23 +230,24 @@ public class XPathProcessor extends AbstractProcessor {
 
             if (node.hasChild(name)) {
                 // Try to get and increment the node if it exists
-                node = node.getChild(name);
+                node = node.child(name);
                 node.incrementIndex();
             }
             else {
                 // The node doesn't exist : we create him
-                node = node.addChild(new XPathNode(name));
+                node = node.child(new XPathNode(name));
             }
+
             // Define the node as the current node in path
             currentPath.addLast(node);
-            return node.getIndex();
+            return node.index();
         }
 
         /**
          * Removes the last child and, recursively its children, from this tree.
          */
         public void clearLast() {
-            currentPath.removeLast().removeChildren();
+            currentPath.removeLast().clear();
         }
 
         /**
@@ -273,8 +255,8 @@ public class XPathProcessor extends AbstractProcessor {
          *
          * @return an approximate size
          */
-        public long estimatedSize() {
-            return dummyRoot.estimatedSize();
+        public long size() {
+            return dummyRoot.size();
         }
 
         /**
@@ -288,14 +270,16 @@ public class XPathProcessor extends AbstractProcessor {
              * The name of this node.
              */
             private final String name;
-            /**
-             * In-memory cache that holds all children of this node, identified by their name.
-             */
-            private final Cache<String, XPathNode> childrenCache;
+
             /**
              * The index of this node.
              */
             private int index;
+
+            /**
+             * A map that holds all children of this node, identified by their name.
+             */
+            private final Map<String, XPathNode> children;
 
             /**
              * Constructs a new {@code XPathNode} with the given {@code name}.
@@ -305,7 +289,7 @@ public class XPathProcessor extends AbstractProcessor {
             public XPathNode(String name) {
                 this.name = name;
                 this.index = 0;
-                this.childrenCache = Caffeine.newBuilder().build();
+                this.children = new HashMap<>();
             }
 
             /**
@@ -313,7 +297,7 @@ public class XPathProcessor extends AbstractProcessor {
              *
              * @return the name
              */
-            public String getName() {
+            public String name() {
                 return name;
             }
 
@@ -322,7 +306,7 @@ public class XPathProcessor extends AbstractProcessor {
              *
              * @return the index
              */
-            public int getIndex() {
+            public int index() {
                 return index;
             }
 
@@ -343,8 +327,8 @@ public class XPathProcessor extends AbstractProcessor {
              * @throws NoSuchElementException if no child has the given {@code name}
              */
             @Nonnull
-            public XPathNode getChild(@Nonnull String id) {
-                XPathNode child = childrenCache.getIfPresent(id);
+            public XPathNode child(@Nonnull String id) {
+                XPathNode child = children.get(id);
                 if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + id + "' in the element '" + this.name + "'");
                 }
@@ -359,16 +343,16 @@ public class XPathProcessor extends AbstractProcessor {
              * @return the given {@code child} (for chaining)
              */
             @Nonnull
-            public XPathNode addChild(@Nonnull XPathNode child) {
-                childrenCache.put(child.getName(), child);
+            public XPathNode child(@Nonnull XPathNode child) {
+                children.put(child.name(), child);
                 return child;
             }
 
             /**
              * Removes all children of this node.
              */
-            public void removeChildren() {
-                childrenCache.invalidateAll();
+            public void clear() {
+                children.clear();
             }
 
             /**
@@ -379,7 +363,7 @@ public class XPathProcessor extends AbstractProcessor {
              * @return {@code true} if a child node has the specified {@code name}
              */
             public boolean hasChild(@Nonnull String name) {
-                return nonNull(childrenCache.getIfPresent(name));
+                return nonNull(children.get(name));
             }
 
             /**
@@ -389,8 +373,8 @@ public class XPathProcessor extends AbstractProcessor {
              * @return an approximate size
              */
             @Nonnegative
-            public long estimatedSize() {
-                return childrenCache.estimatedSize() + childrenCache.asMap().values().stream().mapToLong(XPathNode::estimatedSize).sum();
+            public long size() {
+                return children.size() + children.values().stream().mapToLong(XPathNode::size).sum();
             }
         }
     }

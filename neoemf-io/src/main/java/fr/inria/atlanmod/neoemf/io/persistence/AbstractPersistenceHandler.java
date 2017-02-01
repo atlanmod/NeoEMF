@@ -226,12 +226,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             id = getOrCreateId(attribute.id());
         }
 
-        addAttribute(id,
-                attribute.name(),
-                attribute.index(),
-                attribute.many(),
-                attribute.value());
-
+        addAttribute(id, attribute.name(), attribute.index(), attribute.many(), attribute.value());
         incrementAndCommit();
     }
 
@@ -248,13 +243,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         Id idReference = getOrCreateId(reference.idReference());
 
         try {
-            addReference(id,
-                    reference.name(),
-                    reference.index(),
-                    reference.many(),
-                    reference.containment(),
-                    idReference);
-
+            addReference(id, reference.name(), reference.index(), reference.many(), reference.containment(), idReference);
             incrementAndCommit();
         }
         catch (NoSuchElementException e) {
@@ -309,11 +298,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         checkNotNull(element);
         checkNotNull(id);
 
-        addElement(id,
-                element.ns().uri(),
-                element.className(),
-                element.root());
-
+        addElement(id, element.ns().uri(), element.className(), element.root());
         incrementAndCommit();
 
         tryLink(element.id().value(), id);
@@ -336,8 +321,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         String idValue = element.id().value();
 
         Id id = createId(element.id());
-        boolean conflict = false;
 
+        boolean conflict = false;
         do {
             try {
                 createElement(element, id);
@@ -367,30 +352,25 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     protected Id getOrCreateMetaClass(@Nonnull final MetaClass metaClass) {
         String idValue = metaClass.ns().uri() + ':' + metaClass.name();
 
-        // Gets from cache
-        Id id = metaclassIdCache.getIfPresent(idValue);
+        Id id = metaclassIdCache.get(idValue, key -> {
 
-        // If metaclass doesn't already exist, we create it
-        if (isNull(id)) {
-            id = createId(Identifier.generated(idValue));
+            // If metaclass doesn't already exist, we create it
+            Id newId = createId(Identifier.generated(idValue));
+
             boolean conflict = false;
-
             do {
                 try {
-                    addElement(id,
-                            metaClass.ns().uri(),
-                            metaClass.name(),
-                            false);
-
-                    metaclassIdCache.put(idValue, id);
+                    addElement(newId, metaClass.ns().uri(), metaClass.name(), false);
                 }
                 catch (AlreadyExistingIdException e) {
-                    id = createId(Identifier.generated(id.toString()));
+                    newId = createId(Identifier.generated(newId.toString()));
                     conflict = true;
                 }
             }
             while (conflict);
-        }
+
+            return newId;
+        });
 
         incrementAndCommit();
 

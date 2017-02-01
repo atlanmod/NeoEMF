@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.Handler;
 
 import org.codehaus.stax2.XMLInputFactory2;
 
@@ -33,12 +33,12 @@ import javax.xml.stream.events.XMLEvent;
 public class XmiStAXIteratorReader extends AbstractXmiReader {
 
     /**
-     * Constructs a new {@code XmiStAXIteratorReader} with the given {@code processor}.
+     * Constructs a new {@code XmiStAXIteratorReader} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public XmiStAXIteratorReader(Processor processor) {
-        super(processor);
+    public XmiStAXIteratorReader(Handler handler) {
+        super(handler);
     }
 
     @Override

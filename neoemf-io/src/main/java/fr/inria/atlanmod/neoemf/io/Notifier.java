@@ -29,7 +29,7 @@ public interface Notifier<T extends Handler> {
      *
      * @return the handler to notify
      */
-    T next();
+    Iterable<T> next();
 
     /**
      * Notifies all registered handlers of the start of a document.
@@ -38,7 +38,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleStartDocument()
      */
     default void notifyStartDocument() {
-        next().handleStartDocument();
+        next().forEach(Handler::handleStartDocument);
     }
 
     /**
@@ -50,7 +50,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleStartElement(Element)
      */
     default void notifyStartElement(Element element) {
-        next().handleStartElement(element);
+        next().forEach(h -> h.handleStartElement(element));
     }
 
     /**
@@ -61,7 +61,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleAttribute(Attribute)
      */
     default void notifyAttribute(Attribute attribute) {
-        next().handleAttribute(attribute);
+        next().forEach(h -> h.handleAttribute(attribute));
     }
 
     /**
@@ -72,7 +72,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleReference(Reference)
      */
     default void notifyReference(Reference reference) {
-        next().handleReference(reference);
+        next().forEach(h -> h.handleReference(reference));
     }
 
     /**
@@ -83,7 +83,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleCharacters(String)
      */
     default void notifyCharacters(String characters) {
-        next().handleCharacters(characters);
+        next().forEach(h -> h.handleCharacters(characters));
     }
 
     /**
@@ -93,7 +93,7 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleEndElement()
      */
     default void notifyEndElement() {
-        next().handleEndElement();
+        next().forEach(Handler::handleEndElement);
     }
 
     /**
@@ -103,6 +103,6 @@ public interface Notifier<T extends Handler> {
      * @see Handler#handleEndDocument()
      */
     default void notifyEndDocument() {
-        next().handleEndDocument();
+        next().forEach(Handler::handleEndDocument);
     }
 }
