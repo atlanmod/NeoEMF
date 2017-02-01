@@ -15,11 +15,11 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
@@ -44,7 +44,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
 
         PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
-        assertThat(store).isInstanceOf(DirectWriteMapDbStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteMapStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -62,7 +62,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, MapDbOptionsBuilder.newBuilder().asMap());
-        assertThat(store).isInstanceOf(DirectWriteMapDbStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteMapStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -76,7 +76,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteMapDbStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteMapStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -90,7 +90,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteMapDbListsStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteMapStoreWithLists.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -104,7 +104,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteMapDbIndicesStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteMapStoreWithIndices.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -132,7 +132,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteMapDbCacheManyStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteCachedMapStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
