@@ -25,6 +25,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -40,10 +41,11 @@ import java.util.Map;
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
  * between elements</li> <li><b>InstanceOf Map: </b> holds metaclass information for each element</li> <li><b>Features
  * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
- * optional Map used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices} that stores {@link Collection} indices instead of a
- * serialized version of the collection itself</li> </ul>
+ * optional Map used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices} that stores
+ * {@link Collection} indices instead of a serialized version of the collection itself</li> </ul>
  *
- * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore} and its subclasses to access and manipulate the database.
+ * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore} and its
+ * subclasses to access and manipulate the database.
  * @note Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
  * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbPersistenceBackendFactory
@@ -145,8 +147,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public boolean isClosed() {
-        return db.isClosed();
+    public void save() {
+        db.commit();
     }
 
     @Override
@@ -160,25 +162,13 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public void save() {
-        db.commit();
+    public boolean isClosed() {
+        return db.isClosed();
     }
-    
+
     @Override
     public boolean isDistributed() {
         return false;
-    }
-
-    @Override
-    @VisibleForTesting
-    public Map<String, Object> getAll() {
-        return db.getAll();
-    }
-
-    @Override
-    @VisibleForTesting
-    public <E> E get(String name) {
-        return db.get(name);
     }
 
     @Override
@@ -231,11 +221,24 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
         return multivaluedFeatures.get(key);
     }
 
+    @VisibleForTesting
+    @Override
+    public Map<String, Object> getAll() {
+        return db.getAll();
+    }
+
+    @VisibleForTesting
+    @Override
+    public <E> E get(String name) {
+        return db.get(name);
+    }
+
     /**
      * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
+    @SuppressWarnings("rawtypes")
     public void copyTo(MapDbPersistenceBackend target) {
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();

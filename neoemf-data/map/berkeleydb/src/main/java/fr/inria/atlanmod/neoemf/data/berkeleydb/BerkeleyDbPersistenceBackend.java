@@ -22,6 +22,7 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
@@ -72,31 +73,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
      * ???
      */
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
-
-    /**
-     * ???
-     */
-    private static final IdSerializer idSerializer = new IdSerializer();
-
-    /**
-     * ???
-     */
-    private static final FeatureKeySerializer fkSerializer = new FeatureKeySerializer();
-
-    /**
-     * ???
-     */
-    private static final ClassInfoSerializer classSerializer = new ClassInfoSerializer();
-
-    /**
-     * ???
-     */
-    private static final ContainerInfoSerializer containerSerializer = new ContainerInfoSerializer();
-
-    /**
-     * ???
-     */
-    private static final ObjectSerializer objSerializer = new ObjectSerializer();
 
     /**
      * ???
@@ -186,30 +162,30 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         }
     }
 
-    /**
-     * ???
-     *
-     * @return ???
-     */
+    @VisibleForTesting
+    @Override
     public Map<String, Object> getAll() {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * ???
-     *
-     * @param name ???
-     * @param <E>  ???
-     *
-     * @return ???
-     */
+    @VisibleForTesting
+    @Override
     public <E> E get(String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
+    public void save() {
+        try {
+            this.containers.sync();
+            this.instances.sync();
+            this.features.sync();
+            this.multivaluedFeatures.sync();
+//            env.sync();
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
+        }
     }
 
     @Override
@@ -230,39 +206,24 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public void save() {
-        try {
-            this.containers.sync();
-            this.instances.sync();
-            this.features.sync();
-            this.multivaluedFeatures.sync();
-//            env.sync();
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
+    public boolean isClosed() {
+        return isClosed;
     }
-    
+
     @Override
     public boolean isDistributed() {
         return false;
     }
 
-    /**
-     * Retrieves the container for a given object id.
-     *
-     * @param id ???
-     *
-     * @return ???
-     */
+    @Override
     public ContainerInfo containerFor(Id id) {
         ContainerInfo containerInfo = null;
-        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
+        DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (containers.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                containerInfo = containerSerializer.deserialize(data);
+                containerInfo = new ContainerInfoSerializer().deserialize(data);
             }
         }
         catch (DatabaseException e) {
@@ -271,15 +232,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return containerInfo;
     }
 
-    /**
-     * Stores the container information for an object id.
-     *
-     * @param id        ???
-     * @param container ???
-     */
+    @Override
     public void storeContainer(Id id, ContainerInfo container) {
-        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
-        DatabaseEntry value = new DatabaseEntry(containerSerializer.serialize(container));
+        DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
+        DatabaseEntry value = new DatabaseEntry(new ContainerInfoSerializer().serialize(container));
         try {
             containers.put(null, key, value);
         }
@@ -288,21 +244,15 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         }
     }
 
-    /**
-     * Retrieves the metaclass (EClass) for a given object id.
-     *
-     * @param id ???
-     *
-     * @return ???
-     */
+    @Override
     public ClassInfo metaclassFor(Id id) {
         ClassInfo classInfo = null;
-        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
+        DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                classInfo = classSerializer.deserialize(data);
+                classInfo = new ClassInfoSerializer().deserialize(data);
             }
         }
         catch (DatabaseException e) {
@@ -311,15 +261,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return classInfo;
     }
 
-    /**
-     * Stores the metaclass (EClass) information for an object id.
-     *
-     * @param id        ???
-     * @param metaclass ???
-     */
+    @Override
     public void storeMetaclass(Id id, ClassInfo metaclass) {
-        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
-        DatabaseEntry value = new DatabaseEntry(classSerializer.serialize(metaclass));
+        DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
+        DatabaseEntry value = new DatabaseEntry(new ClassInfoSerializer().serialize(metaclass));
         try {
             instances.put(null, key, value);
         }
@@ -328,19 +273,12 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         }
     }
 
-    /**
-     * Store the value of a given feature.
-     *
-     * @param featureKey ???
-     * @param obj        ???
-     *
-     * @return ???
-     */
+    @Override
     public Object storeValue(FeatureKey featureKey, Object obj) {
         Object old = null;
         try {
-            DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
-            DatabaseEntry value = new DatabaseEntry(objSerializer.serialize(obj));
+            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
             features.put(null, key, value);
             old = obj;
         }
@@ -350,20 +288,14 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return old;
     }
 
-    /**
-     * Retrieves the value of a given feature.
-     *
-     * @param featureKey ???
-     *
-     * @return ???
-     */
+    @Override
     public Object valueOf(FeatureKey featureKey) {
-        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
+        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
         try {
             if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                old = objSerializer.deserialize(value.getData());
+                old = new ObjectSerializer().deserialize(value.getData());
             }
         }
         catch (DatabaseException e) {
@@ -372,21 +304,15 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return old;
     }
 
-    /**
-     * Removes the value of a given feature. The feature becomes unset.
-     *
-     * @param featureKey ???
-     *
-     * @return the previous (eventually null) value of the feature.
-     */
+    @Override
     public Object removeFeature(FeatureKey featureKey) {
-        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
+        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
         try {
-            if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+            if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 features.delete(null, key);
-                old = objSerializer.deserialize(value.getData());
+                old = new ObjectSerializer().deserialize(value.getData());
             }
         }
         catch (DatabaseException e) {
@@ -395,16 +321,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return old;
     }
 
-    /**
-     * Return {@code true} if the feature was set, {@code false} otherwise.
-     *
-     * @param featureKey ???
-     *
-     * @return ???
-     */
+    @Override
     public boolean isFeatureSet(FeatureKey featureKey) {
         boolean isSet = false;
-        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
+        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         try {
             isSet = (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
@@ -415,18 +335,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return isSet;
     }
 
-    /**
-     * Stores the single value of a given multi-valued feature at the given index.
-     *
-     * @param featureKey the key
-     * @param obj        the value
-     *
-     * @return ???
-     */
+    @Override
     public Object storeValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
-            DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
-            DatabaseEntry value = new DatabaseEntry(objSerializer.serialize(obj));
+            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
             multivaluedFeatures.put(null, key, value);
             return obj;
         }
@@ -436,20 +349,14 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
         return null;
     }
 
-    /**
-     * Retrieves the value of a given multi-valued feature at a given index.
-     *
-     * @param featureKey ???
-     *
-     * @return ???
-     */
+    @Override
     public Object valueAtIndex(MultivaluedFeatureKey featureKey) {
-        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
+        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
         try {
             if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                old = objSerializer.deserialize(value.getData());
+                old = new ObjectSerializer().deserialize(value.getData());
             }
         }
         catch (DatabaseException e) {
@@ -478,12 +385,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     /**
      * Utility method to copy the contents from one database to another.
      *
-     * @param from ???
-     * @param to   ???
-     *
-     * @throws DatabaseException if ???
+     * @param from the database to copy
+     * @param to   the database to copy the database contents to
      */
-    private void copyDatabaseTo(Database from, Database to) throws DatabaseException {
+    private void copyDatabaseTo(Database from, Database to) {
         try (Cursor cursor = from.openCursor(null, null)) {
             DatabaseEntry key = new DatabaseEntry();
             DatabaseEntry value = new DatabaseEntry();

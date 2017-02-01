@@ -98,7 +98,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * The index key used to retrieve metaclass {@link Vertex}s.
      */
-    public static final String KEY_NAME = "name";
+    public static final String KEY_NAME_LITERAL = "name";
 
     /**
      * The string used as a separator between values of multi-valued attributes.
@@ -113,22 +113,22 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * The label used to define container {@link Edge}s.
      */
-    protected static final String CONTAINER = "eContainer";
+    protected static final String KEY_CONTAINER = "eContainer";
 
     /**
      * The label used to link root vertex to top-level elements.
      */
-    protected static final String CONTENTS = "eContents";
+    protected static final String KEY_CONTENTS = "eContents";
 
     /**
      * The property key used to define the opposite containing feature in container {@link Edge}s.
      */
-    protected static final String CONTAINING_FEATURE = "containingFeature";
+    protected static final String KEY_CONTAINING_FEATURE = "containingFeature";
 
     /**
      * The property key used to define the number of edges with a specific label.
      */
-    protected static final String SIZE_LITERAL = "size";
+    protected static final String KEY_SIZE_LITERAL = "size";
 
     /**
      * The default cache size (10 000).
@@ -231,10 +231,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     @Override
     public ContainerInfo containerFor(Id id) {
         Vertex containmentVertex = getVertex(id);
-        Edge edge = Iterables.getOnlyElement(containmentVertex.getEdges(Direction.OUT, CONTAINER), null);
+        Edge edge = Iterables.getOnlyElement(containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER), null);
 
         if (nonNull(edge)) {
-            String featureName = edge.getProperty(CONTAINING_FEATURE);
+            String featureName = edge.getProperty(KEY_CONTAINING_FEATURE);
             Vertex containerVertex = edge.getVertex(Direction.IN);
             return ContainerInfo.of(new StringId(containerVertex.getId().toString()), featureName);
         }
@@ -247,12 +247,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Vertex containmentVertex = getVertex(id);
         Vertex containerVertex = getVertex(container.id());
 
-        for (Edge edge : containmentVertex.getEdges(Direction.OUT, CONTAINER)) {
+        for (Edge edge : containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER)) {
             edge.remove();
         }
 
-        Edge edge = containmentVertex.addEdge(CONTAINER, containerVertex);
-        edge.setProperty(CONTAINING_FEATURE, container.name());
+        Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
+        edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
     }
 
     @Override
@@ -267,11 +267,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public void storeMetaclass(Id id, ClassInfo metaclass) {
-        Vertex metaclassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, metaclass.name()), null);
+        Vertex metaclassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME_LITERAL, metaclass.name()), null);
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = addVertex(metaclass);
-            metaclassIndex.put(KEY_NAME, metaclass.name(), metaclassVertex);
+            metaclassIndex.put(KEY_NAME_LITERAL, metaclass.name(), metaclassVertex);
             indexedMetaclasses.add(metaclass);
         }
 
@@ -333,7 +333,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             }
             // Get all the vertices that are indexed with one of the EClass
             for (EClass ec : eClassToFind) {
-                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
+                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME_LITERAL, ec.getName()), null);
                 if (nonNull(metaClassVertex)) {
                     Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
                     indexHits.put(ec, instanceVertexIterable);
@@ -472,8 +472,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     private void initMetaClassesIndex(Iterable<ClassInfo> metaclasses) {
         for (ClassInfo metaclass : metaclasses) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, metaclass.name())), "Index is not consistent");
-            metaclassIndex.put(KEY_NAME, metaclass.name(), getVertex(metaclass));
+            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME_LITERAL, metaclass.name())), "Index is not consistent");
+            metaclassIndex.put(KEY_NAME_LITERAL, metaclass.name(), getVertex(metaclass));
         }
     }
 
