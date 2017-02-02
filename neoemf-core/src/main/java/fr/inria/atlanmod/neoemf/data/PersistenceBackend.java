@@ -103,16 +103,6 @@ public interface PersistenceBackend extends Closeable {
     void storeMetaclass(Id id, ClassInfo metaclass);
 
     /**
-     * Stores the value of a given {@link FeatureKey}.
-     *
-     * @param key   the {@link FeatureKey} to set the value of
-     * @param value an {@link Object} representing the value associated to the given {@code key}
-     *
-     * @return ???
-     */
-    Object storeValue(FeatureKey key, Object value);
-
-    /**
      * Retrieves the value of a given {@link FeatureKey}.
      *
      * @param key the {@link FeatureKey} to look for
@@ -121,6 +111,16 @@ public interface PersistenceBackend extends Closeable {
      * in the database
      */
     Object valueOf(FeatureKey key);
+
+    /**
+     * Stores the value of a given {@link FeatureKey}.
+     *
+     * @param key   the {@link FeatureKey} to set the value of
+     * @param value an {@link Object} representing the value associated to the given {@code key}
+     *
+     * @return ???
+     */
+    Object storeValue(FeatureKey key, Object value);
 
     /**
      * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
@@ -142,6 +142,18 @@ public interface PersistenceBackend extends Closeable {
     boolean isFeatureSet(FeatureKey key);
 
     /**
+     * Retrieves the value of a given {@link MultivaluedFeatureKey}.
+     * <p>
+     * This method is similar to {@link #valueOf(FeatureKey)} but it uses multi-valued {@link Map} to retrieve the
+     * element at the given index directly instead of returning the entire {@link Collection}.
+     *
+     * @param key the {@link MultivaluedFeatureKey} to get the value from
+     *
+     * @return an {@link Object} representing the value associated to the given {@code key}
+     */
+    Object valueAtIndex(MultivaluedFeatureKey key);
+
+    /**
      * Stores the value of a given {@link MultivaluedFeatureKey}.
      * <p>
      * This method is similar to {@link #storeValue(FeatureKey, Object)} but it uses the multi-valued {@link Map} that
@@ -153,18 +165,6 @@ public interface PersistenceBackend extends Closeable {
      * @return ???
      */
     Object storeValueAtIndex(MultivaluedFeatureKey key, Object value);
-
-    /**
-     * Retrieves the value of a given {@link MultivaluedFeatureKey}.
-     * <p>
-     * This method is similar to {@link #valueOf(FeatureKey)} but it uses multi-valued {@link Map} to retrieve the
-     * element at the given index directly instead of returning the entire {@link Collection}.
-     *
-     * @param key the {@link MultivaluedFeatureKey} to get the value from
-     *
-     * @return an {@link Object} representing the value associated to the given {@code key}
-     */
-    Object valueAtIndex(MultivaluedFeatureKey key);
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
