@@ -167,6 +167,27 @@ public interface PersistenceBackend extends Closeable {
     Object storeValueAtIndex(MultivaluedFeatureKey key, Object value);
 
     /**
+     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
+     * #isFeatureSet(FeatureKey)}).
+     *
+     * @param key the {@link FeatureKey} to remove
+     *
+     * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
+     */
+    Object removeFeatureAtIndex(FeatureKey key);
+
+    /**
+     * Checks if the given {@link FeatureKey} is set.
+     *
+     * @param key the {@link FeatureKey} to check
+     *
+     * @return {@code true} if the feature is set, {@code false} otherwise
+     */
+    boolean isFeatureSetAtIndex(FeatureKey key);
+
+    int sizeOf(FeatureKey key);
+
+    /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
      *
      * @param eClass the class to compute the instances of

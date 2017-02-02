@@ -306,16 +306,14 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
-        boolean isSet = false;
-        Vertex vertex = backend.getVertex(object.id());
-        if (nonNull(vertex)) {
-            String propertyName = attribute.getName();
-            if (attribute.isMany()) {
-                propertyName += SEPARATOR + SIZE_LITERAL;
-            }
-            isSet = nonNull(vertex.getProperty(propertyName));
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+
+        if (!attribute.isMany()) {
+            return backend.isFeatureSet(featureKey);
         }
-        return isSet;
+        else {
+            return backend.isFeatureSetAtIndex(featureKey);
+        }
     }
 
     @Override
@@ -330,16 +328,14 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
-        Vertex vertex = backend.getVertex(object.id());
-        String propertyName = attribute.getName();
-        if (attribute.isMany()) {
-            propertyName += SEPARATOR + SIZE_LITERAL;
-            Integer size = vertex.getProperty(propertyName);
-            for (int i = 0; i < size; i++) {
-                vertex.removeProperty(attribute.getName() + SEPARATOR + i);
-            }
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+
+        if (!attribute.isMany()) {
+            backend.removeFeature(featureKey);
         }
-        vertex.removeProperty(propertyName);
+        else {
+            backend.removeFeatureAtIndex(featureKey);
+        }
     }
 
     @Override
@@ -572,9 +568,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        Vertex vertex = backend.getVertex(object.id());
-        return isNull(vertex) ? 0 : getSize(vertex, feature);
+
+        return backend.sizeOf(FeatureKey.from(internalObject, feature));
     }
 
     /**

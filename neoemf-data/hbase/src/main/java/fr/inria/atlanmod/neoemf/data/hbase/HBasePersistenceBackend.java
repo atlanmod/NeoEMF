@@ -109,6 +109,21 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public Object removeFeatureAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean isFeatureSetAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int sizeOf(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object valueAtIndex(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }

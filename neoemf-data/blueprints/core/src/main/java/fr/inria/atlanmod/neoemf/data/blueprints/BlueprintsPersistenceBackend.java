@@ -48,6 +48,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -131,15 +132,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     protected static final String KEY_SIZE_LITERAL = "size";
 
     /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
-    /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
      */
-    private final Cache<Id, Vertex> verticesCache;
+    private final Cache<Id, Vertex> verticesCache = Caffeine.newBuilder()
+            .initialCapacity(1_000)
+            .maximumSize(10_000)
+            .build();
 
     /**
      * List that holds indexed {@link ClassInfo}.
@@ -174,7 +172,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedMetaclasses = new ArrayList<>();
 
         Index<Vertex> metaclasses = graph.getIndex(KEY_METACLASSES, Vertex.class);
@@ -305,12 +302,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public Object removeFeature(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return getVertex(key.id()).removeProperty(key.name());
     }
 
     @Override
     public boolean isFeatureSet(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Vertex vertex = getVertex(key.id());
+        return nonNull(vertex) && nonNull(vertex.getProperty(key.name()));
     }
 
     @Override
@@ -327,6 +325,33 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Object oldValue = valueAtIndex(key);
         getVertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
         return oldValue;
+    }
+
+    @Override
+    public Object removeFeatureAtIndex(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+        String property = formatProperty(key.name(), KEY_SIZE_LITERAL);
+
+        IntStream.range(0, vertex.getProperty(property)).forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+
+        return vertex.removeProperty(property);
+    }
+
+    @Override
+    public boolean isFeatureSetAtIndex(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE_LITERAL)));
+    }
+
+    @Override
+    public int sizeOf(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+        if (isNull(vertex)) {
+            return 0;
+        }
+
+        Integer size = vertex.getProperty(formatProperty(key.name(), KEY_SIZE_LITERAL));
+        return isNull(size) ? 0 : size;
     }
 
     @Override
@@ -431,34 +456,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             vertex = getVertex(object.id());
         }
         else {
-            vertex = createVertex(object);
+            vertex = addVertex(object.id());
+            object.setMapped(true);
+            verticesCache.put(object.id(), vertex);
         }
-        return vertex;
-    }
-
-    /**
-     * Defines the {@code object} as mapped to the given {@code vertex}.
-     *
-     * @param vertex the vertex
-     * @param object the object to define as mapped
-     *
-     * @see PersistentEObject#setMapped(boolean)
-     */
-    private void setMappedVertex(Vertex vertex, PersistentEObject object) {
-        object.setMapped(true);
-        verticesCache.put(object.id(), vertex);
-    }
-
-    /**
-     * Creates a new {@link Vertex} from the given {@code object}.
-     *
-     * @param object the object from which to create the {@link Vertex}
-     *
-     * @return the created {@link Vertex}
-     */
-    private Vertex createVertex(PersistentEObject object) {
-        Vertex vertex = addVertex(object.id());
-        setMappedVertex(vertex, object);
         return vertex;
     }
 

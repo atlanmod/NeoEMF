@@ -350,6 +350,21 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public Object removeFeatureAtIndex(FeatureKey key) {
+        return removeFeature(key);
+    }
+
+    @Override
+    public boolean isFeatureSetAtIndex(FeatureKey key) {
+        return isFeatureSet(key);
+    }
+
+    @Override
+    public int sizeOf(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object valueAtIndex(MultivaluedFeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();

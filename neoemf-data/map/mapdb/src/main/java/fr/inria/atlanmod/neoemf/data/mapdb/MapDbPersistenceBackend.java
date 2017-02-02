@@ -217,6 +217,21 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public Object removeFeatureAtIndex(FeatureKey key) {
+        return removeFeature(key);
+    }
+
+    @Override
+    public boolean isFeatureSetAtIndex(FeatureKey key) {
+        return isFeatureSet(key);
+    }
+
+    @Override
+    public int sizeOf(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object valueAtIndex(MultivaluedFeatureKey key) {
         return multivaluedFeatures.get(key);
     }
