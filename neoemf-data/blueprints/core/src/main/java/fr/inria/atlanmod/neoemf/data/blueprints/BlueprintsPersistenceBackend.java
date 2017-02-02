@@ -197,6 +197,18 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return isNull(metaclass) ? null : new StringId(metaclass.name() + '@' + metaclass.uri());
     }
 
+    /**
+     * Formats a property key as {@code prefix:suffix}.
+     *
+     * @param prefix the prefix of the property key
+     * @param suffix the suffix of the property key
+     *
+     * @return the formatted property key
+     */
+    private static String formatProperty(String prefix, Object suffix) {
+        return prefix + SEPARATOR + suffix;
+    }
+
     @Override
     public void save() {
         if (graph.getFeatures().supportsTransactions) {
@@ -280,13 +292,15 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Object storeValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Object valueOf(FeatureKey key) {
+        return getVertex(key.id()).getProperty(key.name());
     }
 
     @Override
-    public Object valueOf(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Object storeValue(FeatureKey key, Object value) {
+        Object oldValue = valueOf(key);
+        getVertex(key.id()).setProperty(key.name(), value);
+        return oldValue;
     }
 
     @Override
@@ -300,13 +314,19 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Object valueAtIndex(MultivaluedFeatureKey key) {
+//        checkElementIndex(key.position(), size(key), "Invalid index " + key.position());
+
+        return getVertex(key.id()).getProperty(formatProperty(key.name(), key.position()));
     }
 
     @Override
-    public Object valueAtIndex(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
+//        checkElementIndex(key.position(), size(key), "Invalid index " + key.position());
+
+        Object oldValue = valueAtIndex(key);
+        getVertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
+        return oldValue;
     }
 
     @Override

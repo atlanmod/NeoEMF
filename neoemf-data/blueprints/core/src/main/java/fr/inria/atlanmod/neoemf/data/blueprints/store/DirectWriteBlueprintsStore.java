@@ -24,6 +24,7 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -194,13 +195,16 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        Vertex vertex = backend.getVertex(object.id());
-        String propertyName = attribute.getName();
-        if (attribute.isMany()) {
-            checkElementIndex(index, getSize(vertex, attribute), "Invalid get index " + index);
-            propertyName += SEPARATOR + index;
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+
+        Object value;
+        if (!attribute.isMany()) {
+            value = backend.valueOf(featureKey);
         }
-        return parseProperty(attribute, vertex.getProperty(propertyName));
+        else {
+            value = backend.valueAtIndex(featureKey.withPosition(index));
+        }
+        return parseProperty(attribute, value);
     }
 
     @Override
@@ -240,17 +244,15 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             persistentObjectsCache.put(object.id(), object);
             updateInstanceOf(object);
 
-            String propertyName = attribute.getName();
+            FeatureKey featureKey = FeatureKey.from(object, attribute);
+
             if (!attribute.isMany()) {
-                Object property = vertex.getProperty(propertyName);
-                old = parseProperty(attribute, property);
+                old = backend.storeValue(featureKey, value);
             }
             else {
-                checkElementIndex(index, getSize(vertex, attribute));
-                propertyName += SEPARATOR + index;
-                old = vertex.getProperty(propertyName);
+                old = backend.storeValueAtIndex(featureKey.withPosition(index), value);
             }
-            vertex.setProperty(propertyName, serializeToProperty(attribute, value));
+            old = parseProperty(attribute, old);
         }
         return old;
     }
