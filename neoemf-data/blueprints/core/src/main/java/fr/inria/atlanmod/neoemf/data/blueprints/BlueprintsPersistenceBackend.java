@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.MoreCollectors;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Element;
@@ -246,14 +245,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public ContainerInfo containerFor(Id id) {
         Vertex containmentVertex = getVertex(id);
 
-        Iterable<Edge> edges = containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER);
+        Iterable<Edge> containerEdges = containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER);
+        Optional<Edge> containerEdge = StreamSupport.stream(containerEdges.spliterator(), false).findAny();
 
-        Optional<Edge> edge = StreamSupport.stream(edges.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
-
-        if (edge.isPresent()) {
-            String featureName = edge.get().getProperty(KEY_CONTAINING_FEATURE);
-            Vertex containerVertex = edge.get().getVertex(Direction.IN);
+        if (containerEdge.isPresent()) {
+            String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
+            Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
             return ContainerInfo.of(new StringId(containerVertex.getId().toString()), featureName);
         }
         return null;
@@ -274,10 +271,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public ClassInfo metaclassFor(Id id) {
         Vertex vertex = getVertex(id);
 
-        Iterable<Vertex> vertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF);
-
-        Optional<Vertex> metaclassVertex = StreamSupport.stream(vertices.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
+        Iterable<Vertex> metaclassVertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF);
+        Optional<Vertex> metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny();
 
         return metaclassVertex.map(v -> ClassInfo.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI))).orElse(null);
     }
@@ -325,9 +320,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     @Override
     public Id getReference(FeatureKey key) {
         Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
-
-        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
+        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
         return referencedVertex.map(v -> new StringId(v.getId().toString())).orElse(null);
     }
@@ -336,16 +329,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public Id setReference(FeatureKey key, Id id) {
         Vertex vertex = getVertex(key.id());
 
-        Iterable<Edge> edges = vertex.getEdges(Direction.OUT, key.name());
-
-        Optional<Edge> edge = StreamSupport.stream(edges.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
+        Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
+        Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
 
         Id previousId = null;
-        if (edge.isPresent()) {
-            Vertex previouslyReferencedVertex = edge.get().getVertex(Direction.IN);
+        if (referenceEdge.isPresent()) {
+            Vertex previouslyReferencedVertex = referenceEdge.get().getVertex(Direction.IN);
             previousId = new StringId(previouslyReferencedVertex.getId().toString());
-            edge.get().remove();
+            referenceEdge.get().remove();
         }
 
         getVertex(key.id()).addEdge(key.name(), getVertex(id));
@@ -357,16 +348,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public Id unsetReference(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
 
-        Iterable<Edge> edges = vertex.getEdges(Direction.OUT, key.name());
-
-        Optional<Edge> edge = StreamSupport.stream(edges.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
+        Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
+        Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
 
         Id previousId = null;
-        if (edge.isPresent()) {
-            Vertex previouslyReferencedVertex = edge.get().getVertex(Direction.IN);
+        if (referenceEdge.isPresent()) {
+            Vertex previouslyReferencedVertex = referenceEdge.get().getVertex(Direction.IN);
             previousId = new StringId(previouslyReferencedVertex.getId().toString());
-            edge.get().remove();
+            referenceEdge.get().remove();
         }
 
         return previousId;
@@ -425,8 +414,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
                 .has(POSITION, key.position())
                 .vertices();
 
-        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
+        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
         return referencedVertex.map(v -> new StringId(v.getId().toString())).orElse(null);
     }
@@ -443,8 +431,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
                 .has(POSITION, key.position())
                 .edges();
 
-        Optional<Edge> previousEdge = StreamSupport.stream(edges.spliterator(), false)
-                .collect(MoreCollectors.toOptional());
+        Optional<Edge> previousEdge = StreamSupport.stream(edges.spliterator(), false).findAny();
 
         Id previousId = null;
         if (previousEdge.isPresent()) {
