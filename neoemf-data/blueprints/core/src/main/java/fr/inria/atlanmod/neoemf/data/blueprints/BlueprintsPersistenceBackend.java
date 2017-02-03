@@ -412,9 +412,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
         Integer size = sizeOf(key);
-        int newSize = size + 1;
-
-        checkPositionIndex(key.position(), newSize, "Invalid index");
+        int newSize = checkPositionIndex(key.position(), size + 1, "Invalid index");
 
         Vertex vertex = getVertex(key.id());
 
@@ -437,10 +435,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public Id removeReference(MultivaluedFeatureKey key) {
-        Integer size = sizeOf(key);
+        Integer size = checkPositionIndex(key.position(), sizeOf(key), "Invalid index");
         int newSize = size - 1;
-
-        checkPositionIndex(key.position(), size, "Invalid index");
 
         Vertex vertex = getVertex(key.id());
 
