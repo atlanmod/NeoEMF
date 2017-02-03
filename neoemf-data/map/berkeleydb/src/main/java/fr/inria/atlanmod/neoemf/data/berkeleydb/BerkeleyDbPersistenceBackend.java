@@ -216,6 +216,16 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public void create(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean has(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public ContainerInfo containerFor(Id id) {
         ContainerInfo containerInfo = null;
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
@@ -354,6 +364,21 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public boolean containsValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int indexOfValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int lastIndexOfValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -390,6 +415,21 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public Iterable<Id> referenceAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean containsReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int indexOfReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

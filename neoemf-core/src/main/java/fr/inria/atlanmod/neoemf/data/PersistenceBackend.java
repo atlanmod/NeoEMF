@@ -67,6 +67,25 @@ public interface PersistenceBackend extends Closeable {
     boolean isDistributed();
 
     /**
+     * Creates the given {@code id} in this {@code PersistenceBackend}.
+     *
+     * @param id the id to create
+     *
+     * @throws IllegalArgumentException if the {@code id} already exists. Use {@link #has(Id)} to check the presence
+     * first
+     */
+    void create(Id id);
+
+    /**
+     * Checks whether the given {@code id} is already present in this {@code PersistenceBackend}.
+     *
+     * @param id the id to check to presence
+     *
+     * @return {@code true} if the {@code id} is present, {@code false} otherwise.
+     */
+    boolean has(Id id);
+
+    /**
      * Retrieves container for a given object {@link Id}.
      *
      * @param id the {@link Id} of the contained object
@@ -149,6 +168,12 @@ public interface PersistenceBackend extends Closeable {
 
     Iterable<Object> valueAsList(FeatureKey key);
 
+    boolean containsValue(FeatureKey key, Object value);
+
+    int indexOfValue(FeatureKey key, Object value);
+
+    int lastIndexOfValue(FeatureKey key, Object value);
+
     Id getReference(FeatureKey key);
 
     Id setReference(FeatureKey key, Id id);
@@ -164,6 +189,12 @@ public interface PersistenceBackend extends Closeable {
     void cleanReference(FeatureKey key);
 
     Iterable<Id> referenceAsList(FeatureKey key);
+
+    boolean containsReference(FeatureKey key, Id id);
+
+    int indexOfReference(FeatureKey key, Id id);
+
+    int lastIndexOfReference(FeatureKey key, Id id);
 
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.

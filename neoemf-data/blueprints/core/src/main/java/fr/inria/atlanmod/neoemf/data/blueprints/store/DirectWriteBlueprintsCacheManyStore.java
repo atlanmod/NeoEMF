@@ -18,6 +18,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -95,7 +96,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 }
                 else {
                     NeoLogger.debug("Found in cache {0} - {1} - idx={2}", key, object.eClass().getName(), index);
-                    return reifyVertex((Vertex) o);
+                    return eObject(new StringId(((Vertex) o).getId().toString()));
                 }
             }
             else {
@@ -119,7 +120,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                         vertices[position] = otherEnd;
                     }
                 }
-                return reifyVertex((Vertex) vertices[index]);
+                return eObject(new StringId(((Vertex) vertices[index]).getId().toString()));
             }
         }
         else {

@@ -64,6 +64,16 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void create(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean has(Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public ContainerInfo containerFor(Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -124,6 +134,21 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public boolean containsValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int indexOfValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int lastIndexOfValue(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -160,6 +185,21 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public Iterable<Id> referenceAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean containsReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int indexOfReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public int lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

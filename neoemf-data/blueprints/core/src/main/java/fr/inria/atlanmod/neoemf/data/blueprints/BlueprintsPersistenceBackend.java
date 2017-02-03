@@ -31,6 +31,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -238,6 +240,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void create(Id id) {
+        Vertex vertex = addVertex(id);
+        verticesCache.put(id, vertex);
+    }
+
+    @Override
+    public boolean has(Id id) {
+        return nonNull(getVertex(id));
+    }
+
+    @Override
     public ContainerInfo containerFor(Id id) {
         Vertex containmentVertex = getVertex(id);
 
@@ -366,6 +379,34 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public boolean containsValue(FeatureKey key, Object value) {
+        Vertex vertex = getVertex(key.id());
+
+        return IntStream.range(0, sizeOf(key))
+                .anyMatch(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value));
+    }
+
+    @Override
+    public int indexOfValue(FeatureKey key, Object value) {
+        Vertex vertex = getVertex(key.id());
+
+        return IntStream.range(0, sizeOf(key))
+                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
+                .min()
+                .orElse(PersistentStore.NO_INDEX);
+    }
+
+    @Override
+    public int lastIndexOfValue(FeatureKey key, Object value) {
+        Vertex vertex = getVertex(key.id());
+
+        return IntStream.range(0, sizeOf(key))
+                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
+                .max()
+                .orElse(PersistentStore.NO_INDEX);
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
@@ -490,6 +531,40 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public boolean containsReference(FeatureKey key, Id id) {
+        Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
+
+        return StreamSupport.stream(referencedVertices.spliterator(), false)
+                .anyMatch(v -> Objects.equals(v.getId().toString(), id.toString()));
+    }
+
+    @Override
+    public int indexOfReference(FeatureKey key, Id id) {
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = getVertex(id).getEdges(Direction.IN, key.name());
+
+        return StreamSupport.stream(edges.spliterator(), false)
+                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex))
+                .map(e -> e.<Integer>getProperty(KEY_POSITION))
+                .min(Integer::compareTo)
+                .orElse(PersistentStore.NO_INDEX);
+    }
+
+    @Override
+    public int lastIndexOfReference(FeatureKey key, Id id) {
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = getVertex(id).getEdges(Direction.IN, key.name());
+
+        return StreamSupport.stream(edges.spliterator(), false)
+                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex))
+                .map(e -> e.<Integer>getProperty(KEY_POSITION))
+                .max(Integer::compareTo)
+                .orElse(PersistentStore.NO_INDEX);
+    }
+
+    @Override
     public Object getValueAtIndex(MultivaluedFeatureKey key) {
         return getVertex(key.id()).getProperty(formatProperty(key.name(), key.position()));
     }
@@ -611,16 +686,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return isNull(size) ? 0 : size;
     }
 
-    /**
-     * Defines the {@code size} of the property identified by the given {@code key}.
-     *
-     * @param key the feature key identifying the property
-     * @param size the new size
-     */
-    protected void sizeOf(FeatureKey key, int size) {
-        getVertex(key.id()).setProperty(formatProperty(key.name(), KEY_SIZE), size);
-    }
-
     @Override
     public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {
         Map<EClass, Iterable<Vertex>> indexHits;
@@ -657,6 +722,16 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             }
         }
         return indexHits;
+    }
+
+    /**
+     * Defines the {@code size} of the property identified by the given {@code key}.
+     *
+     * @param key  the feature key identifying the property
+     * @param size the new size
+     */
+    protected void sizeOf(FeatureKey key, int size) {
+        getVertex(key.id()).setProperty(formatProperty(key.name(), KEY_SIZE), size);
     }
 
     /**
@@ -707,28 +782,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     private Vertex getVertex(ClassInfo metaclass) {
         return getVertex(buildId(metaclass));
-    }
-
-    /**
-     * Return the vertex corresponding to the provided {@link PersistentEObject}. If no vertex corresponds to that
-     * {@link EObject}, then the corresponding {@link Vertex} together with its {@link #KEY_INSTANCE_OF} relationship is
-     * created.
-     *
-     * @param object the {@link PersistentEObject} to find
-     *
-     * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
-     */
-    public Vertex getOrCreateVertex(PersistentEObject object) {
-        Vertex vertex;
-        if (object.isMapped()) {
-            vertex = getVertex(object.id());
-        }
-        else {
-            vertex = addVertex(object.id());
-            object.setMapped(true);
-            verticesCache.put(object.id(), vertex);
-        }
-        return vertex;
     }
 
     /**

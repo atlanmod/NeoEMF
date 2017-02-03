@@ -106,6 +106,45 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     /**
+     * Creates the given {@code object} in the underlying database if it doesn't already exist.
+     *
+     * @param object the object to persist
+     *
+     * @return {@code true} if the {@link PersistentEObject} has been created, {@code false} if it already exists
+     *
+     * @see #updateInstanceOf(PersistentEObject)
+     */
+    protected boolean persist(PersistentEObject object) {
+        if (!backend.has(object.id())) {
+            backend.create(object.id());
+            persistentObjectsCache.put(object.id(), object);
+            updateInstanceOf(object);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Creates the given {@code object} and {@code referencedObject} in the underlying database if it don't already
+     * exist, and update the containment link the two.
+     *
+     * @param object           the object to persist
+     * @param reference        the reference to link the two {@link PersistentEObject}s
+     * @param referencedObject the referenced object to persist
+     *
+     * @return {@code true} if at least one {@link PersistentEObject} have been created, {@code false} if they already
+     * exist
+     *
+     * @see #persist(PersistentEObject)
+     * @see #updateContainment(PersistentEObject, EReference, PersistentEObject)
+     */
+    protected boolean persist(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        boolean created = persist(object) || persist(referencedObject);
+        updateContainment(object, reference, referencedObject);
+        return created;
+    }
+
+    /**
      * {@inheritDoc}
      * <p>
      * By default, calls the associated methods depending on the type of the {@code feature}.

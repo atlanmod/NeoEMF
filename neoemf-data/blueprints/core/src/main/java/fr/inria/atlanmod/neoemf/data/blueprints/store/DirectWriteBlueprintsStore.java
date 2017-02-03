@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.store;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -23,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -35,19 +32,15 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to Blueprints calls.
@@ -102,17 +95,17 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        FeatureKey key = FeatureKey.from(internalObject, feature);
 
         Stream<Object> stream;
         if (feature instanceof EReference) {
             Iterable<Id> references;
 
             if (feature.isMany()) {
-                references = backend.referenceAtIndexAsList(featureKey);
+                references = backend.referenceAtIndexAsList(key);
             }
             else {
-                references = backend.referenceAsList(featureKey);
+                references = backend.referenceAsList(key);
             }
 
             stream = StreamSupport.stream(references.spliterator(), false)
@@ -122,10 +115,10 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             Iterable<Object> values;
 
             if (feature.isMany()) {
-                values = backend.valueAtIndexAsList(featureKey);
+                values = backend.valueAtIndexAsList(key);
             }
             else {
-                values = backend.valueAsList(featureKey);
+                values = backend.valueAsList(key);
             }
 
             stream = StreamSupport.stream(values.spliterator(), false)
@@ -143,30 +136,30 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        FeatureKey key = FeatureKey.from(object, attribute);
 
         Object value;
         if (!attribute.isMany()) {
-            value = backend.getValue(featureKey);
+            value = backend.getValue(key);
         }
         else {
             checkElementIndex(index, size(object, attribute));
-            value = backend.getValueAtIndex(featureKey.withPosition(index));
+            value = backend.getValueAtIndex(key.withPosition(index));
         }
         return parseProperty(attribute, value);
     }
 
     @Override
     protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
-        FeatureKey featureKey = FeatureKey.from(object, reference);
+        FeatureKey key = FeatureKey.from(object, reference);
 
         Id value;
         if (!reference.isMany()) {
-            value = backend.getReference(featureKey);
+            value = backend.getReference(key);
         }
         else {
             checkElementIndex(index, size(object, reference));
-            value = backend.getReferenceAtIndex(featureKey.withPosition(index));
+            value = backend.getReferenceAtIndex(key.withPosition(index));
         }
 
         return eObject(value);
@@ -176,23 +169,21 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         if (isNull(value)) {
             Object previousValue = getAttribute(object, attribute, index);
-            clear(object, attribute);
+            clearAttribute(object, attribute); // FIXME Can remove more than one attribute
             return previousValue;
         }
         else {
-            backend.getOrCreateVertex(object);
-            persistentObjectsCache.put(object.id(), object);
-            updateInstanceOf(object);
+            persist(object);
 
-            FeatureKey featureKey = FeatureKey.from(object, attribute);
+            FeatureKey key = FeatureKey.from(object, attribute);
 
             Object previousValue;
             if (!attribute.isMany()) {
-                previousValue = backend.setValue(featureKey, value);
+                previousValue = backend.setValue(key, value);
             }
             else {
                 checkElementIndex(index, size(object, attribute));
-                previousValue = backend.setValueAtIndex(featureKey.withPosition(index), value);
+                previousValue = backend.setValueAtIndex(key.withPosition(index), value);
             }
             return parseProperty(attribute, previousValue);
         }
@@ -202,29 +193,21 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         if (isNull(value)) {
             PersistentEObject previouslyReferencedObject = getReference(object, reference, index);
-            clear(object, reference);
+            clearReference(object, reference); // FIXME Can remove more than one reference
             return previouslyReferencedObject;
         }
         else {
-            backend.getOrCreateVertex(object);
-            persistentObjectsCache.put(object.id(), object);
-            updateInstanceOf(object);
+            persist(object, reference, value);
 
-            backend.getOrCreateVertex(value);
-            persistentObjectsCache.put(value.id(), value);
-            updateInstanceOf(value);
-
-            updateContainment(object, reference, value);
-
-            FeatureKey featureKey = FeatureKey.from(object, reference);
+            FeatureKey key = FeatureKey.from(object, reference);
 
             Id previousId;
             if (!reference.isMany()) {
-                previousId = backend.setReference(featureKey, value.id());
+                previousId = backend.setReference(key, value.id());
             }
             else {
                 checkElementIndex(index, size(object, reference));
-                previousId = backend.setReferenceAtIndex(featureKey.withPosition(index), value.id());
+                previousId = backend.setReferenceAtIndex(key.withPosition(index), value.id());
             }
             return eObject(previousId);
         }
@@ -232,119 +215,125 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        FeatureKey key = FeatureKey.from(object, attribute);
 
         if (!attribute.isMany()) {
-            return backend.hasValue(featureKey);
+            return backend.hasValue(key);
         }
         else {
-            return backend.hasValueAtIndex(featureKey);
+            return backend.hasValueAtIndex(key);
         }
     }
 
     @Override
     protected boolean isSetReference(PersistentEObject object, EReference reference) {
-        FeatureKey featureKey = FeatureKey.from(object, reference);
+        FeatureKey key = FeatureKey.from(object, reference);
 
         if (!reference.isMany()) {
-            return backend.hasReference(featureKey);
+            return backend.hasReference(key);
         }
         else {
-            return backend.hasReferenceAtIndex(featureKey);
+            return backend.hasReferenceAtIndex(key);
         }
     }
 
     @Override
     protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        FeatureKey key = FeatureKey.from(object, attribute);
 
         if (!attribute.isMany()) {
-            backend.unsetValue(featureKey);
+            backend.unsetValue(key);
         }
         else {
-            backend.unsetValueAtIndex(featureKey);
+            backend.unsetValueAtIndex(key);
         }
     }
 
     @Override
     protected void unsetReference(PersistentEObject object, EReference reference) {
-        FeatureKey featureKey = FeatureKey.from(object, reference);
+        FeatureKey key = FeatureKey.from(object, reference);
 
         if (!reference.isMany()) {
-            backend.unsetReference(featureKey);
+            backend.unsetReference(key);
         }
         else {
-            backend.unsetReferenceAtIndex(featureKey);
+            backend.unsetReferenceAtIndex(key);
         }
     }
 
     @Override
     protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        return ArrayUtils.contains(toArray(object, attribute), value);
+        checkArgument(attribute.isMany(), "Cannot compute contains() of a single-valued feature");
+
+        persist(object);
+
+        FeatureKey key = FeatureKey.from(object, attribute);
+        return backend.containsValue(key, value);
     }
 
     @Override
     protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        Vertex v = backend.getOrCreateVertex(object);
-        persistentObjectsCache.put(object.id(), object);
-        updateInstanceOf(object);
+        checkArgument(reference.isMany(), "Cannot compute contains() of a single-valued feature");
 
-        for (Vertex vOut : v.getVertices(Direction.OUT, reference.getName())) {
-            if (Objects.equals(vOut.getId(), value.id().toString())) {
-                return true;
-            }
-        }
-        return false;
+        persist(object);
+
+        FeatureKey key = FeatureKey.from(object, reference);
+        return backend.containsReference(key, value.id());
     }
 
     @Override
     protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        return ArrayUtils.indexOf(toArray(object, attribute), value);
+        checkArgument(attribute.isMany(), "Cannot compute indexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
+        }
+
+        FeatureKey key = FeatureKey.from(object, attribute);
+        return backend.indexOfValue(key, value);
     }
 
     @Override
     protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        if (nonNull(value)) {
-            Vertex inVertex = backend.getVertex(object.id());
-            Vertex outVertex = backend.getVertex(value.id());
-            for (Edge e : outVertex.getEdges(Direction.IN, reference.getName())) {
-                if (Objects.equals(e.getVertex(Direction.OUT), inVertex)) {
-                    return e.getProperty(POSITION);
-                }
-            }
+        checkArgument(reference.isMany(), "Cannot compute indexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
         }
-        return NO_INDEX;
+
+        FeatureKey key = FeatureKey.from(object, reference);
+        return backend.indexOfReference(key, value.id());
     }
 
     @Override
     protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        return ArrayUtils.lastIndexOf(toArray(object, attribute), value);
+        checkArgument(attribute.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
+        }
+
+        FeatureKey key = FeatureKey.from(object, attribute);
+        return backend.lastIndexOfValue(key, value);
     }
 
     @Override
     protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        if (nonNull(value)) {
-            Vertex inVertex = backend.getVertex(object.id());
-            Vertex outVertex = backend.getVertex(value.id());
-            Edge lastPositionEdge = null;
-            for (Edge e : outVertex.getEdges(Direction.IN, reference.getName())) {
-                if (Objects.equals(e.getVertex(Direction.OUT), inVertex)
-                        && (isNull(lastPositionEdge)
-                        || (int) e.getProperty(POSITION) > (int) lastPositionEdge.getProperty(POSITION)))
-                {
-                    lastPositionEdge = e;
-                }
-            }
-            if (nonNull(lastPositionEdge)) {
-                return lastPositionEdge.getProperty(POSITION);
-            }
+        checkArgument(reference.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
         }
-        return NO_INDEX;
+
+        FeatureKey key = FeatureKey.from(object, reference);
+        return backend.lastIndexOfReference(key, value.id());
     }
 
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        checkArgument(attribute.isMany(), "Cannot compute add() of a single-valued attribute");
+        checkArgument(attribute.isMany(), "Cannot compute add() of a single-valued feature");
+
+        persist(object);
 
         if (index == NO_INDEX) {
             index = size(object, attribute);
@@ -353,17 +342,15 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             checkPositionIndex(index, size(object, attribute));
         }
 
-        backend.getOrCreateVertex(object);
-        persistentObjectsCache.put(object.id(), object);
-        updateInstanceOf(object);
-
-        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, attribute, index);
-        backend.addValue(featureKey, serializeToProperty(attribute, value));
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
+        backend.addValue(key, serializeToProperty(attribute, value));
     }
 
     @Override
     protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        checkArgument(reference.isMany(), "Cannot compute add() of a single-valued reference");
+        checkArgument(reference.isMany(), "Cannot compute add() of a single-valued feature");
+
+        persist(object, reference, value);
 
         if (index == NO_INDEX) {
             index = size(object, reference);
@@ -372,35 +359,26 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             checkPositionIndex(index, size(object, reference));
         }
 
-        Vertex vertex = backend.getOrCreateVertex(object);
-        persistentObjectsCache.put(object.id(), object);
-        updateInstanceOf(object);
-
-        Vertex referencedVertex = backend.getOrCreateVertex(value);
-        persistentObjectsCache.put(value.id(), value);
-        updateContainment(object, reference, value);
-        updateInstanceOf(value);
-
-        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, reference, index);
-        backend.addReference(featureKey, value.id());
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
+        backend.addReference(key, value.id());
     }
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        checkArgument(attribute.isMany(), "Cannot compute remove() of a single-valued attribute");
+        checkArgument(attribute.isMany(), "Cannot compute remove() of a single-valued feature");
         checkElementIndex(index, size(object, attribute));
 
-        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, attribute, index);
-        return parseProperty(attribute, backend.removeValue(featureKey));
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
+        return parseProperty(attribute, backend.removeValue(key));
     }
 
     @Override
     protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
-        checkArgument(reference.isMany(), "Cannot compute remove() of a single-valued reference");
+        checkArgument(reference.isMany(), "Cannot compute remove() of a single-valued feature");
         checkElementIndex(index, size(object, reference));
 
-        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, reference, index);
-        PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(featureKey));
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
+        PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(key));
 
         checkNotNull(previouslyReferencedObject);
         if (reference.isContainment()) {
@@ -413,66 +391,28 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
-        checkArgument(attribute.isMany(), "Cannot compute clear() of a single-valued attribute");
+        checkArgument(attribute.isMany(), "Cannot compute clear() of a single-valued feature");
 
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        backend.cleanValue(featureKey);
+        FeatureKey key = FeatureKey.from(object, attribute);
+        backend.cleanValue(key);
     }
 
     @Override
     protected void clearReference(PersistentEObject object, EReference reference) {
-        checkArgument(reference.isMany(), "Cannot compute clear() of a single-valued reference");
+        checkArgument(reference.isMany(), "Cannot compute clear() of a single-valued feature");
 
-        Vertex vertex = backend.getOrCreateVertex(object);
-        persistentObjectsCache.put(object.id(), object);
-        updateInstanceOf(object);
+        persist(object);
 
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        backend.cleanReference(featureKey);
+        FeatureKey key = FeatureKey.from(object, reference);
+        backend.cleanReference(key);
     }
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
-        return backend.sizeOf(FeatureKey.from(internalObject, feature));
-    }
-
-    /**
-     * Creates an {@link InternalEObject} from the given {@code vertex}.
-     *
-     * @param vertex the {@link Vertex} to reify
-     *
-     * @return an {@link InternalEObject} built from the provided {@link Vertex}
-     *
-     * @see DirectWriteBlueprintsStore#reifyVertex(Vertex, EClass)
-     */
-    protected PersistentEObject reifyVertex(Vertex vertex) {
-        return reifyVertex(vertex, null);
-    }
-
-    /**
-     * Creates an {@link InternalEObject} from the given {@code vertex}, and sets its {@link EClass} with the given
-     * {@link EClass}.
-     * <p>
-     * This method speeds-up the reification for objects with a known {@link EClass} by avoiding unnecessary database
-     * accesses. It guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
-     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
-     * collected.
-     *
-     * @param vertex the {@link Vertex} to reify
-     * @param eClass the {@link EClass} representing the type of the element to create
-     *
-     * @return an {@link InternalEObject} build from the provided {@link Vertex}
-     */
-    protected PersistentEObject reifyVertex(Vertex vertex, @Nullable EClass eClass) {
-        Id id = new StringId(vertex.getId().toString());
-        PersistentEObject object = persistentObjectsCache.get(id);
-
-        if (object.resource() != resource()) {
-            object.resource(resource());
-        }
-        return object;
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+        return backend.sizeOf(key);
     }
 
     /**
@@ -489,7 +429,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         EList<EObject> instances = new BasicEList<>();
         for (Map.Entry<EClass, Iterable<Vertex>> entry : indexHits.entrySet()) {
             for (Vertex instanceVertex : entry.getValue()) {
-                instances.add(reifyVertex(instanceVertex, entry.getKey()));
+                instances.add(eObject(new StringId(instanceVertex.getId().toString())));
             }
         }
         return instances;
