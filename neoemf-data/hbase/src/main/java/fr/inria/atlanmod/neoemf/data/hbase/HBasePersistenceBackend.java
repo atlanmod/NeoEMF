@@ -119,6 +119,11 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public Iterable<Object> valueAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -154,6 +159,11 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public Iterable<Id> referenceAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -165,6 +175,11 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public boolean hasValueAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Iterable<Object> valueAtIndexAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -185,6 +200,11 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public boolean hasReferenceAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Iterable<Id> referenceAtIndexAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

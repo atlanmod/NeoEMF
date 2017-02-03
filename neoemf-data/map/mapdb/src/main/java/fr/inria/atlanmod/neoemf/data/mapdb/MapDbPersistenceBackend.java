@@ -227,6 +227,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public Iterable<Object> valueAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -262,6 +267,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public Iterable<Id> referenceAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
         return multivaluedFeatures.put(key, value);
     }
@@ -274,6 +284,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     @Override
     public boolean hasValueAtIndex(FeatureKey key) {
         return hasValue(key);
+    }
+
+    @Override
+    public Iterable<Object> valueAtIndexAsList(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -293,6 +308,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public boolean hasReferenceAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Iterable<Id> referenceAtIndexAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

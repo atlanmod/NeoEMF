@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.store;
 
-import com.google.common.collect.Iterables;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
@@ -35,15 +34,18 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -83,11 +85,8 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     /**
      * {@inheritDoc}
      * <p>
-     * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
-     * that takes benefit of the underlying backend to get all the linked elements once and return
-     * it as an array, avoiding multiple {@code get()}
-     * operations.
+     * This method is an efficient implementation that takes benefit of the underlying backend to get all the linked
+     * elements once and return it as an array, avoiding multiple {@code get()} operations.
      */
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
@@ -97,80 +96,48 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     /**
      * {@inheritDoc}
      * <p>
-     * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
-     * that takes benefit of the underlying backend to get all the linked elements once and return
-     * it as an array, avoiding multiple {@code get()}
-     * operations.
-     * <p>
-     * Returns the given {@code array} reference if it is not {@code null}.
+     * This method is an efficient implementation that takes benefit of the underlying backend to get all the linked
+     * elements once and return it as an array, avoiding multiple {@code get()} operations.
      */
     @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
-                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
-                feature.getName(), feature.getClass().getSimpleName());
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        Vertex vertex = backend.getVertex(object.id());
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+
+        Stream<Object> stream;
         if (feature instanceof EReference) {
+            Iterable<Id> references;
+
             if (feature.isMany()) {
-                Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.getProperty(POSITION));
-                Object[] result = StreamSupport.stream(
-                        vertex.query()
-                                .labels(feature.getName())
-                                .direction(Direction.OUT)
-                                .edges()
-                                .spliterator(), false)
-                        .sorted(byPosition)
-                        .map(ee -> reifyVertex(ee.getVertex(Direction.IN)))
-                        .toArray();
-                if (isNull(array)) {
-                    return (T[]) result;
-                }
-                else {
-                    System.arraycopy(result, 0, array, 0, result.length);
-                    return array;
-                }
+                references = backend.referenceAtIndexAsList(featureKey);
             }
             else {
-                Vertex referencedVertex = Iterables.getOnlyElement(
-                        vertex.getVertices(Direction.OUT, feature.getName()), null);
-                InternalEObject referencedEObject = reifyVertex(referencedVertex);
-                if (isNull(array)) {
-                    return (T[]) new Object[]{referencedEObject};
-                }
-                else {
-                    array[0] = (T) referencedEObject;
-                    return array;
-                }
+                references = backend.referenceAsList(featureKey);
             }
+
+            stream = StreamSupport.stream(references.spliterator(), false)
+                    .map(this::eObject);
         }
         else {
-            String propertyName = feature.getName();
+            Iterable<Object> values;
+
             if (feature.isMany()) {
-                int size = size(object, feature);
-                T[] output = array;
-                if (isNull(array)) {
-                    output = (T[]) new Object[size];
-                }
-                for (int i = 0; i < size; i++) {
-                    Object parsedProperty = parseProperty((EAttribute) feature, vertex.getProperty(propertyName + ':' + i));
-                    output[i] = (T) parsedProperty;
-                }
-                // Return array if it as been provided to ensure the reference does not change
-                return isNull(array) ? output : array;
+                values = backend.valueAtIndexAsList(featureKey);
             }
             else {
-                Object property = vertex.getProperty(propertyName);
-                if (isNull(array)) {
-                    return (T[]) new Object[]{parseProperty((EAttribute) feature, property)};
-                }
-                else {
-                    array[0] = (T) parseProperty((EAttribute) feature, property);
-                    return array;
-                }
+                values = backend.valueAsList(featureKey);
             }
+
+            stream = StreamSupport.stream(values.spliterator(), false)
+                    .map(v -> parseProperty((EAttribute) feature, v));
+        }
+
+        if (isNull(array)) {
+            return (T[]) stream.toArray();
+        }
+        else {
+            array = stream.collect(Collectors.toList()).toArray(array);
+            return array;
         }
     }
 
@@ -183,6 +150,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             value = backend.getValue(featureKey);
         }
         else {
+            checkElementIndex(index, size(object, attribute));
             value = backend.getValueAtIndex(featureKey.withPosition(index));
         }
         return parseProperty(attribute, value);
@@ -197,6 +165,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             value = backend.getReference(featureKey);
         }
         else {
+            checkElementIndex(index, size(object, reference));
             value = backend.getReferenceAtIndex(featureKey.withPosition(index));
         }
 
@@ -222,6 +191,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 previousValue = backend.setValue(featureKey, value);
             }
             else {
+                checkElementIndex(index, size(object, attribute));
                 previousValue = backend.setValueAtIndex(featureKey.withPosition(index), value);
             }
             return parseProperty(attribute, previousValue);
@@ -253,6 +223,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 previousId = backend.setReference(featureKey, value.id());
             }
             else {
+                checkElementIndex(index, size(object, reference));
                 previousId = backend.setReferenceAtIndex(featureKey.withPosition(index), value.id());
             }
             return eObject(previousId);
@@ -378,6 +349,9 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         if (index == NO_INDEX) {
             index = size(object, attribute);
         }
+        else {
+            checkPositionIndex(index, size(object, attribute));
+        }
 
         backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
@@ -394,6 +368,10 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         if (index == NO_INDEX) {
             index = size(object, reference);
         }
+        else {
+            checkPositionIndex(index, size(object, reference));
+        }
+
         Vertex vertex = backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
         updateInstanceOf(object);
@@ -410,6 +388,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         checkArgument(attribute.isMany(), "Cannot compute remove() of a single-valued attribute");
+        checkElementIndex(index, size(object, attribute));
 
         MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, attribute, index);
         return parseProperty(attribute, backend.removeValue(featureKey));
@@ -418,6 +397,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @Override
     protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
         checkArgument(reference.isMany(), "Cannot compute remove() of a single-valued reference");
+        checkElementIndex(index, size(object, reference));
 
         MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, reference, index);
         PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(featureKey));

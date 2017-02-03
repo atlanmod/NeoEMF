@@ -147,6 +147,8 @@ public interface PersistenceBackend extends Closeable {
 
     void cleanValue(FeatureKey key);
 
+    Iterable<Object> valueAsList(FeatureKey key);
+
     Id getReference(FeatureKey key);
 
     Id setReference(FeatureKey key, Id id);
@@ -160,6 +162,8 @@ public interface PersistenceBackend extends Closeable {
     Id removeReference(MultivaluedFeatureKey key);
 
     void cleanReference(FeatureKey key);
+
+    Iterable<Id> referenceAsList(FeatureKey key);
 
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.
@@ -205,6 +209,8 @@ public interface PersistenceBackend extends Closeable {
      */
     boolean hasValueAtIndex(FeatureKey key);
 
+    Iterable<Object> valueAtIndexAsList(FeatureKey key);
+
     Id getReferenceAtIndex(MultivaluedFeatureKey key);
 
     Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id);
@@ -212,6 +218,8 @@ public interface PersistenceBackend extends Closeable {
     void unsetReferenceAtIndex(FeatureKey key);
 
     boolean hasReferenceAtIndex(FeatureKey key);
+
+    Iterable<Id> referenceAtIndexAsList(FeatureKey key);
 
     int sizeOf(FeatureKey key);
 
