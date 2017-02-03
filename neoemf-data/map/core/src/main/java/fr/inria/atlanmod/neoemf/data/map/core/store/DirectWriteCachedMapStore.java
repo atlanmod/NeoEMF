@@ -81,7 +81,7 @@ public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWrite
             checkPositionIndex(index, array.length, "Invalid add index " + index);
             array = ArrayUtils.add(array, index, value.id());
             objectsCache.put(featureKey, array);
-            backend.storeValue(featureKey, array);
+            backend.setValue(featureKey, array);
             persistentObjectsCache.put(value.id(), value);
         }
         else {

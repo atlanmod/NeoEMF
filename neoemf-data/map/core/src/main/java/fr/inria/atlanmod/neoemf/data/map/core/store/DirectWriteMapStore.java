@@ -59,7 +59,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         checkNotNull(feature);
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        return backend.isFeatureSet(featureKey);
+        return backend.hasValue(featureKey);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         checkNotNull(feature);
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.removeFeature(featureKey);
+        backend.unsetValue(featureKey);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
     public Object getFromMap(FeatureKey featureKey) {
         checkNotNull(featureKey);
 
-        return backend.valueOf(featureKey);
+        return backend.getValue(featureKey);
     }
 
     /**
@@ -170,7 +170,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         checkNotNull(feature);
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.storeValue(featureKey, new Object[]{});
+        backend.setValue(featureKey, new Object[]{});
     }
 
     /**
@@ -297,14 +297,14 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         Object old;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (!attribute.isMany()) {
-            old = backend.storeValue(featureKey, serializeToProperty(attribute, value));
+            old = backend.setValue(featureKey, serializeToProperty(attribute, value));
             old = parseProperty(attribute, old);
         } else {
             Object[] array = (Object[]) getFromMap(featureKey);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             old = array[index];
             array[index] = serializeToProperty(attribute, value);
-            backend.storeValue(featureKey, array);
+            backend.setValue(featureKey, array);
             old = parseProperty(attribute, old);
         }
         return old;
@@ -321,14 +321,14 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         updateContainment(object, reference, value);
         updateInstanceOf(value);
         if (!reference.isMany()) {
-            Object oldId = backend.storeValue(featureKey, value.id());
+            Object oldId = backend.setValue(featureKey, value.id());
             old = isNull(oldId) ? null : eObject((Id) oldId);
         } else {
             Object[] array = (Object[]) getFromMap(featureKey);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             Object oldId = array[index];
             array[index] = value.id();
-            backend.storeValue(featureKey, array);
+            backend.setValue(featureKey, array);
             old = isNull(oldId) ? null : eObject((Id) oldId);
         }
         return old;
@@ -355,7 +355,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         }
         checkPositionIndex(index, array.length, "Invalid add index");
         array = ArrayUtils.add(array, index, serializeToProperty(attribute, value));
-        backend.storeValue(featureKey, array);
+        backend.setValue(featureKey, array);
     }
 
     @Override
@@ -381,7 +381,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         }
         checkPositionIndex(index, array.length, "Invalid add index");
         array = ArrayUtils.add(array, index, value.id());
-        backend.storeValue(featureKey, array);
+        backend.setValue(featureKey, array);
         persistentObjectsCache.put(value.id(), value);
     }
 
@@ -395,7 +395,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         checkPositionIndex(index, array.length, "Invalid remove index");
         Object old = array[index];
         array = ArrayUtils.remove(array, index);
-        backend.storeValue(featureKey, array);
+        backend.setValue(featureKey, array);
         return parseProperty(attribute, old);
     }
 
@@ -409,7 +409,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
         checkPositionIndex(index, array.length, "Invalid remove index");
         Object oldId = array[index];
         array = ArrayUtils.remove(array, index);
-        backend.storeValue(featureKey, array);
+        backend.setValue(featureKey, array);
         return eObject((Id) oldId);
     }
 }

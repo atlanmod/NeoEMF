@@ -45,7 +45,6 @@ import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
@@ -199,45 +198,35 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
         Object value;
         if (!attribute.isMany()) {
-            value = backend.valueOf(featureKey);
+            value = backend.getValue(featureKey);
         }
         else {
-            value = backend.valueAtIndex(featureKey.withPosition(index));
+            value = backend.getValueAtIndex(featureKey.withPosition(index));
         }
         return parseProperty(attribute, value);
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
-        Object soughtReference = null;
-        Vertex vertex = backend.getVertex(object.id());
-        Vertex referencedVertex;
+    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+
+        Id value;
         if (!reference.isMany()) {
-            referencedVertex = Iterables.getOnlyElement(
-                    vertex.getVertices(Direction.OUT, reference.getName()), null);
+            value = backend.getReference(featureKey);
         }
         else {
-            checkElementIndex(index, getSize(vertex, reference), "Invalid get index " + index);
-            referencedVertex = Iterables.getOnlyElement(
-                    vertex.query()
-                            .labels(reference.getName())
-                            .direction(Direction.OUT)
-                            .has(POSITION, index)
-                            .vertices(),
-                    null);
+            value = backend.getReferenceAtIndex(featureKey.withPosition(index));
         }
-        if (nonNull(referencedVertex)) {
-            soughtReference = reifyVertex(referencedVertex);
-        }
-        return soughtReference;
+
+        return eObject(value);
     }
 
     @Override
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        Object old;
         if (isNull(value)) {
-            old = get(object, attribute, index);
+            Object previousValue = getAttribute(object, attribute, index);
             clear(object, attribute);
+            return previousValue;
         }
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
@@ -246,23 +235,23 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
             FeatureKey featureKey = FeatureKey.from(object, attribute);
 
+            Object previousValue;
             if (!attribute.isMany()) {
-                old = backend.storeValue(featureKey, value);
+                previousValue = backend.setValue(featureKey, value);
             }
             else {
-                old = backend.storeValueAtIndex(featureKey.withPosition(index), value);
+                previousValue = backend.setValueAtIndex(featureKey.withPosition(index), value);
             }
-            old = parseProperty(attribute, old);
+            return parseProperty(attribute, previousValue);
         }
-        return old;
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        Object old = null;
+    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         if (isNull(value)) {
-            old = get(object, reference, index);
+            PersistentEObject previouslyReferencedObject = getReference(object, reference, index);
             clear(object, reference);
+            return previouslyReferencedObject;
         }
         else {
             Vertex vertex = backend.getOrCreateVertex(object);
@@ -275,33 +264,17 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
             updateContainment(object, reference, value);
 
+            FeatureKey featureKey = FeatureKey.from(object, reference);
+
+            Id previousId;
             if (!reference.isMany()) {
-                Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, reference.getName()), null);
-                if (nonNull(edge)) {
-                    Vertex referencedVertex = edge.getVertex(Direction.IN);
-                    old = reifyVertex(referencedVertex);
-                    edge.remove();
-                }
-                vertex.addEdge(reference.getName(), newReferencedVertex);
+                previousId = backend.setReference(featureKey, value.id());
             }
             else {
-                checkElementIndex(index, getSize(vertex, reference));
-                Iterable<Edge> edges = vertex.query()
-                        .labels(reference.getName())
-                        .direction(Direction.OUT)
-                        .has(POSITION, index)
-                        .edges();
-
-                for (Edge edge : edges) {
-                    Vertex referencedVertex = edge.getVertex(Direction.IN);
-                    old = reifyVertex(referencedVertex);
-                    edge.remove();
-                }
-                Edge edge = vertex.addEdge(reference.getName(), newReferencedVertex);
-                edge.setProperty(POSITION, index);
+                previousId = backend.setReferenceAtIndex(featureKey.withPosition(index), value.id());
             }
+            return eObject(previousId);
         }
-        return old;
     }
 
     @Override
@@ -309,21 +282,23 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         FeatureKey featureKey = FeatureKey.from(object, attribute);
 
         if (!attribute.isMany()) {
-            return backend.isFeatureSet(featureKey);
+            return backend.hasValue(featureKey);
         }
         else {
-            return backend.isFeatureSetAtIndex(featureKey);
+            return backend.hasValueAtIndex(featureKey);
         }
     }
 
     @Override
     protected boolean isSetReference(PersistentEObject object, EReference reference) {
-        boolean isSet = false;
-        Vertex vertex = backend.getVertex(object.id());
-        if (nonNull(vertex)) {
-            isSet = !Iterables.isEmpty(vertex.getVertices(Direction.OUT, reference.getName()));
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+
+        if (!reference.isMany()) {
+            return backend.hasReference(featureKey);
         }
-        return isSet;
+        else {
+            return backend.hasReferenceAtIndex(featureKey);
+        }
     }
 
     @Override
@@ -331,27 +306,22 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         FeatureKey featureKey = FeatureKey.from(object, attribute);
 
         if (!attribute.isMany()) {
-            backend.removeFeature(featureKey);
+            backend.unsetValue(featureKey);
         }
         else {
-            backend.removeFeatureAtIndex(featureKey);
+            backend.unsetValueAtIndex(featureKey);
         }
     }
 
     @Override
     protected void unsetReference(PersistentEObject object, EReference reference) {
-        Vertex vertex = backend.getVertex(object.id());
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+
         if (!reference.isMany()) {
-            Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, reference.getName()), null);
-            if (nonNull(edge)) {
-                edge.remove();
-            }
+            backend.unsetReference(featureKey);
         }
         else {
-            for (Edge edge : vertex.query().labels(reference.getName()).direction(Direction.OUT).edges()) {
-                edge.remove();
-            }
-            vertex.removeProperty(reference.getName() + SEPARATOR + SIZE_LITERAL);
+            backend.unsetReferenceAtIndex(featureKey);
         }
     }
 
@@ -505,11 +475,12 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
         Vertex vertex = backend.getVertex(object.id());
         String referenceName = reference.getName();
         Integer size = getSize(vertex, reference);
-        InternalEObject old = null;
+
+        PersistentEObject old = null;
         checkPositionIndex(index, size, "Invalid remove index");
 
         Iterable<Edge> edges = vertex.query()
@@ -538,7 +509,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         checkNotNull(old);
         if (reference.isContainment()) {
             old.eBasicSetContainer(null, -1, null);
-            ((PersistentEObject) old).resource(null);
+            old.resource(null);
         }
         return old;
     }

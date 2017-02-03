@@ -70,26 +70,26 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
         FeatureKey featureKey = FeatureKey.from(object, feature);
         // Make space for the new element
-        Integer size = (Integer) backend.valueOf(featureKey);
+        Integer size = (Integer) backend.getValue(featureKey);
         if (isNull(size)) {
             size = 0;
         }
         for (int i = size - 1; i >= index; i--) {
-            Object movingValue = backend.valueAtIndex(featureKey.withPosition(i));
-            backend.storeValueAtIndex(featureKey.withPosition(i + 1), movingValue);
+            Object movingValue = backend.getValueAtIndex(featureKey.withPosition(i));
+            backend.setValueAtIndex(featureKey.withPosition(i + 1), movingValue);
         }
-        backend.storeValue(featureKey, size + 1);
+        backend.setValue(featureKey, size + 1);
 
         // Add element
         MultivaluedFeatureKey multivaluedFeatureKey = featureKey.withPosition(index);
         if (feature instanceof EAttribute) {
-            backend.storeValueAtIndex(multivaluedFeatureKey, value);
+            backend.setValueAtIndex(multivaluedFeatureKey, value);
         }
         else if (feature instanceof EReference) {
             PersistentEObject referencedObject = PersistentEObject.from(value);
             updateContainment(object, (EReference) feature, referencedObject);
             updateInstanceOf(referencedObject);
-            backend.storeValueAtIndex(multivaluedFeatureKey, referencedObject.id());
+            backend.setValueAtIndex(multivaluedFeatureKey, referencedObject.id());
         }
         else {
             throw new IllegalArgumentException(feature.toString());
@@ -102,15 +102,15 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         NeoLogger.debug("remove({0}, {1})", feature.getName(), index);
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        Integer size = (Integer) backend.valueOf(featureKey);
+        Integer size = (Integer) backend.getValue(featureKey);
         // Get element to remove
-        Object old = backend.valueAtIndex(featureKey.withPosition(index));
+        Object old = backend.getValueAtIndex(featureKey.withPosition(index));
         // Update indexes (element to remove is overwritten)
         for (int i = index + 1; i < size; i++) {
-            Object movingValue = backend.valueAtIndex(featureKey.withPosition(i));
-            backend.storeValueAtIndex(featureKey.withPosition(i - 1), movingValue);
+            Object movingValue = backend.getValueAtIndex(featureKey.withPosition(i));
+            backend.setValueAtIndex(featureKey.withPosition(i - 1), movingValue);
         }
-        backend.storeValue(featureKey, size - 1);
+        backend.setValue(featureKey, size - 1);
         return old;
     }
 
@@ -131,7 +131,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.removeFeature(featureKey);
+        backend.unsetValue(featureKey);
     }
 
     @Override
@@ -141,9 +141,9 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         Object result;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (attribute.isMany()) {
-            result = backend.valueAtIndex(featureKey.withPosition(index));
+            result = backend.getValueAtIndex(featureKey.withPosition(index));
         } else {
-            result = backend.valueOf(featureKey);
+            result = backend.getValue(featureKey);
         }
 
         return parseProperty(attribute, result);
@@ -158,9 +158,9 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         Object serializedValue = serializeToProperty(attribute, value);
 
         if (attribute.isMany()) {
-            old = backend.storeValueAtIndex(featureKey.withPosition(index), serializedValue);
+            old = backend.setValueAtIndex(featureKey.withPosition(index), serializedValue);
         } else {
-            old = backend.storeValue(featureKey, serializedValue);
+            old = backend.setValue(featureKey, serializedValue);
         }
 
         return parseProperty(attribute, old);
@@ -173,9 +173,9 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         Id result;
         FeatureKey featureKey = FeatureKey.from(object, reference);
         if (reference.isMany()) {
-            result = (Id) backend.valueAtIndex(featureKey.withPosition(index));
+            result = (Id) backend.getValueAtIndex(featureKey.withPosition(index));
         } else {
-            result = (Id) backend.valueOf(featureKey);
+            result = (Id) backend.getValue(featureKey);
         }
 
         return nonNull(result) ? eObject(result) : null;
@@ -191,9 +191,9 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         updateInstanceOf(value);
 
         if (reference.isMany()) {
-            old = (Id) backend.storeValueAtIndex(featureKey.withPosition(index), value.id());
+            old = (Id) backend.setValueAtIndex(featureKey.withPosition(index), value.id());
         } else {
-            old = (Id) backend.storeValue(featureKey, value.id());
+            old = (Id) backend.setValue(featureKey, value.id());
         }
 
         return nonNull(old) ? eObject(old) : null;
@@ -209,7 +209,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         NeoLogger.debug("size({0}, {1})", object.id(), feature.getName());
 
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        Object value = backend.valueOf(featureKey);
+        Object value = backend.getValue(featureKey);
 
         return isNull(value) ? 0 : (Integer) value;
     }
@@ -287,21 +287,21 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
 
     private <T> T[] monoValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
         FeatureKey fk = FeatureKey.from(object,attr);
-        output[0] = (T) parseProperty(attr, backend.valueOf(fk));
+        output[0] = (T) parseProperty(attr, backend.getValue(fk));
         return output;
     }
 
     private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr,  T[] output) {
         FeatureKey fk = FeatureKey.from(object,attr);
         for (int i = 0; i < output.length; i++) {
-            output[i] = (T) parseProperty(attr,backend.valueAtIndex(fk.withPosition(i)));
+            output[i] = (T) parseProperty(attr,backend.getValueAtIndex(fk.withPosition(i)));
         }
         return output;
     }
 
     private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
         FeatureKey fk = FeatureKey.from(object,ref);
-        Id id = (Id) backend.valueOf(fk);
+        Id id = (Id) backend.getValue(fk);
         output[0] = (T) eObject(id);
         return output;
     }
@@ -309,7 +309,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
     private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
         FeatureKey fk = FeatureKey.from(object,ref);
         for (int i = 0; i < output.length ; i++) {
-            Id id = (Id) backend.valueAtIndex(fk.withPosition(i));
+            Id id = (Id) backend.getValueAtIndex(fk.withPosition(i));
             output[i] = (T) eObject(id);
         }
         return output;

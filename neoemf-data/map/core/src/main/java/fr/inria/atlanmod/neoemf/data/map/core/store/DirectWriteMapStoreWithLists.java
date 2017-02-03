@@ -87,7 +87,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         Object value;
         FeatureKey featureKey = FeatureKey.from(object, feature);
         if (!feature.isMany()) {
-            value = backend.valueOf(featureKey);
+            value = backend.getValue(featureKey);
         } else {
             value = objectsCache.get(featureKey, new FeatureKeyCacheLoader());
         }
@@ -107,7 +107,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         List<Object> list = manyValueFrom(getFromMap(featureKey));
         Object oldId = list.get(index);
         list.remove(index);
-        backend.storeValue(featureKey, list.toArray());
+        backend.setValue(featureKey, list.toArray());
         return eObject((Id) oldId);
     }
 
@@ -117,7 +117,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         List<Object> list = manyValueFrom(getFromMap(featureKey));
         Object old = list.get(index);
         list.remove(index);
-        backend.storeValue(featureKey, list.toArray());
+        backend.setValue(featureKey, list.toArray());
         return parseProperty(attribute, old);
     }
 
@@ -128,7 +128,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         updateInstanceOf(referencedObject);
         List<Object> list = manyValueFrom(getFromMap(featureKey));
         list.add(index, referencedObject.id());
-        backend.storeValue(featureKey, list.toArray());
+        backend.setValue(featureKey, list.toArray());
     }
 
     @Override
@@ -138,12 +138,12 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         updateContainment(object, reference, value);
         updateInstanceOf(value);
         if (!reference.isMany()) {
-            oldId = backend.storeValue(featureKey, value.id());
+            oldId = backend.setValue(featureKey, value.id());
         } else {
             List<Object> list = manyValueFrom(getFromMap(featureKey));
             oldId = list.get(index);
             list.set(index, value.id());
-            backend.storeValue(featureKey, list.toArray());
+            backend.setValue(featureKey, list.toArray());
         }
         return isNull(oldId) ? null : eObject((Id) oldId);
     }
@@ -153,7 +153,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         List<Object> list = manyValueFrom(getFromMap(featureKey));
         list.add(index, serializeToProperty(attribute, value));
-        backend.storeValue(featureKey, list.toArray());
+        backend.setValue(featureKey, list.toArray());
     }
 
     @Override
@@ -161,12 +161,12 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         Object old;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (!attribute.isMany()) {
-            old = backend.storeValue(featureKey, serializeToProperty(attribute, value));
+            old = backend.setValue(featureKey, serializeToProperty(attribute, value));
         } else {
             List<Object> list = manyValueFrom(getFromMap(featureKey));
             old = list.get(index);
             list.set(index, serializeToProperty(attribute, value));
-            backend.storeValue(featureKey, list.toArray());
+            backend.setValue(featureKey, list.toArray());
             old = parseProperty(attribute, old);
         }
         return parseProperty(attribute, old);
@@ -207,7 +207,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.storeValue(featureKey, new ArrayList<>());
+        backend.setValue(featureKey, new ArrayList<>());
     }
 
     @Override
@@ -250,7 +250,7 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
 
         @Override
         public Object apply(FeatureKey key) {
-            Object value = backend.valueOf(key);
+            Object value = backend.getValue(key);
             if (isNull(value)) {
                 value = new ArrayList<>();
             } else if (value instanceof Object[]) {

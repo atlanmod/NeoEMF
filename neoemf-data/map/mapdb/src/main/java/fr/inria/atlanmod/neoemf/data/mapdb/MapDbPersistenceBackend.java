@@ -192,38 +192,78 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Object storeValue(FeatureKey key, Object value) {
+    public Object setValue(FeatureKey key, Object value) {
         return features.put(key, value);
     }
 
     @Override
-    public Object valueOf(FeatureKey key) {
+    public Object getValue(FeatureKey key) {
         return features.get(key);
     }
 
     @Override
-    public Object removeFeature(FeatureKey key) {
+    public Object unsetValue(FeatureKey key) {
         return features.remove(key);
     }
 
     @Override
-    public boolean isFeatureSet(FeatureKey key) {
+    public boolean hasValue(FeatureKey key) {
         return features.containsKey(key);
     }
 
     @Override
-    public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
+    public Id getReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id setReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id unsetReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
         return multivaluedFeatures.put(key, value);
     }
 
     @Override
-    public Object removeFeatureAtIndex(FeatureKey key) {
-        return removeFeature(key);
+    public Object unsetValueAtIndex(FeatureKey key) {
+        return unsetValue(key);
     }
 
     @Override
-    public boolean isFeatureSetAtIndex(FeatureKey key) {
-        return isFeatureSet(key);
+    public boolean hasValueAtIndex(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public Id getReferenceAtIndex(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id unsetReferenceAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasReferenceAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -232,7 +272,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Object valueAtIndex(MultivaluedFeatureKey key) {
+    public Object getValueAtIndex(MultivaluedFeatureKey key) {
         return multivaluedFeatures.get(key);
     }
 

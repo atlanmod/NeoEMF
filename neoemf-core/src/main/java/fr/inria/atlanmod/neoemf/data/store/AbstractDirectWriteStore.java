@@ -88,7 +88,9 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
 
     @Override
     public PersistentEObject eObject(Id id) {
-        checkNotNull(id);
+        if (isNull(id)) {
+            return null;
+        }
 
         PersistentEObject object = persistentObjectsCache.get(id);
         if (object.resource() != resource()) {

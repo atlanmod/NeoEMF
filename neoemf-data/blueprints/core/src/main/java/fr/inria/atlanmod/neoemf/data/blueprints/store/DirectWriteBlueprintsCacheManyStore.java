@@ -83,7 +83,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
      * single-valued, {@code null} if the element doesn't exist
      */
     @Override
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
         if (reference.isMany()) {
             FeatureKey key = FeatureKey.from(object, reference);
             Object[] list = verticesCache.getIfPresent(key);

@@ -14,8 +14,10 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.MoreCollectors;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Element;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
@@ -47,10 +49,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -240,14 +245,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     @Override
     public ContainerInfo containerFor(Id id) {
         Vertex containmentVertex = getVertex(id);
-        Edge edge = Iterables.getOnlyElement(containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER), null);
 
-        if (nonNull(edge)) {
-            String featureName = edge.getProperty(KEY_CONTAINING_FEATURE);
-            Vertex containerVertex = edge.getVertex(Direction.IN);
+        Iterable<Edge> edges = containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER);
+
+        Optional<Edge> edge = StreamSupport.stream(edges.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        if (edge.isPresent()) {
+            String featureName = edge.get().getProperty(KEY_CONTAINING_FEATURE);
+            Vertex containerVertex = edge.get().getVertex(Direction.IN);
             return ContainerInfo.of(new StringId(containerVertex.getId().toString()), featureName);
         }
-
         return null;
     }
 
@@ -256,9 +264,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Vertex containmentVertex = getVertex(id);
         Vertex containerVertex = getVertex(container.id());
 
-        for (Edge edge : containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER)) {
-            edge.remove();
-        }
+        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
 
         Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
         edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
@@ -267,11 +273,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     @Override
     public ClassInfo metaclassFor(Id id) {
         Vertex vertex = getVertex(id);
-        Vertex metaclassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
-        if (nonNull(metaclassVertex)) {
-            return ClassInfo.of(metaclassVertex.getProperty(KEY_ECLASS_NAME), metaclassVertex.getProperty(KEY_EPACKAGE_NSURI));
-        }
-        return null;
+
+        Iterable<Vertex> vertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF);
+
+        Optional<Vertex> metaclassVertex = StreamSupport.stream(vertices.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        return metaclassVertex.map(v -> ClassInfo.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI))).orElse(null);
     }
 
     @Override
@@ -289,58 +297,187 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Object valueOf(FeatureKey key) {
+    public Object getValue(FeatureKey key) {
         return getVertex(key.id()).getProperty(key.name());
     }
 
     @Override
-    public Object storeValue(FeatureKey key, Object value) {
-        Object oldValue = valueOf(key);
+    public Object setValue(FeatureKey key, Object value) {
+        Object oldValue = getValue(key);
+
         getVertex(key.id()).setProperty(key.name(), value);
+
         return oldValue;
     }
 
     @Override
-    public Object removeFeature(FeatureKey key) {
+    public Object unsetValue(FeatureKey key) {
         return getVertex(key.id()).removeProperty(key.name());
     }
 
     @Override
-    public boolean isFeatureSet(FeatureKey key) {
+    public boolean hasValue(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
+
         return nonNull(vertex) && nonNull(vertex.getProperty(key.name()));
     }
 
     @Override
-    public Object valueAtIndex(MultivaluedFeatureKey key) {
-//        checkElementIndex(key.position(), size(key), "Invalid index " + key.position());
+    public Id getReference(FeatureKey key) {
+        Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
+
+        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        return referencedVertex.map(v -> new StringId(v.getId().toString())).orElse(null);
+    }
+
+    @Override
+    public Id setReference(FeatureKey key, Id id) {
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = vertex.getEdges(Direction.OUT, key.name());
+
+        Optional<Edge> edge = StreamSupport.stream(edges.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        Id previousId = null;
+        if (edge.isPresent()) {
+            Vertex previouslyReferencedVertex = edge.get().getVertex(Direction.IN);
+            previousId = new StringId(previouslyReferencedVertex.getId().toString());
+            edge.get().remove();
+        }
+
+        getVertex(key.id()).addEdge(key.name(), getVertex(id));
+
+        return previousId;
+    }
+
+    @Override
+    public Id unsetReference(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = vertex.getEdges(Direction.OUT, key.name());
+
+        Optional<Edge> edge = StreamSupport.stream(edges.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        Id previousId = null;
+        if (edge.isPresent()) {
+            Vertex previouslyReferencedVertex = edge.get().getVertex(Direction.IN);
+            previousId = new StringId(previouslyReferencedVertex.getId().toString());
+            edge.get().remove();
+        }
+
+        return previousId;
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+
+        return nonNull(vertex) && StreamSupport.stream(vertex.getVertices(Direction.OUT, key.name()).spliterator(), false).findAny().isPresent();
+    }
+
+    @Override
+    public Object getValueAtIndex(MultivaluedFeatureKey key) {
+        checkElementIndex(key.position(), sizeOf(key), "Invalid index " + key.position());
 
         return getVertex(key.id()).getProperty(formatProperty(key.name(), key.position()));
     }
 
-    @Override
-    public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
-//        checkElementIndex(key.position(), size(key), "Invalid index " + key.position());
+    public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
+        checkElementIndex(key.position(), sizeOf(key), "Invalid index " + key.position());
 
-        Object oldValue = valueAtIndex(key);
+        Object oldValue = getValueAtIndex(key);
+
         getVertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
+
         return oldValue;
     }
 
     @Override
-    public Object removeFeatureAtIndex(FeatureKey key) {
+    public Object unsetValueAtIndex(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
         String property = formatProperty(key.name(), KEY_SIZE_LITERAL);
 
         IntStream.range(0, vertex.getProperty(property)).forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+        vertex.removeProperty(property);
 
-        return vertex.removeProperty(property);
+        // TODO Returns a complete list of previous values
+        return null;
+    }
+
+    public boolean hasValueAtIndex(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE_LITERAL)));
     }
 
     @Override
-    public boolean isFeatureSetAtIndex(FeatureKey key) {
+    public Id getReferenceAtIndex(MultivaluedFeatureKey key) {
+        checkElementIndex(key.position(), sizeOf(key), "Invalid index " + key.position());
+
         Vertex vertex = getVertex(key.id());
-        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE_LITERAL)));
+
+        Iterable<Vertex> referencedVertices = vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .has(POSITION, key.position())
+                .vertices();
+
+        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        return referencedVertex.map(v -> new StringId(v.getId().toString())).orElse(null);
+    }
+
+    @Override
+    public Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id) {
+        checkElementIndex(key.position(), sizeOf(key), "Invalid index " + key.position());
+
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .has(POSITION, key.position())
+                .edges();
+
+        Optional<Edge> previousEdge = StreamSupport.stream(edges.spliterator(), false)
+                .collect(MoreCollectors.toOptional());
+
+        Id previousId = null;
+        if (previousEdge.isPresent()) {
+            Vertex referencedVertex = previousEdge.get().getVertex(Direction.IN);
+            previousId = new StringId(referencedVertex.getId().toString());
+            previousEdge.get().remove();
+        }
+
+        Edge edge = getVertex(key.id()).addEdge(key.name(), getVertex(id));
+        edge.setProperty(POSITION, key.position());
+
+        return previousId;
+    }
+
+    @Override
+    public Id unsetReferenceAtIndex(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .edges();
+
+        StreamSupport.stream(edges.spliterator(), false).forEach(Element::remove);
+        vertex.removeProperty(formatProperty(key.name(), KEY_SIZE_LITERAL));
+
+        // TODO Returns a complete list of previous Ids
+        return null;
+    }
+
+    @Override
+    public boolean hasReferenceAtIndex(FeatureKey key) {
+        return hasReference(key);
     }
 
     @Override

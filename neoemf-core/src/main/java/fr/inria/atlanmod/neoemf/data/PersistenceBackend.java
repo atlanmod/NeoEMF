@@ -110,7 +110,7 @@ public interface PersistenceBackend extends Closeable {
      * @return an {@link Object} representing the value associated to the given {@code key}, {@code null} if it is not
      * in the database
      */
-    Object valueOf(FeatureKey key);
+    Object getValue(FeatureKey key);
 
     /**
      * Stores the value of a given {@link FeatureKey}.
@@ -120,17 +120,17 @@ public interface PersistenceBackend extends Closeable {
      *
      * @return the old value
      */
-    Object storeValue(FeatureKey key, Object value);
+    Object setValue(FeatureKey key, Object value);
 
     /**
      * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
-     * #isFeatureSet(FeatureKey)}).
+     * #hasValue(FeatureKey)}).
      *
      * @param key the {@link FeatureKey} to remove
      *
      * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
      */
-    Object removeFeature(FeatureKey key);
+    Object unsetValue(FeatureKey key);
 
     /**
      * Checks if the given {@link FeatureKey} is set.
@@ -139,24 +139,32 @@ public interface PersistenceBackend extends Closeable {
      *
      * @return {@code true} if the feature is set, {@code false} otherwise
      */
-    boolean isFeatureSet(FeatureKey key);
+    boolean hasValue(FeatureKey key);
+
+    Id getReference(FeatureKey key);
+
+    Id setReference(FeatureKey key, Id id);
+
+    Id unsetReference(FeatureKey key);
+
+    boolean hasReference(FeatureKey key);
 
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.
      * <p>
-     * This method is similar to {@link #valueOf(FeatureKey)} but it uses multi-valued {@link Map} to retrieve the
+     * This method is similar to {@link #getValue(FeatureKey)} but it uses multi-valued {@link Map} to retrieve the
      * element at the given index directly instead of returning the entire {@link Collection}.
      *
      * @param key the {@link MultivaluedFeatureKey} to get the value from
      *
      * @return an {@link Object} representing the value associated to the given {@code key}
      */
-    Object valueAtIndex(MultivaluedFeatureKey key);
+    Object getValueAtIndex(MultivaluedFeatureKey key);
 
     /**
      * Stores the value of a given {@link MultivaluedFeatureKey}.
      * <p>
-     * This method is similar to {@link #storeValue(FeatureKey, Object)} but it uses the multi-valued {@link Map} that
+     * This method is similar to {@link #setValue(FeatureKey, Object)} but it uses the multi-valued {@link Map} that
      * stores indices explicitly.
      *
      * @param key   the {@link MultivaluedFeatureKey} to set the value of
@@ -164,17 +172,17 @@ public interface PersistenceBackend extends Closeable {
      *
      * @return the old value
      */
-    Object storeValueAtIndex(MultivaluedFeatureKey key, Object value);
+    Object setValueAtIndex(MultivaluedFeatureKey key, Object value);
 
     /**
      * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
-     * #isFeatureSet(FeatureKey)}).
+     * #hasValue(FeatureKey)}).
      *
      * @param key the {@link FeatureKey} to remove
      *
      * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
      */
-    Object removeFeatureAtIndex(FeatureKey key);
+    Object unsetValueAtIndex(FeatureKey key);
 
     /**
      * Checks if the given {@link FeatureKey} is set.
@@ -183,7 +191,15 @@ public interface PersistenceBackend extends Closeable {
      *
      * @return {@code true} if the feature is set, {@code false} otherwise
      */
-    boolean isFeatureSetAtIndex(FeatureKey key);
+    boolean hasValueAtIndex(FeatureKey key);
+
+    Id getReferenceAtIndex(MultivaluedFeatureKey key);
+
+    Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id);
+
+    Id unsetReferenceAtIndex(FeatureKey key);
+
+    boolean hasReferenceAtIndex(FeatureKey key);
 
     int sizeOf(FeatureKey key);
 

@@ -274,7 +274,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object storeValue(FeatureKey featureKey, Object obj) {
+    public Object setValue(FeatureKey featureKey, Object obj) {
         Object old = null;
         try {
             DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
@@ -289,7 +289,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object valueOf(FeatureKey featureKey) {
+    public Object getValue(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
@@ -305,7 +305,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object removeFeature(FeatureKey featureKey) {
+    public Object unsetValue(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
@@ -322,7 +322,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public boolean isFeatureSet(FeatureKey featureKey) {
+    public boolean hasValue(FeatureKey featureKey) {
         boolean isSet = false;
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
@@ -336,7 +336,27 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object storeValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
+    public Id getReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id setReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id unsetReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object setValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
             DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
             DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
@@ -350,13 +370,33 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object removeFeatureAtIndex(FeatureKey key) {
-        return removeFeature(key);
+    public Object unsetValueAtIndex(FeatureKey key) {
+        return unsetValue(key);
     }
 
     @Override
-    public boolean isFeatureSetAtIndex(FeatureKey key) {
-        return isFeatureSet(key);
+    public boolean hasValueAtIndex(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public Id getReferenceAtIndex(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id unsetReferenceAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasReferenceAtIndex(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -365,7 +405,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object valueAtIndex(MultivaluedFeatureKey featureKey) {
+    public Object getValueAtIndex(MultivaluedFeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;

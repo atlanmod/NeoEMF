@@ -81,14 +81,14 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
         IntStream.range(0, TIMES).forEach(i -> {
             FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
-            assertThat(backend.storeValue(key, "value" + i)).isNotNull();
+            assertThat(backend.setValue(key, "value" + i)).isNotNull();
         });
 
 //        backend.save();
         backend.close();
         backend.open();
 
-        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.valueOf(FeatureKey.of(new StringId("object" + i), "name" + i))).isEqualTo("value" + i));
+        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.getValue(FeatureKey.of(new StringId("object" + i), "name" + i))).isEqualTo("value" + i));
     }
 
     @Test
@@ -100,31 +100,31 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
         IntStream.range(0, TIMES).forEach(i -> {
             keys[i] = featureKey.withPosition(i);
-            backend.storeValueAtIndex(keys[i], i);
+            backend.setValueAtIndex(keys[i], i);
         });
 
-        IntStream.range(0, TIMES).forEach(i -> assertThat(i).isEqualTo(backend.valueAtIndex(keys[i])));
+        IntStream.range(0, TIMES).forEach(i -> assertThat(i).isEqualTo(backend.getValueAtIndex(keys[i])));
     }
 
     @Test
     public void testIsFeatureSet() {
         FeatureKey fk1 = FeatureKey.of(new StringId("objectId"), "isSet");
-        assertThat(backend.isFeatureSet(fk1)).isFalse();
+        assertThat(backend.hasValue(fk1)).isFalse();
 
-        backend.storeValue(fk1, "yes");
-        assertThat(backend.isFeatureSet(fk1)).isTrue();
+        backend.setValue(fk1, "yes");
+        assertThat(backend.hasValue(fk1)).isTrue();
     }
 
     @Test
     public void testRemoveFeature() {
         FeatureKey fk1 = FeatureKey.of(new StringId("objectId"), "unSet");
-        assertThat(backend.isFeatureSet(fk1)).isFalse();
+        assertThat(backend.hasValue(fk1)).isFalse();
 
-        backend.storeValue(fk1, "yes");
-        assertThat(backend.isFeatureSet(fk1)).isTrue();
+        backend.setValue(fk1, "yes");
+        assertThat(backend.hasValue(fk1)).isTrue();
 
-        backend.removeFeature(fk1);
-        assertThat(backend.isFeatureSet(fk1)).isFalse();
+        backend.unsetValue(fk1);
+        assertThat(backend.hasValue(fk1)).isFalse();
     }
 
     @Test
