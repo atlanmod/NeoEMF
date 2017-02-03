@@ -55,6 +55,7 @@ import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -318,6 +319,46 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void addValue(MultivaluedFeatureKey key, Object value) {
+        Integer size = sizeOf(key);
+        int newSize = size + 1;
+
+        checkPositionIndex(key.position(), newSize, "Invalid index");
+
+        Vertex vertex = getVertex(key.id());
+
+        // TODO Replace by Stream
+        for (int i = newSize - 1; i > key.position(); i--) {
+            vertex.setProperty(formatProperty(key.name(), i), vertex.getProperty(formatProperty(key.name(), (i - 1))));
+        }
+
+        vertex.setProperty(formatProperty(key.name(), key.position()), value);
+
+        sizeOf(key, newSize);
+    }
+
+    @Override
+    public Object removeValue(MultivaluedFeatureKey key) {
+        Integer size = sizeOf(key);
+        int newSize = size - 1;
+
+        checkPositionIndex(key.position(), size, "Invalid index");
+
+        Vertex vertex = getVertex(key.id());
+
+        Object previousValue = vertex.getProperty(formatProperty(key.name(), key.position()));
+
+        // TODO Replace by Stream
+        for (int i = newSize; i > key.position(); i--) {
+            vertex.setProperty(formatProperty(key.name(), i - 1), vertex.getProperty(formatProperty(key.name(), i)));
+        }
+
+        sizeOf(key, newSize);
+
+        return previousValue;
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
@@ -366,6 +407,68 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Vertex vertex = getVertex(key.id());
 
         return nonNull(vertex) && StreamSupport.stream(vertex.getVertices(Direction.OUT, key.name()).spliterator(), false).findAny().isPresent();
+    }
+
+    @Override
+    public void addReference(MultivaluedFeatureKey key, Id id) {
+        Integer size = sizeOf(key);
+        int newSize = size + 1;
+
+        checkPositionIndex(key.position(), newSize, "Invalid index");
+
+        Vertex vertex = getVertex(key.id());
+
+        if (key.position() != size) {
+            Iterable<Edge> edges = vertex.query()
+                    .labels(key.name())
+                    .direction(Direction.OUT)
+                    .interval(POSITION, key.position(), newSize)
+                    .edges();
+
+            // Avoid unnecessary database access
+            edges.forEach(e -> e.setProperty(POSITION, e.<Integer>getProperty(POSITION) + 1));
+        }
+
+        Edge edge = vertex.addEdge(key.name(), getVertex(id));
+        edge.setProperty(POSITION, key.position());
+
+        sizeOf(key, newSize);
+    }
+
+    @Override
+    public Id removeReference(MultivaluedFeatureKey key) {
+        Integer size = sizeOf(key);
+        int newSize = size - 1;
+
+        checkPositionIndex(key.position(), size, "Invalid index");
+
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .interval(POSITION, key.position(), size)
+                .edges();
+
+        Id previousId = null;
+        for (Edge edge : edges) {
+            int position = edge.getProperty(POSITION);
+
+            if (position != key.position()) {
+                edge.setProperty(POSITION, position - 1);
+            }
+            else {
+                Vertex referencedVertex = edge.getVertex(Direction.IN);
+                previousId = new StringId(referencedVertex.getId().toString());
+                edge.remove();
+
+                referencedVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
+            }
+        }
+
+        sizeOf(key, newSize);
+
+        return previousId;
     }
 
     @Override
@@ -476,6 +579,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         Integer size = vertex.getProperty(formatProperty(key.name(), KEY_SIZE_LITERAL));
         return isNull(size) ? 0 : size;
+    }
+
+    protected void sizeOf(FeatureKey key, int size) {
+        getVertex(key.id()).setProperty(formatProperty(key.name(), KEY_SIZE_LITERAL), size);
     }
 
     @Override

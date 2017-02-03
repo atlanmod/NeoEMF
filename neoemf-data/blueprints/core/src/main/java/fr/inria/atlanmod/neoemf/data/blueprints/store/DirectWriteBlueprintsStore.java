@@ -25,6 +25,7 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -46,7 +47,6 @@ import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -229,7 +229,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             return previousValue;
         }
         else {
-            Vertex vertex = backend.getOrCreateVertex(object);
+            backend.getOrCreateVertex(object);
             persistentObjectsCache.put(object.id(), object);
             updateInstanceOf(object);
 
@@ -254,11 +254,11 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             return previouslyReferencedObject;
         }
         else {
-            Vertex vertex = backend.getOrCreateVertex(object);
+            backend.getOrCreateVertex(object);
             persistentObjectsCache.put(object.id(), object);
             updateInstanceOf(object);
 
-            Vertex newReferencedVertex = backend.getOrCreateVertex(value);
+            backend.getOrCreateVertex(value);
             persistentObjectsCache.put(value.id(), value);
             updateInstanceOf(value);
 
@@ -394,36 +394,20 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         if (index == PersistentStore.NO_INDEX) {
-            /*
-             * Handle NO_INDEX index, which represent direct-append feature.
-			 * The call to size should not cause an overhead because it would have been done in regular
-			 * addUnique() otherwise.
-			 */
             index = size(object, attribute);
         }
-        Vertex vertex = backend.getOrCreateVertex(object);
+
+        backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
         updateInstanceOf(object);
 
-        Integer size = getSize(vertex, attribute);
-        size++;
-        setSize(vertex, attribute, size);
-        checkPositionIndex(index, size, "Invalid add index");
-        for (int i = size - 1; i > index; i--) {
-            Object movingProperty = vertex.getProperty(attribute.getName() + SEPARATOR + (i - 1));
-            vertex.setProperty(attribute.getName() + SEPARATOR + i, movingProperty);
-        }
-        vertex.setProperty(attribute.getName() + SEPARATOR + index, serializeToProperty(attribute, value));
+        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, attribute, index);
+        backend.addValue(featureKey, serializeToProperty(attribute, value));
     }
 
     @Override
     protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         if (index == PersistentStore.NO_INDEX) {
-            /*
-             * Handle NO_INDEX index, which represent direct-append feature.
-			 * The call to size should not cause an overhead because it would have been done in regular
-			 * addUnique() otherwise.
-			 */
             index = size(object, reference);
         }
         Vertex vertex = backend.getOrCreateVertex(object);
@@ -435,83 +419,28 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         updateContainment(object, reference, value);
         updateInstanceOf(value);
 
-        Integer size = getSize(vertex, reference);
-        int newSize = size + 1;
-        checkPositionIndex(index, newSize, "Invalid add index");
-        if (index != size) {
-            Iterable<Edge> edges = vertex.query()
-                    .labels(reference.getName())
-                    .direction(Direction.OUT)
-                    .interval(POSITION, index, newSize)
-                    .edges();
-
-            // Avoid unnecessary database access
-            for (Edge edge : edges) {
-                int position = edge.getProperty(POSITION);
-                edge.setProperty(POSITION, position + 1);
-            }
-        }
-        Edge edge = vertex.addEdge(reference.getName(), referencedVertex);
-        edge.setProperty(POSITION, index);
-
-        setSize(vertex, reference, newSize);
+        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, reference, index);
+        backend.addReference(featureKey, value.id());
     }
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        Vertex vertex = backend.getVertex(object.id());
-        Integer size = getSize(vertex, attribute);
-        Object old;
-        checkPositionIndex(index, size, "Invalid remove index");
-
-        old = parseProperty(attribute, vertex.getProperty(attribute.getName() + SEPARATOR + index));
-        int newSize = size - 1;
-        for (int i = newSize; i > index; i--) {
-            Object movingProperty = vertex.getProperty(attribute.getName() + SEPARATOR + i);
-            vertex.setProperty(attribute.getName() + SEPARATOR + (i - 1), movingProperty);
-        }
-        setSize(vertex, attribute, newSize);
-        return old;
+        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, attribute, index);
+        return parseProperty(attribute, backend.removeValue(featureKey));
     }
 
     @Override
     protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
-        Vertex vertex = backend.getVertex(object.id());
-        String referenceName = reference.getName();
-        Integer size = getSize(vertex, reference);
+        MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, reference, index);
+        PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(featureKey));
 
-        PersistentEObject old = null;
-        checkPositionIndex(index, size, "Invalid remove index");
-
-        Iterable<Edge> edges = vertex.query()
-                .labels(referenceName)
-                .direction(Direction.OUT)
-                .interval(POSITION, index, size)
-                .edges();
-
-        for (Edge edge : edges) {
-            int position = edge.getProperty(POSITION);
-            if (position == index) {
-                Vertex referencedVertex = edge.getVertex(Direction.IN);
-                old = reifyVertex(referencedVertex);
-                edge.remove();
-                if (reference.isContainment()) {
-                    for (Edge conEdge : referencedVertex.getEdges(Direction.OUT, CONTAINER)) {
-                        conEdge.remove();
-                    }
-                }
-            }
-            else {
-                edge.setProperty(POSITION, position - 1);
-            }
-        }
-        setSize(vertex, reference, size - 1); // Update size
-        checkNotNull(old);
+        checkNotNull(previouslyReferencedObject);
         if (reference.isContainment()) {
-            old.eBasicSetContainer(null, -1, null);
-            old.resource(null);
+            previouslyReferencedObject.eBasicSetContainer(null, -1, null);
+            previouslyReferencedObject.resource(null);
         }
-        return old;
+
+        return previouslyReferencedObject;
     }
 
     @Override

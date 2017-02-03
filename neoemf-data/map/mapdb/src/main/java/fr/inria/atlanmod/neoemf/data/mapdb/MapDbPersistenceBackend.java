@@ -212,6 +212,16 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public void addValue(MultivaluedFeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Object removeValue(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -228,6 +238,16 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addReference(MultivaluedFeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Id removeReference(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

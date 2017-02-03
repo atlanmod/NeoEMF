@@ -141,6 +141,10 @@ public interface PersistenceBackend extends Closeable {
      */
     boolean hasValue(FeatureKey key);
 
+    void addValue(MultivaluedFeatureKey key, Object value);
+
+    Object removeValue(MultivaluedFeatureKey key);
+
     Id getReference(FeatureKey key);
 
     Id setReference(FeatureKey key, Id id);
@@ -148,6 +152,10 @@ public interface PersistenceBackend extends Closeable {
     Id unsetReference(FeatureKey key);
 
     boolean hasReference(FeatureKey key);
+
+    void addReference(MultivaluedFeatureKey key, Id id);
+
+    Id removeReference(MultivaluedFeatureKey key);
 
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.
