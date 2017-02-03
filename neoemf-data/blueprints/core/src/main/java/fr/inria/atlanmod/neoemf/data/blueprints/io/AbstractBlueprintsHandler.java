@@ -40,8 +40,6 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
     /**
      * The string used as a separator between values of multi-valued attributes.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore#SEPARATOR
      */
     private static final char SEPARATOR = ':';
 

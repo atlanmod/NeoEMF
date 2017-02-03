@@ -202,8 +202,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Object unsetValue(FeatureKey key) {
-        return features.remove(key);
+    public void unsetValue(FeatureKey key) {
+        features.remove(key);
     }
 
     @Override
@@ -222,6 +222,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public void cleanAttribute(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -232,7 +237,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Id unsetReference(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -252,13 +257,18 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public void cleanReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
         return multivaluedFeatures.put(key, value);
     }
 
     @Override
-    public Object unsetValueAtIndex(FeatureKey key) {
-        return unsetValue(key);
+    public void unsetValueAtIndex(FeatureKey key) {
+        unsetValue(key);
     }
 
     @Override
@@ -277,7 +287,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Id unsetReferenceAtIndex(FeatureKey key) {
+    public void unsetReferenceAtIndex(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

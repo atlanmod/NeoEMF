@@ -130,7 +130,7 @@ public interface PersistenceBackend extends Closeable {
      *
      * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
      */
-    Object unsetValue(FeatureKey key);
+    void unsetValue(FeatureKey key);
 
     /**
      * Checks if the given {@link FeatureKey} is set.
@@ -145,17 +145,21 @@ public interface PersistenceBackend extends Closeable {
 
     Object removeValue(MultivaluedFeatureKey key);
 
+    void cleanAttribute(FeatureKey key);
+
     Id getReference(FeatureKey key);
 
     Id setReference(FeatureKey key, Id id);
 
-    Id unsetReference(FeatureKey key);
+    void unsetReference(FeatureKey key);
 
     boolean hasReference(FeatureKey key);
 
     void addReference(MultivaluedFeatureKey key, Id id);
 
     Id removeReference(MultivaluedFeatureKey key);
+
+    void cleanReference(FeatureKey key);
 
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.
@@ -190,7 +194,7 @@ public interface PersistenceBackend extends Closeable {
      *
      * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
      */
-    Object unsetValueAtIndex(FeatureKey key);
+    void unsetValueAtIndex(FeatureKey key);
 
     /**
      * Checks if the given {@link FeatureKey} is set.
@@ -205,7 +209,7 @@ public interface PersistenceBackend extends Closeable {
 
     Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id);
 
-    Id unsetReferenceAtIndex(FeatureKey key);
+    void unsetReferenceAtIndex(FeatureKey key);
 
     boolean hasReferenceAtIndex(FeatureKey key);
 

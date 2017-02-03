@@ -94,7 +94,7 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Object unsetValue(FeatureKey key) {
+    public void unsetValue(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -114,6 +114,11 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void cleanAttribute(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -124,7 +129,7 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Id unsetReference(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -144,12 +149,17 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void cleanReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Object unsetValueAtIndex(FeatureKey key) {
+    public void unsetValueAtIndex(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -169,7 +179,7 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Id unsetReferenceAtIndex(FeatureKey key) {
+    public void unsetReferenceAtIndex(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

@@ -307,8 +307,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Object unsetValue(FeatureKey key) {
-        return getVertex(key.id()).removeProperty(key.name());
+    public void unsetValue(FeatureKey key) {
+        getVertex(key.id()).removeProperty(key.name());
     }
 
     @Override
@@ -359,6 +359,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void cleanAttribute(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+        IntStream.range(0, sizeOf(key)).forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+        sizeOf(key, 0);
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
@@ -386,20 +393,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Id unsetReference(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
         Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
 
-        Id previousId = null;
-        if (referenceEdge.isPresent()) {
-            Vertex previouslyReferencedVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = new StringId(previouslyReferencedVertex.getId().toString());
-            referenceEdge.get().remove();
-        }
-
-        return previousId;
+        referenceEdge.ifPresent(Element::remove);
     }
 
     @Override
@@ -472,6 +472,20 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void cleanReference(FeatureKey key) {
+        Vertex vertex = getVertex(key.id());
+
+        Iterable<Edge> edges = vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .edges();
+
+        edges.forEach(Element::remove);
+
+        sizeOf(key, 0);
+    }
+
+    @Override
     public Object getValueAtIndex(MultivaluedFeatureKey key) {
         checkElementIndex(key.position(), sizeOf(key), "Invalid index " + key.position());
 
@@ -489,15 +503,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Object unsetValueAtIndex(FeatureKey key) {
+    public void unsetValueAtIndex(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
         String property = formatProperty(key.name(), KEY_SIZE_LITERAL);
 
         IntStream.range(0, vertex.getProperty(property)).forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
         vertex.removeProperty(property);
-
-        // TODO Returns a complete list of previous values
-        return null;
     }
 
     public boolean hasValueAtIndex(FeatureKey key) {
@@ -550,7 +561,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Id unsetReferenceAtIndex(FeatureKey key) {
+    public void unsetReferenceAtIndex(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
 
         Iterable<Edge> edges = vertex.query()
@@ -560,9 +571,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         StreamSupport.stream(edges.spliterator(), false).forEach(Element::remove);
         vertex.removeProperty(formatProperty(key.name(), KEY_SIZE_LITERAL));
-
-        // TODO Returns a complete list of previous Ids
-        return null;
     }
 
     @Override

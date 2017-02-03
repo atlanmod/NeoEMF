@@ -21,9 +21,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -51,41 +48,26 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link DirectWriteStore} that translates model-level operations to Blueprints calls.
+ * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to Blueprints calls.
  * <p>
- * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
+ * This class implements the {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore} interface that defines a set of operations to implement in order to
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
  * PersistentEObject} is forwarded to this class, that takes care of the database serialization and deserialization
  * using its embedded {@link BlueprintsPersistenceBackend}.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
- * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  *
  * @see PersistentEObject
  * @see BlueprintsPersistenceBackend
- * @see AbstractPersistentStoreDecorator
+ * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
-
-    /**
-     * The string used as a separator between values of multi-valued attributes.
-     */
-    protected static final String SEPARATOR = ":";
 
     /**
      * The property key used to define the index of an edge.
      */
     protected static final String POSITION = "position";
-
-    /**
-     * The label used to define container {@link Edge}s.
-     */
-    protected static final String CONTAINER = "eContainer";
-
-    /**
-     * The property key used to define the number of edges with a specific label.
-     */
-    protected static final String SIZE_LITERAL = "size";
 
     /**
      * Constructs a new {@code DirectWriteBlueprintsStore} between the given {@code resource} and the
@@ -167,13 +149,13 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         else {
             String propertyName = feature.getName();
             if (feature.isMany()) {
-                int size = getSize(vertex, feature);
+                int size = size(object, feature);
                 T[] output = array;
                 if (isNull(array)) {
                     output = (T[]) new Object[size];
                 }
                 for (int i = 0; i < size; i++) {
-                    Object parsedProperty = parseProperty((EAttribute) feature, vertex.getProperty(propertyName + SEPARATOR + i));
+                    Object parsedProperty = parseProperty((EAttribute) feature, vertex.getProperty(propertyName + ':' + i));
                     output[i] = (T) parsedProperty;
                 }
                 // Return array if it as been provided to ensure the reference does not change
@@ -351,7 +333,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        int index = ArrayUtils.INDEX_NOT_FOUND;
         if (nonNull(value)) {
             Vertex inVertex = backend.getVertex(object.id());
             Vertex outVertex = backend.getVertex(value.id());
@@ -361,7 +342,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 }
             }
         }
-        return index;
+        return NO_INDEX;
     }
 
     @Override
@@ -371,7 +352,6 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        int index = ArrayUtils.INDEX_NOT_FOUND;
         if (nonNull(value)) {
             Vertex inVertex = backend.getVertex(object.id());
             Vertex outVertex = backend.getVertex(value.id());
@@ -385,15 +365,17 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 }
             }
             if (nonNull(lastPositionEdge)) {
-                index = lastPositionEdge.getProperty(POSITION);
+                return lastPositionEdge.getProperty(POSITION);
             }
         }
-        return index;
+        return NO_INDEX;
     }
 
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        if (index == PersistentStore.NO_INDEX) {
+        checkArgument(attribute.isMany(), "Cannot compute add() of a single-valued attribute");
+
+        if (index == NO_INDEX) {
             index = size(object, attribute);
         }
 
@@ -407,7 +389,9 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        if (index == PersistentStore.NO_INDEX) {
+        checkArgument(reference.isMany(), "Cannot compute add() of a single-valued reference");
+
+        if (index == NO_INDEX) {
             index = size(object, reference);
         }
         Vertex vertex = backend.getOrCreateVertex(object);
@@ -425,12 +409,16 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        checkArgument(attribute.isMany(), "Cannot compute remove() of a single-valued attribute");
+
         MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, attribute, index);
         return parseProperty(attribute, backend.removeValue(featureKey));
     }
 
     @Override
     protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
+        checkArgument(reference.isMany(), "Cannot compute remove() of a single-valued reference");
+
         MultivaluedFeatureKey featureKey = MultivaluedFeatureKey.from(object, reference, index);
         PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(featureKey));
 
@@ -445,55 +433,29 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
-        Vertex vertex = backend.getVertex(object.id());
-        Integer size = getSize(vertex, attribute);
-        for (int i = 0; i < size; i++) {
-            vertex.removeProperty(attribute.getName() + SEPARATOR + i);
-        }
-        setSize(vertex, attribute, 0);
+        checkArgument(attribute.isMany(), "Cannot compute clear() of a single-valued attribute");
+
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        backend.cleanAttribute(featureKey);
     }
 
     @Override
     protected void clearReference(PersistentEObject object, EReference reference) {
+        checkArgument(reference.isMany(), "Cannot compute clear() of a single-valued reference");
+
         Vertex vertex = backend.getOrCreateVertex(object);
         persistentObjectsCache.put(object.id(), object);
         updateInstanceOf(object);
 
-        for (Edge edge : vertex.query().labels(reference.getName()).direction(Direction.OUT).edges()) {
-            edge.remove();
-        }
-        setSize(vertex, reference, 0);
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+        backend.cleanReference(featureKey);
     }
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
+        checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
         return backend.sizeOf(FeatureKey.from(internalObject, feature));
-    }
-
-    /**
-     * Finds the number of elements contained in the given {@code feature}.
-     *
-     * @param vertex  the input {@link Vertex} of the {@code feature}
-     * @param feature the {@link EStructuralFeature} describing the feature to access
-     *
-     * @return the size of the {@code feature} if it is multi-valued, {@code 0} otherwise
-     */
-    protected Integer getSize(Vertex vertex, EStructuralFeature feature) {
-        Integer size = vertex.getProperty(feature.getName() + SEPARATOR + SIZE_LITERAL);
-        return isNull(size) ? 0 : size;
-    }
-
-    /**
-     * Defines the size property of the given {@code feature} in the given {@code vertex} to {@code size}.
-     *
-     * @param vertex  the input {@link Vertex} of the {@code feature}
-     * @param feature the {@link EStructuralFeature} describing the feature to access
-     * @param size    the new size
-     */
-    private void setSize(Vertex vertex, EStructuralFeature feature, int size) {
-        vertex.setProperty(feature.getName() + SEPARATOR + SIZE_LITERAL, size);
     }
 
     /**

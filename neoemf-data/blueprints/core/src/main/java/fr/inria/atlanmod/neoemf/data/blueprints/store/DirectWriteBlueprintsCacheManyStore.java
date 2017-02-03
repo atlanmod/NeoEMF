@@ -100,7 +100,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
             }
             else {
                 Vertex vertex = backend.getVertex(object.id());
-                Integer size = getSize(vertex, reference);
+                Integer size = size(object, reference);
                 Object[] vertices = new Object[size];
                 verticesCache.put(key, vertices);
                 if (index < 0 || index >= size) {

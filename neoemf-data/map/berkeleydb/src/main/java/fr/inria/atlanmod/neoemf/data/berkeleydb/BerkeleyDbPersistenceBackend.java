@@ -305,20 +305,18 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object unsetValue(FeatureKey featureKey) {
+    public void unsetValue(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
         try {
             if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 features.delete(null, key);
-                old = new ObjectSerializer().deserialize(value.getData());
             }
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return old;
     }
 
     @Override
@@ -346,6 +344,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public void cleanAttribute(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Id getReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -356,7 +359,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Id unsetReference(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -376,6 +379,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public void cleanReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
             DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
@@ -390,8 +398,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object unsetValueAtIndex(FeatureKey key) {
-        return unsetValue(key);
+    public void unsetValueAtIndex(FeatureKey key) {
+        unsetValue(key);
     }
 
     @Override
@@ -410,7 +418,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Id unsetReferenceAtIndex(FeatureKey key) {
+    public void unsetReferenceAtIndex(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
