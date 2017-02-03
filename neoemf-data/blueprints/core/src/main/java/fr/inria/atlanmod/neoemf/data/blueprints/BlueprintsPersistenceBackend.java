@@ -359,7 +359,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public void cleanAttribute(FeatureKey key) {
+    public void cleanValue(FeatureKey key) {
         Vertex vertex = getVertex(key.id());
         IntStream.range(0, sizeOf(key)).forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
         sizeOf(key, 0);

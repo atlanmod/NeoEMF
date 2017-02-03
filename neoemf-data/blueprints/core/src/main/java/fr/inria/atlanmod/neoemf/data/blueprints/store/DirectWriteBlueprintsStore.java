@@ -436,7 +436,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         checkArgument(attribute.isMany(), "Cannot compute clear() of a single-valued attribute");
 
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        backend.cleanAttribute(featureKey);
+        backend.cleanValue(featureKey);
     }
 
     @Override

@@ -344,7 +344,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public void cleanAttribute(FeatureKey key) {
+    public void cleanValue(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

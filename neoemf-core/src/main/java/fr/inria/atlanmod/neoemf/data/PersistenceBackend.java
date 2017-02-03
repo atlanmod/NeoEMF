@@ -145,7 +145,7 @@ public interface PersistenceBackend extends Closeable {
 
     Object removeValue(MultivaluedFeatureKey key);
 
-    void cleanAttribute(FeatureKey key);
+    void cleanValue(FeatureKey key);
 
     Id getReference(FeatureKey key);
 
