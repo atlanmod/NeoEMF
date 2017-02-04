@@ -284,21 +284,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object setValue(FeatureKey featureKey, Object obj) {
-        Object old = null;
-        try {
-            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
-            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
-            features.put(null, key, value);
-            old = obj;
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-        return old;
-    }
-
-    @Override
     public Object getValue(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
@@ -307,6 +292,21 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
             if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 old = new ObjectSerializer().deserialize(value.getData());
             }
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
+        }
+        return old;
+    }
+
+    @Override
+    public Object setValue(FeatureKey featureKey, Object obj) {
+        Object old = null;
+        try {
+            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
+            features.put(null, key, value);
+            old = obj;
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
@@ -434,6 +434,22 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public Object getValueAtIndex(MultivaluedFeatureKey featureKey) {
+        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+        DatabaseEntry value = new DatabaseEntry();
+        Object old = null;
+        try {
+            if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                old = new ObjectSerializer().deserialize(value.getData());
+            }
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
+        }
+        return old;
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
             DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
@@ -490,22 +506,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     @Override
     public int sizeOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Object getValueAtIndex(MultivaluedFeatureKey featureKey) {
-        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
-        DatabaseEntry value = new DatabaseEntry();
-        Object old = null;
-        try {
-            if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                old = new ObjectSerializer().deserialize(value.getData());
-            }
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-        return old;
     }
 
     /**

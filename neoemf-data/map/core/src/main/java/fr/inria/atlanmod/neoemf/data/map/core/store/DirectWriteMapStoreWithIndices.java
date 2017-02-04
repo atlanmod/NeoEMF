@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.data.map.core.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -53,14 +53,15 @@ import static java.util.Objects.nonNull;
  * @see MapBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends DirectWriteMapStore<P> {
+public class DirectWriteMapStoreWithIndices extends DirectWriteMapStore {
+
     /**
      * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteMapStoreWithIndices(PersistentResource resource, P backend) {
+    public DirectWriteMapStoreWithIndices(PersistentResource resource, PersistenceBackend backend) {
         super(resource, backend);
     }
 
@@ -117,6 +118,21 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
     }
 
     @Override
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+        checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        NeoLogger.debug("size({0}, {1})", object.id(), feature.getName());
+
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        Object value = backend.getValue(featureKey);
+
+        return isNull(value) ? 0 : (Integer) value;
+    }
+
+    @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         NeoLogger.debug("DirectWriteMapStoreWithIndices::indexOf({0}, {1})", feature.getName(), value);
 
@@ -137,95 +153,6 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
     }
 
     @Override
-    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        NeoLogger.debug("getAttribute({0}, {1}, {2})", object.id(), attribute.getName(), index);
-
-        Object result;
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        if (attribute.isMany()) {
-            result = backend.getValueAtIndex(featureKey.withPosition(index));
-        } else {
-            result = backend.getValue(featureKey);
-        }
-
-        return parseProperty(attribute, result);
-    }
-
-    @Override
-    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        NeoLogger.debug("setAttribute({0}, {1}, {2}, {3})", object.id(), attribute.getName(), index, value);
-
-        Object old;
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        Object serializedValue = serializeToProperty(attribute, value);
-
-        if (attribute.isMany()) {
-            old = backend.setValueAtIndex(featureKey.withPosition(index), serializedValue);
-        } else {
-            old = backend.setValue(featureKey, serializedValue);
-        }
-
-        return parseProperty(attribute, old);
-    }
-
-    @Override
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
-        NeoLogger.debug("getReference({0}, {1}, {2})", object.id(), reference.getName(), index);
-
-        Id result;
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        if (reference.isMany()) {
-            result = (Id) backend.getValueAtIndex(featureKey.withPosition(index));
-        } else {
-            result = (Id) backend.getValue(featureKey);
-        }
-
-        return nonNull(result) ? eObject(result) : null;
-    }
-
-    @Override
-    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        NeoLogger.debug("setReference({0}, {1}, {2}, {3})", object.id(), reference.getName(), index, value);
-
-        Id old;
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        updateContainment(object, reference, value);
-        updateInstanceOf(value);
-
-        if (reference.isMany()) {
-            old = (Id) backend.setValueAtIndex(featureKey.withPosition(index), value.id());
-        } else {
-            old = (Id) backend.setValue(featureKey, value.id());
-        }
-
-        return nonNull(old) ? eObject(old) : null;
-    }
-
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-        checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
-
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        NeoLogger.debug("size({0}, {1})", object.id(), feature.getName());
-
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        Object value = backend.getValue(featureKey);
-
-        return isNull(value) ? 0 : (Integer) value;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation of
-     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
-     * that takes benefit of the underlying backend to deserialize the entire
-     * list once and return it as an array, avoiding multiple {@code get()}
-     * operations.
-     */
-    @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
                 "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
@@ -237,29 +164,21 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
             int length = (int) getFromMap(object, feature);
             if (isReference) {
                 return multiValuedReferenceToArray(object, (EReference) feature, new PersistentEObject[length]);
-            } else {
+            }
+            else {
                 return multiValuedAttributeToArray(object, (EAttribute) feature, new Object[length]);
             }
-        } else { //monovalued
+        }
+        else { //monovalued
             if (isReference) {
                 return monoValuedReferenceToArray(object, (EReference) feature, new PersistentEObject[1]);
-            } else {
-                return monoValuedAttributeToArray(object, (EAttribute)feature, new Object[1]);
+            }
+            else {
+                return monoValuedAttributeToArray(object, (EAttribute) feature, new Object[1]);
             }
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation of
-     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
-     * that takes benefit of the underlying backend to deserialize the entire
-     * list once and return it as an array, avoiding multiple {@code get()}
-     * operations.
-     * <p>
-     * Returns the given {@code array} reference if it is not {@code null}.
-     */
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -273,44 +192,119 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
             //int length = (int) getFromMap(object, feature);
             if (isReference) {
                 return multiValuedReferenceToArray(object, (EReference) feature, array);
-            } else {
+            }
+            else {
                 return multiValuedAttributeToArray(object, (EAttribute) feature, array);
             }
-        } else { //monovalued
+        }
+        else { //monovalued
             if (isReference) {
                 return monoValuedReferenceToArray(object, (EReference) feature, array);
-            } else {
-                return monoValuedAttributeToArray(object, (EAttribute)feature, array);
+            }
+            else {
+                return monoValuedAttributeToArray(object, (EAttribute) feature, array);
             }
         }
 
     }
 
+    @Override
+    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        NeoLogger.debug("getAttribute({0}, {1}, {2})", object.id(), attribute.getName(), index);
 
+        Object result;
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        if (attribute.isMany()) {
+            result = backend.getValueAtIndex(featureKey.withPosition(index));
+        }
+        else {
+            result = backend.getValue(featureKey);
+        }
+
+        return parseProperty(attribute, result);
+    }
+
+    @Override
+    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+        NeoLogger.debug("getReference({0}, {1}, {2})", object.id(), reference.getName(), index);
+
+        Id result;
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+        if (reference.isMany()) {
+            result = (Id) backend.getValueAtIndex(featureKey.withPosition(index));
+        }
+        else {
+            result = (Id) backend.getValue(featureKey);
+        }
+
+        return nonNull(result) ? eObject(result) : null;
+    }
+
+    @Override
+    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
+        NeoLogger.debug("setAttribute({0}, {1}, {2}, {3})", object.id(), attribute.getName(), index, value);
+
+        Object old;
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        Object serializedValue = serializeToProperty(attribute, value);
+
+        if (attribute.isMany()) {
+            old = backend.setValueAtIndex(featureKey.withPosition(index), serializedValue);
+        }
+        else {
+            old = backend.setValue(featureKey, serializedValue);
+        }
+
+        return parseProperty(attribute, old);
+    }
+
+    @Override
+    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+        NeoLogger.debug("setReference({0}, {1}, {2}, {3})", object.id(), reference.getName(), index, value);
+
+        Id old;
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+        updateContainment(object, reference, value);
+        updateInstanceOf(value);
+
+        if (reference.isMany()) {
+            old = (Id) backend.setValueAtIndex(featureKey.withPosition(index), value.id());
+        }
+        else {
+            old = (Id) backend.setValue(featureKey, value.id());
+        }
+
+        return nonNull(old) ? eObject(old) : null;
+    }
+
+    @SuppressWarnings("unchecked")
     private <T> T[] monoValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
-        FeatureKey fk = FeatureKey.from(object,attr);
+        FeatureKey fk = FeatureKey.from(object, attr);
         output[0] = (T) parseProperty(attr, backend.getValue(fk));
         return output;
     }
 
-    private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr,  T[] output) {
-        FeatureKey fk = FeatureKey.from(object,attr);
+    @SuppressWarnings("unchecked")
+    private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, attr);
         for (int i = 0; i < output.length; i++) {
-            output[i] = (T) parseProperty(attr,backend.getValueAtIndex(fk.withPosition(i)));
+            output[i] = (T) parseProperty(attr, backend.getValueAtIndex(fk.withPosition(i)));
         }
         return output;
     }
 
-    private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
-        FeatureKey fk = FeatureKey.from(object,ref);
+    @SuppressWarnings("unchecked")
+    private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, ref);
         Id id = (Id) backend.getValue(fk);
         output[0] = (T) eObject(id);
         return output;
     }
 
-    private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
-        FeatureKey fk = FeatureKey.from(object,ref);
-        for (int i = 0; i < output.length ; i++) {
+    @SuppressWarnings("unchecked")
+    private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, ref);
+        for (int i = 0; i < output.length; i++) {
             Id id = (Id) backend.getValueAtIndex(fk.withPosition(i));
             output[i] = (T) eObject(id);
         }

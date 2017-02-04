@@ -19,15 +19,15 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * An adapter on top of a map-based database that provides specific methods for communicating with the database that it uses.
- * Each {@code MapBackend} manage one single instance of a database.
+ * An adapter on top of a map-based database that provides specific methods for communicating with the database that it
+ * uses. Each {@code MapBackend} manage one single instance of a database.
  * <p>
  * It does not provide model-level translation; these functions are handled by {@link DirectWriteMapStore}s.
  *
  * @see DirectWriteMapStore
  */
 public interface MapBackend extends PersistenceBackend {
-    
+
     /**
      * Returns all the {@link Collection}s contained in the database.
      *

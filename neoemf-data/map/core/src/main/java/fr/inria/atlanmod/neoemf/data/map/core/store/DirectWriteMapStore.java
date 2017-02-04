@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.map.core.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -38,10 +37,8 @@ import static java.util.Objects.isNull;
  * An abstract {@link DefaultDirectWriteStore} that redirects certain methods according to the instance of the
  * encountered {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods of EMF, the call
  * is automatically redirected to the associated method that begins with the same name.
- *
- * @param <P> the type of the supported {@link PersistenceBackend}
  */
-public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWriteStore<P> {
+public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBackend> {
 
     /**
      * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
@@ -49,7 +46,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteMapStore(PersistentResource resource, P backend) {
+    public DirectWriteMapStore(PersistentResource resource, PersistenceBackend backend) {
         super(resource, backend);
     }
 
@@ -72,46 +69,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
     }
 
     @Override
-    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("DirectWriteMapStore::contains({1}, {2})", feature.getName(), value);
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
-        return indexOf(internalObject, feature, value) != PersistentStore.NO_INDEX;
-    }
-
-    /**
-     * Returns the value associated to the {@code featureKey} in the underlying database.
-     *
-     * @param featureKey the {@link FeatureKey} to look for
-     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
-     * {@link Object} can be a single element or a {@link Collection}.
-     */
-    public Object getFromMap(FeatureKey featureKey) {
-        checkNotNull(featureKey);
-
-        return backend.getValue(featureKey);
-    }
-
-    /**
-     * Returns the value associated to ({@code object}, {@code feature}) in the underlying database.
-     * <p>
-     * This method behaves like: {@code getFromMap(FeatureKey.from(object, feature)}.
-     *
-     * @param object  the {@link PersistentEObject} to look for
-     * @param feature the {@link EStructuralFeature} of {@code object} to look for
-     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
-     * {@link Object} can be a single element or a {@link Collection}.
-     * @see #getFromMap(FeatureKey)
-     */
-    protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        checkNotNull(object);
-        checkNotNull(feature);
-
-        return getFromMap(FeatureKey.from(object, feature));
-    }
-
-    @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
         checkNotNull(feature);
@@ -120,6 +77,15 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         PersistentEObject object = PersistentEObject.from(internalObject);
         Object[] array = (Object[]) getFromMap(object, feature);
         return isNull(array) ? 0 : array.length;
+    }
+
+    @Override
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        NeoLogger.debug("DirectWriteMapStore::contains({1}, {2})", feature.getName(), value);
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        return indexOf(internalObject, feature, value) != PersistentStore.NO_INDEX;
     }
 
     @Override
@@ -135,9 +101,11 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         Object[] array = (Object[]) getFromMap(object, feature);
         if (isNull(array)) {
             index = ArrayUtils.INDEX_NOT_FOUND;
-        } else if (feature instanceof EAttribute) {
+        }
+        else if (feature instanceof EAttribute) {
             index = ArrayUtils.indexOf(array, serializeToProperty((EAttribute) feature, value));
-        } else {
+        }
+        else {
             PersistentEObject childEObject = PersistentEObject.from(value);
             index = ArrayUtils.indexOf(array, childEObject.id());
         }
@@ -155,9 +123,11 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         Object[] array = (Object[]) getFromMap(object, feature);
         if (isNull(array)) {
             index = ArrayUtils.INDEX_NOT_FOUND;
-        } else if (feature instanceof EAttribute) {
+        }
+        else if (feature instanceof EAttribute) {
             index = ArrayUtils.lastIndexOf(array, serializeToProperty((EAttribute) feature, value));
-        } else {
+        }
+        else {
             PersistentEObject childEObject = PersistentEObject.from(value);
             index = ArrayUtils.lastIndexOf(array, childEObject.id());
         }
@@ -173,15 +143,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         backend.setValue(featureKey, new Object[]{});
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation of
-     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
-     * that takes benefit of the underlying backend to deserialize the entire
-     * list once and return it as an array, avoiding multiple {@code get()}
-     * operations.
-     */
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -192,22 +153,12 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         if (feature.isMany()) {
             int valueLength = ((Object[]) value).length;
             return internalToArray(value, feature, new Object[valueLength]);
-        } else {
+        }
+        else {
             return internalToArray(value, feature, new Object[1]);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation of
-     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
-     * that takes benefit of the underlying backend to deserialize the entire
-     * list once and return it as an array, avoiding multiple {@code get()}
-     * operations.
-     * <p>
-     * Returns the given {@code array} reference if it is not {@code null}.
-     */
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -216,39 +167,6 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         PersistentEObject object = PersistentEObject.from(internalObject);
         Object value = getFromMap(object, feature);
         return internalToArray(value, feature, array);
-    }
-
-    /**
-     * Reifies the element(s) in {@code value} and put them into {@code output}.
-     * @param value the backend record to reify
-     * @param feature the {@link EStructuralFeature} used to reify {@code value}
-     * @param output the array to fill
-     * @return {@code output} filled with the reified values
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
-        if(feature.isMany()) {
-            Object[] storedArray = (Object[])value;
-            if(feature instanceof EReference) {
-                for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) eObject((Id)storedArray[i]);
-                }
-            }
-            else { // EAttribute
-                for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) parseProperty((EAttribute)feature, storedArray[i]);
-                }
-            }
-        }
-        else {
-            if(feature instanceof EReference) {
-                output[0] = (T) eObject((Id)value);
-            }
-            else { // EAttribute
-                output[0] = (T) parseProperty((EAttribute)feature, value);
-            }
-        }
-        return output;
     }
 
     @Override
@@ -261,7 +179,8 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
             Object[] array = (Object[]) soughtAttribute;
             checkPositionIndex(index, array.length, "Invalid get index " + index);
             soughtAttribute = parseProperty(attribute, array[index]);
-        } else {
+        }
+        else {
             soughtAttribute = parseProperty(attribute, soughtAttribute);
         }
         return soughtAttribute;
@@ -276,12 +195,14 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         Object value = getFromMap(object, reference);
         if (isNull(value)) {
             result = null;
-        } else {
+        }
+        else {
             if (reference.isMany()) {
                 Object[] array = (Object[]) value;
                 checkPositionIndex(index, array.length, "Invalid get index " + index);
                 result = eObject((Id) array[index]);
-            } else {
+            }
+            else {
                 result = eObject((Id) value);
             }
         }
@@ -299,8 +220,9 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         if (!attribute.isMany()) {
             old = backend.setValue(featureKey, serializeToProperty(attribute, value));
             old = parseProperty(attribute, old);
-        } else {
-            Object[] array = (Object[]) getFromMap(featureKey);
+        }
+        else {
+            Object[] array = (Object[]) backend.getValue(featureKey);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             old = array[index];
             array[index] = serializeToProperty(attribute, value);
@@ -323,8 +245,9 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         if (!reference.isMany()) {
             Object oldId = backend.setValue(featureKey, value.id());
             old = isNull(oldId) ? null : eObject((Id) oldId);
-        } else {
-            Object[] array = (Object[]) getFromMap(featureKey);
+        }
+        else {
+            Object[] array = (Object[]) backend.getValue(featureKey);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             Object oldId = array[index];
             array[index] = value.id();
@@ -349,7 +272,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
 			 */
             index = size(object, attribute);
         }
-        Object[] array = (Object[]) getFromMap(featureKey);
+        Object[] array = (Object[]) backend.getValue(featureKey);
         if (isNull(array)) {
             array = new Object[]{};
         }
@@ -375,7 +298,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         }
         updateContainment(object, reference, value);
         updateInstanceOf(value);
-        Object[] array = (Object[]) getFromMap(featureKey);
+        Object[] array = (Object[]) backend.getValue(featureKey);
         if (isNull(array)) {
             array = new Object[]{};
         }
@@ -391,7 +314,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         checkNotNull(attribute);
 
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        Object[] array = (Object[]) getFromMap(featureKey);
+        Object[] array = (Object[]) backend.getValue(featureKey);
         checkPositionIndex(index, array.length, "Invalid remove index");
         Object old = array[index];
         array = ArrayUtils.remove(array, index);
@@ -405,11 +328,78 @@ public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWrit
         checkNotNull(reference);
 
         FeatureKey featureKey = FeatureKey.from(object, reference);
-        Object[] array = (Object[]) getFromMap(featureKey);
+        Object[] array = (Object[]) backend.getValue(featureKey);
         checkPositionIndex(index, array.length, "Invalid remove index");
         Object oldId = array[index];
         array = ArrayUtils.remove(array, index);
         backend.setValue(featureKey, array);
         return eObject((Id) oldId);
+    }
+
+    /**
+     * Returns the value associated to the {@code featureKey} in the underlying database.
+     *
+     * @param featureKey the {@link FeatureKey} to look for
+     *
+     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
+     * {@link Object} can be a single element or a {@link Collection}.
+     */
+    public Object getFromMap(FeatureKey featureKey) {
+        checkNotNull(featureKey);
+
+        return backend.getValue(featureKey);
+    }
+
+    /**
+     * Returns the value associated to ({@code object}, {@code feature}) in the underlying database.
+     * <p>
+     * This method behaves like: {@code getFromMap(FeatureKey.from(object, feature)}.
+     *
+     * @param object  the {@link PersistentEObject} to look for
+     * @param feature the {@link EStructuralFeature} of {@code object} to look for
+     *
+     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
+     * {@link Object} can be a single element or a {@link Collection}.
+     */
+    protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
+        checkNotNull(object);
+        checkNotNull(feature);
+
+        return backend.getValue(FeatureKey.from(object, feature));
+    }
+
+    /**
+     * Reifies the element(s) in {@code value} and put them into {@code output}.
+     *
+     * @param value   the backend record to reify
+     * @param feature the {@link EStructuralFeature} used to reify {@code value}
+     * @param output  the array to fill
+     *
+     * @return {@code output} filled with the reified values
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
+        if (feature.isMany()) {
+            Object[] storedArray = (Object[]) value;
+            if (feature instanceof EReference) {
+                for (int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T) eObject((Id) storedArray[i]);
+                }
+            }
+            else { // EAttribute
+                for (int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T) parseProperty((EAttribute) feature, storedArray[i]);
+                }
+            }
+        }
+        else {
+            if (feature instanceof EReference) {
+                output[0] = (T) eObject((Id) value);
+            }
+            else { // EAttribute
+                output[0] = (T) parseProperty((EAttribute) feature, value);
+            }
+        }
+        return output;
     }
 }

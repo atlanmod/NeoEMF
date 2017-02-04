@@ -16,6 +16,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -28,22 +29,22 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link DirectWriteMapStore} that uses an internal cache to store persisted {@link Object}s that are part
- * of multi-valued {@link EReference}s to speed-up their access.
+ * A {@link DirectWriteMapStore} that uses an internal cache to store persisted {@link Object}s that are part of
+ * multi-valued {@link EReference}s to speed-up their access.
  * <p>
- * Using a cache avoids multiple {@link java.util.List} deserialization to retrieve the same element, which can be an important
- * bottleneck in terms of execution time and memory consumption if the underlying model contains very large {@link
- * java.util.Collection}s.
+ * Using a cache avoids multiple {@link java.util.List} deserialization to retrieve the same element, which can be an
+ * important bottleneck in terms of execution time and memory consumption if the underlying model contains very large
+ * {@link java.util.Collection}s.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
- * fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses) to provide additional features such
+ * as caching or logging.
  *
  * @see DirectWriteMapStore
  * @see MapBackend
- *
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
-public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWriteMapStore<P> {
+public class DirectWriteCachedMapStore extends DirectWriteMapStore {
 
     /**
      * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
@@ -58,7 +59,7 @@ public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWrite
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteCachedMapStore(PersistentResource resource, P backend) {
+    public DirectWriteCachedMapStore(PersistentResource resource, PersistenceBackend backend) {
         super(resource, backend);
     }
 
@@ -76,7 +77,7 @@ public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWrite
             }
             updateContainment(object, reference, value);
             updateInstanceOf(value);
-            Object[] array = (Object[]) getFromMap(featureKey);
+            Object[] array = (Object[]) backend.getValue(featureKey);
             if (isNull(array)) {
                 array = new Object[]{};
             }
@@ -94,6 +95,6 @@ public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWrite
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        return objectsCache.get(featureKey, super::getFromMap);
+        return objectsCache.get(featureKey, backend::getValue);
     }
 }

@@ -202,13 +202,13 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Object setValue(FeatureKey key, Object value) {
-        return features.put(key, value);
+    public Object getValue(FeatureKey key) {
+        return features.get(key);
     }
 
     @Override
-    public Object getValue(FeatureKey key) {
-        return features.get(key);
+    public Object setValue(FeatureKey key, Object value) {
+        return features.put(key, value);
     }
 
     @Override
@@ -312,6 +312,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public Object getValueAtIndex(MultivaluedFeatureKey key) {
+        return multivaluedFeatures.get(key);
+    }
+
+    @Override
     public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
         return multivaluedFeatures.put(key, value);
     }
@@ -359,11 +364,6 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     @Override
     public int sizeOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Object getValueAtIndex(MultivaluedFeatureKey key) {
-        return multivaluedFeatures.get(key);
     }
 
     @VisibleForTesting
