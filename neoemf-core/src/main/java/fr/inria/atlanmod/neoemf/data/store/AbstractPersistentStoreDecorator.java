@@ -130,6 +130,11 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
+    public void save() {
+        store.save();
+    }
+
+    @Override
     public Resource resource() {
         return store.resource();
     }
@@ -142,10 +147,5 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     @Override
     public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
         return store.getAllInstances(metaclass, strict);
-    }
-
-    @Override
-    public void save() {
-        store.save();
     }
 }

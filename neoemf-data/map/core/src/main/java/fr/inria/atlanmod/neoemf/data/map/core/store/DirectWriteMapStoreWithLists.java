@@ -105,7 +105,7 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
             index = NO_INDEX;
         }
         else if (feature instanceof EAttribute) {
-            index = list.indexOf(serializeToProperty((EAttribute) feature, value));
+            index = list.indexOf(serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
@@ -123,7 +123,7 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
             index = NO_INDEX;
         }
         else if (feature instanceof EAttribute) {
-            index = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));
+            index = list.lastIndexOf(serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
@@ -135,7 +135,7 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.setValue(featureKey, new ArrayList<>());
+        backend.valueFor(featureKey, new ArrayList<>());
     }
 
     @Override
@@ -144,15 +144,15 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
         if (attribute.isMany()) {
             soughtAttribute = manyValueFrom(soughtAttribute).get(index);
         }
-        return parseProperty(attribute, soughtAttribute);
+        return deserialize(attribute, soughtAttribute);
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
         checkNotNull(object);
         checkNotNull(reference);
 
-        Object result;
+        PersistentEObject result;
         Object value = getFromMap(object, reference);
         if (isNull(value)) {
             result = null;
@@ -177,32 +177,32 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
         Object old;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (!attribute.isMany()) {
-            old = backend.setValue(featureKey, serializeToProperty(attribute, value));
+            old = backend.valueFor(featureKey, serialize(attribute, value)).orElse(null);
         }
         else {
-            List<Object> list = manyValueFrom(backend.getValue(featureKey));
+            List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
             old = list.get(index);
-            list.set(index, serializeToProperty(attribute, value));
-            backend.setValue(featureKey, list.toArray());
-            old = parseProperty(attribute, old);
+            list.set(index, serialize(attribute, value));
+            backend.valueFor(featureKey, list.toArray());
+            old = deserialize(attribute, old);
         }
-        return parseProperty(attribute, old);
+        return deserialize(attribute, old);
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         Object oldId;
         FeatureKey featureKey = FeatureKey.from(object, reference);
         updateContainment(object, reference, value);
         updateInstanceOf(value);
         if (!reference.isMany()) {
-            oldId = backend.setValue(featureKey, value.id());
+            oldId = backend.valueFor(featureKey, value.id()).orElse(null);
         }
         else {
-            List<Object> list = manyValueFrom(backend.getValue(featureKey));
+            List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
             oldId = list.get(index);
             list.set(index, value.id());
-            backend.setValue(featureKey, list.toArray());
+            backend.valueFor(featureKey, list.toArray());
         }
         return isNull(oldId) ? null : eObject((Id) oldId);
     }
@@ -210,9 +210,9 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        List<Object> list = manyValueFrom(backend.getValue(featureKey));
-        list.add(index, serializeToProperty(attribute, value));
-        backend.setValue(featureKey, list.toArray());
+        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
+        list.add(index, serialize(attribute, value));
+        backend.valueFor(featureKey, list.toArray());
     }
 
     @Override
@@ -220,28 +220,28 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
         FeatureKey featureKey = FeatureKey.from(object, reference);
         updateContainment(object, reference, referencedObject);
         updateInstanceOf(referencedObject);
-        List<Object> list = manyValueFrom(backend.getValue(featureKey));
+        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
         list.add(index, referencedObject.id());
-        backend.setValue(featureKey, list.toArray());
+        backend.valueFor(featureKey, list.toArray());
     }
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        List<Object> list = manyValueFrom(backend.getValue(featureKey));
+        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
         Object old = list.get(index);
         list.remove(index);
-        backend.setValue(featureKey, list.toArray());
-        return parseProperty(attribute, old);
+        backend.valueFor(featureKey, list.toArray());
+        return deserialize(attribute, old);
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
         FeatureKey featureKey = FeatureKey.from(object, reference);
-        List<Object> list = manyValueFrom(backend.getValue(featureKey));
+        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
         Object oldId = list.get(index);
         list.remove(index);
-        backend.setValue(featureKey, list.toArray());
+        backend.valueFor(featureKey, list.toArray());
         return eObject((Id) oldId);
     }
 
@@ -250,7 +250,7 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
         Object value;
         FeatureKey featureKey = FeatureKey.from(object, feature);
         if (!feature.isMany()) {
-            value = backend.getValue(featureKey);
+            value = backend.valueOf(featureKey).orElse(null);
         }
         else {
             value = objectsCache.get(featureKey);
@@ -265,11 +265,8 @@ public class DirectWriteMapStoreWithLists extends DirectWriteMapStore {
 
         @Override
         public Object load(@Nonnull FeatureKey key) {
-            Object value = backend.getValue(key);
-            if (isNull(value)) {
-                value = new ArrayList<>();
-            }
-            else if (value instanceof Object[]) {
+            Object value = backend.valueOf(key).orElse(new ArrayList<>());
+            if (value instanceof Object[]) {
                 Object[] array = (Object[]) value;
                 List<Object> list = new ArrayList<>(array.length + 10);
                 CollectionUtils.addAll(list, array);

@@ -16,9 +16,12 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
@@ -74,32 +77,62 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public ContainerValue containerFor(Id id) {
+    public Optional<ContainerValue> containerOf(Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void storeContainer(Id id, ContainerValue container) {
+    public void containerFor(Id id, ContainerValue container) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public MetaclassValue metaclassFor(Id id) {
+    public Optional<MetaclassValue> metaclassOf(Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void storeMetaclass(Id id, MetaclassValue metaclass) {
+    public void metaclassFor(Id id, MetaclassValue metaclass) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Object setValue(FeatureKey key, Object value) {
+    public Optional<Object> valueOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Object getValue(FeatureKey key) {
+    public Optional<Object> valueOf(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Object> valueFor(FeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -109,52 +142,7 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public boolean hasValue(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void addValue(MultivaluedFeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Object removeValue(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void cleanValue(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Iterable<Object> valueAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean containsValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int indexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int lastIndexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id getReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id setReference(FeatureKey key, Id id) {
+    public void unsetAllValues(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -164,7 +152,32 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
+    public void unsetAllReferences(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasValue(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasAnyValue(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasAnyReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addValue(MultivaluedFeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -174,17 +187,27 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Id removeReference(MultivaluedFeatureKey key) {
+    public Optional<Object> removeValue(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void cleanReference(FeatureKey key) {
+    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Iterable<Id> referenceAsList(FeatureKey key) {
+    public void cleanValues(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void cleanReferences(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean containsValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -194,67 +217,37 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public int indexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public int lastIndexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
+    public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void unsetValueAtIndex(FeatureKey key) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public boolean hasValueAtIndex(FeatureKey key) {
+    public Iterable<Object> valuesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Iterable<Object> valueAtIndexAsList(FeatureKey key) {
+    public Iterable<Id> referencesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Id getReferenceAtIndex(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void unsetReferenceAtIndex(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean hasReferenceAtIndex(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Iterable<Id> referenceAtIndexAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int sizeOf(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Object getValueAtIndex(MultivaluedFeatureKey key) {
+    public OptionalInt sizeOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

@@ -288,7 +288,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
      *
      * @param element the information about the new element
-     * @param id         the identifier of the element
+     * @param id      the identifier of the element
      *
      * @return the given {@code id}
      *

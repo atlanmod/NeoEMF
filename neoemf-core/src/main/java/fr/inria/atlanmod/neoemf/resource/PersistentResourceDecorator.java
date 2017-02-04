@@ -207,7 +207,7 @@ public class PersistentResourceDecorator implements PersistentResource {
     public EStore eStore() {
         return resource.eStore();
     }
-    
+
     @Override
     public boolean isDistributed() {
         return resource.isDistributed();

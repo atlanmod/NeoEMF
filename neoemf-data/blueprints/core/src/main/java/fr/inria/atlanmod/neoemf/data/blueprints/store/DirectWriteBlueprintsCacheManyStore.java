@@ -93,7 +93,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 Object o = list[index];
                 if (isNull(o)) {
                     NeoLogger.warn("Inconsistent content in CachedMany map, null value found for key " + key + " at index " + index);
-                    return (PersistentEObject) super.getReference(object, reference, index);
+                    return super.getReference(object, reference, index);
                 }
                 else {
                     NeoLogger.debug("Found in cache {0} - {1} - idx={2}", key, object.eClass().getName(), index);
@@ -125,7 +125,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
             }
         }
         else {
-            return (PersistentEObject) super.getReference(object, reference, index);
+            return super.getReference(object, reference, index);
         }
     }
 }

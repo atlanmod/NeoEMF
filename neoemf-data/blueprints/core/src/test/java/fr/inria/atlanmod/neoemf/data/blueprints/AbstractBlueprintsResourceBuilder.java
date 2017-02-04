@@ -42,18 +42,6 @@ public abstract class AbstractBlueprintsResourceBuilder<B extends AbstractBluepr
     }
 
     @Override
-    public B uri(URI uri) {
-        this.uri = BlueprintsURI.createURI(uri);
-        return me();
-    }
-
-    @Override
-    public B file(File file) {
-        this.uri = BlueprintsURI.createFileURI(file);
-        return me();
-    }
-
-    @Override
     protected void initBuilder() {
         super.initBuilder();
 
@@ -63,6 +51,18 @@ public abstract class AbstractBlueprintsResourceBuilder<B extends AbstractBluepr
             PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
         }
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+    }
+
+    @Override
+    public B uri(URI uri) {
+        this.uri = BlueprintsURI.createURI(uri);
+        return me();
+    }
+
+    @Override
+    public B file(File file) {
+        this.uri = BlueprintsURI.createFileURI(file);
+        return me();
     }
 
     /**

@@ -21,8 +21,8 @@ import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -33,6 +33,8 @@ import org.mapdb.Serializer;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -182,33 +184,63 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public ContainerValue containerFor(Id id) {
-        return containersMap.get(id);
+    public Optional<ContainerValue> containerOf(Id id) {
+        return Optional.ofNullable(containersMap.get(id));
     }
 
     @Override
-    public void storeContainer(Id id, ContainerValue container) {
+    public void containerFor(Id id, ContainerValue container) {
         containersMap.put(id, container);
     }
 
     @Override
-    public MetaclassValue metaclassFor(Id id) {
-        return instanceOfMap.get(id);
+    public Optional<MetaclassValue> metaclassOf(Id id) {
+        return Optional.ofNullable(instanceOfMap.get(id));
     }
 
     @Override
-    public void storeMetaclass(Id id, MetaclassValue metaclass) {
+    public void metaclassFor(Id id, MetaclassValue metaclass) {
         instanceOfMap.put(id, metaclass);
     }
 
     @Override
-    public Object getValue(FeatureKey key) {
-        return features.get(key);
+    public Optional<Object> valueOf(FeatureKey key) {
+        return Optional.ofNullable(features.get(key));
     }
 
     @Override
-    public Object setValue(FeatureKey key, Object value) {
-        return features.put(key, value);
+    public Optional<Object> valueOf(MultivaluedFeatureKey key) {
+        return Optional.ofNullable(multivaluedFeatures.get(key));
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Object> valueFor(FeatureKey key, Object value) {
+        return Optional.ofNullable(features.put(key, value));
+    }
+
+    @Override
+    public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
+        return Optional.ofNullable(multivaluedFeatures.put(key, value));
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -217,53 +249,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public boolean hasValue(FeatureKey key) {
-        return features.containsKey(key);
-    }
-
-    @Override
-    public void addValue(MultivaluedFeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Object removeValue(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void cleanValue(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Iterable<Object> valueAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean containsValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int indexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int lastIndexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id getReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id setReference(FeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void unsetAllValues(FeatureKey key) {
+        unsetValue(key);
     }
 
     @Override
@@ -272,7 +259,32 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
+    public void unsetAllReferences(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasValue(FeatureKey key) {
+        return features.containsKey(key);
+    }
+
+    @Override
+    public boolean hasAnyValue(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
     public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasAnyReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addValue(MultivaluedFeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -282,17 +294,27 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public Id removeReference(MultivaluedFeatureKey key) {
+    public Optional<Object> removeValue(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void cleanReference(FeatureKey key) {
+    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Iterable<Id> referenceAsList(FeatureKey key) {
+    public void cleanValues(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void cleanReferences(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean containsValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -302,67 +324,37 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public int indexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public int lastIndexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Object getValueAtIndex(MultivaluedFeatureKey key) {
-        return multivaluedFeatures.get(key);
-    }
-
-    @Override
-    public Object setValueAtIndex(MultivaluedFeatureKey key, Object value) {
-        return multivaluedFeatures.put(key, value);
-    }
-
-    @Override
-    public void unsetValueAtIndex(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public boolean hasValueAtIndex(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public Iterable<Object> valueAtIndexAsList(FeatureKey key) {
+    public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Id getReferenceAtIndex(MultivaluedFeatureKey key) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id) {
+    public Iterable<Object> valuesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void unsetReferenceAtIndex(FeatureKey key) {
+    public Iterable<Id> referencesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public boolean hasReferenceAtIndex(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Iterable<Id> referenceAtIndexAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int sizeOf(FeatureKey key) {
+    public OptionalInt sizeOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

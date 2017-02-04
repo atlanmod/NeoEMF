@@ -182,7 +182,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
              * This is not true in a distributed context when another client can the database
              * without notifying others.
              */
-            if(!((PersistentResource) resource).isDistributed() && nonNull(eContainer)) {
+            if (!((PersistentResource) resource).isDistributed() && nonNull(eContainer)) {
                 container = eContainer;
             }
             else {

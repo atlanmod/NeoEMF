@@ -29,7 +29,7 @@ public class MetaClass extends NamedElement {
     /**
      * Constructs a new {@code MetaClass} with the given {@code namespace} and {@code name}.
      *
-     * @param ns the namespace of this {@code MetaClass}
+     * @param ns   the namespace of this {@code MetaClass}
      * @param name the name of this {@code MetaClass}
      */
     public MetaClass(Namespace ns, String name) {

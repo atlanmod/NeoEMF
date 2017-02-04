@@ -16,8 +16,8 @@ import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
 
         PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
-        assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -59,7 +59,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptionsBuilder.newBuilder().asMap());
-        assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
@@ -73,7 +73,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }

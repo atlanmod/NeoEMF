@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -20,11 +21,11 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * An abstract {@link ResourceBuilder} that manages the assembly and the construction of {@link PersistentResource}.
+ *
  * @param <B> the "self"-type of this {@link ResourceBuilder}
  */
 public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<B>> implements ResourceBuilder {
@@ -47,7 +48,7 @@ public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<
     /**
      * Map of options used to define the behavior of the resource.
      */
-    protected Map<Object, Object> resourceOptions;
+    protected Map<String, Object> resourceOptions;
 
     /**
      * Whether the {@link PersistentResource} is persistent.
@@ -84,7 +85,7 @@ public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<
         isPersistent = false;
         EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
         resourceSet = new ResourceSetImpl();
-        resourceOptions = new HashMap<>();
+        resourceOptions = CommonOptionsBuilder.noOption();
     }
 
     /**

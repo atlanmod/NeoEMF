@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -71,11 +70,11 @@ public interface Context {
      * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.
      *
      * @param ePackage the {@link EPackage} associated to the resource
-     * @param file the file from which to load/save data
+     * @param file     the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
-     * @throws IOException if an I/O error occurs
      *
+     * @throws IOException if an I/O error occurs
      * @see ResourceBuilder
      */
     PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
@@ -84,11 +83,11 @@ public interface Context {
      * Creates a new transient resource from the given {@code ePackage} on the given {@code file}.
      *
      * @param ePackage the {@link EPackage} associated to the resource
-     * @param file the file from which to load/save data
+     * @param file     the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
-     * @throws IOException if an I/O error occurs
      *
+     * @throws IOException if an I/O error occurs
      * @see ResourceBuilder
      */
     PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
@@ -99,11 +98,4 @@ public interface Context {
      * @return the {@link PersistenceBackendFactory}
      */
     PersistenceBackendFactory persistenceBackendFactory();
-
-    /**
-     * Returns the {@link Class} representing the {@link DirectWriteStore} implementation used in this {@code Context}.
-     *
-     * @return the {@link DirectWriteStore} sub-class
-     */
-    Class<? extends DirectWriteStore> directWriteClass();
 }

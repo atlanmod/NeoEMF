@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -97,18 +96,6 @@ public class CoreContext implements Context {
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return mock(AbstractPersistenceBackendFactory.class);
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This {@code Context} doesn't have {@link DirectWriteStore} implementation.
-     *
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Class<? extends DirectWriteStore> directWriteClass() {
-        throw new UnsupportedOperationException();
     }
 
     /**

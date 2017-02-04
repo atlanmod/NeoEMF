@@ -77,14 +77,14 @@ public class DirectWriteCachedMapStore extends DirectWriteMapStore {
             }
             updateContainment(object, reference, value);
             updateInstanceOf(value);
-            Object[] array = (Object[]) backend.getValue(featureKey);
+            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
             if (isNull(array)) {
                 array = new Object[]{};
             }
             checkPositionIndex(index, array.length, "Invalid add index " + index);
             array = ArrayUtils.add(array, index, value.id());
             objectsCache.put(featureKey, array);
-            backend.setValue(featureKey, array);
+            backend.valueFor(featureKey, array);
             persistentObjectsCache.put(value.id(), value);
         }
         else {
@@ -95,6 +95,6 @@ public class DirectWriteCachedMapStore extends DirectWriteMapStore {
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        return objectsCache.get(featureKey, backend::getValue);
+        return objectsCache.get(featureKey, key -> backend.valueOf(key).orElse(null));
     }
 }

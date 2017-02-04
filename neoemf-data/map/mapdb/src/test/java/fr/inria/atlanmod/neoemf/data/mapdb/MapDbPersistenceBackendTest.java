@@ -32,9 +32,9 @@ public class MapDbPersistenceBackendTest extends AbstractTest {
         DB db = DBMaker.memoryDB().make();
         MapDbPersistenceBackend backend = new MapDbPersistenceBackend(db);
         FeatureKey key = FeatureKey.of(StringId.of("object1"), "name");
-        backend.setValue(key, "value");
+        backend.valueFor(key, "value");
 
-        assertThat("value").isEqualTo(backend.getValue(key));
+        assertThat("value").isEqualTo(backend.valueOf(key).orElse(null));
     }
 
     @Test
@@ -48,11 +48,11 @@ public class MapDbPersistenceBackendTest extends AbstractTest {
 
         for (int i = 0; i < 10; i++) {
             keys[i] = featureKey.withPosition(i);
-            backend.setValueAtIndex(keys[i], i);
+            backend.valueFor(keys[i], i);
         }
 
         for (int i = 0; i < TIMES; i++) {
-            assertThat(i).isEqualTo(backend.getValueAtIndex(keys[i]));
+            assertThat(i).isEqualTo(backend.valueOf(keys[i]).orElse(null));
         }
     }
 

@@ -20,8 +20,8 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -36,7 +36,9 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -48,7 +50,6 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link DirectWriteStore} that redirects certain methods according to the instance of the encountered
@@ -100,6 +101,34 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         return EAttribute.class.isInstance(feature);
     }
 
+    /**
+     * Creates an instance of the {@code attribute}.
+     *
+     * @param attribute the attribute to instantiate
+     * @param property  the string value of the attribute
+     *
+     * @return an instance of the attribute
+     *
+     * @see EcoreUtil#createFromString(EDataType, String)
+     */
+    protected static Object deserialize(EAttribute attribute, Object property) {
+        return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
+    }
+
+    /**
+     * Converts an instance of the {@code attribute} to a string literal representation.
+     *
+     * @param attribute the attribute to instantiate
+     * @param value     a value of the attribute
+     *
+     * @return the string literal representation of the value
+     *
+     * @see EcoreUtil#convertToString(EDataType, Object)
+     */
+    protected static String serialize(EAttribute attribute, Object value) {
+        return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
+    }
+
     @Override
     public void save() {
         backend.save();
@@ -118,7 +147,6 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
 
         PersistentEObject object = persistentObjectsCache.get(id);
         if (object.resource() != resource()) {
-            // TODO Check if it's not the 'ROOT' before setting the resource
             object.resource(resource());
         }
         return object;
@@ -134,7 +162,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
-        return StreamSupport.stream(backend.getAllInstances(metaclass, strict).spliterator(), false)
+        return StreamSupport.stream(backend.allInstances(metaclass, strict).spliterator(), false)
                 .map(this::eObject)
                 .collect(Collectors.toList());
     }
@@ -181,6 +209,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
         PersistentEObject object = PersistentEObject.from(internalObject);
         if (isAttribute(feature)) {
             return getAttribute(object, (EAttribute) feature, index);
@@ -200,6 +231,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
         if (isNull(value)) {
             Object previousValue = get(internalObject, feature, index);
             unset(internalObject, feature);
@@ -226,6 +260,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
         PersistentEObject object = PersistentEObject.from(internalObject);
         if (isAttribute(feature)) {
             return isSetAttribute(object, (EAttribute) feature);
@@ -245,6 +282,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
         PersistentEObject object = PersistentEObject.from(internalObject);
         if (isAttribute(feature)) {
             unsetAttribute(object, (EAttribute) feature);
@@ -256,6 +296,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
 
     @Override
     public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute isEmpty() of a single-valued feature");
 
         return size(internalObject, feature) == 0;
@@ -263,10 +305,12 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        return backend.sizeOf(key);
+        return backend.sizeOf(key).orElse(0);
     }
 
     /**
@@ -279,6 +323,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute contains() of a single-valued feature");
 
         if (isNull(value)) {
@@ -310,6 +356,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
 
         if (isNull(value)) {
@@ -336,6 +384,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
 
         if (isNull(value)) {
@@ -362,6 +412,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
         if (index == NO_INDEX) {
@@ -391,6 +443,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute remove() of a single-valued feature");
         checkElementIndex(index, size(internalObject, feature));
 
@@ -399,12 +453,22 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             return removeAttribute(object, (EAttribute) feature, index);
         }
         else {
-            return removeReference(object, (EReference) feature, index);
+            EReference reference = (EReference) feature;
+            PersistentEObject removedElement = removeReference(object, reference, index);
+
+            if (reference.isContainment()) {
+                removedElement.eBasicSetContainer(null, -1, null);
+                removedElement.resource(null);
+            }
+
+            return removedElement;
         }
     }
 
     @Override
     public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
 
         Object movedElement = remove(internalObject, feature, sourceIndex);
@@ -422,6 +486,8 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute clear() of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -446,6 +512,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
         return toArray(internalObject, feature, null);
     }
 
@@ -458,6 +527,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'T'
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
         Stream<Object> stream;
@@ -465,10 +537,10 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             Iterable<Id> references;
 
             if (feature.isMany()) {
-                references = backend.referenceAtIndexAsList(key);
+                references = backend.referencesAsList(key);
             }
             else {
-                references = backend.referenceAsList(key);
+                references = backend.referenceFor(key).map(Collections::singleton).orElseGet(Collections::emptySet);
             }
 
             stream = StreamSupport.stream(references.spliterator(), false)
@@ -478,14 +550,14 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             Iterable<Object> values;
 
             if (feature.isMany()) {
-                values = backend.valueAtIndexAsList(key);
+                values = backend.valuesAsList(key);
             }
             else {
-                values = backend.valueAsList(key);
+                values = backend.valueOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
             }
 
             stream = StreamSupport.stream(values.spliterator(), false)
-                    .map(v -> parseProperty((EAttribute) feature, v));
+                    .map(v -> deserialize((EAttribute) feature, v));
         }
 
         if (isNull(array)) {
@@ -507,11 +579,10 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         checkNotNull(internalObject);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerValue container = backend.containerFor(object.id());
-        if (nonNull(container)) {
-            return eObject(container.id());
-        }
-        return null;
+        Optional<ContainerValue> container = backend.containerOf(object.id());
+        return container
+                .map(containerValue -> eObject(containerValue.id()))
+                .orElse(null);
     }
 
     @Override
@@ -519,12 +590,10 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         checkNotNull(internalObject);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerValue container = backend.containerFor(object.id());
-        if (nonNull(container)) {
-            PersistentEObject containerObject = eObject(container.id());
-            return containerObject.eClass().getEStructuralFeature(container.name());
-        }
-        return null;
+
+        return backend.containerOf(object.id())
+                .map(containerValue -> eObject(containerValue.id()).eClass().getEStructuralFeature(containerValue.name()))
+                .orElse(null);
     }
 
     /**
@@ -544,9 +613,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         checkNotNull(referencedObject);
 
         if (reference.isContainment()) {
-            ContainerValue container = backend.containerFor(referencedObject.id());
-            if (isNull(container) || !Objects.equals(container.id(), object.id())) {
-                backend.storeContainer(referencedObject.id(), ContainerValue.from(object, reference));
+            Optional<ContainerValue> container = backend.containerOf(referencedObject.id());
+            if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
+                backend.containerFor(referencedObject.id(), ContainerValue.from(object, reference));
             }
         }
     }
@@ -558,14 +627,11 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
-    protected EClass resolveInstanceOf(Id id) {
+    protected Optional<EClass> resolveInstanceOf(Id id) {
         checkNotNull(id);
 
-        MetaclassValue metaclass = backend.metaclassFor(id);
-        if (nonNull(metaclass)) {
-            return metaclass.eClass();
-        }
-        return null;
+        return backend.metaclassOf(id)
+                .map(MetaclassValue::eClass);
     }
 
     /**
@@ -578,38 +644,10 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
     protected void updateInstanceOf(PersistentEObject object) {
         checkNotNull(object);
 
-        MetaclassValue metaclass = backend.metaclassFor(object.id());
-        if (isNull(metaclass)) {
-            backend.storeMetaclass(object.id(), MetaclassValue.from(object));
+        Optional<MetaclassValue> metaclass = backend.metaclassOf(object.id());
+        if (!metaclass.isPresent()) {
+            backend.metaclassFor(object.id(), MetaclassValue.from(object));
         }
-    }
-
-    /**
-     * Creates an instance of the {@code attribute}.
-     *
-     * @param attribute the attribute to instantiate
-     * @param property  the string value of the attribute
-     *
-     * @return an instance of the attribute
-     *
-     * @see EcoreUtil#createFromString(EDataType, String)
-     */
-    protected Object parseProperty(EAttribute attribute, Object property) {
-        return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
-    }
-
-    /**
-     * Converts an instance of the {@code attribute} to a string literal representation.
-     *
-     * @param attribute the attribute to instantiate
-     * @param value     a value of the attribute
-     *
-     * @return the string literal representation of the value
-     *
-     * @see EcoreUtil#convertToString(EDataType, Object)
-     */
-    protected Object serializeToProperty(EAttribute attribute, Object value) {
-        return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 
     /**
@@ -626,15 +664,18 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         FeatureKey key = FeatureKey.from(object, attribute);
 
-        Object value;
+        Optional<Object> value;
         if (!attribute.isMany()) {
-            value = backend.getValue(key);
+            value = backend.valueOf(key);
         }
         else {
             checkElementIndex(index, size(object, attribute));
-            value = backend.getValueAtIndex(key.withPosition(index));
+            value = backend.valueOf(key.withPosition(index));
         }
-        return parseProperty(attribute, value);
+
+        return value
+                .map(v -> deserialize(attribute, v))
+                .orElse(null);
     }
 
     /**
@@ -648,19 +689,21 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      *
      * @see #get(InternalEObject, EStructuralFeature, int)
      */
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
         FeatureKey key = FeatureKey.from(object, reference);
 
-        Id value;
+        Optional<Id> value;
         if (!reference.isMany()) {
-            value = backend.getReference(key);
+            value = backend.referenceFor(key);
         }
         else {
             checkElementIndex(index, size(object, reference));
-            value = backend.getReferenceAtIndex(key.withPosition(index));
+            value = backend.referenceFor(key.withPosition(index));
         }
 
-        return eObject(value);
+        return value
+                .map(this::eObject)
+                .orElse(null);
     }
 
     /**
@@ -680,15 +723,18 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
 
         FeatureKey key = FeatureKey.from(object, attribute);
 
-        Object previousValue;
+        Optional<Object> previousValue;
         if (!attribute.isMany()) {
-            previousValue = backend.setValue(key, value);
+            previousValue = backend.valueFor(key, value);
         }
         else {
             checkElementIndex(index, size(object, attribute));
-            previousValue = backend.setValueAtIndex(key.withPosition(index), value);
+            previousValue = backend.valueFor(key.withPosition(index), value);
         }
-        return parseProperty(attribute, previousValue);
+
+        return previousValue
+                .map(v -> deserialize(attribute, v))
+                .orElse(null);
     }
 
     /**
@@ -703,20 +749,23 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      *
      * @see #set(InternalEObject, EStructuralFeature, int, Object)
      */
-    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         persist(object, reference, value);
 
         FeatureKey key = FeatureKey.from(object, reference);
 
-        Id previousId;
+        Optional<Id> previousId;
         if (!reference.isMany()) {
-            previousId = backend.setReference(key, value.id());
+            previousId = backend.referenceFor(key, value.id());
         }
         else {
             checkElementIndex(index, size(object, reference));
-            previousId = backend.setReferenceAtIndex(key.withPosition(index), value.id());
+            previousId = backend.referenceFor(key.withPosition(index), value.id());
         }
-        return eObject(previousId);
+
+        return previousId
+                .map(this::eObject)
+                .orElse(null);
     }
 
     /**
@@ -736,7 +785,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             return backend.hasValue(key);
         }
         else {
-            return backend.hasValueAtIndex(key);
+            return backend.hasAnyValue(key);
         }
     }
 
@@ -757,7 +806,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             return backend.hasReference(key);
         }
         else {
-            return backend.hasReferenceAtIndex(key);
+            return backend.hasAnyReference(key);
         }
     }
 
@@ -776,7 +825,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             backend.unsetValue(key);
         }
         else {
-            backend.unsetValueAtIndex(key);
+            backend.unsetAllValues(key);
         }
     }
 
@@ -795,7 +844,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
             backend.unsetReference(key);
         }
         else {
-            backend.unsetReferenceAtIndex(key);
+            backend.unsetAllReferences(key);
         }
     }
 
@@ -844,7 +893,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         FeatureKey key = FeatureKey.from(object, attribute);
-        return backend.indexOfValue(key, value);
+        return backend.indexOfValue(key, value).orElse(NO_INDEX);
     }
 
     /**
@@ -860,7 +909,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         FeatureKey key = FeatureKey.from(object, reference);
-        return backend.indexOfReference(key, value.id());
+        return backend.indexOfReference(key, value.id()).orElse(NO_INDEX);
     }
 
     /**
@@ -876,7 +925,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         FeatureKey key = FeatureKey.from(object, attribute);
-        return backend.lastIndexOfValue(key, value);
+        return backend.lastIndexOfValue(key, value).orElse(NO_INDEX);
     }
 
     /**
@@ -892,7 +941,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         FeatureKey key = FeatureKey.from(object, reference);
-        return backend.lastIndexOfReference(key, value.id());
+        return backend.lastIndexOfReference(key, value.id()).orElse(NO_INDEX);
     }
 
     /**
@@ -909,7 +958,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         persist(object);
 
         MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
-        backend.addValue(key, serializeToProperty(attribute, value));
+        backend.addValue(key, serialize(attribute, value));
     }
 
     /**
@@ -942,7 +991,10 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
-        return parseProperty(attribute, backend.removeValue(key));
+
+        return backend.removeValue(key)
+                .map(v -> deserialize(attribute, v))
+                .orElse(null);
     }
 
     /**
@@ -956,17 +1008,12 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      *
      * @see #remove(InternalEObject, EStructuralFeature, int)
      */
-    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
         MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
-        PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(key));
 
-        checkNotNull(previouslyReferencedObject);
-        if (reference.isContainment()) {
-            previouslyReferencedObject.eBasicSetContainer(null, -1, null);
-            previouslyReferencedObject.resource(null);
-        }
-
-        return previouslyReferencedObject;
+        return backend.removeReference(key)
+                .map(this::eObject)
+                .orElse(null);
     }
 
     /**
@@ -979,7 +1026,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
         FeatureKey key = FeatureKey.from(object, attribute);
-        backend.cleanValue(key);
+        backend.cleanValues(key);
     }
 
     /**
@@ -992,7 +1039,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     protected void clearReference(PersistentEObject object, EReference reference) {
         FeatureKey key = FeatureKey.from(object, reference);
-        backend.cleanReference(key);
+        backend.cleanReferences(key);
     }
 
     /**
@@ -1000,27 +1047,43 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
      */
     private class PersistentObjectLoader implements CacheLoader<Id, PersistentEObject> {
 
+        @SuppressWarnings("JavaDoc")
+        private final PersistenceFactory persistenceFactory = PersistenceFactory.getInstance();
+
         @Override
         public PersistentEObject load(@Nonnull Id id) throws Exception {
-            PersistentEObject persistentObject;
-
-            EClass eClass = resolveInstanceOf(id);
-            if (nonNull(eClass)) {
+            Optional<EClass> eClass = resolveInstanceOf(id);
+            if (eClass.isPresent()) {
                 EObject eObject;
-                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
+
+                if (Objects.equals(eClass.get().getEPackage().getClass(), EPackageImpl.class)) {
                     // Dynamic EMF
-                    eObject = PersistenceFactory.getInstance().create(eClass);
+                    eObject = persistenceFactory.create(eClass.get());
                 }
                 else {
-                    eObject = EcoreUtil.create(eClass);
+                    eObject = EcoreUtil.create(eClass.get());
                 }
-                persistentObject = PersistentEObject.from(eObject);
-                persistentObject.id(id);
-                persistentObject.setMapped(true);
+
+                return create(eObject, id);
             }
             else {
                 throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
+        }
+
+        /**
+         * Creates an {@link PersistentEObject} from the given {@code eObject} and the {@code id}.
+         *
+         * @param eObject the {@link EObject} from which to create the {@link PersistentEObject}
+         * @param id      the identifier of the created {@link PersistentEObject}
+         *
+         * @return a new {@link PersistentEObject}
+         */
+        private PersistentEObject create(EObject eObject, Id id) {
+            PersistentEObject persistentObject = PersistentEObject.from(eObject);
+
+            persistentObject.id(id);
+            persistentObject.setMapped(true);
 
             return persistentObject;
         }

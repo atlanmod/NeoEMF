@@ -25,8 +25,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -118,7 +118,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
             store = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else { // Default store
-            store = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
+            store = new DefaultDirectWriteStore<>(resource, backend);
         }
         return store;
     }
@@ -176,7 +176,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        return new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
+        return new DefaultDirectWriteStore<>(resource, (BlueprintsPersistenceBackend) backend);
     }
 
     @Override

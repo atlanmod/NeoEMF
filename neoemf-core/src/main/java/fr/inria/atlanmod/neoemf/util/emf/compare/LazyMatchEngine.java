@@ -45,7 +45,7 @@ import java.util.List;
  * <b>Note:</b> This class overrides all the {@code match} methods to remove old
  * Guava dependencies. It should be removed if/when Guava dependencies become
  * compatible with NeoEMF.
- * 
+ *
  * @see LazyMatchEngineFactory
  * @see LazyEqualityHelper
  */
@@ -53,14 +53,27 @@ public class LazyMatchEngine extends DefaultMatchEngine {
 
     /**
      * Creates a new LazyMatchEngine.
-     * 
-     * @param matcher
-     *            the matcher to use
-     * @param comparisonFactory
-     *            the {@link IComparisonFactory} to use
+     *
+     * @param matcher           the matcher to use
+     * @param comparisonFactory the {@link IComparisonFactory} to use
      */
     public LazyMatchEngine(IEObjectMatcher matcher, IComparisonFactory comparisonFactory) {
         super(matcher, comparisonFactory);
+    }
+
+    /**
+     * This will check that at least two of the three given booleans are
+     * <code>true</code>.
+     *
+     * @param condition1 First of the three booleans.
+     * @param condition2 Second of the three booleans.
+     * @param condition3 Third of the three booleans.
+     *
+     * @return <code>true</code> if at least two of the three given booleans are <code>true</code>, <code>false</code>
+     * otherwise.
+     */
+    private static boolean atLeastTwo(boolean condition1, boolean condition2, boolean condition3) {
+        return condition1 && (condition2 || condition3) || (condition2 && condition3);
     }
 
     /**
@@ -72,14 +85,14 @@ public class LazyMatchEngine extends DefaultMatchEngine {
      * Guava dependencies become compatible with NeoEMF.
      */
     @Override
-    protected void match(Comparison comparison, IComparisonScope scope, ResourceSet left,
-            ResourceSet right, ResourceSet origin, Monitor monitor) {
+    protected void match(Comparison comparison, IComparisonScope scope, ResourceSet left, ResourceSet right, ResourceSet origin, Monitor monitor) {
         final Iterator<? extends Resource> leftChildren = scope.getCoveredResources(left);
         final Iterator<? extends Resource> rightChildren = scope.getCoveredResources(right);
         final Iterator<? extends Resource> originChildren;
         if (origin != null) {
             originChildren = scope.getCoveredResources(origin);
-        } else {
+        }
+        else {
             originChildren = Collections.emptyIterator();
         }
 
@@ -125,44 +138,12 @@ public class LazyMatchEngine extends DefaultMatchEngine {
      * {@inheritDoc}
      * <p>
      * <b>Note:</b> This method overrides
-     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, EObject, EObject, EObject, Monitor)}
-     * to remove incompatible Guava dependencies. It should be removed if/when
-     * Guava dependencies become compatible with NeoEMF.
-     */
-    @Override
-    protected void match(Comparison comparison, IComparisonScope scope, EObject left,
-            EObject right, EObject origin, Monitor monitor) {
-        if (left == null || right == null) {
-            throw new IllegalArgumentException();
-        }
-
-        final Iterator<? extends EObject> leftEObjects = Iterators.concat(
-                Iterators.singletonIterator(left), scope.getChildren(left));
-        final Iterator<? extends EObject> rightEObjects = Iterators.concat(
-                Iterators.singletonIterator(right), scope.getChildren(right));
-        final Iterator<? extends EObject> originEObjects;
-        if (origin != null) {
-            originEObjects = Iterators.concat(Iterators.singletonIterator(origin),
-                    scope.getChildren(origin));
-        } else {
-            originEObjects = Collections.emptyIterator();
-        }
-
-        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
-                monitor);
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * <b>Note:</b> This method overrides
      * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, Resource, Resource, Resource, Monitor)}
      * to remove incompatible Guava dependencies. It should be removed if/when
      * Guava dependencies become compatible with NeoEMF.
      */
     @Override
-    protected void match(Comparison comparison, IComparisonScope scope, Resource left,
-            Resource right, Resource origin, Monitor monitor) {
+    protected void match(Comparison comparison, IComparisonScope scope, Resource left, Resource right, Resource origin, Monitor monitor) {
         // Our "roots" are Resources. Consider them matched
         final MatchResource match = CompareFactory.eINSTANCE.createMatchResource();
 
@@ -205,19 +186,22 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         final Iterator<? extends EObject> leftEObjects;
         if (left != null) {
             leftEObjects = scope.getCoveredEObjects(left);
-        } else {
+        }
+        else {
             leftEObjects = Collections.emptyIterator();
         }
         final Iterator<? extends EObject> rightEObjects;
         if (right != null) {
             rightEObjects = scope.getCoveredEObjects(right);
-        } else {
+        }
+        else {
             rightEObjects = Collections.emptyIterator();
         }
         final Iterator<? extends EObject> originEObjects;
         if (origin != null) {
             originEObjects = scope.getCoveredEObjects(origin);
-        } else {
+        }
+        else {
             originEObjects = Collections.emptyIterator();
         }
 
@@ -226,20 +210,34 @@ public class LazyMatchEngine extends DefaultMatchEngine {
     }
 
     /**
-     * This will check that at least two of the three given booleans are
-     * <code>true</code>.
-     * 
-     * @param condition1
-     *            First of the three booleans.
-     * @param condition2
-     *            Second of the three booleans.
-     * @param condition3
-     *            Third of the three booleans.
-     * @return <code>true</code> if at least two of the three given booleans are
-     *         <code>true</code>, <code>false</code> otherwise.
+     * {@inheritDoc}
+     * <p>
+     * <b>Note:</b> This method overrides
+     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, EObject, EObject, EObject, Monitor)}
+     * to remove incompatible Guava dependencies. It should be removed if/when
+     * Guava dependencies become compatible with NeoEMF.
      */
-    private static boolean atLeastTwo(boolean condition1, boolean condition2, boolean condition3) {
-        return condition1 && (condition2 || condition3) || (condition2 && condition3);
+    @Override
+    protected void match(Comparison comparison, IComparisonScope scope, EObject left, EObject right, EObject origin, Monitor monitor) {
+        if (left == null || right == null) {
+            throw new IllegalArgumentException();
+        }
+
+        final Iterator<? extends EObject> leftEObjects = Iterators.concat(
+                Iterators.singletonIterator(left), scope.getChildren(left));
+        final Iterator<? extends EObject> rightEObjects = Iterators.concat(
+                Iterators.singletonIterator(right), scope.getChildren(right));
+        final Iterator<? extends EObject> originEObjects;
+        if (origin != null) {
+            originEObjects = Iterators.concat(Iterators.singletonIterator(origin),
+                    scope.getChildren(origin));
+        }
+        else {
+            originEObjects = Collections.emptyIterator();
+        }
+
+        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
+                monitor);
     }
 
 }

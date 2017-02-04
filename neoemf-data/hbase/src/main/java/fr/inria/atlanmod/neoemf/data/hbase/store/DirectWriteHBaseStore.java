@@ -48,6 +48,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -194,118 +195,6 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
         table.append(append);
     }
 
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        String[] array = (String[]) getFromTable(object, feature);
-        return isNull(array) ? 0 : array.length;
-    }
-
-    @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        PersistentEObject object = PersistentEObject.from(internalObject);
-
-        try {
-            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
-            String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
-            String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
-
-            if (nonNull(containerId) && nonNull(containingFeatureName)) {
-                return eObject(StringId.of(containerId));
-            }
-        }
-        catch (IOException e) {
-            NeoLogger.error("Unable to get containment information for {0}", object);
-        }
-        return null;
-    }
-
-    @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        PersistentEObject object = PersistentEObject.from(internalObject);
-
-        try {
-            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
-            String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
-            String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
-
-            if (nonNull(containerId) && nonNull(containingFeatureName)) {
-                PersistentEObject container = eObject(StringId.of(containerId));
-                return container.eClass().getEStructuralFeature(containingFeatureName);
-            }
-        }
-        catch (IOException e) {
-            NeoLogger.error("Unable to get containment information for {0}", object);
-        }
-        return null;
-    }
-
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
-     *
-     * @param id the {@link Id} of the model element to compute the {@link EClass} from
-     *
-     * @return an {@link EClass} representing the metaclass of the element
-     */
-    @Override
-    protected EClass resolveInstanceOf(Id id) {
-        try {
-            Result result = table.get(new Get(Bytes.toBytes(id.toString())));
-            String nsURI = Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER));
-            String className = Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER));
-            if (nonNull(nsURI) && nonNull(className)) {
-                return (EClass) Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
-            }
-        }
-        catch (IOException e) {
-            NeoLogger.error("Unable to get instance of information for {0}", id);
-        }
-        return null;
-    }
-
-    /**
-     * Add {@code referencedObject} in the {@code reference} containment list of {@code object}. Inverse container
-     * feature between {@code referencedObject} and {@code object} is also updated.
-     *
-     * @param object           the container element
-     * @param reference        the containment {@link EReference}
-     * @param referencedObject the element to add to {@code object}'s containment list
-     */
-    @Override
-    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        if (reference.isContainment()) {
-            try {
-                Put put = new Put(Bytes.toBytes(referencedObject.id().toString()));
-                put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.id().toString()));
-                put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(reference.getName()));
-                table.put(put);
-
-            }
-            catch (IOException e) {
-                NeoLogger.error("Unable to update containment information for {0}", object);
-            }
-        }
-    }
-
-    /**
-     * Computes {@code object}'s metaclass information and persists them in the database.
-     *
-     * @param object the {@link PersistentEObject} to persist the metaclass of
-     */
-    @Override
-    protected void updateInstanceOf(PersistentEObject object) {
-        try {
-            Put put = new Put(Bytes.toBytes(object.id().toString()));
-            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
-            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(object.eClass().getName()));
-            table.checkAndPut(Bytes.toBytes(object.id().toString()), TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
-
-        }
-        catch (IOException e) {
-            NeoLogger.error("Unable to update containment information for {0}", object);
-        }
-    }
-
     /**
      * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
      * PersistentEObject object}.
@@ -370,6 +259,13 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
     }
 
     @Override
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        String[] array = (String[]) getFromTable(object, feature);
+        return isNull(array) ? 0 : array.length;
+    }
+
+    @Override
     // TODO Implement this method
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         return false;
@@ -384,7 +280,7 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
             return PersistentStore.NO_INDEX;
         }
         if (feature instanceof EAttribute) {
-            return ArrayUtils.indexOf(array, serializeToProperty((EAttribute) feature, value));
+            return ArrayUtils.indexOf(array, serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
@@ -400,7 +296,7 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
             return PersistentStore.NO_INDEX;
         }
         if (feature instanceof EAttribute) {
-            return ArrayUtils.lastIndexOf(array, serializeToProperty((EAttribute) feature, value));
+            return ArrayUtils.lastIndexOf(array, serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
@@ -420,7 +316,7 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
             NeoLogger.error("Unable to get containment information for {0}", object);
         }
     }
-    
+
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -431,11 +327,12 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
         if (feature.isMany()) {
             int valueLength = ((Object[]) value).length;
             return internalToArray(value, feature, new Object[valueLength]);
-        } else {
+        }
+        else {
             return internalToArray(value, feature, new Object[1]);
         }
     }
-    
+
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -446,55 +343,129 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
         return internalToArray(value, feature, array);
     }
 
-    /**
-     * Reifies the element(s) in {@code value} and put them into {@code output}.
-     * @param value the backend record to reify
-     * @param feature the {@link EStructuralFeature} used to reify {@code value}
-     * @param output the array to fill
-     * @return {@code output} filled with the reified values
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
-        if(feature.isMany()) {
-            Object[] storedArray = (Object[])value;
-            if(feature instanceof EReference) {
-                for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) eObject(StringId.of((String) storedArray[i]));
-                }
-            }
-            else { // EAttribute
-                for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) parseProperty((EAttribute)feature, storedArray[i]);
-                }
-            }
-        }
-        else {
-            if(feature instanceof EReference) {
-                output[0] = (T) eObject((Id)value);
-            }
-            else { // EAttribute
-                output[0] = (T) parseProperty((EAttribute)feature, value);
-            }
-        }
-        return output;
-    }
-    
     @Override
-    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        Object soughtAttribute = getFromTable(object, attribute);
-        if (!attribute.isMany()) {
-            return parseProperty(attribute, soughtAttribute);
+    public InternalEObject getContainer(InternalEObject internalObject) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        try {
+            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
+            String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
+            String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
+
+            if (nonNull(containerId) && nonNull(containingFeatureName)) {
+                return eObject(StringId.of(containerId));
+            }
         }
-        else {
-            String[] array = (String[]) soughtAttribute;
-            return parseProperty(attribute, array[index]);
+        catch (IOException e) {
+            NeoLogger.error("Unable to get containment information for {0}", object);
+        }
+        return null;
+    }
+
+    @Override
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        try {
+            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
+            String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
+            String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
+
+            if (nonNull(containerId) && nonNull(containingFeatureName)) {
+                PersistentEObject container = eObject(StringId.of(containerId));
+                return container.eClass().getEStructuralFeature(containingFeatureName);
+            }
+        }
+        catch (IOException e) {
+            NeoLogger.error("Unable to get containment information for {0}", object);
+        }
+        return null;
+    }
+
+    /**
+     * Add {@code referencedObject} in the {@code reference} containment list of {@code object}. Inverse container
+     * feature between {@code referencedObject} and {@code object} is also updated.
+     *
+     * @param object           the container element
+     * @param reference        the containment {@link EReference}
+     * @param referencedObject the element to add to {@code object}'s containment list
+     */
+    @Override
+    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        if (reference.isContainment()) {
+            try {
+                Put put = new Put(Bytes.toBytes(referencedObject.id().toString()));
+                put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.id().toString()));
+                put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(reference.getName()));
+                table.put(put);
+
+            }
+            catch (IOException e) {
+                NeoLogger.error("Unable to update containment information for {0}", object);
+            }
+        }
+    }
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
+     *
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the metaclass of the element
+     */
+    @Override
+    protected Optional<EClass> resolveInstanceOf(Id id) {
+        Optional<EClass> metaclass = Optional.empty();
+
+        try {
+            Result result = table.get(new Get(Bytes.toBytes(id.toString())));
+            String nsURI = Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER));
+            String className = Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER));
+            if (nonNull(nsURI) && nonNull(className)) {
+                metaclass = Optional.ofNullable((EClass) Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className));
+            }
+        }
+        catch (IOException e) {
+            NeoLogger.error("Unable to get instance of information for {0}", id);
+        }
+        return metaclass;
+    }
+
+    /**
+     * Computes {@code object}'s metaclass information and persists them in the database.
+     *
+     * @param object the {@link PersistentEObject} to persist the metaclass of
+     */
+    @Override
+    protected void updateInstanceOf(PersistentEObject object) {
+        try {
+            Put put = new Put(Bytes.toBytes(object.id().toString()));
+            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
+            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(object.eClass().getName()));
+            table.checkAndPut(Bytes.toBytes(object.id().toString()), TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
+
+        }
+        catch (IOException e) {
+            NeoLogger.error("Unable to update containment information for {0}", object);
         }
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        Object soughtAttribute = getFromTable(object, attribute);
+        if (!attribute.isMany()) {
+            return deserialize(attribute, soughtAttribute);
+        }
+        else {
+            String[] array = (String[]) soughtAttribute;
+            return deserialize(attribute, array[index]);
+        }
+    }
+
+    @Override
+    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
         if (reference.isContainer()) {
-            return getContainer(object);
+            return (PersistentEObject) getContainer(object);
         }
 
         Object soughtReference = getFromTable(object, reference);
@@ -516,7 +487,7 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
         try {
             if (!attribute.isMany()) {
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
-                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(attribute.getName()), Bytes.toBytes(serializeToProperty(attribute, value).toString()));
+                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(attribute.getName()), Bytes.toBytes(serialize(attribute, value).toString()));
                 table.put(put);
             }
             else {
@@ -530,7 +501,7 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
                         Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                                 PROPERTY_FAMILY,
                                 Bytes.toBytes(attribute.getName()),
-                                HBaseEncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeToProperty(attribute, value))));
+                                HBaseEncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serialize(attribute, value))));
                         passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                                 PROPERTY_FAMILY,
                                 Bytes.toBytes(attribute.getName()),
@@ -563,8 +534,8 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
-        Object old = isSet(object, reference) ? get(object, reference, index) : null;
+    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
+        PersistentEObject old = isSet(object, reference) ? (PersistentEObject) get(object, reference, index) : null;
         persistentObjectsCache.put(object.id(), object);
         updateContainment(object, reference, referencedObject);
         updateInstanceOf(referencedObject);
@@ -606,8 +577,8 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
                         PROPERTY_FAMILY,
                         Bytes.toBytes(attribute.getName()),
                         HBaseEncoderUtil.toBytes(index < 0 ?
-                                (String[]) ArrayUtils.add(array, serializeToProperty(attribute, value)) :
-                                (String[]) ArrayUtils.add(array, serializeToProperty(attribute, value))
+                                ArrayUtils.add(array, serialize(attribute, value)) :
+                                ArrayUtils.add(array, serialize(attribute, value))
                         ));
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
@@ -729,8 +700,8 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
-        Object old = get(object, reference, index);
+    protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
+        PersistentEObject old = (PersistentEObject) get(object, reference, index);
         try {
             String[] array;
             boolean passed;
@@ -766,5 +737,40 @@ public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersiste
         }
 
         return old;
+    }
+
+    /**
+     * Reifies the element(s) in {@code value} and put them into {@code output}.
+     *
+     * @param value   the backend record to reify
+     * @param feature the {@link EStructuralFeature} used to reify {@code value}
+     * @param output  the array to fill
+     *
+     * @return {@code output} filled with the reified values
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
+        if (feature.isMany()) {
+            Object[] storedArray = (Object[]) value;
+            if (feature instanceof EReference) {
+                for (int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T) eObject(StringId.of((String) storedArray[i]));
+                }
+            }
+            else { // EAttribute
+                for (int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T) deserialize((EAttribute) feature, storedArray[i]);
+                }
+            }
+        }
+        else {
+            if (feature instanceof EReference) {
+                output[0] = (T) eObject((Id) value);
+            }
+            else { // EAttribute
+                output[0] = (T) deserialize((EAttribute) feature, value);
+            }
+        }
+        return output;
     }
 }

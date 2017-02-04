@@ -59,8 +59,8 @@ public class MetaclassValue implements Serializable {
     }
 
     /**
-     * Creates a new {@code MetaclassValue} from the given {@code object}. The {@link EClass} will be found by calling the
-     * {@link PersistentEObject#eClass()} method.
+     * Creates a new {@code MetaclassValue} from the given {@code object}. The {@link EClass} will be found by calling
+     * the {@link PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
      *

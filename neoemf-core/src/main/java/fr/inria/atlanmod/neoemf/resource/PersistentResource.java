@@ -20,7 +20,7 @@ import java.io.Closeable;
 
 /**
  * Extends the {@link Resource} interface by providing efficient model-level operations that
- * are not accessible using the standard EMF API. For example, {@code getAllInstances} is a
+ * are not accessible using the standard EMF API. For example, {@code allInstances} is a
  * utility method that computes efficiently all the instances of a given type by delegating the
  * operation to the underlying database, that can benefits of its internal optimizations and indices.
  */
@@ -35,9 +35,10 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return the {@link EStore}
      */
     EStore eStore();
-    
+
     /**
      * Returns {@code true} if the resource is distributed, {@code false} otherwise.
+     *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
      */
     boolean isDistributed();

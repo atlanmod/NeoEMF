@@ -14,9 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase.context;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -83,11 +81,6 @@ public class HBaseContext implements Context {
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return HBasePersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    public Class<? extends DirectWriteStore> directWriteClass() {
-        return DirectWriteHBaseStore.class;
     }
 
     /**

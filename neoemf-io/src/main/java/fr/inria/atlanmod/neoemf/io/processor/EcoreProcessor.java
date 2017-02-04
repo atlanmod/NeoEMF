@@ -215,8 +215,8 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Processes an attribute.
      *
-     * @param element the element representing the attribute
-     * @param attribute  the associated EMF attribute
+     * @param element   the element representing the attribute
+     * @param attribute the associated EMF attribute
      */
     private void processAttribute(@SuppressWarnings("unused") Element element, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
@@ -231,10 +231,10 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Processes a reference.
      *
-     * @param element the element representing the reference
-     * @param ns         the namespace of the class of the reference
-     * @param reference  the associated EMF reference
-     * @param ePackage   the package where to find the class of the reference
+     * @param element   the element representing the reference
+     * @param ns        the namespace of the class of the reference
+     * @param reference the associated EMF reference
+     * @param ePackage  the package where to find the class of the reference
      */
     private void processReference(Element element, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass

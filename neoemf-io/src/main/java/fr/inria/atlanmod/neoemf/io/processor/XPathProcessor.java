@@ -270,16 +270,14 @@ public class XPathProcessor extends AbstractProcessor {
              * The name of this node.
              */
             private final String name;
-
-            /**
-             * The index of this node.
-             */
-            private int index;
-
             /**
              * A map that holds all children of this node, identified by their name.
              */
             private final Map<String, XPathNode> children;
+            /**
+             * The index of this node.
+             */
+            private int index;
 
             /**
              * Constructs a new {@code XPathNode} with the given {@code name}.

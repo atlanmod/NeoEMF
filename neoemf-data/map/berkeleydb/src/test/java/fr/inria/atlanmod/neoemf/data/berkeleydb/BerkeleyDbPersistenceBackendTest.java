@@ -18,8 +18,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.eclipse.emf.ecore.EClass;
@@ -81,14 +81,14 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
         IntStream.range(0, TIMES).forEach(i -> {
             FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
-            assertThat(backend.setValue(key, "value" + i)).isNotNull();
+            assertThat(backend.valueFor(key, "value" + i)).isPresent();
         });
 
 //        backend.save();
         backend.close();
         backend.open();
 
-        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.getValue(FeatureKey.of(StringId.of("object" + i), "name" + i))).isEqualTo("value" + i));
+        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.valueOf(FeatureKey.of(StringId.of("object" + i), "name" + i)).orElse(null)).isEqualTo("value" + i));
     }
 
     @Test
@@ -100,10 +100,10 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
         IntStream.range(0, TIMES).forEach(i -> {
             keys[i] = featureKey.withPosition(i);
-            backend.setValueAtIndex(keys[i], i);
+            backend.valueFor(keys[i], i);
         });
 
-        IntStream.range(0, TIMES).forEach(i -> assertThat(i).isEqualTo(backend.getValueAtIndex(keys[i])));
+        IntStream.range(0, TIMES).forEach(i -> assertThat(i).isEqualTo(backend.valueOf(keys[i]).orElse(null)));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         FeatureKey fk1 = FeatureKey.of(StringId.of("objectId"), "isSet");
         assertThat(backend.hasValue(fk1)).isFalse();
 
-        backend.setValue(fk1, "yes");
+        backend.valueFor(fk1, "yes");
         assertThat(backend.hasValue(fk1)).isTrue();
     }
 
@@ -120,7 +120,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         FeatureKey fk1 = FeatureKey.of(StringId.of("objectId"), "unSet");
         assertThat(backend.hasValue(fk1)).isFalse();
 
-        backend.setValue(fk1, "yes");
+        backend.valueFor(fk1, "yes");
         assertThat(backend.hasValue(fk1)).isTrue();
 
         backend.unsetValue(fk1);
@@ -138,9 +138,9 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         when(eref.getName()).thenReturn("ref-name");
 
         ContainerValue originalContainer = ContainerValue.from(po, eref);
-        backend.storeContainer(id1, originalContainer);
+        backend.containerFor(id1, originalContainer);
 
-        ContainerValue retrievedContainer = backend.containerFor(id1);
+        ContainerValue retrievedContainer = backend.containerOf(id1).orElse(null);
 
         assertThat(retrievedContainer.id()).isEqualTo(id2);
         assertThat(retrievedContainer.name()).isEqualTo("ref-name");
@@ -161,9 +161,9 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         PersistentEObject po = mock(PersistentEObject.class);
         when(po.eClass()).thenReturn(eClass);
 
-        backend.storeMetaclass(id2, MetaclassValue.from(po));
+        backend.metaclassFor(id2, MetaclassValue.from(po));
 
-        MetaclassValue metaclass = backend.metaclassFor(id2);
+        MetaclassValue metaclass = backend.metaclassOf(id2).orElse(null);
         assertThat(metaclass).isNotNull();
         assertThat(metaclass.name()).isEqualTo("eClassTest");
         assertThat(metaclass.uri()).isEqualTo("URI://my.uri/");

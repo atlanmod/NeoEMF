@@ -39,7 +39,7 @@ public class Element extends MetaClass {
     /**
      * Constructs a new {@code Element} with the given {@code ns} and {@code name}.
      *
-     * @param ns the ns of this classifier
+     * @param ns   the ns of this classifier
      * @param name the name of this classifier
      */
     public Element(Namespace ns, String name) {

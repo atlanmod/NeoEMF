@@ -93,7 +93,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      * Updates the containment identified by its {@code name} between the {@code parentVertex} and the {@code
      * childVertex}.
      *
-     * @param name    the name of the property identifying the reference (parent -&gt; child)
+     * @param name         the name of the property identifying the reference (parent -&gt; child)
      * @param parentVertex the parent vertex
      * @param childVertex  the child vertex
      */

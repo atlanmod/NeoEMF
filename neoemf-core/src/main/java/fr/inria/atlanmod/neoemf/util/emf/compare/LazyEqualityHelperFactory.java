@@ -24,7 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  * Overrides {@link DefaultEqualityHelperFactory} methods to create
  * {@link LazyEqualityHelper} instances instead of default
  * {@link EqualityHelper} ones.
- * 
+ *
  * @see LazyEqualityHelper
  */
 public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
@@ -39,9 +39,8 @@ public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
     /**
      * Constructs a new {@link LazyEqualityHelperFactory} using the given
      * {@code cacheBuilder}.
-     * 
-     * @param cacheBuilder
-     *            the {@link CacheBuilder} to use
+     *
+     * @param cacheBuilder the {@link CacheBuilder} to use
      */
     public LazyEqualityHelperFactory(CacheBuilder<Object, Object> cacheBuilder) {
         super(cacheBuilder);
@@ -49,9 +48,9 @@ public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
 
     /**
      * Returns a new lazy {@link IEqualityHelper}.
-     * 
+     *
      * @return a new lazy {@link IEqualityHelper}
-     * 
+     *
      * @see LazyEqualityHelper
      */
     @Override

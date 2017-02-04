@@ -13,10 +13,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -83,11 +81,6 @@ public class MapDbContext implements Context {
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return MapDbPersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    public Class<? extends DirectWriteStore> directWriteClass() {
-        return DirectWriteMapStore.class;
     }
 
     /**

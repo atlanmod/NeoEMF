@@ -221,7 +221,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public InternalEObject.EStore eStore() {
         return store;
     }
-    
+
     @Override
     public boolean isDistributed() {
         return backend.isDistributed();

@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
+import java.util.Optional;
 
 /**
  * An adapter on top of a database that provides specific methods for communicating with the database that it uses.
@@ -68,7 +69,7 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      * @param id the id to create
      *
      * @throws IllegalArgumentException if the {@code id} already exists. Use {@link #has(Id)} to check the presence
-     * first
+     *                                  first
      */
     void create(Id id);
 
@@ -88,7 +89,7 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      *
      * @return a {@link ContainerValue} descriptor that contains element's container information
      */
-    ContainerValue containerFor(Id id);
+    Optional<ContainerValue> containerOf(Id id);
 
     /**
      * Stores container information for a given id in the Container Map.
@@ -96,26 +97,26 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      * @param id        the {@link Id} of the contained element
      * @param container the {@link ContainerValue} descriptor containing element's container information to store
      */
-    void storeContainer(Id id, ContainerValue container);
+    void containerFor(Id id, ContainerValue container);
 
     /**
      * Retrieves the metaclass ({@link EClass}) of the element with the given {@link Id}.
      *
      * @param id the {@link Id} of the element
      *
-     * @return a {@link MetaclassValue} descriptor containing element's metaclass information ({@link EClass}, meta-model
-     * name, and {@code nsURI})
+     * @return a {@link MetaclassValue} descriptor containing element's metaclass information ({@link EClass},
+     * meta-model name, and {@code nsURI})
      */
-    MetaclassValue metaclassFor(Id id);
+    Optional<MetaclassValue> metaclassOf(Id id);
 
     /**
      * Stores metaclass ({@link EClass}) information for the element with the given {@link Id}.
      *
      * @param id        the {@link Id} of the element
-     * @param metaclass the {@link MetaclassValue} descriptor containing element's metaclass information ({@link EClass},
-     *                  meta-model name, and {@code nsURI})
+     * @param metaclass the {@link MetaclassValue} descriptor containing element's metaclass information ({@link
+     *                  EClass}, meta-model name, and {@code nsURI})
      */
-    void storeMetaclass(Id id, MetaclassValue metaclass);
+    void metaclassFor(Id id, MetaclassValue metaclass);
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
@@ -126,10 +127,10 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
      * EClass}
      *
-     * @throws UnsupportedOperationException if the back-end does not support all instances lookup
+     * @throws UnsupportedOperationException if the back-end doesn't support the lookup of all instances
      */
-    default Iterable<Id> getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException("This back-end does not support custom all instances computation");
+    default Iterable<Id> allInstances(EClass eClass, boolean strict) {
+        throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
     }
 }
 

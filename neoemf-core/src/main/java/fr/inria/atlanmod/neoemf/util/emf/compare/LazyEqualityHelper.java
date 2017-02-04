@@ -39,17 +39,15 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * comparisons involving at least one {@link PersistentEObject} are computed
  * using {@code equals} which may imply some data query process to compute the
  * object identifier.
- * 
+ *
  * @see LazyEqualityHelperFactory
  */
 class LazyEqualityHelper extends EqualityHelper {
 
     /**
      * Creates a new LazyEqualityHelper with the given cache.
-     * 
-     * @param uriCache
-     *            the cache to be used for {@link EcoreUtil#getURI(EObject)}
-     *            calls
+     *
+     * @param uriCache the cache to be used for {@link EcoreUtil#getURI(EObject)} calls
      */
     LazyEqualityHelper(LoadingCache<EObject, URI> uriCache) {
         super(uriCache);
@@ -80,19 +78,24 @@ class LazyEqualityHelper extends EqualityHelper {
             if (object2 instanceof PersistentEObject
                     || match.getLeft() instanceof PersistentEObject
                     || match.getRight() instanceof PersistentEObject
-                    || match.getOrigin() instanceof PersistentEObject) {
+                    || match.getOrigin() instanceof PersistentEObject)
+            {
                 equal = Objects.equal(match.getLeft(), object2)
                         || Objects.equal(match.getRight(), object2)
                         || Objects.equal(match.getOrigin(), object2);
-            } else {
+            }
+            else {
                 equal = match.getLeft() == object2 || match.getRight() == object2
                         || match.getOrigin() == object2;
             }
-        } else if (getTarget().getMatch(object2) != null) {
+        }
+        else if (getTarget().getMatch(object2) != null) {
             equal = false;
-        } else if (object1.eClass() != object2.eClass()) {
+        }
+        else if (object1.eClass() != object2.eClass()) {
             equal = false;
-        } else {
+        }
+        else {
             equal = matchingURIs(object1, object2);
         }
         return equal;

@@ -33,8 +33,8 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -42,6 +42,8 @@ import org.eclipse.emf.ecore.EClass;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * ???
@@ -226,14 +228,14 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public ContainerValue containerFor(Id id) {
-        ContainerValue container = null;
+    public Optional<ContainerValue> containerOf(Id id) {
+        Optional<ContainerValue> container = Optional.empty();
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (containers.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                container = new ContainerInfoSerializer().deserialize(data);
+                container = Optional.of(new ContainerInfoSerializer().deserialize(data));
             }
         }
         catch (DatabaseException e) {
@@ -243,7 +245,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public void storeContainer(Id id, ContainerValue container) {
+    public void containerFor(Id id, ContainerValue container) {
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry(new ContainerInfoSerializer().serialize(container));
         try {
@@ -255,14 +257,14 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public MetaclassValue metaclassFor(Id id) {
-        MetaclassValue metaclass = null;
+    public Optional<MetaclassValue> metaclassOf(Id id) {
+        Optional<MetaclassValue> metaclass = Optional.empty();
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                metaclass = new ClassInfoSerializer().deserialize(data);
+                metaclass = Optional.of(new ClassInfoSerializer().deserialize(data));
             }
         }
         catch (DatabaseException e) {
@@ -272,7 +274,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public void storeMetaclass(Id id, MetaclassValue metaclass) {
+    public void metaclassFor(Id id, MetaclassValue metaclass) {
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry(new ClassInfoSerializer().serialize(metaclass));
         try {
@@ -284,13 +286,13 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object getValue(FeatureKey featureKey) {
+    public Optional<Object> valueOf(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
-        Object old = null;
+        Optional<Object> old = Optional.empty();
         try {
             if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                old = new ObjectSerializer().deserialize(value.getData());
+                old = Optional.of(new ObjectSerializer().deserialize(value.getData()));
             }
         }
         catch (DatabaseException e) {
@@ -300,18 +302,68 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Object setValue(FeatureKey featureKey, Object obj) {
-        Object old = null;
+    public Optional<Object> valueOf(MultivaluedFeatureKey featureKey) {
+        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+        DatabaseEntry value = new DatabaseEntry();
+        Optional<Object> old = Optional.empty();
         try {
-            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
-            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
-            features.put(null, key, value);
-            old = obj;
+            if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                old = Optional.of(new ObjectSerializer().deserialize(value.getData()));
+            }
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return old;
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Object> valueFor(FeatureKey featureKey, Object obj) {
+        Optional<Object> old = Optional.empty();
+        try {
+            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
+            features.put(null, key, value);
+            old = Optional.of(obj);
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
+        }
+        return old;
+    }
+
+    @Override
+    public Optional<Object> valueFor(MultivaluedFeatureKey featureKey, Object obj) {
+        try {
+            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
+            multivaluedFeatures.put(null, key, value);
+            return Optional.of(obj);
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -330,6 +382,21 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
+    public void unsetAllValues(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void unsetAllReferences(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public boolean hasValue(FeatureKey featureKey) {
         boolean isSet = false;
         DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
@@ -344,57 +411,22 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public void addValue(MultivaluedFeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Object removeValue(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void cleanValue(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Iterable<Object> valueAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean containsValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int indexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int lastIndexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id getReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Id setReference(FeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public boolean hasAnyValue(FeatureKey key) {
+        return hasValue(key);
     }
 
     @Override
     public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean hasAnyReference(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addValue(MultivaluedFeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -404,17 +436,27 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Id removeReference(MultivaluedFeatureKey key) {
+    public Optional<Object> removeValue(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void cleanReference(FeatureKey key) {
+    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Iterable<Id> referenceAsList(FeatureKey key) {
+    public void cleanValues(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void cleanReferences(FeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean containsValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -424,87 +466,37 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public int indexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public int lastIndexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Object getValueAtIndex(MultivaluedFeatureKey featureKey) {
-        DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
-        DatabaseEntry value = new DatabaseEntry();
-        Object old = null;
-        try {
-            if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                old = new ObjectSerializer().deserialize(value.getData());
-            }
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-        return old;
-    }
-
-    @Override
-    public Object setValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
-        try {
-            DatabaseEntry key = new DatabaseEntry(new FeatureKeySerializer().serialize(featureKey));
-            DatabaseEntry value = new DatabaseEntry(new ObjectSerializer().serialize(obj));
-            multivaluedFeatures.put(null, key, value);
-            return obj;
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-        return null;
-    }
-
-    @Override
-    public void unsetValueAtIndex(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public boolean hasValueAtIndex(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public Iterable<Object> valueAtIndexAsList(FeatureKey key) {
+    public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Id getReferenceAtIndex(MultivaluedFeatureKey key) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id) {
+    public Iterable<Object> valuesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void unsetReferenceAtIndex(FeatureKey key) {
+    public Iterable<Id> referencesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public boolean hasReferenceAtIndex(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Iterable<Id> referenceAtIndexAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public int sizeOf(FeatureKey key) {
+    public OptionalInt sizeOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

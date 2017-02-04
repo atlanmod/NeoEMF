@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -103,7 +104,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
             index = ArrayUtils.INDEX_NOT_FOUND;
         }
         else if (feature instanceof EAttribute) {
-            index = ArrayUtils.indexOf(array, serializeToProperty((EAttribute) feature, value));
+            index = ArrayUtils.indexOf(array, serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
@@ -125,7 +126,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
             index = ArrayUtils.INDEX_NOT_FOUND;
         }
         else if (feature instanceof EAttribute) {
-            index = ArrayUtils.lastIndexOf(array, serializeToProperty((EAttribute) feature, value));
+            index = ArrayUtils.lastIndexOf(array, serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
@@ -140,7 +141,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         checkNotNull(feature);
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.setValue(featureKey, new Object[]{});
+        backend.valueFor(featureKey, new Object[]{});
     }
 
     @Override
@@ -178,16 +179,16 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         if (attribute.isMany()) {
             Object[] array = (Object[]) soughtAttribute;
             checkPositionIndex(index, array.length, "Invalid get index " + index);
-            soughtAttribute = parseProperty(attribute, array[index]);
+            soughtAttribute = deserialize(attribute, array[index]);
         }
         else {
-            soughtAttribute = parseProperty(attribute, soughtAttribute);
+            soughtAttribute = deserialize(attribute, soughtAttribute);
         }
         return soughtAttribute;
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
         checkNotNull(object);
         checkNotNull(reference);
 
@@ -218,40 +219,40 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         Object old;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (!attribute.isMany()) {
-            old = backend.setValue(featureKey, serializeToProperty(attribute, value));
-            old = parseProperty(attribute, old);
+            old = backend.valueFor(featureKey, serialize(attribute, value)).orElse(null);
+            old = deserialize(attribute, old);
         }
         else {
-            Object[] array = (Object[]) backend.getValue(featureKey);
+            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             old = array[index];
-            array[index] = serializeToProperty(attribute, value);
-            backend.setValue(featureKey, array);
-            old = parseProperty(attribute, old);
+            array[index] = serialize(attribute, value);
+            backend.valueFor(featureKey, array);
+            old = deserialize(attribute, old);
         }
         return old;
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         checkNotNull(object);
         checkNotNull(reference);
         checkNotNull(value);
 
-        Object old;
+        PersistentEObject old;
         FeatureKey featureKey = FeatureKey.from(object, reference);
         updateContainment(object, reference, value);
         updateInstanceOf(value);
         if (!reference.isMany()) {
-            Object oldId = backend.setValue(featureKey, value.id());
-            old = isNull(oldId) ? null : eObject((Id) oldId);
+            Optional<Object> oldId = backend.valueFor(featureKey, value.id());
+            old = oldId.isPresent() ? eObject((Id) oldId.get()) : null;
         }
         else {
-            Object[] array = (Object[]) backend.getValue(featureKey);
+            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             Object oldId = array[index];
             array[index] = value.id();
-            backend.setValue(featureKey, array);
+            backend.valueFor(featureKey, array);
             old = isNull(oldId) ? null : eObject((Id) oldId);
         }
         return old;
@@ -272,13 +273,13 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
 			 */
             index = size(object, attribute);
         }
-        Object[] array = (Object[]) backend.getValue(featureKey);
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
         if (isNull(array)) {
             array = new Object[]{};
         }
         checkPositionIndex(index, array.length, "Invalid add index");
-        array = ArrayUtils.add(array, index, serializeToProperty(attribute, value));
-        backend.setValue(featureKey, array);
+        array = ArrayUtils.add(array, index, serialize(attribute, value));
+        backend.valueFor(featureKey, array);
     }
 
     @Override
@@ -298,13 +299,13 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         }
         updateContainment(object, reference, value);
         updateInstanceOf(value);
-        Object[] array = (Object[]) backend.getValue(featureKey);
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
         if (isNull(array)) {
             array = new Object[]{};
         }
         checkPositionIndex(index, array.length, "Invalid add index");
         array = ArrayUtils.add(array, index, value.id());
-        backend.setValue(featureKey, array);
+        backend.valueFor(featureKey, array);
         persistentObjectsCache.put(value.id(), value);
     }
 
@@ -314,25 +315,25 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         checkNotNull(attribute);
 
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        Object[] array = (Object[]) backend.getValue(featureKey);
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
         checkPositionIndex(index, array.length, "Invalid remove index");
         Object old = array[index];
         array = ArrayUtils.remove(array, index);
-        backend.setValue(featureKey, array);
-        return parseProperty(attribute, old);
+        backend.valueFor(featureKey, array);
+        return deserialize(attribute, old);
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+    protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
         checkNotNull(object);
         checkNotNull(reference);
 
         FeatureKey featureKey = FeatureKey.from(object, reference);
-        Object[] array = (Object[]) backend.getValue(featureKey);
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
         checkPositionIndex(index, array.length, "Invalid remove index");
         Object oldId = array[index];
         array = ArrayUtils.remove(array, index);
-        backend.setValue(featureKey, array);
+        backend.valueFor(featureKey, array);
         return eObject((Id) oldId);
     }
 
@@ -347,7 +348,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
     public Object getFromMap(FeatureKey featureKey) {
         checkNotNull(featureKey);
 
-        return backend.getValue(featureKey);
+        return backend.valueOf(featureKey).orElse(null);
     }
 
     /**
@@ -365,7 +366,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         checkNotNull(object);
         checkNotNull(feature);
 
-        return backend.getValue(FeatureKey.from(object, feature));
+        return backend.valueOf(FeatureKey.from(object, feature)).orElse(null);
     }
 
     /**
@@ -388,7 +389,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
             }
             else { // EAttribute
                 for (int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) parseProperty((EAttribute) feature, storedArray[i]);
+                    output[i] = (T) deserialize((EAttribute) feature, storedArray[i]);
                 }
             }
         }
@@ -397,7 +398,7 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
                 output[0] = (T) eObject((Id) value);
             }
             else { // EAttribute
-                output[0] = (T) parseProperty((EAttribute) feature, value);
+                output[0] = (T) deserialize((EAttribute) feature, value);
             }
         }
         return output;

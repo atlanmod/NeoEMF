@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
 import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.AbstractBlueprintsResourceBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -36,6 +36,6 @@ public class BlueprintsResourceBuilder extends AbstractBlueprintsResourceBuilder
 
     @Override
     protected void registerFactory() {
-        resourceOptions.put(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        resourceOptions = BlueprintsOptionsBuilder.newBuilder().asMap();
     }
 }
