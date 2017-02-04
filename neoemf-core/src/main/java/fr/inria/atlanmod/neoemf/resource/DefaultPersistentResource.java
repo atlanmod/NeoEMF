@@ -24,7 +24,6 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -229,22 +228,16 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
-    public EList<EObject> getAllInstances(EClass eClass) {
-        return getAllInstances(eClass, false);
-    }
-
-    @Override
-    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        EList<EObject> allInstances;
+    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
+        Iterable<EObject> allInstances;
         try {
             allInstances = store.getAllInstances(eClass, strict);
         }
         catch (UnsupportedOperationException e) {
             NeoLogger.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
-            EList<EObject> instanceList = new BasicEList<>();
-            Iterator<EObject> it = getAllContents();
-            while (it.hasNext()) {
-                EObject eObject = it.next();
+            List<EObject> instanceList = new ArrayList<>();
+            Iterable<EObject> allContents = this::getAllContents;
+            for (EObject eObject : allContents) {
                 if (eClass.isInstance(eObject)) {
                     if (strict) {
                         if (Objects.equals(eObject.eClass(), eClass)) {

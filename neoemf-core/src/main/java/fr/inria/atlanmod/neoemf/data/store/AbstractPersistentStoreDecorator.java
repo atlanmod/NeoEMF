@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -141,7 +140,7 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
-    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
         return store.getAllInstances(eClass, strict);
     }
 

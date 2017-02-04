@@ -130,19 +130,19 @@ public class AllInstancesTest extends AbstractBackendTest {
     }
 
     private void assertAllInstancesPersistentTranscient(final PersistentResource resource, final boolean strict, final int abstractPackContentCount, final int packContentCount) {
-        EList<EObject> allPacks = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
+        Iterable<EObject> allPacks = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
         assertThat(allPacks).hasSize(PACK_COUNT); // "Invalid count"
 
-        EList<EObject> allAbstractPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
+        Iterable<EObject> allAbstractPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
         assertThat(allAbstractPackContents).hasSize(abstractPackContentCount); // "Invalid count"
 
-        EList<EObject> allPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
+        Iterable<EObject> allPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
         assertThat(allPackContents).hasSize(packContentCount); // "Invalid count"
 
-        EList<EObject> allSpecializedPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
+        Iterable<EObject> allSpecializedPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
         assertThat(allSpecializedPackContents).hasSize(SPECIALIZED_PACK_CONTENT_COUNT); // "Invalid count"
 
-        EList<EObject> allPackContents2 = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
+        Iterable<EObject> allPackContents2 = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
         assertThat(allPackContents2).hasSize(PACK_CONTENT_2_COUNT); // "Invalid count"
     }
 }

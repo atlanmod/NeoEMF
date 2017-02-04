@@ -21,6 +21,8 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -35,10 +37,16 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -81,6 +89,17 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         this.backend = backend;
     }
 
+    /**
+     * Checks whether the {@code feature} is an {@link EAttribute}.
+     *
+     * @param feature the feature for which to check the type
+     *
+     * @return {@code true} if the {@code feature} is an {@link EAttribute}, {@code false} is it is a {@link EReference}
+     */
+    private static boolean isAttribute(EStructuralFeature feature) {
+        return EAttribute.class.isInstance(feature);
+    }
+
     @Override
     public Resource.Internal resource() {
         return resource;
@@ -110,38 +129,31 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      *
      * @param object the object to persist
      *
-     * @return {@code true} if the {@link PersistentEObject} has been created, {@code false} if it already exists
-     *
      * @see #updateInstanceOf(PersistentEObject)
      */
-    protected boolean persist(PersistentEObject object) {
+    protected void persist(PersistentEObject object) {
         if (!backend.has(object.id())) {
             backend.create(object.id());
             persistentObjectsCache.put(object.id(), object);
             updateInstanceOf(object);
-            return true;
         }
-        return false;
     }
 
     /**
-     * Creates the given {@code object} and {@code referencedObject} in the underlying database if it don't already
-     * exist, and update the containment link the two.
+     * Creates the given {@code object} and {@code referencedObject} in the underlying back-end if they don't already
+     * exist, and update the containment link between them.
      *
      * @param object           the object to persist
-     * @param reference        the reference to link the two {@link PersistentEObject}s
+     * @param reference        the reference to link the two objects
      * @param referencedObject the referenced object to persist
-     *
-     * @return {@code true} if at least one {@link PersistentEObject} have been created, {@code false} if they already
-     * exist
      *
      * @see #persist(PersistentEObject)
      * @see #updateContainment(PersistentEObject, EReference, PersistentEObject)
      */
-    protected boolean persist(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        boolean created = persist(object) || persist(referencedObject);
+    protected void persist(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        persist(object);
+        persist(referencedObject);
         updateContainment(object, reference, referencedObject);
-        return created;
     }
 
     /**
@@ -155,7 +167,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             return getAttribute(object, (EAttribute) feature, index);
         }
         else {
@@ -173,8 +185,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        if (isNull(value)) {
+            Object previousValue = get(internalObject, feature, index);
+            unset(internalObject, feature);
+            return previousValue;
+        }
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             return setAttribute(object, (EAttribute) feature, index, value);
         }
         else {
@@ -194,7 +212,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     @Override
     public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             return isSetAttribute(object, (EAttribute) feature);
         }
         else {
@@ -213,7 +231,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             unsetAttribute(object, (EAttribute) feature);
         }
         else {
@@ -236,12 +254,19 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkArgument(feature.isMany(), "Cannot compute contains() of a single-valued feature");
+
         if (isNull(value)) {
             return false;
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+
+        if (!backend.has(object.id())) {
+            return false;
+        }
+
+        if (isAttribute(feature)) {
             return containsAttribute(object, (EAttribute) feature, value);
         }
         else {
@@ -260,8 +285,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkArgument(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
+        }
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             return indexOfAttribute(object, (EAttribute) feature, value);
         }
         else {
@@ -280,8 +311,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkArgument(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
+        }
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             return lastIndexOfAttribute(object, (EAttribute) feature, value);
         }
         else {
@@ -300,8 +337,17 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
+
+        if (index == NO_INDEX) {
+            index = size(internalObject, feature);
+        }
+        else {
+            checkPositionIndex(index, size(internalObject, feature));
+        }
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             addAttribute(object, (EAttribute) feature, index, value);
         }
         else {
@@ -320,8 +366,11 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkArgument(feature.isMany(), "Cannot compute remove() of a single-valued feature");
+        checkElementIndex(index, size(internalObject, feature));
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+        if (isAttribute(feature)) {
             return removeAttribute(object, (EAttribute) feature, index);
         }
         else {
@@ -331,6 +380,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
 
     @Override
     public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
+
         Object movedElement = remove(internalObject, feature, sourceIndex);
         add(internalObject, feature, targetIndex, movedElement);
         return movedElement;
@@ -346,8 +397,15 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      */
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature.isMany(), "Cannot compute clear() of a single-valued feature");
+
         PersistentEObject object = PersistentEObject.from(internalObject);
-        if (feature instanceof EAttribute) {
+
+        if (!backend.has(object.id())) {
+            return;
+        }
+
+        if (isAttribute(feature)) {
             clearAttribute(object, (EAttribute) feature);
         }
         else {
@@ -355,25 +413,63 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation that takes benefit of the underlying backend to get all the linked
+     * elements once and return it as an array, avoiding multiple {@code get()} operations.
+     */
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        int size = size(internalObject, feature);
-        Object[] array = new Object[size];
-        for (int index = 0; index < size; index++) {
-            array[index] = get(internalObject, feature, index);
-        }
-        return array;
+        return toArray(internalObject, feature, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation that takes benefit of the underlying backend to get all the linked
+     * elements once and return it as an array, avoiding multiple {@code get()} operations.
+     */
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'T'
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        int size = size(internalObject, feature);
-        array = array.length < size ? Arrays.copyOf(array, size) : array;
-        for (int index = 0; index < size; index++) {
-            array[index] = (T) get(internalObject, feature, index);
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        Stream<Object> stream;
+        if (feature instanceof EReference) {
+            Iterable<Id> references;
+
+            if (feature.isMany()) {
+                references = backend.referenceAtIndexAsList(key);
+            }
+            else {
+                references = backend.referenceAsList(key);
+            }
+
+            stream = StreamSupport.stream(references.spliterator(), false)
+                    .map(this::eObject);
         }
-        return array;
+        else {
+            Iterable<Object> values;
+
+            if (feature.isMany()) {
+                values = backend.valueAtIndexAsList(key);
+            }
+            else {
+                values = backend.valueAsList(key);
+            }
+
+            stream = StreamSupport.stream(values.spliterator(), false)
+                    .map(v -> parseProperty((EAttribute) feature, v));
+        }
+
+        if (isNull(array)) {
+            return (T[]) stream.toArray();
+        }
+        else {
+            array = stream.collect(Collectors.toList()).toArray(array);
+            return array;
+        }
     }
 
     @Override
@@ -503,7 +599,17 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #get(InternalEObject, EStructuralFeature, int)
      */
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+
+        Object value;
+        if (!attribute.isMany()) {
+            value = backend.getValue(key);
+        }
+        else {
+            checkElementIndex(index, size(object, attribute));
+            value = backend.getValueAtIndex(key.withPosition(index));
+        }
+        return parseProperty(attribute, value);
     }
 
     /**
@@ -518,7 +624,18 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #get(InternalEObject, EStructuralFeature, int)
      */
     protected Object getReference(PersistentEObject object, EReference reference, int index) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+
+        Id value;
+        if (!reference.isMany()) {
+            value = backend.getReference(key);
+        }
+        else {
+            checkElementIndex(index, size(object, reference));
+            value = backend.getReferenceAtIndex(key.withPosition(index));
+        }
+
+        return eObject(value);
     }
 
     /**
@@ -534,7 +651,19 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #set(InternalEObject, EStructuralFeature, int, Object)
      */
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        throw new UnsupportedOperationException();
+        persist(object);
+
+        FeatureKey key = FeatureKey.from(object, attribute);
+
+        Object previousValue;
+        if (!attribute.isMany()) {
+            previousValue = backend.setValue(key, value);
+        }
+        else {
+            checkElementIndex(index, size(object, attribute));
+            previousValue = backend.setValueAtIndex(key.withPosition(index), value);
+        }
+        return parseProperty(attribute, previousValue);
     }
 
     /**
@@ -550,7 +679,19 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #set(InternalEObject, EStructuralFeature, int, Object)
      */
     protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        throw new UnsupportedOperationException();
+        persist(object, reference, value);
+
+        FeatureKey key = FeatureKey.from(object, reference);
+
+        Id previousId;
+        if (!reference.isMany()) {
+            previousId = backend.setReference(key, value.id());
+        }
+        else {
+            checkElementIndex(index, size(object, reference));
+            previousId = backend.setReferenceAtIndex(key.withPosition(index), value.id());
+        }
+        return eObject(previousId);
     }
 
     /**
@@ -564,7 +705,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #isSet(InternalEObject, EStructuralFeature)
      */
     protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+
+        if (!attribute.isMany()) {
+            return backend.hasValue(key);
+        }
+        else {
+            return backend.hasValueAtIndex(key);
+        }
     }
 
     /**
@@ -578,7 +726,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #isSet(InternalEObject, EStructuralFeature)
      */
     protected boolean isSetReference(PersistentEObject object, EReference reference) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+
+        if (!reference.isMany()) {
+            return backend.hasReference(key);
+        }
+        else {
+            return backend.hasReferenceAtIndex(key);
+        }
     }
 
     /**
@@ -590,7 +745,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #unset(InternalEObject, EStructuralFeature)
      */
     protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+
+        if (!attribute.isMany()) {
+            backend.unsetValue(key);
+        }
+        else {
+            backend.unsetValueAtIndex(key);
+        }
     }
 
     /**
@@ -602,7 +764,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #unset(InternalEObject, EStructuralFeature)
      */
     protected void unsetReference(PersistentEObject object, EReference reference) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+
+        if (!reference.isMany()) {
+            backend.unsetReference(key);
+        }
+        else {
+            backend.unsetReferenceAtIndex(key);
+        }
     }
 
     /**
@@ -617,7 +786,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #contains(InternalEObject, EStructuralFeature, Object)
      */
     protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+        return backend.containsValue(key, value);
     }
 
     /**
@@ -632,7 +802,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #contains(InternalEObject, EStructuralFeature, Object)
      */
     protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+        return backend.containsReference(key, value.id());
     }
 
     /**
@@ -647,7 +818,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #indexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+        return backend.indexOfValue(key, value);
     }
 
     /**
@@ -662,7 +834,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #indexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+        return backend.indexOfReference(key, value.id());
     }
 
     /**
@@ -677,7 +850,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+        return backend.lastIndexOfValue(key, value);
     }
 
     /**
@@ -692,7 +866,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+        return backend.lastIndexOfReference(key, value.id());
     }
 
     /**
@@ -706,7 +881,10 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #add(InternalEObject, EStructuralFeature, int, Object)
      */
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        throw new UnsupportedOperationException();
+        persist(object);
+
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
+        backend.addValue(key, serializeToProperty(attribute, value));
     }
 
     /**
@@ -720,7 +898,10 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #add(InternalEObject, EStructuralFeature, int, Object)
      */
     protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        throw new UnsupportedOperationException();
+        persist(object, reference, value);
+
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
+        backend.addReference(key, value.id());
     }
 
     /**
@@ -735,7 +916,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #remove(InternalEObject, EStructuralFeature, int)
      */
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        throw new UnsupportedOperationException();
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
+        return parseProperty(attribute, backend.removeValue(key));
     }
 
     /**
@@ -750,7 +932,16 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #remove(InternalEObject, EStructuralFeature, int)
      */
     protected Object removeReference(PersistentEObject object, EReference reference, int index) {
-        throw new UnsupportedOperationException();
+        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
+        PersistentEObject previouslyReferencedObject = eObject(backend.removeReference(key));
+
+        checkNotNull(previouslyReferencedObject);
+        if (reference.isContainment()) {
+            previouslyReferencedObject.eBasicSetContainer(null, -1, null);
+            previouslyReferencedObject.resource(null);
+        }
+
+        return previouslyReferencedObject;
     }
 
     /**
@@ -762,7 +953,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #clear(InternalEObject, EStructuralFeature)
      */
     protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, attribute);
+        backend.cleanValue(key);
     }
 
     /**
@@ -774,7 +966,16 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @see #clear(InternalEObject, EStructuralFeature)
      */
     protected void clearReference(PersistentEObject object, EReference reference) {
-        throw new UnsupportedOperationException();
+        FeatureKey key = FeatureKey.from(object, reference);
+        backend.cleanReference(key);
+    }
+
+    @Override
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+        return backend.sizeOf(key);
     }
 
     /**

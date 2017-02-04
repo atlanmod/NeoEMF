@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
@@ -265,7 +266,7 @@ public interface PersistenceBackend extends Closeable {
      *
      * @throws UnsupportedOperationException if the back-end does not support all instances lookup
      */
-    default Object getAllInstances(EClass eClass, boolean strict) {
+    default Iterable<Id> getAllInstances(EClass eClass, boolean strict) {
         throw new UnsupportedOperationException("This back-end does not support custom all instances computation");
     }
 }

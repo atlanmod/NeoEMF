@@ -46,7 +46,6 @@ import org.eclipse.emf.ecore.EcorePackage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -687,15 +686,15 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {
-        Map<EClass, Iterable<Vertex>> indexHits;
+    public Iterable<Id> getAllInstances(EClass eClass, boolean strict) {
+        List<Id> indexHits;
 
         // There is no strict instance of an abstract class
         if (eClass.isAbstract() && strict) {
-            indexHits = Collections.emptyMap();
+            indexHits = Collections.emptyList();
         }
         else {
-            indexHits = new HashMap<>();
+            indexHits = new ArrayList<>();
             Set<EClass> eClassToFind = new HashSet<>();
             eClassToFind.add(eClass);
 
@@ -714,7 +713,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
                 Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
                 if (nonNull(metaClassVertex)) {
                     Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
-                    indexHits.put(ec, instanceVertexIterable);
+                    for (Vertex v : instanceVertexIterable) {
+                        indexHits.add(new StringId(v.getId().toString()));
+                    }
                 }
                 else {
                     NeoLogger.warn("Metaclass {0} not found in index", ec.getName());

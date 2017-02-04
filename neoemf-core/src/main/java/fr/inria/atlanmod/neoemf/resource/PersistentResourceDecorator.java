@@ -214,12 +214,12 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
-    public EList<EObject> getAllInstances(EClass eClass) {
+    public Iterable<EObject> getAllInstances(EClass eClass) {
         return resource.getAllInstances(eClass);
     }
 
     @Override
-    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
         return resource.getAllInstances(eClass, strict);
     }
 

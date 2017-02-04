@@ -50,16 +50,18 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
     /**
-     * The default cache size (10 000).
+     * The property key used to define the index of an edge.
      */
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
+    private static final String POSITION = "position";
 
     /**
      * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
      */
     // TODO Cache many properties in addition to vertices
-    private final Cache<FeatureKey, Object[]> verticesCache;
+    private final Cache<FeatureKey, Object[]> verticesCache = Caffeine.newBuilder()
+            .initialCapacity(1_000)
+            .maximumSize(10_000)
+            .build();
 
     /**
      * Constructs a new {@code DirectWriteBlueprintsCacheManyStore} between the given {@code resource} and the
@@ -70,7 +72,6 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
      */
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
-        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     /**
@@ -92,7 +93,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 Object o = list[index];
                 if (isNull(o)) {
                     NeoLogger.warn("Inconsistent content in CachedMany map, null value found for key " + key + " at index " + index);
-                    return super.getReference(object, reference, index);
+                    return (PersistentEObject) super.getReference(object, reference, index);
                 }
                 else {
                     NeoLogger.debug("Found in cache {0} - {1} - idx={2}", key, object.eClass().getName(), index);
@@ -124,7 +125,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
             }
         }
         else {
-            return super.getReference(object, reference, index);
+            return (PersistentEObject) super.getReference(object, reference, index);
         }
     }
 }

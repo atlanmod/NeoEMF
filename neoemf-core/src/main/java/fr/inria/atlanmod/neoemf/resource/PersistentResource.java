@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -52,7 +51,9 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      *
      * @return all the instances of the given {@link EClass} from the resource
      */
-    EList<EObject> getAllInstances(EClass eClass);
+    default Iterable<EObject> getAllInstances(EClass eClass) {
+        return getAllInstances(eClass, false);
+    }
 
     /**
      * Computes the set of instances of the given {@link EClass}.
@@ -63,5 +64,5 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return if {@code true} then the method returns only the strict instances of the given {@link EClass}, otherwise
      * it also returns the instances of the sub-types of {@code eClass}.
      */
-    EList<EObject> getAllInstances(EClass eClass, boolean strict);
+    Iterable<EObject> getAllInstances(EClass eClass, boolean strict);
 }
