@@ -13,8 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.store;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
-
-import org.eclipse.emf.ecore.resource.Resource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to Blueprints
@@ -42,7 +41,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
+    public DirectWriteBlueprintsStore(PersistentResource resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
     }
 }

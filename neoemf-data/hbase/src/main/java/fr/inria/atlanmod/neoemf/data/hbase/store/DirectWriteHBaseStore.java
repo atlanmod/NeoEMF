@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -45,7 +46,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -130,7 +130,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      *
      * @throws IOException if the HBase server cannot be found
      */
-    public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
+    public DirectWriteHBaseStore(PersistentResource resource) throws IOException {
         super(resource, null);
 
         Configuration configuration = HBaseConfiguration.create();

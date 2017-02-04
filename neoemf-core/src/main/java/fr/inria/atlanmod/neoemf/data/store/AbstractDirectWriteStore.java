@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -76,7 +77,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     /**
      * The resource to persist and access.
      */
-    private final Resource.Internal resource;
+    private final PersistentResource resource;
 
     /**
      * Constructs a new {@code AbstractDirectWriteStore} between the given {@code resource} and the {@code backend}.
@@ -84,7 +85,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public AbstractDirectWriteStore(Resource.Internal resource, P backend) {
+    public AbstractDirectWriteStore(PersistentResource resource, P backend) {
         this.resource = resource;
         this.backend = backend;
     }
@@ -106,7 +107,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     @Override
-    public Resource.Internal resource() {
+    public PersistentResource resource() {
         return resource;
     }
 

@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
@@ -59,7 +56,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#DIRECT_WRITE
-     * @see DirectWriteBlueprintsStore
+     * @see fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore
      */
     public B directWrite() {
         return storeOption(BlueprintsStoreOptions.DIRECT_WRITE);
@@ -71,7 +68,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#CACHE_MANY
-     * @see DirectWriteBlueprintsCacheManyStore
+     * @see fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore
      */
     public B directWriteCacheMany() {
         return storeOption(BlueprintsStoreOptions.CACHE_MANY);

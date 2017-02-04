@@ -14,13 +14,15 @@ package fr.inria.atlanmod.neoemf.data.map.core.store;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
@@ -56,7 +58,7 @@ public class DirectWriteCachedMapStore<P extends MapBackend> extends DirectWrite
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteCachedMapStore(Resource.Internal resource, P backend) {
+    public DirectWriteCachedMapStore(PersistentResource resource, P backend) {
         super(resource, backend);
     }
 

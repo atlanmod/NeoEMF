@@ -29,7 +29,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 
 import java.util.Objects;
@@ -131,12 +130,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     @Nullable
-    public Internal resource() {
+    public Resource.Internal resource() {
         return resource;
     }
 
     @Override
-    public void resource(Internal resource) {
+    public void resource(Resource.Internal resource) {
         this.resource = resource;
         EStore oldStore = store;
 
