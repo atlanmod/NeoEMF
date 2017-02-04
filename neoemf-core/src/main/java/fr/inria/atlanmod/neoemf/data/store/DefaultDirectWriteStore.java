@@ -58,7 +58,7 @@ import static java.util.Objects.nonNull;
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
-public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
+public class DefaultDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
@@ -80,12 +80,12 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     private final PersistentResource resource;
 
     /**
-     * Constructs a new {@code AbstractDirectWriteStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DefaultDirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public AbstractDirectWriteStore(PersistentResource resource, P backend) {
+    public DefaultDirectWriteStore(PersistentResource resource, P backend) {
         this.resource = resource;
         this.backend = backend;
     }

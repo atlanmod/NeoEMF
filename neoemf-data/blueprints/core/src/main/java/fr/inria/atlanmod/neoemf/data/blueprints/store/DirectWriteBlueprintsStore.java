@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.store;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 /**
@@ -32,7 +32,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
  * @see BlueprintsPersistenceBackend
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
-public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
+public class DirectWriteBlueprintsStore extends DefaultDirectWriteStore<BlueprintsPersistenceBackend> {
 
     /**
      * Constructs a new {@code DirectWriteBlueprintsStore} between the given {@code resource} and the

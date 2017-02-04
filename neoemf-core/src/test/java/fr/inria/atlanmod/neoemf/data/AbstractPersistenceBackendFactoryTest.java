@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
@@ -49,7 +49,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
         PersistenceBackend innerBackend;
 
         try {
-            innerBackend = getField(store, INNER_BACKEND_FIELDNAME, AbstractDirectWriteStore.class, PersistenceBackend.class);
+            innerBackend = getField(store, INNER_BACKEND_FIELDNAME, DefaultDirectWriteStore.class, PersistenceBackend.class);
         }
         catch (IllegalArgumentException e) {
             return getInnerBackend(getInnerStore(store));

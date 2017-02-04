@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.map.core.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
@@ -219,7 +219,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
      * {@inheritDoc}
      * <p>
      * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
      * that takes benefit of the underlying backend to deserialize the entire
      * list once and return it as an array, avoiding multiple {@code get()}
      * operations.
@@ -252,7 +252,7 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
      * {@inheritDoc}
      * <p>
      * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
      * that takes benefit of the underlying backend to deserialize the entire
      * list once and return it as an array, avoiding multiple {@code get()}
      * operations.

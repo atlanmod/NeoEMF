@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -35,13 +35,13 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract {@link AbstractDirectWriteStore} that redirects certain methods according to the instance of the
+ * An abstract {@link DefaultDirectWriteStore} that redirects certain methods according to the instance of the
  * encountered {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods of EMF, the call
  * is automatically redirected to the associated method that begins with the same name.
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
-public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWriteStore<P> {
+public class DirectWriteMapStore<P extends MapBackend> extends DefaultDirectWriteStore<P> {
 
     /**
      * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
@@ -177,7 +177,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
      * {@inheritDoc}
      * <p>
      * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
      * that takes benefit of the underlying backend to deserialize the entire
      * list once and return it as an array, avoiding multiple {@code get()}
      * operations.
@@ -201,7 +201,7 @@ public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWri
      * {@inheritDoc}
      * <p>
      * This method is an efficient implementation of
-     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * {@link DefaultDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
      * that takes benefit of the underlying backend to deserialize the entire
      * list once and return it as an array, avoiding multiple {@code get()}
      * operations.
