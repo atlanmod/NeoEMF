@@ -192,7 +192,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * @return the create {@link Id}
      */
     private static Id buildId(ClassInfo metaclass) {
-        return isNull(metaclass) ? null : new StringId(metaclass.name() + '@' + metaclass.uri());
+        return isNull(metaclass) ? null : StringId.of(metaclass.name() + '@' + metaclass.uri());
     }
 
     /**
@@ -259,7 +259,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         if (containerEdge.isPresent()) {
             String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
             Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
-            return ContainerInfo.of(new StringId(containerVertex.getId().toString()), featureName);
+            return ContainerInfo.of(StringId.from(containerVertex.getId()), featureName);
         }
 
         return null;
@@ -410,7 +410,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
-        return referencedVertex.map(v -> new StringId(v.getId().toString())).orElse(null);
+        return referencedVertex.map(v -> StringId.from(v.getId())).orElse(null);
     }
 
     @Override
@@ -423,7 +423,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Id previousId = null;
         if (referenceEdge.isPresent()) {
             Vertex previouslyReferencedVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = new StringId(previouslyReferencedVertex.getId().toString());
+            previousId = StringId.from(previouslyReferencedVertex.getId());
             referenceEdge.get().remove();
         }
 
@@ -494,7 +494,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             }
             else {
                 Vertex referencedVertex = edge.getVertex(Direction.IN);
-                previousId = new StringId(referencedVertex.getId().toString());
+                previousId = StringId.from(referencedVertex.getId());
                 edge.remove();
 
                 referencedVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
@@ -525,7 +525,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Iterable<Vertex> referencedVertices = getVertex(key.id()).getVertices(Direction.OUT, key.name());
 
         return StreamSupport.stream(referencedVertices.spliterator(), false)
-                .map(v -> new StringId(v.getId().toString()))
+                .map(v -> StringId.from(v.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -613,7 +613,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
-        return referencedVertex.map(v -> new StringId(v.getId().toString())).orElse(null);
+        return referencedVertex.map(v -> StringId.from(v.getId())).orElse(null);
     }
 
     @Override
@@ -631,7 +631,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Id previousId = null;
         if (previousEdge.isPresent()) {
             Vertex referencedVertex = previousEdge.get().getVertex(Direction.IN);
-            previousId = new StringId(referencedVertex.getId().toString());
+            previousId = StringId.from(referencedVertex.getId());
             previousEdge.get().remove();
         }
 
@@ -670,7 +670,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         return StreamSupport.stream(edges.spliterator(), false)
                 .sorted(byPosition)
-                .map(e -> new StringId(e.getVertex(Direction.IN).getId().toString()))
+                .map(e -> StringId.from(e.getVertex(Direction.IN).getId()))
                 .collect(Collectors.toList());
     }
 
@@ -714,7 +714,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
                 if (nonNull(metaClassVertex)) {
                     Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
                     for (Vertex v : instanceVertexIterable) {
-                        indexHits.add(new StringId(v.getId().toString()));
+                        indexHits.add(StringId.from(v.getId()));
                     }
                 }
                 else {

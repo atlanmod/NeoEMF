@@ -171,14 +171,14 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
 
         try (BerkeleyDbPersistenceBackend backend = (BerkeleyDbPersistenceBackend) context().persistenceBackendFactory().createTransientBackend()) {
             IntStream.range(0, TIMES).forEach(i -> {
-                FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+                FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
                 assertThat(backend.setValue(key, "value" + i)).isNotNull();
             });
         }
 
         try (BerkeleyDbPersistenceBackend other = (BerkeleyDbPersistenceBackend) context().persistenceBackendFactory().createTransientBackend()) {
             IntStream.range(0, TIMES).forEach(i -> {
-                FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+                FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
                 assertThat(other.hasValue(key)).isFalse();
             });
         }

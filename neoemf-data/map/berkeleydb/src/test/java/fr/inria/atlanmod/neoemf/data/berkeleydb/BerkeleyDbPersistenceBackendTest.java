@@ -80,7 +80,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         final int TIMES = 1000;
 
         IntStream.range(0, TIMES).forEach(i -> {
-            FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+            FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
             assertThat(backend.setValue(key, "value" + i)).isNotNull();
         });
 
@@ -88,7 +88,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         backend.close();
         backend.open();
 
-        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.getValue(FeatureKey.of(new StringId("object" + i), "name" + i))).isEqualTo("value" + i));
+        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.getValue(FeatureKey.of(StringId.of("object" + i), "name" + i))).isEqualTo("value" + i));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         final int TIMES = 10;
 
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
-        FeatureKey featureKey = FeatureKey.of(new StringId("object"), "name");
+        FeatureKey featureKey = FeatureKey.of(StringId.of("object"), "name");
 
         IntStream.range(0, TIMES).forEach(i -> {
             keys[i] = featureKey.withPosition(i);
@@ -108,7 +108,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
     @Test
     public void testIsFeatureSet() {
-        FeatureKey fk1 = FeatureKey.of(new StringId("objectId"), "isSet");
+        FeatureKey fk1 = FeatureKey.of(StringId.of("objectId"), "isSet");
         assertThat(backend.hasValue(fk1)).isFalse();
 
         backend.setValue(fk1, "yes");
@@ -117,7 +117,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
     @Test
     public void testRemoveFeature() {
-        FeatureKey fk1 = FeatureKey.of(new StringId("objectId"), "unSet");
+        FeatureKey fk1 = FeatureKey.of(StringId.of("objectId"), "unSet");
         assertThat(backend.hasValue(fk1)).isFalse();
 
         backend.setValue(fk1, "yes");

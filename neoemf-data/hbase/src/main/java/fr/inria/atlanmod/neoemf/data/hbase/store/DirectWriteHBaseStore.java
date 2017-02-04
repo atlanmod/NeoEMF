@@ -211,7 +211,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
             if (nonNull(containerId) && nonNull(containingFeatureName)) {
-                return eObject(new StringId(containerId));
+                return eObject(StringId.of(containerId));
             }
         }
         catch (IOException e) {
@@ -230,7 +230,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
             if (nonNull(containerId) && nonNull(containingFeatureName)) {
-                PersistentEObject container = eObject(new StringId(containerId));
+                PersistentEObject container = eObject(StringId.of(containerId));
                 return container.eClass().getEStructuralFeature(containingFeatureName);
             }
         }
@@ -459,7 +459,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             Object[] storedArray = (Object[])value;
             if(feature instanceof EReference) {
                 for(int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) eObject(new StringId((String) storedArray[i]));
+                    output[i] = (T) eObject(StringId.of((String) storedArray[i]));
                 }
             }
             else { // EAttribute
@@ -502,11 +502,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             return null;
         }
         if (!reference.isMany()) {
-            return eObject(new StringId((String) soughtReference));
+            return eObject(StringId.of((String) soughtReference));
         }
         else {
             String[] array = (String[]) soughtReference;
-            return eObject(new StringId(array[index]));
+            return eObject(StringId.of(array[index]));
         }
     }
 

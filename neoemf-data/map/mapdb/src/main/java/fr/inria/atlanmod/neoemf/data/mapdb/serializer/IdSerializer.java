@@ -47,7 +47,7 @@ public class IdSerializer implements Serializer<Id> {
 
     @Override
     public Id deserialize(@Nonnull DataInput2 in, int i) throws IOException {
-        return new StringId(serializer.deserialize(in, i));
+        return StringId.of(serializer.deserialize(in, i));
     }
 
     @Override

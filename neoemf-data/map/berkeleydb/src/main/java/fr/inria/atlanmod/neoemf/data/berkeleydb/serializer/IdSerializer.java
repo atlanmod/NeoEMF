@@ -38,6 +38,6 @@ public class IdSerializer implements Serializer<Id> {
     public Id deserialize(@Nonnull byte[] data) {
         checkNotNull(data);
 
-        return new StringId(SerializationUtils.deserialize(data));
+        return StringId.of(SerializationUtils.deserialize(data));
     }
 }

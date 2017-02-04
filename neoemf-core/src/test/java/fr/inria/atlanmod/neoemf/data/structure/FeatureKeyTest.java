@@ -27,31 +27,31 @@ public class FeatureKeyTest extends AbstractTest {
 
     @Test
     public void testCompareEqualTo() {
-        FeatureKey key1 = FeatureKey.of(new StringId("myobject"), "aaa");
-        FeatureKey key2 = FeatureKey.of(new StringId("myobject"), "aaa");
+        FeatureKey key1 = FeatureKey.of(StringId.of("myobject"), "aaa");
+        FeatureKey key2 = FeatureKey.of(StringId.of("myobject"), "aaa");
 
         assertThat(key1.compareTo(key2)).isEqualTo(0);
     }
 
     @Test
     public void testCompareLowerThan() {
-        FeatureKey key1 = FeatureKey.of(new StringId("myobject"), "aaa");
-        FeatureKey key2 = FeatureKey.of(new StringId("myobject"), "bbb");
+        FeatureKey key1 = FeatureKey.of(StringId.of("myobject"), "aaa");
+        FeatureKey key2 = FeatureKey.of(StringId.of("myobject"), "bbb");
 
         assertThat(key1.compareTo(key2)).isLessThan(0);
     }
 
     @Test
     public void testCompareGreaterThan() {
-        FeatureKey key1 = FeatureKey.of(new StringId("AAA"), "aaa");
-        FeatureKey key2 = FeatureKey.of(new StringId("BBB"), "zzz");
+        FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
+        FeatureKey key2 = FeatureKey.of(StringId.of("BBB"), "zzz");
 
         assertThat(key1.compareTo(key2)).isGreaterThan(0);
     }
 
     @Test
     public void testSerializable() throws Exception {
-        FeatureKey key1 = FeatureKey.of(new StringId("AAA"), "aaa");
+        FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
         ByteArrayOutputStream os = new ByteArrayOutputStream(20);
         ObjectOutputStream out = new ObjectOutputStream(os);
         out.writeObject(key1);

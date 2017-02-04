@@ -66,7 +66,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     /**
      * The identifier of the root element.
      */
-    private static final Id ROOT_ID = new StringId("ROOT");
+    private static final Id ROOT_ID = StringId.of("ROOT");
 
     /**
      * The property key used by the root element to define its content.
@@ -144,7 +144,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
     @Override
     protected Id getId(final String reference) {
-        return new StringId(reference);
+        return StringId.of(reference);
     }
 
     @Override

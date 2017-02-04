@@ -97,7 +97,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 }
                 else {
                     NeoLogger.debug("Found in cache {0} - {1} - idx={2}", key, object.eClass().getName(), index);
-                    return eObject(new StringId(((Vertex) o).getId().toString()));
+                    return eObject(StringId.from(((Vertex) o).getId()));
                 }
             }
             else {
@@ -121,7 +121,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                         vertices[position] = otherEnd;
                     }
                 }
-                return eObject(new StringId(((Vertex) vertices[index]).getId().toString()));
+                return eObject(StringId.from(((Vertex) vertices[index]).getId()));
             }
         }
         else {

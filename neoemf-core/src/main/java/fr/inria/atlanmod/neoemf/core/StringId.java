@@ -39,8 +39,16 @@ public class StringId implements Id {
      *
      * @param literalId the literal representation of this {@code StringId}
      */
-    public StringId(@Nonnull String literalId) {
+    protected StringId(@Nonnull String literalId) {
         this.literalId = checkNotNull(literalId);
+    }
+
+    public static Id from(Object o) {
+        return of(o.toString());
+    }
+
+    public static Id of(String literalId) {
+        return new StringId(literalId);
     }
 
     /**

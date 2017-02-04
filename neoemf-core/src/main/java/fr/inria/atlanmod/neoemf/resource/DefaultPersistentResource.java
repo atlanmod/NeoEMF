@@ -141,7 +141,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        EObject eObject = store.eObject(new StringId(uriFragment));
+        EObject eObject = store.eObject(StringId.of(uriFragment));
         return isNull(eObject) ? super.getEObject(uriFragment) : eObject;
     }
 
@@ -299,7 +299,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param resource the resource containing this object.
          */
         public DummyRootEObject(Resource.Internal resource) {
-            super(new StringId(ROOT_EOBJECT_ID));
+            super(StringId.of(ROOT_EOBJECT_ID));
             eSetDirectResource(resource);
         }
     }
