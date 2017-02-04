@@ -32,8 +32,8 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -141,9 +141,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             .build();
 
     /**
-     * List that holds indexed {@link ClassInfo}.
+     * List that holds indexed {@link MetaclassValue}.
      */
-    private final List<ClassInfo> indexedMetaclasses;
+    private final List<MetaclassValue> indexedMetaclasses;
 
     /**
      * Index containing metaclasses.
@@ -185,13 +185,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Builds the {@link Id} used to identify a {@link ClassInfo} {@link Vertex}.
+     * Builds the {@link Id} used to identify a {@link MetaclassValue} {@link Vertex}.
      *
-     * @param metaclass the {@link ClassInfo} to build an {@link Id} from
+     * @param metaclass the {@link MetaclassValue} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
-    private static Id buildId(ClassInfo metaclass) {
+    private static Id buildId(MetaclassValue metaclass) {
         return isNull(metaclass) ? null : StringId.of(metaclass.name() + '@' + metaclass.uri());
     }
 
@@ -250,7 +250,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public ContainerInfo containerFor(Id id) {
+    public ContainerValue containerFor(Id id) {
         Vertex containmentVertex = getVertex(id);
 
         Iterable<Edge> containerEdges = containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER);
@@ -259,14 +259,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         if (containerEdge.isPresent()) {
             String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
             Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
-            return ContainerInfo.of(StringId.from(containerVertex.getId()), featureName);
+            return ContainerValue.of(StringId.from(containerVertex.getId()), featureName);
         }
 
         return null;
     }
 
     @Override
-    public void storeContainer(Id id, ContainerInfo container) {
+    public void storeContainer(Id id, ContainerValue container) {
         Vertex containmentVertex = getVertex(id);
         Vertex containerVertex = getVertex(container.id());
 
@@ -277,17 +277,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public ClassInfo metaclassFor(Id id) {
+    public MetaclassValue metaclassFor(Id id) {
         Vertex vertex = getVertex(id);
 
         Iterable<Vertex> metaclassVertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF);
         Optional<Vertex> metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny();
 
-        return metaclassVertex.map(v -> ClassInfo.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI))).orElse(null);
+        return metaclassVertex.map(v -> MetaclassValue.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI))).orElse(null);
     }
 
     @Override
-    public void storeMetaclass(Id id, ClassInfo metaclass) {
+    public void storeMetaclass(Id id, MetaclassValue metaclass) {
         Vertex metaclassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, metaclass.name()), null);
 
         if (isNull(metaclassVertex)) {
@@ -754,7 +754,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return the newly created vertex
      */
-    private Vertex addVertex(ClassInfo metaclass) {
+    private Vertex addVertex(MetaclassValue metaclass) {
         Vertex vertex = addVertex(buildId(metaclass));
         vertex.setProperty(KEY_ECLASS_NAME, metaclass.name());
         vertex.setProperty(KEY_EPACKAGE_NSURI, metaclass.uri());
@@ -774,14 +774,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@link ClassInfo}. If no vertex corresponds to that
-     * {@link ClassInfo}, then return {@code null}.
+     * Returns the vertex corresponding to the provided {@link MetaclassValue}. If no vertex corresponds to that
+     * {@link MetaclassValue}, then return {@code null}.
      *
-     * @param metaclass the {@link ClassInfo} to find
+     * @param metaclass the {@link MetaclassValue} to find
      *
-     * @return the vertex corresponding to the provided {@link ClassInfo} or {@code null} when no such vertex exists
+     * @return the vertex corresponding to the provided {@link MetaclassValue} or {@code null} when no such vertex exists
      */
-    private Vertex getVertex(ClassInfo metaclass) {
+    private Vertex getVertex(MetaclassValue metaclass) {
         return getVertex(buildId(metaclass));
     }
 
@@ -793,7 +793,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
 
-        for (ClassInfo metaclass : indexedMetaclasses) {
+        for (MetaclassValue metaclass : indexedMetaclasses) {
             checkArgument(Iterables.isEmpty(target.metaclassIndex.get(KEY_NAME, metaclass.name())), "Index is not consistent");
             target.metaclassIndex.put(KEY_NAME, metaclass.name(), getVertex(metaclass));
         }

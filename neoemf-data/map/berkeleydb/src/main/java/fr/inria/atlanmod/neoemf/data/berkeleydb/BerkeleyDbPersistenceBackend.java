@@ -32,8 +32,8 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -226,24 +226,24 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public ContainerInfo containerFor(Id id) {
-        ContainerInfo containerInfo = null;
+    public ContainerValue containerFor(Id id) {
+        ContainerValue container = null;
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (containers.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                containerInfo = new ContainerInfoSerializer().deserialize(data);
+                container = new ContainerInfoSerializer().deserialize(data);
             }
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return containerInfo;
+        return container;
     }
 
     @Override
-    public void storeContainer(Id id, ContainerInfo container) {
+    public void storeContainer(Id id, ContainerValue container) {
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry(new ContainerInfoSerializer().serialize(container));
         try {
@@ -255,24 +255,24 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public ClassInfo metaclassFor(Id id) {
-        ClassInfo classInfo = null;
+    public MetaclassValue metaclassFor(Id id) {
+        MetaclassValue metaclass = null;
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                classInfo = new ClassInfoSerializer().deserialize(data);
+                metaclass = new ClassInfoSerializer().deserialize(data);
             }
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return classInfo;
+        return metaclass;
     }
 
     @Override
-    public void storeMetaclass(Id id, ClassInfo metaclass) {
+    public void storeMetaclass(Id id, MetaclassValue metaclass) {
         DatabaseEntry key = new DatabaseEntry(new IdSerializer().serialize(id));
         DatabaseEntry value = new DatabaseEntry(new ClassInfoSerializer().serialize(metaclass));
         try {

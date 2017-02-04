@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -74,22 +74,22 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public ContainerInfo containerFor(Id id) {
+    public ContainerValue containerFor(Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void storeContainer(Id id, ContainerInfo container) {
+    public void storeContainer(Id id, ContainerValue container) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public ClassInfo metaclassFor(Id id) {
+    public MetaclassValue metaclassFor(Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void storeMetaclass(Id id, ClassInfo metaclass) {
+    public void storeMetaclass(Id id, MetaclassValue metaclass) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

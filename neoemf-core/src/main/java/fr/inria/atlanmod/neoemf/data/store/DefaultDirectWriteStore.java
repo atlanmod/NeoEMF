@@ -19,8 +19,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -507,9 +507,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         checkNotNull(internalObject);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerInfo info = backend.containerFor(object.id());
-        if (nonNull(info)) {
-            return eObject(info.id());
+        ContainerValue container = backend.containerFor(object.id());
+        if (nonNull(container)) {
+            return eObject(container.id());
         }
         return null;
     }
@@ -519,10 +519,10 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         checkNotNull(internalObject);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        ContainerInfo info = backend.containerFor(object.id());
-        if (nonNull(info)) {
-            PersistentEObject container = eObject(info.id());
-            return container.eClass().getEStructuralFeature(info.name());
+        ContainerValue container = backend.containerFor(object.id());
+        if (nonNull(container)) {
+            PersistentEObject containerObject = eObject(container.id());
+            return containerObject.eClass().getEStructuralFeature(container.name());
         }
         return null;
     }
@@ -544,9 +544,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
         checkNotNull(referencedObject);
 
         if (reference.isContainment()) {
-            ContainerInfo info = backend.containerFor(referencedObject.id());
-            if (isNull(info) || !Objects.equals(info.id(), object.id())) {
-                backend.storeContainer(referencedObject.id(), ContainerInfo.from(object, reference));
+            ContainerValue container = backend.containerFor(referencedObject.id());
+            if (isNull(container) || !Objects.equals(container.id(), object.id())) {
+                backend.storeContainer(referencedObject.id(), ContainerValue.from(object, reference));
             }
         }
     }
@@ -561,15 +561,15 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
     protected EClass resolveInstanceOf(Id id) {
         checkNotNull(id);
 
-        ClassInfo classInfo = backend.metaclassFor(id);
-        if (nonNull(classInfo)) {
-            return classInfo.eClass();
+        MetaclassValue metaclass = backend.metaclassFor(id);
+        if (nonNull(metaclass)) {
+            return metaclass.eClass();
         }
         return null;
     }
 
     /**
-     * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.
+     * Computes the type of the {@code object} in a {@link MetaclassValue} object and persists it in the database.
      *
      * @param object the {@link PersistentEObject} to store the instance-of information from
      *
@@ -578,9 +578,9 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
     protected void updateInstanceOf(PersistentEObject object) {
         checkNotNull(object);
 
-        ClassInfo info = backend.metaclassFor(object.id());
-        if (isNull(info)) {
-            backend.storeMetaclass(object.id(), ClassInfo.from(object));
+        MetaclassValue metaclass = backend.metaclassFor(object.id());
+        if (isNull(metaclass)) {
+            backend.storeMetaclass(object.id(), MetaclassValue.from(object));
         }
     }
 

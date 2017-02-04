@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -21,22 +21,22 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link Serializer} for {@link ContainerInfo}.
+ * A {@link Serializer} for {@link ContainerValue}.
  */
 @Experimental
-public class ContainerInfoSerializer implements Serializer<ContainerInfo> {
+public class ContainerInfoSerializer implements Serializer<ContainerValue> {
 
     @Override
-    public byte[] serialize(@Nonnull ContainerInfo value) {
+    public byte[] serialize(@Nonnull ContainerValue value) {
         checkNotNull(value);
 
         return SerializationUtils.serialize(value);
     }
 
     @Override
-    public ContainerInfo deserialize(@Nonnull byte[] data) {
+    public ContainerValue deserialize(@Nonnull byte[] data) {
         checkNotNull(data);
 
-        return (ContainerInfo) SerializationUtils.deserialize(data);
+        return (ContainerValue) SerializationUtils.deserialize(data);
     }
 }

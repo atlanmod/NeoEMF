@@ -20,8 +20,8 @@ import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -89,12 +89,12 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     /**
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
-    private final HTreeMap<Id, ContainerInfo> containersMap;
+    private final HTreeMap<Id, ContainerValue> containersMap;
 
     /**
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
-    private final HTreeMap<Id, ClassInfo> instanceOfMap;
+    private final HTreeMap<Id, MetaclassValue> instanceOfMap;
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
@@ -182,22 +182,22 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     }
 
     @Override
-    public ContainerInfo containerFor(Id id) {
+    public ContainerValue containerFor(Id id) {
         return containersMap.get(id);
     }
 
     @Override
-    public void storeContainer(Id id, ContainerInfo container) {
+    public void storeContainer(Id id, ContainerValue container) {
         containersMap.put(id, container);
     }
 
     @Override
-    public ClassInfo metaclassFor(Id id) {
+    public MetaclassValue metaclassFor(Id id) {
         return instanceOfMap.get(id);
     }
 
     @Override
-    public void storeMetaclass(Id id, ClassInfo metaclass) {
+    public void storeMetaclass(Id id, MetaclassValue metaclass) {
         instanceOfMap.put(id, metaclass);
     }
 

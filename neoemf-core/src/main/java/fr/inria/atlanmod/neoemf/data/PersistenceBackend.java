@@ -13,18 +13,14 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * An adapter on top of a database that provides specific methods for communicating with the database that it uses.
@@ -37,7 +33,7 @@ import java.util.Map;
  * or get a value.
  * @see DirectWriteStore
  */
-public interface PersistenceBackend extends Closeable {
+public interface PersistenceBackend extends PersistenceMapper, Closeable {
 
     /**
      * Saves the modifications of the owned {@link EObject}s in the underlying database.
@@ -90,169 +86,36 @@ public interface PersistenceBackend extends Closeable {
      *
      * @param id the {@link Id} of the contained object
      *
-     * @return a {@link ContainerInfo} descriptor that contains element's container information
+     * @return a {@link ContainerValue} descriptor that contains element's container information
      */
-    ContainerInfo containerFor(Id id);
+    ContainerValue containerFor(Id id);
 
     /**
      * Stores container information for a given id in the Container Map.
      *
      * @param id        the {@link Id} of the contained element
-     * @param container the {@link ContainerInfo} descriptor containing element's container information to store
+     * @param container the {@link ContainerValue} descriptor containing element's container information to store
      */
-    void storeContainer(Id id, ContainerInfo container);
+    void storeContainer(Id id, ContainerValue container);
 
     /**
      * Retrieves the metaclass ({@link EClass}) of the element with the given {@link Id}.
      *
      * @param id the {@link Id} of the element
      *
-     * @return a {@link ClassInfo} descriptor containing element's metaclass information ({@link EClass}, meta-model
+     * @return a {@link MetaclassValue} descriptor containing element's metaclass information ({@link EClass}, meta-model
      * name, and {@code nsURI})
      */
-    ClassInfo metaclassFor(Id id);
+    MetaclassValue metaclassFor(Id id);
 
     /**
      * Stores metaclass ({@link EClass}) information for the element with the given {@link Id}.
      *
      * @param id        the {@link Id} of the element
-     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass information ({@link EClass},
+     * @param metaclass the {@link MetaclassValue} descriptor containing element's metaclass information ({@link EClass},
      *                  meta-model name, and {@code nsURI})
      */
-    void storeMetaclass(Id id, ClassInfo metaclass);
-
-    /**
-     * Retrieves the value of a given {@link FeatureKey}.
-     *
-     * @param key the {@link FeatureKey} to look for
-     *
-     * @return an {@link Object} representing the value associated to the given {@code key}, {@code null} if it is not
-     * in the database
-     */
-    Object getValue(FeatureKey key);
-
-    /**
-     * Stores the value of a given {@link FeatureKey}.
-     *
-     * @param key   the {@link FeatureKey} to set the value of
-     * @param value an {@link Object} representing the value associated to the given {@code key}
-     *
-     * @return the old value
-     */
-    Object setValue(FeatureKey key, Object value);
-
-    /**
-     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
-     * #hasValue(FeatureKey)}).
-     *
-     * @param key the {@link FeatureKey} to remove
-     *
-     * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
-     */
-    void unsetValue(FeatureKey key);
-
-    /**
-     * Checks if the given {@link FeatureKey} is set.
-     *
-     * @param key the {@link FeatureKey} to check
-     *
-     * @return {@code true} if the feature is set, {@code false} otherwise
-     */
-    boolean hasValue(FeatureKey key);
-
-    void addValue(MultivaluedFeatureKey key, Object value);
-
-    Object removeValue(MultivaluedFeatureKey key);
-
-    void cleanValue(FeatureKey key);
-
-    Iterable<Object> valueAsList(FeatureKey key);
-
-    boolean containsValue(FeatureKey key, Object value);
-
-    int indexOfValue(FeatureKey key, Object value);
-
-    int lastIndexOfValue(FeatureKey key, Object value);
-
-    Id getReference(FeatureKey key);
-
-    Id setReference(FeatureKey key, Id id);
-
-    void unsetReference(FeatureKey key);
-
-    boolean hasReference(FeatureKey key);
-
-    void addReference(MultivaluedFeatureKey key, Id id);
-
-    Id removeReference(MultivaluedFeatureKey key);
-
-    void cleanReference(FeatureKey key);
-
-    Iterable<Id> referenceAsList(FeatureKey key);
-
-    boolean containsReference(FeatureKey key, Id id);
-
-    int indexOfReference(FeatureKey key, Id id);
-
-    int lastIndexOfReference(FeatureKey key, Id id);
-
-    /**
-     * Retrieves the value of a given {@link MultivaluedFeatureKey}.
-     * <p>
-     * This method is similar to {@link #getValue(FeatureKey)} but it uses multi-valued {@link Map} to retrieve the
-     * element at the given index directly instead of returning the entire {@link Collection}.
-     *
-     * @param key the {@link MultivaluedFeatureKey} to get the value from
-     *
-     * @return an {@link Object} representing the value associated to the given {@code key}
-     */
-    Object getValueAtIndex(MultivaluedFeatureKey key);
-
-    /**
-     * Stores the value of a given {@link MultivaluedFeatureKey}.
-     * <p>
-     * This method is similar to {@link #setValue(FeatureKey, Object)} but it uses the multi-valued {@link Map} that
-     * stores indices explicitly.
-     *
-     * @param key   the {@link MultivaluedFeatureKey} to set the value of
-     * @param value an {@link Object} representing the value associated to the given {@code key}
-     *
-     * @return the old value
-     */
-    Object setValueAtIndex(MultivaluedFeatureKey key, Object value);
-
-    /**
-     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
-     * #hasValue(FeatureKey)}).
-     *
-     * @param key the {@link FeatureKey} to remove
-     *
-     * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
-     */
-    void unsetValueAtIndex(FeatureKey key);
-
-    /**
-     * Checks if the given {@link FeatureKey} is set.
-     *
-     * @param key the {@link FeatureKey} to check
-     *
-     * @return {@code true} if the feature is set, {@code false} otherwise
-     */
-    boolean hasValueAtIndex(FeatureKey key);
-
-    Iterable<Object> valueAtIndexAsList(FeatureKey key);
-
-    Id getReferenceAtIndex(MultivaluedFeatureKey key);
-
-    Id setReferenceAtIndex(MultivaluedFeatureKey key, Id id);
-
-    void unsetReferenceAtIndex(FeatureKey key);
-
-    boolean hasReferenceAtIndex(FeatureKey key);
-
-    Iterable<Id> referenceAtIndexAsList(FeatureKey key);
-
-    int sizeOf(FeatureKey key);
+    void storeMetaclass(Id id, MetaclassValue metaclass);
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.

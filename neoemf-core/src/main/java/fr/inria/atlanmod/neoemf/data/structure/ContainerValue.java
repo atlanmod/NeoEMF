@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A simple representation of a containment between a {@link PersistentEObject} and another. The referenced
  * {@link PersistentEObject} is identified by the name the reference used to retrieve it.
  */
-public class ContainerInfo implements Serializable {
+public class ContainerValue implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
@@ -44,44 +44,44 @@ public class ContainerInfo implements Serializable {
     private final String name;
 
     /**
-     * Constructs a new {@code ContainerInfo} with the given {@code id} and the given {@code name}.
+     * Constructs a new {@code ContainerValue} with the given {@code id} and the given {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
      */
-    protected ContainerInfo(@Nonnull Id id, @Nonnull String name) {
+    protected ContainerValue(@Nonnull Id id, @Nonnull String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
 
     /**
-     * Creates a new {@code ContainerInfo} from the given {@code object} and {@code reference}.
+     * Creates a new {@code ContainerValue} from the given {@code object} and {@code reference}.
      * <p>
      * This method behaves like: {@code of(object.id(), reference.getName())}.
      *
      * @param object    the {@link PersistentEObject}
      * @param reference the reference used to retrieve the container of the {@link PersistentEObject}
      *
-     * @return a new {@code ContainerInfo}
+     * @return a new {@code ContainerValue}
      *
      * @see #of(Id, String)
      */
     @Nonnull
-    public static ContainerInfo from(@Nonnull PersistentEObject object, @Nonnull EReference reference) {
+    public static ContainerValue from(@Nonnull PersistentEObject object, @Nonnull EReference reference) {
         return of(object.id(), reference.getName());
     }
 
     /**
-     * Creates a new {@code ContainerInfo} with the given {@code id} and {@code name}.
+     * Creates a new {@code ContainerValue} with the given {@code id} and {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
      *
-     * @return a new {@code ContainerInfo}
+     * @return a new {@code ContainerValue}
      */
     @Nonnull
-    public static ContainerInfo of(@Nonnull Id id, @Nonnull String name) {
-        return new ContainerInfo(id, name);
+    public static ContainerValue of(@Nonnull Id id, @Nonnull String name) {
+        return new ContainerValue(id, name);
     }
 
     /**

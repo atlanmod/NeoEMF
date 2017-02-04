@@ -17,8 +17,8 @@ import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -137,13 +137,13 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         EReference eref = mock(EReference.class);
         when(eref.getName()).thenReturn("ref-name");
 
-        ContainerInfo ci = ContainerInfo.from(po, eref);
-        backend.storeContainer(id1, ci);
+        ContainerValue originalContainer = ContainerValue.from(po, eref);
+        backend.storeContainer(id1, originalContainer);
 
-        ContainerInfo containerInfo = backend.containerFor(id1);
+        ContainerValue retrievedContainer = backend.containerFor(id1);
 
-        assertThat(containerInfo.id()).isEqualTo(id2);
-        assertThat(containerInfo.name()).isEqualTo("ref-name");
+        assertThat(retrievedContainer.id()).isEqualTo(id2);
+        assertThat(retrievedContainer.name()).isEqualTo("ref-name");
     }
 
     @Test
@@ -161,12 +161,12 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         PersistentEObject po = mock(PersistentEObject.class);
         when(po.eClass()).thenReturn(eClass);
 
-        backend.storeMetaclass(id2, ClassInfo.from(po));
+        backend.storeMetaclass(id2, MetaclassValue.from(po));
 
-        ClassInfo classInfo = backend.metaclassFor(id2);
-        assertThat(classInfo).isNotNull();
-        assertThat(classInfo.name()).isEqualTo("eClassTest");
-        assertThat(classInfo.uri()).isEqualTo("URI://my.uri/");
+        MetaclassValue metaclass = backend.metaclassFor(id2);
+        assertThat(metaclass).isNotNull();
+        assertThat(metaclass.name()).isEqualTo("eClassTest");
+        assertThat(metaclass.uri()).isEqualTo("URI://my.uri/");
     }
 }
 

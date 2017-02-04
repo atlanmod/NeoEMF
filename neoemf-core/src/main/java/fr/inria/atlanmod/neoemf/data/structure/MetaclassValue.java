@@ -29,7 +29,7 @@ import static java.util.Objects.isNull;
 /**
  * A simple representation of a (meta){@link EClass}.
  */
-public class ClassInfo implements Serializable {
+public class MetaclassValue implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
@@ -47,19 +47,19 @@ public class ClassInfo implements Serializable {
     private final String uri;
 
     /**
-     * Constructs a new {@code ClassInfo} with the given {@code name} and {@code uri}, which are used as a simple
+     * Constructs a new {@code MetaclassValue} with the given {@code name} and {@code uri}, which are used as a simple
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
-    protected ClassInfo(@Nonnull String name, @Nonnull String uri) {
+    protected MetaclassValue(@Nonnull String name, @Nonnull String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
 
     /**
-     * Creates a new {@code ClassInfo} from the given {@code object}. The {@link EClass} will be found by calling the
+     * Creates a new {@code MetaclassValue} from the given {@code object}. The {@link EClass} will be found by calling the
      * {@link PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
@@ -67,28 +67,28 @@ public class ClassInfo implements Serializable {
      * @param object the object from which the {@link EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method
      *
-     * @return a new {@code ClassInfo}
+     * @return a new {@code MetaclassValue}
      *
      * @see #of(String, String)
      */
     @Nonnull
-    public static ClassInfo from(@Nonnull PersistentEObject object) {
+    public static MetaclassValue from(@Nonnull PersistentEObject object) {
         final EClass eClass = object.eClass();
         return of(eClass.getName(), eClass.getEPackage().getNsURI());
     }
 
     /**
-     * Creates a new {@code ClassInfo} with the given {@code name} and {@code uri}, which are used as a simple
+     * Creates a new {@code MetaclassValue} with the given {@code name} and {@code uri}, which are used as a simple
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      *
-     * @return a new {@code ClassInfo}
+     * @return a new {@code MetaclassValue}
      */
     @Nonnull
-    public static ClassInfo of(@Nonnull String name, @Nonnull String uri) {
-        return new ClassInfo(name, uri);
+    public static MetaclassValue of(@Nonnull String name, @Nonnull String uri) {
+        return new MetaclassValue(name, uri);
     }
 
     /**
@@ -112,7 +112,7 @@ public class ClassInfo implements Serializable {
     }
 
     /**
-     * Retrieves the {@link EClass} corresponding to this {@code ClassInfo}.
+     * Retrieves the {@link EClass} corresponding to this {@code MetaclassValue}.
      *
      * @return a class, or {@code null} if it can not be found
      */
