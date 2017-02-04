@@ -129,8 +129,8 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * database indices to avoid costly traversal of the entire model.
      *
      * @param metaclass the {@link EClass} to get the instances of
-     * @param strict set to {@code true} if the method should look for instances of {@code eClass} only, set to {@code
-     *               false} if the method should also return elements that are subclasses of {@code eClass}
+     * @param strict    set to {@code true} if the method should look for instances of {@code eClass} only, set to
+     *                  {@code false} if the method should also return elements that are subclasses of {@code eClass}
      */
     @Override
     public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
