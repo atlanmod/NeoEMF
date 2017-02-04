@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,15 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
+
 package fr.inria.atlanmod.neoemf.util.emf.compare;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import com.google.common.base.Objects;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
@@ -28,11 +31,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Overrides {@link DefaultMatchEngine} to allow lazy comparison of

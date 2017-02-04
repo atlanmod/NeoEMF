@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,12 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
+
 package fr.inria.atlanmod.neoemf.util.emf.compare;
+
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.compare.match.DefaultComparisonFactory;
 import org.eclipse.emf.compare.match.DefaultMatchEngine;
@@ -18,9 +22,6 @@ import org.eclipse.emf.compare.match.eobject.WeightProvider;
 import org.eclipse.emf.compare.match.eobject.WeightProviderDescriptorRegistryImpl;
 import org.eclipse.emf.compare.match.impl.MatchEngineFactoryImpl;
 import org.eclipse.emf.compare.utils.UseIdentifiers;
-
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
  * Overrides {@link DefaultEqualityHelperFactory} methods to create
@@ -55,7 +56,7 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
      * Constructor that instantiate a {@link LazyMatchEngineFactory} that will
      * use identifiers as specified by the given {@code useIDs} enumeration.
      * This match engine will use a the standalone weight provider registry
-     * {@link WeightProviderDescriptorRegistryImpl.createStandaloneInstance()}.
+     * {@link WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
      * 
      * @param useIDs
      *            the kinds of matcher to use.

@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent2;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SpecializedPackContent;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

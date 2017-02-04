@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -42,7 +41,6 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 
 /**
  * A factory that creates instances of {@link MapDbPersistenceBackend}.
