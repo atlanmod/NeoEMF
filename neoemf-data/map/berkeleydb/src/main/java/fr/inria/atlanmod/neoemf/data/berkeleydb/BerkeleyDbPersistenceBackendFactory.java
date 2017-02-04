@@ -81,16 +81,16 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
 
         // Store
         if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteCachedMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteCachedMapStore(resource, backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            store = new DirectWriteMapStoreWithLists<>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithLists(resource, backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            store = new DirectWriteMapStoreWithIndices<>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteMapStoreWithIndices(resource, backend);
         }
         else { // Default store
-            store = new DirectWriteMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteMapStore(resource, backend);
         }
         return store;
     }
@@ -144,7 +144,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
         checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteMapStore<>(resource, (BerkeleyDbPersistenceBackend) backend);
+        return new DirectWriteMapStore(resource, backend);
     }
 
     @Override
