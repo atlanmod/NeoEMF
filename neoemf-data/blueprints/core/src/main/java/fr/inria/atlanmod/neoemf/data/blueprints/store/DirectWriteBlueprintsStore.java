@@ -31,7 +31,10 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
  * @see fr.inria.atlanmod.neoemf.core.PersistentEObject
  * @see BlueprintsPersistenceBackend
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
+ *
+ * @deprecated Use {@link DefaultDirectWriteStore} instead
  */
+@Deprecated
 public class DirectWriteBlueprintsStore extends DefaultDirectWriteStore<BlueprintsPersistenceBackend> {
 
     /**
