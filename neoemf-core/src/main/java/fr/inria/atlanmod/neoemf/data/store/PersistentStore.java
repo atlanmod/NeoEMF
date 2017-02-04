@@ -32,6 +32,11 @@ public interface PersistentStore extends EStore {
     int NO_INDEX = EStore.NO_INDEX;
 
     /**
+     * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
+     */
+    void save();
+
+    /**
      * Returns the {@link Resource} to persist and access.
      *
      * @return the resource to persist and access
@@ -50,21 +55,14 @@ public interface PersistentStore extends EStore {
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
      *
-     * @param eClass the {@link EClass} to compute the instances of
+     * @param metaclass the {@link EClass} to compute the instances of
      * @param strict {@code true} if the lookup searches for strict instances
      *
      * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
      *
      * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
      */
-    default Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
-     */
-    void save();
+    Iterable<EObject> getAllInstances(EClass metaclass, boolean strict);
 
     @Override
     default EObject create(EClass eClass) {

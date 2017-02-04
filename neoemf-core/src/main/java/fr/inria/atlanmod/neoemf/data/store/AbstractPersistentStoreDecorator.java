@@ -140,8 +140,8 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
-    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
-        return store.getAllInstances(eClass, strict);
+    public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
+        return store.getAllInstances(metaclass, strict);
     }
 
     @Override

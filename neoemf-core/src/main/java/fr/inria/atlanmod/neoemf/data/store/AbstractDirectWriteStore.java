@@ -101,6 +101,11 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     @Override
+    public void save() {
+        backend.save();
+    }
+
+    @Override
     public Resource.Internal resource() {
         return resource;
     }
@@ -119,9 +124,19 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         return object;
     }
 
+    /**
+     * Computes efficiently {@code allInstances} operation by using underlying graph facilities. This method uses
+     * database indices to avoid costly traversal of the entire model.
+     *
+     * @param metaclass the {@link EClass} to get the instances of
+     * @param strict set to {@code true} if the method should look for instances of {@code eClass} only, set to {@code
+     *               false} if the method should also return elements that are subclasses of {@code eClass}
+     */
     @Override
-    public void save() {
-        backend.save();
+    public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
+        return StreamSupport.stream(backend.getAllInstances(metaclass, strict).spliterator(), false)
+                .map(this::eObject)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -241,7 +256,17 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
 
     @Override
     public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature.isMany(), "Cannot compute isEmpty() of a single-valued feature");
+
         return size(internalObject, feature) == 0;
+    }
+
+    @Override
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+        return backend.sizeOf(key);
     }
 
     /**
@@ -968,14 +993,6 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     protected void clearReference(PersistentEObject object, EReference reference) {
         FeatureKey key = FeatureKey.from(object, reference);
         backend.cleanReference(key);
-    }
-
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
-
-        FeatureKey key = FeatureKey.from(internalObject, feature);
-        return backend.sizeOf(key);
     }
 
     /**

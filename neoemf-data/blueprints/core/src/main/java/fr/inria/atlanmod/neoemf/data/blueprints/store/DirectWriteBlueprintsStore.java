@@ -14,12 +14,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.store;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to Blueprints
@@ -49,20 +44,5 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      */
     public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
-    }
-
-    /**
-     * Computes efficiently {@code allInstances} operation by using underlying graph facilities. This method uses
-     * database indices to avoid costly traversal of the entire model.
-     *
-     * @param eClass the {@link EClass} to get the instances of
-     * @param strict set to {@code true} if the method should look for instances of {@code eClass} only, set to {@code
-     *               false} if the method should also return elements that are subclasses of {@code eClass}
-     */
-    @Override
-    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
-        return StreamSupport.stream(backend.getAllInstances(eClass, strict).spliterator(), false)
-                .map(this::eObject)
-                .collect(Collectors.toList());
     }
 }
