@@ -82,8 +82,6 @@ public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends Def
         if (attribute.isMany()) {
             FeatureKey key = FeatureKey.from(object, attribute);
 
-            backend.referencesAsList(key);
-
             Object[] values = valuesCache.get(key, featureKey ->
                     Iterables.toArray(backend.valuesAsList(featureKey), Object.class));
 
