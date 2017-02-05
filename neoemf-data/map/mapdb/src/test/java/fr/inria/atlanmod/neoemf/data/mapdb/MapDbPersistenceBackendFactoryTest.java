@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
@@ -96,15 +96,15 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteWithIndexesOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreDirectWriteWithArraysOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
-                .directWriteIndices()
+                .directWriteArrays()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteMapStoreWithIndices.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteMapStoreWithArrays.class); // "Invalid EStore created"
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }

@@ -73,12 +73,12 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      *
      * @return this builder (for chaining)
      *
-     * @see MapDbStoreOptions#DIRECT_WRITE_INDICES
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
+     * @see MapDbStoreOptions#DIRECT_WRITE_ARRAYS
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
      */
     @Nonnull
-    public MapDbOptionsBuilder directWriteIndices() {
-        return storeOption(MapDbStoreOptions.DIRECT_WRITE_INDICES);
+    public MapDbOptionsBuilder directWriteArrays() {
+        return storeOption(MapDbStoreOptions.DIRECT_WRITE_ARRAYS);
     }
 
     /**

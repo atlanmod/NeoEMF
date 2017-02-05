@@ -11,85 +11,44 @@
 
 package fr.inria.atlanmod.neoemf.data.map.core.store;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link DirectWriteMapStore} that uses Java {@link List}s instead of arrays to persist multi-valued
- * {@link EAttribute}s and {@link EReference}s.
- * <p>
- * Using a {@link List}-based implementation allows to benefit from the rich Java {@link Collection} API, with the cost
- * of a small memory overhead compared to raw arrays.
- * <p>
- * This class re-implements {@link EStructuralFeature} accessors and mutators as well as {@link Collection} operations
- * such as {@code size}, {@code clear}, or {@code indexOf}.
- * <p>
- * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
- * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
- *
- * @see DirectWriteMapStore
- * @see MapBackend
- * @see AbstractPersistentStoreDecorator
+ * An abstract {@link DefaultDirectWriteStore} that redirects certain methods according to the instance of the
+ * encountered {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods of EMF, the call
+ * is automatically redirected to the associated method that begins with the same name.
  */
 @Deprecated
 // TODO Unusable: must be completely reviewed
-public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<PersistenceBackend> {
+public class DirectWriteMapStoreWithArrays extends DefaultDirectWriteStore<PersistenceBackend> {
 
     /**
-     * In-memory cache that holds multi-valued {@link EStructuralFeature}s wrapped in a {@link List}, identified by
-     * their associated {@link FeatureKey}.
-     */
-    protected final LoadingCache<FeatureKey, Object> objectsCache = Caffeine.newBuilder()
-            .initialCapacity(1_000)
-            .maximumSize(10_000)
-            .build(new FeatureKeyCacheLoader());
-
-    /**
-     * Constructs a new {@code DirectWriteMapStoreWithLists} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteMapStoreWithArrays} between the given {@code resource} and the {@code
+     * backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteMapStoreWithLists(PersistentResource resource, PersistenceBackend backend) {
+    public DirectWriteMapStoreWithArrays(PersistentResource resource, PersistenceBackend backend) {
         super(resource, backend);
-    }
-
-    /**
-     * Casts the {@code value} as a {@link List}.
-     *
-     * @param value the object to cast
-     *
-     * @return a list
-     */
-    @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
-    protected List<Object> manyValueFrom(Object value) {
-        return (List<Object>) value;
     }
 
     @Override
@@ -107,8 +66,8 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         PersistentEObject object = PersistentEObject.from(internalObject);
-        List<Object> list = manyValueFrom(getFromMap(object, feature));
-        return isNull(list) ? 0 : list.size();
+        Object[] array = (Object[]) getFromMap(object, feature);
+        return isNull(array) ? 0 : array.length;
     }
 
     @Override
@@ -120,16 +79,17 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         int index;
         PersistentEObject object = PersistentEObject.from(internalObject);
-        List<Object> list = manyValueFrom(getFromMap(object, feature));
-        if (isNull(list)) {
-            index = NO_INDEX;
+
+        Object[] array = (Object[]) getFromMap(object, feature);
+        if (isNull(array)) {
+            index = ArrayUtils.INDEX_NOT_FOUND;
         }
         else if (feature instanceof EAttribute) {
-            index = list.indexOf(serialize((EAttribute) feature, value));
+            index = ArrayUtils.indexOf(array, serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
-            index = list.indexOf(childEObject.id());
+            index = ArrayUtils.indexOf(array, childEObject.id());
         }
         return index;
     }
@@ -138,16 +98,16 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         int index;
         PersistentEObject object = PersistentEObject.from(internalObject);
-        List<Object> list = manyValueFrom(getFromMap(object, feature));
-        if (isNull(list)) {
-            index = NO_INDEX;
+        Object[] array = (Object[]) getFromMap(object, feature);
+        if (isNull(array)) {
+            index = ArrayUtils.INDEX_NOT_FOUND;
         }
         else if (feature instanceof EAttribute) {
-            index = list.lastIndexOf(serialize((EAttribute) feature, value));
+            index = ArrayUtils.lastIndexOf(array, serialize((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
-            index = list.lastIndexOf(childEObject.id());
+            index = ArrayUtils.lastIndexOf(array, childEObject.id());
         }
         return index;
     }
@@ -155,7 +115,7 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.valueFor(featureKey, new ArrayList<>());
+        backend.valueFor(featureKey, new Object[]{});
     }
 
     @Override
@@ -182,9 +142,14 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         Object soughtAttribute = getFromMap(object, attribute);
         if (attribute.isMany()) {
-            soughtAttribute = manyValueFrom(soughtAttribute).get(index);
+            Object[] array = (Object[]) soughtAttribute;
+            checkPositionIndex(index, array.length, "Invalid index");
+            soughtAttribute = deserialize(attribute, array[index]);
         }
-        return deserialize(attribute, soughtAttribute);
+        else {
+            soughtAttribute = deserialize(attribute, soughtAttribute);
+        }
+        return soughtAttribute;
     }
 
     @Override
@@ -196,14 +161,12 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
         }
         else {
             if (reference.isMany()) {
-                List<Object> aList = manyValueFrom(value);
-                checkPositionIndex(index, aList.size(), "Invalid index");
-                Id id = (Id) aList.get(index);
-                result = eObject(id);
+                Object[] array = (Object[]) value;
+                checkPositionIndex(index, array.length, "Invalid index");
+                result = eObject((Id) array[index]);
             }
             else {
-                Id id = (Id) value;
-                result = eObject(id);
+                result = eObject((Id) value);
             }
         }
         return result;
@@ -215,84 +178,122 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
         FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (!attribute.isMany()) {
             old = backend.valueFor(featureKey, serialize(attribute, value)).orElse(null);
-        }
-        else {
-            List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
-            old = list.get(index);
-            list.set(index, serialize(attribute, value));
-            backend.valueFor(featureKey, list.toArray());
             old = deserialize(attribute, old);
         }
-        return deserialize(attribute, old);
+        else {
+            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
+            checkPositionIndex(index, array.length, "Invalid index");
+            old = array[index];
+            array[index] = serialize(attribute, value);
+            backend.valueFor(featureKey, array);
+            old = deserialize(attribute, old);
+        }
+        return old;
     }
 
     @Override
     protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        Object oldId;
+        PersistentEObject old;
         FeatureKey featureKey = FeatureKey.from(object, reference);
         updateContainment(object, reference, value);
         updateInstanceOf(value);
         if (!reference.isMany()) {
-            oldId = backend.valueFor(featureKey, value.id()).orElse(null);
+            Optional<Object> oldId = backend.valueFor(featureKey, value.id());
+            old = oldId.isPresent() ? eObject((Id) oldId.get()) : null;
         }
         else {
-            List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
-            oldId = list.get(index);
-            list.set(index, value.id());
-            backend.valueFor(featureKey, list.toArray());
+            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
+            checkPositionIndex(index, array.length, "Invalid index");
+            Object oldId = array[index];
+            array[index] = value.id();
+            backend.valueFor(featureKey, array);
+            old = isNull(oldId) ? null : eObject((Id) oldId);
         }
-        return isNull(oldId) ? null : eObject((Id) oldId);
+        return old;
     }
 
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
-        list.add(index, serialize(attribute, value));
-        backend.valueFor(featureKey, list.toArray());
+        if (index == PersistentStore.NO_INDEX) {
+            index = size(object, attribute);
+        }
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
+        if (isNull(array)) {
+            array = new Object[]{};
+        }
+        checkPositionIndex(index, array.length, "Invalid index");
+        array = ArrayUtils.add(array, index, serialize(attribute, value));
+        backend.valueFor(featureKey, array);
     }
 
     @Override
-    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
+    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         FeatureKey featureKey = FeatureKey.from(object, reference);
-        updateContainment(object, reference, referencedObject);
-        updateInstanceOf(referencedObject);
-        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
-        list.add(index, referencedObject.id());
-        backend.valueFor(featureKey, list.toArray());
+        if (index == PersistentStore.NO_INDEX) {
+            index = size(object, reference);
+        }
+        updateContainment(object, reference, value);
+        updateInstanceOf(value);
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
+        if (isNull(array)) {
+            array = new Object[]{};
+        }
+        checkPositionIndex(index, array.length, "Invalid index");
+        array = ArrayUtils.add(array, index, value.id());
+        backend.valueFor(featureKey, array);
+        persistentObjectsCache.put(value.id(), value);
     }
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
-        Object old = list.get(index);
-        list.remove(index);
-        backend.valueFor(featureKey, list.toArray());
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
+        checkPositionIndex(index, array.length, "Invalid index");
+        Object old = array[index];
+        array = ArrayUtils.remove(array, index);
+        backend.valueFor(featureKey, array);
         return deserialize(attribute, old);
     }
 
     @Override
     protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
         FeatureKey featureKey = FeatureKey.from(object, reference);
-        List<Object> list = manyValueFrom(backend.valueOf(featureKey).orElse(null));
-        Object oldId = list.get(index);
-        list.remove(index);
-        backend.valueFor(featureKey, list.toArray());
+        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
+        checkPositionIndex(index, array.length, "Invalid index");
+        Object oldId = array[index];
+        array = ArrayUtils.remove(array, index);
+        backend.valueFor(featureKey, array);
         return eObject((Id) oldId);
     }
 
+    /**
+     * Returns the value associated to the {@code featureKey} in the underlying database.
+     *
+     * @param featureKey the {@link FeatureKey} to look for
+     *
+     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
+     * {@link Object} can be a single element or a {@link Collection}.
+     */
+    @Deprecated
+    public Object getFromMap(FeatureKey featureKey) {
+        return backend.valueOf(featureKey).orElse(null);
+    }
+
+    /**
+     * Returns the value associated to ({@code object}, {@code feature}) in the underlying database.
+     * <p>
+     * This method behaves like: {@code getFromMap(FeatureKey.from(object, feature)}.
+     *
+     * @param object  the {@link PersistentEObject} to look for
+     * @param feature the {@link EStructuralFeature} of {@code object} to look for
+     *
+     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
+     * {@link Object} can be a single element or a {@link Collection}.
+     */
     @Deprecated
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        Object value;
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        if (!feature.isMany()) {
-            value = backend.valueOf(featureKey).orElse(null);
-        }
-        else {
-            value = objectsCache.get(featureKey);
-        }
-        return value;
+        return backend.valueOf(FeatureKey.from(object, feature)).orElse(null);
     }
 
     /**
@@ -328,23 +329,5 @@ public class DirectWriteMapStoreWithLists extends DefaultDirectWriteStore<Persis
             }
         }
         return output;
-    }
-
-    /**
-     * A cache loader to retrieve a {@link Object} stored in the database.
-     */
-    public class FeatureKeyCacheLoader implements CacheLoader<FeatureKey, Object> {
-
-        @Override
-        public Object load(@Nonnull FeatureKey key) {
-            Object value = backend.valueOf(key).orElse(new ArrayList<>());
-            if (value instanceof Object[]) {
-                Object[] array = (Object[]) value;
-                List<Object> list = new ArrayList<>(array.length + 10);
-                CollectionUtils.addAll(list, array);
-                value = list;
-            }
-            return value;
-        }
     }
 }

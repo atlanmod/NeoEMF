@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices;
+import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
@@ -100,8 +100,8 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_LISTS)) {
             store = new DirectWriteMapStoreWithLists(resource, backend);
         }
-        else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            store = new DirectWriteMapStoreWithIndices(resource, backend);
+        else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_ARRAYS)) {
+            store = new DirectWriteMapStoreWithArrays(resource, backend);
         }
         else { // Default store
             store = new DirectWriteMapStore(resource, backend);

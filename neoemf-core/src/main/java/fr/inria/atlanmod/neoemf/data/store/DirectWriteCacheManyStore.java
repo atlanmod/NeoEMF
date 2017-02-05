@@ -46,6 +46,8 @@ import java.util.Optional;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
+@Deprecated
+// TODO Unusable: must be completely reviewed
 public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends DefaultDirectWriteStore<P> {
 
     /**

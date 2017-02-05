@@ -53,7 +53,7 @@ import java.util.OptionalInt;
  * @see MapDbPersistenceBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 public class MapDbPersistenceBackend extends AbstractPersistenceBackend implements MapBackend {

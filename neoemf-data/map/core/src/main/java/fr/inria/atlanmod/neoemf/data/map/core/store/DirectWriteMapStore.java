@@ -14,11 +14,13 @@ package fr.inria.atlanmod.neoemf.data.map.core.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;
@@ -27,17 +29,28 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Collections;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
- * An abstract {@link DefaultDirectWriteStore} that redirects certain methods according to the instance of the
- * encountered {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods of EMF, the call
- * is automatically redirected to the associated method that begins with the same name.
+ * A {@link DirectWriteMapStore} that persists {@link Collection} indices instead of serialized arrays.
+ * <p>
+ * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to
+ * store. Using this approach avoid to deserialize entire {@link Collection}s to retrieve a single
+ * element, which can be an important bottleneck in terms of execution time and memory consumption
+ * if the underlying model contains very large {@link Collections}.
+ * <p>
+ * This class re-implements {@link EStructuralFeature} accessors and mutators as well as {@link Collection}
+ * operations such as {@code size}, {@code clear}, or {@code indexOf}.
+ * <p>
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ *
+ * @see DirectWriteMapStore
+ * @see MapBackend
+ * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBackend> {
 
@@ -53,353 +66,230 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
 
     @Override
     public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         return backend.hasValue(featureKey);
     }
 
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         backend.unsetValue(featureKey);
     }
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
-        checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Object[] array = (Object[]) getFromMap(object, feature);
-        return isNull(array) ? 0 : array.length;
+
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        Object value = backend.valueOf(featureKey).orElse(null);
+
+        return isNull(value) ? 0 : (Integer) value;
     }
 
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.debug("DirectWriteMapStore::contains({1}, {2})", feature.getName(), value);
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
         return indexOf(internalObject, feature, value) != PersistentStore.NO_INDEX;
     }
 
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-        checkNotNull(value);
-
-        int index;
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        NeoLogger.debug("DirectWriteMapStore::indexOf({})");
-
-        Object[] array = (Object[]) getFromMap(object, feature);
-        if (isNull(array)) {
-            index = ArrayUtils.INDEX_NOT_FOUND;
-        }
-        else if (feature instanceof EAttribute) {
-            index = ArrayUtils.indexOf(array, serialize((EAttribute) feature, value));
-        }
-        else {
-            PersistentEObject childEObject = PersistentEObject.from(value);
-            index = ArrayUtils.indexOf(array, childEObject.id());
-        }
-        return index;
+        return ArrayUtils.indexOf(toArray(internalObject, feature), value);
     }
 
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-        checkNotNull(value);
+        return ArrayUtils.lastIndexOf(toArray(internalObject, feature), value);
+    }
 
-        int index;
+    @Override
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Object[] array = (Object[]) getFromMap(object, feature);
-        if (isNull(array)) {
-            index = ArrayUtils.INDEX_NOT_FOUND;
+
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+
+        // Make space for the new element
+        int size = (Integer) backend.valueOf(featureKey).orElse(0);
+
+        for (int i = size - 1; i >= index; i--) {
+            Object movingValue = backend.valueOf(featureKey.withPosition(i)).orElse(null);
+            backend.valueFor(featureKey.withPosition(i + 1), movingValue);
         }
-        else if (feature instanceof EAttribute) {
-            index = ArrayUtils.lastIndexOf(array, serialize((EAttribute) feature, value));
+        backend.valueFor(featureKey, size + 1);
+
+        // Add element
+        MultivaluedFeatureKey multivaluedFeatureKey = featureKey.withPosition(index);
+        if (feature instanceof EAttribute) {
+            backend.valueFor(multivaluedFeatureKey, value);
         }
         else {
-            PersistentEObject childEObject = PersistentEObject.from(value);
-            index = ArrayUtils.lastIndexOf(array, childEObject.id());
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            updateContainment(object, (EReference) feature, referencedObject);
+            updateInstanceOf(referencedObject);
+            backend.valueFor(multivaluedFeatureKey, referencedObject.id());
         }
-        return index;
+    }
+
+    @Override
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        int size = (Integer) backend.valueOf(featureKey).orElse(0);
+        // Get element to remove
+        Object old = backend.valueOf(featureKey.withPosition(index)).orElse(null);
+        // Update indexes (element to remove is overwritten)
+        for (int i = index + 1; i < size; i++) {
+            Object movingValue = backend.valueOf(featureKey.withPosition(i)).orElse(null);
+            backend.valueFor(featureKey.withPosition(i - 1), movingValue);
+        }
+        backend.valueFor(featureKey, size - 1);
+        return old;
     }
 
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.valueFor(featureKey, new Object[]{});
+        backend.unsetValue(featureKey);
     }
 
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
-                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
-                feature.getName(), feature.getClass().getSimpleName());
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Object value = getFromMap(object, feature);
+        boolean isReference = feature instanceof EReference;
+
         if (feature.isMany()) {
-            int valueLength = ((Object[]) value).length;
-            return internalToArray(value, feature, new Object[valueLength]);
+            int length = (int) backend.valueOf(FeatureKey.from(object, feature)).orElse(0);
+            if (isReference) {
+                return multiValuedReferenceToArray(object, (EReference) feature, new PersistentEObject[length]);
+            }
+            else {
+                return multiValuedAttributeToArray(object, (EAttribute) feature, new Object[length]);
+            }
         }
-        else {
-            return internalToArray(value, feature, new Object[1]);
+        else { //monovalued
+            if (isReference) {
+                return monoValuedReferenceToArray(object, (EReference) feature, new PersistentEObject[1]);
+            }
+            else {
+                return monoValuedAttributeToArray(object, (EAttribute) feature, new Object[1]);
+            }
         }
     }
 
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
-                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
-                feature.getName(), feature.getClass().getSimpleName());
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Object value = getFromMap(object, feature);
-        return internalToArray(value, feature, array);
+        boolean isReference = feature instanceof EReference;
+
+        if (feature.isMany()) {
+            //int length = (int) getFromMap(object, feature);
+            if (isReference) {
+                return multiValuedReferenceToArray(object, (EReference) feature, array);
+            }
+            else {
+                return multiValuedAttributeToArray(object, (EAttribute) feature, array);
+            }
+        }
+        else { //monovalued
+            if (isReference) {
+                return monoValuedReferenceToArray(object, (EReference) feature, array);
+            }
+            else {
+                return monoValuedAttributeToArray(object, (EAttribute) feature, array);
+            }
+        }
+
     }
 
     @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        checkNotNull(object);
-        checkNotNull(attribute);
-
-        Object soughtAttribute = getFromMap(object, attribute);
+        Object result;
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
         if (attribute.isMany()) {
-            Object[] array = (Object[]) soughtAttribute;
-            checkPositionIndex(index, array.length, "Invalid get index " + index);
-            soughtAttribute = deserialize(attribute, array[index]);
+            result = backend.valueOf(featureKey.withPosition(index)).orElse(null);
         }
         else {
-            soughtAttribute = deserialize(attribute, soughtAttribute);
+            result = backend.valueOf(featureKey).orElse(null);
         }
-        return soughtAttribute;
+
+        return deserialize(attribute, result);
     }
 
     @Override
     protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
-        checkNotNull(object);
-        checkNotNull(reference);
-
-        PersistentEObject result;
-        Object value = getFromMap(object, reference);
-        if (isNull(value)) {
-            result = null;
+        Id result;
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+        if (reference.isMany()) {
+            result = (Id) backend.valueOf(featureKey.withPosition(index)).orElse(null);
         }
         else {
-            if (reference.isMany()) {
-                Object[] array = (Object[]) value;
-                checkPositionIndex(index, array.length, "Invalid get index " + index);
-                result = eObject((Id) array[index]);
-            }
-            else {
-                result = eObject((Id) value);
-            }
+            result = (Id) backend.valueOf(featureKey).orElse(null);
         }
-        return result;
+
+        return nonNull(result) ? eObject(result) : null;
     }
 
     @Override
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        checkNotNull(object);
-        checkNotNull(attribute);
-        checkNotNull(value);
-
         Object old;
         FeatureKey featureKey = FeatureKey.from(object, attribute);
-        if (!attribute.isMany()) {
-            old = backend.valueFor(featureKey, serialize(attribute, value)).orElse(null);
-            old = deserialize(attribute, old);
+        Object serializedValue = serialize(attribute, value);
+
+        if (attribute.isMany()) {
+            old = backend.valueFor(featureKey.withPosition(index), serializedValue).orElse(null);
         }
         else {
-            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
-            checkPositionIndex(index, array.length, "Invalid set index " + index);
-            old = array[index];
-            array[index] = serialize(attribute, value);
-            backend.valueFor(featureKey, array);
-            old = deserialize(attribute, old);
+            old = backend.valueFor(featureKey, serializedValue).orElse(null);
         }
-        return old;
-    }
 
-    @Override
-    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        checkNotNull(object);
-        checkNotNull(reference);
-        checkNotNull(value);
-
-        PersistentEObject old;
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        updateContainment(object, reference, value);
-        updateInstanceOf(value);
-        if (!reference.isMany()) {
-            Optional<Object> oldId = backend.valueFor(featureKey, value.id());
-            old = oldId.isPresent() ? eObject((Id) oldId.get()) : null;
-        }
-        else {
-            Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
-            checkPositionIndex(index, array.length, "Invalid set index " + index);
-            Object oldId = array[index];
-            array[index] = value.id();
-            backend.valueFor(featureKey, array);
-            old = isNull(oldId) ? null : eObject((Id) oldId);
-        }
-        return old;
-    }
-
-    @Override
-    protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        checkNotNull(object);
-        checkNotNull(attribute);
-        checkNotNull(value);
-
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        if (index == PersistentStore.NO_INDEX) {
-            /*
-             * Handle NO_INDEX index, which represent direct-append feature.
-			 * The call to size should not cause an overhead because it would have been done in regular
-			 * addUnique() otherwise.
-			 */
-            index = size(object, attribute);
-        }
-        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
-        if (isNull(array)) {
-            array = new Object[]{};
-        }
-        checkPositionIndex(index, array.length, "Invalid add index");
-        array = ArrayUtils.add(array, index, serialize(attribute, value));
-        backend.valueFor(featureKey, array);
-    }
-
-    @Override
-    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        checkNotNull(object);
-        checkNotNull(reference);
-        checkNotNull(value);
-
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        if (index == PersistentStore.NO_INDEX) {
-            /*
-             * Handle NO_INDEX index, which represent direct-append feature.
-			 * The call to size should not cause an overhead because it would have been done in regular
-			 * addUnique() otherwise.
-			 */
-            index = size(object, reference);
-        }
-        updateContainment(object, reference, value);
-        updateInstanceOf(value);
-        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
-        if (isNull(array)) {
-            array = new Object[]{};
-        }
-        checkPositionIndex(index, array.length, "Invalid add index");
-        array = ArrayUtils.add(array, index, value.id());
-        backend.valueFor(featureKey, array);
-        persistentObjectsCache.put(value.id(), value);
-    }
-
-    @Override
-    protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        checkNotNull(object);
-        checkNotNull(attribute);
-
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
-        checkPositionIndex(index, array.length, "Invalid remove index");
-        Object old = array[index];
-        array = ArrayUtils.remove(array, index);
-        backend.valueFor(featureKey, array);
         return deserialize(attribute, old);
     }
 
     @Override
-    protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
-        checkNotNull(object);
-        checkNotNull(reference);
-
+    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+        Id old;
         FeatureKey featureKey = FeatureKey.from(object, reference);
-        Object[] array = (Object[]) backend.valueOf(featureKey).orElse(null);
-        checkPositionIndex(index, array.length, "Invalid remove index");
-        Object oldId = array[index];
-        array = ArrayUtils.remove(array, index);
-        backend.valueFor(featureKey, array);
-        return eObject((Id) oldId);
-    }
+        updateContainment(object, reference, value);
+        updateInstanceOf(value);
 
-    /**
-     * Returns the value associated to the {@code featureKey} in the underlying database.
-     *
-     * @param featureKey the {@link FeatureKey} to look for
-     *
-     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
-     * {@link Object} can be a single element or a {@link Collection}.
-     */
-    public Object getFromMap(FeatureKey featureKey) {
-        checkNotNull(featureKey);
-
-        return backend.valueOf(featureKey).orElse(null);
-    }
-
-    /**
-     * Returns the value associated to ({@code object}, {@code feature}) in the underlying database.
-     * <p>
-     * This method behaves like: {@code getFromMap(FeatureKey.from(object, feature)}.
-     *
-     * @param object  the {@link PersistentEObject} to look for
-     * @param feature the {@link EStructuralFeature} of {@code object} to look for
-     *
-     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
-     * {@link Object} can be a single element or a {@link Collection}.
-     */
-    protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        checkNotNull(object);
-        checkNotNull(feature);
-
-        return backend.valueOf(FeatureKey.from(object, feature)).orElse(null);
-    }
-
-    /**
-     * Reifies the element(s) in {@code value} and put them into {@code output}.
-     *
-     * @param value   the backend record to reify
-     * @param feature the {@link EStructuralFeature} used to reify {@code value}
-     * @param output  the array to fill
-     *
-     * @return {@code output} filled with the reified values
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
-        if (feature.isMany()) {
-            Object[] storedArray = (Object[]) value;
-            if (feature instanceof EReference) {
-                for (int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) eObject((Id) storedArray[i]);
-                }
-            }
-            else { // EAttribute
-                for (int i = 0; i < storedArray.length; i++) {
-                    output[i] = (T) deserialize((EAttribute) feature, storedArray[i]);
-                }
-            }
+        if (reference.isMany()) {
+            old = (Id) backend.valueFor(featureKey.withPosition(index), value.id()).orElse(null);
         }
         else {
-            if (feature instanceof EReference) {
-                output[0] = (T) eObject((Id) value);
-            }
-            else { // EAttribute
-                output[0] = (T) deserialize((EAttribute) feature, value);
-            }
+            old = (Id) backend.valueFor(featureKey, value.id()).orElse(null);
+        }
+
+        return nonNull(old) ? eObject(old) : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T[] monoValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, attr);
+        output[0] = (T) deserialize(attr, backend.valueOf(fk).orElse(null));
+        return output;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, attr);
+        for (int i = 0; i < output.length; i++) {
+            output[i] = (T) deserialize(attr, backend.valueOf(fk.withPosition(i)).orElse(null));
+        }
+        return output;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, ref);
+        Id id = (Id) backend.valueOf(fk).orElse(null);
+        output[0] = (T) eObject(id);
+        return output;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref, T[] output) {
+        FeatureKey fk = FeatureKey.from(object, ref);
+        for (int i = 0; i < output.length; i++) {
+            Id id = (Id) backend.valueOf(fk.withPosition(i)).orElse(null);
+            output[i] = (T) eObject(id);
         }
         return output;
     }

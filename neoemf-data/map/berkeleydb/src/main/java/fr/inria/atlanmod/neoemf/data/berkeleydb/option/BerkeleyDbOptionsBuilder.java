@@ -69,8 +69,8 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * @return this builder (for chaining)
      */
     @Nonnull
-    public BerkeleyDbOptionsBuilder directWriteIndices() {
-        return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES);
+    public BerkeleyDbOptionsBuilder directWriteArrays() {
+        return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_ARRAYS);
     }
 
     /**

@@ -33,7 +33,7 @@ public enum BerkeleyDbStoreOptions implements PersistentStoreOptions {
     /**
      * ???
      */
-    DIRECT_WRITE_INDICES,
+    DIRECT_WRITE_ARRAYS,
 
     /**
      * ???

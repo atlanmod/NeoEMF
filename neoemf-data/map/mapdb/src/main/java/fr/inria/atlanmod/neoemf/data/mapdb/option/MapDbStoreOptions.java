@@ -28,7 +28,7 @@ import java.util.List;
  * @see AutocommitStoreDecorator
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 public enum MapDbStoreOptions implements PersistentStoreOptions {
@@ -52,9 +52,9 @@ public enum MapDbStoreOptions implements PersistentStoreOptions {
      * Translates model-level operations to MapDB calls, and persists {@link Collection} indices instead of serialized
      * arrays.
      *
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
+     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
      */
-    DIRECT_WRITE_INDICES,
+    DIRECT_WRITE_ARRAYS,
 
     /**
      * Translates model-level operations to Blueprints calls, and uses an internal cache to store elements that are

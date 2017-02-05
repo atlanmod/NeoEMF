@@ -9,7 +9,6 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-
 package fr.inria.atlanmod.neoemf.data.map.core.store;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -18,6 +17,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -44,7 +44,9 @@ import static java.util.Objects.isNull;
  * @see MapBackend
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
-public class DirectWriteCachedMapStore extends DirectWriteMapStore {
+@Deprecated
+// TODO Unusable: must be completely reviewed
+public class DirectWriteCachedMapStore extends DefaultDirectWriteStore<PersistenceBackend> {
 
     /**
      * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
@@ -54,7 +56,7 @@ public class DirectWriteCachedMapStore extends DirectWriteMapStore {
             .maximumSize(10_000).build();
 
     /**
-     * Constructs a new {@code DirectWriteMapStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteCachedMapStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
@@ -92,7 +94,6 @@ public class DirectWriteCachedMapStore extends DirectWriteMapStore {
         }
     }
 
-    @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
         return objectsCache.get(featureKey, key -> backend.valueOf(key).orElse(null));
