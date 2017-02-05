@@ -25,12 +25,9 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
@@ -66,16 +63,16 @@ import static java.util.Objects.nonNull;
  * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
  * <p>
  * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
- * PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
- * caches to improve access time of {@link Vertex} from  their corresponding {@link PersistentEObject}.
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
+ * caches to improve access time of {@link Vertex} from  their corresponding {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  *
- * @note This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to
- * access and manipulate the database.
+ * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore} to access and manipulate
+ * the database.
  * @note Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory}
  * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsPersistenceBackendFactory
- * @see DirectWriteBlueprintsStore
- * @see DirectWriteBlueprintsCacheManyStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
  */
 public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 

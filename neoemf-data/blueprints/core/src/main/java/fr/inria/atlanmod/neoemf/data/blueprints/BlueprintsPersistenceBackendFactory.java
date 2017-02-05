@@ -24,7 +24,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprints
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -115,7 +115,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
+            store = new DirectWriteCacheManyStore<>(resource, backend);
         }
         else { // Default store
             store = new DefaultDirectWriteStore<>(resource, backend);

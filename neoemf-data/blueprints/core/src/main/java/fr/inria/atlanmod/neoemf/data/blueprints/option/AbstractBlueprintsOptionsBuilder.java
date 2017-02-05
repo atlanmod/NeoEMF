@@ -56,7 +56,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#DIRECT_WRITE
-     * @see fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore
+     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
      */
     public B directWrite() {
         return storeOption(BlueprintsStoreOptions.DIRECT_WRITE);
@@ -68,7 +68,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#CACHE_MANY
-     * @see fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore
+     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
      */
     public B directWriteCacheMany() {
         return storeOption(BlueprintsStoreOptions.CACHE_MANY);
