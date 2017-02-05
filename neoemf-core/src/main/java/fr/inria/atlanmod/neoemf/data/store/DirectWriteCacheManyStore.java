@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.collect.Iterables;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -25,7 +26,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that uses an internal cache to store values and
@@ -85,8 +85,7 @@ public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends Def
             backend.referencesAsList(key);
 
             Object[] values = valuesCache.get(key, featureKey ->
-                    StreamSupport.stream(backend.valuesAsList(featureKey).spliterator(), false)
-                            .toArray());
+                    Iterables.toArray(backend.valuesAsList(featureKey), Object.class));
 
             Optional<Object> value = Optional.ofNullable(values[index]);
 
@@ -102,9 +101,8 @@ public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends Def
         if (reference.isMany()) {
             FeatureKey key = FeatureKey.from(object, reference);
 
-            Id[] references = referenceCache.get(key, featureKey -> (Id[])
-                    StreamSupport.stream(backend.referencesAsList(featureKey).spliterator(), false)
-                            .toArray());
+            Id[] references = referenceCache.get(key, featureKey ->
+                    Iterables.toArray(backend.referencesAsList(featureKey), Id.class));
 
             Optional<Id> id = Optional.ofNullable(references[index]);
 
