@@ -82,6 +82,7 @@ public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends Def
         if (attribute.isMany()) {
             FeatureKey key = FeatureKey.from(object, attribute);
 
+            // TODO Can be replaced by "toArray" to outsource from DirectWrite
             Object[] values = valuesCache.get(key, featureKey ->
                     Iterables.toArray(backend.valuesAsList(featureKey), Object.class));
 
@@ -99,6 +100,7 @@ public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends Def
         if (reference.isMany()) {
             FeatureKey key = FeatureKey.from(object, reference);
 
+            // TODO Can be replaced by "toArray" to outsource from DirectWrite
             Id[] references = referenceCache.get(key, featureKey ->
                     Iterables.toArray(backend.referencesAsList(featureKey), Id.class));
 
