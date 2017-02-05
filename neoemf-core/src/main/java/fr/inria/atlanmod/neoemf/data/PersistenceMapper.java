@@ -53,7 +53,7 @@ public interface PersistenceMapper {
      * @param key
      * @return
      */
-    Optional<Id> referenceFor(FeatureKey key);
+    Optional<Id> referenceOf(FeatureKey key);
 
     /**
      *
@@ -61,7 +61,7 @@ public interface PersistenceMapper {
      * @param key
      * @return
      */
-    Optional<Id> referenceFor(MultivaluedFeatureKey key);
+    Optional<Id> referenceOf(MultivaluedFeatureKey key);
 
     /**
      * Sets the value of a given {@link FeatureKey}.

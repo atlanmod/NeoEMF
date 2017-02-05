@@ -318,12 +318,12 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     }
 
     @Override
-    public Optional<Id> referenceFor(FeatureKey key) {
+    public Optional<Id> referenceOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Optional<Id> referenceFor(MultivaluedFeatureKey key) {
+    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

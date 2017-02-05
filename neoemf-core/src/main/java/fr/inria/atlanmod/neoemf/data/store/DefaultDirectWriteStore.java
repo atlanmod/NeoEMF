@@ -540,7 +540,7 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
                 references = backend.referencesAsList(key);
             }
             else {
-                references = backend.referenceFor(key).map(Collections::singleton).orElseGet(Collections::emptySet);
+                references = backend.referenceOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
             }
 
             stream = StreamSupport.stream(references.spliterator(), false)
@@ -694,11 +694,11 @@ public class DefaultDirectWriteStore<P extends PersistenceBackend> extends Abstr
 
         Optional<Id> value;
         if (!reference.isMany()) {
-            value = backend.referenceFor(key);
+            value = backend.referenceOf(key);
         }
         else {
             checkElementIndex(index, size(object, reference));
-            value = backend.referenceFor(key.withPosition(index));
+            value = backend.referenceOf(key.withPosition(index));
         }
 
         return value

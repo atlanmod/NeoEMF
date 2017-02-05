@@ -355,7 +355,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Optional<Id> referenceFor(FeatureKey key) {
+    public Optional<Id> referenceOf(FeatureKey key) {
         Iterable<Vertex> referencedVertices = vertex(key.id()).getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
@@ -363,7 +363,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     @Override
-    public Optional<Id> referenceFor(MultivaluedFeatureKey key) {
+    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Vertex> referencedVertices = vertex.query()

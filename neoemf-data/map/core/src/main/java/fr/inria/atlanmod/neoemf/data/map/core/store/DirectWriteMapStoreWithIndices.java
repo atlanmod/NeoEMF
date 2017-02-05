@@ -224,7 +224,7 @@ public class DirectWriteMapStoreWithIndices extends DirectWriteMapStore {
 
     @Override
     protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
-        NeoLogger.debug("referenceFor({0}, {1}, {2})", object.id(), reference.getName(), index);
+        NeoLogger.debug("referenceOf({0}, {1}, {2})", object.id(), reference.getName(), index);
 
         Id result;
         FeatureKey featureKey = FeatureKey.from(object, reference);
@@ -258,7 +258,7 @@ public class DirectWriteMapStoreWithIndices extends DirectWriteMapStore {
 
     @Override
     protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        NeoLogger.debug("referenceFor({0}, {1}, {2}, {3})", object.id(), reference.getName(), index, value);
+        NeoLogger.debug("referenceOf({0}, {1}, {2}, {3})", object.id(), reference.getName(), index, value);
 
         Id old;
         FeatureKey featureKey = FeatureKey.from(object, reference);
