@@ -19,6 +19,11 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 public interface MapDbBackend extends PersistenceBackend {
 
     /**
+     * The literal description of this back-end.
+     */
+    String NAME = "mapdb";
+
+    /**
      * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to

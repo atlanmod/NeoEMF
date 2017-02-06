@@ -57,7 +57,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = AbstractMapDbBackend.NAME;
+    public static final String NAME = MapDbBackend.NAME;
 
     /**
      * Constructs a new {@code MapDbBackendFactory}.

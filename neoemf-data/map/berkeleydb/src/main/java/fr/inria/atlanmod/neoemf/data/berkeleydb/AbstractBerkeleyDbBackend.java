@@ -37,11 +37,6 @@ import java.io.File;
 public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend implements BerkeleyDbBackend {
 
     /**
-     * The literal description of this back-end.
-     */
-    public static final String NAME = "berkeleydb";
-
-    /**
      * ???
      */
     protected final DatabaseConfig databaseConfig;

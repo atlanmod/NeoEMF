@@ -43,7 +43,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = AbstractBerkeleyDbBackend.NAME;
+    public static final String NAME = BerkeleyDbBackend.NAME;
 
     /**
      * Constructs a new {@code BerkeleyDbBackendFactory}.

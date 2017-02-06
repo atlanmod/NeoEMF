@@ -24,6 +24,11 @@ import org.eclipse.emf.ecore.EcorePackage;
 public interface BlueprintsBackend extends PersistenceBackend {
 
     /**
+     * The literal description of this back-end.
+     */
+    String NAME = "blueprints";
+
+    /**
      * @deprecated Don't use this field
      */
     @Deprecated
@@ -52,5 +57,4 @@ public interface BlueprintsBackend extends PersistenceBackend {
      */
     @Deprecated
     Vertex addVertex(Id id);
-
 }

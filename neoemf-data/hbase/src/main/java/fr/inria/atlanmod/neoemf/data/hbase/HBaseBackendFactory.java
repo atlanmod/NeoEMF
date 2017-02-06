@@ -51,7 +51,7 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = DefaultHBaseBackend.NAME;
+    public static final String NAME = HBaseBackend.NAME;
 
     /**
      * Constructs a new {@code HBaseBackendFactory}.

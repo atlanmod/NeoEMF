@@ -35,11 +35,6 @@ import java.util.Map;
 public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implements MapDbBackend {
 
     /**
-     * The literal description of this back-end.
-     */
-    public static final String NAME = "mapdb";
-
-    /**
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     protected final HTreeMap<Id, ContainerValue> containersMap;

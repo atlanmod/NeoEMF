@@ -75,7 +75,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = DefaultBlueprintsBackend.NAME;
+    public static final String NAME = BlueprintsBackend.NAME;
 
     /**
      * The configuration file name.

@@ -9,17 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase;
+package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 
 /**
  *
  */
-public interface HBaseBackend extends PersistenceBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    String NAME = "hbase";
+public abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend implements BlueprintsBackend {
 }

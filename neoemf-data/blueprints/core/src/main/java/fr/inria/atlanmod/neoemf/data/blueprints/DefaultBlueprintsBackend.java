@@ -75,12 +75,7 @@ import static java.util.Objects.nonNull;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
  */
-class DefaultBlueprintsBackend extends AbstractPersistenceBackend implements BlueprintsBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    public static final String NAME = "blueprints";
+class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     /**
      * The property key used to set metaclass name in metaclass {@link Vertex}s.

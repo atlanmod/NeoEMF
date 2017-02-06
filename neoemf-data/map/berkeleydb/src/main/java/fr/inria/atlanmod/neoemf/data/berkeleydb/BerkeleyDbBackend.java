@@ -19,6 +19,11 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 public interface BerkeleyDbBackend extends PersistenceBackend {
 
     /**
+     * The literal description of this back-end.
+     */
+    String NAME = "berkeleydb";
+
+    /**
      * ???
      */
     void open();

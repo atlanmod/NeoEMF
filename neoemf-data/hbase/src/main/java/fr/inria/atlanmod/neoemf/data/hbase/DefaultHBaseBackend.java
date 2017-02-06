@@ -36,11 +36,6 @@ import java.util.OptionalInt;
 class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBackend {
 
     /**
-     * The literal description of this back-end.
-     */
-    public static final String NAME = "hbase";
-
-    /**
      * Constructs a new {@code DefaultHBaseBackend}.
      */
     protected DefaultHBaseBackend() {
