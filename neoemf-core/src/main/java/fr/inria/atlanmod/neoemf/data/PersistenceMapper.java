@@ -33,7 +33,7 @@ public interface PersistenceMapper {
      * @return an {@link Object} representing the value associated to the given {@code key}, or {@code null} if it isn't
      * in the database
      */
-    Optional<Object> valueOf(FeatureKey key);
+    <T> Optional<T> valueOf(FeatureKey key);
 
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.
@@ -45,7 +45,7 @@ public interface PersistenceMapper {
      *
      * @return an {@link Object} representing the value associated to the given {@code key}
      */
-    Optional<Object> valueOf(MultivaluedFeatureKey key);
+    <T> Optional<T> valueOf(MultivaluedFeatureKey key);
 
     /**
      *
@@ -71,7 +71,7 @@ public interface PersistenceMapper {
      *
      * @return the old value
      */
-    Optional<Object> valueFor(FeatureKey key, Object value);
+    <T> Optional<T> valueFor(FeatureKey key, T value);
 
     /**
      * Stores the value of a given {@link MultivaluedFeatureKey}.
@@ -84,7 +84,7 @@ public interface PersistenceMapper {
      *
      * @return the old value
      */
-    Optional<Object> valueFor(MultivaluedFeatureKey key, Object value);
+    <T> Optional<T> valueFor(MultivaluedFeatureKey key, T value);
 
     /**
      *
@@ -176,7 +176,7 @@ public interface PersistenceMapper {
      * @param key
      * @param value
      */
-    void addValue(MultivaluedFeatureKey key, Object value);
+    <T> void addValue(MultivaluedFeatureKey key, T value);
 
     /**
      *
@@ -191,7 +191,7 @@ public interface PersistenceMapper {
      * @param key
      * @return
      */
-    Optional<Object> removeValue(MultivaluedFeatureKey key);
+    <T> Optional<T> removeValue(MultivaluedFeatureKey key);
 
     /**
      *
@@ -220,7 +220,7 @@ public interface PersistenceMapper {
      * @param value
      * @return
      */
-    boolean containsValue(FeatureKey key, Object value);
+    <T> boolean containsValue(FeatureKey key, T value);
 
     /**
      *
@@ -238,7 +238,7 @@ public interface PersistenceMapper {
      * @param value
      * @return
      */
-    OptionalInt indexOfValue(FeatureKey key, Object value);
+    <T> OptionalInt indexOfValue(FeatureKey key, T value);
 
     /**
      *
@@ -256,7 +256,7 @@ public interface PersistenceMapper {
      * @param value
      * @return
      */
-    OptionalInt lastIndexOfValue(FeatureKey key, Object value);
+    <T> OptionalInt lastIndexOfValue(FeatureKey key, T value);
 
     /**
      *
@@ -273,7 +273,7 @@ public interface PersistenceMapper {
      * @param key
      * @return
      */
-    Iterable<Object> valuesAsList(FeatureKey key);
+    <T> Iterable<T> valuesAsList(FeatureKey key);
 
     /**
      *
@@ -289,5 +289,5 @@ public interface PersistenceMapper {
      * @param key
      * @return
      */
-    OptionalInt sizeOf(FeatureKey key);
+    <T> OptionalInt sizeOf(FeatureKey key);
 }

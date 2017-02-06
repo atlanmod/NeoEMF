@@ -28,12 +28,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A {@link Serializer} for {@link Object}.
+ *
+ * @param <T> the type of {@link Object} to serialize/deserialize
  */
 @Experimental
-public class ObjectSerializer implements Serializer<Object> {
+public class ObjectSerializer<T> implements Serializer<T> {
 
-    @Override
-    public byte[] serialize(@Nonnull Object value) {
+    public byte[] serialize(@Nonnull T value) {
         checkNotNull(value);
 
         byte[] data;
@@ -50,15 +51,15 @@ public class ObjectSerializer implements Serializer<Object> {
         return data;
     }
 
-    @Override
-    public Object deserialize(@Nonnull byte[] data) {
+    @SuppressWarnings("unchecked")
+    public T deserialize(@Nonnull byte[] data) {
         checkNotNull(data);
 
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        Object value = null;
+        T value = null;
         try {
             ObjectInput in = new ObjectInputStream(bis);
-            value = in.readObject();
+            value = (T) in.readObject();
         }
         catch (IOException | ClassNotFoundException e) {
             NeoLogger.error(e);
