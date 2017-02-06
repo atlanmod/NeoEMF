@@ -34,8 +34,11 @@ import org.mapdb.Serializer;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -217,14 +220,14 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
         return valueOf(key)
-                .map(i -> Optional.of(StringId.from(i)))
+                .map(v -> Optional.of(StringId.from(v)))
                 .orElse(Optional.empty());
     }
 
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         return valueOf(key)
-                .map(i -> Optional.of(StringId.from(i)))
+                .map(v -> Optional.of(StringId.from(v)))
                 .orElse(Optional.empty());
     }
 
@@ -241,14 +244,14 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
         return valueFor(key, id)
-                .map(i -> Optional.of(StringId.from(i)))
+                .map(v -> Optional.of(StringId.from(v)))
                 .orElse(Optional.empty());
     }
 
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
         return valueFor(key, id)
-                .map(i -> Optional.of(StringId.from(i)))
+                .map(v -> Optional.of(StringId.from(v)))
                 .orElse(Optional.empty());
     }
 
@@ -363,52 +366,68 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public void cleanReferences(FeatureKey key) {
-        cleanValues(key);
+        unsetReference(key);
     }
 
     @Override
     public boolean containsValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
     @Override
     public boolean containsReference(FeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .anyMatch(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false));
     }
 
     @Override
     public OptionalInt indexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
+                .min();
     }
 
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .filter(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false))
+                .min();
     }
 
     @Override
     public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
+                .max();
     }
 
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .filter(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false))
+                .max();
     }
 
     @Override
     public Iterable<Object> valuesAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .mapToObj(i -> valueOf(key.withPosition(i)).orElse(null))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return IntStream.range(0, sizeOf(key).orElse(0))
+                .mapToObj(i -> referenceOf(key.withPosition(i)).orElse(null))
+                .collect(Collectors.toList());
     }
 
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
-        return valueOf(key).map(v -> OptionalInt.of((int) v)).orElse(OptionalInt.empty());
+        return valueOf(key)
+                .map(v -> OptionalInt.of((int) v))
+                .orElse(OptionalInt.empty());
     }
 
     protected void sizeOf(FeatureKey key, int size) {
