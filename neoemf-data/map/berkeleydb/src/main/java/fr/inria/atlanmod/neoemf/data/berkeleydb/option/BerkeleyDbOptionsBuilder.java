@@ -49,6 +49,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * @return this builder (for chaining)
      */
     @Nonnull
+    @Deprecated
     public BerkeleyDbOptionsBuilder directWrite() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE);
     }
@@ -59,6 +60,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * @return this builder (for chaining)
      */
     @Nonnull
+    @Deprecated
     public BerkeleyDbOptionsBuilder directWriteLists() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS);
     }
@@ -69,6 +71,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * @return this builder (for chaining)
      */
     @Nonnull
+    @Deprecated
     public BerkeleyDbOptionsBuilder directWriteArrays() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_ARRAYS);
     }
@@ -79,6 +82,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * @return this builder (for chaining)
      */
     @Nonnull
+    @Deprecated
     public BerkeleyDbOptionsBuilder directWriteCacheMany() {
         return storeOption(BerkeleyDbStoreOptions.CACHE_MANY);
     }

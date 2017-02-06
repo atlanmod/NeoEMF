@@ -18,7 +18,6 @@
     </description>
 
     <modules>
-        <module>core</module>
         <module>berkeleydb</module>
 		<module>mapdb</module>
     </modules>

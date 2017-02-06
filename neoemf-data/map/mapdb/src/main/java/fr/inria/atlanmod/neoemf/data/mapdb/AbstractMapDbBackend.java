@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;

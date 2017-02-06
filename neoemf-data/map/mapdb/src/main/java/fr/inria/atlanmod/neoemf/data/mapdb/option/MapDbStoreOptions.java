@@ -23,43 +23,33 @@ import java.util.List;
 /**
  * {@link PersistentStoreOptions} that hold MapDB related database access features, such as direct write, usage of raw
  * arrays or {@link List}s.
- *
- * @see AutocommitStoreDecorator
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 public enum MapDbStoreOptions implements PersistentStoreOptions {
 
     /**
      * Translates model-level operations to MapDB calls <i>(default {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore})</i>.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
      */
+    @Deprecated
     DIRECT_WRITE,
 
     /**
      * Translates model-level operations to MapDB calls, and uses {@link List}s instead of arrays to persist
      * multi-valued {@link EAttribute}s and {@link EReference}s.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
      */
+    @Deprecated
     DIRECT_WRITE_LISTS,
 
     /**
      * Translates model-level operations to MapDB calls, and persists {@link Collection} indices instead of serialized
      * arrays.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
      */
+    @Deprecated
     DIRECT_WRITE_ARRAYS,
 
     /**
      * Translates model-level operations to Blueprints calls, and uses an internal cache to store elements that are
      * part of multi-valued {@link EReference}s to speed-up their access.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
      */
+    @Deprecated
     CACHE_MANY
 }

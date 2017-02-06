@@ -46,9 +46,6 @@ import java.util.OptionalInt;
  * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 class MapDbBackendArrays extends AbstractMapDbBackend {
 
@@ -271,7 +268,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
-        return Optional.ofNullable((Object[]) features.get(key))
+        return Optional.ofNullable(asMany(features.get(key)))
                 .map(v -> OptionalInt.of(v.length))
                 .orElse(OptionalInt.empty());
     }

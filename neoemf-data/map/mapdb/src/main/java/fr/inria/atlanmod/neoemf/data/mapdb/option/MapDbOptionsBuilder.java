@@ -51,6 +51,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
      */
     @Nonnull
+    @Deprecated
     public MapDbOptionsBuilder directWrite() {
         return storeOption(MapDbStoreOptions.DIRECT_WRITE);
     }
@@ -61,9 +62,9 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#DIRECT_WRITE_LISTS
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
      */
     @Nonnull
+    @Deprecated
     public MapDbOptionsBuilder directWriteLists() {
         return storeOption(MapDbStoreOptions.DIRECT_WRITE_LISTS);
     }
@@ -74,9 +75,9 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#DIRECT_WRITE_ARRAYS
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
      */
     @Nonnull
+    @Deprecated
     public MapDbOptionsBuilder directWriteArrays() {
         return storeOption(MapDbStoreOptions.DIRECT_WRITE_ARRAYS);
     }
@@ -87,9 +88,9 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#CACHE_MANY
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
      */
     @Nonnull
+    @Deprecated
     public MapDbOptionsBuilder directWriteCacheMany() {
         return storeOption(MapDbStoreOptions.CACHE_MANY);
     }

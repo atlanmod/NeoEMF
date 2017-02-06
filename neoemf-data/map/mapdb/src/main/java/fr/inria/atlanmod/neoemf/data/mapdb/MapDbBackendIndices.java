@@ -50,9 +50,6 @@ import java.util.stream.IntStream;
  * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 class MapDbBackendIndices extends AbstractMapDbBackend {
 

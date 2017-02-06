@@ -23,20 +23,24 @@ public enum BerkeleyDbStoreOptions implements PersistentStoreOptions {
     /**
      * ???
      */
+    @Deprecated
     DIRECT_WRITE,
 
     /**
      * ???
      */
+    @Deprecated
     DIRECT_WRITE_LISTS,
 
     /**
      * ???
      */
+    @Deprecated
     DIRECT_WRITE_ARRAYS,
 
     /**
      * ???
      */
+    @Deprecated
     CACHE_MANY
 }

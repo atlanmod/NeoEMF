@@ -15,15 +15,11 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -35,7 +31,6 @@ import org.mapdb.DBMaker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -90,23 +85,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         checkArgument(backend instanceof MapDbBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        PersistentStore store;
-        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
-
-        // Store
-        if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteCachedMapStore(resource, backend);
-        }
-        else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            store = new DirectWriteMapStoreWithLists(resource, backend);
-        }
-        else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_ARRAYS)) {
-            store = new DirectWriteMapStoreWithArrays(resource, backend);
-        }
-        else { // Default store
-            store = new DefaultDirectWriteStore<>(resource, backend);
-        }
-        return store;
+        return new DefaultDirectWriteStore<>(resource, backend);
     }
 
     @Override

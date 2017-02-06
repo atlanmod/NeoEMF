@@ -172,9 +172,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
         List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        Optional<Object> previousValue = Optional.of(values.get(key.position()));
-
-        values.set(key.position(), value);
+        Optional<Object> previousValue = Optional.of(values.set(key.position(), value));
 
         dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
         features.put(null, dbKey, dbValue);
@@ -372,8 +370,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
-            return OptionalInt.of(values.size());
+            return OptionalInt.of(asMany(new ObjectSerializer().deserialize(dbValue.getData())).size());
         }
         else {
             return OptionalInt.empty();

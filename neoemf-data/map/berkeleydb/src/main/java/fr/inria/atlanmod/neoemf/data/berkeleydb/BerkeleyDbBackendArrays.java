@@ -379,8 +379,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
-            return OptionalInt.of(values.length);
+            return OptionalInt.of(asMany(new ObjectSerializer().deserialize(dbValue.getData())).length);
         }
         else {
             return OptionalInt.empty();

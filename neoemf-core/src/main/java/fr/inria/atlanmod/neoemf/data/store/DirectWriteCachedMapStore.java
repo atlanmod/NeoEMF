@@ -9,15 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.map.core.store;
+package fr.inria.atlanmod.neoemf.data.store;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -41,7 +39,6 @@ import static java.util.Objects.isNull;
  * as caching or logging.
  *
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
- * @see MapBackend
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
 @Deprecated
