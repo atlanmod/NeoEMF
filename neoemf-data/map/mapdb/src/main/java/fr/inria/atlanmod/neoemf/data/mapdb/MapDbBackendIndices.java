@@ -54,7 +54,7 @@ import java.util.stream.IntStream;
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
-class MapDbBackendIndices extends MapDbBackend {
+class MapDbBackendIndices extends AbstractMapDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s, identified by the

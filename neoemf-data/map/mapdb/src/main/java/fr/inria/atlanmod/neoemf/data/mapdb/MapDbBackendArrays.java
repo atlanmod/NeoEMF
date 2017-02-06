@@ -50,7 +50,7 @@ import java.util.OptionalInt;
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
-class MapDbBackendArrays extends MapDbBackend {
+class MapDbBackendArrays extends AbstractMapDbBackend {
 
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
