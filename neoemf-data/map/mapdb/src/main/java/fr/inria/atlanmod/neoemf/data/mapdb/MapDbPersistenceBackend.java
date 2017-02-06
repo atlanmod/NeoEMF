@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
@@ -175,12 +176,12 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public void create(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Do nothing
     }
 
     @Override
     public boolean has(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
     }
 
     @Override
@@ -215,12 +216,16 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return valueOf(key)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return valueOf(key)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
@@ -235,12 +240,16 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return valueFor(key, id)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return valueFor(key, id)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
@@ -255,12 +264,12 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public void unsetReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        unsetValue(key);
     }
 
     @Override
     public void unsetAllReferences(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        unsetReference(key);
     }
 
     @Override
@@ -275,42 +284,86 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public boolean hasReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return hasValue(key);
     }
 
     @Override
     public boolean hasAnyReference(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return hasReference(key);
     }
 
     @Override
     public void addValue(MultivaluedFeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Make space for the new element
+        int size = sizeOf(key).orElse(0);
+
+        // TODO Replace by Stream
+        for (int i = size - 1; i >= key.position(); i--) {
+            valueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size + 1);
+
+        // Add element
+        valueFor(key, value);
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Make space for the new element
+        int size = sizeOf(key).orElse(0);
+
+        // TODO Replace by Stream
+        for (int i = size - 1; i >= key.position(); i--) {
+            referenceFor(key.withPosition(i + 1), referenceOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size + 1);
+
+        // Add reference
+        referenceFor(key, id);
     }
 
     @Override
     public Optional<Object> removeValue(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        int size = sizeOf(key).orElse(0);
+
+        // Get element to remove
+        Optional<Object> previousValue = valueOf(key);
+
+        // Update indexes (element to remove is overwritten)
+        // TODO Replace by Stream
+        for (int i = key.position() + 1; i < size; i++) {
+            valueFor(key.withPosition(i - 1), valueOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size - 1);
+
+        return previousValue;
     }
 
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        int size = sizeOf(key).orElse(0);
+
+        // Get element to remove
+        Optional<Id> previousId = referenceOf(key);
+
+        // Update indexes (element to remove is overwritten)
+        // TODO Replace by Stream
+        for (int i = key.position() + 1; i < size; i++) {
+            referenceFor(key.withPosition(i - 1), referenceOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size - 1);
+
+        return previousId;
     }
 
     @Override
     public void cleanValues(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        unsetValue(key);
     }
 
     @Override
     public void cleanReferences(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        cleanValues(key);
     }
 
     @Override
@@ -355,7 +408,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return valueOf(key).map(v -> OptionalInt.of((int) v)).orElse(OptionalInt.empty());
+    }
+
+    protected void sizeOf(FeatureKey key, int size) {
+        valueFor(key, size);
     }
 
     @VisibleForTesting

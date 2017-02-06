@@ -222,12 +222,12 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public void create(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Do nothing
     }
 
     @Override
     public boolean has(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
     }
 
     @Override
@@ -334,12 +334,16 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        return valueOf(key).map(o -> Optional.of(StringId.from(o))).orElse(Optional.empty());
+        return valueOf(key)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
-        return valueOf(key).map(o -> Optional.of(StringId.from(o))).orElse(Optional.empty());
+        return valueOf(key)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
@@ -378,12 +382,16 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return valueFor(key, id).map(o -> Optional.of(StringId.from(o))).orElse(Optional.empty());
+        return valueFor(key, id)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
-        return valueFor(key, id).map(o -> Optional.of(StringId.from(o))).orElse(Optional.empty());
+        return valueFor(key, id)
+                .map(i -> Optional.of(StringId.from(i)))
+                .orElse(Optional.empty());
     }
 
     @Override
@@ -400,14 +408,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public void unsetAllValues(FeatureKey key) {
-        try {
-            DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
-
-            multivaluedFeatures.delete(null, dbKey);
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
+        unsetValue(key);
     }
 
     @Override
@@ -417,7 +418,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public void unsetAllReferences(FeatureKey key) {
-        unsetAllValues(key);
+        unsetReference(key);
     }
 
     @Override
@@ -439,19 +440,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public boolean hasAnyValue(FeatureKey key) {
-        boolean has = false;
-
-        try {
-            DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
-            DatabaseEntry dbValue = new DatabaseEntry();
-
-            has = multivaluedFeatures.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS;
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-
-        return has;
+        return hasValue(key);
     }
 
     @Override
@@ -461,41 +450,77 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public boolean hasAnyReference(FeatureKey key) {
-        return hasAnyValue(key);
+        return hasReference(key);
     }
 
     @Override
     public void addValue(MultivaluedFeatureKey key, Object value) {
+        // Make space for the new element
+        int size = sizeOf(key).orElse(0);
+
+        for (int i = size - 1; i >= key.position(); i--) {
+            valueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size + 1);
+
+        // Add element
         valueFor(key, value);
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Make space for the new element
+        int size = sizeOf(key).orElse(0);
+
+        for (int i = size - 1; i >= key.position(); i--) {
+            referenceFor(key.withPosition(i + 1), referenceOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size + 1);
+
+        // Add reference
+        referenceFor(key, id);
     }
 
     @Override
     public Optional<Object> removeValue(MultivaluedFeatureKey key) {
+        int size = sizeOf(key).orElse(0);
+
+        // Get element to remove
         Optional<Object> previousValue = valueOf(key);
-        unsetAllValues(key);
+
+        // Update indexes (element to remove is overwritten)
+        for (int i = key.position() + 1; i < size; i++) {
+            valueFor(key.withPosition(i - 1), valueOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size - 1);
+
         return previousValue;
     }
 
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
+        int size = sizeOf(key).orElse(0);
+
+        // Get element to remove
         Optional<Id> previousId = referenceOf(key);
-        unsetAllReferences(key);
+
+        // Update indexes (element to remove is overwritten)
+        for (int i = key.position() + 1; i < size; i++) {
+            referenceFor(key.withPosition(i - 1), referenceOf(key.withPosition(i)).orElse(null));
+        }
+        sizeOf(key, size - 1);
+
         return previousId;
     }
 
     @Override
     public void cleanValues(FeatureKey key) {
-        unsetAllValues(key);
+        unsetValue(key);
     }
 
     @Override
     public void cleanReferences(FeatureKey key) {
-        unsetAllReferences(key);
+        cleanValues(key);
     }
 
     @Override
@@ -540,7 +565,13 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return valueOf(key)
+                .map(v -> OptionalInt.of((int) v))
+                .orElse(OptionalInt.empty());
+    }
+
+    protected void sizeOf(FeatureKey key, int size) {
+        valueFor(key, size);
     }
 
     /**

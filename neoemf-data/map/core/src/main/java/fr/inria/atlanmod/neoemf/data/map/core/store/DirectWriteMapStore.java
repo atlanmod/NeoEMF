@@ -31,9 +31,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.Collection;
 import java.util.Collections;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 /**
  * A {@link DirectWriteMapStore} that persists {@link Collection} indices instead of serialized arrays.
  * <p>
@@ -62,28 +59,6 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
      */
     public DirectWriteMapStore(PersistentResource resource, PersistenceBackend backend) {
         super(resource, backend);
-    }
-
-    @Override
-    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        return backend.hasValue(featureKey);
-    }
-
-    @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.unsetValue(featureKey);
-    }
-
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        PersistentEObject object = PersistentEObject.from(internalObject);
-
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        Object value = backend.valueOf(featureKey).orElse(null);
-
-        return isNull(value) ? 0 : (Integer) value;
     }
 
     @Override
@@ -133,8 +108,10 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         int size = (Integer) backend.valueOf(featureKey).orElse(0);
+
         // Get element to remove
         Object old = backend.valueOf(featureKey.withPosition(index)).orElse(null);
+
         // Update indexes (element to remove is overwritten)
         for (int i = index + 1; i < size; i++) {
             Object movingValue = backend.valueOf(featureKey.withPosition(i)).orElse(null);
@@ -142,12 +119,6 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
         }
         backend.valueFor(featureKey, size - 1);
         return old;
-    }
-
-    @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.unsetValue(featureKey);
     }
 
     @Override
@@ -197,67 +168,6 @@ public class DirectWriteMapStore extends DefaultDirectWriteStore<PersistenceBack
             }
         }
 
-    }
-
-    @Override
-    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        Object result;
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        if (attribute.isMany()) {
-            result = backend.valueOf(featureKey.withPosition(index)).orElse(null);
-        }
-        else {
-            result = backend.valueOf(featureKey).orElse(null);
-        }
-
-        return deserialize(attribute, result);
-    }
-
-    @Override
-    protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
-        Id result;
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        if (reference.isMany()) {
-            result = (Id) backend.valueOf(featureKey.withPosition(index)).orElse(null);
-        }
-        else {
-            result = (Id) backend.valueOf(featureKey).orElse(null);
-        }
-
-        return nonNull(result) ? eObject(result) : null;
-    }
-
-    @Override
-    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
-        Object old;
-        FeatureKey featureKey = FeatureKey.from(object, attribute);
-        Object serializedValue = serialize(attribute, value);
-
-        if (attribute.isMany()) {
-            old = backend.valueFor(featureKey.withPosition(index), serializedValue).orElse(null);
-        }
-        else {
-            old = backend.valueFor(featureKey, serializedValue).orElse(null);
-        }
-
-        return deserialize(attribute, old);
-    }
-
-    @Override
-    protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
-        Id old;
-        FeatureKey featureKey = FeatureKey.from(object, reference);
-        updateContainment(object, reference, value);
-        updateInstanceOf(value);
-
-        if (reference.isMany()) {
-            old = (Id) backend.valueFor(featureKey.withPosition(index), value.id()).orElse(null);
-        }
-        else {
-            old = (Id) backend.valueFor(featureKey, value.id()).orElse(null);
-        }
-
-        return nonNull(old) ? eObject(old) : null;
     }
 
     @SuppressWarnings("unchecked")
