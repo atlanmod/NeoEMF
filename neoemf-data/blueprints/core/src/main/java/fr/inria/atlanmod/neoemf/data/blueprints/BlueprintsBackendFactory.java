@@ -111,16 +111,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
         checkArgument(backend instanceof BlueprintsBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        PersistentStore store;
-        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
-
-        if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
-            store = new DirectWriteCacheManyStore<>(resource, backend);
-        }
-        else { // Default store
-            store = new DefaultDirectWriteStore<>(resource, backend);
-        }
-        return store;
+        return new DefaultDirectWriteStore<>(resource, backend);
     }
 
     @Override

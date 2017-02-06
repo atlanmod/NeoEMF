@@ -72,8 +72,6 @@ import static java.util.Objects.nonNull;
  * @note Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory}
  * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsBackendFactory
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
  */
 class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 

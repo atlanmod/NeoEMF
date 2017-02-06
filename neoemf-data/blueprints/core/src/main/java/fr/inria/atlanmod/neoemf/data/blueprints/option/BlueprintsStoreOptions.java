@@ -15,24 +15,19 @@ import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 /**
  * {@link PersistentStoreOptions} that hold Blueprints related database access features, such as direct write behavior.
- *
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
  */
 public enum BlueprintsStoreOptions implements PersistentStoreOptions {
 
     /**
      * Translates model-level operations to Blueprints calls <i>(default {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore})</i>.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
      */
+    @Deprecated
     DIRECT_WRITE,
 
     /**
      * Translates model-level operations to Blueprints calls, and uses an internal cache to store elements that are
      * part of multi-valued {@link org.eclipse.emf.ecore.EReference}s to speed-up their access.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
      */
+    @Deprecated
     CACHE_MANY
 }
