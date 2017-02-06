@@ -49,7 +49,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BerkeleyDbBackend.NAME;
+    public static final String NAME = AbstractBerkeleyDbBackend.NAME;
 
     /**
      * Constructs a new {@code BerkeleyDbBackendFactory}.
@@ -112,7 +112,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendArrays(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendLists(dir, envConfig, dbConfig);
             backend.open();
         }
         catch (IOException e) {
@@ -141,7 +141,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendArrays(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendLists(dir, envConfig, dbConfig);
             backend.open();
 
             processGlobalConfiguration(directory);

@@ -30,10 +30,9 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -42,7 +41,7 @@ import java.util.OptionalInt;
  * ???
  */
 @Experimental
-class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
+class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
 
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
@@ -52,10 +51,10 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
      * @param envConfig ???
      * @param dbConfig  ???
      *
-     * @note This constructor is protected. To create a new {@code BerkeleyDbBackendArrays} use {@link
+     * @note This constructor is protected. To create a new {@code BerkeleyDbBackendLists} use {@link
      * BerkeleyDbBackendFactory#createPersistentBackend(File, Map)}.
      */
-    protected BerkeleyDbBackendArrays(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
+    protected BerkeleyDbBackendLists(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);
     }
 
@@ -130,7 +129,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
 
         Optional<Object> value;
         if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(asMany(new ObjectSerializer().deserialize(dbValue.getData()))[key.position()]);
+            value = Optional.of(asMany(new ObjectSerializer().deserialize(dbValue.getData())).get(key.position()));
         }
         else {
             value = Optional.empty();
@@ -171,11 +170,11 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+        List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        Optional<Object> previousValue = Optional.of(values[key.position()]);
+        Optional<Object> previousValue = Optional.of(values.get(key.position()));
 
-        values[key.position()] = value;
+        values.set(key.position(), value);
 
         dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
         features.put(null, dbKey, dbValue);
@@ -247,15 +246,15 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key.withoutPosition()));
         DatabaseEntry dbValue = new DatabaseEntry();
 
-        Object[] values;
+        List<Object> values;
         if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
             values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
         }
         else {
-            values = new Object[0];
+            values = new ArrayList<>(0);
         }
 
-        values = ArrayUtils.add(values, key.position(), value);
+        values.add(key.position(), value);
 
         dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
         features.put(null, dbKey, dbValue);
@@ -272,11 +271,11 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+        List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        Optional<Object> previousValue = Optional.of(values[key.position()]);
+        Optional<Object> previousValue = Optional.of(values.get(key.position()));
 
-        values = ArrayUtils.remove(values, key.position());
+        values.remove(key.position());
 
         dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
         features.put(null, dbKey, dbValue);
@@ -307,9 +306,9 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+        List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        return ArrayUtils.contains(values, value);
+        return values.contains(value);
     }
 
     @Override
@@ -323,10 +322,10 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+        List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        int index = ArrayUtils.indexOf(values, value);
-        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
+        int index = values.indexOf(value);
+        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
@@ -340,10 +339,10 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+        List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        int index = ArrayUtils.lastIndexOf(values, value);
-        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
+        int index = values.lastIndexOf(value);
+        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
@@ -357,9 +356,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
-
-        return Arrays.asList(values);
+        return asMany(new ObjectSerializer().deserialize(dbValue.getData()));
     }
 
     @Override
@@ -368,9 +365,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
-        Id[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
-
-        return Arrays.asList(values);
+        return asMany(new ObjectSerializer().deserialize(dbValue.getData()));
     }
 
     @Override
@@ -379,8 +374,8 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         DatabaseEntry dbValue = new DatabaseEntry();
 
         if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
-            return OptionalInt.of(values.length);
+            List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+            return OptionalInt.of(values.size());
         }
         else {
             return OptionalInt.empty();
@@ -396,7 +391,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
      * @return a multi-value
      */
     @SuppressWarnings("unchecked")
-    private <T> T[] asMany(Object value) {
-        return (T[]) value;
+    private <T> List<T> asMany(Object value) {
+        return (List<T>) value;
     }
 }

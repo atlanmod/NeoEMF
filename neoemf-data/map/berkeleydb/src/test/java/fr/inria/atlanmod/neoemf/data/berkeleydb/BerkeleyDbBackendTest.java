@@ -59,7 +59,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
                 .setSortedDuplicates(false)
                 .setDeferredWrite(true);
 
-        backend = new BerkeleyDbBackendArrays(file, envConfig, dbConfig);
+        backend = new BerkeleyDbBackendLists(file, envConfig, dbConfig);
     }
 
     @Before

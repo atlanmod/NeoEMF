@@ -148,14 +148,11 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class); // "Transient back-end is not an instance of BerkeleyDbBackendIndices"
-        BerkeleyDbBackend transientMap = (BerkeleyDbBackend) transientBackend;
 
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class); // "Persistent back-end is not an instance of BerkeleyDbBackendIndices"
 
-        BerkeleyDbBackend persistentMap = (BerkeleyDbBackend) persistentBackend;
-
-        context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
+        context().persistenceBackendFactory().copyBackend(transientBackend, persistentBackend);
 
 //        for (String tKey : transientMap.getAll().keySet()) {
 //            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent back-end does not contain the key"

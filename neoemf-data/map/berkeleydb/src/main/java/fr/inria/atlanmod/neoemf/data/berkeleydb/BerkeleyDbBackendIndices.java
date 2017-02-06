@@ -44,7 +44,7 @@ import java.util.stream.IntStream;
  * ???
  */
 @Experimental
-public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
+class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link PersistentEObject}, identified by the
@@ -75,6 +75,15 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
     }
 
     @Override
+    public <P extends BerkeleyDbBackend> void copyTo(P target) {
+        super.copyTo(target);
+
+        BerkeleyDbBackendIndices backend = (BerkeleyDbBackendIndices) target;
+
+        this.copyDatabaseTo(multivaluedFeatures, backend.multivaluedFeatures);
+    }
+
+    @Override
     public void save() {
         super.save();
 
@@ -92,13 +101,6 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
         environment.close();
 
         isClosed = true;
-    }
-
-    @Override
-    public <P extends BerkeleyDbBackend> void copyTo(P target) {
-        super.copyTo(target);
-
-        this.copyDatabaseTo(multivaluedFeatures, ((BerkeleyDbBackendIndices) target).multivaluedFeatures);
     }
 
     @Override

@@ -266,7 +266,7 @@ class MapDbBackendArrays extends MapDbBackend {
 
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
-        return Arrays.asList((Id[]) asMany(features.get(key)));
+        return Arrays.asList(asMany(features.get(key)));
     }
 
     @Override
@@ -276,7 +276,16 @@ class MapDbBackendArrays extends MapDbBackend {
                 .orElse(OptionalInt.empty());
     }
 
-    private Object[] asMany(Object value) {
-        return (Object[]) value;
+    /**
+     * Returns the given {@code value} as a multi-value.
+     *
+     * @param value the value to cast
+     * @param <T>   the type of the multi-value
+     *
+     * @return a multi-value
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T[] asMany(Object value) {
+        return (T[]) value;
     }
 }
