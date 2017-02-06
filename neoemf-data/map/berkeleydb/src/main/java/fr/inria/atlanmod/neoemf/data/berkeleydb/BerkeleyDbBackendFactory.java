@@ -74,7 +74,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof BerkeleyDbBackendIndices,
+        checkArgument(backend instanceof BerkeleyDbBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore store;
@@ -112,7 +112,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendArrays(dir, envConfig, dbConfig);
             backend.open();
         }
         catch (IOException e) {
@@ -141,7 +141,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendArrays(dir, envConfig, dbConfig);
             backend.open();
 
             processGlobalConfiguration(directory);
@@ -156,7 +156,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof BerkeleyDbBackendIndices,
+        checkArgument(backend instanceof BerkeleyDbBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         return new DefaultDirectWriteStore<>(resource, backend);
@@ -164,11 +164,11 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof BerkeleyDbBackendIndices && to instanceof BerkeleyDbBackendIndices,
+        checkArgument(from instanceof BerkeleyDbBackend && to instanceof BerkeleyDbBackend,
                 "The backend to copy is not an instance of BerkeleyDbBackendIndices");
 
-        BerkeleyDbBackendIndices source = (BerkeleyDbBackendIndices) from;
-        BerkeleyDbBackendIndices target = (BerkeleyDbBackendIndices) to;
+        BerkeleyDbBackend source = (BerkeleyDbBackend) from;
+        BerkeleyDbBackend target = (BerkeleyDbBackend) to;
 
         source.copyTo(target);
     }

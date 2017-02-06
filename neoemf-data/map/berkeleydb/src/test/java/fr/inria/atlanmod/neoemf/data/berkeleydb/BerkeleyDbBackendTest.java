@@ -59,7 +59,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
                 .setSortedDuplicates(false)
                 .setDeferredWrite(true);
 
-        backend = new BerkeleyDbBackendIndices(file, envConfig, dbConfig);
+        backend = new BerkeleyDbBackendArrays(file, envConfig, dbConfig);
     }
 
     @Before
@@ -97,7 +97,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
 
         IntStream.range(0, TIMES).forEach(i -> {
             keys[i] = featureKey.withPosition(i);
-            backend.valueFor(keys[i], i);
+            backend.addValue(keys[i], i);
         });
 
         IntStream.range(0, TIMES).forEach(i -> assertThat(i).isEqualTo(backend.valueOf(keys[i]).orElse(null)));

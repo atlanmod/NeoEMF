@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.EnvironmentConfig;
@@ -20,7 +19,6 @@ import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ClassInfoSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializer;
@@ -32,25 +30,19 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * ???
  */
 @Experimental
-public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
-
-    /**
-     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}, identified by the
-     * associated {@link MultivaluedFeatureKey}.
-     */
-    private Database multivaluedFeatures;
+public class BerkeleyDbBackendArrays extends BerkeleyDbBackend {
 
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
@@ -61,44 +53,10 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
      * @param dbConfig  ???
      *
      * @note This constructor is protected. To create a new {@code BerkeleyDbBackendIndices} use {@link
-     * BerkeleyDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * BerkeleyDbBackendFactory#createPersistentBackend(File, Map)}.
      */
-    protected BerkeleyDbBackendIndices(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
+    protected BerkeleyDbBackendArrays(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);
-    }
-
-    @Override
-    public void open() {
-        super.open();
-
-        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
-    }
-
-    @Override
-    public void save() {
-        super.save();
-
-        this.multivaluedFeatures.sync();
-    }
-
-    @Override
-    public void close() {
-        this.save();
-
-        containers.close();
-        instances.close();
-        features.close();
-        multivaluedFeatures.close();
-        environment.close();
-
-        isClosed = true;
-    }
-
-    @Override
-    public <P extends BerkeleyDbBackend> void copyTo(P target) {
-        super.copyTo(target);
-
-        this.copyDatabaseTo(multivaluedFeatures, ((BerkeleyDbBackendIndices) target).multivaluedFeatures);
     }
 
     @Override
@@ -167,12 +125,12 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
 
     @Override
     public Optional<Object> valueOf(MultivaluedFeatureKey key) {
-        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key.withoutPosition()));
         DatabaseEntry dbValue = new DatabaseEntry();
 
         Optional<Object> value;
-        if (multivaluedFeatures.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(new ObjectSerializer().deserialize(dbValue.getData()));
+        if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            value = Optional.of(asMany(new ObjectSerializer().deserialize(dbValue.getData()))[key.position()]);
         }
         else {
             value = Optional.empty();
@@ -196,11 +154,11 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
     }
 
     @Override
-    public Optional<Object> valueFor(FeatureKey key, Object value) {
+    public Optional<Object> valueFor(FeatureKey key, Object obj) {
         Optional<Object> previousValue = valueOf(key);
 
         DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(new ObjectSerializer().serialize(value));
+        DatabaseEntry dbValue = new DatabaseEntry(new ObjectSerializer().serialize(obj));
 
         features.put(null, dbKey, dbValue);
 
@@ -209,12 +167,18 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
 
     @Override
     public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
-        Optional<Object> previousValue = valueOf(key);
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key.withoutPosition()));
+        DatabaseEntry dbValue = new DatabaseEntry();
 
-        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(new ObjectSerializer().serialize(value));
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        multivaluedFeatures.put(null, dbKey, dbValue);
+        Optional<Object> previousValue = Optional.of(values[key.position()]);
+
+        values[key.position()] = value;
+
+        dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
+        features.put(null, dbKey, dbValue);
 
         return previousValue;
     }
@@ -280,60 +244,51 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
 
     @Override
     public void addValue(MultivaluedFeatureKey key, Object value) {
-        int size = sizeOf(key.withoutPosition()).orElse(0);
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key.withoutPosition()));
+        DatabaseEntry dbValue = new DatabaseEntry();
 
-        // TODO Replace by Stream
-        for (int i = size - 1; i >= key.position(); i--) {
-            valueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElse(null));
+        Object[] values;
+        if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
         }
-        sizeFor(key.withoutPosition(), size + 1);
+        else {
+            values = new Object[0];
+        }
 
-        valueFor(key, value);
+        values = ArrayUtils.add(values, key.position(), value);
+
+        dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
+        features.put(null, dbKey, dbValue);
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        int size = sizeOf(key.withoutPosition()).orElse(0);
-
-        // TODO Replace by Stream
-        for (int i = size - 1; i >= key.position(); i--) {
-            referenceFor(key.withPosition(i + 1), referenceOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size + 1);
-
-        referenceFor(key, id);
+        addValue(key, id);
     }
 
     @Override
     public Optional<Object> removeValue(MultivaluedFeatureKey key) {
-        Optional<Object> previousValue = valueOf(key);
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key.withoutPosition()));
+        DatabaseEntry dbValue = new DatabaseEntry();
 
-        int size = sizeOf(key.withoutPosition()).orElse(0);
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        // Update indexes (element to remove is overwritten)
-        // TODO Replace by Stream
-        for (int i = key.position() + 1; i < size; i++) {
-            valueFor(key.withPosition(i - 1), valueOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size - 1);
+        Optional<Object> previousValue = Optional.of(values[key.position()]);
+
+        values = ArrayUtils.remove(values, key.position());
+
+        dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
+        features.put(null, dbKey, dbValue);
 
         return previousValue;
     }
 
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        Optional<Id> previousId = referenceOf(key);
-
-        int size = sizeOf(key.withoutPosition()).orElse(0);
-
-        // Update indexes (element to remove is overwritten)
-        // TODO Replace by Stream
-        for (int i = key.position() + 1; i < size; i++) {
-            referenceFor(key.withPosition(i - 1), referenceOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size - 1);
-
-        return previousId;
+        return removeValue(key)
+                .map(v -> Optional.of(StringId.from(v)))
+                .orElse(Optional.empty());
     }
 
     @Override
@@ -348,66 +303,91 @@ public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
 
     @Override
     public boolean containsValue(FeatureKey key, Object value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+
+        return ArrayUtils.contains(values, value);
     }
 
     @Override
     public boolean containsReference(FeatureKey key, Id id) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .anyMatch(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false));
+        return containsValue(key, id);
     }
 
     @Override
     public OptionalInt indexOfValue(FeatureKey key, Object value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
-                .min();
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+
+        int index = ArrayUtils.indexOf(values, value);
+        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false))
-                .min();
+        return indexOfValue(key, id);
     }
 
     @Override
     public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
-                .max();
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+
+        int index = ArrayUtils.lastIndexOf(values, value);
+        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false))
-                .max();
+        return lastIndexOfValue(key, id);
     }
 
     @Override
     public Iterable<Object> valuesAsList(FeatureKey key) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> valueOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+
+        return Arrays.asList(values);
     }
 
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> referenceOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        features.get(null, dbKey, dbValue, LockMode.DEFAULT);
+        Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+
+        return Arrays.asList((Id[]) values);
     }
 
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
-        return valueOf(key)
-                .map(v -> OptionalInt.of((int) v))
-                .orElse(OptionalInt.empty());
+        DatabaseEntry dbKey = new DatabaseEntry(new FeatureKeySerializer().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        if (features.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            Object[] values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
+            return OptionalInt.of(values.length);
+        }
+        else {
+            return OptionalInt.empty();
+        }
     }
 
-    protected void sizeFor(FeatureKey key, int size) {
-        valueFor(key, size);
+    private Object[] asMany(Object value) {
+        return (Object[]) value;
     }
 }
