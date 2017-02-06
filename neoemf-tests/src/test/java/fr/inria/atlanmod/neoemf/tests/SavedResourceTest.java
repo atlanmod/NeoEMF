@@ -116,7 +116,6 @@ public class SavedResourceTest extends AbstractBackendTest {
         assertThat(modelContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
     }
 
-    @Ignore
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() {
@@ -125,7 +124,6 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        // FIXME Doesn't work with map-based
         InternalEObject sampleModel = (InternalEObject) it.next();
         assertThat(sampleModel.eDirectResource()).isSameAs(resource); // "Wrong eDirectResource value"
 
