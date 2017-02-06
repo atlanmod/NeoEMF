@@ -56,7 +56,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link DefaultDirectWriteStore} that translates model-level operations to HBase operations.
+ * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to HBase
+ * operations.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
@@ -69,7 +70,7 @@ import static java.util.Objects.nonNull;
  * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  * @see PersistentEObject
  * @see HBasePersistenceBackend
- * @see DefaultDirectWriteStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersistenceBackend> {

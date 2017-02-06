@@ -63,11 +63,12 @@ import static java.util.Objects.nonNull;
  * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
  * <p>
  * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
- * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
- * caches to improve access time of {@link Vertex} from  their corresponding {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access,
+ * and manage a set of lightweight caches to improve access time of {@link Vertex} from  their corresponding {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  *
- * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore} to access and manipulate
- * the database.
+ * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and {@link
+ * fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore} to access and manipulate the database.
  * @note Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory}
  * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsPersistenceBackendFactory
@@ -509,7 +510,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         vertex.setProperty(formatProperty(key.name(), key.position()), value);
 
-        sizeOf(key, newSize);
+        sizeFor(key, newSize);
     }
 
     @Override
@@ -532,7 +533,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Edge edge = vertex.addEdge(key.name(), vertex(id));
         edge.setProperty(KEY_POSITION, key.position());
 
-        sizeOf(key, newSize);
+        sizeFor(key, newSize);
     }
 
     @Override
@@ -549,7 +550,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             vertex.setProperty(formatProperty(key.name(), i - 1), vertex.getProperty(formatProperty(key.name(), i)));
         }
 
-        sizeOf(key, newSize);
+        sizeFor(key, newSize);
 
         return previousValue;
     }
@@ -583,7 +584,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             }
         }
 
-        sizeOf(key, newSize);
+        sizeFor(key, newSize);
 
         return previousId;
     }
@@ -595,7 +596,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         IntStream.range(0, sizeOf(key).orElse(0))
                 .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
 
-        sizeOf(key, 0);
+        sizeFor(key, 0);
     }
 
     @Override
@@ -609,7 +610,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         edges.forEach(Element::remove);
 
-        sizeOf(key, 0);
+        sizeFor(key, 0);
     }
 
     @Override
@@ -709,7 +710,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * @param key  the feature key identifying the property
      * @param size the new size
      */
-    protected void sizeOf(FeatureKey key, int size) {
+    protected void sizeFor(FeatureKey key, int size) {
         vertex(key.id()).setProperty(formatProperty(key.name(), KEY_SIZE), size);
     }
 

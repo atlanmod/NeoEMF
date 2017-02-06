@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -26,7 +25,7 @@ import java.util.List;
  * arrays or {@link List}s.
  *
  * @see AutocommitStoreDecorator
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
@@ -34,9 +33,9 @@ import java.util.List;
 public enum MapDbStoreOptions implements PersistentStoreOptions {
 
     /**
-     * Translates model-level operations to MapDB calls <i>(default {@link DirectWriteStore})</i>.
+     * Translates model-level operations to MapDB calls <i>(default {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore})</i>.
      *
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
+     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
      */
     DIRECT_WRITE,
 

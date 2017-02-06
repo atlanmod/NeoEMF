@@ -50,12 +50,12 @@ import java.util.stream.IntStream;
  * optional Map used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices} that stores
  * {@link Collection} indices instead of a serialized version of the collection itself</li> </ul>
  *
- * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore} and its
- * subclasses to access and manipulate the database.
+ * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and its subclasses to access
+ * and manipulate the database.
  * @note Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
  * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbPersistenceBackendFactory
- * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
@@ -297,64 +297,58 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
 
     @Override
     public void addValue(MultivaluedFeatureKey key, Object value) {
-        // Make space for the new element
-        int size = sizeOf(key).orElse(0);
+        int size = sizeOf(key.withoutPosition()).orElse(0);
 
         // TODO Replace by Stream
         for (int i = size - 1; i >= key.position(); i--) {
             valueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElse(null));
         }
-        sizeOf(key, size + 1);
+        sizeFor(key.withoutPosition(), size + 1);
 
-        // Add element
         valueFor(key, value);
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        // Make space for the new element
-        int size = sizeOf(key).orElse(0);
+        int size = sizeOf(key.withoutPosition()).orElse(0);
 
         // TODO Replace by Stream
         for (int i = size - 1; i >= key.position(); i--) {
             referenceFor(key.withPosition(i + 1), referenceOf(key.withPosition(i)).orElse(null));
         }
-        sizeOf(key, size + 1);
+        sizeFor(key.withoutPosition(), size + 1);
 
-        // Add reference
         referenceFor(key, id);
     }
 
     @Override
     public Optional<Object> removeValue(MultivaluedFeatureKey key) {
-        int size = sizeOf(key).orElse(0);
-
-        // Get element to remove
         Optional<Object> previousValue = valueOf(key);
+
+        int size = sizeOf(key.withoutPosition()).orElse(0);
 
         // Update indexes (element to remove is overwritten)
         // TODO Replace by Stream
         for (int i = key.position() + 1; i < size; i++) {
             valueFor(key.withPosition(i - 1), valueOf(key.withPosition(i)).orElse(null));
         }
-        sizeOf(key, size - 1);
+        sizeFor(key.withoutPosition(), size - 1);
 
         return previousValue;
     }
 
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        int size = sizeOf(key).orElse(0);
-
-        // Get element to remove
         Optional<Id> previousId = referenceOf(key);
+
+        int size = sizeOf(key.withoutPosition()).orElse(0);
 
         // Update indexes (element to remove is overwritten)
         // TODO Replace by Stream
         for (int i = key.position() + 1; i < size; i++) {
             referenceFor(key.withPosition(i - 1), referenceOf(key.withPosition(i)).orElse(null));
         }
-        sizeOf(key, size - 1);
+        sizeFor(key.withoutPosition(), size - 1);
 
         return previousId;
     }
@@ -430,7 +424,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
                 .orElse(OptionalInt.empty());
     }
 
-    protected void sizeOf(FeatureKey key, int size) {
+    protected void sizeFor(FeatureKey key, int size) {
         valueFor(key, size);
     }
 

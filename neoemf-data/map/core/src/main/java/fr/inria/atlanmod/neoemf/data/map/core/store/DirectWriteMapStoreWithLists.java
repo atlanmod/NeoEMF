@@ -41,8 +41,8 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link DirectWriteMapStore} that uses Java {@link List}s instead of arrays to persist multi-valued
- * {@link EAttribute}s and {@link EReference}s.
+ * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that uses Java {@link List}s instead of arrays to
+ * persist multi-valued {@link EAttribute}s and {@link EReference}s.
  * <p>
  * Using a {@link List}-based implementation allows to benefit from the rich Java {@link Collection} API, with the cost
  * of a small memory overhead compared to raw arrays.
@@ -50,10 +50,10 @@ import static java.util.Objects.isNull;
  * This class re-implements {@link EStructuralFeature} accessors and mutators as well as {@link Collection} operations
  * such as {@code size}, {@code clear}, or {@code indexOf}.
  * <p>
- * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
- * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
+ * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  *
- * @see DirectWriteMapStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see MapBackend
  * @see AbstractPersistentStoreDecorator
  */

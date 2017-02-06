@@ -32,9 +32,9 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract {@link DefaultDirectWriteStore} that redirects certain methods according to the instance of the
- * encountered {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods of EMF, the call
- * is automatically redirected to the associated method that begins with the same name.
+ * An {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that redirects certain methods according to the
+ * instance of the encountered {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods
+ * of EMF, the call is automatically redirected to the associated method that begins with the same name.
  */
 @Deprecated
 // TODO Unusable: must be completely reviewed

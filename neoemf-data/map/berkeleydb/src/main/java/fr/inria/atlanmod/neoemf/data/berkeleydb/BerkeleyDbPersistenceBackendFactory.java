@@ -22,8 +22,8 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists;
+import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -90,7 +90,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
             store = new DirectWriteMapStoreWithArrays(resource, backend);
         }
         else { // Default store
-            store = new DirectWriteMapStore(resource, backend);
+            store = new DefaultDirectWriteStore<>(resource, backend);
         }
         return store;
     }
@@ -144,7 +144,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
         checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteMapStore(resource, backend);
+        return new DefaultDirectWriteStore<>(resource, backend);
     }
 
     @Override

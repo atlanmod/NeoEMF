@@ -38,7 +38,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * The position of this key.
      */
     @Nonnegative
-    private final int position;
+    protected final int position;
 
     /**
      * Constructs a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
@@ -120,6 +120,19 @@ public class MultivaluedFeatureKey extends FeatureKey {
     @Nonnegative
     public int position() {
         return position;
+    }
+
+    /**
+     * Creates a new {@link FeatureKey} with the {@link Id} and the name of this {@code MultivaluedFeatureKey}, without
+     * its position.
+     *
+     * @return a new {@link FeatureKey}
+     *
+     * @see FeatureKey#of(Id, String)
+     */
+    @Nonnull
+    public FeatureKey withoutPosition() {
+        return FeatureKey.of(id, name);
     }
 
     @Override

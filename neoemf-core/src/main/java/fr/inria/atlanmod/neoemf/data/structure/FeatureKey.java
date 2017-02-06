@@ -38,13 +38,13 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * The identifier of the object.
      */
     @Nonnull
-    private final Id id;
+    protected final Id id;
 
     /**
      * The name of the feature of the object.
      */
     @Nonnull
-    private final String name;
+    protected final String name;
 
     /**
      * Constructs a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a

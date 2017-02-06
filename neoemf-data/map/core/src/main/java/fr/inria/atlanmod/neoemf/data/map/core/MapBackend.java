@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.map.core;
 
 import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 
 import java.util.Collection;
 import java.util.Map;
@@ -22,9 +21,10 @@ import java.util.Map;
  * An adapter on top of a map-based database that provides specific methods for communicating with the database that it
  * uses. Each {@code MapBackend} manage one single instance of a database.
  * <p>
- * It does not provide model-level translation; these functions are handled by {@link DirectWriteMapStore}s.
+ * It does not provide model-level translation; these functions are handled by {@link
+ * fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}s.
  *
- * @see DirectWriteMapStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 public interface MapBackend extends PersistenceBackend {
 

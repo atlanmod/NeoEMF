@@ -48,7 +48,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * @return this builder (for chaining)
      *
      * @see MapDbStoreOptions#DIRECT_WRITE
-     * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
+     * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWrite() {
