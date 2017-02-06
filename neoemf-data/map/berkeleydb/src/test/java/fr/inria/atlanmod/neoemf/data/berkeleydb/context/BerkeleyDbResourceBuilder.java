@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
 import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -45,7 +45,7 @@ public class BerkeleyDbResourceBuilder extends AbstractResourceBuilder<BerkeleyD
         super.initBuilder();
         if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
             PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME,
-                    BerkeleyDbPersistenceBackendFactory.getInstance());
+                    BerkeleyDbBackendFactory.getInstance());
         }
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }

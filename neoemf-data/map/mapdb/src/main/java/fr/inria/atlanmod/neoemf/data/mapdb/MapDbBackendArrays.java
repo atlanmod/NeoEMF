@@ -12,27 +12,23 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
-import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -46,42 +42,30 @@ import java.util.stream.IntStream;
  *
  * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and its subclasses to access
  * and manipulate the database.
- * @note Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
+ * @note Instances of {@link MapDbBackendArrays} are created by {@link MapDbBackendFactory} that
  * provides an usable {@link DB} that can be manipulated by this wrapper.
- * @see MapDbPersistenceBackendFactory
+ * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
-public class MapDbPersistenceBackend extends MapDbBackend {
+class MapDbBackendArrays extends MapDbBackend {
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s, identified by the
-     * associated {@link MultivaluedFeatureKey}.
-     */
-    private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
-
-    /**
-     * Constructs a new {@code MapDbPersistenceBackend} wrapping the provided {@code db}.
+     * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
      * <p>
      * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
      * {@link Serializer}s.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
-     * @note This constructor is protected. To create a new {@code MapDbPersistenceBackend} use {@link
-     * MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
-     * @see MapDbPersistenceBackendFactory
+     * @note This constructor is protected. To create a new {@code MapDbBackendIndices} use {@link
+     * MapDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * @see MapDbBackendFactory
      */
-    @SuppressWarnings("unchecked")
-    protected MapDbPersistenceBackend(DB db) {
+    protected MapDbBackendArrays(DB db) {
         super(db);
-
-        multivaluedFeatures = db.hashMap("multivaluedFeatures")
-                .keySerializer(new MultivaluedFeatureKeySerializer())
-                .valueSerializer(Serializer.JAVA)
-                .createOrOpen();
     }
 
     @Override
@@ -111,7 +95,7 @@ public class MapDbPersistenceBackend extends MapDbBackend {
 
     @Override
     public Optional<Object> valueOf(MultivaluedFeatureKey key) {
-        return Optional.ofNullable(multivaluedFeatures.get(key));
+        return Optional.of(asMany(features.get(key.withoutPosition()))[key.position()]);
     }
 
     @Override
@@ -135,7 +119,15 @@ public class MapDbPersistenceBackend extends MapDbBackend {
 
     @Override
     public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
-        return Optional.ofNullable(multivaluedFeatures.put(key, value));
+        Object[] values = asMany(features.get(key.withoutPosition()));
+
+        Optional<Object> previousValue = Optional.of(values[key.position()]);
+
+        values[key.position()] = value;
+
+        features.put(key.withoutPosition(), values);
+
+        return previousValue;
     }
 
     @Override
@@ -194,60 +186,35 @@ public class MapDbPersistenceBackend extends MapDbBackend {
 
     @Override
     public void addValue(MultivaluedFeatureKey key, Object value) {
-        int size = sizeOf(key.withoutPosition()).orElse(0);
+        Object[] values = Optional.ofNullable(asMany(features.get(key.withoutPosition()))).orElse(new Object[0]);
+        values = ArrayUtils.add(values, key.position(), value);
 
-        // TODO Replace by Stream
-        for (int i = size - 1; i >= key.position(); i--) {
-            valueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size + 1);
-
-        valueFor(key, value);
+        features.put(key.withoutPosition(), values);
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        int size = sizeOf(key.withoutPosition()).orElse(0);
-
-        // TODO Replace by Stream
-        for (int i = size - 1; i >= key.position(); i--) {
-            referenceFor(key.withPosition(i + 1), referenceOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size + 1);
-
-        referenceFor(key, id);
+        addValue(key, id);
     }
 
     @Override
     public Optional<Object> removeValue(MultivaluedFeatureKey key) {
-        Optional<Object> previousValue = valueOf(key);
+        Object[] values = asMany(features.get(key.withoutPosition()));
 
-        int size = sizeOf(key.withoutPosition()).orElse(0);
+        Optional<Object> previousValue = Optional.of(values[key.position()]);
 
-        // Update indexes (element to remove is overwritten)
-        // TODO Replace by Stream
-        for (int i = key.position() + 1; i < size; i++) {
-            valueFor(key.withPosition(i - 1), valueOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size - 1);
+        values = ArrayUtils.remove(values, key.position());
+
+        features.put(key.withoutPosition(), values);
 
         return previousValue;
     }
 
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        Optional<Id> previousId = referenceOf(key);
-
-        int size = sizeOf(key.withoutPosition()).orElse(0);
-
-        // Update indexes (element to remove is overwritten)
-        // TODO Replace by Stream
-        for (int i = key.position() + 1; i < size; i++) {
-            referenceFor(key.withPosition(i - 1), referenceOf(key.withPosition(i)).orElse(null));
-        }
-        sizeFor(key.withoutPosition(), size - 1);
-
-        return previousId;
+        return removeValue(key)
+                .map(v -> Optional.of(StringId.from(v)))
+                .orElse(Optional.empty());
     }
 
     @Override
@@ -262,66 +229,54 @@ public class MapDbPersistenceBackend extends MapDbBackend {
 
     @Override
     public boolean containsValue(FeatureKey key, Object value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
+        return ArrayUtils.contains(asMany(features.get(key)), value);
     }
 
     @Override
     public boolean containsReference(FeatureKey key, Id id) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .anyMatch(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false));
+        return containsValue(key, id);
     }
 
     @Override
     public OptionalInt indexOfValue(FeatureKey key, Object value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
-                .min();
+        int index = ArrayUtils.indexOf(asMany(features.get(key)), value);
+        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false))
-                .min();
+        return indexOfValue(key, id);
     }
 
     @Override
     public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
-                .max();
+        int index = ArrayUtils.lastIndexOf(asMany(features.get(key)), value);
+        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .filter(i -> referenceOf(key.withPosition(i)).map(v -> Objects.equals(v, id)).orElse(false))
-                .max();
+        return lastIndexOfValue(key, id);
     }
 
     @Override
     public Iterable<Object> valuesAsList(FeatureKey key) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> valueOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
+        return Arrays.asList(asMany(features.get(key)));
     }
 
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> referenceOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
+        return Arrays.asList((Id[]) asMany(features.get(key)));
     }
 
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
-        return valueOf(key)
-                .map(v -> OptionalInt.of((int) v))
+        return Optional.ofNullable((Object[]) features.get(key))
+                .map(v -> OptionalInt.of(v.length))
                 .orElse(OptionalInt.empty());
     }
 
-    protected void sizeFor(FeatureKey key, int size) {
-        valueFor(key, size);
+    private Object[] asMany(Object value) {
+        return (Object[]) value;
     }
 }

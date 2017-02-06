@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.configuration;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
 
 import org.apache.commons.configuration.Configuration;
@@ -22,9 +22,9 @@ import java.io.File;
  * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
  * Configuration}.
  *
- * @note Implementations of this interface are called dynamically by {@link BlueprintsPersistenceBackendFactory} during
+ * @note Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during
  * database creation.
- * @see BlueprintsPersistenceBackendFactory
+ * @see BlueprintsBackendFactory
  * @see InternalBlueprintsTgConfiguration
  */
 public interface InternalBlueprintsConfiguration {

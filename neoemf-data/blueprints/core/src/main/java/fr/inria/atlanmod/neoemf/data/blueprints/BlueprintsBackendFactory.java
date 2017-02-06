@@ -53,7 +53,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A factory that creates instances of {@link BlueprintsPersistenceBackend}.
+ * A factory that creates instances of {@link BlueprintsBackend}.
  * <p>
  * As other implementations of {@link PersistenceBackendFactory}, this class can create transient and persistent
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
@@ -65,17 +65,17 @@ import static java.util.Objects.nonNull;
  * according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
  *
  * @see PersistentResource
- * @see BlueprintsPersistenceBackend
+ * @see BlueprintsBackend
  * @see BlueprintsOptionsBuilder
  * @see BlueprintsResourceOptions
  * @see BlueprintsStoreOptions
  */
-public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BlueprintsPersistenceBackend.NAME;
+    public static final String NAME = DefaultBlueprintsBackend.NAME;
 
     /**
      * The configuration file name.
@@ -86,9 +86,9 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
     private static final String BLUEPRINTS_CONFIG_FILE = "config.properties";
 
     /**
-     * Constructs a new {@code BlueprintsPersistenceBackendFactory}.
+     * Constructs a new {@code BlueprintsBackendFactory}.
      */
-    protected BlueprintsPersistenceBackendFactory() {
+    protected BlueprintsBackendFactory() {
     }
 
     /**
@@ -108,7 +108,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof BlueprintsPersistenceBackend,
+        checkArgument(backend instanceof BlueprintsBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
         PersistentStore store;
@@ -125,12 +125,12 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        return new BlueprintsPersistenceBackend(new TinkerGraph());
+        return new DefaultBlueprintsBackend(new TinkerGraph());
     }
 
     @Override
-    public BlueprintsPersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
-        BlueprintsPersistenceBackend backend;
+    public BlueprintsBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
+        BlueprintsBackend backend;
         PropertiesConfiguration configuration = null;
 
         try {
@@ -140,7 +140,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
                 Graph baseGraph = GraphFactory.open(configuration);
 
                 if (baseGraph instanceof KeyIndexableGraph) {
-                    backend = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
+                    backend = new DefaultBlueprintsBackend((KeyIndexableGraph) baseGraph);
                 }
                 else {
                     NeoLogger.error("Graph type {0} does not support Key Indices", directory.getAbsolutePath());
@@ -173,19 +173,19 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof BlueprintsPersistenceBackend,
+        checkArgument(backend instanceof BlueprintsBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        return new DefaultDirectWriteStore<>(resource, (BlueprintsPersistenceBackend) backend);
+        return new DefaultDirectWriteStore<>(resource, (DefaultBlueprintsBackend) backend);
     }
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof BlueprintsPersistenceBackend && to instanceof BlueprintsPersistenceBackend,
+        checkArgument(from instanceof DefaultBlueprintsBackend && to instanceof DefaultBlueprintsBackend,
                 "Trying to use Graph backend copy on non Graph databases");
 
-        BlueprintsPersistenceBackend source = (BlueprintsPersistenceBackend) from;
-        BlueprintsPersistenceBackend target = (BlueprintsPersistenceBackend) to;
+        DefaultBlueprintsBackend source = (DefaultBlueprintsBackend) from;
+        DefaultBlueprintsBackend target = (DefaultBlueprintsBackend) to;
 
         source.copyTo(target);
     }
@@ -244,10 +244,10 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
             String graphName = segments[segments.length - 2];
             String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
             String configClassName = MessageFormat.format("InternalBlueprints{0}Configuration", upperCaseGraphName);
-            String configClassQualifiedName = MessageFormat.format("{0}.{1}.configuration.{2}", BlueprintsPersistenceBackendFactory.class.getPackage().getName(), graphName, configClassName);
+            String configClassQualifiedName = MessageFormat.format("{0}.{1}.configuration.{2}", BlueprintsBackendFactory.class.getPackage().getName(), graphName, configClassName);
 
             try {
-                ClassLoader classLoader = BlueprintsPersistenceBackendFactory.class.getClassLoader();
+                ClassLoader classLoader = BlueprintsBackendFactory.class.getClassLoader();
                 Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
                 Method configClassInstanceMethod = configClass.getMethod("getInstance");
                 InternalBlueprintsConfiguration blueprintsConfig = (InternalBlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
@@ -278,6 +278,6 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
+        private static final PersistenceBackendFactory INSTANCE = new BlueprintsBackendFactory();
     }
 }

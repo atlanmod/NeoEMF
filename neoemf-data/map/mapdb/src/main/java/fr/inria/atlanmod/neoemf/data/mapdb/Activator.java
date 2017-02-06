@@ -19,11 +19,11 @@ import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import org.osgi.framework.BundleActivator;
 
 /**
- * A {@link BundleActivator} that automatically registers a {@link MapDbPersistenceBackendFactory} with its
+ * A {@link BundleActivator} that automatically registers a {@link MapDbBackendFactory} with its
  * associated {@link MapDbURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
  *
  * @note This class should not be used in standard use.
- * @see MapDbPersistenceBackendFactory
+ * @see MapDbBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */
 public class Activator extends AbstractActivator {
@@ -40,6 +40,6 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected PersistenceBackendFactory factory() {
-        return MapDbPersistenceBackendFactory.getInstance();
+        return MapDbBackendFactory.getInstance();
     }
 }

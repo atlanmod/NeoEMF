@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.configuration;
 
 import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
@@ -28,9 +28,9 @@ import static java.util.Objects.isNull;
  * An internal class that sets Blueprints Neo4j default configuration properties in the current NeoEMF
  * {@link Configuration}.
  *
- * @note This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if Neo4j implementation is used
+ * @note This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used
  * to store the underlying database.
- * @see BlueprintsPersistenceBackendFactory
+ * @see BlueprintsBackendFactory
  */
 @SuppressWarnings("unused") // Called dynamically
 public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -80,7 +80,7 @@ public class BlueprintsContext implements Context {
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
-        return BlueprintsPersistenceBackendFactory.getInstance();
+        return BlueprintsBackendFactory.getInstance();
     }
 
     /**

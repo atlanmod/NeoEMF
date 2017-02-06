@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements MapDbTest {
+public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements MapDbTest {
 
     @Test
     public void testCreateTransientBackend() {
@@ -144,11 +144,11 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     @Test
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(MapDbBackend.class); // "Transient back-end is not an instance of MapDbPersistenceBackend"
+        assertThat(transientBackend).isInstanceOf(MapDbBackend.class); // "Transient back-end is not an instance of MapDbBackendIndices"
         MapDbBackend transientMap = (MapDbBackend) transientBackend;
 
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(MapDbBackend.class); // "Persistent back-end is not an instance of MapDbPersistenceBackend"
+        assertThat(persistentBackend).isInstanceOf(MapDbBackend.class); // "Persistent back-end is not an instance of MapDbBackendIndices"
 
         MapDbBackend persistentMap = (MapDbBackend) persistentBackend;
 

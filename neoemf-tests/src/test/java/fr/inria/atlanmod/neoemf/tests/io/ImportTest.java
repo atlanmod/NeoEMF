@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
@@ -351,14 +351,14 @@ public class ImportTest extends AbstractInputTest {
     }
 
     private EObject loadWithNeoBlueprints(final File file) throws IOException {
-        BlueprintsPersistenceBackend backend = createNeo4jPersistenceBackend();
+        BlueprintsBackend backend = createNeo4jPersistenceBackend();
         PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
 
         loadWithNeo(file, handler);
 
         backend.close();
 
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
@@ -369,12 +369,12 @@ public class ImportTest extends AbstractInputTest {
         return resource.getContents().get(0);
     }
 
-    private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
+    private BlueprintsBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .directWrite()
                 .noCache()
                 .asMap();
 
-        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(testFile, options);
+        return (BlueprintsBackend) BlueprintsBackendFactory.getInstance().createPersistentBackend(testFile, options);
     }
 }

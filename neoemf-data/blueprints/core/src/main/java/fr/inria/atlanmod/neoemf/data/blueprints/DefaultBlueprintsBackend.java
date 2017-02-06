@@ -69,13 +69,13 @@ import static java.util.Objects.nonNull;
  *
  * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and {@link
  * fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore} to access and manipulate the database.
- * @note Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory}
+ * @note Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory}
  * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
- * @see BlueprintsPersistenceBackendFactory
+ * @see BlueprintsBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore
  */
-public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
+class DefaultBlueprintsBackend extends AbstractPersistenceBackend implements BlueprintsBackend {
 
     /**
      * The literal description of this back-end.
@@ -161,17 +161,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private boolean isClosed = false;
 
     /**
-     * Constructs a new {@code BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}.
+     * Constructs a new {@code DefaultBlueprintsBackend} wrapping the provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is protected. To create a new {@code BlueprintsPersistenceBackend} use {@link
-     * BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
-     * @see BlueprintsPersistenceBackendFactory
+     * @note This constructor is protected. To create a new {@code DefaultBlueprintsBackend} use {@link
+     * BlueprintsBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * @see BlueprintsBackendFactory
      */
-    protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
+    protected DefaultBlueprintsBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
         this.indexedMetaclasses = new ArrayList<>();
 
@@ -733,7 +733,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return the newly created vertex
      */
-    @Deprecated
+    @Override
     public Vertex addVertex(Id id) {
         return graph.addVertex(id.toString());
     }
@@ -746,7 +746,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
-    @Deprecated
+    @Override
     public Vertex getVertex(Id id) {
         return verticesCache.get(id, key -> graph.getVertex(key.toString()));
     }
@@ -756,7 +756,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
-    public void copyTo(BlueprintsPersistenceBackend target) {
+    public void copyTo(DefaultBlueprintsBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
 
         for (MetaclassValue metaclass : indexedMetaclasses) {

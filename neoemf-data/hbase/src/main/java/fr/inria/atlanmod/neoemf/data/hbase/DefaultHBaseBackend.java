@@ -33,7 +33,7 @@ import java.util.OptionalInt;
  *
  * @see DirectWriteHBaseStore
  */
-public class HBasePersistenceBackend extends AbstractPersistenceBackend {
+class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBackend {
 
     /**
      * The literal description of this back-end.
@@ -41,9 +41,9 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     public static final String NAME = "hbase";
 
     /**
-     * Constructs a new {@code HBasePersistenceBackend}.
+     * Constructs a new {@code DefaultHBaseBackend}.
      */
-    protected HBasePersistenceBackend() {
+    protected DefaultHBaseBackend() {
     }
 
     @Override

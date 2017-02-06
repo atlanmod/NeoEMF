@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -34,22 +34,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * descriptor or an existing {@link URI}.
  * <p>
  * The class defines a BerkeleyDB specific {@link URI} scheme that is used to register {@link
- * BerkeleyDbPersistenceBackendFactory} in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol
+ * BerkeleyDbBackendFactory} in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol
  * to factory} map of an existing {@link ResourceSet} with a {@link PersistentResourceFactory}.
  *
  * @see PersistenceBackendFactoryRegistry
- * @see BerkeleyDbPersistenceBackendFactory
+ * @see BerkeleyDbBackendFactory
  * @see PersistentResourceFactory
  */
 @Experimental
 public class BerkeleyDbURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the URI. This scheme is used to register {@link BerkeleyDbPersistenceBackendFactory}
+     * The scheme associated to the URI. This scheme is used to register {@link BerkeleyDbBackendFactory}
      * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
      *
      * @see PersistenceBackendFactoryRegistry
-     * @see BerkeleyDbPersistenceBackendFactory
+     * @see BerkeleyDbBackendFactory
      * @see PersistentResourceFactory
      */
     @Nonnull

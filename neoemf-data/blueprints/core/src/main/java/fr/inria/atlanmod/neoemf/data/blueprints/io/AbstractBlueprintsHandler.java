@@ -19,7 +19,7 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.Handler;
@@ -36,7 +36,7 @@ import static java.util.Objects.nonNull;
 /**
  * An abstract {@link Handler} specific to a Blueprints implementation.
  */
-public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
+public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsBackend> {
 
     /**
      * The string used as a separator between values of multi-valued attributes.
@@ -84,7 +84,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      *
      * @param backend the back-end where to store data
      */
-    public AbstractBlueprintsHandler(BlueprintsPersistenceBackend backend) {
+    public AbstractBlueprintsHandler(BlueprintsBackend backend) {
         super(backend);
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
@@ -152,16 +152,16 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
-        if (nonNull(vertex.getProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI))) {
+        if (nonNull(vertex.getProperty(BlueprintsBackend.KEY_EPACKAGE_NSURI))) {
             throw new IllegalArgumentException(
                     "An element with the same Id (" + id.toString() + ") is already defined. " +
                             "Use a handler with a conflicts resolution feature instead.");
         }
 
         if (nonNull(name)) {
-            vertex.setProperty(BlueprintsPersistenceBackend.KEY_ECLASS_NAME, name);
+            vertex.setProperty(BlueprintsBackend.KEY_ECLASS_NAME, name);
         }
-        vertex.setProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI, nsUri);
+        vertex.setProperty(BlueprintsBackend.KEY_EPACKAGE_NSURI, nsUri);
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
@@ -213,7 +213,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         Vertex vertex = getVertex(id);
         Vertex metaClassVertex = getVertex(metaClassId);
 
-        vertex.addEdge(BlueprintsPersistenceBackend.KEY_INSTANCE_OF, metaClassVertex);
+        vertex.addEdge(BlueprintsBackend.KEY_INSTANCE_OF, metaClassVertex);
     }
 
     @Override

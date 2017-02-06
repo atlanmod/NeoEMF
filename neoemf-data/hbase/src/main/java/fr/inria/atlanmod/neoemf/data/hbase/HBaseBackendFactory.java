@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /**
- * A factory that creates instances of {@link HBasePersistenceBackend}.
+ * A factory that creates instances of {@link DefaultHBaseBackend}.
  * <p>
  * This class only creates persistent databases that can be configured using
  * {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
@@ -42,21 +42,21 @@ import javax.annotation.Nonnull;
  * ensuring the resource is using a persistent back-end.
  *
  * @see PersistentResource
- * @see HBasePersistenceBackend
+ * @see HBaseBackend
  * @see HBaseOptionsBuilder
  * @see HBaseResourceOptions
  */
-public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = HBasePersistenceBackend.NAME;
+    public static final String NAME = DefaultHBaseBackend.NAME;
 
     /**
-     * Constructs a new {@code HBasePersistenceBackendFactory}.
+     * Constructs a new {@code HBaseBackendFactory}.
      */
-    protected HBasePersistenceBackendFactory() {
+    protected HBaseBackendFactory() {
     }
 
     /**
@@ -86,13 +86,13 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        return new HBasePersistenceBackend();
+        return new DefaultHBaseBackend();
     }
 
     @Override
     public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) {
         // TODO Externalise the back-end implementation from the HBase EStores.
-        return new HBasePersistenceBackend();
+        return new DefaultHBaseBackend();
     }
 
     @Override
@@ -113,6 +113,6 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new HBasePersistenceBackendFactory();
+        private static final PersistenceBackendFactory INSTANCE = new HBaseBackendFactory();
     }
 }

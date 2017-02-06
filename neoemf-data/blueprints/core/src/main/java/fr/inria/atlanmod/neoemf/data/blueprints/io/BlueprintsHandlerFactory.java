@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.io;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
 /**
@@ -37,7 +37,7 @@ public class BlueprintsHandlerFactory {
      *
      * @return a new persistence handler
      */
-    public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend backend, boolean conflictResolution) {
+    public static PersistenceHandler createPersistenceHandler(BlueprintsBackend backend, boolean conflictResolution) {
         if (conflictResolution) {
             return new BlueprintsAwareHandler(backend);
         }

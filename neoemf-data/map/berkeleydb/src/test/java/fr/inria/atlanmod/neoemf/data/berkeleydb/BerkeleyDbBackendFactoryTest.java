@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements BerkeleyDbTest {
+public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements BerkeleyDbTest {
 
     @Test
     public void testCreateTransientBackend() {
@@ -147,11 +147,11 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
     @Test
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class); // "Transient back-end is not an instance of BerkeleyDbPersistenceBackend"
+        assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class); // "Transient back-end is not an instance of BerkeleyDbBackendIndices"
         BerkeleyDbBackend transientMap = (BerkeleyDbBackend) transientBackend;
 
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class); // "Persistent back-end is not an instance of BerkeleyDbPersistenceBackend"
+        assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class); // "Persistent back-end is not an instance of BerkeleyDbBackendIndices"
 
         BerkeleyDbBackend persistentMap = (BerkeleyDbBackend) persistentBackend;
 

@@ -43,7 +43,7 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A factory that creates instances of {@link MapDbPersistenceBackend}.
+ * A factory that creates instances of {@link MapDbBackendIndices}.
  * <p>
  * As other implementations of {@link PersistenceBackendFactory}, this class can create transient and persistent
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
@@ -53,11 +53,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  * according to the provided resource options ({@link MapDbStoreOptions}).
  *
  * @see PersistentResource
- * @see MapDbPersistenceBackend
+ * @see MapDbBackendIndices
  * @see MapDbOptionsBuilder
  * @see MapDbStoreOptions
  */
-public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.
@@ -65,9 +65,9 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
     public static final String NAME = MapDbBackend.NAME;
 
     /**
-     * Constructs a new {@code MapDbPersistenceBackendFactory}.
+     * Constructs a new {@code MapDbBackendFactory}.
      */
-    protected MapDbPersistenceBackendFactory() {
+    protected MapDbBackendFactory() {
     }
 
     /**
@@ -112,7 +112,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     public PersistenceBackend createTransientBackend() {
         DB db = DBMaker.memoryDB().make();
-        return new MapDbPersistenceBackendArrays(db);
+        return new MapDbBackendArrays(db);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         }
 
         DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
-        backend = new MapDbPersistenceBackendArrays(db);
+        backend = new MapDbBackendArrays(db);
         processGlobalConfiguration(directory);
 
         return backend;
@@ -147,7 +147,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
         checkArgument(from instanceof MapDbBackend && to instanceof MapDbBackend,
-                "The backend to copy is not an instance of MapDbPersistenceBackend");
+                "The backend to copy is not an instance of MapDbBackendIndices");
 
         MapDbBackend source = (MapDbBackend) from;
         MapDbBackend target = (MapDbBackend) to;
@@ -163,6 +163,6 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new MapDbPersistenceBackendFactory();
+        private static final PersistenceBackendFactory INSTANCE = new MapDbBackendFactory();
     }
 }

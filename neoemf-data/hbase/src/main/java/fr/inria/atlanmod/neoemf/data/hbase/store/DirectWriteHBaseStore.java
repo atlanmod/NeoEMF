@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
@@ -63,17 +63,17 @@ import static java.util.Objects.nonNull;
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
  * PersistentEObject} is forwarded to this class, that takes care of the serialization/deserialization from/to HBase.
  *
- * @note For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead, it accesses HBase
+ * @note For historical purposes this class does not use a {@link HBaseBackend}, instead, it accesses HBase
  * directly using the low-level database API.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
  * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  * @see PersistentEObject
- * @see HBasePersistenceBackend
+ * @see HBaseBackend
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 // TODO Continue cleaning, there is still code duplication
-public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBasePersistenceBackend> {
+public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBaseBackend> {
 
     /**
      * The column family holding properties.

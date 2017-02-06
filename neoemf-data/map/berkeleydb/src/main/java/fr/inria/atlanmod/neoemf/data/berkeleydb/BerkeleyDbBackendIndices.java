@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
  * ???
  */
 @Experimental
-public class BerkeleyDbPersistenceBackend extends BerkeleyDbBackend {
+public class BerkeleyDbBackendIndices extends BerkeleyDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link PersistentEObject}, identified by the
@@ -55,17 +55,17 @@ public class BerkeleyDbPersistenceBackend extends BerkeleyDbBackend {
     private Database multivaluedFeatures;
 
     /**
-     * Constructs a new {@code BerkeleyDbPersistenceBackend} on the given {@code file} with the given
+     * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
      * {@code envConfig}.
      *
      * @param file      ???
      * @param envConfig ???
      * @param dbConfig  ???
      *
-     * @note This constructor is protected. To create a new {@code BerkeleyDbPersistenceBackend} use {@link
-     * BerkeleyDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * @note This constructor is protected. To create a new {@code BerkeleyDbBackendIndices} use {@link
+     * BerkeleyDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
      */
-    protected BerkeleyDbPersistenceBackend(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
+    protected BerkeleyDbBackendIndices(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);
     }
 
@@ -105,7 +105,7 @@ public class BerkeleyDbPersistenceBackend extends BerkeleyDbBackend {
     public <P extends BerkeleyDbBackend> void copyTo(P target) {
         super.copyTo(target);
 
-        this.copyDatabaseTo(multivaluedFeatures, ((BerkeleyDbPersistenceBackend) target).multivaluedFeatures);
+        this.copyDatabaseTo(multivaluedFeatures, ((BerkeleyDbBackendIndices) target).multivaluedFeatures);
     }
 
     @Override

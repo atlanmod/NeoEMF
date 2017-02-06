@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -32,22 +32,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A specific {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File} descriptor or
  * an existing {@link URI}.
  * <p>
- * The class defines a MapDB specific {@link URI} scheme that is used to register {@link MapDbPersistenceBackendFactory}
+ * The class defines a MapDB specific {@link URI} scheme that is used to register {@link MapDbBackendFactory}
  * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link
  * ResourceSet} with a {@link PersistentResourceFactory}.
  *
  * @see PersistenceBackendFactoryRegistry
- * @see MapDbPersistenceBackendFactory
+ * @see MapDbBackendFactory
  * @see PersistentResourceFactory
  */
 public class MapDbURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the {@link URI}. This scheme is used to register {@link MapDbPersistenceBackendFactory}
+     * The scheme associated to the {@link URI}. This scheme is used to register {@link MapDbBackendFactory}
      * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
      *
      * @see PersistenceBackendFactoryRegistry
-     * @see MapDbPersistenceBackendFactory
+     * @see MapDbBackendFactory
      * @see PersistentResourceFactory
      */
     @Nonnull

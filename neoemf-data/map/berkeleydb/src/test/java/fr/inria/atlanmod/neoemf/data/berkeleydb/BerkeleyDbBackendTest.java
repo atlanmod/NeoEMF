@@ -40,11 +40,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
+public class BerkeleyDbBackendTest extends AbstractTest {
 
     private static BerkeleyDbBackend backend;
 
-    public BerkeleyDbPersistenceBackendTest() {}
+    public BerkeleyDbBackendTest() {}
 
     @BeforeClass
     public static void initialize() throws IOException {
@@ -59,7 +59,7 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
                 .setSortedDuplicates(false)
                 .setDeferredWrite(true);
 
-        backend = new BerkeleyDbPersistenceBackend(file, envConfig, dbConfig);
+        backend = new BerkeleyDbBackendIndices(file, envConfig, dbConfig);
     }
 
     @Before

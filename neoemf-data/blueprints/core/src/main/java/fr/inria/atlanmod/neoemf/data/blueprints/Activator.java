@@ -19,11 +19,11 @@ import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import org.osgi.framework.BundleActivator;
 
 /**
- * A {@link BundleActivator} that automatically registers a {@link BlueprintsPersistenceBackendFactory} with its
+ * A {@link BundleActivator} that automatically registers a {@link BlueprintsBackendFactory} with its
  * associated {@link BlueprintsURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
  *
  * @note This class should not be used in standard use.
- * @see BlueprintsPersistenceBackendFactory
+ * @see BlueprintsBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */
 public class Activator extends AbstractActivator {
@@ -40,6 +40,6 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected PersistenceBackendFactory factory() {
-        return BlueprintsPersistenceBackendFactory.getInstance();
+        return BlueprintsBackendFactory.getInstance();
     }
 }

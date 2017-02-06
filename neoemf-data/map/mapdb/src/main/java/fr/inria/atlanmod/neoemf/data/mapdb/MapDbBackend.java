@@ -70,8 +70,8 @@ public abstract class MapDbBackend extends AbstractPersistenceBackend implements
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
      * @note This constructor is protected. To create a new {@code MapDbBackend} use {@link
-     * MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
-     * @see MapDbPersistenceBackendFactory
+     * MapDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")
     protected MapDbBackend(DB db) {
@@ -140,7 +140,6 @@ public abstract class MapDbBackend extends AbstractPersistenceBackend implements
         return db.get(name);
     }
 
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void copyTo(MapDbBackend target) {
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {

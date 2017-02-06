@@ -20,11 +20,11 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import org.osgi.framework.BundleActivator;
 
 /**
- * A {@link BundleActivator} that automatically registers a {@link BerkeleyDbPersistenceBackendFactory} with its
+ * A {@link BundleActivator} that automatically registers a {@link BerkeleyDbBackendFactory} with its
  * associated {@link BerkeleyDbURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
  *
  * @note This class should not be used in standard use.
- * @see BerkeleyDbPersistenceBackendFactory
+ * @see BerkeleyDbBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */
 @Experimental
@@ -42,6 +42,6 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected PersistenceBackendFactory factory() {
-        return BerkeleyDbPersistenceBackendFactory.getInstance();
+        return BerkeleyDbBackendFactory.getInstance();
     }
 }

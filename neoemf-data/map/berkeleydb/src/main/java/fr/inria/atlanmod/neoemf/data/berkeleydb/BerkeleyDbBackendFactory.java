@@ -44,7 +44,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * ???
  */
 @Experimental
-public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.
@@ -52,9 +52,9 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
     public static final String NAME = BerkeleyDbBackend.NAME;
 
     /**
-     * Constructs a new {@code BerkeleyDbPersistenceBackendFactory}.
+     * Constructs a new {@code BerkeleyDbBackendFactory}.
      */
-    protected BerkeleyDbPersistenceBackendFactory() {
+    protected BerkeleyDbBackendFactory() {
     }
 
     /**
@@ -74,7 +74,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
 
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
+        checkArgument(backend instanceof BerkeleyDbBackendIndices,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore store;
@@ -112,7 +112,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbPersistenceBackend(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
             backend.open();
         }
         catch (IOException e) {
@@ -141,7 +141,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbPersistenceBackend(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
             backend.open();
 
             processGlobalConfiguration(directory);
@@ -156,7 +156,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
 
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
+        checkArgument(backend instanceof BerkeleyDbBackendIndices,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         return new DefaultDirectWriteStore<>(resource, backend);
@@ -164,11 +164,11 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof BerkeleyDbPersistenceBackend && to instanceof BerkeleyDbPersistenceBackend,
-                "The backend to copy is not an instance of BerkeleyDbPersistenceBackend");
+        checkArgument(from instanceof BerkeleyDbBackendIndices && to instanceof BerkeleyDbBackendIndices,
+                "The backend to copy is not an instance of BerkeleyDbBackendIndices");
 
-        BerkeleyDbPersistenceBackend source = (BerkeleyDbPersistenceBackend) from;
-        BerkeleyDbPersistenceBackend target = (BerkeleyDbPersistenceBackend) to;
+        BerkeleyDbBackendIndices source = (BerkeleyDbBackendIndices) from;
+        BerkeleyDbBackendIndices target = (BerkeleyDbBackendIndices) to;
 
         source.copyTo(target);
     }
@@ -181,6 +181,6 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new BerkeleyDbPersistenceBackendFactory();
+        private static final PersistenceBackendFactory INSTANCE = new BerkeleyDbBackendFactory();
     }
 }

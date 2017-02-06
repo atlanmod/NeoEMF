@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -32,22 +32,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File}
  * descriptor or an existing {@link URI}.
  * <p>
- * The class defines a HBase specific {@link URI} scheme that is used to register {@link HBasePersistenceBackendFactory}
+ * The class defines a HBase specific {@link URI} scheme that is used to register {@link HBaseBackendFactory}
  * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link
  * ResourceSet} with a {@link PersistentResourceFactory}.
  *
  * @see PersistenceBackendFactoryRegistry
- * @see HBasePersistenceBackendFactory
+ * @see HBaseBackendFactory
  * @see PersistentResourceFactory
  */
 public class HBaseURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the URI. This scheme is used to register {@link HBasePersistenceBackendFactory}
+     * The scheme associated to the URI. This scheme is used to register {@link HBaseBackendFactory}
      * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
      *
      * @see PersistenceBackendFactoryRegistry
-     * @see HBasePersistenceBackendFactory
+     * @see HBaseBackendFactory
      * @see PersistentResourceFactory
      */
     @Nonnull

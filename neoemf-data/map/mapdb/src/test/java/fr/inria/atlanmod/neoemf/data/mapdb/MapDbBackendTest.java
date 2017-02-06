@@ -25,12 +25,12 @@ import org.mapdb.Serializer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapDbPersistenceBackendTest extends AbstractTest {
+public class MapDbBackendTest extends AbstractTest {
 
     @Test
     public void testStoreFeature() {
         DB db = DBMaker.memoryDB().make();
-        MapDbBackend backend = new MapDbPersistenceBackendArrays(db);
+        MapDbBackend backend = new MapDbBackendArrays(db);
         FeatureKey key = FeatureKey.of(StringId.of("object1"), "name");
         backend.valueFor(key, "value");
 
@@ -41,7 +41,7 @@ public class MapDbPersistenceBackendTest extends AbstractTest {
     public void testStoreMultivaluedFeature() {
         final int TIMES = 10;
         DB db = DBMaker.memoryDB().make();
-        MapDbBackend backend = new MapDbPersistenceBackendArrays(db);
+        MapDbBackend backend = new MapDbBackendArrays(db);
 
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
         FeatureKey featureKey = FeatureKey.of(StringId.of("object"), "name");

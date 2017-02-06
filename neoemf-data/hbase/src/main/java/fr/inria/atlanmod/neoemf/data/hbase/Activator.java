@@ -19,11 +19,11 @@ import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import org.osgi.framework.BundleActivator;
 
 /**
- * A {@link BundleActivator} that automatically registers a {@link HBasePersistenceBackendFactory} with its
+ * A {@link BundleActivator} that automatically registers a {@link HBaseBackendFactory} with its
  * associated {@link HBaseURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
  *
  * @note This class should not be used in standard use.
- * @see HBasePersistenceBackendFactory
+ * @see HBaseBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */
 public class Activator extends AbstractActivator {
@@ -40,6 +40,6 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected PersistenceBackendFactory factory() {
-        return HBasePersistenceBackendFactory.getInstance();
+        return HBaseBackendFactory.getInstance();
     }
 }
