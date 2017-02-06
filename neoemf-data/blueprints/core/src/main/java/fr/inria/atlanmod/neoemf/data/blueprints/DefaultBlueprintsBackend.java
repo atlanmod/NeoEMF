@@ -26,7 +26,6 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -67,8 +66,8 @@ import static java.util.Objects.nonNull;
  * and manage a set of lightweight caches to improve access time of {@link Vertex} from  their corresponding {@link
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  *
- * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and {@link
- * fr.inria.atlanmod.neoemf.data.store.DirectWriteCacheManyStore} to access and manipulate the database.
+ * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} to access and manipulate the
+ * database.
  * @note Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory}
  * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsBackendFactory
