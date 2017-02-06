@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
@@ -26,7 +27,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 
 public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
-    private static BerkeleyDbPersistenceBackend backend;
+    private static BerkeleyDbBackend backend;
 
     public BerkeleyDbPersistenceBackendTest() {}
 
@@ -50,19 +50,16 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
     public static void initialize() throws IOException {
         File file = workspace.newFile("BerkeleyDB");
         file = Files.createDirectory(file.toPath()).toFile();
-        EnvironmentConfig envConfig = new EnvironmentConfig();
-        envConfig.setAllowCreate(true);
-        backend = new BerkeleyDbPersistenceBackend(file, envConfig);
-    }
 
-    @AfterClass
-    public static void tearDown() throws IOException {
-        // Temp directories are automatically cleaned
-//        Files.walk(new File(pathname).toPath(), FileVisitOption.FOLLOW_LINKS)
-//                .sorted(Comparator.reverseOrder())
-//                .map(Path::toFile)
-//                .peek(System.out::println)
-//                .forEach(File::delete);
+        EnvironmentConfig envConfig = new EnvironmentConfig()
+                .setAllowCreate(true);
+
+        DatabaseConfig dbConfig = new DatabaseConfig()
+                .setAllowCreate(true)
+                .setSortedDuplicates(false)
+                .setDeferredWrite(true);
+
+        backend = new BerkeleyDbPersistenceBackend(file, envConfig, dbConfig);
     }
 
     @Before

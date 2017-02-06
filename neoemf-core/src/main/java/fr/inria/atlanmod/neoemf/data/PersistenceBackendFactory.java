@@ -41,8 +41,11 @@ public interface PersistenceBackendFactory {
      * Creates an in-memory {@link PersistenceBackend}.
      *
      * @return the persistence back-end
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
+     *                                   missing
      */
-    PersistenceBackend createTransientBackend();
+    PersistenceBackend createTransientBackend() throws InvalidDataStoreException;
 
     /**
      * Creates a {@link PersistenceBackend} in the given {@code directory}.
@@ -52,7 +55,8 @@ public interface PersistenceBackendFactory {
      *
      * @return the persistence back-end
      *
-     * @throws InvalidDataStoreException the invalid datastore exception
+     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
+     *                                   missing
      */
     PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException;
 

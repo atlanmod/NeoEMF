@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
@@ -48,7 +49,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BerkeleyDbPersistenceBackend.NAME;
+    public static final String NAME = BerkeleyDbBackend.NAME;
 
     /**
      * Constructs a new {@code BerkeleyDbPersistenceBackendFactory}.
@@ -96,46 +97,60 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
     }
 
     @Override
-    public PersistenceBackend createTransientBackend() {
-        NeoLogger.debug("createTransientBackend()");
-        BerkeleyDbPersistenceBackend backend = null;
+    public PersistenceBackend createTransientBackend() throws InvalidDataStoreException {
+        BerkeleyDbBackend backend;
 
         try {
-            File temporaryFolder = Files.createTempDirectory("neoemf").toFile();
-            EnvironmentConfig envConfig = new EnvironmentConfig();
-            envConfig.setAllowCreate(true);
-            envConfig.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
+            File dir = new File(BerkeleyDbURI.createFileURI(Files.createTempDirectory("neoemf").toFile()).toFileString());
 
-            File dir = new File(BerkeleyDbURI.createFileURI(temporaryFolder).toFileString());
-            backend = new BerkeleyDbPersistenceBackend(dir, envConfig);
+            EnvironmentConfig envConfig = new EnvironmentConfig()
+                    .setAllowCreate(true)
+                    .setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
+
+            DatabaseConfig dbConfig = new DatabaseConfig()
+                    .setAllowCreate(true)
+                    .setSortedDuplicates(false)
+                    .setDeferredWrite(true);
+
+            backend = new BerkeleyDbPersistenceBackend(dir, envConfig, dbConfig);
             backend.open();
-
         }
         catch (IOException e) {
             NeoLogger.error(e);
+            throw new InvalidDataStoreException(e);
         }
+
         return backend;
     }
 
     @Override
     public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
-        NeoLogger.debug("createPersistentBackend() " + directory.toString());
+        BerkeleyDbBackend backend;
 
-        BerkeleyDbPersistenceBackend backend;
-        EnvironmentConfig envConfig = new EnvironmentConfig();
-        envConfig.setAllowCreate(true);
-        File dir = new File(BerkeleyDbURI.createFileURI(directory).toFileString());
-        if (!dir.exists()) {
-            try {
+        try {
+            File dir = new File(BerkeleyDbURI.createFileURI(directory).toFileString());
+            if (!dir.exists()) {
                 Files.createDirectories(dir.toPath());
             }
-            catch (IOException e) {
-                NeoLogger.error(e);
-            }
+
+            EnvironmentConfig envConfig = new EnvironmentConfig()
+                    .setAllowCreate(true);
+
+            DatabaseConfig dbConfig = new DatabaseConfig()
+                    .setAllowCreate(true)
+                    .setSortedDuplicates(false)
+                    .setDeferredWrite(true);
+
+            backend = new BerkeleyDbPersistenceBackend(dir, envConfig, dbConfig);
+            backend.open();
+
+            processGlobalConfiguration(directory);
         }
-        backend = new BerkeleyDbPersistenceBackend(dir, envConfig);
-        backend.open();
-        processGlobalConfiguration(directory);
+        catch (IOException e) {
+            NeoLogger.error(e);
+            throw new InvalidDataStoreException(e);
+        }
+
         return backend;
     }
 

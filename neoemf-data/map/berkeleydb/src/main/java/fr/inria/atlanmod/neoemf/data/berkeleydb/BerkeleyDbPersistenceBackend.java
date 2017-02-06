@@ -11,35 +11,28 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ClassInfoSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ObjectSerializer;
-import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
-
-import org.eclipse.emf.ecore.EClass;
 
 import java.io.File;
 import java.util.Map;
@@ -53,69 +46,7 @@ import java.util.stream.IntStream;
  * ???
  */
 @Experimental
-public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend implements MapBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    public static final String NAME = "berkeleydb";
-
-    /**
-     * ???
-     */
-    private static final String KEY_CONTAINER = "eContainer";
-
-    /**
-     * ???
-     */
-    private static final String KEY_INSTANCE_OF = "neoInstanceOf";
-
-    /**
-     * ???
-     */
-    private static final String KEY_FEATURES = "features";
-
-    /**
-     * ???
-     */
-    private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
-
-    /**
-     * ???
-     */
-    private final DatabaseConfig databaseConfig;
-
-    /**
-     * ???
-     */
-    private final EnvironmentConfig environmentConfig;
-
-    /**
-     * ???
-     */
-    private final File file;
-
-    /**
-     * ???
-     */
-    private boolean isClosed = true;
-
-    /**
-     * A persistent map that stores the container of {@link PersistentEObject}, identified by the object {@link Id}.
-     */
-    private Database containers;
-
-    /**
-     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}, identified by the object {@link
-     * Id}.
-     */
-    private Database instances;
-
-    /**
-     * A persistent map that stores structural features values for {@link PersistentEObject}, identified by the
-     * associated {@link FeatureKey}.
-     */
-    private Database features;
+public class BerkeleyDbPersistenceBackend extends BerkeleyDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link PersistentEObject}, identified by the
@@ -124,70 +55,32 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     private Database multivaluedFeatures;
 
     /**
-     * ???
-     */
-    private Environment environment;
-
-    /**
      * Constructs a new {@code BerkeleyDbPersistenceBackend} on the given {@code file} with the given
-     * {@code environmentConfig}.
+     * {@code envConfig}.
      *
-     * @param file              ???
-     * @param environmentConfig ???
+     * @param file      ???
+     * @param envConfig ???
+     * @param dbConfig  ???
      *
      * @note This constructor is protected. To create a new {@code BerkeleyDbPersistenceBackend} use {@link
      * BerkeleyDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      */
-    protected BerkeleyDbPersistenceBackend(File file, EnvironmentConfig environmentConfig) {
-        this.file = file;
-        this.environmentConfig = environmentConfig;
-        this.databaseConfig = new DatabaseConfig()
-                .setAllowCreate(true)
-                .setSortedDuplicates(false)
-                .setDeferredWrite(true);
+    protected BerkeleyDbPersistenceBackend(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
+        super(file, envConfig, dbConfig);
     }
 
-    /**
-     * ???
-     */
+    @Override
     public void open() {
-        if (!isClosed()) {
-            NeoLogger.warn("This backend is already open");
-        }
+        super.open();
 
-        try {
-            environment = new Environment(file, environmentConfig);
-
-            this.containers = environment.openDatabase(null, KEY_CONTAINER, databaseConfig);
-            this.instances = environment.openDatabase(null, KEY_INSTANCE_OF, databaseConfig);
-            this.features = environment.openDatabase(null, KEY_FEATURES, databaseConfig);
-            this.multivaluedFeatures = environment.openDatabase(null, KEY_MULTIVALUED_FEATURES, databaseConfig);
-
-            isClosed = false;
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-    }
-
-    @VisibleForTesting
-    @Override
-    public Map<String, Object> getAll() {
-        throw new UnsupportedOperationException();
-    }
-
-    @VisibleForTesting
-    @Override
-    public <E> E get(String name) {
-        throw new UnsupportedOperationException();
+        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
     }
 
     @Override
     public void save() {
+        super.save();
+
         try {
-            this.containers.sync();
-            this.instances.sync();
-            this.features.sync();
             this.multivaluedFeatures.sync();
         }
         catch (DatabaseException e) {
@@ -199,38 +92,20 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
     public void close() {
         this.save();
 
-        try {
-            this.containers.close();
-            this.instances.close();
-            this.features.close();
-            this.multivaluedFeatures.close();
-            this.environment.close();
+        containers.close();
+        instances.close();
+        features.close();
+        multivaluedFeatures.close();
+        environment.close();
 
-            isClosed = true;
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
+        isClosed = true;
     }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
-    }
+    public <P extends BerkeleyDbBackend> void copyTo(P target) {
+        super.copyTo(target);
 
-    @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
-    public void create(Id id) {
-        // Do nothing
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return false;
+        this.copyDatabaseTo(multivaluedFeatures, ((BerkeleyDbPersistenceBackend) target).multivaluedFeatures);
     }
 
     @Override
@@ -587,39 +462,5 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend imp
 
     protected void sizeFor(FeatureKey key, int size) {
         valueFor(key, size);
-    }
-
-    /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
-     *
-     * @param target the {@code PersistenceBackend} to copy the database contents to
-     */
-    public void copyTo(BerkeleyDbPersistenceBackend target) {
-        try {
-            this.copyDatabaseTo(instances, target.instances);
-            this.copyDatabaseTo(features, target.features);
-            this.copyDatabaseTo(containers, target.containers);
-            this.copyDatabaseTo(multivaluedFeatures, target.multivaluedFeatures);
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-    }
-
-    /**
-     * Utility method to copy the contents from one database to another.
-     *
-     * @param from the database to copy
-     * @param to   the database to copy the database contents to
-     */
-    private void copyDatabaseTo(Database from, Database to) {
-        try (Cursor cursor = from.openCursor(null, null)) {
-            DatabaseEntry key = new DatabaseEntry();
-            DatabaseEntry value = new DatabaseEntry();
-            while (cursor.getNext(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                to.put(null, key, value);
-            }
-        }
-        to.sync();
     }
 }

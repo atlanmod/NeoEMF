@@ -62,7 +62,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = MapDbPersistenceBackend.NAME;
+    public static final String NAME = MapDbBackend.NAME;
 
     /**
      * Constructs a new {@code MapDbPersistenceBackendFactory}.
@@ -87,7 +87,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof MapDbPersistenceBackend,
+        checkArgument(backend instanceof MapDbBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore store;
@@ -112,12 +112,12 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     public PersistenceBackend createTransientBackend() {
         DB db = DBMaker.memoryDB().make();
-        return new MapDbPersistenceBackend(db);
+        return new MapDbPersistenceBackendArrays(db);
     }
 
     @Override
     public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
-        MapDbPersistenceBackend backend;
+        MapDbBackend backend;
 
         File dbFile = FileUtils.getFile(MapDbURI.createURI(URI.createFileURI(directory.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
         if (!dbFile.getParentFile().exists()) {
@@ -130,7 +130,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
         }
 
         DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
-        backend = new MapDbPersistenceBackend(db);
+        backend = new MapDbPersistenceBackendArrays(db);
         processGlobalConfiguration(directory);
 
         return backend;
@@ -138,7 +138,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof MapDbPersistenceBackend,
+        checkArgument(backend instanceof MapDbBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
         return new DefaultDirectWriteStore<>(resource, backend);
@@ -146,11 +146,11 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof MapDbPersistenceBackend && to instanceof MapDbPersistenceBackend,
+        checkArgument(from instanceof MapDbBackend && to instanceof MapDbBackend,
                 "The backend to copy is not an instance of MapDbPersistenceBackend");
 
-        MapDbPersistenceBackend source = (MapDbPersistenceBackend) from;
-        MapDbPersistenceBackend target = (MapDbPersistenceBackend) to;
+        MapDbBackend source = (MapDbBackend) from;
+        MapDbBackend target = (MapDbBackend) to;
 
         source.copyTo(target);
     }
