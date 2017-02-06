@@ -90,7 +90,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendLists(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
             backend.open();
         }
         catch (IOException e) {
@@ -119,7 +119,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendLists(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
             backend.open();
 
             processGlobalConfiguration(directory);

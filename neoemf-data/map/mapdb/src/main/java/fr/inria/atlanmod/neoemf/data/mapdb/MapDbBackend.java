@@ -28,5 +28,6 @@ public interface MapDbBackend extends PersistenceBackend {
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
-    <P extends MapDbBackend> void copyTo(P target);
+    // TODO Generalize to all back-ends
+    void copyTo(MapDbBackend target);
 }

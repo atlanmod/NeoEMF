@@ -33,5 +33,6 @@ public interface BerkeleyDbBackend extends PersistenceBackend {
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
-    <P extends BerkeleyDbBackend> void copyTo(P target);
+    // TODO Generalize to all back-ends
+    void copyTo(BerkeleyDbBackend target);
 }

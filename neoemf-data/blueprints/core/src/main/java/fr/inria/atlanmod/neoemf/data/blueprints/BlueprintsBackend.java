@@ -57,4 +57,12 @@ public interface BlueprintsBackend extends PersistenceBackend {
      */
     @Deprecated
     Vertex addVertex(Id id);
+
+    /**
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     *
+     * @param target the {@code PersistenceBackend} to copy the database contents to
+     */
+    // TODO Generalize to all back-ends
+    void copyTo(BlueprintsBackend target);
 }

@@ -169,11 +169,11 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof DefaultBlueprintsBackend && to instanceof DefaultBlueprintsBackend,
+        checkArgument(from instanceof BlueprintsBackend && to instanceof BlueprintsBackend,
                 "Trying to use Graph backend copy on non Graph databases");
 
-        DefaultBlueprintsBackend source = (DefaultBlueprintsBackend) from;
-        DefaultBlueprintsBackend target = (DefaultBlueprintsBackend) to;
+        BlueprintsBackend source = (BlueprintsBackend) from;
+        BlueprintsBackend target = (BlueprintsBackend) to;
 
         source.copyTo(target);
     }

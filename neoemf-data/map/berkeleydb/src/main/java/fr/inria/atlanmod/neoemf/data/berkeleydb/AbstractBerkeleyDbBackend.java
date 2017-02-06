@@ -15,7 +15,6 @@ import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
-import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
@@ -24,12 +23,20 @@ import com.sleepycat.je.OperationStatus;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * ???
@@ -81,9 +88,9 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     /**
      * ???
      *
-     * @param file
-     * @param envConfig
-     * @param dbConfig
+     * @param file      ???
+     * @param envConfig ???
+     * @param dbConfig  ???
      */
     protected AbstractBerkeleyDbBackend(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         this.file = file;
@@ -94,46 +101,47 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     /**
      * ???
      */
+    @Override
     public void open() {
         if (!isClosed()) {
             NeoLogger.warn("This backend is already open");
         }
 
-        try {
-            environment = new Environment(file, environmentConfig);
+        environment = new Environment(file, environmentConfig);
 
-            this.containers = environment.openDatabase(null, "eContainer", databaseConfig);
-            this.instances = environment.openDatabase(null, "neoInstanceOf", databaseConfig);
-            this.features = environment.openDatabase(null, "features", databaseConfig);
+        containers = environment.openDatabase(null, "eContainer", databaseConfig);
+        instances = environment.openDatabase(null, "neoInstanceOf", databaseConfig);
+        features = environment.openDatabase(null, "features", databaseConfig);
 
-            isClosed = false;
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
+        isClosed = false;
+    }
+
+    /**
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     *
+     * @param target the {@code PersistenceBackend} to copy the database contents to
+     */
+    @Override
+    public void copyTo(BerkeleyDbBackend target) {
+        AbstractBerkeleyDbBackend backend = (AbstractBerkeleyDbBackend) target;
+
+        copyDatabaseTo(instances, backend.instances);
+        copyDatabaseTo(features, backend.features);
+        copyDatabaseTo(containers, backend.containers);
     }
 
     @Override
     public void save() {
-        try {
-            this.containers.sync();
-            this.instances.sync();
-            this.features.sync();
-        }
-        catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
+        allDatabases().forEach(Database::sync);
     }
 
     @Override
     public void close() {
         this.save();
 
-        this.containers.close();
-        this.instances.close();
-        this.features.close();
-        this.environment.close();
+        allDatabases().forEach(Database::close);
 
+        environment.close();
         isClosed = true;
     }
 
@@ -157,18 +165,199 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         return false;
     }
 
-    /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
-     *
-     * @param target the {@code PersistenceBackend} to copy the database contents to
-     */
     @Override
-    public <P extends BerkeleyDbBackend> void copyTo(P target) {
-        AbstractBerkeleyDbBackend backend = (AbstractBerkeleyDbBackend) target;
+    public Optional<ContainerValue> containerOf(Id id) {
+        return fromDatabase(containers, id);
+    }
 
-        this.copyDatabaseTo(instances, backend.instances);
-        this.copyDatabaseTo(features, backend.features);
-        this.copyDatabaseTo(containers, backend.containers);
+    @Override
+    public void containerFor(Id id, ContainerValue container) {
+        toDatabase(containers, id, container);
+    }
+
+    @Override
+    public Optional<MetaclassValue> metaclassOf(Id id) {
+        return fromDatabase(instances, id);
+    }
+
+    @Override
+    public void metaclassFor(Id id, MetaclassValue metaclass) {
+        toDatabase(instances, id, metaclass);
+    }
+
+    @Override
+    public <T> Optional<T> valueOf(FeatureKey key) {
+        return fromDatabase(features, key);
+    }
+
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        return valueOf(key);
+    }
+
+    @Override
+    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
+        return valueOf(key);
+    }
+
+    @Override
+    public <T> Optional<T> valueFor(FeatureKey key, T value) {
+        Optional<T> previousValue = valueOf(key);
+
+        toDatabase(features, key, value);
+
+        return previousValue;
+    }
+
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
+
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
+
+    @Override
+    public void unsetValue(FeatureKey key) {
+        outDatabase(features, key);
+    }
+
+    @Override
+    public void unsetAllValues(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void unsetAllReferences(FeatureKey key) {
+        unsetReference(key);
+    }
+
+    @Override
+    public boolean hasValue(FeatureKey key) {
+        return fromDatabase(features, key).isPresent();
+    }
+
+    @Override
+    public boolean hasAnyValue(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public boolean hasAnyReference(FeatureKey key) {
+        return hasReference(key);
+    }
+
+    @Override
+    public void addReference(MultivaluedFeatureKey key, Id id) {
+        addValue(key, id);
+    }
+
+    @Override
+    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
+        return removeValue(key);
+    }
+
+    @Override
+    public void cleanValues(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void cleanReferences(FeatureKey key) {
+        unsetReference(key);
+    }
+
+    @Override
+    public boolean containsReference(FeatureKey key, Id id) {
+        return containsValue(key, id);
+    }
+
+    @Override
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
+        return indexOfValue(key, id);
+    }
+
+    @Override
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+        return lastIndexOfValue(key, id);
+    }
+
+    /**
+     * Returns all loaded databases.
+     *
+     * @return a list of {@link Database}
+     */
+    protected List<Database> allDatabases() {
+        List<Database> databases = new ArrayList<>();
+        databases.add(containers);
+        databases.add(instances);
+        databases.add(features);
+        return databases;
+    }
+
+    /**
+     * Retrieves a value from the {@code database} according to the given {@code key}.
+     *
+     * @param database  the database where to looking for
+     * @param key       the key of the element to retrieve
+     * @param <K>       the type of the key
+     * @param <V>       the type of the value
+     *
+     * @return on optional containing the element, or an empty optional if the element has not been found
+     */
+    protected <K, V> Optional<V> fromDatabase(Database database, K key) {
+        DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry();
+
+        Optional<V> value;
+        if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            value = Optional.of(new Serializer<V>().deserialize(dbValue.getData()));
+        }
+        else {
+            value = Optional.empty();
+        }
+        return value;
+    }
+
+    /**
+     * Saves a {@code value} identified by the {@code key} in the {@code database}.
+     *
+     * @param database the database where to save the value
+     * @param key      the key of the element to save
+     * @param value    the value to save
+     * @param <K>      the type of the key
+     * @param <V>      the type of the value
+     */
+    protected <K, V> void toDatabase(Database database, K key, V value) {
+        DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry(new Serializer<V>().serialize(value));
+
+        database.put(null, dbKey, dbValue);
+    }
+
+    /**
+     * Removes a value from the {@code database} according to its {@code key}.
+     *
+     * @param database the database where to remove the value
+     * @param key      the key of the element to remove
+     * @param <K>      the type of the key
+     */
+    protected <K> void outDatabase(Database database, K key) {
+        DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));
+
+        database.delete(null, dbKey);
     }
 
     /**
@@ -179,10 +368,10 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      */
     protected void copyDatabaseTo(Database from, Database to) {
         try (Cursor cursor = from.openCursor(null, null)) {
-            DatabaseEntry key = new DatabaseEntry();
-            DatabaseEntry value = new DatabaseEntry();
-            while (cursor.getNext(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                to.put(null, key, value);
+            DatabaseEntry dbKey = new DatabaseEntry();
+            DatabaseEntry dbValue = new DatabaseEntry();
+            while (cursor.getNext(dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                to.put(null, dbKey, dbValue);
             }
         }
         to.sync();

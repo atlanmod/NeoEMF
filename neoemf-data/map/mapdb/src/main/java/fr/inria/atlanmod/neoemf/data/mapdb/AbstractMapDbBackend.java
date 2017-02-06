@@ -134,7 +134,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public <P extends MapDbBackend> void copyTo(P target) {
+    public void copyTo(MapDbBackend target) {
         AbstractMapDbBackend backend = (AbstractMapDbBackend) target;
 
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {

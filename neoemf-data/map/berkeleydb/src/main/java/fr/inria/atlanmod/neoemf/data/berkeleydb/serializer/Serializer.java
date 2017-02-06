@@ -13,7 +13,17 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+
 import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Simple class to serialize/deserialize objects to byte arrays.
@@ -21,7 +31,7 @@ import javax.annotation.Nonnull;
  * @param <T> the type of {@link Object} to serialize/deserialize
  */
 @Experimental
-public interface Serializer<T> {
+public class Serializer<T> {
 
     /**
      * Serializes an {@code Object} to a byte array for storage/serialization.
@@ -30,7 +40,18 @@ public interface Serializer<T> {
      *
      * @return the serialized object as a byte array
      */
-    byte[] serialize(@Nonnull T value);
+    public byte[] serialize(@Nonnull T value) {
+        checkNotNull(value);
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512); ObjectOutput out = new ObjectOutputStream(baos)) {
+            out.writeObject(value);
+            out.flush();
+            return baos.toByteArray();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Deserializes a single {@code Object} from an array of bytes.
@@ -39,5 +60,15 @@ public interface Serializer<T> {
      *
      * @return the deserialized object
      */
-    T deserialize(@Nonnull byte[] data);
+    @SuppressWarnings("unchecked")
+    public T deserialize(@Nonnull byte[] data) {
+        checkNotNull(data);
+
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bis)) {
+            return (T) in.readObject();
+        }
+        catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

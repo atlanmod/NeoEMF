@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
-
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
@@ -26,7 +25,7 @@ public class FeatureKeySerializerTest {
 
     @Test
     public void testSerialize() {
-        FeatureKeySerializer serializer = new FeatureKeySerializer();
+        Serializer<FeatureKey> serializer = new Serializer<>();
         FeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature");
         FeatureKey fkOut = serializer.deserialize(serializer.serialize(fkIn));
 
@@ -35,7 +34,7 @@ public class FeatureKeySerializerTest {
 
     @Test
     public void testSerializeMFK() {
-        FeatureKeySerializer serializer = new FeatureKeySerializer();
+        Serializer<FeatureKey> serializer = new Serializer<>();
         MultivaluedFeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature").withPosition(0);
         MultivaluedFeatureKey fkOut = (MultivaluedFeatureKey) serializer.deserialize(serializer.serialize(fkIn));
 
@@ -45,7 +44,7 @@ public class FeatureKeySerializerTest {
 
     @Test
     public void testSerializeMFKBis() {
-        FeatureKeySerializer serializer = new FeatureKeySerializer();
+        Serializer<FeatureKey> serializer = new Serializer<>();
         FeatureKey fk = FeatureKey.of(StringId.of("obj1"), "feature");
         MultivaluedFeatureKey fk1 = fk.withPosition(0);
         MultivaluedFeatureKey fk2 = fk.withPosition(1);

@@ -747,12 +747,15 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
-    public void copyTo(DefaultBlueprintsBackend target) {
-        GraphHelper.copyGraph(graph, target.graph);
+    @Override
+    public void copyTo(BlueprintsBackend target) {
+        DefaultBlueprintsBackend backend = (DefaultBlueprintsBackend) target;
+
+        GraphHelper.copyGraph(graph, backend.graph);
 
         for (MetaclassValue metaclass : indexedMetaclasses) {
-            checkArgument(Iterables.isEmpty(target.metaclassIndex.get(KEY_NAME, metaclass.name())), "Index is not consistent");
-            target.metaclassIndex.put(KEY_NAME, metaclass.name(), vertex(buildId(metaclass)));
+            checkArgument(Iterables.isEmpty(backend.metaclassIndex.get(KEY_NAME, metaclass.name())), "Index is not consistent");
+            backend.metaclassIndex.put(KEY_NAME, metaclass.name(), vertex(buildId(metaclass)));
         }
     }
 
