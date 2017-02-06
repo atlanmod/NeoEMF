@@ -24,8 +24,10 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
 import org.mapdb.Serializer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -42,7 +44,7 @@ import java.util.OptionalInt;
  *
  * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and its subclasses to access
  * and manipulate the database.
- * @note Instances of {@link MapDbBackend} are created by {@link MapDbBackendFactory} that
+ * @note Instances of {@link MapDbBackendLists} are created by {@link MapDbBackendFactory} that
  * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
@@ -50,10 +52,10 @@ import java.util.OptionalInt;
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithArrays
  * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
-class MapDbBackendArrays extends AbstractMapDbBackend {
+class MapDbBackendLists extends AbstractMapDbBackend {
 
     /**
-     * Constructs a new {@code MapDbBackendArrays} wrapping the provided {@code db}.
+     * Constructs a new {@code MapDbBackendLists} wrapping the provided {@code db}.
      * <p>
      * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
      * {@link Serializer}s.
@@ -64,7 +66,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
      * MapDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see MapDbBackendFactory
      */
-    protected MapDbBackendArrays(DB db) {
+    protected MapDbBackendLists(DB db) {
         super(db);
     }
 
@@ -95,7 +97,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public Optional<Object> valueOf(MultivaluedFeatureKey key) {
-        return Optional.of(asMany(features.get(key.withoutPosition()))[key.position()]);
+        return Optional.of(asMany(features.get(key.withoutPosition())).get(key.position()));
     }
 
     @Override
@@ -119,11 +121,11 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
-        Object[] values = asMany(features.get(key.withoutPosition()));
+        List<Object> values = asMany(features.get(key.withoutPosition()));
 
-        Optional<Object> previousValue = Optional.of(values[key.position()]);
+        Optional<Object> previousValue = Optional.of(values.get(key.position()));
 
-        values[key.position()] = value;
+        values.set(key.position(), value);
 
         features.put(key.withoutPosition(), values);
 
@@ -186,8 +188,8 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public void addValue(MultivaluedFeatureKey key, Object value) {
-        Object[] values = Optional.ofNullable(asMany(features.get(key.withoutPosition()))).orElse(new Object[0]);
-        values = ArrayUtils.add(values, key.position(), value);
+        List<Object> values = Optional.ofNullable(asMany(features.get(key.withoutPosition()))).orElse(new ArrayList<>(0));
+        values.add(key.position(), value);
 
         features.put(key.withoutPosition(), values);
     }
@@ -199,11 +201,9 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public Optional<Object> removeValue(MultivaluedFeatureKey key) {
-        Object[] values = asMany(features.get(key.withoutPosition()));
+        List<Object> values = asMany(features.get(key.withoutPosition()));
 
-        Optional<Object> previousValue = Optional.of(values[key.position()]);
-
-        values = ArrayUtils.remove(values, key.position());
+        Optional<Object> previousValue = Optional.of(values.remove(key.position()));
 
         features.put(key.withoutPosition(), values);
 
@@ -229,7 +229,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public boolean containsValue(FeatureKey key, Object value) {
-        return ArrayUtils.contains(asMany(features.get(key)), value);
+        return asMany(features.get(key)).contains(value);
     }
 
     @Override
@@ -239,8 +239,8 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public OptionalInt indexOfValue(FeatureKey key, Object value) {
-        int index = ArrayUtils.indexOf(asMany(features.get(key)), value);
-        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
+        int index = asMany(features.get(key)).indexOf(value);
+        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
@@ -250,8 +250,8 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
-        int index = ArrayUtils.lastIndexOf(asMany(features.get(key)), value);
-        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
+        int index = asMany(features.get(key)).lastIndexOf(value);
+        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
     }
 
     @Override
@@ -261,12 +261,12 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Override
     public Iterable<Object> valuesAsList(FeatureKey key) {
-        return Arrays.asList(asMany(features.get(key)));
+        return asMany(features.get(key));
     }
 
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
-        return Arrays.asList(asMany(features.get(key)));
+        return asMany(features.get(key));
     }
 
     @Override
@@ -285,7 +285,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
      * @return a multi-value
      */
     @SuppressWarnings("unchecked")
-    private <T> T[] asMany(Object value) {
-        return (T[]) value;
+    private <T> List<T> asMany(Object value) {
+        return (List<T>) value;
     }
 }

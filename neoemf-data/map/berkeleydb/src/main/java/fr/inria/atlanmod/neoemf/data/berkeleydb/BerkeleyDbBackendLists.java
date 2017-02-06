@@ -273,9 +273,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
         features.get(null, dbKey, dbValue, LockMode.DEFAULT);
         List<Object> values = asMany(new ObjectSerializer().deserialize(dbValue.getData()));
 
-        Optional<Object> previousValue = Optional.of(values.get(key.position()));
-
-        values.remove(key.position());
+        Optional<Object> previousValue = Optional.of(values.remove(key.position()));
 
         dbValue = new DatabaseEntry(new ObjectSerializer().serialize(values));
         features.put(null, dbKey, dbValue);

@@ -112,7 +112,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
     @Override
     public PersistenceBackend createTransientBackend() {
         DB db = DBMaker.memoryDB().make();
-        return new MapDbBackendArrays(db);
+        return new MapDbBackendLists(db);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         }
 
         DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
-        backend = new MapDbBackendArrays(db);
+        backend = new MapDbBackendLists(db);
         processGlobalConfiguration(directory);
 
         return backend;

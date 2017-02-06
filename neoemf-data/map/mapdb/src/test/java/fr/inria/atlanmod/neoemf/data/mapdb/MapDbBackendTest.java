@@ -30,7 +30,7 @@ public class MapDbBackendTest extends AbstractTest {
     @Test
     public void testStoreFeature() {
         DB db = DBMaker.memoryDB().make();
-        MapDbBackend backend = new MapDbBackendArrays(db);
+        MapDbBackend backend = new MapDbBackendLists(db);
         FeatureKey key = FeatureKey.of(StringId.of("object1"), "name");
         backend.valueFor(key, "value");
 
@@ -41,7 +41,7 @@ public class MapDbBackendTest extends AbstractTest {
     public void testStoreMultivaluedFeature() {
         final int TIMES = 10;
         DB db = DBMaker.memoryDB().make();
-        MapDbBackend backend = new MapDbBackendArrays(db);
+        MapDbBackend backend = new MapDbBackendLists(db);
 
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
         FeatureKey featureKey = FeatureKey.of(StringId.of("object"), "name");
