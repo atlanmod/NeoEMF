@@ -11,25 +11,21 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.OwnedTransientStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
+import fr.inria.atlanmod.neoemf.util.DelegatedContentsList;
+import fr.inria.atlanmod.neoemf.util.DelegatedStoreList;
+import fr.inria.atlanmod.neoemf.util.DelegatedStoreMap;
 
-import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreEMap;
 
 import java.util.Objects;
 
@@ -246,7 +242,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public EList<EObject> eContents() {
-        return NeoEContentsEList.createNeoEContentsEList(this);
+        return DelegatedContentsList.newList(this);
     }
 
     /**
@@ -294,10 +290,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         final EClassifier eType = feature.getEType();
         if (feature.isMany()) {
             if (Objects.equals(eType.getInstanceClassName(), java.util.Map.Entry.class.getName())) {
-                value = new EStoreEcoreEMap(eType, feature);
+                value = new DelegatedStoreMap<>(this, feature);
             }
             else {
-                value = new EStoreEcoreEList(feature);
+                value = new DelegatedStoreList<>(this, feature);
             }
         }
         else {
@@ -382,122 +378,5 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         PersistentEObject other = (PersistentEObject) o;
         return Objects.equals(id, other.id());
-    }
-
-    /**
-     * ???
-     */
-    private class EStoreEcoreEMap extends EcoreEMap<Object, Object> {
-
-        @SuppressWarnings("JavaDoc")
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Constructs a {@code EStoreEcoreEMap} with the given {@code type} and {@code feature}.
-         *
-         * @param type    ???
-         * @param feature ???
-         */
-        public EStoreEcoreEMap(EClassifier type, EStructuralFeature feature) {
-            super((EClass) type, BasicEMap.Entry.class, null);
-            delegateEList = new EntryBasicEStoreEList(feature);
-            size = delegateEList.size();
-        }
-
-        /**
-         * ???
-         */
-        private class EntryBasicEStoreEList extends EStoreEObjectImpl.BasicEStoreEList<Entry<Object, Object>> {
-
-            @SuppressWarnings("JavaDoc")
-            private static final long serialVersionUID = 1L;
-
-            /**
-             * Constructs a new {@code EntryBasicEStoreEList} with the given {@code feature}. This
-             * {@link PersistentEObject} is defined as the owner of this list.
-             *
-             * @param feature ???
-             */
-            public EntryBasicEStoreEList(EStructuralFeature feature) {
-                super(DefaultPersistentEObject.this, feature);
-            }
-
-            @Override
-            protected void didSet(int index, Entry<Object, Object> newObject, Entry<Object, Object> oldObject) {
-                didRemove(index, oldObject);
-                didAdd(index, newObject);
-            }
-
-            @Override
-            protected void didAdd(int index, Entry<Object, Object> newObject) {
-                doPut(newObject);
-            }
-
-            @Override
-            protected void didRemove(int index, Entry<Object, Object> oldObject) {
-                EStoreEcoreEMap.this.doRemove(oldObject);
-            }
-
-            @Override
-            protected void didClear(int size, Object[] oldObjects) {
-                EStoreEcoreEMap.this.doClear();
-            }
-
-            @Override
-            protected void didMove(int index, Entry<Object, Object> movedObject, int oldIndex) {
-                EStoreEcoreEMap.this.doMove(movedObject);
-            }
-        }
-    }
-
-    /**
-     * ???
-     */
-    private class EStoreEcoreEList extends EStoreEObjectImpl.BasicEStoreEList<Object> {
-
-        @SuppressWarnings("JavaDoc")
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Constructs a new {@code EStoreEcoreEList} with the given {@code feature}. This {@link PersistentEObject} is
-         * defined as the owner of this list.
-         *
-         * @param feature ???
-         */
-        public EStoreEcoreEList(EStructuralFeature feature) {
-            super(DefaultPersistentEObject.this, feature);
-        }
-
-        @Override
-        public boolean contains(Object object) {
-            return delegateContains(object);
-        }
-
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
-         * to append the result to the existing list.
-         * <p>
-         * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
-         * deserialize the underlying list to add the element at the specified index.
-         */
-        @Override
-        public boolean add(Object object) {
-            if (isUnique() && contains(object)) {
-                return false;
-            }
-            else {
-                if (eStructuralFeature instanceof EAttribute) {
-                    addUnique(object);
-                }
-                else {
-                    int index = size() == 0 ? 0 : PersistentStore.NO_INDEX;
-                    addUnique(index, object);
-                }
-                return true;
-            }
-        }
     }
 }

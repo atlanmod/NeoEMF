@@ -28,20 +28,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link EContentsEList} implementation that delegates its operations to the associated
- * {@link PersistentStore}.
+ * An {@link EContentsEList} implementation that delegates its operations to the associated {@link PersistentStore}.
  * <p>
  * Instances of this class are created by {@link PersistentResource#getContents()} and allows to access the content
  * of a {@link PersistentResource} by lazily loading the elements.
  *
  * @param <E> the type of elements in this list
  */
-public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
+public class DelegatedContentsList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
     /**
-     * The instance of an empty {@code NeoEContentsEList}.
+     * The instance of an empty {@code DelegatedContentsList}.
      */
-    private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
+    private static final DelegatedContentsList<?> EMPTY = new EmptyDelegatedContentsList<>();
 
     /**
      * The owner of this list.
@@ -49,64 +48,68 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     private final PersistentEObject owner;
 
     /**
-     * Constructs a new {@code NeoEContentsEList} with the given {@code owner}.
+     * Constructs a new {@code DelegatedContentsList} with the given {@code owner}.
      *
      * @param owner the owner of this list
      */
-    protected NeoEContentsEList(EObject owner) {
+    protected DelegatedContentsList(EObject owner) {
         super(owner);
         this.owner = PersistentEObject.from(owner);
     }
 
     /**
-     * Constructs a new {@code NeoEContentsEList} with the given {@code owner} and {@code features}.
+     * Constructs a new {@code DelegatedContentsList} with the given {@code owner} and {@code features}.
      *
      * @param owner    the owner of this list
      * @param features the containment features that are handled by this list
      */
-    protected NeoEContentsEList(EObject owner, EStructuralFeature[] features) {
+    protected DelegatedContentsList(EObject owner, EStructuralFeature[] features) {
         super(owner, features);
         this.owner = PersistentEObject.from(owner);
     }
 
     /**
-     * Returns an empty {@code NeoEContentsEList}.
+     * Returns an empty {@code DelegatedContentsList}.
      *
      * @param <E> the type of elements in this list
      *
      * @return an empty list
      */
-    @SuppressWarnings("unchecked") // Unchecked cast: 'NeoEContentsEList<?>' to 'NeoEContentsEList<...>'
-    public static <E> NeoEContentsEList<E> emptyNeoContentsEList() {
-        return (NeoEContentsEList<E>) EMPTY_NEO_CONTENTS_ELIST;
+    @SuppressWarnings("unchecked") // Unchecked cast: 'DelegatedContentsList<?>' to 'DelegatedContentsList<...>'
+    public static <E> DelegatedContentsList<E> empty() {
+        return (DelegatedContentsList<E>) EMPTY;
     }
 
     /**
-     * Creates a new {@code NeoEContentsEList} with the given {@code owner}.
+     * Creates a new {@code DelegatedContentsList} with the given {@code owner}.
      *
      * @param owner the owner of this list
      * @param <E>   the type of elements in this list
      *
      * @return a new list
      */
-    public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject owner) {
-        NeoEContentsEList<E> contentEList;
-        EStructuralFeature[] features = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
-        if (isNull(features)) {
-            contentEList = NeoEContentsEList.emptyNeoContentsEList();
+    public static <E> DelegatedContentsList<E> newList(PersistentEObject owner) {
+        DelegatedContentsList<E> list;
+
+        EStructuralFeature[] containments = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
+        if (isNull(containments)) {
+            list = DelegatedContentsList.empty();
         }
         else {
-            contentEList = new NeoEContentsEList<>(owner, features);
+            list = new DelegatedContentsList<>(owner, containments);
         }
-        return contentEList;
+
+        return list;
     }
 
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'E'
     public E get(int index) {
         checkNotNull(eStructuralFeatures, "index=" + index + ", size=0");
+
         // Find the feature to look for
         int featureSize = 0;
+
         for (EStructuralFeature feature : eStructuralFeatures) {
             int localFeatureSize;
             if (feature.isMany()) {
@@ -121,20 +124,21 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
                 return (E) owner.eStore().get(owner, feature, (index - (featureSize - localFeatureSize)));
             }
         }
+
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
     }
 
     /**
-     * An empty {@code NeoEContentsEList}.
+     * An empty {@code DelegatedContentsList}.
      *
      * @param <E> the type of elements in this list
      */
-    private static class EmptyNeoEContentsEList<E> extends NeoEContentsEList<E> {
+    private static class EmptyDelegatedContentsList<E> extends DelegatedContentsList<E> {
 
         /**
-         * Constructs a new {@code EmptyNeoEContentsEList}.
+         * Constructs a new {@code EmptyDelegatedContentsList}.
          */
-        public EmptyNeoEContentsEList() {
+        public EmptyDelegatedContentsList() {
             super(null, null);
         }
 
