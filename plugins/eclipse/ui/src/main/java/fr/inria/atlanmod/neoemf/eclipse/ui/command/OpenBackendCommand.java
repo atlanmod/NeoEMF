@@ -12,11 +12,11 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
@@ -105,13 +105,13 @@ public class OpenBackendCommand extends AbstractHandler {
                 NeoLogger.error("{0} does not contain {1} property", PersistenceBackendFactory.CONFIG_FILE, PersistenceBackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
-            else if (Objects.equals(backendType, MapDbPersistenceBackendFactory.NAME)) {
+            else if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
                 uri = MapDbURI.createFileURI(root.toFile());
             }
-            else if (Objects.equals(backendType, BlueprintsPersistenceBackendFactory.NAME)) {
+            else if (Objects.equals(backendType, BlueprintsBackendFactory.NAME)) {
                 uri = BlueprintsURI.createFileURI(root.toFile());
             }
-            else if (Objects.equals(backendType, BerkeleyDbPersistenceBackendFactory.NAME)) {
+            else if (Objects.equals(backendType, BerkeleyDbBackendFactory.NAME)) {
                 uri = BerkeleyDbURI.createFileURI(root.toFile());
             }
 
