@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides serializers that allows to persist model-level elements into MapDB collections.
+ * <b>TODO:</b> Provides...
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.serializer;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer;

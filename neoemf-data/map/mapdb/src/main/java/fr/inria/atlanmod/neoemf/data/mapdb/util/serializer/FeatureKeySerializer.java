@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.serializer;
+package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
 
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
@@ -23,30 +23,33 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link FeatureKeySerializer} that is able to serialize {@link MultivaluedFeatureKey}.
+ * A {@link Serializer} implementation for {@link FeatureKey}.
  *
- * @see FeatureKeySerializer
- * @see MultivaluedFeatureKey
+ * @see FeatureKey
  */
-public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
+public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
     /**
-     * An embedded {@link Integer} {@link Serializer} used to handle collection indices.
+     * The {@link Serializer} that manages {@link String}s.
      */
-    protected final Serializer<Integer> intSerializer = INTEGER;
+    protected final Serializer<String> stringSerializer = STRING;
+
+    /**
+     * The {@link Serializer} the manages {@link Id}s.
+     */
+    protected final Serializer<Id> idSerializer = new IdSerializer();
 
     @Override
     public void serialize(@Nonnull DataOutput2 out, @Nonnull FeatureKey key) throws IOException {
-        super.serialize(out, key);
-        intSerializer.serialize(out, ((MultivaluedFeatureKey) key).position());
+        idSerializer.serialize(out, key.id());
+        stringSerializer.serialize(out, key.name());
     }
 
     @Override
     public FeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
-        return MultivaluedFeatureKey.of(
+        return FeatureKey.of(
                 idSerializer.deserialize(in, -1),
-                stringSerializer.deserialize(in, -1),
-                intSerializer.deserialize(in, -1));
+                stringSerializer.deserialize(in, -1)
+        );
     }
-
 }

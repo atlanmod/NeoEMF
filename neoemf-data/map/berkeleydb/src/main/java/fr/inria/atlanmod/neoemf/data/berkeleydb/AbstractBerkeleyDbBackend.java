@@ -23,7 +23,7 @@ import com.sleepycat.je.OperationStatus;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
@@ -225,12 +225,12 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     }
 
     @Override
-    public void unsetAllValues(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         unsetValue(key);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetAllValues(FeatureKey key) {
         unsetValue(key);
     }
 
@@ -245,12 +245,12 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     }
 
     @Override
-    public boolean hasAnyValue(FeatureKey key) {
+    public boolean hasReference(FeatureKey key) {
         return hasValue(key);
     }
 
     @Override
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasAnyValue(FeatureKey key) {
         return hasValue(key);
     }
 
@@ -315,21 +315,21 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     /**
      * Retrieves a value from the {@code database} according to the given {@code key}.
      *
-     * @param database  the database where to looking for
-     * @param key       the key of the element to retrieve
-     * @param <K>       the type of the key
-     * @param <V>       the type of the value
+     * @param database the database where to looking for
+     * @param key      the key of the element to retrieve
+     * @param <K>      the type of the key
+     * @param <V>      the type of the value
      *
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
     protected <K, V> Optional<V> fromDatabase(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry();
 
         Optional<V> value;
         if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(new Serializer<V>().deserialize(dbValue.getData()));
+            value = Optional.of(Serializer.deserialize(dbValue.getData()));
         }
         else {
             value = Optional.empty();
@@ -347,8 +347,8 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @param <V>      the type of the value
      */
     protected <K, V> void toDatabase(Database database, K key, V value) {
-        DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(new Serializer<V>().serialize(value));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry(Serializer.serialize(value));
 
         database.put(null, dbKey, dbValue);
     }
@@ -361,7 +361,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @param <K>      the type of the key
      */
     protected <K> void outDatabase(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
 
         database.delete(null, dbKey);
     }

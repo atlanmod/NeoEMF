@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
@@ -26,12 +26,19 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Simple class to serialize/deserialize objects to byte arrays.
- *
- * @param <T> the type of {@link Object} to serialize/deserialize
+ * Simple class to serialize/deserialize objects from/to byte arrays.
  */
 @Experimental
-public class Serializer<T> {
+public final class Serializer {
+
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException every time
+     */
+    private Serializer() {
+        throw new IllegalStateException("This class should not be instantiated");
+    }
 
     /**
      * Serializes an {@code Object} to a byte array for storage/serialization.
@@ -40,7 +47,7 @@ public class Serializer<T> {
      *
      * @return the serialized object as a byte array
      */
-    public byte[] serialize(@Nonnull T value) {
+    public static <T> byte[] serialize(@Nonnull T value) {
         checkNotNull(value);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512); ObjectOutput out = new ObjectOutputStream(baos)) {
@@ -61,7 +68,7 @@ public class Serializer<T> {
      * @return the deserialized object
      */
     @SuppressWarnings("unchecked")
-    public T deserialize(@Nonnull byte[] data) {
+    public static <T> T deserialize(@Nonnull byte[] data) {
         checkNotNull(data);
 
         try (ByteArrayInputStream bis = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bis)) {

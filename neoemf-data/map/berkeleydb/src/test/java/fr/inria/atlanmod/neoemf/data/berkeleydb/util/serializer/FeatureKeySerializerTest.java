@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -25,33 +25,29 @@ public class FeatureKeySerializerTest {
 
     @Test
     public void testSerialize() {
-        Serializer<FeatureKey> serializer = new Serializer<>();
         FeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature");
-        FeatureKey fkOut = serializer.deserialize(serializer.serialize(fkIn));
+        FeatureKey fkOut = Serializer.deserialize(Serializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
 
     @Test
     public void testSerializeMFK() {
-        Serializer<FeatureKey> serializer = new Serializer<>();
         MultivaluedFeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature").withPosition(0);
-        MultivaluedFeatureKey fkOut = (MultivaluedFeatureKey) serializer.deserialize(serializer.serialize(fkIn));
+        MultivaluedFeatureKey fkOut = Serializer.deserialize(Serializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
 
-
     @Test
     public void testSerializeMFKBis() {
-        Serializer<FeatureKey> serializer = new Serializer<>();
         FeatureKey fk = FeatureKey.of(StringId.of("obj1"), "feature");
         MultivaluedFeatureKey fk1 = fk.withPosition(0);
         MultivaluedFeatureKey fk2 = fk.withPosition(1);
 
-        byte[] ser1 = serializer.serialize(fk1);
-        byte[] ser2 = serializer.serialize(fk2);
-        byte[] ser3 = serializer.serialize(fk);
+        byte[] ser1 = Serializer.serialize(fk1);
+        byte[] ser2 = Serializer.serialize(fk2);
+        byte[] ser3 = Serializer.serialize(fk);
 
 
         assertThat(Arrays.equals(ser1, ser2)).isFalse();
