@@ -17,6 +17,8 @@
     <properties>
         <uberjar.name>benchmarks</uberjar.name>
         <uberjar.directory>${project.build.directory}/exec</uberjar.directory>
+
+        <cglib.version>3.2.4</cglib.version>
     </properties>
 
     <dependencies>
@@ -84,6 +86,8 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
+            <version>${cglib.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -114,11 +118,6 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jul</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
         </dependency>
 
         <!-- Benchmark -->
