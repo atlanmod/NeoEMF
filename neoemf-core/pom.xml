@@ -106,7 +106,7 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
         
-        <!-- Temporary fix: unable to resolve EMFCompare maven dependency -->
+        <!-- FIXME Temporary fix: unable to resolve EMFCompare maven dependency -->
         <dependency>
 		    <groupId>static-import</groupId>
 		    <artifactId>emf.compare</artifactId>
@@ -124,7 +124,7 @@
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
 
         <dependency>

@@ -25,11 +25,11 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
 
-import java.io.File;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -279,11 +279,13 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         @Override
         public PersistenceBackendFactory persistenceBackendFactory() {
             try {
-                AbstractPersistenceBackendFactory persistenceBackendFactory = (AbstractPersistenceBackendFactory) super.persistenceBackendFactory();
-                when(persistenceBackendFactory.createPersistentBackend(any(File.class), any(Map.class))).thenReturn(mock(PersistenceBackend.class));
-                when(persistenceBackendFactory.createPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
-                when(persistenceBackendFactory.createSpecificPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mock(PersistentStore.class));
-                return persistenceBackendFactory;
+                AbstractPersistenceBackendFactory factory = (AbstractPersistenceBackendFactory) super.persistenceBackendFactory();
+
+                when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistenceBackend.class));
+                when(factory.createSpecificPersistentStore(any(), any(), notNull())).thenReturn(mock(PersistentStore.class));
+                when(factory.createPersistentStore(any(), any(), notNull())).thenCallRealMethod();
+
+                return factory;
             }
             catch (InvalidDataStoreException e) {
                 throw new RuntimeException(e);
