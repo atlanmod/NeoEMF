@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -71,7 +71,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
         checkArgument(backend instanceof BerkeleyDbBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DefaultDirectWriteStore<>(resource, backend);
+        return new DirectWriteStore<>(resource, backend);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
         checkArgument(backend instanceof BerkeleyDbBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DefaultDirectWriteStore<>(resource, backend);
+        return new DirectWriteStore<>(resource, backend);
     }
 
     @Override

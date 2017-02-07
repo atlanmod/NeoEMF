@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that uses an internal cache to store persisted {@link
+ * A {@link DirectWriteStore} that uses an internal cache to store persisted {@link
  * Object}s that are part of multi-valued {@link EReference}s to speed-up their access.
  * <p>
  * Using a cache avoids multiple {@link java.util.List} deserialization to retrieve the same element, which can be an
@@ -38,12 +38,12 @@ import static java.util.Objects.isNull;
  * fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses) to provide additional features such
  * as caching or logging.
  *
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
+ * @see DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
 @Deprecated
 // TODO Unusable: must be completely reviewed
-public class DirectWriteCachedMapStore extends DefaultDirectWriteStore<PersistenceBackend> {
+public class DirectWriteCachedMapStore extends DirectWriteStore<PersistenceBackend> {
 
     /**
      * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.

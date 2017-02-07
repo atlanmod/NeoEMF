@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -56,7 +56,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to HBase
+ * A {@link DirectWriteStore} that translates model-level operations to HBase
  * operations.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
@@ -70,10 +70,10 @@ import static java.util.Objects.nonNull;
  * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  * @see PersistentEObject
  * @see HBaseBackend
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
+ * @see DirectWriteStore
  */
 // TODO Continue cleaning, there is still code duplication
-public class DirectWriteHBaseStore extends DefaultDirectWriteStore<HBaseBackend> {
+public class DirectWriteHBaseStore extends DirectWriteStore<HBaseBackend> {
 
     /**
      * The column family holding properties.

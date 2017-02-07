@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.data.store.DefaultDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -85,7 +85,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         checkArgument(backend instanceof MapDbBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DefaultDirectWriteStore<>(resource, backend);
+        return new DirectWriteStore<>(resource, backend);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         checkArgument(backend instanceof MapDbBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DefaultDirectWriteStore<>(resource, backend);
+        return new DirectWriteStore<>(resource, backend);
     }
 
     @Override

@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EReference;
 import java.util.Optional;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that uses an internal cache to store values and
+ * A {@link DirectWriteStore} that uses an internal cache to store values and
  * references that are part of multi-valued {@link org.eclipse.emf.ecore.EStructuralFeature}s to speed-up their access.
  * <p>
  * Large multi-valued {@link org.eclipse.emf.ecore.EStructuralFeature}s can be an execution time bottleneck in the
@@ -41,14 +41,12 @@ import java.util.Optional;
  * fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses) to provide additional features such
  * as caching or logging.
  *
- * @param <P> the type of the supported {@link PersistenceBackend}
- *
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
+ * @see DirectWriteStore
  * @see fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator
  */
 @Deprecated
 // TODO Unusable: must be completely reviewed
-public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends DefaultDirectWriteStore<P> {
+public class DirectWriteCacheManyStore extends DirectWriteStore<PersistenceBackend> {
 
     /**
      * In-memory cache that holds the recently loaded multivalued values, identified by the associated
@@ -75,7 +73,7 @@ public class DirectWriteCacheManyStore<P extends PersistenceBackend> extends Def
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteCacheManyStore(PersistentResource resource, P backend) {
+    public DirectWriteCacheManyStore(PersistentResource resource, PersistenceBackend backend) {
         super(resource, backend);
     }
 
