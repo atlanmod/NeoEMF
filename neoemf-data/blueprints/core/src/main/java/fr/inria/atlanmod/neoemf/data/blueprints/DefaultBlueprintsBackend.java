@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.Iterables;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Element;
@@ -67,8 +66,8 @@ import static java.util.Objects.nonNull;
  *
  * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} to access and manipulate the
  * database.
- * @note Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory}
- * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
+ * @note Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory} that provides an usable
+ * {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsBackendFactory
  */
 class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
@@ -281,7 +280,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void metaclassFor(Id id, MetaclassValue metaclass) {
-        Vertex metaclassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, metaclass.name()), null);
+        Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
+        Vertex metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny().orElse(null);
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = graph.addVertex(buildId(metaclass).toString());
@@ -302,38 +302,29 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         // There is no strict instance of an abstract class
         if (eClass.isAbstract() && strict) {
-            indexHits = Collections.emptyList();
+            return Collections.emptyList();
         }
         else {
-            indexHits = new ArrayList<>();
             Set<EClass> eClassToFind = new HashSet<>();
             eClassToFind.add(eClass);
 
             // Find all the concrete subclasses of the given EClass (the metaclass index only stores concretes EClass)
             if (!strict) {
-                eClass.getEPackage().getEClassifiers()
+                eClassToFind.addAll(eClass.getEPackage().getEClassifiers()
                         .stream()
                         .filter(EClass.class::isInstance)
                         .map(EClass.class::cast)
                         .filter(c -> eClass.isSuperTypeOf(c) && !c.isAbstract())
-                        .forEach(eClassToFind::add);
+                        .collect(Collectors.toList()));
             }
 
             // Get all the vertices that are indexed with one of the EClass
-            for (EClass ec : eClassToFind) {
-                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
-                if (nonNull(metaClassVertex)) {
-                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
-                    for (Vertex v : instanceVertexIterable) {
-                        indexHits.add(StringId.from(v.getId()));
-                    }
-                }
-                else {
-                    NeoLogger.warn("Metaclass {0} not found in index", ec.getName());
-                }
-            }
+            return eClassToFind.stream()
+                    .flatMap(ec -> StreamSupport.stream(metaclassIndex.get(KEY_NAME, ec.getName()).spliterator(), false)
+                            .flatMap(mcv -> StreamSupport.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF).spliterator(), false)
+                                    .map(v -> StringId.from(v.getId()))))
+                    .collect(Collectors.toList());
         }
-        return indexHits;
     }
 
     @Override
@@ -718,18 +709,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     /**
-     * Create a new vertex, add it to the graph, and return the newly created vertex.
-     *
-     * @param id the identifier of the {@link Vertex}
-     *
-     * @return the newly created vertex
-     */
-    @Override
-    public Vertex addVertex(Id id) {
-        return graph.addVertex(id.toString());
-    }
-
-    /**
      * Returns the vertex corresponding to the provided {@code id}. If no vertex corresponds to that {@code id}, then
      * return {@code null}.
      *
@@ -740,6 +719,18 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Override
     public Vertex getVertex(Id id) {
         return verticesCache.get(id, key -> graph.getVertex(key.toString()));
+    }
+
+    /**
+     * Create a new vertex, add it to the graph, and return the newly created vertex.
+     *
+     * @param id the identifier of the {@link Vertex}
+     *
+     * @return the newly created vertex
+     */
+    @Override
+    public Vertex addVertex(Id id) {
+        return graph.addVertex(id.toString());
     }
 
     /**
@@ -754,7 +745,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         GraphHelper.copyGraph(graph, backend.graph);
 
         for (MetaclassValue metaclass : indexedMetaclasses) {
-            checkArgument(Iterables.isEmpty(backend.metaclassIndex.get(KEY_NAME, metaclass.name())), "Index is not consistent");
+            Iterable<Vertex> metaclasses = backend.metaclassIndex.get(KEY_NAME, metaclass.name());
+            checkArgument(
+                    !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
+                    "Index is not consistent");
+
             backend.metaclassIndex.put(KEY_NAME, metaclass.name(), vertex(buildId(metaclass)));
         }
     }
@@ -831,7 +826,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             public void remove() {
                 Vertex referencedVertex = getVertex(Direction.IN);
                 super.remove();
-                if (Iterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
+
+                Iterable<Edge> edges = referencedVertex.getEdges(Direction.IN);
+                if (!StreamSupport.stream(edges.spliterator(), false).findAny().isPresent()) {
                     // If the Vertex has no more incoming edges remove it from the DB
                     referencedVertex.remove();
                 }
