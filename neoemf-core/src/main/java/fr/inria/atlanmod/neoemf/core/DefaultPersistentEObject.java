@@ -473,11 +473,33 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         public boolean contains(Object object) {
             return delegateContains(object);
         }
+        
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
+         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature)} implementation.
+         */
+        @Override
+        public Object[] toArray() {
+            return eStore().toArray(owner, getEStructuralFeature());
+        };
+        
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
+         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
+         */
+        @Override
+        public <T extends Object> T[] toArray(T[] array) {
+            return eStore().toArray(owner, getEStructuralFeature(), array);
+        };
 
         /**
          * {@inheritDoc}
          * <p>
-         * Override the default implementation which relies on {@link #size()} to compute the insertion index by
+         * Overrides the default implementation which relies on {@link #size()} to compute the insertion index by
          * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
          * to append the result to the existing list.
          * <p>
