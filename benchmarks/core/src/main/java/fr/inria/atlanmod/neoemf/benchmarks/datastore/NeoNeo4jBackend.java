@@ -38,7 +38,6 @@ public class NeoNeo4jBackend extends NeoTinkerBackend {
     @Override
     public Map<String, Object> getOptions() {
         return BlueprintsNeo4jOptionsBuilder.newBuilder()
-                .directWrite()
                 .autocommit()
                 .asMap();
     }

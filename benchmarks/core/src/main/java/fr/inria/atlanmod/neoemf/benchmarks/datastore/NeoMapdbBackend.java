@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -36,7 +36,7 @@ public class NeoMapdbBackend extends AbstractNeoBackend {
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
         URI uri = MapDbURI.createFileURI(file);
@@ -47,7 +47,6 @@ public class NeoMapdbBackend extends AbstractNeoBackend {
     @Override
     public Map<String, Object> getOptions() {
         return MapDbOptionsBuilder.newBuilder()
-                .directWriteIndices()
                 .autocommit()
                 .asMap();
     }
