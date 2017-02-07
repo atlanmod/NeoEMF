@@ -145,10 +145,9 @@
 
         <javax-annotations.version>3.0.1</javax-annotations.version>
 
-        <assertj.version>3.6.1</assertj.version>
+        <assertj.version>3.6.2</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
-        <cglib-nodep.version>3.2.4</cglib-nodep.version>
     </properties>
 
     <dependencies>
@@ -169,12 +168,6 @@
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>${cglib-nodep.version}</version>
             </dependency>
 
             <!-- Common -->
