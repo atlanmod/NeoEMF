@@ -328,12 +328,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> Optional<T> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return Optional.ofNullable(vertex(key.id()).getProperty(key.name()));
     }
 
     @Override
-    public <T> Optional<T> valueOf(MultivaluedFeatureKey key) {
+    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return Optional.ofNullable(vertex(key.id()).getProperty(formatProperty(key.name(), key.position())));
     }
 
@@ -361,14 +361,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> Optional<T> valueFor(FeatureKey key, T value) {
-        Optional<T> previousValue = valueOf(key);
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        Optional<V> previousValue = valueOf(key);
         vertex(key.id()).setProperty(key.name(), value);
         return previousValue;
     }
 
-    public <T> Optional<T> valueFor(MultivaluedFeatureKey key, T value) {
-        Optional<T> previousValue = valueOf(key);
+    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+        Optional<V> previousValue = valueOf(key);
         vertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
         return previousValue;
     }
@@ -479,7 +479,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> void addValue(MultivaluedFeatureKey key, T value) {
+    public <V> void addValue(MultivaluedFeatureKey key, V value) {
         int size = sizeOf(key).orElse(0);
         int newSize = size + 1;
 
@@ -519,13 +519,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> Optional<T> removeValue(MultivaluedFeatureKey key) {
+    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         int size = sizeOf(key).orElse(0);
         int newSize = size - 1;
 
         Vertex vertex = vertex(key.id());
 
-        Optional<T> previousValue = Optional.ofNullable(vertex.getProperty(formatProperty(key.name(), key.position())));
+        Optional<V> previousValue = Optional.ofNullable(vertex.getProperty(formatProperty(key.name(), key.position())));
 
         // TODO Replace by Stream
         for (int i = newSize; i > key.position(); i--) {
@@ -596,7 +596,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> boolean containsValue(FeatureKey key, T value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -612,7 +612,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> OptionalInt indexOfValue(FeatureKey key, T value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -633,7 +633,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> OptionalInt lastIndexOfValue(FeatureKey key, T value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -654,11 +654,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <T> Iterable<T> valuesAsList(FeatureKey key) {
+    public <V> Iterable<V> valuesAsList(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> vertex.<T>getProperty(formatProperty(key.name(), i)))
+                .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
                 .collect(Collectors.toList());
     }
 

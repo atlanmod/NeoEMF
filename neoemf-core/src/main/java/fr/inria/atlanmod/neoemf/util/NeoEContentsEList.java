@@ -127,9 +127,9 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     /**
      * An empty {@code NeoEContentsEList}.
      *
-     * @param <T> the type of elements in this list
+     * @param <E> the type of elements in this list
      */
-    private static class EmptyNeoEContentsEList<T> extends NeoEContentsEList<T> {
+    private static class EmptyNeoEContentsEList<E> extends NeoEContentsEList<E> {
 
         /**
          * Constructs a new {@code EmptyNeoEContentsEList}.
@@ -139,7 +139,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         }
 
         @Override
-        public List<T> basicList() {
+        public List<E> basicList() {
             return this;
         }
     }

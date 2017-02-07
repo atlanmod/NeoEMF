@@ -18,18 +18,18 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
  *
- * @param <T> the type of handlers
+ * @param <H> the type of handlers
  *
  * @see Handler
  */
-public interface Notifier<T extends Handler> {
+public interface Notifier<H extends Handler> {
 
     /**
      * Returns the {@link Handler} that will be notified by this {@code Notifier}.
      *
      * @return the handler to notify
      */
-    Iterable<T> next();
+    Iterable<H> next();
 
     /**
      * Notifies all registered handlers of the start of a document.

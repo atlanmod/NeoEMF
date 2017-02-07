@@ -146,7 +146,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
     }
 
     @Override
-    public <T> Optional<T> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(features, key);
     }
 
@@ -161,7 +161,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
     }
 
     @Override
-    public <T> Optional<T> valueFor(FeatureKey key, T value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         return toDatabase(features, key, value);
     }
 
@@ -261,7 +261,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
     }
 
     @VisibleForTesting
-    public <E> E get(String name) {
+    public <V> V get(String name) {
         return db.get(name);
     }
 

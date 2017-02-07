@@ -186,7 +186,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     }
 
     @Override
-    public <T> Optional<T> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(features, key);
     }
 
@@ -201,8 +201,8 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     }
 
     @Override
-    public <T> Optional<T> valueFor(FeatureKey key, T value) {
-        Optional<T> previousValue = valueOf(key);
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        Optional<V> previousValue = valueOf(key);
 
         toDatabase(features, key, value);
 

@@ -15,7 +15,6 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -49,17 +48,17 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public <T> Optional<T> valueOf(MultivaluedFeatureKey key) {
-        return this.<T[]>valueOf(key.withoutPosition())
+    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
+        return this.<V[]>valueOf(key.withoutPosition())
                 .map(ts -> ts[key.position()]);
     }
 
     @Override
-    public <T> Optional<T> valueFor(MultivaluedFeatureKey key, T value) {
-        T[] values = this.<T[]>valueOf(key.withoutPosition())
+    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        Optional<T> previousValue = Optional.of(values[key.position()]);
+        Optional<V> previousValue = Optional.of(values[key.position()]);
 
         values[key.position()] = value;
 
@@ -69,19 +68,19 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public <T> void addValue(MultivaluedFeatureKey key, T value) {
-        T[] values = this.<T[]>valueOf(key.withoutPosition())
+    public <V> void addValue(MultivaluedFeatureKey key, V value) {
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
         valueFor(key.withoutPosition(), ArrayUtils.add(values, key.position(), value));
     }
 
     @Override
-    public <T> Optional<T> removeValue(MultivaluedFeatureKey key) {
-        T[] values = this.<T[]>valueOf(key.withoutPosition())
+    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        Optional<T> previousValue = Optional.of(values[key.position()]);
+        Optional<V> previousValue = Optional.of(values[key.position()]);
 
         valueFor(key.withoutPosition(), ArrayUtils.remove(values, key.position()));
 
@@ -89,15 +88,15 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public <T> boolean containsValue(FeatureKey key, T value) {
-        return this.<T[]>valueOf(key)
+    public <V> boolean containsValue(FeatureKey key, V value) {
+        return this.<V[]>valueOf(key)
                 .map(ts -> ArrayUtils.contains(ts, value))
                 .orElse(false);
     }
 
     @Override
-    public <T> OptionalInt indexOfValue(FeatureKey key, T value) {
-        return this.<T[]>valueOf(key)
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+        return this.<V[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.indexOf(ts, value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
@@ -106,8 +105,8 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public <T> OptionalInt lastIndexOfValue(FeatureKey key, T value) {
-        return this.<T[]>valueOf(key)
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+        return this.<V[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.lastIndexOf(ts, value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
@@ -116,16 +115,16 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public <T> Iterable<T> valuesAsList(FeatureKey key) {
-        T[] values = this.<T[]>valueOf(key)
+    public <V> Iterable<V> valuesAsList(FeatureKey key) {
+        V[] values = this.<V[]>valueOf(key)
                 .orElse(newValue());
 
         return Arrays.asList(values);
     }
 
     @Override
-    public <T> OptionalInt sizeOf(FeatureKey key) {
-        return this.<T[]>valueOf(key)
+    public <V> OptionalInt sizeOf(FeatureKey key) {
+        return this.<V[]>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());
     }
@@ -133,12 +132,12 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     /**
      * Creates a new multi-value.
      *
-     * @param <T> the type of the multi-value
+     * @param <V> the type of the multi-value
      *
      * @return a new multi-value
      */
     @SuppressWarnings("unchecked")
-    private <T> T[] newValue() {
-        return (T[]) new Object[0];
+    private <V> V[] newValue() {
+        return (V[]) new Object[0];
     }
 }

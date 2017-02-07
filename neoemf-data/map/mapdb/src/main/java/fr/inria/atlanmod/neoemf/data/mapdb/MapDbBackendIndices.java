@@ -77,13 +77,13 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> Optional<T> valueOf(MultivaluedFeatureKey key) {
+    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return fromDatabase(multivaluedFeatures, key);
     }
 
     @Override
-    public <T> Optional<T> valueFor(MultivaluedFeatureKey key, T value) {
-        Optional<T> previousValue = valueOf(key);
+    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+        Optional<V> previousValue = valueOf(key);
 
         toDatabase(multivaluedFeatures, key, value);
 
@@ -91,7 +91,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> void addValue(MultivaluedFeatureKey key, T value) {
+    public <V> void addValue(MultivaluedFeatureKey key, V value) {
         int size = sizeOf(key.withoutPosition()).orElse(0);
 
         // TODO Replace by Stream
@@ -104,8 +104,8 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> Optional<T> removeValue(MultivaluedFeatureKey key) {
-        Optional<T> previousValue = valueOf(key);
+    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
+        Optional<V> previousValue = valueOf(key);
 
         int size = sizeOf(key.withoutPosition()).orElse(0);
 
@@ -120,29 +120,29 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> boolean containsValue(FeatureKey key, T value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
                 .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
     @Override
-    public <T> OptionalInt indexOfValue(FeatureKey key, T value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .min();
     }
 
     @Override
-    public <T> OptionalInt lastIndexOfValue(FeatureKey key, T value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .max();
     }
 
     @Override
-    public <T> Iterable<T> valuesAsList(FeatureKey key) {
+    public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> this.<T>valueOf(key.withPosition(i)).orElse(null))
+                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
                 .collect(Collectors.toList());
     }
 

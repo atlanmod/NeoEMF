@@ -62,16 +62,16 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> Optional<T> valueOf(MultivaluedFeatureKey key) {
-        return this.<List<T>>valueOf(key.withoutPosition())
+    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
+        return this.<List<V>>valueOf(key.withoutPosition())
                 .map(ts -> ts.get(key.position()));
     }
 
     @Override
-    public <T> Optional<T> valueFor(MultivaluedFeatureKey key, T value) {
-        List<T> values = this.<List<T>>valueOf(key.withoutPosition()).orElse(newValue());
+    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition()).orElse(newValue());
 
-        Optional<T> previousValue = Optional.of(values.set(key.position(), value));
+        Optional<V> previousValue = Optional.of(values.set(key.position(), value));
 
         valueFor(key.withoutPosition(), values);
 
@@ -79,8 +79,8 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> void addValue(MultivaluedFeatureKey key, T value) {
-        List<T> values = this.<List<T>>valueOf(key.withoutPosition())
+    public <V> void addValue(MultivaluedFeatureKey key, V value) {
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
         values.add(key.position(), value);
@@ -89,11 +89,11 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> Optional<T> removeValue(MultivaluedFeatureKey key) {
-        List<T> values = this.<List<T>>valueOf(key.withoutPosition())
+    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        Optional<T> previousValue = Optional.of(values.remove(key.position()));
+        Optional<V> previousValue = Optional.of(values.remove(key.position()));
 
         valueFor(key.withoutPosition(), values);
 
@@ -101,15 +101,15 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> boolean containsValue(FeatureKey key, T value) {
-        return this.<List<T>>valueOf(key)
+    public <V> boolean containsValue(FeatureKey key, V value) {
+        return this.<List<V>>valueOf(key)
                 .map(ts -> ts.contains(value))
                 .orElse(false);
     }
 
     @Override
-    public <T> OptionalInt indexOfValue(FeatureKey key, T value) {
-        return this.<List<T>>valueOf(key)
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+        return this.<List<V>>valueOf(key)
                 .map(ts -> {
                     int index = ts.indexOf(value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
@@ -118,8 +118,8 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> OptionalInt lastIndexOfValue(FeatureKey key, T value) {
-        return this.<List<T>>valueOf(key)
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+        return this.<List<V>>valueOf(key)
                 .map(ts -> {
                     int index = ts.lastIndexOf(value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
@@ -128,14 +128,14 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <T> Iterable<T> valuesAsList(FeatureKey key) {
-        return this.<List<T>>valueOf(key)
+    public <V> Iterable<V> valuesAsList(FeatureKey key) {
+        return this.<List<V>>valueOf(key)
                 .orElse(newValue());
     }
 
     @Override
-    public <T> OptionalInt sizeOf(FeatureKey key) {
-        return this.<List<T>>valueOf(key)
+    public <V> OptionalInt sizeOf(FeatureKey key) {
+        return this.<List<V>>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.size()))
                 .orElse(OptionalInt.empty());
     }
@@ -143,11 +143,11 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     /**
      * Creates a new multi-value.
      *
-     * @param <T> the type of the multi-value
+     * @param <V> the type of the multi-value
      *
      * @return a new multi-value
      */
-    private <T> List<T> newValue() {
+    private <V> List<V> newValue() {
         return new ArrayList<>();
     }
 }
