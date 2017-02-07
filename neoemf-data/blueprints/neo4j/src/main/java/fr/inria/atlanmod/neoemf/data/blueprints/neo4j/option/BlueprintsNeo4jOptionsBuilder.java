@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jResourceOptions.CacheType;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptionsBuilder;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -38,6 +40,16 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      */
     protected BlueprintsNeo4jOptionsBuilder() {
         graph(BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
+    }
+
+    /**
+     * Returns an immutable empty {@link Map}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
     }
 
     /**

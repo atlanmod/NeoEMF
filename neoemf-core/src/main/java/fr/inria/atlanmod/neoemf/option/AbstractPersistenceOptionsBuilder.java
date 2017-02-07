@@ -54,16 +54,6 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
         this.storeOptions = new ArrayList<>();
     }
 
-    /**
-     * Returns an immutable empty {@link Map}.
-     *
-     * @return an immutable {@link Map}
-     */
-    @Nonnull
-    public static Map<String, Object> noOption() {
-        return Collections.emptyMap();
-    }
-
     @Nonnull
     @Override
     public final Map<String, Object> asMap() throws InvalidOptionException {

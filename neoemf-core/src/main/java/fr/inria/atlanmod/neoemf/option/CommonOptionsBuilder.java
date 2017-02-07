@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -31,6 +33,16 @@ public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<Comm
      * #newBuilder()}
      */
     protected CommonOptionsBuilder() {
+    }
+
+    /**
+     * Returns an immutable empty {@link Map}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return CommonOptionsBuilder.newBuilder().asMap();
     }
 
     /**

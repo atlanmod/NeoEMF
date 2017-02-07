@@ -36,6 +36,6 @@ public class BlueprintsResourceBuilder extends AbstractBlueprintsResourceBuilder
 
     @Override
     protected void registerFactory() {
-        resourceOptions = BlueprintsOptionsBuilder.newBuilder().asMap();
+        resourceOptions = BlueprintsOptionsBuilder.noOption();
     }
 }

@@ -39,7 +39,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     @Test
     public void testSaveGraphNeo4jResourceNeo4jTypeOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.noOption();
 
         resource.save(options);
 

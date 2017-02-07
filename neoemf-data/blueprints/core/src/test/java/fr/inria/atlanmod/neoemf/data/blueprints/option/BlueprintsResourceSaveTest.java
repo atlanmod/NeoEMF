@@ -78,7 +78,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
 
     @Test
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
-        resource.save(BlueprintsOptionsBuilder.newBuilder().asMap());
+        resource.save(BlueprintsOptionsBuilder.noOption());
 
         File configFile = new File(file() + configFileName);
         assertThat(configFile).exists(); // "Config file does not exist"

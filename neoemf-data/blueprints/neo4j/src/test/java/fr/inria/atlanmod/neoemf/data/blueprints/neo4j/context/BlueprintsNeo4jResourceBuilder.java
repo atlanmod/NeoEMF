@@ -36,6 +36,6 @@ public class BlueprintsNeo4jResourceBuilder extends AbstractBlueprintsResourceBu
 
     @Override
     protected void registerFactory() {
-        resourceOptions = BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
+        resourceOptions = BlueprintsNeo4jOptionsBuilder.noOption();
     }
 }

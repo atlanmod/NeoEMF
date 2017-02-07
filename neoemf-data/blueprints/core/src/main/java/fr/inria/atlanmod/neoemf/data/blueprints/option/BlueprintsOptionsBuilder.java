@@ -15,6 +15,8 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -34,6 +36,16 @@ public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<B
      * #newBuilder()}.
      */
     protected BlueprintsOptionsBuilder() {
+    }
+
+    /**
+     * Returns an immutable empty {@link Map}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return BlueprintsOptionsBuilder.newBuilder().asMap();
     }
 
     /**

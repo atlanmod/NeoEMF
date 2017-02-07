@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -31,6 +33,16 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
      * #newBuilder()}
      */
     protected BerkeleyDbOptionsBuilder() {
+    }
+
+    /**
+     * Returns an immutable empty {@link Map}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return BerkeleyDbOptionsBuilder.newBuilder().asMap();
     }
 
     /**

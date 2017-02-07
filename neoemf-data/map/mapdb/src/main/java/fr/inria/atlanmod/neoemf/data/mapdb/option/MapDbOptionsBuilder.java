@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb.option;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -30,6 +32,16 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
      * #newBuilder()}
      */
     protected MapDbOptionsBuilder() {
+    }
+
+    /**
+     * Returns an immutable empty {@link Map}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return MapDbOptionsBuilder.newBuilder().asMap();
     }
 
     /**

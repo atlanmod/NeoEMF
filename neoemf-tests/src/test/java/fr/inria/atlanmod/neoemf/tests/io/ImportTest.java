@@ -364,7 +364,7 @@ public class ImportTest extends AbstractInputTest {
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
         Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(testFile));
-        resource.load(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
+        resource.load(BlueprintsNeo4jOptionsBuilder.noOption());
 
         return resource.getContents().get(0);
     }
