@@ -294,6 +294,11 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         return lastIndexOfValue(key, id);
     }
 
+    @Override
+    public Iterable<Id> referencesAsList(FeatureKey key) {
+        return valuesAsList(key);
+    }
+
     /**
      * Returns all loaded databases.
      *
@@ -315,7 +320,8 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @param <K>       the type of the key
      * @param <V>       the type of the value
      *
-     * @return on optional containing the element, or an empty optional if the element has not been found
+     * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
+     * found
      */
     protected <K, V> Optional<V> fromDatabase(Database database, K key) {
         DatabaseEntry dbKey = new DatabaseEntry(new Serializer<K>().serialize(key));

@@ -120,12 +120,6 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
-        return this.<List<Id>>valueOf(key)
-                .orElse(newValue());
-    }
-
-    @Override
     public <T> OptionalInt sizeOf(FeatureKey key) {
         return this.<List<T>>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.size()))

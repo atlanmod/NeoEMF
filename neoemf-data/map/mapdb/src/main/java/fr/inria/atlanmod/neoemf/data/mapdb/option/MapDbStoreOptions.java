@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 import org.eclipse.emf.ecore.EAttribute;

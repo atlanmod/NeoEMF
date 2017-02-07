@@ -32,7 +32,8 @@ public class FeatureKeySerializer implements Serializer<FeatureKey> {
     /**
      * The {@link Serializer} that manages {@link String}s.
      */
-    protected final Serializer<String> stringSerializer = Serializer.STRING;
+    protected final Serializer<String> stringSerializer = STRING;
+
     /**
      * The {@link Serializer} the manages {@link Id}s.
      */

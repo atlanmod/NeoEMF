@@ -38,7 +38,7 @@ public class IdSerializer implements Serializer<Id> {
     /**
      * An embedded {@link String} {@link Serializer} used to handle {@link StringId}s.
      */
-    private final Serializer<String> serializer = Serializer.STRING;
+    private final Serializer<String> serializer = STRING;
 
     @Override
     public void serialize(@Nonnull DataOutput2 out, @Nonnull Id id) throws IOException {

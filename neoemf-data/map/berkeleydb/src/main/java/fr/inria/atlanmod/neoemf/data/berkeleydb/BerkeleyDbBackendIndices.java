@@ -149,13 +149,6 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> referenceOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public OptionalInt sizeOf(FeatureKey key) {
         return valueOf(key)
                 .map(v -> OptionalInt.of((int) v))

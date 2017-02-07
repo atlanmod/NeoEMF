@@ -100,7 +100,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         return this.<T[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.indexOf(ts, value);
-                    return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }
@@ -110,7 +110,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         return this.<T[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.lastIndexOf(ts, value);
-                    return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }
@@ -121,14 +121,6 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
                 .orElse(newValue());
 
         return Arrays.asList(values);
-    }
-
-    @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
-        Id[] references = this.<Id[]>valueOf(key)
-                .orElse(newValue());
-
-        return Arrays.asList(references);
     }
 
     @Override

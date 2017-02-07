@@ -11,12 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -37,13 +33,13 @@ import java.util.OptionalInt;
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
  * between elements</li> <li><b>InstanceOf Map: </b> holds metaclass information for each element</li> <li><b>Features
  * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
- * optional Map used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices} that stores
- * {@link Collection} indices instead of a serialized version of the collection itself</li> </ul>
+ * optional Map used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that stores {@link Collection}
+ * indices instead of a serialized version of the collection itself</li> </ul>
  *
  * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and its subclasses to access
  * and manipulate the database.
- * @note Instances of {@link MapDbBackend} are created by {@link MapDbBackendFactory} that
- * provides an usable {@link DB} that can be manipulated by this wrapper.
+ * @note Instances of {@link MapDbBackend} are created by {@link MapDbBackendFactory} that provides an usable {@link DB}
+ * that can be manipulated by this wrapper.
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
@@ -66,223 +62,96 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
     }
 
     @Override
-    public Optional<ContainerValue> containerOf(Id id) {
-        return Optional.ofNullable(containersMap.get(id));
+    public <T> Optional<T> valueOf(MultivaluedFeatureKey key) {
+        return this.<T[]>valueOf(key.withoutPosition())
+                .map(ts -> ts[key.position()]);
     }
 
     @Override
-    public void containerFor(Id id, ContainerValue container) {
-        containersMap.put(id, container);
-    }
+    public <T> Optional<T> valueFor(MultivaluedFeatureKey key, T value) {
+        T[] values = this.<T[]>valueOf(key.withoutPosition())
+                .orElse(newValue());
 
-    @Override
-    public Optional<MetaclassValue> metaclassOf(Id id) {
-        return Optional.ofNullable(instanceOfMap.get(id));
-    }
-
-    @Override
-    public void metaclassFor(Id id, MetaclassValue metaclass) {
-        instanceOfMap.put(id, metaclass);
-    }
-
-    @Override
-    public Optional<Object> valueOf(FeatureKey key) {
-        return Optional.ofNullable(features.get(key));
-    }
-
-    @Override
-    public Optional<Object> valueOf(MultivaluedFeatureKey key) {
-        return Optional.of(asMany(features.get(key.withoutPosition()))[key.position()]);
-    }
-
-    @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        return valueOf(key)
-                .map(v -> Optional.of(StringId.from(v)))
-                .orElse(Optional.empty());
-    }
-
-    @Override
-    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
-        return valueOf(key)
-                .map(v -> Optional.of(StringId.from(v)))
-                .orElse(Optional.empty());
-    }
-
-    @Override
-    public Optional<Object> valueFor(FeatureKey key, Object value) {
-        return Optional.ofNullable(features.put(key, value));
-    }
-
-    @Override
-    public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
-        Object[] values = asMany(features.get(key.withoutPosition()));
-
-        Optional<Object> previousValue = Optional.of(values[key.position()]);
+        Optional<T> previousValue = Optional.of(values[key.position()]);
 
         values[key.position()] = value;
 
-        features.put(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values);
 
         return previousValue;
     }
 
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return valueFor(key, id)
-                .map(v -> Optional.of(StringId.from(v)))
-                .orElse(Optional.empty());
+    public <T> void addValue(MultivaluedFeatureKey key, T value) {
+        T[] values = this.<T[]>valueOf(key.withoutPosition())
+                .orElse(newValue());
+
+        valueFor(key.withoutPosition(), ArrayUtils.add(values, key.position(), value));
     }
 
     @Override
-    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
-        return valueFor(key, id)
-                .map(v -> Optional.of(StringId.from(v)))
-                .orElse(Optional.empty());
-    }
+    public <T> Optional<T> removeValue(MultivaluedFeatureKey key) {
+        T[] values = this.<T[]>valueOf(key.withoutPosition())
+                .orElse(newValue());
 
-    @Override
-    public void unsetValue(FeatureKey key) {
-        features.remove(key);
-    }
+        Optional<T> previousValue = Optional.of(values[key.position()]);
 
-    @Override
-    public void unsetAllValues(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        unsetReference(key);
-    }
-
-    @Override
-    public boolean hasValue(FeatureKey key) {
-        return features.containsKey(key);
-    }
-
-    @Override
-    public boolean hasAnyValue(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public boolean hasAnyReference(FeatureKey key) {
-        return hasReference(key);
-    }
-
-    @Override
-    public void addValue(MultivaluedFeatureKey key, Object value) {
-        Object[] values = Optional.ofNullable(asMany(features.get(key.withoutPosition()))).orElse(new Object[0]);
-        values = ArrayUtils.add(values, key.position(), value);
-
-        features.put(key.withoutPosition(), values);
-    }
-
-    @Override
-    public void addReference(MultivaluedFeatureKey key, Id id) {
-        addValue(key, id);
-    }
-
-    @Override
-    public Optional<Object> removeValue(MultivaluedFeatureKey key) {
-        Object[] values = asMany(features.get(key.withoutPosition()));
-
-        Optional<Object> previousValue = Optional.of(values[key.position()]);
-
-        values = ArrayUtils.remove(values, key.position());
-
-        features.put(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), ArrayUtils.remove(values, key.position()));
 
         return previousValue;
     }
 
     @Override
-    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        return removeValue(key)
-                .map(v -> Optional.of(StringId.from(v)))
-                .orElse(Optional.empty());
+    public <T> boolean containsValue(FeatureKey key, T value) {
+        return this.<T[]>valueOf(key)
+                .map(ts -> ArrayUtils.contains(ts, value))
+                .orElse(false);
     }
 
     @Override
-    public void cleanValues(FeatureKey key) {
-        unsetValue(key);
+    public <T> OptionalInt indexOfValue(FeatureKey key, T value) {
+        return this.<T[]>valueOf(key)
+                .map(ts -> {
+                    int index = ArrayUtils.indexOf(ts, value);
+                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                })
+                .orElse(OptionalInt.empty());
     }
 
     @Override
-    public void cleanReferences(FeatureKey key) {
-        unsetReference(key);
+    public <T> OptionalInt lastIndexOfValue(FeatureKey key, T value) {
+        return this.<T[]>valueOf(key)
+                .map(ts -> {
+                    int index = ArrayUtils.lastIndexOf(ts, value);
+                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                })
+                .orElse(OptionalInt.empty());
     }
 
     @Override
-    public boolean containsValue(FeatureKey key, Object value) {
-        return ArrayUtils.contains(asMany(features.get(key)), value);
+    public <T> Iterable<T> valuesAsList(FeatureKey key) {
+        T[] values = this.<T[]>valueOf(key)
+                .orElse(newValue());
+
+        return Arrays.asList(values);
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id id) {
-        return containsValue(key, id);
-    }
-
-    @Override
-    public OptionalInt indexOfValue(FeatureKey key, Object value) {
-        int index = ArrayUtils.indexOf(asMany(features.get(key)), value);
-        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
-    }
-
-    @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id id) {
-        return indexOfValue(key, id);
-    }
-
-    @Override
-    public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
-        int index = ArrayUtils.lastIndexOf(asMany(features.get(key)), value);
-        return index == ArrayUtils.INDEX_NOT_FOUND ? OptionalInt.empty() : OptionalInt.of(index);
-    }
-
-    @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
-        return lastIndexOfValue(key, id);
-    }
-
-    @Override
-    public Iterable<Object> valuesAsList(FeatureKey key) {
-        return Arrays.asList(asMany(features.get(key)));
-    }
-
-    @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
-        return Arrays.asList(asMany(features.get(key)));
-    }
-
-    @Override
-    public OptionalInt sizeOf(FeatureKey key) {
-        return Optional.ofNullable(asMany(features.get(key)))
-                .map(v -> OptionalInt.of(v.length))
+    public <T> OptionalInt sizeOf(FeatureKey key) {
+        return this.<T[]>valueOf(key)
+                .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());
     }
 
     /**
-     * Returns the given {@code value} as a multi-value.
+     * Creates a new multi-value.
      *
-     * @param value the value to cast
-     * @param <T>   the type of the multi-value
+     * @param <T> the type of the multi-value
      *
-     * @return a multi-value
+     * @return a new multi-value
      */
     @SuppressWarnings("unchecked")
-    private <T> T[] asMany(Object value) {
-        return (T[]) value;
+    private <T> T[] newValue() {
+        return (T[]) new Object[0];
     }
 }
