@@ -23,6 +23,7 @@ import org.mapdb.Serializer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -76,7 +77,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
     @Override
     public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElse(newValue());
+                .orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values[key.position()]);
 
@@ -99,7 +100,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElse(newValue());
+                .orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values[key.position()]);
 
@@ -141,7 +142,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
-                .orElse(newValue());
+                .orElseThrow(NoSuchElementException::new);
 
         return Arrays.asList(values);
     }

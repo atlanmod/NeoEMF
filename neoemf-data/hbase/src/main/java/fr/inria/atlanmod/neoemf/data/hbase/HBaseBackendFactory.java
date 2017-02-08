@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /**
- * A factory that creates instances of {@link DefaultHBaseBackend}.
+ * A factory that creates instances of {@link HBaseBackendArrays}.
  * <p>
  * This class only creates persistent databases that can be configured using
  * {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
@@ -86,13 +86,13 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        return new DefaultHBaseBackend();
+        return new HBaseBackendArrays();
     }
 
     @Override
     public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) {
         // TODO Externalise the back-end implementation from the HBase EStores.
-        return new DefaultHBaseBackend();
+        return new HBaseBackendArrays();
     }
 
     @Override

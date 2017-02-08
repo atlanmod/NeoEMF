@@ -12,13 +12,24 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 
+import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
+
+import java.io.IOException;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -26,6 +37,50 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implements HBaseBackend {
+
+    /**
+     * The column family holding properties.
+     */
+    protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
+
+    /**
+     * ???
+     */
+    protected static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
+
+    /**
+     * ???
+     */
+    protected static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
+
+    /**
+     * ???
+     */
+    protected static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
+
+    /**
+     * ???
+     */
+    protected static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
+
+    /**
+     * ???
+     */
+    protected static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
+
+    /**
+     * ???
+     */
+    protected static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
+
+    /**
+     * The HBase table used to access the model.
+     */
+    protected final Table table;
+
+    protected AbstractHBaseBackend(Table table) {
+        this.table = table;
+    }
 
     @Override
     public void save() {
@@ -49,33 +104,101 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void create(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Do nothing
     }
 
     @Override
     public boolean has(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
     }
 
     @Nonnull
     @Override
     public Optional<ContainerValue> containerOf(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return fromDatabase(id)
+                .map(result -> Optional.of(ContainerValue.of(
+                        StringId.of(Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER))),
+                        Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER)))))
+                .orElse(Optional.empty());
     }
 
     @Override
     public void containerFor(Id id, ContainerValue container) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            Put put = new Put(Bytes.toBytes(id.toString()));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
+            table.put(put);
+        }
+        catch (IOException ignore) {
+        }
     }
 
     @Nonnull
     @Override
     public Optional<MetaclassValue> metaclassOf(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return fromDatabase(id)
+                .map(result -> Optional.of(MetaclassValue.of(
+                        Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER)),
+                        Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER)))))
+                .orElse(Optional.empty());
     }
 
     @Override
     public void metaclassFor(Id id, MetaclassValue metaclass) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            byte[] idAsBytes = Bytes.toBytes(id.toString());
+            Put put = new Put(idAsBytes);
+            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(metaclass.uri()));
+            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(metaclass.name()));
+            table.checkAndPut(idAsBytes, TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
+        }
+        catch (IOException ignore) {
+        }
+    }
+
+    protected Optional<byte[]> fromDatabase(FeatureKey key) {
+        return fromDatabase(key.id())
+                .map(result -> Optional.of(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name()))))
+                .orElse(Optional.empty());
+    }
+
+    protected void toDatabase(FeatureKey key, @Nullable byte[] value) {
+        try {
+            byte[] idAsBytes = Bytes.toBytes(key.id().toString());
+            Put put = new Put(idAsBytes);
+            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), value);
+            table.put(put);
+        }
+        catch (IOException ignore) {
+        }
+    }
+
+    protected void outDatabase(FeatureKey key) {
+        try {
+            byte[] idAsBytes = Bytes.toBytes(key.id().toString());
+            Delete delete = new Delete(idAsBytes);
+            delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()));
+            table.delete(delete);
+        }
+        catch (IOException ignore) {
+        }
+    }
+
+    private Optional<Result> fromDatabase(Id id) {
+        Optional<Result> value = Optional.empty();
+
+        try {
+            byte[] idAsBytes = Bytes.toBytes(id.toString());
+            Get get = new Get(idAsBytes);
+            Result result = table.get(get);
+            if (!result.isEmpty()) {
+                value = Optional.of(result);
+            }
+        }
+        catch (IOException ignore) {
+        }
+
+        return value;
     }
 }

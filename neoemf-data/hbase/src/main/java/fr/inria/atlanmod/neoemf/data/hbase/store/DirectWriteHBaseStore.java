@@ -75,7 +75,8 @@ import static java.util.Objects.nonNull;
  * @see DirectWriteStore
  */
 // TODO Continue cleaning, there is still code duplication
-    @ParametersAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@Deprecated
 public class DirectWriteHBaseStore extends DirectWriteStore<HBaseBackend> {
 
     /**

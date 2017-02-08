@@ -30,7 +30,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -38,6 +41,7 @@ import static java.util.Objects.nonNull;
  * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that HBase
  * keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
  */
+@ParametersAreNonnullByDefault
 public class HBaseEncoderUtil {
 
     /**
@@ -56,67 +60,60 @@ public class HBaseEncoderUtil {
     /**
      * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
      *
-     * @param value the HBase value to decode
+     * @param values the HBase values to decode
      *
      * @return an array of {@link String}s representing the {@link EReference}s decoded from the database
      *
-     * @throws NullPointerException     if the given {@code value} is null
-     * @throws IllegalArgumentException if the length of {@code value} is not a multiple of {@code UUID_LENGTH}
+     * @throws NullPointerException     if the given {@code values} is null
+     * @throws IllegalArgumentException if the length of {@code values} is not a multiple of {@code UUID_LENGTH}
      * @see HBaseEncoderUtil#toBytesReferences(String[])
      */
-    public static String[] toStringsReferences(byte... value) {
-        if (nonNull(value)) {
-            checkArgument(value.length % (UUID_LENGTH + 1) == UUID_LENGTH);
-            int length = (value.length + 1) / (UUID_LENGTH + 1);
+    public static String[] toStringsReferences(byte... values) {
+        checkNotNull(values);
 
-            Iterator<String> iterator = Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(value)).iterator();
-            String[] strings = new String[length];
-            int index = 0;
-            while (iterator.hasNext()) {
-                strings[index++] = iterator.next();
-            }
-            return strings;
+        checkArgument(values.length % (UUID_LENGTH + 1) == UUID_LENGTH);
+        int length = (values.length + 1) / (UUID_LENGTH + 1);
+
+        Iterator<String> iterator = Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(values)).iterator();
+        String[] strings = new String[length];
+        int index = 0;
+        while (iterator.hasNext()) {
+            strings[index++] = iterator.next();
         }
-        return null;
+        return strings;
     }
 
     /**
      * Encodes the provided {@link String} array into an array of {@code bytes} that can be stored in the database.
      *
-     * @param strings an array of {@link String}s representing the {@link EReference}s to encode.
+     * @param values an array of {@link String}s representing the {@link EReference}s to encode.
      *
      * @return an array of {@code bytes}
      *
      * @throws NullPointerException if the value to encode is {@code null}
      * @see HBaseEncoderUtil#toStringsReferences(byte[])
      */
-    public static byte[] toBytesReferences(String... strings) {
-        if (nonNull(strings)) {
-            return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes(Charsets.UTF_8);
-        }
-        return null;
+    public static byte[] toBytesReferences(String... values) {
+        return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(values).getBytes(Charsets.UTF_8);
     }
 
     /**
      * Encodes an array of {@link String}s into an array of {@code bytes} that can be stored in the database.
      *
-     * @param strings the array to encode
+     * @param values the array to encode
      *
      * @return the encoded {@code byte} array
      *
      * @see HBaseEncoderUtil#toStrings(byte[])
      */
-    public static byte[] toBytes(String... strings) {
-        try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(strings);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-            return byteArrayOutputStream.toByteArray();
+    public static <V> byte[] toBytes(V... values) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream stream = new ObjectOutputStream(baos)) {
+            stream.writeObject(values);
+            stream.flush();
+            return baos.toByteArray();
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to convert {0} to byte[]", Arrays.toString(strings));
+            NeoLogger.error("Unable to convert {0} to byte[]", Arrays.toString(values));
         }
         return null;
     }
@@ -129,19 +126,17 @@ public class HBaseEncoderUtil {
      * @return the decoded {@link String} array
      *
      * @throws NullPointerException if the given array is {@code null}
-     * @see HBaseEncoderUtil#toBytes(String[])
+     * @see HBaseEncoderUtil#toBytes(Object[])
      */
-    public static String[] toStrings(byte... bytes) {
-        if (isNull(bytes)) {
-            return null;
-        }
+    public static <V> V[] toStrings(byte... bytes) {
+        checkNotNull(bytes);
 
-        String[] strings = null;
+        V[] strings = null;
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         ObjectInputStream objectInputStream = null;
         try {
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            strings = (String[]) objectInputStream.readObject();
+            strings = (V[]) objectInputStream.readObject();
         }
         catch (IOException e) {
             NeoLogger.error("Unable to convert {0} to String[]", Arrays.toString(bytes));
