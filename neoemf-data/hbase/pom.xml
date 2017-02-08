@@ -91,7 +91,7 @@
 
         <dependency>
             <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
+            <artifactId>hbase-client</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -137,12 +137,6 @@
         <dependencies>
             <dependency>
                 <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase</artifactId>
-                <version>${hbase.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
                 <artifactId>hbase-common</artifactId>
                 <version>${hbase.version}</version>
             </dependency>
@@ -169,6 +163,36 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-hdfs</artifactId>
                 <version>${hadoop.version}</version>
+            </dependency>
+
+            <!-- Test -->
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-common</artifactId>
+                <version>${hbase.version}</version>
+                <type>test-jar</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-client</artifactId>
+                <version>${hbase.version}</version>
+                <type>test-jar</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+                <type>test-jar</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>${hadoop.version}</version>
+                <type>test-jar</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
