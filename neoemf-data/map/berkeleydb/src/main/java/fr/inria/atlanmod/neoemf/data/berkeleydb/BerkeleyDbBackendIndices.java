@@ -15,7 +15,6 @@ import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
@@ -29,17 +28,24 @@ import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * ???
  */
-@Experimental
+@ParametersAreNonnullByDefault
 class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link Id}, identified by the associated
      * {@link MultivaluedFeatureKey}.
      */
-    private Database multivaluedFeatures;
+    @Nonnull
+    private final Database multivaluedFeatures;
 
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
@@ -54,13 +60,8 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
      */
     protected BerkeleyDbBackendIndices(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);
-    }
 
-    @Override
-    public void open() {
-        super.open();
-
-        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
+        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", dbConfig);
     }
 
     @Override
@@ -71,6 +72,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
         this.copyDatabaseTo(multivaluedFeatures, backend.multivaluedFeatures);
     }
 
+    @Nonnull
     @Override
     protected List<Database> allDatabases() {
         List<Database> databases = super.allDatabases();
@@ -78,11 +80,13 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
         return databases;
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return fromDatabase(multivaluedFeatures, key);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
@@ -105,6 +109,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
         valueFor(key, value);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         Optional<V> previousValue = valueOf(key);
@@ -127,6 +132,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
                 .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -134,6 +140,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
                 .min();
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -141,6 +148,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
                 .max();
     }
 
+    @Nonnull
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -148,6 +156,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
                 .collect(Collectors.toList());
     }
 
+    @Nonnull
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
         return valueOf(key)
@@ -161,7 +170,9 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
      * @param key  the key
      * @param size the new size
      */
-    protected void sizeFor(FeatureKey key, int size) {
+    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
+        checkArgument(size >= 0);
+
         valueFor(key, size);
     }
 }

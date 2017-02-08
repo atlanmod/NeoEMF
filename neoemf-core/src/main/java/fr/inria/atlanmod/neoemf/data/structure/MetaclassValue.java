@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -29,6 +29,7 @@ import static java.util.Objects.isNull;
 /**
  * A simple representation of a (meta){@link EClass}.
  */
+@ParametersAreNonnullByDefault
 public class MetaclassValue implements Serializable {
 
     @SuppressWarnings("JavaDoc")
@@ -53,7 +54,7 @@ public class MetaclassValue implements Serializable {
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
-    protected MetaclassValue(@Nonnull String name, @Nonnull String uri) {
+    protected MetaclassValue(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
@@ -72,7 +73,7 @@ public class MetaclassValue implements Serializable {
      * @see #of(String, String)
      */
     @Nonnull
-    public static MetaclassValue from(@Nonnull PersistentEObject object) {
+    public static MetaclassValue from(PersistentEObject object) {
         final EClass eClass = object.eClass();
         return of(eClass.getName(), eClass.getEPackage().getNsURI());
     }
@@ -87,7 +88,7 @@ public class MetaclassValue implements Serializable {
      * @return a new {@code MetaclassValue}
      */
     @Nonnull
-    public static MetaclassValue of(@Nonnull String name, @Nonnull String uri) {
+    public static MetaclassValue of(String name, String uri) {
         return new MetaclassValue(name, uri);
     }
 
@@ -116,7 +117,6 @@ public class MetaclassValue implements Serializable {
      *
      * @return a class, or {@code null} if it can not be found
      */
-    @Nullable
     public EClass eClass() {
         EClass eClass = null;
         EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);

@@ -13,9 +13,12 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  *
  */
+@ParametersAreNonnullByDefault
 public interface MapDbBackend extends PersistenceBackend {
 
     /**

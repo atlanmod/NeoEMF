@@ -12,15 +12,15 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
-import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An adapter on top of a database that provides specific methods for communicating with the database that it uses.
@@ -34,6 +34,7 @@ import java.util.Optional;
  * or get a value.
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
+@ParametersAreNonnullByDefault
 public interface PersistenceBackend extends PersistenceMapper, Closeable {
 
     /**
@@ -64,25 +65,6 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
     boolean isDistributed();
 
     /**
-     * Creates the given {@code id} in this {@code PersistenceBackend}.
-     *
-     * @param id the id to create
-     *
-     * @throws IllegalArgumentException if the {@code id} already exists. Use {@link #has(Id)} to check the presence
-     *                                  first
-     */
-    void create(Id id);
-
-    /**
-     * Checks whether the given {@code id} is already present in this {@code PersistenceBackend}.
-     *
-     * @param id the id to check to presence
-     *
-     * @return {@code true} if the {@code id} is present, {@code false} otherwise.
-     */
-    boolean has(Id id);
-
-    /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
      *
      * @param eClass the class to compute the instances of
@@ -93,6 +75,7 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      *
      * @throws UnsupportedOperationException if the back-end doesn't support the lookup of all instances
      */
+    @Nonnull
     default Iterable<Id> allInstances(EClass eClass, boolean strict) {
         throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
     }

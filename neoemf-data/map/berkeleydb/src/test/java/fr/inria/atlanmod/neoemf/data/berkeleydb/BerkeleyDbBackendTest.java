@@ -44,10 +44,8 @@ public class BerkeleyDbBackendTest extends AbstractTest {
 
     private static BerkeleyDbBackend backend;
 
-    public BerkeleyDbBackendTest() {}
-
-    @BeforeClass
-    public static void initialize() throws IOException {
+    @Before
+    public void initialize() throws IOException {
         File file = workspace.newFile("BerkeleyDB");
         file = Files.createDirectory(file.toPath()).toFile();
 
@@ -60,11 +58,6 @@ public class BerkeleyDbBackendTest extends AbstractTest {
                 .setDeferredWrite(true);
 
         backend = new BerkeleyDbBackendIndices(file, envConfig, dbConfig);
-    }
-
-    @Before
-    public void before() {
-        backend.open();
     }
 
     @After
@@ -81,9 +74,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
             assertThat(backend.valueFor(key, "value" + i)).isNotPresent();
         });
 
-//        backend.save();
-        backend.close();
-        backend.open();
+        backend.save();
 
         IntStream.range(0, TIMES).forEach(i -> assertThat(backend.valueOf(FeatureKey.of(StringId.of("object" + i), "name" + i)).orElse(null)).isEqualTo("value" + i));
     }

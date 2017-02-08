@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
  * <p>
@@ -43,6 +46,7 @@ import java.util.OptionalInt;
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
+@ParametersAreNonnullByDefault
 class MapDbBackendLists extends AbstractMapDbBackend {
 
     /**
@@ -61,12 +65,14 @@ class MapDbBackendLists extends AbstractMapDbBackend {
         super(db);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return this.<List<V>>valueOf(key.withoutPosition())
                 .map(ts -> ts.get(key.position()));
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition()).orElse(newValue());
@@ -88,6 +94,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
         valueFor(key.withoutPosition(), values);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
@@ -107,6 +114,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
                 .orElse(false);
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
@@ -117,6 +125,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
                 .orElse(OptionalInt.empty());
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
@@ -127,12 +136,14 @@ class MapDbBackendLists extends AbstractMapDbBackend {
                 .orElse(OptionalInt.empty());
     }
 
+    @Nonnull
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return this.<List<V>>valueOf(key)
                 .orElse(newValue());
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt sizeOf(FeatureKey key) {
         return this.<List<V>>valueOf(key)
@@ -147,6 +158,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
      *
      * @return a new multi-value
      */
+    @Nonnull
     private <V> List<V> newValue() {
         return new ArrayList<>();
     }

@@ -26,7 +26,9 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -34,6 +36,7 @@ import static java.util.Objects.isNull;
 /**
  * The factory that adapts {@link Object}s in a specific {@link Class}.
  */
+@ParametersAreNonnullByDefault
 class PersistentEObjectAdapter {
 
     /**
@@ -43,6 +46,7 @@ class PersistentEObjectAdapter {
      * We use a weak-references cache since the adaptor is no longer needed when the original {@link InternalEObject}
      * has been garbage collected.
      */
+    @Nonnull
     private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
             Caffeine.newBuilder().weakKeys().build();
 
@@ -114,6 +118,7 @@ class PersistentEObjectAdapter {
      *
      * @return an adapted object in the given {@code type}
      */
+    @Nonnull
     private static Object createAdapter(Object adaptableObject, Class<?> adapterType) {
         /*
          * Compute the interfaces that the proxy has to implement

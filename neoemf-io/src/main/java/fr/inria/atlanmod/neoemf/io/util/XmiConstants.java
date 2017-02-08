@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -20,6 +21,7 @@ import static java.util.Objects.isNull;
 /**
  * A utility class that contains all the constants used in an XMI file.
  */
+@ParametersAreNonnullByDefault
 public interface XmiConstants extends XmlConstants {
 
     /**
@@ -69,7 +71,7 @@ public interface XmiConstants extends XmlConstants {
      * @return the formatted value as {@code "prefix:value"}
      */
     @Nonnull
-    static String format(@Nullable String prefix, @Nonnull String value) {
+    static String format(@Nullable String prefix, String value) {
         checkNotNull(value);
 
         return (isNull(prefix) ? "" : prefix + ':') + value;

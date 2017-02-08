@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EReference;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -26,6 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A simple representation of a containment between a {@link PersistentEObject} and another. The referenced
  * {@link PersistentEObject} is identified by the name the reference used to retrieve it.
  */
+@ParametersAreNonnullByDefault
 public class ContainerValue implements Serializable {
 
     @SuppressWarnings("JavaDoc")
@@ -49,7 +51,7 @@ public class ContainerValue implements Serializable {
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
      */
-    protected ContainerValue(@Nonnull Id id, @Nonnull String name) {
+    protected ContainerValue(Id id, String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
@@ -67,7 +69,7 @@ public class ContainerValue implements Serializable {
      * @see #of(Id, String)
      */
     @Nonnull
-    public static ContainerValue from(@Nonnull PersistentEObject object, @Nonnull EReference reference) {
+    public static ContainerValue from(PersistentEObject object, EReference reference) {
         return of(object.id(), reference.getName());
     }
 
@@ -80,7 +82,7 @@ public class ContainerValue implements Serializable {
      * @return a new {@code ContainerValue}
      */
     @Nonnull
-    public static ContainerValue of(@Nonnull Id id, @Nonnull String name) {
+    public static ContainerValue of(Id id, String name) {
         return new ContainerValue(id, name);
     }
 

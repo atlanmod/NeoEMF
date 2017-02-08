@@ -11,9 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The abstract implementation of {@link PersistenceBackend}.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractPersistenceBackend implements PersistenceBackend {
 
     /**

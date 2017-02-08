@@ -29,6 +29,12 @@ import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
  * <p>
@@ -46,12 +52,14 @@ import java.util.stream.IntStream;
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
+@ParametersAreNonnullByDefault
 class MapDbBackendIndices extends AbstractMapDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id}s,
      * identified by the associated {@link MultivaluedFeatureKey}.
      */
+    @Nonnull
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
     /**
@@ -76,11 +84,13 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
                 .createOrOpen();
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return fromDatabase(multivaluedFeatures, key);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
@@ -103,6 +113,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
         valueFor(key, value);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         Optional<V> previousValue = valueOf(key);
@@ -125,6 +136,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
                 .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -132,6 +144,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
                 .min();
     }
 
+    @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -139,6 +152,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
                 .max();
     }
 
+    @Nonnull
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return IntStream.range(0, sizeOf(key).orElse(0))
@@ -146,6 +160,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
                 .collect(Collectors.toList());
     }
 
+    @Nonnull
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
         return valueOf(key)
@@ -159,7 +174,9 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
      * @param key  the key
      * @param size the new size
      */
-    protected void sizeFor(FeatureKey key, int size) {
+    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
+        checkArgument(size >= 0);
+
         valueFor(key, size);
     }
 }

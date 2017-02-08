@@ -13,20 +13,18 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  *
  */
+@ParametersAreNonnullByDefault
 public interface BerkeleyDbBackend extends PersistenceBackend {
 
     /**
      * The literal description of this back-end.
      */
     String NAME = "berkeleydb";
-
-    /**
-     * ???
-     */
-    void open();
 
     /**
      * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.

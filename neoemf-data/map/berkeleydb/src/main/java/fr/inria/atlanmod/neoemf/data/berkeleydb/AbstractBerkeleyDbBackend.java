@@ -28,7 +28,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -38,52 +37,47 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * ???
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend implements BerkeleyDbBackend {
-
-    /**
-     * ???
-     */
-    protected final DatabaseConfig databaseConfig;
-
-    /**
-     * ???
-     */
-    private final EnvironmentConfig environmentConfig;
-
-    /**
-     * ???
-     */
-    private final File file;
 
     /**
      * A persistent map that stores the container of {@link PersistentEObject}, identified by the object {@link Id}.
      */
-    protected Database containers;
+    @Nonnull
+    private final Database containers;
 
     /**
      * A persistent map that stores the {@link EClass} for {@link PersistentEObject}, identified by the object {@link
      * Id}.
      */
-    protected Database instances;
+    @Nonnull
+    private final Database instances;
 
     /**
      * A persistent map that stores structural features values for {@link PersistentEObject}, identified by the
      * associated {@link FeatureKey}.
      */
-    protected Database features;
+    @Nonnull
+    private final Database features;
 
     /**
      * ???
      */
-    protected Environment environment;
+    @Nonnull
+    protected final Environment environment;
 
     /**
      * ???
      */
-    protected boolean isClosed = true;
+    private boolean isClosed;
 
     /**
      * ???
@@ -93,25 +87,15 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @param dbConfig  ???
      */
     protected AbstractBerkeleyDbBackend(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
-        this.file = file;
-        this.environmentConfig = envConfig;
-        this.databaseConfig = dbConfig;
-    }
+        checkNotNull(file);
+        checkNotNull(envConfig);
+        checkNotNull(dbConfig);
 
-    /**
-     * ???
-     */
-    @Override
-    public void open() {
-        if (!isClosed()) {
-            NeoLogger.warn("This backend is already open");
-        }
+        environment = new Environment(file, envConfig);
 
-        environment = new Environment(file, environmentConfig);
-
-        containers = environment.openDatabase(null, "eContainer", databaseConfig);
-        instances = environment.openDatabase(null, "neoInstanceOf", databaseConfig);
-        features = environment.openDatabase(null, "features", databaseConfig);
+        containers = environment.openDatabase(null, "eContainer", dbConfig);
+        instances = environment.openDatabase(null, "neoInstanceOf", dbConfig);
+        features = environment.openDatabase(null, "features", dbConfig);
 
         isClosed = false;
     }
@@ -165,6 +149,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         return false;
     }
 
+    @Nonnull
     @Override
     public Optional<ContainerValue> containerOf(Id id) {
         return fromDatabase(containers, id);
@@ -175,6 +160,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         toDatabase(containers, id, container);
     }
 
+    @Nonnull
     @Override
     public Optional<MetaclassValue> metaclassOf(Id id) {
         return fromDatabase(instances, id);
@@ -185,21 +171,25 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         toDatabase(instances, id, metaclass);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(features, key);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
         return valueOf(key);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         return valueOf(key);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
@@ -209,11 +199,13 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         return previousValue;
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
         return valueFor(key, id);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
         return valueFor(key, id);
@@ -264,6 +256,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         addValue(key, id);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         return removeValue(key);
@@ -284,16 +277,19 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         return containsValue(key, id);
     }
 
+    @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
         return indexOfValue(key, id);
     }
 
+    @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         return lastIndexOfValue(key, id);
     }
 
+    @Nonnull
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
         return valuesAsList(key);
@@ -304,6 +300,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      *
      * @return a list of {@link Database}
      */
+    @Nonnull
     protected List<Database> allDatabases() {
         List<Database> databases = new ArrayList<>();
         databases.add(containers);
@@ -323,6 +320,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
+    @Nonnull
     protected <K, V> Optional<V> fromDatabase(Database database, K key) {
         DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry();

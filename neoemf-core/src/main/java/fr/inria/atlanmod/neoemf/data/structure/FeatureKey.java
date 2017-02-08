@@ -23,12 +23,14 @@ import java.util.Objects;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a {@link EStructuralFeature} of a {@link PersistentEObject}.
  */
+@ParametersAreNonnullByDefault
 public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     @SuppressWarnings("JavaDoc")
@@ -53,7 +55,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      */
-    protected FeatureKey(@Nonnull Id id, @Nonnull String name) {
+    protected FeatureKey(Id id, String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
@@ -73,7 +75,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * @see EStructuralFeature#getName()
      */
     @Nonnull
-    public static FeatureKey from(@Nonnull InternalEObject internalObject, @Nonnull EStructuralFeature feature) {
+    public static FeatureKey from(InternalEObject internalObject, EStructuralFeature feature) {
         return from(PersistentEObject.from(internalObject), feature);
     }
 
@@ -92,7 +94,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * @see EStructuralFeature#getName()
      */
     @Nonnull
-    public static FeatureKey from(@Nonnull PersistentEObject object, @Nonnull EStructuralFeature feature) {
+    public static FeatureKey from(PersistentEObject object, EStructuralFeature feature) {
         return of(object.id(), feature.getName());
     }
 
@@ -106,7 +108,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * @return a new {@code FeatureKey}
      */
     @Nonnull
-    public static FeatureKey of(@Nonnull Id id, @Nonnull String name) {
+    public static FeatureKey of(Id id, String name) {
         return new FeatureKey(id, name);
     }
 
@@ -146,7 +148,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     }
 
     @Override
-    public int compareTo(@Nonnull FeatureKey o) {
+    public int compareTo(FeatureKey o) {
         final int EQUAL = 0;
 
         if (this == o) {

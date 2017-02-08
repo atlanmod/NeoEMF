@@ -23,6 +23,9 @@ import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
  * <p>
@@ -33,99 +36,59 @@ import java.util.OptionalInt;
  *
  * @see DirectWriteHBaseStore
  */
-class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBackend {
+@ParametersAreNonnullByDefault
+class DefaultHBaseBackend extends AbstractHBaseBackend {
 
     /**
      * Constructs a new {@code DefaultHBaseBackend}.
      */
     protected DefaultHBaseBackend() {
+        super();
     }
 
+    @Nonnull
     @Override
-    public void save() {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    @Override
-    public void close() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean isClosed() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return true;
-    }
-
-    @Override
-    public void create(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public boolean has(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Optional<ContainerValue> containerOf(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerValue container) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Optional<MetaclassValue> metaclassOf(Id id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public void metaclassFor(Id id, MetaclassValue metaclass) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Optional<Object> valueOf(FeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Optional<Object> valueOf(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
+    @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Nonnull
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
-    public Optional<Object> valueFor(FeatureKey key, Object value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    @Override
-    public Optional<Object> valueFor(MultivaluedFeatureKey key, Object value) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
+    @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Nonnull
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -137,12 +100,12 @@ class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBac
     }
 
     @Override
-    public void unsetAllValues(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetAllValues(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -157,12 +120,12 @@ class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBac
     }
 
     @Override
-    public boolean hasAnyValue(FeatureKey key) {
+    public boolean hasReference(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasAnyValue(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -172,7 +135,7 @@ class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBac
     }
 
     @Override
-    public void addValue(MultivaluedFeatureKey key, Object value) {
+    public <V> void addValue(MultivaluedFeatureKey key, V value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -181,11 +144,13 @@ class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBac
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
-    public Optional<Object> removeValue(MultivaluedFeatureKey key) {
+    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -202,7 +167,7 @@ class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBac
     }
 
     @Override
-    public boolean containsValue(FeatureKey key, Object value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -211,36 +176,43 @@ class DefaultHBaseBackend extends AbstractPersistenceBackend implements HBaseBac
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
-    public OptionalInt indexOfValue(FeatureKey key, Object value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
-    public OptionalInt lastIndexOfValue(FeatureKey key, Object value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
-    public Iterable<Object> valuesAsList(FeatureKey key) {
+    public <V> Iterable<V> valuesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
         throw new UnsupportedOperationException("Not implemented yet");

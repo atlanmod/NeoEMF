@@ -51,6 +51,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -73,6 +75,7 @@ import static java.util.Objects.nonNull;
  * @see DirectWriteStore
  */
 // TODO Continue cleaning, there is still code duplication
+    @ParametersAreNonnullByDefault
 public class DirectWriteHBaseStore extends DirectWriteStore<HBaseBackend> {
 
     /**
@@ -488,7 +491,7 @@ public class DirectWriteHBaseStore extends DirectWriteStore<HBaseBackend> {
         try {
             if (!attribute.isMany()) {
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
-                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(attribute.getName()), Bytes.toBytes(serialize(attribute, value).toString()));
+                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(attribute.getName()), Bytes.toBytes(serialize(attribute, value)));
                 table.put(put);
             }
             else {

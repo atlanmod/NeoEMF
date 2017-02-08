@@ -18,9 +18,13 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
 import org.eclipse.emf.ecore.EcorePackage;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  *
  */
+@ParametersAreNonnullByDefault
 public interface BlueprintsBackend extends PersistenceBackend {
 
     /**
@@ -55,6 +59,7 @@ public interface BlueprintsBackend extends PersistenceBackend {
     /**
      * @deprecated Don't use this method
      */
+    @Nonnull
     @Deprecated
     Vertex addVertex(Id id);
 

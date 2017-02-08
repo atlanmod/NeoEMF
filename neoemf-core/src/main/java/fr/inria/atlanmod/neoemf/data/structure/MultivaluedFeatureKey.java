@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -29,6 +30,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * A simple representation of a multi-valued {@link EStructuralFeature} of a {@link PersistentEObject}. The
  * "multi-valued" characteristic is identified with a position.
  */
+@ParametersAreNonnullByDefault
 public class MultivaluedFeatureKey extends FeatureKey {
 
     @SuppressWarnings("JavaDoc")
@@ -49,7 +51,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      * @param position the position of the {@link EStructuralFeature}
      */
-    protected MultivaluedFeatureKey(@Nonnull Id id, @Nonnull String name, @Nonnegative int position) {
+    protected MultivaluedFeatureKey(Id id, String name, @Nonnegative int position) {
         super(id, name);
         checkArgument(position >= 0, "Position must be >= 0");
         this.position = position;
@@ -73,7 +75,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
      */
-    public static MultivaluedFeatureKey from(@Nonnull InternalEObject internalObject, @Nonnull EStructuralFeature feature, @Nonnegative int position) {
+    public static MultivaluedFeatureKey from(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int position) {
         return from(PersistentEObject.from(internalObject), feature, position);
     }
 
@@ -93,7 +95,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
-    public static MultivaluedFeatureKey from(@Nonnull PersistentEObject object, @Nonnull EStructuralFeature feature, @Nonnegative int position) {
+    public static MultivaluedFeatureKey from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
         return of(object.id(), feature.getName(), position);
     }
 
@@ -108,7 +110,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
      *
      * @return a new {@code MultivaluedFeatureKey}
      */
-    public static MultivaluedFeatureKey of(@Nonnull Id id, @Nonnull String name, @Nonnegative int position) {
+    public static MultivaluedFeatureKey of(Id id, String name, @Nonnegative int position) {
         return new MultivaluedFeatureKey(id, name, position);
     }
 
@@ -136,7 +138,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
     }
 
     @Override
-    public int compareTo(@Nonnull FeatureKey o) {
+    public int compareTo(FeatureKey o) {
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;

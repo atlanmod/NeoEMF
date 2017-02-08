@@ -44,6 +44,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -60,11 +62,13 @@ import static java.util.Objects.isNull;
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
+@ParametersAreNonnullByDefault
 public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements PersistentStore {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
+    @Nonnull
     protected final LoadingCache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
             .softValues()
             .initialCapacity(1_000)
@@ -74,11 +78,13 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
     /**
      * The persistence back-end used to store the model.
      */
+    @Nonnull
     protected final P backend;
 
     /**
      * The resource to persist and access.
      */
+    @Nullable
     private final PersistentResource resource;
 
     /**
@@ -87,7 +93,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteStore(PersistentResource resource, P backend) {
+    public DirectWriteStore(@Nullable PersistentResource resource, P backend) {
         this.resource = resource;
         this.backend = backend;
     }
@@ -113,7 +119,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      *
      * @see EcoreUtil#createFromString(EDataType, String)
      */
-    protected static Object deserialize(EAttribute attribute, Object property) {
+    protected static Object deserialize(EAttribute attribute, @Nullable Object property) {
         return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
     }
 
@@ -127,7 +133,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      *
      * @see EcoreUtil#convertToString(EDataType, Object)
      */
-    protected static String serialize(EAttribute attribute, Object value) {
+    protected static String serialize(EAttribute attribute, @Nullable Object value) {
         return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 
@@ -528,7 +534,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      */
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'T'
-    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, @Nullable T[] array) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 

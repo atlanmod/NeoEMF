@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,13 +20,14 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Simple class to serialize/deserialize objects from/to byte arrays.
  */
-@Experimental
+@ParametersAreNonnullByDefault
 public final class Serializer {
 
     /**
@@ -47,7 +46,8 @@ public final class Serializer {
      *
      * @return the serialized object as a byte array
      */
-    public static <T> byte[] serialize(@Nonnull T value) {
+    @Nonnull
+    public static <T> byte[] serialize(T value) {
         checkNotNull(value);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512); ObjectOutput out = new ObjectOutputStream(baos)) {
@@ -68,7 +68,8 @@ public final class Serializer {
      * @return the deserialized object
      */
     @SuppressWarnings("unchecked")
-    public static <T> T deserialize(@Nonnull byte[] data) {
+    @Nonnull
+    public static <T> T deserialize(byte[] data) {
         checkNotNull(data);
 
         try (ByteArrayInputStream bis = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bis)) {

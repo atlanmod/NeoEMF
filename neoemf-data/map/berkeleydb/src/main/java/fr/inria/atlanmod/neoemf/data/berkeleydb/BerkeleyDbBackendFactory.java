@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -37,7 +36,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * ???
  */
-@Experimental
 public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
@@ -91,7 +89,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setDeferredWrite(true);
 
             backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
-            backend.open();
+//            backend.open();
         }
         catch (IOException e) {
             NeoLogger.error(e);
@@ -120,7 +118,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setDeferredWrite(true);
 
             backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
-            backend.open();
+//            backend.open();
 
             processGlobalConfiguration(directory);
         }

@@ -13,9 +13,12 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  *
  */
+@ParametersAreNonnullByDefault
 public interface HBaseBackend extends PersistenceBackend {
 
     /**

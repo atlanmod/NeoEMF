@@ -17,10 +17,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An {@link EObject} identified by a unique {@link Id}, able to persist in datastores.
  */
+@ParametersAreNonnullByDefault
 public interface PersistentEObject extends InternalEObject {
 
     /**
@@ -31,7 +33,6 @@ public interface PersistentEObject extends InternalEObject {
      * @return an adapted object as a {@code PersistentEObject}, or {@code null} if the {@code object} cannot be
      * assigned as a {@code PersistentEObject}
      */
-    @Nullable
     static PersistentEObject from(@Nullable Object object) {
         return PersistentEObjectAdapter.getAdapter(object);
     }
@@ -49,7 +50,7 @@ public interface PersistentEObject extends InternalEObject {
      *
      * @param id the identifier
      */
-    void id(@Nonnull Id id);
+    void id(Id id);
 
     /**
      * Returns whether this {@code PersistentEObject} is mapped to an entity stored in a database.
@@ -70,7 +71,6 @@ public interface PersistentEObject extends InternalEObject {
      *
      * @return the containing resource
      */
-    @Nullable
     Resource.Internal resource();
 
     /**

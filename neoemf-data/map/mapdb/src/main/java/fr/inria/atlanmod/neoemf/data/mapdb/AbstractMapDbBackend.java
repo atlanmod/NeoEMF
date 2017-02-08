@@ -31,31 +31,41 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An abstract {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a
  * MapDB database.
  */
-public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implements MapDbBackend {
+@ParametersAreNonnullByDefault
+abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implements MapDbBackend {
 
     /**
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
-    protected final HTreeMap<Id, ContainerValue> containersMap;
+    @Nonnull
+    private final HTreeMap<Id, ContainerValue> containersMap;
 
     /**
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
-    protected final HTreeMap<Id, MetaclassValue> instanceOfMap;
+    @Nonnull
+    private final HTreeMap<Id, MetaclassValue> instanceOfMap;
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
      * associated {@link FeatureKey}.
      */
-    protected final HTreeMap<FeatureKey, Object> features;
+    @Nonnull
+    private final HTreeMap<FeatureKey, Object> features;
 
     /**
      * The MapDB database.
      */
+    @Nonnull
     private final DB db;
 
     /**
@@ -72,7 +82,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
      */
     @SuppressWarnings("unchecked")
     protected AbstractMapDbBackend(DB db) {
-        this.db = db;
+        this.db = checkNotNull(db);
 
         containersMap = db.hashMap("eContainer")
                 .keySerializer(new IdSerializer())
@@ -125,6 +135,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
         return false;
     }
 
+    @Nonnull
     @Override
     public Optional<ContainerValue> containerOf(Id id) {
         return fromDatabase(containersMap, id);
@@ -135,6 +146,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
         toDatabase(containersMap, id, container);
     }
 
+    @Nonnull
     @Override
     public Optional<MetaclassValue> metaclassOf(Id id) {
         return fromDatabase(instanceOfMap, id);
@@ -145,31 +157,37 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
         toDatabase(instanceOfMap, id, metaclass);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(features, key);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
         return valueOf(key);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         return valueOf(key);
     }
 
+    @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
         return toDatabase(features, key, value);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
         return valueFor(key, id);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
         return valueFor(key, id);
@@ -181,12 +199,12 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
     }
 
     @Override
-    public void unsetAllValues(FeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         unsetValue(key);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetAllValues(FeatureKey key) {
         unsetValue(key);
     }
 
@@ -201,12 +219,12 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
     }
 
     @Override
-    public boolean hasAnyValue(FeatureKey key) {
+    public boolean hasReference(FeatureKey key) {
         return hasValue(key);
     }
 
     @Override
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasAnyValue(FeatureKey key) {
         return hasValue(key);
     }
 
@@ -220,6 +238,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
         addValue(key, id);
     }
 
+    @Nonnull
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         return removeValue(key);
@@ -240,16 +259,19 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
         return containsValue(key, id);
     }
 
+    @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
         return indexOfValue(key, id);
     }
 
+    @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         return lastIndexOfValue(key, id);
     }
 
+    @Nonnull
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
         return valuesAsList(key);
@@ -295,6 +317,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
      * @return an {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
+    @Nonnull
     @SuppressWarnings("unchecked")
     protected <K, V> Optional<V> fromDatabase(HTreeMap<K, ? super V> database, K key) {
         return Optional.ofNullable((V) database.get(key));
@@ -312,6 +335,7 @@ public abstract class AbstractMapDbBackend extends AbstractPersistenceBackend im
      * @return an {@link Optional} containing the previous element, or an empty {@link Optional} if there is not any
      * previous element
      */
+    @Nonnull
     @SuppressWarnings("unchecked")
     protected <K, V> Optional<V> toDatabase(HTreeMap<K, ? super V> database, K key, V value) {
         return Optional.ofNullable((V) database.put(key, value));
