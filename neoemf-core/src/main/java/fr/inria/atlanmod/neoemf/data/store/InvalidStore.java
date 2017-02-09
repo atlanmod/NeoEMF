@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.resource.Resource;
  * <p>
  * All methods throws an {@link UnsupportedOperationException}.
  */
-public class InvalidStore implements PersistentStore {
+public final class InvalidStore implements PersistentStore {
 
     /**
      * The message of the exceptions thrown when calling methods.

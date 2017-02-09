@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.CoreTest;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.CoreContext;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
@@ -42,10 +43,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     @Test
     public void testNoOptions() throws InvalidDataStoreException {
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, CommonOptionsBuilder.noOption());
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     @Test
@@ -60,10 +58,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     @Test
@@ -78,10 +73,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     @Test
@@ -96,10 +88,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     @Test
@@ -114,10 +103,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     @Test
@@ -132,10 +118,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
@@ -158,10 +141,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
@@ -184,10 +164,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
@@ -210,10 +187,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
@@ -245,10 +219,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(PersistentStore.class);
-
-        // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     @Override
@@ -282,7 +253,6 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 AbstractPersistenceBackendFactory factory = (AbstractPersistenceBackendFactory) super.persistenceBackendFactory();
 
                 when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistenceBackend.class));
-                when(factory.createSpecificPersistentStore(any(), any(), notNull())).thenReturn(mock(PersistentStore.class));
                 when(factory.createPersistentStore(any(), any(), notNull())).thenCallRealMethod();
 
                 return factory;

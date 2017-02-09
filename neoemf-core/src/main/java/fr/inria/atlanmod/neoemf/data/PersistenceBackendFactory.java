@@ -18,6 +18,8 @@ import org.eclipse.emf.common.util.URI;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * A factory of {@link PersistenceBackend} and {@link PersistentStore}.
  * <p>
@@ -46,6 +48,7 @@ public interface PersistenceBackendFactory {
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
      */
+    @Nonnull
     PersistenceBackend createTransientBackend() throws InvalidDataStoreException;
 
     /**
@@ -59,6 +62,7 @@ public interface PersistenceBackendFactory {
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
      */
+    @Nonnull
     PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException;
 
     /**
@@ -69,6 +73,7 @@ public interface PersistenceBackendFactory {
      *
      * @return the newly created persistent store.
      */
+    @Nonnull
     PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend);
 
     /**
@@ -88,6 +93,7 @@ public interface PersistenceBackendFactory {
      * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
      *                                   PersistenceBackend} for this factory
      */
+    @Nonnull
     PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, IllegalArgumentException;
 
     /**

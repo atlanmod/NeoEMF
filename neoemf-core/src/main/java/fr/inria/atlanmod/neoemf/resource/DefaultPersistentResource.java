@@ -163,7 +163,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             this.isLoaded = true;
             this.isPersistent = true;
         }
-        backend.save();
+
+        store.save();
+
         NeoLogger.info("{0} saved: {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
@@ -205,7 +207,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void close() {
-        if (nonNull(backend)) { // FIXME Quick fix for HBase
+        if (!backend.isClosed()) {
             this.backend.close();
         }
 
@@ -225,9 +227,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public boolean isDistributed() {
-        if (isNull(backend)) { // FIXME Quick fix for HBase
-            return true;
-        }
         return backend.isDistributed();
     }
 
@@ -341,9 +340,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param uri     the {@link URI} of the resource used by the {@code backend}
          */
         public static void closeOnExit(PersistenceBackend backend, URI uri) {
-            if (isNull(backend)) { // FIXME Quick fix for HBase
-                return;
-            }
             Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));
         }
 
@@ -358,7 +354,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         public void run() {
             if (!backend.isClosed()) {
                 backend.close();
-                NeoLogger.info("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
+                NeoLogger.debug("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
             }
         }
     }

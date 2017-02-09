@@ -109,7 +109,6 @@ public class HBaseResourceBuilder extends AbstractResourceBuilder<HBaseResourceB
         when(factory.createPersistentBackend(any(), any())).thenCallRealMethod();
         when(factory.createTransientBackend()).thenCallRealMethod();
         when(factory.createPersistentStore(any(), any(), any())).thenCallRealMethod();
-        when(factory.createSpecificPersistentStore(any(), any(), any())).thenCallRealMethod();
         when(factory.createTransientStore(any(), any())).thenCallRealMethod();
 
         doCallRealMethod().when(factory).copyBackend(any(), any());

@@ -13,12 +13,12 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.InvalidBackend;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseResourceOptions;
-import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -89,29 +89,24 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
         return NAME;
     }
 
+    @Nonnull
     @Override
-    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        return new DirectWriteHBaseStore(resource, createTable(resource.getURI()));
-
-        // FIXME Integrate new DirectWriteStore
-//        return new DirectWriteStore<>(resource, backend);
+    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
+        return new InvalidStore();
     }
 
+    @Nonnull
     @Override
     public PersistenceBackend createTransientBackend() {
-        return null;
+        return new InvalidBackend();
     }
 
+    @Nonnull
     @Override
     public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
         return new HBaseBackendArrays(createTable(uri));
-    }
-
-    @Override
-    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        return new InvalidStore();
     }
 
     @Override

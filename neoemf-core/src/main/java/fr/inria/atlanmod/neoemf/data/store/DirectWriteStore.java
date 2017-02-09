@@ -52,7 +52,6 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistentStore} that translates model-level operations into datastore calls.
@@ -140,9 +139,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
 
     @Override
     public void save() {
-        if (nonNull(backend)) { // FIXME Quick fix for HBase
-            backend.save();
-        }
+        backend.save();
     }
 
     @Override
@@ -173,10 +170,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      */
     @Override
     public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
-        if (isNull(backend)) { // FIXME Quick fix for HBase
-            throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
-        }
-
         return StreamSupport.stream(backend.allInstances(metaclass, strict).spliterator(), false)
                 .map(this::eObject)
                 .collect(Collectors.toList());

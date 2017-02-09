@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
@@ -96,9 +97,17 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      */
     protected abstract String getName();
 
+    @Nonnull
+    @Override
+    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
+        return new DirectWriteStore<>(resource, backend);
+    }
+
+    @Nonnull
     @Override
     public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        PersistentStore store = createSpecificPersistentStore(resource, backend, options);
+        PersistentStore store = new DirectWriteStore<>(resource, backend);
+
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         if (!storeOptions.isEmpty()) {
@@ -132,27 +141,6 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         }
         return store;
     }
-
-    /**
-     * Creates a {@link PersistentStore} between the given {@code resource} and the given {@code backend}
-     * according to the given {@code options}.
-     * <p>
-     * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
-     * <p>
-     * Contrary to {@link #createPersistentStore(PersistentResource, PersistenceBackend, Map)}, this method is
-     * associated to a specific {@link PersistenceBackend}, and called before creating global
-     * {@link PersistentStore}.
-     *
-     * @param resource the resource
-     * @param backend  the back-end
-     * @param options  the options
-     *
-     * @return the newly created persistent store
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
-     *                                   missing
-     */
-    protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
 
     /**
      * Creates and saves the NeoEMF configuration.

@@ -25,8 +25,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -105,19 +103,13 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
         return NAME;
     }
 
-    @Override
-    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof BlueprintsBackend,
-                "Trying to create a Graph-based EStore with an invalid backend");
-
-        return new DirectWriteStore<>(resource, backend);
-    }
-
+    @Nonnull
     @Override
     public PersistenceBackend createTransientBackend() {
         return new DefaultBlueprintsBackend(new TinkerGraph());
     }
 
+    @Nonnull
     @Override
     public BlueprintsBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
         BlueprintsBackend backend;
@@ -162,14 +154,6 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
         processGlobalConfiguration(file);
 
         return backend;
-    }
-
-    @Override
-    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof BlueprintsBackend,
-                "Trying to create a Graph-based EStore with an invalid backend");
-
-        return new DirectWriteStore<>(resource, (DefaultBlueprintsBackend) backend);
     }
 
     @Override

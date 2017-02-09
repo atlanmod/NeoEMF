@@ -18,8 +18,6 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -80,20 +78,14 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         return NAME;
     }
 
-    @Override
-    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof MapDbBackend,
-                "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
-
-        return new DirectWriteStore<>(resource, backend);
-    }
-
+    @Nonnull
     @Override
     public PersistenceBackend createTransientBackend() {
         DB db = DBMaker.memoryDB().make();
         return new MapDbBackendIndices(db);
     }
 
+    @Nonnull
     @Override
     public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
         MapDbBackend backend;
@@ -116,14 +108,6 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         processGlobalConfiguration(file);
 
         return backend;
-    }
-
-    @Override
-    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof MapDbBackend,
-                "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
-
-        return new DirectWriteStore<>(resource, backend);
     }
 
     @Override
