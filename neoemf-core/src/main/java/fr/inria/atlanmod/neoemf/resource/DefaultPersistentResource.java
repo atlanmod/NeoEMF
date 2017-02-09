@@ -147,7 +147,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void save(Map<?, ?> options) throws IOException {
-
         if (nonNull(this.options)) {
             // Check that the save options do not collide with previous load options
             for (Entry<?, ?> entry : options.entrySet()) {
@@ -206,7 +205,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void close() {
-        this.backend.close();
+        if (nonNull(backend)) { // FIXME Quick fix for HBase
+            this.backend.close();
+        }
 
         this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
         this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
@@ -224,6 +225,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public boolean isDistributed() {
+        if (isNull(backend)) { // FIXME Quick fix for HBase
+            return true;
+        }
         return backend.isDistributed();
     }
 
@@ -337,6 +341,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param uri     the {@link URI} of the resource used by the {@code backend}
          */
         public static void closeOnExit(PersistenceBackend backend, URI uri) {
+            if (isNull(backend)) { // FIXME Quick fix for HBase
+                return;
+            }
             Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));
         }
 

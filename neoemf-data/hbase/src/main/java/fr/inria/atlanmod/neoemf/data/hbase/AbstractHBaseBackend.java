@@ -84,17 +84,17 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void save() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // TODO Implement this method
     }
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // TODO Implement this method
     }
 
     @Override
     public boolean isClosed() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
     }
 
     @Override

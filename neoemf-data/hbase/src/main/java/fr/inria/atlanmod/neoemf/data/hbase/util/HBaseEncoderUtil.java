@@ -30,12 +30,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that HBase
@@ -60,21 +60,24 @@ public class HBaseEncoderUtil {
     /**
      * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
      *
-     * @param values the HBase values to decode
+     * @param bytes the HBase bytes to decode
      *
      * @return an array of {@link String}s representing the {@link EReference}s decoded from the database
      *
-     * @throws NullPointerException     if the given {@code values} is null
-     * @throws IllegalArgumentException if the length of {@code values} is not a multiple of {@code UUID_LENGTH}
+     * @throws NullPointerException     if the given {@code bytes} is null
+     * @throws IllegalArgumentException if the length of {@code bytes} is not a multiple of {@code UUID_LENGTH}
      * @see HBaseEncoderUtil#toBytesReferences(String[])
      */
-    public static String[] toStringsReferences(byte... values) {
-        checkNotNull(values);
+    @Nullable
+    public static String[] toStringsReferences(@Nullable byte... bytes) {
+        if (isNull(bytes)) {
+            return null;
+        }
 
-        checkArgument(values.length % (UUID_LENGTH + 1) == UUID_LENGTH);
-        int length = (values.length + 1) / (UUID_LENGTH + 1);
+        checkArgument(bytes.length % (UUID_LENGTH + 1) == UUID_LENGTH);
+        int length = (bytes.length + 1) / (UUID_LENGTH + 1);
 
-        Iterator<String> iterator = Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(values)).iterator();
+        Iterator<String> iterator = Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(bytes)).iterator();
         String[] strings = new String[length];
         int index = 0;
         while (iterator.hasNext()) {
@@ -93,7 +96,12 @@ public class HBaseEncoderUtil {
      * @throws NullPointerException if the value to encode is {@code null}
      * @see HBaseEncoderUtil#toStringsReferences(byte[])
      */
-    public static byte[] toBytesReferences(String... values) {
+    @Nullable
+    public static byte[] toBytesReferences(@Nullable String... values) {
+        if (isNull(values)) {
+            return null;
+        }
+
         return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(values).getBytes(Charsets.UTF_8);
     }
 
@@ -106,7 +114,12 @@ public class HBaseEncoderUtil {
      *
      * @see HBaseEncoderUtil#toStrings(byte[])
      */
-    public static <V> byte[] toBytes(V... values) {
+    @Nullable
+    public static <V> byte[] toBytes(@Nullable V... values) {
+        if (isNull(values)) {
+            return null;
+        }
+
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream stream = new ObjectOutputStream(baos)) {
             stream.writeObject(values);
             stream.flush();
@@ -128,7 +141,12 @@ public class HBaseEncoderUtil {
      * @throws NullPointerException if the given array is {@code null}
      * @see HBaseEncoderUtil#toBytes(Object[])
      */
-    public static <V> V[] toStrings(byte... bytes) {
+    @Nullable
+    public static <V> V[] toStrings(@Nullable byte... bytes) {
+        if (isNull(bytes)) {
+            return null;
+        }
+
         checkNotNull(bytes);
 
         V[] strings = null;

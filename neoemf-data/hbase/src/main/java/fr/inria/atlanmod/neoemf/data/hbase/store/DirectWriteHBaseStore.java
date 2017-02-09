@@ -186,9 +186,8 @@ public class DirectWriteHBaseStore extends DirectWriteStore<HBaseBackend> {
     }
 
     @Override
-    // TODO Implement this method
     public void save() {
-        throw new UnsupportedOperationException();
+        // TODO Implement this method
     }
 
     @Override

@@ -101,7 +101,6 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Override
     public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) {
-        // TODO Externalise the back-end implementation from the HBase EStores.
         return new HBaseBackendArrays(null);
     }
 
