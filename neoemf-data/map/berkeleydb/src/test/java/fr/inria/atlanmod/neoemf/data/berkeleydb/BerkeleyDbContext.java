@@ -9,12 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.context;
+package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -22,22 +22,20 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
-import static org.mockito.Mockito.mock;
-
 /**
- * A specific {@link Context} for the core.
+ * A specific {@link Context} for the BerkeleyDB implementation.
  */
-public class CoreContext implements Context {
+public class BerkeleyDbContext implements Context {
 
     /**
      * The name of this context.
      */
-    public static final String NAME = "Core";
+    public static final String NAME = "BerkeleyDB";
 
     /**
-     * Constructs a new {@code CoreContext}.
+     * Constructs a new {@code BerkeleyDbContext}.
      */
-    protected CoreContext() {
+    protected BerkeleyDbContext() {
     }
 
     /**
@@ -56,46 +54,32 @@ public class CoreContext implements Context {
 
     @Override
     public String uriScheme() {
-        return "mock";
+        return BerkeleyDbURI.SCHEME;
     }
 
     @Override
     public URI createURI(URI uri) {
-        return PersistenceURI.createURI(uri);
+        return BerkeleyDbURI.createURI(uri);
     }
 
     @Override
     public URI createFileURI(File file) {
-        return PersistenceURI.createFileURI(file, uriScheme());
+        return BerkeleyDbURI.createFileURI(file);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This {@code Context} doesn't support the {@link PersistentResource} creation.
-     *
-     * @throws UnsupportedOperationException every time
-     */
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        throw new UnsupportedOperationException();
+        return new BerkeleyDbResourceBuilder(ePackage).persistent().file(file).build();
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This {@code Context} doesn't support the {@link PersistentResource} creation.
-     *
-     * @throws UnsupportedOperationException every time
-     */
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        throw new UnsupportedOperationException();
+        return new BerkeleyDbResourceBuilder(ePackage).file(file).build();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
-        return mock(AbstractPersistenceBackendFactory.class);
+        return BerkeleyDbBackendFactory.getInstance();
     }
 
     /**
@@ -106,6 +90,6 @@ public class CoreContext implements Context {
         /**
          * The instance of the outer class.
          */
-        private static final Context INSTANCE = new CoreContext();
+        private static final Context INSTANCE = new BerkeleyDbContext();
     }
 }

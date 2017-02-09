@@ -9,12 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
+package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -24,19 +23,19 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * A specific {@link Context} for the BerkeleyDB implementation.
+ * A specific {@link Context} for the Blueprints implementation.
  */
-public class BerkeleyDbContext implements Context {
+public class BlueprintsContext implements Context {
 
     /**
      * The name of this context.
      */
-    public static final String NAME = "BerkeleyDB";
+    public static final String NAME = "Tinker";
 
     /**
-     * Constructs a new {@code BerkeleyDbContext}.
+     * Constructs a new {@code BlueprintsContext}.
      */
-    protected BerkeleyDbContext() {
+    protected BlueprintsContext() {
     }
 
     /**
@@ -55,32 +54,32 @@ public class BerkeleyDbContext implements Context {
 
     @Override
     public String uriScheme() {
-        return BerkeleyDbURI.SCHEME;
+        return BlueprintsURI.SCHEME;
     }
 
     @Override
     public URI createURI(URI uri) {
-        return BerkeleyDbURI.createURI(uri);
+        return BlueprintsURI.createURI(uri);
     }
 
     @Override
     public URI createFileURI(File file) {
-        return BerkeleyDbURI.createFileURI(file);
+        return BlueprintsURI.createFileURI(file);
     }
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbResourceBuilder(ePackage).persistent().file(file).build();
+        return new BlueprintsResourceBuilder(ePackage).persistent().file(file).build();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbResourceBuilder(ePackage).file(file).build();
+        return new BlueprintsResourceBuilder(ePackage).file(file).build();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
-        return BerkeleyDbBackendFactory.getInstance();
+        return BlueprintsBackendFactory.getInstance();
     }
 
     /**
@@ -91,6 +90,6 @@ public class BerkeleyDbContext implements Context {
         /**
          * The instance of the outer class.
          */
-        private static final Context INSTANCE = new BerkeleyDbContext();
+        private static final Context INSTANCE = new BlueprintsContext();
     }
 }

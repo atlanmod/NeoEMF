@@ -9,34 +9,31 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.context;
+package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.Context;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * A specific {@link Context} for the MapDB implementation.
+ * A specific {@link Context} for the Blueprints Neo4j implementation.
  */
-public class MapDbContext implements Context {
+public class BlueprintsNeo4jContext extends BlueprintsContext {
 
     /**
      * The name of this context.
      */
-    public static final String NAME = "MapDb";
+    public static final String NAME = "Neo4j";
 
     /**
-     * Constructs a new {@code MapDbContext}.
+     * Constructs a new {@code BlueprintsNeo4jContext}.
      */
-    protected MapDbContext() {
+    protected BlueprintsNeo4jContext() {
     }
 
     /**
@@ -54,33 +51,13 @@ public class MapDbContext implements Context {
     }
 
     @Override
-    public String uriScheme() {
-        return MapDbURI.SCHEME;
-    }
-
-    @Override
-    public URI createURI(URI uri) {
-        return MapDbURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return MapDbURI.createFileURI(file);
-    }
-
-    @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbResourceBuilder(ePackage).persistent().file(file).build();
+        return new BlueprintsNeo4jResourceBuilder(ePackage).persistent().file(file).build();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbResourceBuilder(ePackage).file(file).build();
-    }
-
-    @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
-        return MapDbBackendFactory.getInstance();
+        return new BlueprintsNeo4jResourceBuilder(ePackage).file(file).build();
     }
 
     /**
@@ -91,6 +68,6 @@ public class MapDbContext implements Context {
         /**
          * The instance of the outer class.
          */
-        private static final Context INSTANCE = new MapDbContext();
+        private static final Context INSTANCE = new BlueprintsNeo4jContext();
     }
 }

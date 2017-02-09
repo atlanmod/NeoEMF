@@ -9,13 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.context;
+package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -23,20 +22,22 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+import static org.mockito.Mockito.mock;
+
 /**
- * A specific {@link Context} for the Blueprints implementation.
+ * A specific {@link Context} for the core.
  */
-public class BlueprintsContext implements Context {
+public class CoreContext implements Context {
 
     /**
      * The name of this context.
      */
-    public static final String NAME = "Tinker";
+    public static final String NAME = "Core";
 
     /**
-     * Constructs a new {@code BlueprintsContext}.
+     * Constructs a new {@code CoreContext}.
      */
-    protected BlueprintsContext() {
+    protected CoreContext() {
     }
 
     /**
@@ -55,32 +56,46 @@ public class BlueprintsContext implements Context {
 
     @Override
     public String uriScheme() {
-        return BlueprintsURI.SCHEME;
+        return "mock";
     }
 
     @Override
     public URI createURI(URI uri) {
-        return BlueprintsURI.createURI(uri);
+        return PersistenceURI.createURI(uri);
     }
 
     @Override
     public URI createFileURI(File file) {
-        return BlueprintsURI.createFileURI(file);
+        return PersistenceURI.createFileURI(file, uriScheme());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This {@code Context} doesn't support the {@link PersistentResource} creation.
+     *
+     * @throws UnsupportedOperationException every time
+     */
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).persistent().file(file).build();
+        throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This {@code Context} doesn't support the {@link PersistentResource} creation.
+     *
+     * @throws UnsupportedOperationException every time
+     */
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).file(file).build();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
-        return BlueprintsBackendFactory.getInstance();
+        return mock(AbstractPersistenceBackendFactory.class);
     }
 
     /**
@@ -91,6 +106,6 @@ public class BlueprintsContext implements Context {
         /**
          * The instance of the outer class.
          */
-        private static final Context INSTANCE = new BlueprintsContext();
+        private static final Context INSTANCE = new CoreContext();
     }
 }

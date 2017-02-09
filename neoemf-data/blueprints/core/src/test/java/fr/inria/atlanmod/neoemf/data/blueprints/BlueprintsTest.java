@@ -11,9 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.ContextualTest;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.Context;
+import fr.inria.atlanmod.neoemf.ContextualTest;
 
 /**
  * A test-case that uses a {@link BlueprintsContext}.

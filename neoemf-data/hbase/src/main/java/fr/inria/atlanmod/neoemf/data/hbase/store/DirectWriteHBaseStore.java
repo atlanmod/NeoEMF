@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -24,15 +23,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Append;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
@@ -133,48 +124,12 @@ public class DirectWriteHBaseStore extends DirectWriteStore<HBaseBackend> {
      * Constructs a new {@code DirectWriteHBaseStore} on the given {@code resource}.
      *
      * @param resource the resource to persist and access
-     *
-     * @throws IOException if the HBase server cannot be found
+     * @param table    the HBase table
      */
-    public DirectWriteHBaseStore(PersistentResource resource) throws IOException {
+    public DirectWriteHBaseStore(PersistentResource resource, Table table) {
         super(resource, null);
 
-        Configuration configuration = HBaseConfiguration.create();
-        configuration.set("hbase.zookeeper.quorum", resource.getURI().host());
-        configuration.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
-
-        TableName tableName = TableName.valueOf(HBaseURI.format(resource.getURI()));
-
-        Connection connection = ConnectionFactory.createConnection(configuration);
-        Admin admin = connection.getAdmin();
-
-        this.table = initTable(connection, tableName, admin);
-    }
-
-    /**
-     * Initialize the HBase table by creating the columns and column families to store the model.
-     *
-     * @param connection the connection to the HBase server
-     * @param tableName  the name of the table to access on the server
-     * @param admin      the administrator client of the HBase server
-     *
-     * @return the created HBase table containing the columns and column families to store the model
-     *
-     * @throws IOException if the HBase server cannot be found
-     */
-    protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
-        if (!admin.tableExists(tableName)) {
-            // FIXME Don't initialize this table in READ ONLY.
-            HTableDescriptor desc = new HTableDescriptor(tableName);
-            HColumnDescriptor propertyFamily = new HColumnDescriptor(PROPERTY_FAMILY);
-            HColumnDescriptor typeFamily = new HColumnDescriptor(TYPE_FAMILY);
-            HColumnDescriptor containmentFamily = new HColumnDescriptor(CONTAINMENT_FAMILY);
-            desc.addFamily(propertyFamily);
-            desc.addFamily(typeFamily);
-            desc.addFamily(containmentFamily);
-            admin.createTable(desc);
-        }
-        return connection.getTable(tableName);
+        this.table = table;
     }
 
     /**

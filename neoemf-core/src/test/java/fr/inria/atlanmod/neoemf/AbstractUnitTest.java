@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.context.ContextualTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 
 import org.junit.After;
@@ -42,8 +41,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
 
     /**
      * Registers the current {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} from the current {@link
-     * fr.inria.atlanmod.neoemf.context.Context} in the {@link PersistenceBackendFactoryRegistry} and initialize the
-     * {@link #file}.
+     * Context} in the {@link PersistenceBackendFactoryRegistry} and initialize the {@link #file}.
      *
      * @throws IOException if an I/O error occurs
      */

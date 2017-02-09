@@ -9,12 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.context;
+package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
-import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.AbstractResourceBuilder;
+import fr.inria.atlanmod.neoemf.ResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 

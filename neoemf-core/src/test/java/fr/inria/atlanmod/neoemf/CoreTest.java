@@ -11,10 +11,6 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.ContextualTest;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
-
 /**
  * A test-case that uses a {@link CoreContext}.
  */

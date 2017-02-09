@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.context;
+package fr.inria.atlanmod.neoemf;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 

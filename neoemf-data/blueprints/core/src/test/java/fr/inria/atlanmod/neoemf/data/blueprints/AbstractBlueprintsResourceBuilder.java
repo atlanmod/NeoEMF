@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
-import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.AbstractResourceBuilder;
+import fr.inria.atlanmod.neoemf.ResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
