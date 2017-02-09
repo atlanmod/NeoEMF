@@ -25,6 +25,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -353,8 +354,6 @@ public class ImportTest extends AbstractInputTest {
 
         backend.close();
 
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
-
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
@@ -365,11 +364,14 @@ public class ImportTest extends AbstractInputTest {
     }
 
     private BlueprintsBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .directWrite()
                 .noCache()
                 .asMap();
 
-        return (BlueprintsBackend) BlueprintsBackendFactory.getInstance().createPersistentBackend(BlueprintsURI.createFileURI(testFile), options);
+        URI uri = BlueprintsURI.createFileURI(testFile);
+        return (BlueprintsBackend) BlueprintsBackendFactory.getInstance().createPersistentBackend(uri, options);
     }
 }
