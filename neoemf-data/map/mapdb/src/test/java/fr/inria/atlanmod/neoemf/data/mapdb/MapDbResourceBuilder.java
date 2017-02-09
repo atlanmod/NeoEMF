@@ -43,9 +43,8 @@ public class MapDbResourceBuilder extends AbstractResourceBuilder<MapDbResourceB
     protected void initBuilder() {
         super.initBuilder();
 
-        if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
-        }
+        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 

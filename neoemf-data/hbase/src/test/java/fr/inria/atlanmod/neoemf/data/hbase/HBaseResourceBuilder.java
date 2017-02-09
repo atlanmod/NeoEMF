@@ -27,8 +27,10 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
@@ -38,6 +40,21 @@ import static org.mockito.Mockito.when;
  * A specific {@link ResourceBuilder} for the MapDB implementation.
  */
 public class HBaseResourceBuilder extends AbstractResourceBuilder<HBaseResourceBuilder> {
+
+    /**
+     * Facility for testing HBase.
+     */
+    private static HBaseTestingUtility hbaseUtility;
+
+    /**
+     * The current table name.
+     */
+    private String currentName;
+
+    /**
+     * The current table.
+     */
+    private Table currentTable;
 
     /**
      * Constructs a new {@code HBaseResourceBuilder} with the given {@code ePackage}.
@@ -54,39 +71,87 @@ public class HBaseResourceBuilder extends AbstractResourceBuilder<HBaseResourceB
     protected void initBuilder() {
         super.initBuilder();
 
-        if (!PersistenceBackendFactoryRegistry.isRegistered(HBaseURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, createMock());
-        }
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     @Override
     public HBaseResourceBuilder uri(URI uri) {
-        this.uri = HBaseURI.createHierarchicalURI("127.0.0.1", "0", HBaseURI.createURI(uri));
-        return me();
+        throw new UnsupportedOperationException("HBase doesn't support URI creation");
     }
 
     @Override
     public HBaseResourceBuilder file(File file) {
+        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, createMock(file.getName()));
+
         this.uri = HBaseURI.createHierarchicalURI("127.0.0.1", "0", URI.createURI(file.getName()));
         return me();
     }
 
-    public static PersistenceBackendFactory createMock() {
-        Table table;
+    /**
+     * Creates a mocked {@link PersistenceBackendFactory} for testing HBase in a local environment.
+     *
+     * @param name the name of the {@link Table}
+     *
+     * @return a new {@link PersistenceBackendFactory}
+     */
+    private PersistenceBackendFactory createMock(String name) {
+        if (isNull(hbaseUtility)) {
+            initCluster();
+        }
+
+        Table table = initTable(name);
+
+        HBaseBackendFactory factory = mock(HBaseBackendFactory.class);
+        when(factory.createTable(any())).thenReturn(table);
+
+        when(factory.getName()).thenCallRealMethod();
+
+        when(factory.createPersistentBackend(any(), any())).thenCallRealMethod();
+        when(factory.createTransientBackend()).thenCallRealMethod();
+        when(factory.createPersistentStore(any(), any(), any())).thenCallRealMethod();
+        when(factory.createSpecificPersistentStore(any(), any(), any())).thenCallRealMethod();
+        when(factory.createTransientStore(any(), any())).thenCallRealMethod();
+
+        doCallRealMethod().when(factory).copyBackend(any(), any());
+
+        return factory;
+    }
+
+    /**
+     * Initializes a {@link Table} with the given {@code name}.
+     *
+     * @param name the name of the table
+     *
+     * @return a new {@link Table}, or a previous if the name has already been used
+     */
+    private Table initTable(String name) {
+        if (!Objects.equals(name, currentName)) {
+            try {
+                TableName tableName = TableName.valueOf(name);
+                byte[][] families = new byte[][]{
+                        AbstractHBaseBackend.PROPERTY_FAMILY,
+                        AbstractHBaseBackend.TYPE_FAMILY,
+                        AbstractHBaseBackend.CONTAINMENT_FAMILY};
+
+                currentTable = hbaseUtility.createTable(tableName, families);
+                currentName = name;
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Unable to create the Table");
+            }
+        }
+        return currentTable;
+    }
+
+    /**
+     * Initializes Hadoop cluster.
+     */
+    private void initCluster() {
         try {
             NeoLogger.info("Initializing Hadoop minicluster... (This may take several minutes)");
 
-            HBaseTestingUtility hbase = new HBaseTestingUtility();
-            hbase.startMiniCluster(1);
-
-            TableName tableName = TableName.valueOf(UUID.randomUUID().toString());
-            byte[][] families = new byte[][]{
-                    AbstractHBaseBackend.PROPERTY_FAMILY,
-                    AbstractHBaseBackend.TYPE_FAMILY,
-                    AbstractHBaseBackend.CONTAINMENT_FAMILY};
-
-            table = hbase.createTable(tableName, families);
+            hbaseUtility = new HBaseTestingUtility();
+            hbaseUtility.startMiniCluster(1);
 
             NeoLogger.info("Hadoop minicluster is ready");
         }
@@ -94,18 +159,5 @@ public class HBaseResourceBuilder extends AbstractResourceBuilder<HBaseResourceB
             NeoLogger.error(e, "Unable to create the Hadoop minicluster");
             throw new RuntimeException(e);
         }
-
-        HBaseBackendFactory factory = mock(HBaseBackendFactory.class);
-        when(factory.createTable(any())).thenReturn(table);
-
-        doCallRealMethod().when(factory).getName();
-        doCallRealMethod().when(factory).createPersistentBackend(any(), any());
-        doCallRealMethod().when(factory).createTransientBackend();
-        doCallRealMethod().when(factory).createPersistentStore(any(), any(), any());
-        doCallRealMethod().when(factory).createSpecificPersistentStore(any(), any(), any());
-        doCallRealMethod().when(factory).createTransientStore(any(), any());
-        doCallRealMethod().when(factory).copyBackend(any(), any());
-
-        return factory;
     }
 }

@@ -12,11 +12,13 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseContext;
 import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -28,14 +30,27 @@ import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoadedResourceTest extends AbstractBackendTest {
 
+    private boolean isHBase() {
+        if (Objects.equals(context.name(), HBaseContext.NAME)) {
+            NeoLogger.warn("NeoEMF/HBase doesn't support loading from a minicluster");
+            return true;
+        }
+        return false;
+    }
+
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsContainer() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
@@ -48,6 +63,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsContainer() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -63,6 +82,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
     public void testGetElementsEInternalContainer() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         InternalEObject model = (InternalEObject) resource.getContents().get(0);
@@ -76,6 +99,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
     public void testGetAllContentsEInternalContainer() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -90,6 +117,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsEResource() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
@@ -102,6 +133,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEResource() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -116,6 +151,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsEDirectResource() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         InternalEObject model = (InternalEObject) resource.getContents().get(0);
@@ -128,6 +167,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();

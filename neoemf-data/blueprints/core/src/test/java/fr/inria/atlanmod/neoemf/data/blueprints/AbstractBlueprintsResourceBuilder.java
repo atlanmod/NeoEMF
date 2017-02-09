@@ -46,10 +46,8 @@ public abstract class AbstractBlueprintsResourceBuilder<B extends AbstractBluepr
         super.initBuilder();
 
         registerFactory();
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
 
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
-        }
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 

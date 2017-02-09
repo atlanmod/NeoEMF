@@ -59,8 +59,8 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
                 new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
                 new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
                 new Object[]{MapDbContext.get(), MapDbContext.NAME},
-                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME}
-//                new Object[]{HBaseContext.get(), HBaseContext.NAME}
+                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME},
+                new Object[]{HBaseContext.get(), HBaseContext.NAME}
         );
     }
 

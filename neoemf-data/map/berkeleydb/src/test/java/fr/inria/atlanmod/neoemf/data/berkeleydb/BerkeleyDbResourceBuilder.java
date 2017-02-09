@@ -42,10 +42,9 @@ public class BerkeleyDbResourceBuilder extends AbstractResourceBuilder<BerkeleyD
     @Override
     protected void initBuilder() {
         super.initBuilder();
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME,
-                    BerkeleyDbBackendFactory.getInstance());
-        }
+
+        PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
+
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
