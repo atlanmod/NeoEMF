@@ -32,6 +32,8 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -117,12 +119,15 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
     }
 
     @Override
-    public BlueprintsBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
+    public BlueprintsBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
         BlueprintsBackend backend;
         PropertiesConfiguration configuration = null;
 
+        checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
+        File file = FileUtils.getFile(uri.toFileString());
+
         try {
-            configuration = getOrCreateBlueprintsConfiguration(directory, options);
+            configuration = getOrCreateBlueprintsConfiguration(file, options);
 
             try {
                 Graph baseGraph = GraphFactory.open(configuration);
@@ -131,8 +136,8 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                     backend = new DefaultBlueprintsBackend((KeyIndexableGraph) baseGraph);
                 }
                 else {
-                    NeoLogger.error("Graph type {0} does not support Key Indices", directory.getAbsolutePath());
-                    throw new InvalidDataStoreException("Graph type " + directory.getAbsolutePath() + " does not support Key Indices");
+                    NeoLogger.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
+                    throw new InvalidDataStoreException("Graph type " + file.getAbsolutePath() + " does not support Key Indices");
                 }
             }
             catch (RuntimeException e) {
@@ -154,7 +159,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
             }
         }
 
-        processGlobalConfiguration(directory);
+        processGlobalConfiguration(file);
 
         return backend;
     }

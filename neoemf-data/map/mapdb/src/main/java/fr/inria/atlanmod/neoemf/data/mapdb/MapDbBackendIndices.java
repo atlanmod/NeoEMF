@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultivaluedFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
@@ -71,7 +72,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
      * @note This constructor is protected. To create a new {@code MapDbBackendIndices} use {@link
-     * MapDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")

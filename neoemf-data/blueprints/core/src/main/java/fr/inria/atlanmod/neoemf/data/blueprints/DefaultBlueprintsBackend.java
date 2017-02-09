@@ -20,6 +20,7 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -64,7 +65,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
      * @note This constructor is protected. To create a new {@code DefaultBlueprintsBackend} use {@link
-     * BlueprintsBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see BlueprintsBackendFactory
      */
     protected DefaultBlueprintsBackend(KeyIndexableGraph baseGraph) {

@@ -16,6 +16,7 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -56,7 +57,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
      * @param dbConfig  ???
      *
      * @note This constructor is protected. To create a new {@code BerkeleyDbBackendIndices} use {@link
-     * BerkeleyDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      */
     protected BerkeleyDbBackendIndices(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);

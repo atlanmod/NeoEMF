@@ -34,14 +34,14 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
-import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.common.util.URI;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
@@ -91,17 +91,22 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        return new DirectWriteHBaseStore(resource, createTable(resource));
+        return new DirectWriteHBaseStore(resource, createTable(resource.getURI()));
+
+        // FIXME Integrate new DirectWriteStore
+//        return new DirectWriteStore<>(resource, backend);
     }
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        return new HBaseBackendArrays(null);
+        return null;
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) {
-        return new HBaseBackendArrays(null);
+    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
+        checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
+
+        return new HBaseBackendArrays(createTable(uri));
     }
 
     @Override
@@ -114,14 +119,21 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
+    /**
+     * Creates a new {@link Table} with the given {@code uri}.
+     *
+     * @param uri the {@link URI} to get information about it
+     *
+     * @return a new {@link Table}
+     */
     @VisibleForTesting
-    protected Table createTable(Resource resource) {
+    protected Table createTable(URI uri) {
         try {
             Configuration configuration = HBaseConfiguration.create();
-            configuration.set("hbase.zookeeper.quorum", resource.getURI().host());
-            configuration.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
+            configuration.set("hbase.zookeeper.quorum", uri.host());
+            configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
 
-            TableName tableName = TableName.valueOf(HBaseURI.format(resource.getURI()));
+            TableName tableName = TableName.valueOf(HBaseURI.format(uri));
 
             Connection connection = ConnectionFactory.createConnection(configuration);
             Admin admin = connection.getAdmin();

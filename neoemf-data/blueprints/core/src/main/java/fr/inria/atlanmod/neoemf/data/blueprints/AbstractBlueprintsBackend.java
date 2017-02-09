@@ -26,6 +26,7 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -149,7 +150,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
      * @note This constructor is protected. To create a new {@code DefaultBlueprintsBackend} use {@link
-     * BlueprintsBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see BlueprintsBackendFactory
      */
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {

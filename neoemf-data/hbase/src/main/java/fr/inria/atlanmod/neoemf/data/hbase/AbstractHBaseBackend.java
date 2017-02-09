@@ -32,6 +32,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.isNull;
+
 /**
  *
  */
@@ -116,9 +118,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public Optional<ContainerValue> containerOf(Id id) {
         return fromDatabase(id)
-                .map(result -> Optional.of(ContainerValue.of(
-                        StringId.of(Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER))),
-                        Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER)))))
+                .map(result -> {
+                    byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
+                    byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
+                    if (isNull(byteId) || isNull(byteName)) {
+                        return Optional.<ContainerValue>empty();
+                    }
+                    return Optional.of(ContainerValue.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
+                })
                 .orElse(Optional.empty());
     }
 
@@ -138,9 +145,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public Optional<MetaclassValue> metaclassOf(Id id) {
         return fromDatabase(id)
-                .map(result -> Optional.of(MetaclassValue.of(
-                        Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER)),
-                        Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER)))))
+                .map(result -> {
+                    byte[] byteName = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
+                    byte[] byteUri = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
+                    if (isNull(byteName) || isNull(byteUri)) {
+                        return Optional.<MetaclassValue>empty();
+                    }
+                    return Optional.of(MetaclassValue.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
+                })
                 .orElse(Optional.empty());
     }
 
@@ -159,7 +171,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     protected Optional<byte[]> fromDatabase(FeatureKey key) {
         return fromDatabase(key.id())
-                .map(result -> Optional.of(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name()))))
+                .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name()))))
                 .orElse(Optional.empty());
     }
 

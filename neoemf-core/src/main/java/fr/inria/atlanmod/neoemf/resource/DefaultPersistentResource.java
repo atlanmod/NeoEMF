@@ -156,7 +156,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             }
         }
         if (!isLoaded() || !isPersistent) {
-            PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+            PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(uri, options);
             PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(backend, newBackend);
             this.backend = newBackend;
             this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, backend, options);
@@ -174,7 +174,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             if (!isLoaded) {
                 if (getFile().exists() || nonNull(uri.authority())) {
                     // Check authority to enable remote resource loading
-                    this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+                    this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(uri, options);
                     this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, backend, options);
                     this.isPersistent = true;
                     dummyRootEObject.setMapped(true);

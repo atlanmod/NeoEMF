@@ -14,7 +14,8 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import java.io.File;
+import org.eclipse.emf.common.util.URI;
+
 import java.util.Map;
 
 /**
@@ -50,7 +51,7 @@ public interface PersistenceBackendFactory {
     /**
      * Creates a {@link PersistenceBackend} in the given {@code directory}.
      *
-     * @param directory the directory
+     * @param uri the directory
      * @param options   the options that defines the behaviour of the back-end
      *
      * @return the persistence back-end
@@ -58,7 +59,7 @@ public interface PersistenceBackendFactory {
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
      */
-    PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException;
+    PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException;
 
     /**
      * Creates a {@link PersistentStore} between the given {@code resource} and the given in-memory {@code backend}.

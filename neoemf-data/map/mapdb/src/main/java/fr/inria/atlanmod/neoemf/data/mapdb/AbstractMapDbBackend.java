@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
@@ -77,7 +78,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
      * @note This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
-     * MapDbBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")

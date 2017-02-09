@@ -24,6 +24,9 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -100,11 +103,14 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
         BerkeleyDbBackend backend;
 
+        checkArgument(uri.isFile(), "NeoEMF/BerkeleyDB only supports file URIs");
+        File file = FileUtils.getFile(uri.toFileString());
+
         try {
-            File dir = new File(BerkeleyDbURI.createFileURI(directory).toFileString());
+            File dir = new File(uri.toFileString());
             if (!dir.exists()) {
                 Files.createDirectories(dir.toPath());
             }
@@ -120,7 +126,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
             backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
 //            backend.open();
 
-            processGlobalConfiguration(directory);
+            processGlobalConfiguration(file);
         }
         catch (IOException e) {
             NeoLogger.error(e);

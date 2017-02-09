@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -43,7 +44,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
      * @param dbConfig  ???
      *
      * @note This constructor is protected. To create a new {@code BerkeleyDbBackendLists} use {@link
-     * BerkeleyDbBackendFactory#createPersistentBackend(File, Map)}.
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      */
     protected BerkeleyDbBackendLists(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);

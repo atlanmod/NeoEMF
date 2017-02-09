@@ -370,6 +370,6 @@ public class ImportTest extends AbstractInputTest {
                 .noCache()
                 .asMap();
 
-        return (BlueprintsBackend) BlueprintsBackendFactory.getInstance().createPersistentBackend(testFile, options);
+        return (BlueprintsBackend) BlueprintsBackendFactory.getInstance().createPersistentBackend(BlueprintsURI.createFileURI(testFile), options);
     }
 }
