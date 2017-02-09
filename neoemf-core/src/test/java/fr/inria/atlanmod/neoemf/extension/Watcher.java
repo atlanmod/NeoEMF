@@ -15,6 +15,9 @@ import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.runner.Description;
+import org.junit.runners.model.MultipleFailureException;
+
+import static java.util.Objects.isNull;
 
 /**
  * A {@link org.junit.Rule} that logs each test-case call.
@@ -33,7 +36,21 @@ public class Watcher extends org.junit.rules.TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        LOG.warn("[WARN] --- Failed");
+        if (isNull(e)) {
+            LOG.warn("[WARN] --- Failed");
+        }
+        else {
+            // Several exceptions
+            if (MultipleFailureException.class.isInstance(e)) {
+                LOG.error(e, "[ERROR] --- Several exceptions have been thrown during the test:");
+                ((MultipleFailureException) e).getFailures()
+                        .forEach(t -> LOG.error(t, ""));
+            }
+            // One exception
+            else {
+                LOG.error(e, "[ERROR] --- An exception has been thrown during the test:");
+            }
+        }
     }
 
     @Override
