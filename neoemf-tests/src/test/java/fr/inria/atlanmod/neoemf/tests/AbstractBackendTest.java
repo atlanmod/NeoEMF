@@ -77,20 +77,16 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         try {
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
         }
-        catch (NullPointerException e) {
-            NeoLogger.error(e);
-        }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     public PersistentResource createTransientStore() {
         try {
             return closeAtExit(context.createTransientResource(EPACKAGE, file));
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
