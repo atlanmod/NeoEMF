@@ -47,7 +47,7 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class ImportTest extends AbstractInputTest {
 
@@ -275,13 +275,8 @@ public class ImportTest extends AbstractInputTest {
         assertThat(eObject.eClass().getName()).isEqualTo(className);
         assertThat(eObject.eContents()).hasSize(size);
         if (isNull(name)) {
-            try {
-                eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
-                fail("Supposed to throw a NullPointerException");
-            }
-            catch (NullPointerException ignore) {
-                // It's good !
-            }
+            Throwable thrown = catchThrowable(() -> eObject.eGet(eObject.eClass().getEStructuralFeature("name")));
+            assertThat(thrown).isInstanceOf(NullPointerException.class);
         }
         else {
             assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
