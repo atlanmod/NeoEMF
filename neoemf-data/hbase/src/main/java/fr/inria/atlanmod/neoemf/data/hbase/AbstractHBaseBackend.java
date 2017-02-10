@@ -11,16 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -33,18 +28,17 @@ import org.eclipse.emf.ecore.EReference;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  *
@@ -58,34 +52,34 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 
     /**
-     * ???
+     * The column family holding instances.
      */
     protected static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
 
     /**
-     * ???
-     */
-    protected static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
-
-    /**
-     * ???
-     */
-    protected static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
-
-    /**
-     * ???
+     * The column family holding containments.
      */
     protected static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
 
     /**
-     * ???
+     * The column qualifier holding the URI of metamodels.
      */
-    protected static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
+    private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
 
     /**
-     * ???
+     * The column qualifier holding the name of classes.
      */
-    protected static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
+    private static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
+
+    /**
+     * The column qualifier holding the identifier of containers.
+     */
+    private static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
+
+    /**
+     * The column qualifier holding the name of the feature used to retrieve the containment.
+     */
+    private static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
 
     /**
      * The HBase table used to access the model.
@@ -138,10 +132,10 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
                 .map(result -> {
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
-                    if (isNull(byteId) || isNull(byteName)) {
-                        return Optional.<ContainerValue>empty();
+                    if (nonNull(byteId) && nonNull(byteName)) {
+                        return Optional.of(ContainerValue.of(Serializer.deserialize(byteId), Serializer.deserialize(byteName)));
                     }
-                    return Optional.of(ContainerValue.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
+                    return Optional.<ContainerValue>empty();
                 })
                 .orElse(Optional.empty());
     }
@@ -149,9 +143,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public void containerFor(Id id, ContainerValue container) {
         try {
-            Put put = new Put(Bytes.toBytes(id.toString()));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
+            Put put = new Put(Serializer.serialize(id));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Serializer.serialize(container.id()));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Serializer.serialize(container.name()));
             table.put(put);
         }
         catch (IOException ignore) {
@@ -163,12 +157,12 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     public Optional<MetaclassValue> metaclassOf(Id id) {
         return fromDatabase(id)
                 .map(result -> {
-                    byte[] byteName = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
-                    byte[] byteUri = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
-                    if (isNull(byteName) || isNull(byteUri)) {
-                        return Optional.<MetaclassValue>empty();
+                    byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
+                    byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
+                    if (nonNull(byteName) && nonNull(byteUri)) {
+                        return Optional.of(MetaclassValue.of(Serializer.deserialize(byteName), Serializer.deserialize(byteUri)));
                     }
-                    return Optional.of(MetaclassValue.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
+                    return Optional.<MetaclassValue>empty();
                 })
                 .orElse(Optional.empty());
     }
@@ -176,11 +170,10 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public void metaclassFor(Id id, MetaclassValue metaclass) {
         try {
-            byte[] idAsBytes = Bytes.toBytes(id.toString());
-            Put put = new Put(idAsBytes);
-            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(metaclass.uri()));
-            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(metaclass.name()));
-            table.checkAndPut(idAsBytes, TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
+            Put put = new Put(Serializer.serialize(id));
+            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Serializer.serialize(metaclass.name()));
+            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Serializer.serialize(metaclass.uri()));
+            table.put(put);
         }
         catch (IOException ignore) {
         }
@@ -194,9 +187,12 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    protected Optional<byte[]> fromDatabase(FeatureKey key) {
+    protected <V> Optional<V> fromDatabase(FeatureKey key) {
         return fromDatabase(key.id())
-                .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name()))))
+                .map(result -> {
+                    Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Serializer.serialize(key.name())));
+                    return value.map(bytes -> Optional.<V>of(Serializer.deserialize(bytes))).orElse(Optional.empty());
+                })
                 .orElse(Optional.empty());
     }
 
@@ -206,11 +202,10 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @param key   the key of the element to save
      * @param value the value to save
      */
-    protected void toDatabase(FeatureKey key, @Nullable byte[] value) {
+    protected <V> void toDatabase(FeatureKey key, V value) {
         try {
-            byte[] idAsBytes = Bytes.toBytes(key.id().toString());
-            Put put = new Put(idAsBytes);
-            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), value);
+            Put put = new Put(Serializer.serialize(key.id()));
+            put.addColumn(PROPERTY_FAMILY, Serializer.serialize(key.name()), Serializer.serialize(value));
             table.put(put);
         }
         catch (IOException ignore) {
@@ -224,9 +219,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      */
     protected void outDatabase(FeatureKey key) {
         try {
-            byte[] idAsBytes = Bytes.toBytes(key.id().toString());
-            Delete delete = new Delete(idAsBytes);
-            delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()));
+            Delete delete = new Delete(Serializer.serialize(key.id()));
+            delete.addColumn(PROPERTY_FAMILY, Serializer.serialize(key.name()));
             table.delete(delete);
         }
         catch (IOException ignore) {
@@ -245,8 +239,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         Optional<Result> value = Optional.empty();
 
         try {
-            byte[] idAsBytes = Bytes.toBytes(id.toString());
-            Get get = new Get(idAsBytes);
+            Get get = new Get(Serializer.serialize(id));
             Result result = table.get(get);
             if (!result.isEmpty()) {
                 value = Optional.of(result);
@@ -266,16 +259,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     protected static class Serializer {
 
         /**
-         * Expected length (in {@code bytes}) of stored elements.
-         */
-        public static final int UUID_LENGTH = 23;
-
-        /**
-         * The default separator used to serialize {@link Collection}s.
-         */
-        public static final char VALUE_SEPERATOR_DEFAULT = ',';
-
-        /**
          * This class should not be instantiated.
          *
          * @throws IllegalStateException every time
@@ -285,95 +268,42 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
 
         /**
-         * Encodes the provided {@link String} array into an array of {@code bytes} that can be stored in the database.
+         * Serializes an {@code Object} to a byte array for storage/serialization.
          *
-         * @param values an array of {@link String}s representing the {@link EReference}s to encode.
+         * @param value the object to serialize to bytes
          *
-         * @return an array of {@code bytes}
-         *
-         * @throws NullPointerException if the value to encode is {@code null}
-         * @see Serializer#deserializeReferences(byte[])
+         * @return the serialized object as a byte array
          */
         @Nonnull
-        public static byte[] serializeReferences(String[] values) {
-            checkNotNull(values);
+        public static <T> byte[] serialize(T value) {
+            checkNotNull(value);
 
-            return Bytes.toBytes(Joiner.on(VALUE_SEPERATOR_DEFAULT).join(values));
-        }
-
-        /**
-         * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
-         *
-         * @param data the HBase bytes to decode
-         *
-         * @return an array of {@link String}s representing the {@link EReference}s decoded from the database
-         *
-         * @throws NullPointerException     if the given {@code bytes} is null
-         * @throws IllegalArgumentException if the length of {@code bytes} is not a multiple of {@code UUID_LENGTH}
-         * @see Serializer#serializeReferences(String[])
-         */
-        @Nonnull
-        public static String[] deserializeReferences(byte[] data) {
-            checkNotNull(data);
-
-            checkArgument(data.length % (UUID_LENGTH + 1) == UUID_LENGTH);
-
-            int length = (data.length + 1) / (UUID_LENGTH + 1);
-
-            String[] strings = new String[length];
-            int index = 0;
-
-            for (String s : Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(data))) {
-                strings[index++] = s;
-            }
-
-            return strings;
-        }
-
-        /**
-         * Encodes an array of {@link String}s into an array of {@code bytes} that can be stored in the database.
-         *
-         * @param values the array to encode
-         *
-         * @return the encoded {@code byte} array
-         *
-         * @see Serializer#deserializeValues(byte[])
-         */
-        @Nonnull
-        public static <V> byte[] serializeValues(V[] values) {
-            checkNotNull(values);
-
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream stream = new ObjectOutputStream(baos)) {
-                stream.writeObject(values);
-                stream.flush();
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512); ObjectOutput out = new ObjectOutputStream(baos)) {
+                out.writeObject(value);
+                out.flush();
                 return baos.toByteArray();
             }
             catch (IOException e) {
-                NeoLogger.error("Unable to convert String[] to byte[]");
                 throw new RuntimeException(e);
             }
         }
 
         /**
-         * Decodes an array of bytes into an array of {@link String}s.
+         * Deserializes a single {@code Object} from an array of bytes.
          *
-         * @param data the {@code byte} array to decode
+         * @param data the serialized object as a byte array
          *
-         * @return the decoded {@link String} array
-         *
-         * @throws NullPointerException if the given array is {@code null}
-         * @see Serializer#serializeValues(Object[])
+         * @return the deserialized object
          */
-        @Nonnull
         @SuppressWarnings("unchecked")
-        public static <V> V[] deserializeValues(byte[] data) {
+        @Nonnull
+        public static <T> T deserialize(byte[] data) {
             checkNotNull(data);
 
-            try (ByteArrayInputStream baos = new ByteArrayInputStream(data); ObjectInputStream stream = new ObjectInputStream(baos)) {
-                return (V[]) stream.readObject();
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bis)) {
+                return (T) in.readObject();
             }
             catch (IOException | ClassNotFoundException e) {
-                NeoLogger.error("Unable to convert byte[] to String[]");
                 throw new RuntimeException(e);
             }
         }

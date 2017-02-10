@@ -12,21 +12,17 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,33 +52,26 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return fromDatabase(key)
-                .map(bytes -> Optional.of((V) Bytes.toString(bytes)))
-                .orElse(Optional.empty());
+        return fromDatabase(key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        return valueOf(key)
-                .map(s -> Optional.of(StringId.of(s.toString())))
-                .orElse(Optional.empty());
+        return valueOf(key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
-        return fromDatabase(key)
-                .map(bytes -> Optional.of(Serializer.<V>deserializeValues(bytes)[key.position()]))
-                .orElse(Optional.empty());
+        return this.<V[]>valueOf(key.withoutPosition())
+                .map(ts -> ts[key.position()]);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
-        return fromDatabase(key)
-                .map(bytes -> Optional.of(StringId.of(Serializer.deserializeReferences(bytes)[key.position()])))
-                .orElse(Optional.empty());
+        return valueOf(key);
     }
 
     @Nonnull
@@ -90,7 +79,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
-        toDatabase(key, Bytes.toBytes(value.toString()));
+        toDatabase(key, value);
 
         return previousValue;
     }
@@ -98,23 +87,20 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return valueFor(key, id.toString())
-                .map(s -> Optional.of(StringId.of(s)))
-                .orElse(Optional.empty());
+        return valueFor(key, id);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
-        Optional<V> previousValue = valueOf(key);
-
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElseThrow(NoSuchElementException::new);
+
+        Optional<V> previousValue = Optional.of(values[key.position()]);
 
         values[key.position()] = value;
 
-        toDatabase(key, Serializer.serializeValues(values));
+        valueFor(key.withoutPosition(), values);
 
         return previousValue;
     }
@@ -122,17 +108,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
-        Optional<Id> previousId = referenceOf(key);
-
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElseThrow(NoSuchElementException::new);
-
-        values[key.position()] = id.toString();
-
-        toDatabase(key, Serializer.serializeReferences(values));
-
-        return previousId;
+        return valueFor(key, id);
     }
 
     @Override
@@ -152,7 +128,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Override
     public void unsetAllReferences(FeatureKey key) {
-        unsetValue(key);
+        unsetReference(key);
     }
 
     @Override
@@ -172,43 +148,31 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Override
     public boolean hasAnyReference(FeatureKey key) {
-        return hasValue(key);
+        return hasReference(key);
     }
 
     @Override
     public <V> void addValue(MultivaluedFeatureKey key, V value) {
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        ArrayUtils.add(values, key.position(), value);
-
-        toDatabase(key, Serializer.serializeValues(values));
+        valueFor(key.withoutPosition(), ArrayUtils.add(values, key.position(), value));
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElse(new String[0]);
-
-        ArrayUtils.add(values, key.position(), id.toString());
-
-        toDatabase(key, Serializer.serializeReferences(values));
+        addValue(key, id);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElseThrow(NoSuchElementException::new);
 
-        Optional<V> previousValue = Optional.ofNullable(values[key.position()]);
+        Optional<V> previousValue = Optional.of(values[key.position()]);
 
-        ArrayUtils.remove(values, key.position());
-
-        toDatabase(key, Serializer.serializeValues(values));
+        valueFor(key.withoutPosition(), ArrayUtils.remove(values, key.position()));
 
         return previousValue;
     }
@@ -216,96 +180,69 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Nonnull
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElseThrow(NoSuchElementException::new);
-
-        Optional<Id> previousId = Optional.ofNullable(values[key.position()]).map(StringId::of);
-
-        ArrayUtils.remove(values, key.position());
-
-        toDatabase(key, Serializer.serializeReferences(values));
-
-        return previousId;
+        return removeValue(key);
     }
 
     @Override
     public void cleanValues(FeatureKey key) {
-        toDatabase(key, null);
+        unsetValue(key);
     }
 
     @Override
     public void cleanReferences(FeatureKey key) {
-        cleanValues(key);
+        unsetReference(key);
     }
 
     @Override
     public <V> boolean containsValue(FeatureKey key, V value) {
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
-                .orElseThrow(NoSuchElementException::new);
-
-        return ArrayUtils.contains(values, value);
+        return this.<V[]>valueOf(key)
+                .map(ts -> org.apache.commons.lang.ArrayUtils.contains(ts, value))
+                .orElse(false);
     }
 
     @Override
     public boolean containsReference(FeatureKey key, Id id) {
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElseThrow(NoSuchElementException::new);
-
-        return ArrayUtils.contains(values, id.toString());
+        return containsValue(key, id);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
-                .orElseThrow(NoSuchElementException::new);
-
-        int index = ArrayUtils.indexOf(values, value);
-        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+        return this.<V[]>valueOf(key)
+                .map(ts -> {
+                    int index = org.apache.commons.lang.ArrayUtils.indexOf(ts, value);
+                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                })
+                .orElse(OptionalInt.empty());
     }
 
     @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElseThrow(NoSuchElementException::new);
-
-        int index = ArrayUtils.indexOf(values, id.toString());
-        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+        return indexOfValue(key, id);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
-                .orElseThrow(NoSuchElementException::new);
-
-        int index = ArrayUtils.lastIndexOf(values, value);
-        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+        return this.<V[]>valueOf(key)
+                .map(ts -> {
+                    int index = org.apache.commons.lang.ArrayUtils.lastIndexOf(ts, value);
+                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                })
+                .orElse(OptionalInt.empty());
     }
 
     @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElseThrow(NoSuchElementException::new);
-
-        int index = ArrayUtils.lastIndexOf(values, id.toString());
-        return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+        return lastIndexOfValue(key, id);
     }
 
     @Nonnull
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
-        V[] values = fromDatabase(key)
-                .map(Serializer::<V>deserializeValues)
+        V[] values = this.<V[]>valueOf(key)
                 .orElseThrow(NoSuchElementException::new);
 
         return Arrays.asList(values);
@@ -314,20 +251,14 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Nonnull
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
-        String[] values = fromDatabase(key)
-                .map(Serializer::deserializeReferences)
-                .orElseThrow(NoSuchElementException::new);
-
-        return Stream.of(values)
-                .map(StringId::of)
-                .collect(Collectors.toList());
+        return valuesAsList(key);
     }
 
     @Nonnull
     @Override
-    public OptionalInt sizeOf(FeatureKey key) {
-        return fromDatabase(key)
-                .map(b -> OptionalInt.of(Serializer.deserializeValues(b).length))
+    public <V> OptionalInt sizeOf(FeatureKey key) {
+        return this.<V[]>valueOf(key)
+                .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());
     }
 
