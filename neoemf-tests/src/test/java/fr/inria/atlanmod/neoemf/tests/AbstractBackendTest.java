@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractBackendTest extends AbstractTest implements ContextualTest {
@@ -57,8 +59,8 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
                 new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
                 new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
                 new Object[]{MapDbContext.get(), MapDbContext.NAME},
-                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME},
-                new Object[]{HBaseContext.get(), HBaseContext.NAME}
+                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME}
+//                new Object[]{HBaseContext.get(), HBaseContext.NAME}
         );
     }
 
@@ -106,5 +108,13 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
             resource.close();
         }
         loadedResources.clear();
+    }
+
+    protected boolean isHBase() {
+        if (Objects.equals(context.name(), HBaseContext.NAME)) {
+            NeoLogger.warn("NeoEMF/HBase doesn't support loading from a minicluster");
+            return true;
+        }
+        return false;
     }
 }

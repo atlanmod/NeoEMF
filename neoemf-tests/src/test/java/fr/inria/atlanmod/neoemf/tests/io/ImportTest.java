@@ -11,28 +11,29 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandlerFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandlerFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -44,47 +45,129 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-public class ImportTest extends AbstractInputTest {
+public class ImportTest extends AbstractBackendTest {
 
-    private File testFile;
-
+    /**
+     * A {@link java.util.Set} holding all tested {@link Object}s.
+     */
     private HashSet<Object> testedObjects;
+
+    /**
+     * A {@link java.util.Set} holding tested {@link EStructuralFeature}s.
+     */
     private HashSet<EStructuralFeature> testedFeatures;
 
+    /**
+     * Retrieves a child element from the {@code root} following the given {@code indexes}.
+     *
+     * @param root    the element from which to start the search
+     * @param indexes the indexes of contained elements. The first index represents the index of the element from the
+     *                root element, the second represents the index of the element from the previous,...
+     *
+     * @return the object
+     */
+    @Nonnull
     private static EObject getChildFrom(EObject root, int... indexes) {
         if (indexes.length == 0) {
             throw new IllegalArgumentException("You must define at least one index");
         }
 
-        EObject child = root;
-
+        EObject element = root;
         for (int index : indexes) {
-            child = child.eContents().get(index);
+            element = element.eContents().get(index);
+        }
+        assertThat(element).isNotNull();
+        return element;
+    }
+
+    /**
+     * Returns the test XMI file that uses XPath as references.
+     *
+     * @return the test file
+     */
+    protected static File getXmiStandard() {
+        return getResourceFile("/io/xmi/sampleStandard.xmi");
+    }
+
+    /**
+     * Returns the test XMI file that uses {@code xmi:id} as references.
+     *
+     * @return the test file
+     */
+    protected static File getXmiWithId() {
+        return getResourceFile("/io/xmi/sampleWithId.xmi");
+    }
+
+    /**
+     * Returns a test file according to the given {@code path}.
+     *
+     * @param path the resource path
+     *
+     * @return the test file
+     */
+    protected static File getResourceFile(String path) {
+        return new File(ImportTest.class.getResource(path).getFile());
+    }
+
+    /**
+     * Registers a EPackage in {@link EPackage.Registry} according to its {@code prefix} and {@code uri}, from an Ecore
+     * file.
+     * <p>
+     * The targeted Ecore file must be present in {@code /resources/ecore}.
+     *
+     * @param prefix the prefix of the URI. It is used to retrieve the {@code ecore} file
+     * @param uri    the URI of the {@link EPackage}
+     */
+    protected static void registerEPackageFromEcore(String prefix, String uri) {
+        File file = getResourceFile("/io/ecore/{name}.ecore".replaceAll("\\{name\\}", prefix));
+
+        EPackage ePackage = null;
+
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
+
+        ResourceSet rs = new ResourceSetImpl();
+
+        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
+        rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
+
+        Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
+        EObject eObject = r.getContents().get(0);
+        if (eObject instanceof EPackage) {
+            ePackage = (EPackage) eObject;
+            rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        return child;
+        assertThat(ePackage).isNotNull(); // "EPackage does not exist"
+
+        EPackage.Registry.INSTANCE.put(uri, ePackage);
     }
 
     @Before
     public void init() throws IOException {
-        testFile = workspace.newFile("Neo4j");
+        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();
     }
 
     @Test
-    public void testCompareWithEMFNeo4j() throws IOException {
+    public void testCompare() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         File file = getXmiStandard();
 
         EObject emfObject = loadWithEMF(file);
-        EObject neoObject = loadWithNeoBlueprints(file);
+        EObject neoObject = loadWithNeoEMF(file);
 
         assertEqualEObject(neoObject, emfObject);
     }
@@ -96,10 +179,14 @@ public class ImportTest extends AbstractInputTest {
      */
     @Test
     public void testElementsAndChildrenNeo4j() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         EObject eObject;
         EObject eObjectChild;
 
-        EObject root = loadWithNeoBlueprints(getXmiStandard());
+        EObject root = loadWithNeoEMF(getXmiStandard());
         assertValidElement(root, "Model", 19, "fr.inria.atlanmod.kyanos.tests");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
@@ -139,9 +226,13 @@ public class ImportTest extends AbstractInputTest {
      */
     @Test
     public void testAttributesNeo4j() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         EObject eObject;
 
-        EObject root = loadWithNeoBlueprints(getXmiStandard());
+        EObject root = loadWithNeoEMF(getXmiStandard());
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
             eObject = getChildFrom(root, 0, 0, 0, 0, 0, 0, 0);
@@ -165,10 +256,14 @@ public class ImportTest extends AbstractInputTest {
      */
     @Test
     public void testReferencesNeo4j() throws IOException {
+        if (isHBase()) {
+            return;
+        }
+
         EObject eObject;
         EObject eObjectChild;
 
-        EObject root = loadWithNeoBlueprints(getXmiStandard());
+        EObject root = loadWithNeoEMF(getXmiStandard());
         assertValidReference(root, "ownedElements", 0, "Package", "fr", true, true);
         assertValidReference(root, "orphanTypes", 5, "PrimitiveTypeVoid", "void", true, true);
         {
@@ -211,12 +306,12 @@ public class ImportTest extends AbstractInputTest {
         File file = getXmiWithId();
 
         EObject emfObject = loadWithEMF(file);
-        EObject neoObject = loadWithNeoBlueprints(file);
+        EObject neoObject = loadWithNeoEMF(file);
 
         assertEqualEObject(neoObject, emfObject);
     }
 
-    private void assertEqualEObject(final EObject actual, final EObject expected) {
+    private void assertEqualEObject(EObject actual, EObject expected) {
         NeoLogger.debug("Actual object     : {0}", actual);
         NeoLogger.debug("Expected object   : {0}", expected);
 
@@ -241,7 +336,7 @@ public class ImportTest extends AbstractInputTest {
     }
 
     @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
-    private void assertEqualFeature(final EObject actual, final EObject expected, final int featureId) {
+    private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
         EStructuralFeature feature = expected.eClass().getEStructuralFeature(featureId);
 
         if (!testedFeatures.contains(feature)) {
@@ -272,7 +367,7 @@ public class ImportTest extends AbstractInputTest {
         }
     }
 
-    private void assertValidElement(final EObject eObject, final String className, final int size, final Object name) {
+    private void assertValidElement(EObject eObject, String className, int size, Object name) {
         assertThat(eObject.eClass().getName()).isEqualTo(className);
         assertThat(eObject.eContents()).hasSize(size);
         if (isNull(name)) {
@@ -285,7 +380,7 @@ public class ImportTest extends AbstractInputTest {
     }
 
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
-    private void assertValidReference(final EObject eObject, final String name, final int index, final String referenceClassName, final String referenceName, final boolean many, final boolean containment) {
+    private void assertValidReference(EObject eObject, String name, int index, String referenceClassName, String referenceName, boolean many, boolean containment) {
         EReference reference = (EReference) eObject.eClass().getEStructuralFeature(name);
 
         Object objectReference = eObject.eGet(reference);
@@ -319,7 +414,7 @@ public class ImportTest extends AbstractInputTest {
         assertThat(reference.isMany()).isEqualTo(many);
     }
 
-    private void assertValidAttribute(final EObject eObject, final String name, final Object value) {
+    private void assertValidAttribute(EObject eObject, String name, Object value) {
         EAttribute attribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
 
         if (isNull(value)) {
@@ -330,48 +425,30 @@ public class ImportTest extends AbstractInputTest {
         }
     }
 
-    private EObject loadWithEMF(final File file) throws IOException {
-        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
-
+    private EObject loadWithEMF(File file) throws IOException {
         Resource resource = new XMIResourceImpl();
         resource.load(new FileInputStream(file), Collections.emptyMap());
         return resource.getContents().get(0);
     }
 
-    private void loadWithNeo(final File file, final PersistenceHandler inputHandler) throws IOException {
-        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
-
-        Importer.fromXmi(new FileInputStream(file), inputHandler);
-    }
-
-    private EObject loadWithNeoBlueprints(final File file) throws IOException {
-        BlueprintsBackend backend = createNeo4jPersistenceBackend();
-        PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
-
-        loadWithNeo(file, handler);
-
-        backend.close();
+    private EObject loadWithNeoEMF(File file) throws IOException {
+        try (PersistenceBackend backend = createPersistenceBackend()) {
+            PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
+            Importer.fromXmi(new FileInputStream(file), handler);
+        }
 
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry()
+                .getProtocolToFactoryMap().put(context().uriScheme(), PersistentResourceFactory.getInstance());
 
-        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(testFile));
-        resource.load(BlueprintsNeo4jOptionsBuilder.noOption());
+        Resource resource = resourceSet.createResource(context().createFileURI(file()));
+        resource.load(context().defaultOptions());
 
         return resource.getContents().get(0);
     }
 
-    private BlueprintsBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
-
-        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
-                .directWrite()
-                .noCache()
-                .asMap();
-
-        URI uri = BlueprintsURI.createFileURI(testFile);
-        return (BlueprintsBackend) BlueprintsBackendFactory.getInstance().createPersistentBackend(uri, options);
+    private PersistenceBackend createPersistenceBackend() {
+        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+        return context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), context().defaultOptions());
     }
 }

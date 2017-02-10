@@ -36,14 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoadedResourceTest extends AbstractBackendTest {
 
-    private boolean isHBase() {
-        if (Objects.equals(context.name(), HBaseContext.NAME)) {
-            NeoLogger.warn("NeoEMF/HBase doesn't support loading from a minicluster");
-            return true;
-        }
-        return false;
-    }
-
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsContainer() throws IOException {

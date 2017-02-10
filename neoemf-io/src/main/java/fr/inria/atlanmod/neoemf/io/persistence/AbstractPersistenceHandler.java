@@ -312,7 +312,6 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
             if (index == PersistentStore.NO_INDEX) {
                 index = backend.sizeOf(key).orElse(0);
             }
-
             backend.addValue(key.withPosition(index), attribute.value());
         }
     }
@@ -339,13 +338,17 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
 
         FeatureKey key = FeatureKey.of(id, reference.name());
 
-        int index = reference.index();
-        if (index == PersistentStore.NO_INDEX) {
-            index = backend.sizeOf(key).orElse(0);
-        }
-
         // FIXME Single-valued reference are not handled, and cause exception
-        backend.addReference(key.withPosition(index), idReference);
+//        if (!reference.many()) {
+//            backend.referenceFor(key, idReference);
+//        }
+//        else {
+            int index = reference.index();
+            if (index == PersistentStore.NO_INDEX) {
+                index = backend.sizeOf(key).orElse(0);
+            }
+            backend.addReference(key.withPosition(index), idReference);
+//        }
     }
 
     /**

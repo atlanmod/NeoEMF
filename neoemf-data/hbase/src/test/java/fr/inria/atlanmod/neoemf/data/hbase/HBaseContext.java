@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -21,6 +22,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A specific {@link Context} for the HBase implementation.
@@ -80,6 +82,11 @@ public class HBaseContext implements Context {
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return HBaseBackendFactory.getInstance();
+    }
+
+    @Override
+    public Map<String, Object> defaultOptions() {
+        return HBaseOptionsBuilder.noOption();
     }
 
     /**
