@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -37,17 +35,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
  * <p>
  * This class does not access HBase database, but is here to fit the requirement of the core architecture. For
- * historical reasons the real access to the HBase Table is done in {@link DirectWriteHBaseStore}.
+ * historical reasons the real access to the HBase Table is done in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}.
  * <p>
  * Moving HBase access to this class to fit NeoEMF back-end architecture is planned in a future release.
  *
- * @see DirectWriteHBaseStore
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
 class HBaseBackendArrays extends AbstractHBaseBackend {
 
     /**
-     * Constructs a new {@code HBaseBackendArrays}.
+     * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
+     *
+     * @param table the HBase table
      */
     protected HBaseBackendArrays(Table table) {
         super(table);
@@ -73,7 +73,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return fromDatabase(key)
-                .map(bytes -> Optional.of(HBaseEncoderUtil.<V>toStrings(bytes)[key.position()]))
+                .map(bytes -> Optional.of(Serializer.<V>deserializeValues(bytes)[key.position()]))
                 .orElse(Optional.empty());
     }
 
@@ -81,7 +81,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
         return fromDatabase(key)
-                .map(bytes -> Optional.of(StringId.of(HBaseEncoderUtil.toStringsReferences(bytes)[key.position()])))
+                .map(bytes -> Optional.of(StringId.of(Serializer.deserializeReferences(bytes)[key.position()])))
                 .orElse(Optional.empty());
     }
 
@@ -109,12 +109,12 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         Optional<V> previousValue = valueOf(key);
 
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElseThrow(NoSuchElementException::new);
 
         values[key.position()] = value;
 
-        toDatabase(key, HBaseEncoderUtil.toBytes(values));
+        toDatabase(key, Serializer.serializeValues(values));
 
         return previousValue;
     }
@@ -125,12 +125,12 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         Optional<Id> previousId = referenceOf(key);
 
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
+                .map(Serializer::deserializeReferences)
                 .orElseThrow(NoSuchElementException::new);
 
         values[key.position()] = id.toString();
 
-        toDatabase(key, HBaseEncoderUtil.toBytesReferences(values));
+        toDatabase(key, Serializer.serializeReferences(values));
 
         return previousId;
     }
@@ -178,37 +178,37 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> void addValue(MultivaluedFeatureKey key, V value) {
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElse(newValue());
 
         ArrayUtils.add(values, key.position(), value);
 
-        toDatabase(key, HBaseEncoderUtil.toBytes(values));
+        toDatabase(key, Serializer.serializeValues(values));
     }
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
-                .orElse(newValue());
+                .map(Serializer::deserializeReferences)
+                .orElse(new String[0]);
 
         ArrayUtils.add(values, key.position(), id.toString());
 
-        toDatabase(key, HBaseEncoderUtil.toBytesReferences(values));
+        toDatabase(key, Serializer.serializeReferences(values));
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.ofNullable(values[key.position()]);
 
         ArrayUtils.remove(values, key.position());
 
-        toDatabase(key, HBaseEncoderUtil.toBytes(values));
+        toDatabase(key, Serializer.serializeValues(values));
 
         return previousValue;
     }
@@ -217,14 +217,14 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
+                .map(Serializer::deserializeReferences)
                 .orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousId = Optional.ofNullable(values[key.position()]).map(StringId::of);
 
         ArrayUtils.remove(values, key.position());
 
-        toDatabase(key, HBaseEncoderUtil.toBytesReferences(values));
+        toDatabase(key, Serializer.serializeReferences(values));
 
         return previousId;
     }
@@ -242,7 +242,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> boolean containsValue(FeatureKey key, V value) {
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElseThrow(NoSuchElementException::new);
 
         return ArrayUtils.contains(values, value);
@@ -251,7 +251,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public boolean containsReference(FeatureKey key, Id id) {
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
+                .map(Serializer::deserializeReferences)
                 .orElseThrow(NoSuchElementException::new);
 
         return ArrayUtils.contains(values, id.toString());
@@ -261,7 +261,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElseThrow(NoSuchElementException::new);
 
         int index = ArrayUtils.indexOf(values, value);
@@ -272,7 +272,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id id) {
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
+                .map(Serializer::deserializeReferences)
                 .orElseThrow(NoSuchElementException::new);
 
         int index = ArrayUtils.indexOf(values, id.toString());
@@ -283,7 +283,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElseThrow(NoSuchElementException::new);
 
         int index = ArrayUtils.lastIndexOf(values, value);
@@ -294,7 +294,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
+                .map(Serializer::deserializeReferences)
                 .orElseThrow(NoSuchElementException::new);
 
         int index = ArrayUtils.lastIndexOf(values, id.toString());
@@ -305,7 +305,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         V[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::<V>toStrings)
+                .map(Serializer::<V>deserializeValues)
                 .orElseThrow(NoSuchElementException::new);
 
         return Arrays.asList(values);
@@ -315,7 +315,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public Iterable<Id> referencesAsList(FeatureKey key) {
         String[] values = fromDatabase(key)
-                .map(HBaseEncoderUtil::toStringsReferences)
+                .map(Serializer::deserializeReferences)
                 .orElseThrow(NoSuchElementException::new);
 
         return Stream.of(values)
@@ -327,7 +327,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public OptionalInt sizeOf(FeatureKey key) {
         return fromDatabase(key)
-                .map(b -> OptionalInt.of(HBaseEncoderUtil.toStrings(b).length))
+                .map(b -> OptionalInt.of(Serializer.deserializeValues(b).length))
                 .orElse(OptionalInt.empty());
     }
 

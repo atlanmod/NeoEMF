@@ -42,6 +42,7 @@ import static java.util.Objects.isNull;
  * keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
  */
 @ParametersAreNonnullByDefault
+@Deprecated
 public class HBaseEncoderUtil {
 
     /**

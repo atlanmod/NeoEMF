@@ -33,6 +33,7 @@ import static java.util.Objects.isNull;
 /**
  * Utility singleton class that provides HBase-specific helpers.
  */
+@Deprecated
 public class HBaseResourceUtil {
 
     /**

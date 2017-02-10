@@ -11,12 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -24,14 +28,22 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.eclipse.emf.ecore.EReference;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -80,8 +92,13 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      */
     protected final Table table;
 
+    /**
+     * Constructs a new {@code AbstractHBaseBackend} on th given {@code table}
+     *
+     * @param table the HBase table
+     */
     protected AbstractHBaseBackend(Table table) {
-        this.table = table;
+        this.table = checkNotNull(table);
     }
 
     @Override
@@ -212,5 +229,135 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
 
         return value;
+    }
+
+    /**
+     * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that HBase
+     * keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
+     */
+    @ParametersAreNonnullByDefault
+    protected static class Serializer {
+
+        /**
+         * Expected length (in {@code bytes}) of stored elements.
+         */
+        public static final int UUID_LENGTH = 23;
+
+        /**
+         * The default separator used to serialize {@link Collection}s.
+         */
+        public static final char VALUE_SEPERATOR_DEFAULT = ',';
+
+        /**
+         * This class should not be instantiated.
+         *
+         * @throws IllegalStateException every time
+         */
+        private Serializer() {
+            throw new IllegalStateException("This class should not be instantiated");
+        }
+
+        /**
+         * Encodes the provided {@link String} array into an array of {@code bytes} that can be stored in the database.
+         *
+         * @param values an array of {@link String}s representing the {@link EReference}s to encode.
+         *
+         * @return an array of {@code bytes}
+         *
+         * @throws NullPointerException if the value to encode is {@code null}
+         * @see Serializer#deserializeReferences(byte[])
+         */
+        @Nullable
+        public static byte[] serializeReferences(@Nullable String... values) {
+            if (isNull(values)) {
+                return null;
+            }
+
+            return Bytes.toBytes(Joiner.on(VALUE_SEPERATOR_DEFAULT).join(values));
+        }
+
+        /**
+         * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
+         *
+         * @param bytes the HBase bytes to decode
+         *
+         * @return an array of {@link String}s representing the {@link EReference}s decoded from the database
+         *
+         * @throws NullPointerException     if the given {@code bytes} is null
+         * @throws IllegalArgumentException if the length of {@code bytes} is not a multiple of {@code UUID_LENGTH}
+         * @see Serializer#serializeReferences(String[])
+         */
+        @Nullable
+        public static String[] deserializeReferences(@Nullable byte... bytes) {
+            if (isNull(bytes)) {
+                return null;
+            }
+
+            checkArgument(bytes.length % (UUID_LENGTH + 1) == UUID_LENGTH);
+
+            int length = (bytes.length + 1) / (UUID_LENGTH + 1);
+
+            String[] strings = new String[length];
+            int index = 0;
+
+            for (String s : Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(bytes))) {
+                strings[index++] = s;
+            }
+
+            return strings;
+        }
+
+        /**
+         * Encodes an array of {@link String}s into an array of {@code bytes} that can be stored in the database.
+         *
+         * @param values the array to encode
+         *
+         * @return the encoded {@code byte} array
+         *
+         * @see Serializer#deserializeValues(byte[])
+         */
+        @Nullable
+        @SafeVarargs
+        public static <V> byte[] serializeValues(@Nullable V... values) {
+            if (isNull(values)) {
+                return null;
+            }
+
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream stream = new ObjectOutputStream(baos)) {
+                stream.writeObject(values);
+                stream.flush();
+                return baos.toByteArray();
+            }
+            catch (IOException e) {
+                NeoLogger.error("Unable to convert String[] to byte[]");
+                throw new RuntimeException(e);
+            }
+        }
+
+        /**
+         * Decodes an array of {@code bytes} into an array of {@link String}s.
+         *
+         * @param bytes the {@code byte} array to decode
+         *
+         * @return the decoded {@link String} array
+         *
+         * @throws NullPointerException if the given array is {@code null}
+         * @see Serializer#serializeValues(Object[])
+         */
+        @Nullable
+        @SuppressWarnings("unchecked")
+        public static <V> V[] deserializeValues(@Nullable byte... bytes) {
+            if (isNull(bytes)) {
+                return null;
+            }
+
+            try (ByteArrayInputStream baos = new ByteArrayInputStream(bytes); ObjectInputStream stream = new ObjectInputStream(baos)) {
+                return (V[]) stream.readObject();
+            }
+            catch (IOException | ClassNotFoundException e) {
+                NeoLogger.error("Unable to convert byte[] to String[]");
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

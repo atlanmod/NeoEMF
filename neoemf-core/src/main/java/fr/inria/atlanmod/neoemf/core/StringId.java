@@ -17,12 +17,14 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An {@link Id} with a {@link String} representation.
  */
+@ParametersAreNonnullByDefault
 public class StringId implements Id {
 
     @SuppressWarnings("JavaDoc")
@@ -39,14 +41,28 @@ public class StringId implements Id {
      *
      * @param literalId the literal representation of this {@code StringId}
      */
-    protected StringId(@Nonnull String literalId) {
+    protected StringId(String literalId) {
         this.literalId = checkNotNull(literalId);
     }
 
-    public static Id from(Object o) {
-        return of(o.toString());
+    /**
+     * Creates a new {@code StringId} with the given {@code object} by calling {@link Object#toString()}.
+     *
+     * @param object the object
+     *
+     * @return a new {@code StringId}
+     */
+    public static Id from(Object object) {
+        return of(object.toString());
     }
 
+    /**
+     * Creates a new {@code StringId} with its literal representation.
+     *
+     * @param literalId the literal representation of this {@code StringId}
+     *
+     * @return a new {@code StringId}
+     */
     public static Id of(String literalId) {
         return new StringId(literalId);
     }
@@ -65,7 +81,7 @@ public class StringId implements Id {
     }
 
     @Override
-    public int compareTo(@Nonnull Id o) {
+    public int compareTo(Id o) {
         return o.toString().compareTo(toString());
     }
 
