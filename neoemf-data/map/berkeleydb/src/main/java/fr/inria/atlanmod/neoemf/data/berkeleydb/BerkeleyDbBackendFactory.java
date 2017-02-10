@@ -127,17 +127,6 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
         return backend;
     }
 
-    @Override
-    public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof BerkeleyDbBackend && to instanceof BerkeleyDbBackend,
-                "The backend to copy is not an instance of BerkeleyDbBackendIndices");
-
-        BerkeleyDbBackend source = (BerkeleyDbBackend) from;
-        BerkeleyDbBackend target = (BerkeleyDbBackend) to;
-
-        source.copyTo(target);
-    }
-
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */

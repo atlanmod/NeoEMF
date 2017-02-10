@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -38,7 +37,6 @@ public final class InvalidStore implements PersistentStore {
      */
     public InvalidStore() {
         super();
-        NeoLogger.warn(MSG);
     }
 
     /**

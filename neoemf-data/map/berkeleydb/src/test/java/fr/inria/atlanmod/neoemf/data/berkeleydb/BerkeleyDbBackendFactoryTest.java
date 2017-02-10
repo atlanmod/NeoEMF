@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
@@ -138,7 +137,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     }
 
     /**
-     * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent datastores from the transient ones.
+     * Test if {@link PersistenceBackend#copyTo} creates the persistent datastores from the transient ones.
      * Only empty back-ends are tested.
      */
     @Test
@@ -149,7 +148,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class); // "Persistent back-end is not an instance of BerkeleyDbBackendIndices"
 
-        context().persistenceBackendFactory().copyBackend(transientBackend, persistentBackend);
+        transientBackend.copyTo(persistentBackend);
 
 //        for (String tKey : transientMap.getAll().keySet()) {
 //            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent back-end does not contain the key"

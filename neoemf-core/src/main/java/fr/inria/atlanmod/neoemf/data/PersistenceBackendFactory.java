@@ -54,8 +54,8 @@ public interface PersistenceBackendFactory {
     /**
      * Creates a {@link PersistenceBackend} in the given {@code directory}.
      *
-     * @param uri the directory
-     * @param options   the options that defines the behaviour of the back-end
+     * @param uri     the directory
+     * @param options the options that defines the behaviour of the back-end
      *
      * @return the persistence back-end
      *
@@ -95,12 +95,4 @@ public interface PersistenceBackendFactory {
      */
     @Nonnull
     PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, IllegalArgumentException;
-
-    /**
-     * Copies the content from a {@link PersistenceBackend} to another.
-     *
-     * @param from the back-end to copy
-     * @param to   the destination
-     */
-    void copyBackend(PersistenceBackend from, PersistenceBackend to);
 }

@@ -28,8 +28,8 @@ import static java.util.Objects.isNull;
  * An internal class that sets Blueprints Neo4j default configuration properties in the current NeoEMF
  * {@link Configuration}.
  *
- * @note This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used
- * to store the underlying database.
+ * @note This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used to store
+ * the underlying database.
  * @see BlueprintsBackendFactory
  */
 @SuppressWarnings("unused") // Called dynamically

@@ -23,6 +23,7 @@ import com.sleepycat.je.OperationStatus;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -40,6 +41,7 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -47,6 +49,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend implements BerkeleyDbBackend {
+
+    /**
+     * ???
+     */
+    @Nonnull
+    protected final Environment environment;
 
     /**
      * A persistent map that stores the container of {@link PersistentEObject}, identified by the object {@link Id}.
@@ -67,12 +75,6 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      */
     @Nonnull
     private final Database features;
-
-    /**
-     * ???
-     */
-    @Nonnull
-    protected final Environment environment;
 
     /**
      * ???
@@ -100,20 +102,6 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
         isClosed = false;
     }
 
-    /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
-     *
-     * @param target the {@code PersistenceBackend} to copy the database contents to
-     */
-    @Override
-    public void copyTo(BerkeleyDbBackend target) {
-        AbstractBerkeleyDbBackend backend = (AbstractBerkeleyDbBackend) target;
-
-        copyDatabaseTo(instances, backend.instances);
-        copyDatabaseTo(features, backend.features);
-        copyDatabaseTo(containers, backend.containers);
-    }
-
     @Override
     public void save() {
         allDatabases().forEach(Database::sync);
@@ -137,6 +125,21 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    /**
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     *
+     * @param target the {@code PersistenceBackend} to copy the database contents to
+     */
+    @Override
+    public void copyTo(PersistenceBackend target) {
+        checkArgument(target instanceof AbstractBerkeleyDbBackend);
+        AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
+
+        copyDatabaseTo(instances, to.instances);
+        copyDatabaseTo(features, to.features);
+        copyDatabaseTo(containers, to.containers);
     }
 
     @Override

@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.IdSerializer;
@@ -35,6 +36,7 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -124,6 +126,26 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void copyTo(PersistenceBackend target) {
+        checkArgument(target instanceof AbstractMapDbBackend);
+        AbstractMapDbBackend to = (AbstractMapDbBackend) target;
+
+        for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
+            Object collection = entry.getValue();
+            if (collection instanceof Map) {
+                Map fromMap = (Map) collection;
+                Map toMap = to.db.hashMap(entry.getKey()).createOrOpen();
+
+                toMap.putAll(fromMap);
+            }
+            else {
+                throw new UnsupportedOperationException("Cannot copy MapDB backend: store type " + collection.getClass().getSimpleName() + " is not supported");
+            }
+        }
     }
 
     @Override
@@ -286,25 +308,6 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     @VisibleForTesting
     public <V> V get(String name) {
         return db.get(name);
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void copyTo(MapDbBackend target) {
-        AbstractMapDbBackend backend = (AbstractMapDbBackend) target;
-
-        for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
-            Object collection = entry.getValue();
-            if (collection instanceof Map) {
-                Map fromMap = (Map) collection;
-                Map toMap = backend.db.hashMap(entry.getKey()).createOrOpen();
-
-                toMap.putAll(fromMap);
-            }
-            else {
-                throw new UnsupportedOperationException("Cannot copy MapDB backend: store type " + collection.getClass().getSimpleName() + " is not supported");
-            }
-        }
     }
 
     /**

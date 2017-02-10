@@ -110,17 +110,6 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         return backend;
     }
 
-    @Override
-    public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof MapDbBackend && to instanceof MapDbBackend,
-                "The backend to copy is not an instance of MapDbBackendIndices");
-
-        MapDbBackend source = (MapDbBackend) from;
-        MapDbBackend target = (MapDbBackend) to;
-
-        source.copyTo(target);
-    }
-
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */

@@ -26,6 +26,7 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
@@ -220,6 +221,28 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         return false;
     }
 
+    /**
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     *
+     * @param target the {@code PersistenceBackend} to copy the database contents to
+     */
+    @Override
+    public void copyTo(PersistenceBackend target) {
+        checkArgument(target instanceof AbstractBlueprintsBackend);
+        AbstractBlueprintsBackend to = (AbstractBlueprintsBackend) target;
+
+        GraphHelper.copyGraph(graph, to.graph);
+
+        for (MetaclassValue metaclass : indexedMetaclasses) {
+            Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, metaclass.name());
+            checkArgument(
+                    !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
+                    "Index is not consistent");
+
+            to.metaclassIndex.put(KEY_NAME, metaclass.name(), vertex(buildId(metaclass)));
+        }
+    }
+
     @Nonnull
     @Override
     public Iterable<Id> allInstances(EClass eClass, boolean strict) {
@@ -357,27 +380,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     @Override
     public Vertex addVertex(Id id) {
         return graph.addVertex(id.toString());
-    }
-
-    /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
-     *
-     * @param target the {@code PersistenceBackend} to copy the database contents to
-     */
-    @Override
-    public void copyTo(BlueprintsBackend target) {
-        AbstractBlueprintsBackend backend = (AbstractBlueprintsBackend) target;
-
-        GraphHelper.copyGraph(graph, backend.graph);
-
-        for (MetaclassValue metaclass : indexedMetaclasses) {
-            Iterable<Vertex> metaclasses = backend.metaclassIndex.get(KEY_NAME, metaclass.name());
-            checkArgument(
-                    !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
-                    "Index is not consistent");
-
-            backend.metaclassIndex.put(KEY_NAME, metaclass.name(), vertex(buildId(metaclass)));
-        }
     }
 
     /**

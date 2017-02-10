@@ -32,7 +32,6 @@ import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -110,8 +109,6 @@ public class HBaseResourceBuilder extends AbstractResourceBuilder<HBaseResourceB
         when(factory.createTransientBackend()).thenCallRealMethod();
         when(factory.createPersistentStore(any(), any(), any())).thenCallRealMethod();
         when(factory.createTransientStore(any(), any())).thenCallRealMethod();
-
-        doCallRealMethod().when(factory).copyBackend(any(), any());
 
         return factory;
     }

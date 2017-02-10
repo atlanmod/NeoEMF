@@ -65,6 +65,13 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
     boolean isDistributed();
 
     /**
+     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     *
+     * @param target the {@code PersistenceBackend} to copy the database contents to
+     */
+    void copyTo(PersistenceBackend target);
+
+    /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
      *
      * @param eClass the class to compute the instances of

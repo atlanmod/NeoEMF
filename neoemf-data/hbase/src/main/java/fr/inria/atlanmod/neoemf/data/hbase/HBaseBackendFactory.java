@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -107,11 +106,6 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
         return new HBaseBackendArrays(createTable(uri));
-    }
-
-    @Override
-    public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
     /**

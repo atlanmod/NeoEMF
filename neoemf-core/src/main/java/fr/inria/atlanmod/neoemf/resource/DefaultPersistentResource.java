@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.io.FileUtils;
@@ -39,7 +39,6 @@ import org.eclipse.emf.ecore.impl.EStoreEObjectImpl.EStoreEList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -105,20 +104,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public DefaultPersistentResource(URI uri) {
         super(uri);
         this.dummyRootEObject = new DummyRootEObject(this);
+
         this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
         this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
+
         this.isPersistent = false;
+
         PersistenceBackendShutdownHook.closeOnExit(backend, getURI());
         NeoLogger.info("{0} created", PersistentResource.class.getSimpleName());
-    }
-
-    /**
-     * Returns the database file.
-     *
-     * @return the database file
-     */
-    protected File getFile() {
-        return FileUtils.getFile(PersistenceURI.createURI(getURI()).toFileString());
     }
 
     @Override
@@ -156,10 +149,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             }
         }
         if (!isLoaded() || !isPersistent) {
-            PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(uri, options);
-            PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(backend, newBackend);
+            PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+
+            PersistenceBackend newBackend = factory.createPersistentBackend(uri, options);
+            backend.copyTo(newBackend);
+
             this.backend = newBackend;
-            this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, backend, options);
+            this.store = factory.createPersistentStore(this, backend, options);
+
             this.isLoaded = true;
             this.isPersistent = true;
         }
@@ -173,17 +170,21 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void load(Map<?, ?> options) throws IOException {
         try {
             isLoading = true;
+
             if (!isLoaded) {
-                if (getFile().exists() || nonNull(uri.authority())) {
-                    // Check authority to enable remote resource loading
-                    this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(uri, options);
-                    this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, backend, options);
-                    this.isPersistent = true;
+                if ((uri.isFile() && FileUtils.getFile(uri.toFileString()).exists()) || uri.hasAuthority()) {
+                    PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+
+                    backend = factory.createPersistentBackend(uri, options);
+                    store = factory.createPersistentStore(this, backend, options);
+
+                    isPersistent = true;
                     dummyRootEObject.setMapped(true);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
                 }
+
                 this.options = options;
                 isLoaded = true;
             }
@@ -196,11 +197,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     protected void doUnload() {
-        Iterator<EObject> allContents = getAllProperContents(unloadingContents);
+        Iterable<EObject> allContents = () -> getAllProperContents(unloadingContents);
         getErrors().clear();
         getWarnings().clear();
-        while (allContents.hasNext()) {
-            unloaded((InternalEObject) allContents.next());
+        for (EObject e : allContents) {
+            unloaded((InternalEObject) e);
         }
         close();
     }

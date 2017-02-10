@@ -42,17 +42,18 @@ public final class InvalidBackend implements PersistenceBackend {
      */
     public InvalidBackend() {
         super();
-        NeoLogger.warn(MSG);
     }
 
     @Override
     public void save() {
         // Do nothing
+        NeoLogger.warn(MSG);
     }
 
     @Override
     public void close() {
         // Do nothing
+        NeoLogger.warn(MSG);
     }
 
     @Override
@@ -63,6 +64,12 @@ public final class InvalidBackend implements PersistenceBackend {
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    @Override
+    public void copyTo(PersistenceBackend target) {
+        // Do nothing
+        NeoLogger.warn(MSG);
     }
 
     @Override

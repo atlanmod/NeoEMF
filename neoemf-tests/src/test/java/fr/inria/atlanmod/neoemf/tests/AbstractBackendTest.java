@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +29,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
