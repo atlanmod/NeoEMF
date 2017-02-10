@@ -16,12 +16,12 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 /**
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
-public abstract class Feature extends NamedElement {
+public abstract class RawFeature extends RawNamedElement {
 
     /**
      * The identifier of the feature.
      */
-    private Identifier id;
+    private RawId id;
 
     /**
      * The index of the feature.
@@ -34,12 +34,12 @@ public abstract class Feature extends NamedElement {
     private boolean many;
 
     /**
-     * Constructs a new {@code Feature} with the given {@code name}. Its index is initialized to
+     * Constructs a new {@code RawFeature} with the given {@code name}. Its index is initialized to
      * {@link PersistentStore#NO_INDEX}.
      *
      * @param name the name of this feature
      */
-    public Feature(String name) {
+    public RawFeature(String name) {
         super(name);
         this.index = PersistentStore.NO_INDEX;
         this.many = false;
@@ -50,7 +50,7 @@ public abstract class Feature extends NamedElement {
      *
      * @return the identifier
      */
-    public Identifier id() {
+    public RawId id() {
         return id;
     }
 
@@ -59,7 +59,7 @@ public abstract class Feature extends NamedElement {
      *
      * @param id the identifier
      */
-    public void id(Identifier id) {
+    public void id(RawId id) {
         this.id = id;
     }
 
@@ -100,7 +100,7 @@ public abstract class Feature extends NamedElement {
     }
 
     /**
-     * Defines whether this feature is a {@link Reference}.
+     * Defines whether this feature is a {@link RawReference}.
      *
      * @return {@code true} if this feature is a reference.
      */
@@ -109,7 +109,7 @@ public abstract class Feature extends NamedElement {
     }
 
     /**
-     * Defines whether this feature is an {@link Attribute}.
+     * Defines whether this feature is an {@link RawAttribute}.
      *
      * @return {@code true} if this feature is an attribute.
      */

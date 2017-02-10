@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
@@ -47,9 +47,9 @@ public interface Notifier<H extends Handler> {
      * @param element the element of the new element
      *
      * @see #notifyEndElement()
-     * @see Handler#handleStartElement(Element)
+     * @see Handler#handleStartElement(RawElement)
      */
-    default void notifyStartElement(Element element) {
+    default void notifyStartElement(RawElement element) {
         next().forEach(h -> h.handleStartElement(element));
     }
 
@@ -58,9 +58,9 @@ public interface Notifier<H extends Handler> {
      *
      * @param attribute the new attribute
      *
-     * @see Handler#handleAttribute(Attribute)
+     * @see Handler#handleAttribute(RawAttribute)
      */
-    default void notifyAttribute(Attribute attribute) {
+    default void notifyAttribute(RawAttribute attribute) {
         next().forEach(h -> h.handleAttribute(attribute));
     }
 
@@ -69,9 +69,9 @@ public interface Notifier<H extends Handler> {
      *
      * @param reference the new reference
      *
-     * @see Handler#handleReference(Reference)
+     * @see Handler#handleReference(RawReference)
      */
-    default void notifyReference(Reference reference) {
+    default void notifyReference(RawReference reference) {
         next().forEach(h -> h.handleReference(reference));
     }
 
@@ -89,7 +89,7 @@ public interface Notifier<H extends Handler> {
     /**
      * Notifies all registered handlers of the end of the current element.
      *
-     * @see #notifyStartElement(Element)
+     * @see #notifyStartElement(RawElement)
      * @see Handler#handleEndElement()
      */
     default void notifyEndElement() {

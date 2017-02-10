@@ -17,9 +17,9 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
      *
      * @note In case of conflict detection only.
      */
-    private final HashMultimap<String, UnlinkedReference> unlinkedElements;
+    private final HashMultimap<String, UnlinkedRawReference> unlinkedElements;
 
     /**
      * In-memory cache that holds conflicted {@link Id}s, identified by their literal representation.
@@ -64,7 +64,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(Element element) {
+    public void handleStartElement(RawElement element) {
         super.handleStartElement(element);
 
         tryLink(element.id().value(), idsStack.getLast());
@@ -91,7 +91,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
     }
 
     @Override
-    protected Id createElement(Element element, Id id) {
+    protected Id createElement(RawElement element, Id id) {
         boolean conflict = false;
         do {
             try {
@@ -99,7 +99,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
             }
             catch (AlreadyExistingIdException e) {
                 // Id already exists in the back-end : try another
-                id = createId(Identifier.generated(id.toString()));
+                id = createId(RawId.generated(id.toString()));
                 conflictIdsCache.put(element.id().value(), id);
                 conflict = true;
             }
@@ -110,19 +110,19 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
     }
 
     @Override
-    protected Id getOrCreateId(Identifier identifier) {
+    protected Id getOrCreateId(RawId identifier) {
         return Optional.ofNullable(conflictIdsCache.get(identifier.value()))
                 .orElse(super.getOrCreateId(identifier));
     }
 
     @Override
-    protected void addReference(Id id, Reference reference, Id idReference) {
+    protected void addReference(Id id, RawReference reference, Id idReference) {
         try {
             super.addReference(id, reference, idReference);
         }
         catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
-            unlinkedElements.put(reference.idReference().value(), new UnlinkedReference(id, reference));
+            unlinkedElements.put(reference.idReference().value(), new UnlinkedRawReference(id, reference));
         }
     }
 
@@ -148,7 +148,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
      * @param id        the identifier of the targeted element
      */
     private void tryLink(String reference, Id id) {
-        for (UnlinkedReference e : unlinkedElements.removeAll(reference)) {
+        for (UnlinkedRawReference e : unlinkedElements.removeAll(reference)) {
             addReference(e.id, e, id);
         }
     }
@@ -156,7 +156,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
     /**
      * A simple representation of an element that could not be linked when it was created.
      */
-    private class UnlinkedReference extends Reference {
+    private class UnlinkedRawReference extends RawReference {
 
         /**
          * The identifier of this element.
@@ -164,13 +164,13 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
         public final Id id;
 
         /**
-         * Constructs a new {@code UnlinkedReference} with the given {@code id} and information about the {@link
-         * Reference}.
+         * Constructs a new {@code UnlinkedRawReference} with the given {@code id} and information about the {@link
+         * RawReference}.
          *
-         * @param id      the identifier of the unlinked feature
+         * @param id        the identifier of the unlinked feature
          * @param reference the feature of the reference
          */
-        public UnlinkedReference(Id id, Reference reference) {
+        public UnlinkedRawReference(Id id, RawReference reference) {
             super(reference.name());
             this.id = id;
 

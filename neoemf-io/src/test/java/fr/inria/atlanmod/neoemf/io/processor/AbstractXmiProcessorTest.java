@@ -16,10 +16,10 @@ import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,12 +57,12 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         }
     }
 
-    protected void assertValidMetaClass(final MetaClass metaClass, final String name, final Namespace ns) {
+    protected void assertValidMetaClass(final RawMetaclass metaClass, final String name, final Namespace ns) {
         assertThat(metaClass.name()).isEqualTo(name);
         assertThat(metaClass.ns()).isSameAs(ns);
     }
 
-    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
+    protected void assertValidReference(final RawReference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
         assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
@@ -70,7 +70,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         assertThat(reference.many()).isEqualTo(many);
     }
 
-    protected void assertValidAttribute(final Attribute attribute, final String name, final int index, final Object value) {
+    protected void assertValidAttribute(final RawAttribute attribute, final String name, final int index, final Object value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
         assertThat(attribute.index()).isEqualTo(index);

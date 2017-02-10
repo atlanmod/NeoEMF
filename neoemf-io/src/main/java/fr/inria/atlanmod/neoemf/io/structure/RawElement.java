@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A identifiable {@link MetaClass} which can be typed.
+ * A identifiable {@link RawMetaclass} which can be typed.
  */
-public class Element extends MetaClass {
+public class RawElement extends RawMetaclass {
 
     /**
      * The identifier of this classifier.
      */
-    private Identifier id;
+    private RawId id;
 
     /**
      * The name of the class of this classifier.
@@ -29,7 +29,7 @@ public class Element extends MetaClass {
     /**
      * The metaclassifier of this classifier.
      */
-    private MetaClass metaClass;
+    private RawMetaclass metaClass;
 
     /**
      * Whether this classifier is the root element of a structure.
@@ -37,12 +37,12 @@ public class Element extends MetaClass {
     private boolean root;
 
     /**
-     * Constructs a new {@code Element} with the given {@code ns} and {@code name}.
+     * Constructs a new {@code RawElement} with the given {@code ns} and {@code name}.
      *
      * @param ns   the ns of this classifier
      * @param name the name of this classifier
      */
-    public Element(Namespace ns, String name) {
+    public RawElement(Namespace ns, String name) {
         super(ns, name);
         this.root = false;
     }
@@ -52,7 +52,7 @@ public class Element extends MetaClass {
      *
      * @return the identifier
      */
-    public Identifier id() {
+    public RawId id() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class Element extends MetaClass {
      *
      * @param id the identifier
      */
-    public void id(Identifier id) {
+    public void id(RawId id) {
         this.id = id;
     }
 
@@ -88,7 +88,7 @@ public class Element extends MetaClass {
      *
      * @return the metaclassifier
      */
-    public MetaClass metaClass() {
+    public RawMetaclass metaClass() {
         return metaClass;
     }
 
@@ -97,7 +97,7 @@ public class Element extends MetaClass {
      *
      * @param metaClass the metaclassifier
      */
-    public void metaClass(MetaClass metaClass) {
+    public void metaClass(RawMetaclass metaClass) {
         this.metaClass = metaClass;
     }
 

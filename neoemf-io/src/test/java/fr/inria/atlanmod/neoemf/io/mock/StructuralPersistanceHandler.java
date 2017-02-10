@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(Element element) {
+    public void handleStartElement(RawElement element) {
         ElementMock mock = new ElementMock(element);
 
         if (!elementsStack.isEmpty()) {
@@ -72,7 +72,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) {
+    public void handleAttribute(RawAttribute attribute) {
         if (isNull(attribute.id()) || attribute.id().equals(elementsStack.getLast().id())) {
             elementsStack.getLast().attributes().add(attribute);
         }
@@ -88,7 +88,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleReference(Reference reference) {
+    public void handleReference(RawReference reference) {
         if (isNull(reference.id()) || reference.id().equals(elementsStack.getLast().id())) {
             elementsStack.getLast().references().add(reference);
         }

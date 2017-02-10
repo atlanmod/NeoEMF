@@ -24,11 +24,11 @@ import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.hash.Hasher;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -84,6 +84,18 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
     private static final String FEATURE_NAME = "name";
 
     /**
+     * The persistence back-end where to store data.
+     */
+    protected final PersistenceBackend backend;
+
+    /**
+     * Queue holding the current {@link Id} chain (current element and its parent).
+     * <p>
+     * It is updated after each addition/deletion of an element.
+     */
+    protected final Deque<Id> idsStack = new ArrayDeque<>();
+
+    /**
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
     private final Cache<String, Id> idsCache = Caffeine.newBuilder()
@@ -96,18 +108,6 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      * Used for automatically saves modifications as calls are made.
      */
     private long autocommitCount;
-
-    /**
-     * The persistence back-end where to store data.
-     */
-    protected final PersistenceBackend backend;
-
-    /**
-     * Queue holding the current {@link Id} chain (current element and its parent).
-     * <p>
-     * It is updated after each addition/deletion of an element.
-     */
-    protected final Deque<Id> idsStack = new ArrayDeque<>();
 
     /**
      * Constructs a new {@code AbstractPersistenceHandler} on top of the {@code backend}.
@@ -150,10 +150,10 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
     @Override
     public void handleStartDocument() {
         // Create the 'ROOT' node with the default metaclass
-        MetaClass metaClass = MetaClass.getDefault();
+        RawMetaclass metaClass = RawMetaclass.getDefault();
 
-        Element rootElement = new Element(metaClass.ns(), metaClass.name());
-        rootElement.id(Identifier.generated(ROOT_ID.toString()));
+        RawElement rootElement = new RawElement(metaClass.ns(), metaClass.name());
+        rootElement.id(RawId.generated(ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.root(false);
         rootElement.metaClass(metaClass);
@@ -162,19 +162,19 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(Element element) {
+    public void handleStartElement(RawElement element) {
         idsStack.addLast(createElement(element));
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) {
+    public void handleAttribute(RawAttribute attribute) {
         Id id = Optional.ofNullable(attribute.id()).map(this::getOrCreateId).orElse(idsStack.getLast());
         addAttribute(id, attribute);
         incrementAndCommit();
     }
 
     @Override
-    public void handleReference(Reference reference) {
+    public void handleReference(RawReference reference) {
         Id id = Optional.ofNullable(reference.id())
                 .map(this::getOrCreateId)
                 .orElse(idsStack.getLast());
@@ -210,14 +210,14 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
-    protected Id createElement(Element element, Id id) {
+    protected Id createElement(RawElement element, Id id) {
         checkNotNull(element);
         checkNotNull(id);
 
         persist(id);
 
         if (nonNull(element.className())) {
-            Attribute attribute = new Attribute(FEATURE_NAME);
+            RawAttribute attribute = new RawAttribute(FEATURE_NAME);
             attribute.value(element.className());
 
             addAttribute(id, attribute);
@@ -227,7 +227,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
 
         // Add the current element as content of the 'ROOT' node
         if (element.root()) {
-            Reference reference = new Reference(ROOT_FEATURE_NAME);
+            RawReference reference = new RawReference(ROOT_FEATURE_NAME);
 
             addReference(ROOT_ID, reference, id);
         }
@@ -246,7 +246,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      *
      * @throws NullPointerException if the {@code element} is {@code null} or if it does not have an {@link Id}
      */
-    protected Id createElement(Element element) {
+    protected Id createElement(RawElement element) {
         checkNotNull(element.id());
 
         Id id = createId(element.id());
@@ -264,7 +264,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      *
      * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
-    protected Id getOrCreateId(Identifier identifier) {
+    protected Id getOrCreateId(RawId identifier) {
         checkNotNull(identifier);
 
         return idsCache.get(identifier.value(), value -> createId(identifier));
@@ -277,7 +277,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      *
      * @return the {@link Id}
      */
-    protected Id createId(Identifier identifier) {
+    protected Id createId(RawId identifier) {
         checkNotNull(identifier);
 
         String idValue = identifier.value();
@@ -296,7 +296,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      * @param id        the identifier of the element
      * @param attribute the attribute to add
      */
-    protected void addAttribute(Id id, Attribute attribute) {
+    protected void addAttribute(Id id, RawAttribute attribute) {
         checkNotNull(id);
         checkNotNull(attribute);
 
@@ -324,7 +324,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
      * @param reference   the reference to add
      * @param idReference the identifier of the referenced element
      */
-    protected void addReference(Id id, Reference reference, Id idReference) {
+    protected void addReference(Id id, RawReference reference, Id idReference) {
         checkNotNull(id);
         checkNotNull(reference);
         checkNotNull(idReference);
@@ -349,7 +349,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
     }
 
     /**
-     * Updates the containment identified by its {@code name} between the {@code idContainer} and the {@code idContainment}.
+     * Updates the containment identified by its {@code name} between the {@code idContainer} and the {@code
+     * idContainment}.
      *
      * @param idContainer   the identifier of the element
      * @param name          the name of the property identifying the reference (parent -&gt; child)

@@ -14,13 +14,13 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import com.google.common.base.Splitter;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Feature;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawFeature;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -68,12 +68,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * The current element.
      */
-    private Element currentElement;
+    private RawElement currentElement;
 
     /**
      * A collection that holds all features of the {@link #currentElement}.
      */
-    private Collection<Feature> currentFeatures;
+    private Collection<RawFeature> currentFeatures;
 
     /**
      * Constructs a new {@code AbstractXmiReader} with the given {@code handler}.
@@ -94,7 +94,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param name the name of the element
      */
     protected void readStartElement(String uri, String name) {
-        currentElement = new Element(Namespace.Registry.getInstance().getFromUri(uri), name);
+        currentElement = new RawElement(Namespace.Registry.getInstance().getFromUri(uri), name);
         currentFeatures = new ArrayList<>();
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     protected void readAttribute(String prefix, String name, String value) {
         if (!ignoreElement) {
-            Collection<Feature> localFeatures = getFeatures(prefix, name, value);
+            Collection<RawFeature> localFeatures = getFeatures(prefix, name, value);
 
             if (ignoreElement) {
                 // No need to go further
@@ -129,12 +129,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
             notifyStartElement(currentElement);
 
             // Notifies the features
-            for (Feature feature : currentFeatures) {
+            for (RawFeature feature : currentFeatures) {
                 if (feature.isAttribute()) {
-                    notifyAttribute((Attribute) feature);
+                    notifyAttribute((RawAttribute) feature);
                 }
                 else {
-                    notifyReference((Reference) feature);
+                    notifyReference((RawReference) feature);
                 }
             }
 
@@ -163,14 +163,14 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param name   the name of the feature
      * @param value  the value of the feature
      *
-     * @return a list of {@link Feature} that can be empty.
+     * @return a list of {@link RawFeature} that can be empty.
      *
      * @see #getAttribute(String, String)
      * @see #getReferences(String, Iterable)
      */
     @Nonnull
-    private Collection<Feature> getFeatures(String prefix, String name, String value) {
-        Collection<Feature> features;
+    private Collection<RawFeature> getFeatures(String prefix, String name, String value) {
+        Collection<RawFeature> features;
 
         if (!processSpecialFeature(prefix, name, value)) {
             Collection<String> references = parseReference(value);
@@ -210,13 +210,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // xmi:id
-                currentElement.id(Identifier.original(value));
+                currentElement.id(RawId.original(value));
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // xmi:idref
                 // It's not a feature of the current element, but a reference of the previous
-                Reference reference = new Reference(currentElement.name());
-                reference.idReference(Identifier.original(value));
+                RawReference reference = new RawReference(currentElement.name());
+                reference.idReference(RawId.original(value));
                 notifyReference(reference);
                 ignoreElement = true;
                 isSpecialFeature = true;
@@ -281,11 +281,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param name  the name of the attribute
      * @param value the value of the attribute
      *
-     * @return a singleton list of {@link Feature} containing the processed attribute.
+     * @return a singleton list of {@link RawFeature} containing the processed attribute.
      */
     @Nonnull
-    private Collection<Feature> getAttribute(String name, String value) {
-        Attribute attribute = new Attribute(name);
+    private Collection<RawFeature> getAttribute(String name, String value) {
+        RawAttribute attribute = new RawAttribute(name);
         attribute.index(0);
         attribute.value(value);
 
@@ -293,22 +293,22 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     /**
-     * Processes a list of {@code references} and returns a list of {@link Reference}.
+     * Processes a list of {@code references} and returns a list of {@link RawReference}.
      *
      * @param name       the name of the reference
      * @param references the list that holds the identifier of referenced elements
      *
-     * @return a list of {@link Reference} from the given {@code references}
+     * @return a list of {@link RawReference} from the given {@code references}
      */
     @Nonnull
-    private Collection<Feature> getReferences(String name, Iterable<String> references) {
-        Collection<Feature> features = new ArrayList<>();
+    private Collection<RawFeature> getReferences(String name, Iterable<String> references) {
+        Collection<RawFeature> features = new ArrayList<>();
 
         int index = 0;
         for (String rawReference : references) {
-            Reference ref = new Reference(name);
+            RawReference ref = new RawReference(name);
             ref.index(index);
-            ref.idReference(Identifier.generated(rawReference));
+            ref.idReference(RawId.generated(rawReference));
             features.add(ref);
             index++;
         }
@@ -330,7 +330,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
             Namespace ns = Namespace.Registry.getInstance().getFromPrefix(m.group(1));
             String name = m.group(2);
 
-            MetaClass metaClass = new MetaClass(ns, name);
+            RawMetaclass metaClass = new RawMetaclass(ns, name);
             currentElement.metaClass(metaClass);
         }
         else {

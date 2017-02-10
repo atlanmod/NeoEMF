@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -104,7 +104,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         ElementMock mock;
         ElementMock mockChild;
 
-        List<Attribute> attributeList;
+        List<RawAttribute> attributeList;
 
         ElementMock root = persistanceHandler.getElements().get(0);
         assertThat(root.attributes()).isEmpty(); // Assert that 'xmi:version' and 'xmlns' don't exist
@@ -158,7 +158,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         ElementMock mock;
         ElementMock mockChild;
 
-        List<Reference> referenceList;
+        List<RawReference> referenceList;
 
         ElementMock root = persistanceHandler.getElements().get(0);
         assertThat(root.references()).isEmpty();

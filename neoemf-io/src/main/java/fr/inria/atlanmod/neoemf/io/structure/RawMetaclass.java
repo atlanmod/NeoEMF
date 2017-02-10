@@ -14,40 +14,40 @@ package fr.inria.atlanmod.neoemf.io.structure;
 /**
  * A simple representation of a element with a {@link Namespace} and a name.
  */
-public class MetaClass extends NamedElement {
+public class RawMetaclass extends RawNamedElement {
 
     /**
-     * The instance of the default {@code MetaClass}.
+     * The instance of the default {@code RawMetaclass}.
      */
-    private static final MetaClass DEFAULT = new MetaClass(Namespace.getDefault(), "EObject");
+    private static final RawMetaclass DEFAULT = new RawMetaclass(Namespace.getDefault(), "EObject");
 
     /**
-     * The namespace of this {@code MetaClass}.
+     * The namespace of this {@code RawMetaclass}.
      */
     private Namespace ns;
 
     /**
-     * Constructs a new {@code MetaClass} with the given {@code namespace} and {@code name}.
+     * Constructs a new {@code RawMetaclass} with the given {@code namespace} and {@code name}.
      *
-     * @param ns   the namespace of this {@code MetaClass}
-     * @param name the name of this {@code MetaClass}
+     * @param ns   the namespace of this {@code RawMetaclass}
+     * @param name the name of this {@code RawMetaclass}
      */
-    public MetaClass(Namespace ns, String name) {
+    public RawMetaclass(Namespace ns, String name) {
         super(name);
         this.ns = ns;
     }
 
     /**
-     * Returns the default {@code MetaClass}.
+     * Returns the default {@code RawMetaclass}.
      *
-     * @return the {@code MetaClass} representing "ecore:EObject"
+     * @return the {@code RawMetaclass} representing "ecore:EObject"
      */
-    public static MetaClass getDefault() {
+    public static RawMetaclass getDefault() {
         return DEFAULT;
     }
 
     /**
-     * Returns the namespace of this {@code MetaClass}.
+     * Returns the namespace of this {@code RawMetaclass}.
      *
      * @return the namespace
      */
@@ -56,7 +56,7 @@ public class MetaClass extends NamedElement {
     }
 
     /**
-     * Defines the namespace of this {@code MetaClass}.
+     * Defines the namespace of this {@code RawMetaclass}.
      *
      * @param ns the namespace
      */

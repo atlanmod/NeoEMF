@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,17 +36,17 @@ public abstract class AbstractXmiWriter extends AbstractWriter {
     }
 
     @Override
-    public void handleStartElement(Element element) {
+    public void handleStartElement(RawElement element) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) {
+    public void handleAttribute(RawAttribute attribute) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleReference(Reference reference) {
+    public void handleReference(RawReference reference) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

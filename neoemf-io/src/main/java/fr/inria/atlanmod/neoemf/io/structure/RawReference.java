@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link Feature} representing a reference, which links several {@link Element}s.
+ * A {@link RawFeature} representing a reference, which links several {@link RawElement}s.
  */
-public class Reference extends Feature {
+public class RawReference extends RawFeature {
 
     /**
      * The identifier of the referenced element.
      */
-    private Identifier idReference;
+    private RawId idReference;
 
     /**
      * Whether this reference is a containment.
@@ -27,27 +27,27 @@ public class Reference extends Feature {
     private boolean containment;
 
     /**
-     * Constructs a new {@code Reference} with the given {@code name}.
+     * Constructs a new {@code RawReference} with the given {@code name}.
      *
      * @param name the name of this reference
      */
-    public Reference(String name) {
+    public RawReference(String name) {
         super(name);
         this.containment = false;
     }
 
     /**
-     * Converts an {@link Attribute} to a {@code Reference}.
+     * Converts an {@link RawAttribute} to a {@code RawReference}.
      *
      * @param attribute the attribute to convert
      *
      * @return a new reference
      */
-    public static Reference from(Attribute attribute) {
-        Reference reference = new Reference(attribute.name());
+    public static RawReference from(RawAttribute attribute) {
+        RawReference reference = new RawReference(attribute.name());
         reference.id(attribute.id());
         reference.index(attribute.index());
-        reference.idReference(Identifier.original(attribute.value().toString()));
+        reference.idReference(RawId.original(attribute.value().toString()));
         return reference;
     }
 
@@ -56,7 +56,7 @@ public class Reference extends Feature {
      *
      * @return the identifier
      */
-    public Identifier idReference() {
+    public RawId idReference() {
         return idReference;
     }
 
@@ -65,7 +65,7 @@ public class Reference extends Feature {
      *
      * @param idReference the identifier
      */
-    public void idReference(Identifier idReference) {
+    public void idReference(RawId idReference) {
         this.idReference = idReference;
     }
 

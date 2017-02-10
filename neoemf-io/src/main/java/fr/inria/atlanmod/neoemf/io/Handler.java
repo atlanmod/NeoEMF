@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * A object that handles events notified by a {@link Notifier}.
@@ -34,9 +34,9 @@ public interface Handler {
      *
      * @param element the element of the new element
      *
-     * @see Notifier#notifyStartElement(Element)
+     * @see Notifier#notifyStartElement(RawElement)
      */
-    void handleStartElement(Element element);
+    void handleStartElement(RawElement element);
 
     /**
      * Process an attribute in the current element.
@@ -45,9 +45,9 @@ public interface Handler {
      *
      * @param attribute the new attribute
      *
-     * @see Notifier#notifyAttribute(Attribute)
+     * @see Notifier#notifyAttribute(RawAttribute)
      */
-    void handleAttribute(Attribute attribute);
+    void handleAttribute(RawAttribute attribute);
 
     /**
      * Process a reference from the current element to another element.
@@ -56,9 +56,9 @@ public interface Handler {
      *
      * @param reference the new reference
      *
-     * @see Notifier#notifyReference(Reference)
+     * @see Notifier#notifyReference(RawReference)
      */
-    void handleReference(Reference reference);
+    void handleReference(RawReference reference);
 
     /**
      * Process the end of the current element.

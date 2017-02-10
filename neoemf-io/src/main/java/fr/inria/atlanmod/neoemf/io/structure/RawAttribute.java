@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link Feature} representing an attribute, with a value.
+ * A {@link RawFeature} representing an attribute, with a value.
  */
-public class Attribute extends Feature {
+public class RawAttribute extends RawFeature {
 
     /**
      * The value of this attribute.
@@ -22,23 +22,23 @@ public class Attribute extends Feature {
     private Object value;
 
     /**
-     * Constructs a new {@code Attribute} with the given {@code name}.
+     * Constructs a new {@code RawAttribute} with the given {@code name}.
      *
      * @param name the name of this attribute
      */
-    public Attribute(String name) {
+    public RawAttribute(String name) {
         super(name);
     }
 
     /**
-     * Converts a {@link Reference} to an {@code Attribute}.
+     * Converts a {@link RawReference} to an {@code RawAttribute}.
      *
      * @param reference the reference to convert
      *
      * @return a new attribute
      */
-    public static Attribute from(Reference reference) {
-        Attribute attribute = new Attribute(reference.name());
+    public static RawAttribute from(RawReference reference) {
+        RawAttribute attribute = new RawAttribute(reference.name());
         attribute.id(reference.id());
         attribute.index(reference.index());
         attribute.value(reference.idReference().value());

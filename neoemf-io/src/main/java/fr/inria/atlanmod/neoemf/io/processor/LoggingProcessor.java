@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -34,7 +34,7 @@ public class LoggingProcessor extends AbstractProcessor {
     /**
      * The current identifier, used to replace a full reference by "this".
      */
-    private Identifier currentId;
+    private RawId currentId;
 
     /**
      * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
@@ -53,7 +53,7 @@ public class LoggingProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void handleStartElement(Element element) {
+    public void handleStartElement(RawElement element) {
         log.debug("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 element.ns().prefix(),
                 element.name(),
@@ -67,7 +67,7 @@ public class LoggingProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) {
+    public void handleAttribute(RawAttribute attribute) {
         log.debug("[A]    {0} ({1}) = {2}",
                 attribute.name(),
                 attribute.index(),
@@ -77,7 +77,7 @@ public class LoggingProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void handleReference(Reference reference) {
+    public void handleReference(RawReference reference) {
         log.debug("[R]    {0} ({1}) = {2} -> {3}",
                 reference.name(),
                 reference.index(),

@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
@@ -41,19 +41,19 @@ public class AbstractProcessor extends AbstractNotifier<Handler> implements Proc
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void handleStartElement(Element element) {
+    public void handleStartElement(RawElement element) {
         notifyStartElement(element);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void handleAttribute(Attribute attribute) {
+    public void handleAttribute(RawAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void handleReference(Reference reference) {
+    public void handleReference(RawReference reference) {
         notifyReference(reference);
     }
 

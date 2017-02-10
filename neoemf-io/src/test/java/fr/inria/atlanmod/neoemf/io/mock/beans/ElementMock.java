@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.mock.beans;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClass;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawId;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +26,14 @@ import java.util.List;
  */
 public class ElementMock {
 
-    private final Element element;
+    private final RawElement element;
 
-    private final List<Attribute> attributes;
-    private final List<Reference> references;
+    private final List<RawAttribute> attributes;
+    private final List<RawReference> references;
 
     private final List<ElementMock> elements;
 
-    public ElementMock(Element element) {
+    public ElementMock(RawElement element) {
         this.element = element;
 
         this.attributes = new ArrayList<>();
@@ -71,19 +71,19 @@ public class ElementMock {
         return element.className();
     }
 
-    public Identifier id() {
+    public RawId id() {
         return element.id();
     }
 
-    public MetaClass metaClass() {
+    public RawMetaclass metaClass() {
         return element.metaClass();
     }
 
-    public List<Attribute> attributes() {
+    public List<RawAttribute> attributes() {
         return attributes;
     }
 
-    public List<Reference> references() {
+    public List<RawReference> references() {
         return references;
     }
 
