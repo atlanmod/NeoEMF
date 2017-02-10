@@ -13,6 +13,9 @@ package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbContext;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandlerFactory;
@@ -160,7 +163,7 @@ public class ImportTest extends AbstractBackendTest {
 
     @Test
     public void testCompare() throws IOException {
-        if (isHBase()) {
+        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
 
@@ -179,7 +182,7 @@ public class ImportTest extends AbstractBackendTest {
      */
     @Test
     public void testElementsAndChildrenNeo4j() throws IOException {
-        if (isHBase()) {
+        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
 
@@ -226,7 +229,7 @@ public class ImportTest extends AbstractBackendTest {
      */
     @Test
     public void testAttributesNeo4j() throws IOException {
-        if (isHBase()) {
+        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
 
@@ -256,7 +259,7 @@ public class ImportTest extends AbstractBackendTest {
      */
     @Test
     public void testReferencesNeo4j() throws IOException {
-        if (isHBase()) {
+        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
 
@@ -303,6 +306,10 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Ignore // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
     public void testImportWithIdNeo4j() throws IOException {
+        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
+            return;
+        }
+
         File file = getXmiWithId();
 
         EObject emfObject = loadWithEMF(file);

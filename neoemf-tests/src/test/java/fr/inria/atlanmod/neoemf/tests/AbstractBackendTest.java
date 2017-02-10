@@ -35,6 +35,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractBackendTest extends AbstractTest implements ContextualTest {
@@ -59,8 +62,8 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
                 new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
                 new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
                 new Object[]{MapDbContext.get(), MapDbContext.NAME},
-                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME}
-//                new Object[]{HBaseContext.get(), HBaseContext.NAME}
+                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME},
+                new Object[]{HBaseContext.get(), HBaseContext.NAME}
         );
     }
 
@@ -110,9 +113,13 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         loadedResources.clear();
     }
 
-    protected boolean isHBase() {
-        if (Objects.equals(context.name(), HBaseContext.NAME)) {
-            NeoLogger.warn("NeoEMF/HBase doesn't support loading from a minicluster");
+    protected boolean ignoreWhen(String... name) {
+        if (isNull(name)) {
+            return false;
+        }
+
+        if (Stream.of(name).anyMatch(s -> Objects.equals(s, context.name()))) {
+            NeoLogger.warn("This test is ignored in this context: {0}", context.name());
             return true;
         }
         return false;
