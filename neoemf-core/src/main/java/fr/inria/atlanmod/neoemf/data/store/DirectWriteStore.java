@@ -55,15 +55,9 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link PersistentStore} that translates model-level operations into datastore calls.
- * <p>
- * It redirects certain methods according to the instance of the encountered {@link EStructuralFeature}. If the subclass
- * does not re-implement the inherited methods of EMF, the call is automatically redirected to the associated method
- * that begins with the same name.
- *
- * @param <P> the type of the supported {@link PersistenceBackend}
  */
 @ParametersAreNonnullByDefault
-public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements PersistentStore {
+public class DirectWriteStore extends AbstractPersistentStore implements PersistentStore {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
@@ -79,7 +73,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      * The persistence back-end used to store the model.
      */
     @Nonnull
-    protected final P backend;
+    protected final PersistenceBackend backend;
 
     /**
      * The resource to persist and access.
@@ -93,7 +87,7 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteStore(@Nullable PersistentResource resource, P backend) {
+    public DirectWriteStore(@Nullable PersistentResource resource, PersistenceBackend backend) {
         this.resource = resource;
         this.backend = backend;
     }
@@ -119,8 +113,8 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      *
      * @see EcoreUtil#createFromString(EDataType, String)
      */
-    protected static Object deserialize(EAttribute attribute, @Nullable Object property) {
-        return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
+    protected static Object deserialize(EAttribute attribute, Object property) {
+        return EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
     }
 
     /**
@@ -133,8 +127,8 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
      *
      * @see EcoreUtil#convertToString(EDataType, Object)
      */
-    protected static String serialize(EAttribute attribute, @Nullable Object value) {
-        return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
+    protected static String serialize(EAttribute attribute, Object value) {
+        return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 
     @Override
@@ -207,14 +201,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         updateContainment(object, reference, referencedObject);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #getAttribute(PersistentEObject, EAttribute, int)
-     * @see #getReference(PersistentEObject, EReference, int)
-     */
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         checkNotNull(internalObject);
@@ -229,14 +215,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #setAttribute(PersistentEObject, EAttribute, int, Object)
-     * @see #setReference(PersistentEObject, EReference, int, PersistentEObject)
-     */
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         checkNotNull(internalObject);
@@ -258,14 +236,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #isSetAttribute(PersistentEObject, EAttribute)
-     * @see #isSetReference(PersistentEObject, EReference)
-     */
     @Override
     public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
@@ -280,14 +250,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #unsetAttribute(PersistentEObject, EAttribute)
-     * @see #unsetReference(PersistentEObject, EReference)
-     */
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
@@ -321,14 +283,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         return backend.sizeOf(key).orElse(0);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #containsAttribute(PersistentEObject, EAttribute, Object)
-     * @see #containsReference(PersistentEObject, EReference, PersistentEObject)
-     */
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         checkNotNull(internalObject);
@@ -354,14 +308,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #indexOfAttribute(PersistentEObject, EAttribute, Object)
-     * @see #indexOfReference(PersistentEObject, EReference, PersistentEObject)
-     */
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         checkNotNull(internalObject);
@@ -382,14 +328,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #lastIndexOfAttribute(PersistentEObject, EAttribute, Object)
-     * @see #lastIndexOfReference(PersistentEObject, EReference, PersistentEObject)
-     */
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         checkNotNull(internalObject);
@@ -410,18 +348,11 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #addAttribute(PersistentEObject, EAttribute, int, Object)
-     * @see #addReference(PersistentEObject, EReference, int, PersistentEObject)
-     */
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
+        checkNotNull(value);
         checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
         if (index == NO_INDEX) {
@@ -441,14 +372,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #removeAttribute(PersistentEObject, EAttribute, int)
-     * @see #removeReference(PersistentEObject, EReference, int)
-     */
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         checkNotNull(internalObject);
@@ -484,14 +407,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         return movedElement;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * By default, calls the associated methods depending on the type of the {@code feature}.
-     *
-     * @see #clearAttribute(PersistentEObject, EAttribute)
-     * @see #clearReference(PersistentEObject, EReference)
-     */
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
@@ -512,12 +427,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation that takes benefit of the underlying backend to get all the linked
-     * elements once and return it as an array, avoiding multiple {@code get()} operations.
-     */
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
@@ -526,12 +435,6 @@ public class DirectWriteStore<P extends PersistenceBackend> extends AbstractPers
         return toArray(internalObject, feature, null);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is an efficient implementation that takes benefit of the underlying backend to get all the linked
-     * elements once and return it as an array, avoiding multiple {@code get()} operations.
-     */
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'T'
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, @Nullable T[] array) {

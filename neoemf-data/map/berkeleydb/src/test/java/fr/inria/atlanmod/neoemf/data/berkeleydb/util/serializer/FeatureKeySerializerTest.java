@@ -26,7 +26,7 @@ public class FeatureKeySerializerTest {
     @Test
     public void testSerialize() {
         FeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature");
-        FeatureKey fkOut = Serializer.deserialize(Serializer.serialize(fkIn));
+        FeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
@@ -34,7 +34,7 @@ public class FeatureKeySerializerTest {
     @Test
     public void testSerializeMFK() {
         MultivaluedFeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature").withPosition(0);
-        MultivaluedFeatureKey fkOut = Serializer.deserialize(Serializer.serialize(fkIn));
+        MultivaluedFeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
@@ -45,9 +45,9 @@ public class FeatureKeySerializerTest {
         MultivaluedFeatureKey fk1 = fk.withPosition(0);
         MultivaluedFeatureKey fk2 = fk.withPosition(1);
 
-        byte[] ser1 = Serializer.serialize(fk1);
-        byte[] ser2 = Serializer.serialize(fk2);
-        byte[] ser3 = Serializer.serialize(fk);
+        byte[] ser1 = ObjectSerializer.serialize(fk1);
+        byte[] ser2 = ObjectSerializer.serialize(fk2);
+        byte[] ser3 = ObjectSerializer.serialize(fk);
 
 
         assertThat(Arrays.equals(ser1, ser2)).isFalse();

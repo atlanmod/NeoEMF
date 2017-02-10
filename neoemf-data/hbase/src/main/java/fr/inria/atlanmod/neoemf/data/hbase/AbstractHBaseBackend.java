@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.hbase.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
@@ -23,15 +24,8 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.eclipse.emf.ecore.EReference;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -133,7 +127,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return Optional.of(ContainerValue.of(Serializer.deserialize(byteId), Serializer.deserialize(byteName)));
+                        return Optional.of(ContainerValue.of(ObjectSerializer.deserialize(byteId), ObjectSerializer.deserialize(byteName)));
                     }
                     return Optional.<ContainerValue>empty();
                 })
@@ -143,9 +137,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public void containerFor(Id id, ContainerValue container) {
         try {
-            Put put = new Put(Serializer.serialize(id));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Serializer.serialize(container.id()));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Serializer.serialize(container.name()));
+            Put put = new Put(ObjectSerializer.serialize(id));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, ObjectSerializer.serialize(container.id()));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, ObjectSerializer.serialize(container.name()));
             table.put(put);
         }
         catch (IOException ignore) {
@@ -160,7 +154,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
                     if (nonNull(byteName) && nonNull(byteUri)) {
-                        return Optional.of(MetaclassValue.of(Serializer.deserialize(byteName), Serializer.deserialize(byteUri)));
+                        return Optional.of(MetaclassValue.of(ObjectSerializer.deserialize(byteName), ObjectSerializer.deserialize(byteUri)));
                     }
                     return Optional.<MetaclassValue>empty();
                 })
@@ -170,9 +164,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public void metaclassFor(Id id, MetaclassValue metaclass) {
         try {
-            Put put = new Put(Serializer.serialize(id));
-            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Serializer.serialize(metaclass.name()));
-            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Serializer.serialize(metaclass.uri()));
+            Put put = new Put(ObjectSerializer.serialize(id));
+            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, ObjectSerializer.serialize(metaclass.name()));
+            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, ObjectSerializer.serialize(metaclass.uri()));
             table.put(put);
         }
         catch (IOException ignore) {
@@ -190,8 +184,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     protected <V> Optional<V> fromDatabase(FeatureKey key) {
         return fromDatabase(key.id())
                 .map(result -> {
-                    Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Serializer.serialize(key.name())));
-                    return value.map(bytes -> Optional.<V>of(Serializer.deserialize(bytes))).orElse(Optional.empty());
+                    Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name())));
+                    return value.map(bytes -> Optional.<V>of(ObjectSerializer.deserialize(bytes))).orElse(Optional.empty());
                 })
                 .orElse(Optional.empty());
     }
@@ -204,8 +198,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      */
     protected <V> void toDatabase(FeatureKey key, V value) {
         try {
-            Put put = new Put(Serializer.serialize(key.id()));
-            put.addColumn(PROPERTY_FAMILY, Serializer.serialize(key.name()), Serializer.serialize(value));
+            Put put = new Put(ObjectSerializer.serialize(key.id()));
+            put.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()), ObjectSerializer.serialize(value));
             table.put(put);
         }
         catch (IOException ignore) {
@@ -219,8 +213,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      */
     protected void outDatabase(FeatureKey key) {
         try {
-            Delete delete = new Delete(Serializer.serialize(key.id()));
-            delete.addColumn(PROPERTY_FAMILY, Serializer.serialize(key.name()));
+            Delete delete = new Delete(ObjectSerializer.serialize(key.id()));
+            delete.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()));
             table.delete(delete);
         }
         catch (IOException ignore) {
@@ -239,7 +233,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         Optional<Result> value = Optional.empty();
 
         try {
-            Get get = new Get(Serializer.serialize(id));
+            Get get = new Get(ObjectSerializer.serialize(id));
             Result result = table.get(get);
             if (!result.isEmpty()) {
                 value = Optional.of(result);
@@ -249,63 +243,5 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
 
         return value;
-    }
-
-    /**
-     * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that
-     * HBase keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
-     */
-    @ParametersAreNonnullByDefault
-    protected static class Serializer {
-
-        /**
-         * This class should not be instantiated.
-         *
-         * @throws IllegalStateException every time
-         */
-        private Serializer() {
-            throw new IllegalStateException("This class should not be instantiated");
-        }
-
-        /**
-         * Serializes an {@code Object} to a byte array for storage/serialization.
-         *
-         * @param value the object to serialize to bytes
-         *
-         * @return the serialized object as a byte array
-         */
-        @Nonnull
-        public static <T> byte[] serialize(T value) {
-            checkNotNull(value);
-
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512); ObjectOutput out = new ObjectOutputStream(baos)) {
-                out.writeObject(value);
-                out.flush();
-                return baos.toByteArray();
-            }
-            catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        /**
-         * Deserializes a single {@code Object} from an array of bytes.
-         *
-         * @param data the serialized object as a byte array
-         *
-         * @return the deserialized object
-         */
-        @SuppressWarnings("unchecked")
-        @Nonnull
-        public static <T> T deserialize(byte[] data) {
-            checkNotNull(data);
-
-            try (ByteArrayInputStream bis = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bis)) {
-                return (T) in.readObject();
-            }
-            catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

@@ -23,7 +23,7 @@ import com.sleepycat.je.OperationStatus;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
@@ -322,12 +322,12 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      */
     @Nonnull
     protected <K, V> Optional<V> fromDatabase(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry();
 
         Optional<V> value;
         if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(Serializer.deserialize(dbValue.getData()));
+            value = Optional.of(ObjectSerializer.deserialize(dbValue.getData()));
         }
         else {
             value = Optional.empty();
@@ -345,8 +345,8 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @param <V>      the type of the value
      */
     protected <K, V> void toDatabase(Database database, K key, V value) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(Serializer.serialize(value));
+        DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry(ObjectSerializer.serialize(value));
 
         database.put(null, dbKey, dbValue);
     }
@@ -359,7 +359,7 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * @param <K>      the type of the key
      */
     protected <K> void outDatabase(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
 
         database.delete(null, dbKey);
     }

@@ -52,13 +52,13 @@ public class FeatureKeyTest extends AbstractTest {
     @Test
     public void testSerializable() throws Exception {
         FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
-        ByteArrayOutputStream os = new ByteArrayOutputStream(20);
-        ObjectOutputStream out = new ObjectOutputStream(os);
-        out.writeObject(key1);
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(os.toByteArray()));
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream out = new ObjectOutputStream(baos)) {
+            out.writeObject(key1);
 
-        FeatureKey key2 = (FeatureKey) in.readObject();
-
-        assertThat(key1).isEqualTo(key2);
+            try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+                FeatureKey key2 = (FeatureKey) in.readObject();
+                assertThat(key1).isEqualTo(key2);
+            }
+        }
     }
 }

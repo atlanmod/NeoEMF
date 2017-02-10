@@ -28,14 +28,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Simple class to serialize/deserialize objects from/to byte arrays.
  */
 @ParametersAreNonnullByDefault
-public final class Serializer {
+public final class ObjectSerializer {
 
     /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
      */
-    private Serializer() {
+    private ObjectSerializer() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 
@@ -50,7 +50,7 @@ public final class Serializer {
     public static <T> byte[] serialize(T value) {
         checkNotNull(value);
 
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512); ObjectOutput out = new ObjectOutputStream(baos)) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(baos)) {
             out.writeObject(value);
             out.flush();
             return baos.toByteArray();
@@ -72,7 +72,7 @@ public final class Serializer {
     public static <T> T deserialize(byte[] data) {
         checkNotNull(data);
 
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bis)) {
+        try (ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(data))) {
             return (T) in.readObject();
         }
         catch (IOException | ClassNotFoundException e) {
