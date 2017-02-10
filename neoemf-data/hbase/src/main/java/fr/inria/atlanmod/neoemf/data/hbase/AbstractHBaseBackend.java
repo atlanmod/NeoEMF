@@ -186,12 +186,26 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
     }
 
+    /**
+     * Retrieves a value from the {@link Table} according to the given {@code key}.
+     *
+     * @param key the key of the element to retrieve
+     *
+     * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
+     * found
+     */
     protected Optional<byte[]> fromDatabase(FeatureKey key) {
         return fromDatabase(key.id())
                 .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name()))))
                 .orElse(Optional.empty());
     }
 
+    /**
+     * Saves a {@code value} identified by the {@code key} in the {@link Table}.
+     *
+     * @param key   the key of the element to save
+     * @param value the value to save
+     */
     protected void toDatabase(FeatureKey key, @Nullable byte[] value) {
         try {
             byte[] idAsBytes = Bytes.toBytes(key.id().toString());
@@ -203,6 +217,11 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
     }
 
+    /**
+     * Removes a value from the {@link Table} according to its {@code key}.
+     *
+     * @param key the key of the element to remove
+     */
     protected void outDatabase(FeatureKey key) {
         try {
             byte[] idAsBytes = Bytes.toBytes(key.id().toString());
@@ -214,6 +233,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
     }
 
+    /**
+     * Retrieves a raw value from the {@link Table} according to the given {@code id}.
+     *
+     * @param id the identifier of the {@link Result} to retrieve
+     *
+     * @return on {@link Optional} containing the {@link Result}, or an empty {@link Optional} if the element has not
+     * been found
+     */
     private Optional<Result> fromDatabase(Id id) {
         Optional<Result> value = Optional.empty();
 
@@ -232,8 +259,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     }
 
     /**
-     * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that HBase
-     * keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
+     * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that
+     * HBase keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
      */
     @ParametersAreNonnullByDefault
     protected static class Serializer {
@@ -267,11 +294,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
          * @throws NullPointerException if the value to encode is {@code null}
          * @see Serializer#deserializeReferences(byte[])
          */
-        @Nullable
-        public static byte[] serializeReferences(@Nullable String... values) {
-            if (isNull(values)) {
-                return null;
-            }
+        @Nonnull
+        public static byte[] serializeReferences(String[] values) {
+            checkNotNull(values);
 
             return Bytes.toBytes(Joiner.on(VALUE_SEPERATOR_DEFAULT).join(values));
         }
@@ -279,7 +304,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         /**
          * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
          *
-         * @param bytes the HBase bytes to decode
+         * @param data the HBase bytes to decode
          *
          * @return an array of {@link String}s representing the {@link EReference}s decoded from the database
          *
@@ -287,20 +312,18 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
          * @throws IllegalArgumentException if the length of {@code bytes} is not a multiple of {@code UUID_LENGTH}
          * @see Serializer#serializeReferences(String[])
          */
-        @Nullable
-        public static String[] deserializeReferences(@Nullable byte... bytes) {
-            if (isNull(bytes)) {
-                return null;
-            }
+        @Nonnull
+        public static String[] deserializeReferences(byte[] data) {
+            checkNotNull(data);
 
-            checkArgument(bytes.length % (UUID_LENGTH + 1) == UUID_LENGTH);
+            checkArgument(data.length % (UUID_LENGTH + 1) == UUID_LENGTH);
 
-            int length = (bytes.length + 1) / (UUID_LENGTH + 1);
+            int length = (data.length + 1) / (UUID_LENGTH + 1);
 
             String[] strings = new String[length];
             int index = 0;
 
-            for (String s : Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(bytes))) {
+            for (String s : Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(data))) {
                 strings[index++] = s;
             }
 
@@ -316,12 +339,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
          *
          * @see Serializer#deserializeValues(byte[])
          */
-        @Nullable
-        @SafeVarargs
-        public static <V> byte[] serializeValues(@Nullable V... values) {
-            if (isNull(values)) {
-                return null;
-            }
+        @Nonnull
+        public static <V> byte[] serializeValues(V[] values) {
+            checkNotNull(values);
 
             try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream stream = new ObjectOutputStream(baos)) {
                 stream.writeObject(values);
@@ -335,23 +355,21 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
 
         /**
-         * Decodes an array of {@code bytes} into an array of {@link String}s.
+         * Decodes an array of bytes into an array of {@link String}s.
          *
-         * @param bytes the {@code byte} array to decode
+         * @param data the {@code byte} array to decode
          *
          * @return the decoded {@link String} array
          *
          * @throws NullPointerException if the given array is {@code null}
          * @see Serializer#serializeValues(Object[])
          */
-        @Nullable
+        @Nonnull
         @SuppressWarnings("unchecked")
-        public static <V> V[] deserializeValues(@Nullable byte... bytes) {
-            if (isNull(bytes)) {
-                return null;
-            }
+        public static <V> V[] deserializeValues(byte[] data) {
+            checkNotNull(data);
 
-            try (ByteArrayInputStream baos = new ByteArrayInputStream(bytes); ObjectInputStream stream = new ObjectInputStream(baos)) {
+            try (ByteArrayInputStream baos = new ByteArrayInputStream(data); ObjectInputStream stream = new ObjectInputStream(baos)) {
                 return (V[]) stream.readObject();
             }
             catch (IOException | ClassNotFoundException e) {
