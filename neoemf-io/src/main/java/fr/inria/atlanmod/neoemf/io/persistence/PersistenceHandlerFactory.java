@@ -13,9 +13,12 @@ package fr.inria.atlanmod.neoemf.io.persistence;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The factory that creates instances of {@link PersistenceHandler}s.
  */
+@ParametersAreNonnullByDefault
 public class PersistenceHandlerFactory {
 
     /**

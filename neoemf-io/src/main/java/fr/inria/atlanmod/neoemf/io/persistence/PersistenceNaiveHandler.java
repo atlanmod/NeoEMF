@@ -37,13 +37,13 @@ public class PersistenceNaiveHandler extends AbstractPersistenceHandler {
 
     @Override
     protected void persist(Id id) {
-        checkExists(id);
+        if (!backend.has(id)) {
+            backend.create(id);
+        }
     }
 
     @Override
     protected void checkExists(Id id) {
-        if (!backend.has(id)) {
-            backend.create(id);
-        }
+        persist(id);
     }
 }

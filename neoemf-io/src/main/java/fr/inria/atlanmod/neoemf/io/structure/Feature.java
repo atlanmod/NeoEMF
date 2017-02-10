@@ -42,6 +42,7 @@ public abstract class Feature extends NamedElement {
     public Feature(String name) {
         super(name);
         this.index = PersistentStore.NO_INDEX;
+        this.many = false;
     }
 
     /**
