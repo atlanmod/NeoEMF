@@ -13,4 +13,4 @@
  * Provides hash functions and related structures.
  */
 
-package fr.inria.atlanmod.neoemf.io.hash;
+package fr.inria.atlanmod.neoemf.io.util.hash;
