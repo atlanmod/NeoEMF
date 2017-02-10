@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandlerFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
@@ -348,7 +348,7 @@ public class ImportTest extends AbstractInputTest {
 
     private EObject loadWithNeoBlueprints(final File file) throws IOException {
         BlueprintsBackend backend = createNeo4jPersistenceBackend();
-        PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
+        PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
 
         loadWithNeo(file, handler);
 
