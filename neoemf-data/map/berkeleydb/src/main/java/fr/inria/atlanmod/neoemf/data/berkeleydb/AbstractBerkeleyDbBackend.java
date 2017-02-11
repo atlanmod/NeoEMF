@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.EClass;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -80,6 +81,12 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
      * ???
      */
     private boolean isClosed;
+
+    /**
+     * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
+     * BerkeleyDB doesn't support {@link Id} creation.
+     */
+    private Id lastId;
 
     /**
      * ???
@@ -144,12 +151,12 @@ public abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBacke
 
     @Override
     public void create(Id id) {
-        // Do nothing
+        lastId = id;
     }
 
     @Override
     public boolean has(Id id) {
-        return false;
+        return (Objects.equals(id, lastId)) || metaclassOf(id).isPresent();
     }
 
     @Nonnull

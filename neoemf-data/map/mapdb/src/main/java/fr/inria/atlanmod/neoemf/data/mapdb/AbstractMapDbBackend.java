@@ -30,6 +30,7 @@ import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -70,6 +71,12 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      */
     @Nonnull
     private final DB db;
+
+    /**
+     * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
+     * MapDB doesn't support {@link Id} creation.
+     */
+    private Id lastId;
 
     /**
      * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code db}.
@@ -150,12 +157,12 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void create(Id id) {
-        // Do nothing
+        lastId = id;
     }
 
     @Override
     public boolean has(Id id) {
-        return false;
+        return (Objects.equals(id, lastId)) || metaclassOf(id).isPresent();
     }
 
     @Nonnull
