@@ -168,7 +168,10 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
 
     @Override
     public void handleAttribute(RawAttribute attribute) {
-        Id id = Optional.ofNullable(attribute.id()).map(this::getOrCreateId).orElse(idsStack.getLast());
+        Id id = Optional.ofNullable(attribute.id())
+                .map(this::getOrCreateId)
+                .orElse(idsStack.getLast());
+
         addAttribute(id, attribute);
         incrementAndCommit();
     }

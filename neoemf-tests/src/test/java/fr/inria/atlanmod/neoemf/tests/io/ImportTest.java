@@ -55,15 +55,24 @@ import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+/**
+ * A test case about the import from XMI to {@link PersistenceBackend}s.
+ */
 public class ImportTest extends AbstractBackendTest {
 
     /**
-     * A {@link java.util.Set} holding all tested {@link Object}s.
+     * An array of ignored context.
      */
-    private HashSet<Object> testedObjects;
+    private static final String[] IGNORED = {HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME};
 
     /**
-     * A {@link java.util.Set} holding tested {@link EStructuralFeature}s.
+     * A {@link java.util.Set} holding all tested {@link EObject}s, to avoid testing the same {@link Object} twice.
+     */
+    private HashSet<EObject> testedObjects;
+
+    /**
+     * A {@link java.util.Set} holding tested {@link EStructuralFeature}s, to avoid testing the same {@link Object}
+     * twice.
      */
     private HashSet<EStructuralFeature> testedFeatures;
 
@@ -152,8 +161,11 @@ public class ImportTest extends AbstractBackendTest {
         EPackage.Registry.INSTANCE.put(uri, ePackage);
     }
 
+    /**
+     * Initializes the test case by registering the packages.
+     */
     @Before
-    public void init() throws IOException {
+    public void init() {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
@@ -161,28 +173,16 @@ public class ImportTest extends AbstractBackendTest {
         testedFeatures = new HashSet<>();
     }
 
-    @Test
-    public void testCompare() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
-            return;
-        }
-
-        File file = getXmiStandard();
-
-        EObject emfObject = loadWithEMF(file);
-        EObject neoObject = loadWithNeoEMF(file);
-
-        assertEqualEObject(neoObject, emfObject);
-    }
-
     /**
      * Check that the elements are properly processed.
      * <p>
      * All elements must have an id and a class name.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
     public void testElementsAndChildren() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
+        if (ignoreWhen(IGNORED)) {
             return;
         }
 
@@ -226,10 +226,12 @@ public class ImportTest extends AbstractBackendTest {
 
     /**
      * Check that the attributes are properly processed.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
     public void testAttributes() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
+        if (ignoreWhen(IGNORED)) {
             return;
         }
 
@@ -254,12 +256,14 @@ public class ImportTest extends AbstractBackendTest {
     /**
      * Check that the XPath references/id are properly processed.
      * <p>
-     * Containment and inverse reference must have been created.
-     * References previously detected as attributes, are now well placed.
+     * Containment and inverse reference must have been created. References previously detected as attributes, are now
+     * well placed.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
     public void testReferences() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
+        if (ignoreWhen(IGNORED)) {
             return;
         }
 
@@ -303,10 +307,38 @@ public class ImportTest extends AbstractBackendTest {
         }
     }
 
+    /**
+     * Compares a model read with standard EMF and another read with NeoEMF.
+     * <p>
+     * The models use XPath as references.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
+     */
+    @Test
+    public void testCompare() throws IOException {
+        if (ignoreWhen(IGNORED)) {
+            return;
+        }
+
+        File file = getXmiStandard();
+
+        EObject emfObject = loadWithEMF(file);
+        EObject neoObject = loadWithNeoEMF(file);
+
+        assertEqualEObject(neoObject, emfObject);
+    }
+
+    /**
+     * Compares a model read with standard EMF and another read with NeoEMF.
+     * <p>
+     * The models use {@code xmi:id} as references.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
+     */
     @Test
     @Ignore // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
-    public void testImportWithId() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
+    public void testCompareWithId() throws IOException {
+        if (ignoreWhen(IGNORED)) {
             return;
         }
 
@@ -318,6 +350,12 @@ public class ImportTest extends AbstractBackendTest {
         assertEqualEObject(neoObject, emfObject);
     }
 
+    /**
+     * Checks that the {@code expected} {@link EObject} is the same as the {@code actual}.
+     *
+     * @param actual   the NeoEMF object
+     * @param expected the EMF object
+     */
     private void assertEqualEObject(EObject actual, EObject expected) {
         NeoLogger.debug("Actual object     : {0}", actual);
         NeoLogger.debug("Expected object   : {0}", expected);
@@ -342,6 +380,14 @@ public class ImportTest extends AbstractBackendTest {
         }
     }
 
+    /**
+     * Asserts that the {@link EStructuralFeature} identified by {@code featureId} is the same between the
+     * {@code expected} and the {@code actual}.
+     *
+     * @param actual    the NeoEMF object
+     * @param expected  the EMF object
+     * @param featureId the identifier of the {@link EStructuralFeature} to compare
+     */
     @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
     private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
         EStructuralFeature feature = expected.eClass().getEStructuralFeature(featureId);
@@ -374,23 +420,43 @@ public class ImportTest extends AbstractBackendTest {
         }
     }
 
-    private void assertValidElement(EObject eObject, String className, int size, Object name) {
-        assertThat(eObject.eClass().getName()).isEqualTo(className);
-        assertThat(eObject.eContents()).hasSize(size);
+    /**
+     * Asserts that the given {@code object} the given {@code name}, {@code size}, and inherit from an
+     * {@link org.eclipse.emf.ecore.EClass} named as {@code metaclassName}.
+     *
+     * @param obj           the {@link EObject} to tests
+     * @param metaclassName the expected name of the metaclass of the {@code obj}
+     * @param size          the expected size of the {@code obj}
+     * @param name          the expected name of the {@code obj}
+     */
+    private void assertValidElement(EObject obj, String metaclassName, int size, String name) {
+        assertThat(obj.eClass().getName()).isEqualTo(metaclassName);
+        assertThat(obj.eContents()).hasSize(size);
         if (isNull(name)) {
-            Throwable thrown = catchThrowable(() -> eObject.eGet(eObject.eClass().getEStructuralFeature("name")));
+            Throwable thrown = catchThrowable(() -> obj.eGet(obj.eClass().getEStructuralFeature("name")));
             assertThat(thrown).isInstanceOf(NullPointerException.class);
         }
         else {
-            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
+            assertThat(obj.eGet(obj.eClass().getEStructuralFeature("name"))).isEqualTo(name);
         }
     }
 
+    /**
+     * Asserts that the {@link EReference} of the {@code obj}, identified by its {@code name}, has the given parameters.
+     *
+     * @param obj                the {@link EObject} to retrieve to {@link EReference}
+     * @param name               the name of the {@link EReference} to retrieve
+     * @param index              the index concerned by the test (if {@code many == true})
+     * @param referenceClassName the expected name of the metaclass of the referenced {@link EObject}
+     * @param referenceName      the expected name of the referenced {@link EObject}
+     * @param many               if the reference must be a multi-valued feature
+     * @param containment        if the reference must be a containment
+     */
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
-    private void assertValidReference(EObject eObject, String name, int index, String referenceClassName, String referenceName, boolean many, boolean containment) {
-        EReference reference = (EReference) eObject.eClass().getEStructuralFeature(name);
+    private void assertValidReference(EObject obj, String name, int index, String referenceClassName, String referenceName, boolean many, boolean containment) {
+        EReference reference = (EReference) obj.eClass().getEStructuralFeature(name);
 
-        Object objectReference = eObject.eGet(reference);
+        Object objectReference = obj.eGet(reference);
         EObject eObjectReference;
 
         if (many) {
@@ -409,7 +475,7 @@ public class ImportTest extends AbstractBackendTest {
                 assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
             }
             catch (NullPointerException ignore) {
-                // It's good
+                // It's not a problem if this happens
             }
         }
         else {
@@ -421,25 +487,53 @@ public class ImportTest extends AbstractBackendTest {
         assertThat(reference.isMany()).isEqualTo(many);
     }
 
-    private void assertValidAttribute(EObject eObject, String name, Object value) {
-        EAttribute attribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
+    /**
+     * Asserts that the {@link EAttribute} of the {@code obj}, identified by its {@code name}, has the given {@code
+     * value}.
+     *
+     * @param obj   the {@link EObject} to retrieve to {@link EAttribute}
+     * @param name  the name of the {@link EAttribute} to retrieve
+     * @param value the expected value of the attribute
+     */
+    private void assertValidAttribute(EObject obj, String name, Object value) {
+        EAttribute attribute = (EAttribute) obj.eClass().getEStructuralFeature(name);
 
         if (isNull(value)) {
-            assertThat(eObject.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
+            assertThat(obj.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
         }
         else {
-            assertThat(eObject.eGet(attribute).toString()).isEqualTo(value);
+            assertThat(obj.eGet(attribute).toString()).isEqualTo(value);
         }
     }
 
+    /**
+     * Loads the {@code file} with standard EMF.
+     *
+     * @param file the file to load
+     *
+     * @return the first element of the loaded content
+     *
+     * @throws IOException if an I/O error occur during the loading of models
+     */
     private EObject loadWithEMF(File file) throws IOException {
         Resource resource = new XMIResourceImpl();
         resource.load(new FileInputStream(file), Collections.emptyMap());
         return resource.getContents().get(0);
     }
 
+    /**
+     * Loads the {@code file} with NeoEMF according to the current {@link #context() Context}.
+     *
+     * @param file the file to load
+     *
+     * @return the first element of the loaded content
+     *
+     * @throws IOException if an I/O error occur during the loading of models
+     */
     private EObject loadWithNeoEMF(File file) throws IOException {
-        try (PersistenceBackend backend = createPersistenceBackend()) {
+        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+
+        try (PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), context().defaultOptions())) {
             PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
             Importer.fromXmi(new FileInputStream(file), handler);
         }
@@ -452,10 +546,5 @@ public class ImportTest extends AbstractBackendTest {
         resource.load(context().defaultOptions());
 
         return resource.getContents().get(0);
-    }
-
-    private PersistenceBackend createPersistenceBackend() {
-        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
-        return context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), context().defaultOptions());
     }
 }
