@@ -47,14 +47,14 @@ public class LoggingProcessor extends AbstractProcessor {
 
     @Override
     public void handleStartDocument() {
-        log.debug("[#] Starting document");
+        log.info("[#] Starting document");
 
         super.handleStartDocument();
     }
 
     @Override
     public void handleStartElement(RawElement element) {
-        log.debug("[E] {0}:{1} \"{2}\" : {3} = {4}",
+        log.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 element.ns().prefix(),
                 element.name(),
                 element.className(),
@@ -68,7 +68,7 @@ public class LoggingProcessor extends AbstractProcessor {
 
     @Override
     public void handleAttribute(RawAttribute attribute) {
-        log.debug("[A]    {0} ({1}) = {2}",
+        log.info("[A]    {0} ({1}) = {2}",
                 attribute.name(),
                 attribute.index(),
                 attribute.value());
@@ -78,7 +78,7 @@ public class LoggingProcessor extends AbstractProcessor {
 
     @Override
     public void handleReference(RawReference reference) {
-        log.debug("[R]    {0} ({1}) = {2} -> {3}",
+        log.info("[R]    {0} ({1}) = {2} -> {3}",
                 reference.name(),
                 reference.index(),
                 Objects.isNull(reference.id()) ? "this" : reference.id(),
@@ -89,7 +89,7 @@ public class LoggingProcessor extends AbstractProcessor {
 
     @Override
     public void handleEndDocument() {
-        log.debug("[#] Ending document");
+        log.info("[#] Ending document");
 
         super.handleEndDocument();
     }

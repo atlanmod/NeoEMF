@@ -51,6 +51,9 @@ public final class Importer {
         checkNotNull(handlers, "The handler must be defined");
 
         Processor processor = new PersistenceProcessor(handlers);
+
+        // Custom options come here
+
         processor = new XPathProcessor(processor);
         processor = new EcoreProcessor(processor);
 
