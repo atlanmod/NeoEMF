@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.util.Arrays;
@@ -76,20 +76,19 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V> void addValue(MultivaluedFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
         while(key.position() > values.length) {
-            values = (V[]) ArrayUtils.add(values, values.length, null);
+            values = ArrayUtils.add(values, values.length, null);
         }
 
         if (key.position() < values.length && isNull(values[key.position()])) {
             values[key.position()] = value;
         }
         else {
-            values = (V[]) ArrayUtils.add(values, key.position(), value);
+            values = ArrayUtils.add(values, key.position(), value);
         }
 
         valueFor(key.withoutPosition(), values);

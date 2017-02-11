@@ -27,6 +27,8 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.isNull;
+
 /**
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
  * <p>
@@ -156,7 +158,18 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        valueFor(key.withoutPosition(), ArrayUtils.add(values, key.position(), value));
+        while(key.position() > values.length) {
+            values = ArrayUtils.add(values, values.length, null);
+        }
+
+        if (key.position() < values.length && isNull(values[key.position()])) {
+            values[key.position()] = value;
+        }
+        else {
+            values = ArrayUtils.add(values, key.position(), value);
+        }
+
+        valueFor(key.withoutPosition(), values);
     }
 
     @Override
@@ -196,7 +209,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     @Override
     public <V> boolean containsValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
-                .map(ts -> org.apache.commons.lang.ArrayUtils.contains(ts, value))
+                .map(ts -> ArrayUtils.contains(ts, value))
                 .orElse(false);
     }
 
@@ -210,7 +223,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
-                    int index = org.apache.commons.lang.ArrayUtils.indexOf(ts, value);
+                    int index = ArrayUtils.indexOf(ts, value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -227,7 +240,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
-                    int index = org.apache.commons.lang.ArrayUtils.lastIndexOf(ts, value);
+                    int index = ArrayUtils.lastIndexOf(ts, value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
