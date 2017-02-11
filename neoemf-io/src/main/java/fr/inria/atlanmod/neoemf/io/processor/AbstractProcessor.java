@@ -18,10 +18,12 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link Processor} that delegates all methods to its underlying processor.
  */
+@ParametersAreNonnullByDefault
 public class AbstractProcessor extends AbstractNotifier<Handler> implements Processor {
 
     /**

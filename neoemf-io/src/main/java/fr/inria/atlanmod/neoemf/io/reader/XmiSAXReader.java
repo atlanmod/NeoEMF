@@ -22,6 +22,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.events.Attribute;
@@ -31,6 +33,7 @@ import static java.util.Objects.nonNull;
 /**
  * A {@link Reader} that uses streams for reading and parsing XMI files.
  */
+@ParametersAreNonnullByDefault
 public class XmiSAXReader extends AbstractXmiReader {
 
     /**
@@ -111,7 +114,8 @@ public class XmiSAXReader extends AbstractXmiReader {
          *
          * @return the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix
          */
-        private String getPrefix(String prefixedValue) {
+        @Nullable
+        private String getPrefix(@Nullable String prefixedValue) {
             String prefix = null;
 
             if (nonNull(prefixedValue)) {

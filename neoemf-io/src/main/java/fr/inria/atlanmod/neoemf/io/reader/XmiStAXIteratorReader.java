@@ -17,6 +17,7 @@ import org.codehaus.stax2.XMLInputFactory2;
 
 import java.io.InputStream;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -30,6 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 /**
  * A {@link Reader} that uses a StAX implementation with iterators for reading and parsing XMI files.
  */
+@ParametersAreNonnullByDefault
 public class XmiStAXIteratorReader extends AbstractXmiReader {
 
     /**

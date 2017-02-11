@@ -16,9 +16,12 @@ import com.google.common.base.Stopwatch;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Processor} that measures elapsed time between the start and the end of an I/O process.
  */
+@ParametersAreNonnullByDefault
 public class TimerProcessor extends AbstractProcessor {
 
     /**

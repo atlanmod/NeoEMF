@@ -15,11 +15,14 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A object that handles events notified by a {@link Notifier}.
  *
  * @see Notifier
  */
+@ParametersAreNonnullByDefault
 public interface Handler {
 
     /**

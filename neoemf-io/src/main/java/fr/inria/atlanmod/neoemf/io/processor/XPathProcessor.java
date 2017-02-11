@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -36,6 +37,7 @@ import static java.util.Objects.nonNull;
 /**
  * A {@link Processor} that analyses XML elements in order to create and to process XPath references.
  */
+@ParametersAreNonnullByDefault
 public class XPathProcessor extends AbstractProcessor {
 
     /**

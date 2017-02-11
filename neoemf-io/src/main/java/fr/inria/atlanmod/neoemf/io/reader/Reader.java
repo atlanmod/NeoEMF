@@ -17,11 +17,14 @@ import fr.inria.atlanmod.neoemf.io.Notifier;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Notifier} that reads data from a file.
  *
  * @note It correspond to the head of the parsing process in case of an import.
  */
+@ParametersAreNonnullByDefault
 public interface Reader extends Notifier<Handler> {
 
     /**

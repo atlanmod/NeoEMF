@@ -30,6 +30,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -38,6 +39,7 @@ import static java.util.Objects.nonNull;
 /**
  * A {@link Processor} that creates and links simple elements to an EMF structure.
  */
+@ParametersAreNonnullByDefault
 public class EcoreProcessor extends AbstractProcessor {
 
     /**

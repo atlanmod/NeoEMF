@@ -18,6 +18,7 @@ import org.codehaus.stax2.evt.XMLEventFactory2;
 
 import java.io.InputStream;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -26,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * A {@link Reader} that uses a StAX implementation with cursors for reading and parsing XMI files.
  */
+@ParametersAreNonnullByDefault
 public class XmiStAXCursorReader extends AbstractXmiReader {
 
     /**

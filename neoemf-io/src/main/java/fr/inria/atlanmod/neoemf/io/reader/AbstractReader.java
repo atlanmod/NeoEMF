@@ -21,13 +21,15 @@ import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link Reader} that notifies {@link Handler} and provides overall behavior for the management of
  * namespaces.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractReader extends AbstractNotifier<Handler> implements Reader {
 
     /**
@@ -83,10 +85,6 @@ public abstract class AbstractReader extends AbstractNotifier<Handler> implement
 
     @Override
     public final void read(InputStream stream) throws IOException {
-        if (isNull(next())) {
-            throw new IllegalStateException("This notifier hasn't any handler");
-        }
-
         checkNotNull(stream);
 
         progressTimer = new Timer(true);

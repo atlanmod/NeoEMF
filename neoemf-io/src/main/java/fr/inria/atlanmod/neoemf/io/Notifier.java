@@ -15,6 +15,11 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
  *
@@ -22,6 +27,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
  *
  * @see Handler
  */
+@ParametersAreNonnullByDefault
 public interface Notifier<H extends Handler> {
 
     /**
@@ -29,6 +35,7 @@ public interface Notifier<H extends Handler> {
      *
      * @return the handler to notify
      */
+    @Nonnull
     Iterable<H> next();
 
     /**
@@ -50,6 +57,8 @@ public interface Notifier<H extends Handler> {
      * @see Handler#handleStartElement(RawElement)
      */
     default void notifyStartElement(RawElement element) {
+        checkNotNull(element);
+
         next().forEach(h -> h.handleStartElement(element));
     }
 
@@ -61,6 +70,8 @@ public interface Notifier<H extends Handler> {
      * @see Handler#handleAttribute(RawAttribute)
      */
     default void notifyAttribute(RawAttribute attribute) {
+        checkNotNull(attribute);
+
         next().forEach(h -> h.handleAttribute(attribute));
     }
 
@@ -72,6 +83,8 @@ public interface Notifier<H extends Handler> {
      * @see Handler#handleReference(RawReference)
      */
     default void notifyReference(RawReference reference) {
+        checkNotNull(reference);
+
         next().forEach(h -> h.handleReference(reference));
     }
 
@@ -83,6 +96,8 @@ public interface Notifier<H extends Handler> {
      * @see Handler#handleCharacters(String)
      */
     default void notifyCharacters(String characters) {
+        checkNotNull(characters);
+
         next().forEach(h -> h.handleCharacters(characters));
     }
 

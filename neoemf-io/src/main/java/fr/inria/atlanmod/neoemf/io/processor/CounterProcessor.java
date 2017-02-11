@@ -17,9 +17,12 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Processor} that counts the number of different element.
  */
+@ParametersAreNonnullByDefault
 public class CounterProcessor extends AbstractProcessor {
 
     /**

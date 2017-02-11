@@ -14,10 +14,13 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link Handler} that pre-processes and post-processes received events, before notifying the next {@link Handler}.
  * <p>
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
  */
+@ParametersAreNonnullByDefault
 public interface Processor extends Handler, Notifier<Handler> {
 }

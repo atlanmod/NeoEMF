@@ -13,9 +13,12 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link Processor} that notifies registered {@link PersistenceHandler} of events, without any treatment.
  */
+@ParametersAreNonnullByDefault
 public final class PersistenceProcessor extends AbstractProcessor implements Processor {
 
     /**

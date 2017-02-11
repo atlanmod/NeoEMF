@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -27,7 +27,8 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
     /**
      * The handlers to notify.
      */
-    private Set<H> handlers;
+    @Nonnull
+    private Iterable<H> handlers;
 
     /**
      * Constructs a new {@code AbstractNotifier} with the given {@code handlers}.
@@ -38,9 +39,10 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
     public AbstractNotifier(H... handlers) {
         checkNotNull(handlers);
 
-        this.handlers = new HashSet<>(Arrays.asList(handlers));
+        this.handlers = Arrays.asList(handlers);
     }
 
+    @Nonnull
     @Override
     public Iterable<H> next() {
         return handlers;

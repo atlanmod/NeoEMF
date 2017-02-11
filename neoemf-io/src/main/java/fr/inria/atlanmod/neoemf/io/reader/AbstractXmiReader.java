@@ -33,12 +33,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link Reader} that processes the raw structure of XMI files.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
@@ -105,7 +108,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param name   the name of the attribute
      * @param value  the value of the attribute
      */
-    protected void readAttribute(String prefix, String name, String value) {
+    protected void readAttribute(@Nullable String prefix, String name, String value) {
         if (!ignoreElement) {
             Collection<RawFeature> localFeatures = getFeatures(prefix, name, value);
 
@@ -169,7 +172,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @see #getReferences(String, Iterable)
      */
     @Nonnull
-    private Collection<RawFeature> getFeatures(String prefix, String name, String value) {
+    private Collection<RawFeature> getFeatures(@Nullable String prefix, String name, String value) {
         Collection<RawFeature> features;
 
         if (!processSpecialFeature(prefix, name, value)) {
@@ -198,22 +201,22 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return {@code true} if the given feature is a special feature
      */
-    private boolean processSpecialFeature(String prefix, String name, String value) {
+    private boolean processSpecialFeature(@Nullable String prefix, String name, String value) {
         boolean isSpecialFeature = false;
 
         // A special feature always has a prefix
         if (nonNull(prefix) && !prefix.isEmpty()) {
             final String prefixedValue = prefix + ':' + name;
 
-            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) { // xsi:type or xsi:type
+            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) {
                 processMetaClass(value);
                 isSpecialFeature = true;
             }
-            else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // xmi:id
+            else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) {
                 currentElement.id(RawId.original(value));
                 isSpecialFeature = true;
             }
-            else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // xmi:idref
+            else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) {
                 // It's not a feature of the current element, but a reference of the previous
                 RawReference reference = new RawReference(currentElement.name());
                 reference.idReference(RawId.original(value));
@@ -221,7 +224,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 ignoreElement = true;
                 isSpecialFeature = true;
             }
-            else if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
+            else if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) {
                 NeoLogger.debug("XMI version : " + value);
                 isSpecialFeature = true;
             }
@@ -241,27 +244,26 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     /**
-     * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
+     * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code value} does not
      * match with {@link #PATTERN_WELL_FORMED_REF}.
      *
-     * @param attribute the attribute to parse
+     * @param value the value to parse
      *
-     * @return a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
+     * @return a list of {@link String} representing XPath references, or {@code null} if the {@code value} does not
      * match with {@link #PATTERN_WELL_FORMED_REF}
      *
      * @see #PATTERN_WELL_FORMED_REF
      */
     @Nonnull
-    private Collection<String> parseReference(String attribute) {
+    private Collection<String> parseReference(String value) {
         List<String> references;
 
-        if (!attribute.trim().isEmpty()) {
-            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
+        if (!value.trim().isEmpty()) {
+            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(value);
 
             boolean isReference = true;
-            for (int i = 0, referenceCount = references.size(); i < referenceCount && isReference; i++) {
-                String ref = references.get(i);
-                isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
+            for (int i = 0; i < references.size() && isReference; i++) {
+                isReference = PATTERN_WELL_FORMED_REF.matcher(references.get(i)).matches();
             }
 
             if (!isReference) {
@@ -309,6 +311,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
             RawReference ref = new RawReference(name);
             ref.index(index);
             ref.idReference(RawId.generated(rawReference));
+
             features.add(ref);
             index++;
         }

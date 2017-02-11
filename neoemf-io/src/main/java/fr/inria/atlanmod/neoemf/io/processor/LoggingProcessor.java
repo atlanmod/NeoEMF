@@ -21,9 +21,12 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Objects;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Processor} that logs every events.
  */
+@ParametersAreNonnullByDefault
 public class LoggingProcessor extends AbstractProcessor {
 
     /**
