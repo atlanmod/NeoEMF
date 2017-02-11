@@ -41,7 +41,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
     /**
      * Facility for testing HBase.
      */
-    private static HBaseTestingUtility hbaseUtility;
+    private static HBaseTestingUtility hbase;
 
     /**
      * Constructs a new {@code HBaseTestHelper} with the given {@code ePackage}.
@@ -104,12 +104,12 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
      * @return the connection
      */
     private Connection getConnection() {
-        if (isNull(hbaseUtility)) {
+        if (isNull(hbase)) {
             initMiniCluster();
         }
 
         try {
-            return hbaseUtility.getConnection();
+            return hbase.getConnection();
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -123,13 +123,13 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
         try {
             NeoLogger.info("Initializing Hadoop minicluster... (This may take several minutes)");
 
-            hbaseUtility = new HBaseTestingUtility();
-            hbaseUtility.startMiniCluster(1);
+            hbase = new HBaseTestingUtility();
+            hbase.startMiniCluster(1);
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     NeoLogger.info("Shutting down Hadoop minicluster...");
-                    hbaseUtility.shutdownMiniCluster();
+                    hbase.shutdownMiniCluster();
                 }
                 catch (Exception ignore) {
                 }
