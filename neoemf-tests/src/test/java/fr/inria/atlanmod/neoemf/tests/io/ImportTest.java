@@ -181,7 +181,7 @@ public class ImportTest extends AbstractBackendTest {
      * All elements must have an id and a class name.
      */
     @Test
-    public void testElementsAndChildrenNeo4j() throws IOException {
+    public void testElementsAndChildren() throws IOException {
         if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
@@ -228,7 +228,7 @@ public class ImportTest extends AbstractBackendTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    public void testAttributesNeo4j() throws IOException {
+    public void testAttributes() throws IOException {
         if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
@@ -258,7 +258,7 @@ public class ImportTest extends AbstractBackendTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
-    public void testReferencesNeo4j() throws IOException {
+    public void testReferences() throws IOException {
         if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
@@ -305,7 +305,7 @@ public class ImportTest extends AbstractBackendTest {
 
     @Test
     @Ignore // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
-    public void testImportWithIdNeo4j() throws IOException {
+    public void testImportWithId() throws IOException {
         if (ignoreWhen(HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME)) {
             return;
         }
