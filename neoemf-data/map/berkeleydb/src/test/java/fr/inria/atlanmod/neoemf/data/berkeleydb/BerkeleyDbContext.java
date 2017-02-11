@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A specific {@link Context} for the BerkeleyDB implementation.
@@ -72,32 +70,27 @@ public class BerkeleyDbContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbTestBuilder(ePackage).persistent().file(file).createResource();
+        return new BerkeleyDbTestHelper(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbTestBuilder(ePackage).file(file).createResource();
+        return new BerkeleyDbTestHelper(ePackage).file(file).createResource();
     }
 
     @Override
     public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbTestBuilder(ePackage).file(file).loadResource();
+        return new BerkeleyDbTestHelper(ePackage).file(file).loadResource();
     }
 
     @Override
     public PersistenceBackend createBackend(File file) throws IOException {
-        return new BerkeleyDbTestBuilder(null).file(file).createBackend();
+        return new BerkeleyDbTestHelper(null).file(file).createBackend();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return BerkeleyDbBackendFactory.getInstance();
-    }
-
-    @Override
-    public Map<String, Object> defaultOptions() {
-        return BerkeleyDbOptionsBuilder.noOption();
     }
 
     /**

@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * A builder of {@link PersistentResource}.
  */
-public interface TestBuilder {
+public interface TestHelper {
 
     /**
      * Creates a {@link PersistentResource} according to the specified options.

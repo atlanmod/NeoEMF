@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A specific {@link Context} for the HBase implementation.
@@ -72,7 +70,7 @@ public class HBaseContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new HBaseTestBuilder(ePackage).persistent().file(file).createResource();
+        return new HBaseTestHelper(ePackage).persistent().file(file).createResource();
     }
 
     @Override
@@ -82,22 +80,17 @@ public class HBaseContext implements Context {
 
     @Override
     public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
-        return new HBaseTestBuilder(ePackage).file(file).loadResource();
+        return new HBaseTestHelper(ePackage).file(file).loadResource();
     }
 
     @Override
     public PersistenceBackend createBackend(File file) throws IOException {
-        return new HBaseTestBuilder(null).file(file).createBackend();
+        return new HBaseTestHelper(null).file(file).createBackend();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return HBaseBackendFactory.getInstance();
-    }
-
-    @Override
-    public Map<String, Object> defaultOptions() {
-        return HBaseOptionsBuilder.noOption();
     }
 
     /**

@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A utility class representing a test-case context.
@@ -77,7 +76,7 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestBuilder
+     * @see TestHelper
      */
     PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
 
@@ -90,7 +89,7 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestBuilder
+     * @see TestHelper
      */
     PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
 
@@ -103,7 +102,7 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestBuilder
+     * @see TestHelper
      */
     PersistentResource loadResource(EPackage ePackage, File file) throws IOException;
 
@@ -115,7 +114,7 @@ public interface Context {
      * @return a new {@link PersistenceBackend}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestBuilder
+     * @see TestHelper
      */
     PersistenceBackend createBackend(File file) throws IOException;
 
@@ -125,11 +124,4 @@ public interface Context {
      * @return the {@link PersistenceBackendFactory}
      */
     PersistenceBackendFactory persistenceBackendFactory();
-
-    /**
-     * Returns the default options of this {@code Context}.
-     *
-     * @return a map
-     */
-    Map<String, Object> defaultOptions();
 }

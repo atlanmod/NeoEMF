@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A specific {@link Context} for the MapDB implementation.
@@ -72,32 +70,27 @@ public class MapDbContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbTestBuilder(ePackage).persistent().file(file).createResource();
+        return new MapDbTestHelper(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbTestBuilder(ePackage).file(file).createResource();
+        return new MapDbTestHelper(ePackage).file(file).createResource();
     }
 
     @Override
     public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbTestBuilder(ePackage).file(file).loadResource();
+        return new MapDbTestHelper(ePackage).file(file).loadResource();
     }
 
     @Override
     public PersistenceBackend createBackend(File file) throws IOException {
-        return new MapDbTestBuilder(null).file(file).createBackend();
+        return new MapDbTestHelper(null).file(file).createBackend();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return MapDbBackendFactory.getInstance();
-    }
-
-    @Override
-    public Map<String, Object> defaultOptions() {
-        return MapDbOptionsBuilder.noOption();
     }
 
     /**

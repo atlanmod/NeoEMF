@@ -11,8 +11,11 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -26,11 +29,11 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract {@link TestBuilder} that manages the assembly and the construction of {@link PersistentResource}.
+ * An abstract {@link TestHelper} that manages the assembly and the construction of {@link PersistentResource}.
  *
- * @param <B> the "self"-type of this {@link TestBuilder}
+ * @param <B> the "self"-type of this {@link TestHelper}
  */
-public abstract class AbstractTestBuilder<B extends AbstractTestBuilder<B>> implements TestBuilder {
+public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implements TestHelper {
 
     /**
      * The {@link EPackage} associated to the built resource.
@@ -58,13 +61,13 @@ public abstract class AbstractTestBuilder<B extends AbstractTestBuilder<B>> impl
     private boolean isPersistent;
 
     /**
-     * Constructs a new {@code AbstractTestBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code AbstractTestHelper} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link org.eclipse.emf.ecore.resource.Resource}
      *
      * @see EPackage.Registry
      */
-    public AbstractTestBuilder(EPackage ePackage) {
+    public AbstractTestHelper(EPackage ePackage) {
         this.ePackage = ePackage;
         initBuilder();
     }
@@ -83,14 +86,39 @@ public abstract class AbstractTestBuilder<B extends AbstractTestBuilder<B>> impl
      * Initializes this builder, and registers the {@link EPackage} in the
      * {@link org.eclipse.emf.ecore.EPackage.Registry}.
      */
-    protected void initBuilder() {
+    protected final void initBuilder() {
         isPersistent = false;
+
+        PersistenceBackendFactoryRegistry.register(uriScheme(), factory());
+
+        resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(uriScheme(), PersistentResourceFactory.getInstance());
+
         if (nonNull(ePackage)) {
             EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
         }
-        resourceSet = new ResourceSetImpl();
-        resourceOptions = CommonOptionsBuilder.noOption();
     }
+
+    /**
+     * Returns the {@link PersistenceBackendFactory} of this helper.
+     *
+     * @return a factory
+     */
+    protected abstract PersistenceBackendFactory factory();
+
+    /**
+     * Returns the default options of this helper.
+     *
+     * @return a map of options
+     */
+    protected abstract Map<String, Object> defaultOptions();
+
+    /**
+     * Returns the URI scheme of this helper.
+     *
+     * @return the URI scheme
+     */
+    protected abstract String uriScheme();
 
     /**
      * Defines the {@link URI} of the created resource from another.
@@ -119,26 +147,31 @@ public abstract class AbstractTestBuilder<B extends AbstractTestBuilder<B>> impl
      *
      * @return this builder (for chaining)
      */
-    public B persistent() {
+    public final B persistent() {
         isPersistent = true;
         return me();
     }
 
     @Override
-    public PersistentResource createResource() throws IOException {
+    public final PersistentResource createResource() throws IOException {
         PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
         if (isPersistent) {
-            resource.save(resourceOptions);
+            resource.save(defaultOptions());
         }
         initBuilder();
         return resource;
     }
 
     @Override
-    public PersistentResource loadResource() throws IOException {
+    public final PersistentResource loadResource() throws IOException {
         PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
-        resource.load(resourceOptions);
+        resource.load(defaultOptions());
         initBuilder();
         return resource;
+    }
+
+    @Override
+    public final PersistenceBackend createBackend() throws IOException {
+        return factory().createPersistentBackend(uri, defaultOptions());
     }
 }

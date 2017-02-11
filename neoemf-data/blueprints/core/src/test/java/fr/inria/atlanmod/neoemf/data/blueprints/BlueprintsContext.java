@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A specific {@link Context} for the Blueprints implementation.
@@ -72,32 +70,27 @@ public class BlueprintsContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsTestBuilder(ePackage).persistent().file(file).createResource();
+        return new BlueprintsTestHelper(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsTestBuilder(ePackage).file(file).createResource();
+        return new BlueprintsTestHelper(ePackage).file(file).createResource();
     }
 
     @Override
     public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsTestBuilder(ePackage).file(file).loadResource();
+        return new BlueprintsTestHelper(ePackage).file(file).loadResource();
     }
 
     @Override
     public PersistenceBackend createBackend(File file) throws IOException {
-        return new BlueprintsTestBuilder(null).file(file).createBackend();
+        return new BlueprintsTestHelper(null).file(file).createBackend();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return BlueprintsBackendFactory.getInstance();
-    }
-
-    @Override
-    public Map<String, Object> defaultOptions() {
-        return BlueprintsOptionsBuilder.noOption();
     }
 
     /**

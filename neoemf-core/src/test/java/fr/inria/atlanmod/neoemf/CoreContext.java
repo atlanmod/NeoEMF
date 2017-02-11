@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 
@@ -109,11 +107,6 @@ public class CoreContext implements Context {
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
         return mock(AbstractPersistenceBackendFactory.class);
-    }
-
-    @Override
-    public Map<String, Object> defaultOptions() {
-        return CommonOptionsBuilder.noOption();
     }
 
     /**

@@ -115,17 +115,12 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
      *
      * @return a new {@link Table}
      */
-    @VisibleForTesting
-    protected Table createTable(URI uri) {
+    private Table createTable(URI uri) {
         try {
-            Configuration configuration = HBaseConfiguration.create();
-            configuration.set("hbase.zookeeper.quorum", uri.host());
-            configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
+            Connection connection = configureConnection(uri);
+            Admin admin = connection.getAdmin();
 
             TableName tableName = TableName.valueOf(HBaseURI.format(uri));
-
-            Connection connection = ConnectionFactory.createConnection(configuration);
-            Admin admin = connection.getAdmin();
 
             // Initialize
             if (!admin.tableExists(tableName)) {
@@ -141,6 +136,27 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
             }
 
             return connection.getTable(tableName);
+        }
+        catch (IOException e) {
+            throw new InvalidDataStoreException(e);
+        }
+    }
+
+    /**
+     * Configures the {@link Connection} to the cluster.
+     *
+     * @param uri the URI used to configure the connection
+     *
+     * @return a new connection
+     */
+    @VisibleForTesting
+    protected Connection configureConnection(URI uri) {
+        try {
+            Configuration configuration = HBaseConfiguration.create();
+            configuration.set("hbase.zookeeper.quorum", uri.host());
+            configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
+
+            return ConnectionFactory.createConnection(configuration);
         }
         catch (IOException e) {
             throw new InvalidDataStoreException(e);

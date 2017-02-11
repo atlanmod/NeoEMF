@@ -11,30 +11,32 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.TestBuilder;
+import fr.inria.atlanmod.neoemf.TestHelper;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.util.Map;
+
 /**
- * A specific {@link TestBuilder} for the Blueprints implementation.
+ * A specific {@link TestHelper} for the Blueprints implementation.
  */
-public class BlueprintsTestBuilder extends AbstractBlueprintsTestBuilder<BlueprintsTestBuilder> {
+public class BlueprintsTestHelper extends AbstractBlueprintsTestHelper<BlueprintsTestHelper> {
 
     /**
-     * Constructs a new {@code BlueprintsTestBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code BlueprintsTestHelper} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link Resource}
      *
      * @see EPackage.Registry
      */
-    public BlueprintsTestBuilder(EPackage ePackage) {
+    public BlueprintsTestHelper(EPackage ePackage) {
         super(ePackage);
     }
 
     @Override
-    protected void registerFactory() {
-        resourceOptions = BlueprintsOptionsBuilder.noOption();
+    protected Map<String, Object> defaultOptions() {
+        return BlueprintsOptionsBuilder.noOption();
     }
 }
