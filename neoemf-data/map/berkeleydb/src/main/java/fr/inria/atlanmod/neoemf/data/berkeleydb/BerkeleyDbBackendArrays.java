@@ -30,6 +30,8 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.isNull;
+
 /**
  * ???
  */
@@ -74,11 +76,23 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> void addValue(MultivaluedFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        valueFor(key.withoutPosition(), ArrayUtils.add(values, key.position(), value));
+        while(key.position() > values.length) {
+            values = (V[]) ArrayUtils.add(values, values.length, null);
+        }
+
+        if (key.position() < values.length && isNull(values[key.position()])) {
+            values[key.position()] = value;
+        }
+        else {
+            values = (V[]) ArrayUtils.add(values, key.position(), value);
+        }
+
+        valueFor(key.withoutPosition(), values);
     }
 
     @Nonnull

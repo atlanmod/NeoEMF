@@ -31,6 +31,8 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.isNull;
+
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
  * <p>
@@ -92,7 +94,16 @@ class MapDbBackendLists extends AbstractMapDbBackend {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        values.add(key.position(), value);
+        while(key.position() > values.size()) {
+            values.add(null);
+        }
+
+        if (key.position() < values.size() && isNull(values.get(key.position()))) {
+            values.set(key.position(), value);
+        }
+        else {
+            values.add(key.position(), value);
+        }
 
         valueFor(key.withoutPosition(), values);
     }

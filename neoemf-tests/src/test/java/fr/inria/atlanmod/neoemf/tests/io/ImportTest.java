@@ -534,7 +534,7 @@ public class ImportTest extends AbstractBackendTest {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
         try (PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), context().defaultOptions())) {
-            PersistenceHandler handler = PersistenceHandlerFactory.newAwareHandler(backend);
+            PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
             Importer.fromXmi(new FileInputStream(file), handler);
         }
 

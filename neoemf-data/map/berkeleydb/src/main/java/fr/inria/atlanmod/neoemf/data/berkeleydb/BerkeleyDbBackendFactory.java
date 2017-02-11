@@ -82,7 +82,6 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setDeferredWrite(true);
 
             backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
-//            backend.open();
         }
         catch (IOException e) {
             NeoLogger.error(e);
@@ -115,7 +114,6 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
                     .setDeferredWrite(true);
 
             backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
-//            backend.open();
 
             processGlobalConfiguration(file);
         }

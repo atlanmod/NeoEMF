@@ -156,7 +156,7 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
     /**
      * A simple representation of an element that could not be linked when it was created.
      */
-    private class UnlinkedRawReference extends RawReference {
+    private static class UnlinkedRawReference extends RawReference {
 
         /**
          * The identifier of this element.
