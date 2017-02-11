@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,23 +40,49 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 
+/**
+ * A utility class for testing on different {@link Context}s.
+ */
 @RunWith(Parameterized.class)
 public abstract class AbstractBackendTest extends AbstractTest implements ContextualTest {
 
+    /**
+     * The {@link org.eclipse.emf.ecore.EFactory} of the test model.
+     */
     protected static final MapSampleFactory EFACTORY = MapSampleFactory.eINSTANCE;
 
+    /**
+     * The {@link org.eclipse.emf.ecore.EPackage} of the test model.
+     */
     private static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
 
+    /**
+     * The current context.
+     */
     @Parameterized.Parameter()
     public Context context;
 
+    /**
+     * The name of the current context.
+     */
     @Parameterized.Parameter(1)
     public String name;
 
+    /**
+     * A list that holds the resources that should be closed at the end of the tests.
+     */
     private List<PersistentResource> loadedResources;
 
+    /**
+     * The temporary file.
+     */
     private File file;
 
+    /**
+     * Initializes the parameters of tests.
+     *
+     * @return a collection
+     */
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
@@ -72,10 +99,20 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         return context;
     }
 
+    /**
+     * Returns the temporary file for this test.
+     *
+     * @return a file.
+     */
     public File file() {
         return file;
     }
 
+    /**
+     * Create a new persistent store according to the current {@link #context() Context}.
+     *
+     * @return the created resource
+     */
     public PersistentResource createPersistentStore() {
         try {
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
@@ -85,6 +122,11 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         }
     }
 
+    /**
+     * Creates a new transient store according to the current {@link #context() Context}.
+     *
+     * @return the created resource
+     */
     public PersistentResource createTransientStore() {
         try {
             return closeAtExit(context.createTransientResource(EPACKAGE, file));
@@ -94,31 +136,53 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         }
     }
 
+    /**
+     * Adds the {@code resource} among the resources that should be closed at the end of the tests.
+     *
+     * @param resource the resource to close
+     *
+     * @return the {@code resource}
+     */
     public PersistentResource closeAtExit(final PersistentResource resource) {
         loadedResources.add(resource);
         return resource;
     }
 
+    /**
+     * Initializes the workspace by creating a new temporary file.
+     *
+     * @throws IOException if an I/O error occurs during the file creation
+     */
     @Before
-    public final void createWorkspace() throws Exception {
+    public final void createWorkspace() throws IOException {
         loadedResources = new ArrayList<>();
         file = workspace.newFile(context.name());
     }
 
+    /**
+     * Cleans the workspace by closing all loaded resources.
+     */
     @After
-    public final void cleanWorkspace() throws Exception {
+    public final void cleanWorkspace() {
         for (PersistentResource resource : loadedResources) {
             resource.close();
         }
         loadedResources.clear();
     }
 
-    protected boolean ignoreWhen(String... name) {
-        if (isNull(name)) {
+    /**
+     * Defines whether the current context must be ignored, or not.
+     *
+     * @param names the names of ignored contexts
+     *
+     * @return {@code true} if the current context is part of ignored contexts
+     */
+    protected final boolean ignoreWhen(String... names) {
+        if (isNull(names)) {
             return false;
         }
 
-        if (Stream.of(name).anyMatch(s -> Objects.equals(s, context.name()))) {
+        if (Stream.of(names).anyMatch(s -> Objects.equals(s, context.name()))) {
             NeoLogger.warn("This test is ignored in this context: {0}", context.name());
             return true;
         }
