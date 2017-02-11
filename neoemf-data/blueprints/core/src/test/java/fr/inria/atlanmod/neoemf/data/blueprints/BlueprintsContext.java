@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.Context;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
@@ -71,12 +72,22 @@ public class BlueprintsContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).persistent().file(file).build();
+        return new BlueprintsTestBuilder(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).file(file).build();
+        return new BlueprintsTestBuilder(ePackage).file(file).createResource();
+    }
+
+    @Override
+    public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+        return new BlueprintsTestBuilder(ePackage).file(file).loadResource();
+    }
+
+    @Override
+    public PersistenceBackend createBackend(File file) throws IOException {
+        return new BlueprintsTestBuilder(null).file(file).createBackend();
     }
 
     @Override

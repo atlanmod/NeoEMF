@@ -9,33 +9,32 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
+package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.ResourceBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.AbstractBlueprintsResourceBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
+import fr.inria.atlanmod.neoemf.TestBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A specific {@link ResourceBuilder} for the Blueprints Neo4j implementation.
+ * A specific {@link TestBuilder} for the Blueprints implementation.
  */
-public class BlueprintsNeo4jResourceBuilder extends AbstractBlueprintsResourceBuilder<BlueprintsNeo4jResourceBuilder> {
+public class BlueprintsTestBuilder extends AbstractBlueprintsTestBuilder<BlueprintsTestBuilder> {
 
     /**
-     * Constructs a new {@code BlueprintsNeo4jResourceBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code BlueprintsTestBuilder} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link Resource}
      *
      * @see EPackage.Registry
      */
-    public BlueprintsNeo4jResourceBuilder(EPackage ePackage) {
+    public BlueprintsTestBuilder(EPackage ePackage) {
         super(ePackage);
     }
 
     @Override
     protected void registerFactory() {
-        resourceOptions = BlueprintsNeo4jOptionsBuilder.noOption();
+        resourceOptions = BlueprintsOptionsBuilder.noOption();
     }
 }

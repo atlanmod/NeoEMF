@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.AbstractResourceBuilder;
-import fr.inria.atlanmod.neoemf.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.AbstractTestBuilder;
+import fr.inria.atlanmod.neoemf.TestBuilder;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -22,20 +23,21 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * A specific {@link ResourceBuilder} for the MapDB implementation.
+ * A specific {@link TestBuilder} for the MapDB implementation.
  */
-public class MapDbResourceBuilder extends AbstractResourceBuilder<MapDbResourceBuilder> {
+public class MapDbTestBuilder extends AbstractTestBuilder<MapDbTestBuilder> {
 
     /**
-     * Constructs a new {@code MapDbResourceBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code MapDbTestBuilder} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link Resource}
      *
      * @see EPackage.Registry
      */
-    public MapDbResourceBuilder(EPackage ePackage) {
+    public MapDbTestBuilder(EPackage ePackage) {
         super(ePackage);
     }
 
@@ -49,14 +51,19 @@ public class MapDbResourceBuilder extends AbstractResourceBuilder<MapDbResourceB
     }
 
     @Override
-    public MapDbResourceBuilder uri(URI uri) {
+    public MapDbTestBuilder uri(URI uri) {
         this.uri = MapDbURI.createURI(uri);
         return me();
     }
 
     @Override
-    public MapDbResourceBuilder file(File file) {
+    public MapDbTestBuilder file(File file) {
         this.uri = MapDbURI.createFileURI(file);
         return me();
+    }
+
+    @Override
+    public PersistenceBackend createBackend() throws IOException {
+        return MapDbBackendFactory.getInstance().createPersistentBackend(uri, resourceOptions);
     }
 }

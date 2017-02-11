@@ -80,7 +80,7 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        while(key.position() > values.length) {
+        while (key.position() > values.length) {
             values = ArrayUtils.add(values, values.length, null);
         }
 

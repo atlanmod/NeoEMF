@@ -23,12 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 /**
- * An abstract {@link ResourceBuilder} that manages the assembly and the construction of {@link PersistentResource}.
+ * An abstract {@link TestBuilder} that manages the assembly and the construction of {@link PersistentResource}.
  *
- * @param <B> the "self"-type of this {@link ResourceBuilder}
+ * @param <B> the "self"-type of this {@link TestBuilder}
  */
-public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<B>> implements ResourceBuilder {
+public abstract class AbstractTestBuilder<B extends AbstractTestBuilder<B>> implements TestBuilder {
 
     /**
      * The {@link EPackage} associated to the built resource.
@@ -56,13 +58,13 @@ public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<
     private boolean isPersistent;
 
     /**
-     * Constructs a new {@code AbstractResourceBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code AbstractTestBuilder} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link org.eclipse.emf.ecore.resource.Resource}
      *
      * @see EPackage.Registry
      */
-    public AbstractResourceBuilder(EPackage ePackage) {
+    public AbstractTestBuilder(EPackage ePackage) {
         this.ePackage = ePackage;
         initBuilder();
     }
@@ -83,7 +85,9 @@ public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<
      */
     protected void initBuilder() {
         isPersistent = false;
-        EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
+        if (nonNull(ePackage)) {
+            EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
+        }
         resourceSet = new ResourceSetImpl();
         resourceOptions = CommonOptionsBuilder.noOption();
     }
@@ -121,11 +125,19 @@ public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<
     }
 
     @Override
-    public PersistentResource build() throws IOException {
+    public PersistentResource createResource() throws IOException {
         PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
         if (isPersistent) {
             resource.save(resourceOptions);
         }
+        initBuilder();
+        return resource;
+    }
+
+    @Override
+    public PersistentResource loadResource() throws IOException {
+        PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
+        resource.load(resourceOptions);
         initBuilder();
         return resource;
     }

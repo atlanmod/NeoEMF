@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
@@ -76,7 +77,7 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see ResourceBuilder
+     * @see TestBuilder
      */
     PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
 
@@ -89,9 +90,34 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see ResourceBuilder
+     * @see TestBuilder
      */
     PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
+
+    /**
+     * Loads an existing resource from the given {@code ePackage} on the given {@code file}.
+     *
+     * @param ePackage the {@link EPackage} associated to the resource
+     * @param file     the file from which to load/save data
+     *
+     * @return a new {@link PersistentResource}
+     *
+     * @throws IOException if an I/O error occurs
+     * @see TestBuilder
+     */
+    PersistentResource loadResource(EPackage ePackage, File file) throws IOException;
+
+    /**
+     * Creates a new {@link PersistenceBackend} on the given {@code uri}.
+     *
+     * @param file the URI of the backend
+     *
+     * @return a new {@link PersistenceBackend}
+     *
+     * @throws IOException if an I/O error occurs
+     * @see TestBuilder
+     */
+    PersistenceBackend createBackend(File file) throws IOException;
 
     /**
      * Returns the {@link PersistenceBackendFactory} used by this {@code Context}

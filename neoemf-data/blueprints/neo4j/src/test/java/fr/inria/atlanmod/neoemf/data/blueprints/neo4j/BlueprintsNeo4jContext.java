@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
 import fr.inria.atlanmod.neoemf.Context;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -54,12 +55,22 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4jResourceBuilder(ePackage).persistent().file(file).build();
+        return new BlueprintsNeo4jTestBuilder(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4jResourceBuilder(ePackage).file(file).build();
+        return new BlueprintsNeo4jTestBuilder(ePackage).file(file).createResource();
+    }
+
+    @Override
+    public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+        return new BlueprintsNeo4jTestBuilder(ePackage).file(file).loadResource();
+    }
+
+    @Override
+    public PersistenceBackend createBackend(File file) throws IOException {
+        return new BlueprintsNeo4jTestBuilder(null).file(file).createBackend();
     }
 
     @Override

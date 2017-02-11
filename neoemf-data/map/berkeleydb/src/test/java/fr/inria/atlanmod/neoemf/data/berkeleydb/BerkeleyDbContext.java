@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.Context;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
@@ -71,12 +72,22 @@ public class BerkeleyDbContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbResourceBuilder(ePackage).persistent().file(file).build();
+        return new BerkeleyDbTestBuilder(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDbResourceBuilder(ePackage).file(file).build();
+        return new BerkeleyDbTestBuilder(ePackage).file(file).createResource();
+    }
+
+    @Override
+    public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+        return new BerkeleyDbTestBuilder(ePackage).file(file).loadResource();
+    }
+
+    @Override
+    public PersistenceBackend createBackend(File file) throws IOException {
+        return new BerkeleyDbTestBuilder(null).file(file).createBackend();
     }
 
     @Override

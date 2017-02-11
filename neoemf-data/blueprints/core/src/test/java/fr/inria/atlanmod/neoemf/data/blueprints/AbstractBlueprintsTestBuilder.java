@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.AbstractResourceBuilder;
-import fr.inria.atlanmod.neoemf.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.AbstractTestBuilder;
+import fr.inria.atlanmod.neoemf.TestBuilder;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -22,22 +23,23 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * An abstract {@link ResourceBuilder} for all Blueprints implementations.
+ * An abstract {@link TestBuilder} for all Blueprints implementations.
  *
- * @param <B> the "self"-type of this {@link ResourceBuilder}
+ * @param <B> the "self"-type of this {@link TestBuilder}
  */
-public abstract class AbstractBlueprintsResourceBuilder<B extends AbstractBlueprintsResourceBuilder<B>> extends AbstractResourceBuilder<B> {
+public abstract class AbstractBlueprintsTestBuilder<B extends AbstractBlueprintsTestBuilder<B>> extends AbstractTestBuilder<B> {
 
     /**
-     * Constructs a new {@code AbstractBlueprintsResourceBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code AbstractBlueprintsTestBuilder} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link Resource}
      *
      * @see EPackage.Registry
      */
-    protected AbstractBlueprintsResourceBuilder(EPackage ePackage) {
+    protected AbstractBlueprintsTestBuilder(EPackage ePackage) {
         super(ePackage);
     }
 
@@ -61,6 +63,11 @@ public abstract class AbstractBlueprintsResourceBuilder<B extends AbstractBluepr
     public B file(File file) {
         this.uri = BlueprintsURI.createFileURI(file);
         return me();
+    }
+
+    @Override
+    public PersistenceBackend createBackend() throws IOException {
+        return BlueprintsBackendFactory.getInstance().createPersistentBackend(uri, resourceOptions);
     }
 
     /**

@@ -77,7 +77,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
-        while(key.position() > values.size()) {
+        while (key.position() > values.size()) {
             values.add(null);
         }
 

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.Context;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
@@ -71,12 +72,22 @@ public class MapDbContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbResourceBuilder(ePackage).persistent().file(file).build();
+        return new MapDbTestBuilder(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbResourceBuilder(ePackage).file(file).build();
+        return new MapDbTestBuilder(ePackage).file(file).createResource();
+    }
+
+    @Override
+    public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+        return new MapDbTestBuilder(ePackage).file(file).loadResource();
+    }
+
+    @Override
+    public PersistenceBackend createBackend(File file) throws IOException {
+        return new MapDbTestBuilder(null).file(file).createBackend();
     }
 
     @Override

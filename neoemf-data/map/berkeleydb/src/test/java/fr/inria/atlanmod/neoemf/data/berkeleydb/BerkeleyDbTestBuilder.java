@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.AbstractResourceBuilder;
-import fr.inria.atlanmod.neoemf.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.AbstractTestBuilder;
+import fr.inria.atlanmod.neoemf.TestBuilder;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -22,20 +23,21 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * A specific {@link ResourceBuilder} for the BerkeleyDB implementation.
+ * A specific {@link TestBuilder} for the BerkeleyDB implementation.
  */
-public class BerkeleyDbResourceBuilder extends AbstractResourceBuilder<BerkeleyDbResourceBuilder> {
+public class BerkeleyDbTestBuilder extends AbstractTestBuilder<BerkeleyDbTestBuilder> {
 
     /**
-     * Constructs a new {@code BerkeleyDbResourceBuilder} with the given {@code ePackage}.
+     * Constructs a new {@code BerkeleyDbTestBuilder} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link Resource}
      *
      * @see EPackage.Registry
      */
-    public BerkeleyDbResourceBuilder(EPackage ePackage) {
+    public BerkeleyDbTestBuilder(EPackage ePackage) {
         super(ePackage);
     }
 
@@ -49,14 +51,19 @@ public class BerkeleyDbResourceBuilder extends AbstractResourceBuilder<BerkeleyD
     }
 
     @Override
-    public BerkeleyDbResourceBuilder uri(URI uri) {
+    public BerkeleyDbTestBuilder uri(URI uri) {
         this.uri = BerkeleyDbURI.createURI(uri);
         return me();
     }
 
     @Override
-    public BerkeleyDbResourceBuilder file(File file) {
+    public BerkeleyDbTestBuilder file(File file) {
         this.uri = BerkeleyDbURI.createFileURI(file);
         return me();
+    }
+
+    @Override
+    public PersistenceBackend createBackend() throws IOException {
+        return BerkeleyDbBackendFactory.getInstance().createPersistentBackend(uri, resourceOptions);
     }
 }

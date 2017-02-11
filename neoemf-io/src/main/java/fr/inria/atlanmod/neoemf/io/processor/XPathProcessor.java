@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;

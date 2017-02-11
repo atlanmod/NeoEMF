@@ -22,13 +22,13 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
-import fr.inria.atlanmod.neoemf.io.util.hash.Hasher;
-import fr.inria.atlanmod.neoemf.io.util.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.util.hash.Hasher;
+import fr.inria.atlanmod.neoemf.io.util.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;

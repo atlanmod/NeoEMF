@@ -12,17 +12,13 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.data.hbase.HBaseContext;
 import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,10 +33,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsContainer() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
@@ -53,10 +45,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsContainer() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -72,10 +60,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
     public void testGetElementsEInternalContainer() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         InternalEObject model = (InternalEObject) resource.getContents().get(0);
@@ -89,10 +73,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
     public void testGetAllContentsEInternalContainer() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -107,10 +87,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsEResource() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
@@ -123,10 +99,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEResource() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -141,10 +113,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetElementsEDirectResource() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         InternalEObject model = (InternalEObject) resource.getContents().get(0);
@@ -157,10 +125,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         PersistentResource resource = createResourceContent(createPersistentStore());
 
         Iterator<EObject> it = resource.getAllContents();
@@ -181,11 +145,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
         resource.save(CommonOptionsBuilder.noOption());
         resource.close();
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(context().uriScheme(), PersistentResourceFactory.getInstance());
-
-        PersistentResource newResource = (PersistentResource) rSet.getResource(context().createFileURI(file()), true);
-        newResource.load(CommonOptionsBuilder.noOption());
+        PersistentResource newResource = context().loadResource(EPACKAGE, file());
         return closeAtExit(newResource);
     }
 }

@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,10 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.isNull;
 
 /**
  * A utility class for testing on different {@link Context}s.
@@ -54,7 +49,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     /**
      * The {@link org.eclipse.emf.ecore.EPackage} of the test model.
      */
-    private static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
+    protected static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
 
     /**
      * The current context.
@@ -168,24 +163,5 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
             resource.close();
         }
         loadedResources.clear();
-    }
-
-    /**
-     * Defines whether the current context must be ignored, or not.
-     *
-     * @param names the names of ignored contexts
-     *
-     * @return {@code true} if the current context is part of ignored contexts
-     */
-    protected final boolean ignoreWhen(String... names) {
-        if (isNull(names)) {
-            return false;
-        }
-
-        if (Stream.of(names).anyMatch(s -> Objects.equals(s, context.name()))) {
-            NeoLogger.warn("This test is ignored in this context: {0}", context.name());
-            return true;
-        }
-        return false;
     }
 }

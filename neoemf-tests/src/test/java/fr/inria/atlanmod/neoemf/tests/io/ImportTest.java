@@ -14,11 +14,10 @@ package fr.inria.atlanmod.neoemf.tests.io;
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.hbase.HBaseContext;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandlerFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -178,10 +177,6 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testElementsAndChildren() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         EObject eObject;
         EObject eObjectChild;
 
@@ -228,10 +223,6 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testAttributes() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         EObject eObject;
 
         EObject root = loadWithNeoEMF(getXmiStandard());
@@ -261,10 +252,6 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testReferences() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         EObject eObject;
         EObject eObjectChild;
 
@@ -315,10 +302,6 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompare() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         File file = getXmiStandard();
 
         EObject emfObject = loadWithEMF(file);
@@ -338,10 +321,6 @@ public class ImportTest extends AbstractBackendTest {
     @Ignore // FIXME Inverse references don't exist in EMF
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
-        if (ignoreWhen(HBaseContext.NAME)) {
-            return;
-        }
-
         File file = getXmiWithId();
 
         EObject emfObject = loadWithEMF(file);
@@ -533,18 +512,12 @@ public class ImportTest extends AbstractBackendTest {
     private EObject loadWithNeoEMF(File file) throws IOException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
-        try (PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), context().defaultOptions())) {
+        try (PersistenceBackend backend = context().createBackend(file())) {
             PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
             Importer.fromXmi(new FileInputStream(file), handler);
         }
 
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry()
-                .getProtocolToFactoryMap().put(context().uriScheme(), PersistentResourceFactory.getInstance());
-
-        Resource resource = resourceSet.createResource(context().createFileURI(file()));
-        resource.load(context().defaultOptions());
-
+        PersistentResource resource = context().loadResource(null, file());
         return resource.getContents().get(0);
     }
 }
