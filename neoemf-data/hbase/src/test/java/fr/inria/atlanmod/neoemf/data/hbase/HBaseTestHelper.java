@@ -64,7 +64,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
         HBaseBackendFactory factory = mock(HBaseBackendFactory.class);
 
         // Mocked methods
-        when(factory.configureConnection(any())).thenReturn(getConnection());
+        when(factory.configureConnection(any())).thenReturn(configureConnection());
 
         // Real methods
         when(factory.getName()).thenCallRealMethod();
@@ -103,7 +103,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
      *
      * @return the connection
      */
-    private Connection getConnection() {
+    private Connection configureConnection() {
         if (isNull(hbase)) {
             initMiniCluster();
         }
