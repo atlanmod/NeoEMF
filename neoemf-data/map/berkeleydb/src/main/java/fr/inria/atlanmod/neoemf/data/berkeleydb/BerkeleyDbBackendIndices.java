@@ -24,6 +24,7 @@ import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -105,7 +106,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
 
         // TODO Replace by Stream
         for (int i = size - 1; i >= key.position(); i--) {
-            valueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElse(null));
+            Optional<V> movingValue = valueOf(key.withPosition(i));
+            if (movingValue.isPresent()) {
+                valueFor(key.withPosition(i + 1), movingValue.get());
+            }
         }
         sizeFor(key.withoutPosition(), size + 1);
 
@@ -122,7 +126,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
         // Update indexes (element to remove is overwritten)
         // TODO Replace by Stream
         for (int i = key.position() + 1; i < size; i++) {
-            valueFor(key.withPosition(i - 1), valueOf(key.withPosition(i)).orElse(null));
+            Optional<V> movingValue = valueOf(key.withPosition(i));
+            if (movingValue.isPresent()) {
+                valueFor(key.withPosition(i - 1), movingValue.get());
+            }
         }
         sizeFor(key.withoutPosition(), size - 1);
 
@@ -155,7 +162,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
+                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElseThrow(NoSuchElementException::new))
                 .collect(Collectors.toList());
     }
 

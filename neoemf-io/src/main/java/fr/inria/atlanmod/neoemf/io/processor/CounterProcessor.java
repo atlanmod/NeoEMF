@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -23,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Processor} that counts the number of different element.
  */
 @ParametersAreNonnullByDefault
-public class CounterProcessor extends AbstractProcessor {
+public class CounterProcessor extends AbstractProcessor<Processor> {
 
     /**
      * The current number of element.
@@ -45,7 +44,7 @@ public class CounterProcessor extends AbstractProcessor {
      *
      * @param handler the handler to notify
      */
-    public CounterProcessor(Handler handler) {
+    public CounterProcessor(Processor handler) {
         super(handler);
         this.elementCount = 0;
         this.attributeCount = 0;

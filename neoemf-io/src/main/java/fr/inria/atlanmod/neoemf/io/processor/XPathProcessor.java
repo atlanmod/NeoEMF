@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
  * A {@link Processor} that analyses XML elements in order to create and to process XPath references.
  */
 @ParametersAreNonnullByDefault
-public class XPathProcessor extends AbstractProcessor {
+public class XPathProcessor extends AbstractProcessor<Processor> {
 
     /**
      * Pattern for detecting nodes which have no index in their path.
@@ -71,7 +71,7 @@ public class XPathProcessor extends AbstractProcessor {
      *
      * @param handler the handler to notify
      */
-    public XPathProcessor(Handler handler) {
+    public XPathProcessor(Processor handler) {
         super(handler);
         this.paths = new XPathTree();
         this.hasIds = false;

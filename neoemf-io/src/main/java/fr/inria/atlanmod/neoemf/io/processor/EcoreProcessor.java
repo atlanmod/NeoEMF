@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
@@ -40,7 +39,7 @@ import static java.util.Objects.nonNull;
  * A {@link Processor} that creates and links simple elements to an EMF structure.
  */
 @ParametersAreNonnullByDefault
-public class EcoreProcessor extends AbstractProcessor {
+public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     /**
      * Stack containing previous {@link EClass}.
@@ -67,7 +66,7 @@ public class EcoreProcessor extends AbstractProcessor {
      *
      * @param handler the handler to notify
      */
-    public EcoreProcessor(Handler handler) {
+    public EcoreProcessor(Processor handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
@@ -79,11 +78,11 @@ public class EcoreProcessor extends AbstractProcessor {
     public void handleStartElement(RawElement element) {
         // Is root
         if (classesStack.isEmpty()) {
-            processRootElement(element);
+            processElementAsRoot(element);
         }
         // Is a feature of parent
         else {
-            processFeature(element);
+            processElementAsFeature(element);
         }
     }
 
@@ -158,7 +157,7 @@ public class EcoreProcessor extends AbstractProcessor {
      *
      * @throws NullPointerException if the {@code element} does not have a namespace
      */
-    private void processRootElement(RawElement element) {
+    private void processElementAsRoot(RawElement element) {
         Namespace ns = checkNotNull(element.ns(), "The root element must have a namespace");
 
         // Retrieves the EPackage from NS prefix
@@ -192,10 +191,10 @@ public class EcoreProcessor extends AbstractProcessor {
      *
      * @param element the element representing the feature
      *
-     * @see #processAttribute(RawElement, EAttribute)
-     * @see #processReference(RawElement, Namespace, EReference, EPackage)
+     * @see #processElementAsAttribute(RawElement, EAttribute)
+     * @see #processElementAsReference(RawElement, Namespace, EReference, EPackage)
      */
-    private void processFeature(RawElement element) {
+    private void processElementAsFeature(RawElement element) {
         // Retrieve the parent EClass
         EClass parentEClass = classesStack.getLast();
 
@@ -207,10 +206,10 @@ public class EcoreProcessor extends AbstractProcessor {
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
 
         if (feature instanceof EAttribute) {
-            processAttribute(element, (EAttribute) feature);
+            processElementAsAttribute(element, (EAttribute) feature);
         }
         else if (feature instanceof EReference) {
-            processReference(element, ns, (EReference) feature, ePackage);
+            processElementAsReference(element, ns, (EReference) feature, ePackage);
         }
     }
 
@@ -220,13 +219,16 @@ public class EcoreProcessor extends AbstractProcessor {
      * @param element   the element representing the attribute
      * @param attribute the associated EMF attribute
      */
-    private void processAttribute(@SuppressWarnings("unused") RawElement element, EAttribute attribute) {
+    private void processElementAsAttribute(RawElement element, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
         }
 
         // Waiting a plain text value
         waitingAttribute = new RawAttribute(attribute.getName());
+        waitingAttribute.id(idsStack.getLast());
+        waitingAttribute.many(attribute.isMany());
+
         previousWasAttribute = true;
     }
 
@@ -238,9 +240,9 @@ public class EcoreProcessor extends AbstractProcessor {
      * @param reference the associated EMF reference
      * @param ePackage  the package where to find the class of the reference
      */
-    private void processReference(RawElement element, Namespace ns, EReference reference, EPackage ePackage) {
+    private void processElementAsReference(RawElement element, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass
-        EClass eClass = getEClass(element, ns, (EClass) reference.getEType(), ePackage);
+        EClass eClass = resolveInstanceOf(element, ns, (EClass) reference.getEType(), ePackage);
 
         element.ns(ns);
 
@@ -255,6 +257,8 @@ public class EcoreProcessor extends AbstractProcessor {
             RawReference ref = new RawReference(reference.getName());
             ref.id(idsStack.getLast());
             ref.idReference(currentId);
+            ref.containment(reference.isContainment());
+            ref.many(reference.isMany());
 
             handleReference(ref);
         }
@@ -277,7 +281,7 @@ public class EcoreProcessor extends AbstractProcessor {
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */
     @Nonnull
-    private EClass getEClass(RawElement element, Namespace ns, EClass superClass, EPackage ePackage) {
+    private EClass resolveInstanceOf(RawElement element, Namespace ns, EClass superClass, EPackage ePackage) {
         RawMetaclass metaClass = element.metaClass();
 
         if (nonNull(metaClass)) {

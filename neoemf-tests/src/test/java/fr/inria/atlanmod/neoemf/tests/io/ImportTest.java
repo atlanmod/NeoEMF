@@ -14,9 +14,7 @@ package fr.inria.atlanmod.neoemf.tests.io;
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseContext;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbContext;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandlerFactory;
@@ -61,11 +59,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test case about the import from XMI to {@link PersistenceBackend}s.
  */
 public class ImportTest extends AbstractBackendTest {
-
-    /**
-     * An array of ignored context.
-     */
-    private static final String[] IGNORED = {HBaseContext.NAME, MapDbContext.NAME, BerkeleyDbContext.NAME};
 
     /**
      * A {@link java.util.Set} holding all tested {@link EObject}s, to avoid testing the same {@link Object} twice.
@@ -185,7 +178,7 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testElementsAndChildren() throws IOException {
-        if (ignoreWhen(IGNORED)) {
+        if (ignoreWhen(HBaseContext.NAME)) {
             return;
         }
 
@@ -235,7 +228,7 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testAttributes() throws IOException {
-        if (ignoreWhen(IGNORED)) {
+        if (ignoreWhen(HBaseContext.NAME)) {
             return;
         }
 
@@ -268,7 +261,7 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testReferences() throws IOException {
-        if (ignoreWhen(IGNORED)) {
+        if (ignoreWhen(HBaseContext.NAME)) {
             return;
         }
 
@@ -322,7 +315,7 @@ public class ImportTest extends AbstractBackendTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompare() throws IOException {
-        if (ignoreWhen(IGNORED)) {
+        if (ignoreWhen(HBaseContext.NAME)) {
             return;
         }
 
@@ -342,10 +335,10 @@ public class ImportTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Ignore // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
+    @Ignore // FIXME Inverse references don't exist in EMF
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
-        if (ignoreWhen(IGNORED)) {
+        if (ignoreWhen(HBaseContext.NAME)) {
             return;
         }
 
@@ -541,7 +534,7 @@ public class ImportTest extends AbstractBackendTest {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
         try (PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), context().defaultOptions())) {
-            PersistenceHandler handler = PersistenceHandlerFactory.newNaiveHandler(backend);
+            PersistenceHandler handler = PersistenceHandlerFactory.newAwareHandler(backend);
             Importer.fromXmi(new FileInputStream(file), handler);
         }
 

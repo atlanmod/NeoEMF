@@ -230,6 +230,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         // Add the current element as content of the 'ROOT' node
         if (element.root()) {
             RawReference reference = new RawReference(ROOT_FEATURE_NAME);
+            reference.many(true);
 
             addReference(ROOT_ID, reference, id);
         }
@@ -340,17 +341,16 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
 
         FeatureKey key = FeatureKey.of(id, reference.name());
 
-        // FIXME Single-valued reference are not handled, and cause exception
-//        if (!reference.many()) {
-//            backend.referenceFor(key, idReference);
-//        }
-//        else {
+        if (!reference.many()) {
+            backend.referenceFor(key, idReference);
+        }
+        else {
             int index = reference.index();
             if (index == PersistentStore.NO_INDEX) {
                 index = backend.sizeOf(key).orElse(0);
             }
             backend.addReference(key.withPosition(index), idReference);
-//        }
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Processor} that notifies registered {@link PersistenceHandler} of events, without any treatment.
  */
 @ParametersAreNonnullByDefault
-public final class PersistenceProcessor extends AbstractProcessor implements Processor {
+public final class PersistenceProcessor extends AbstractProcessor<PersistenceHandler> implements Processor {
 
     /**
      * Constructs a new {@code PersistenceProcessor} with the given {@code handlers}.

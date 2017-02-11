@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.Notifier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,5 +21,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
  */
 @ParametersAreNonnullByDefault
-public interface Processor extends Handler, Notifier<Handler> {
+public interface Processor extends Handler {
 }

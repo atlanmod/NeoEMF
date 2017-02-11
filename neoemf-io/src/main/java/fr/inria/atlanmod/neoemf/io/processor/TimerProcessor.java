@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import com.google.common.base.Stopwatch;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Processor} that measures elapsed time between the start and the end of an I/O process.
  */
 @ParametersAreNonnullByDefault
-public class TimerProcessor extends AbstractProcessor {
+public class TimerProcessor extends AbstractProcessor<Processor> {
 
     /**
      * The stopwatch.
@@ -34,7 +33,7 @@ public class TimerProcessor extends AbstractProcessor {
      *
      * @param handler the handler to notify
      */
-    public TimerProcessor(Handler handler) {
+    public TimerProcessor(Processor handler) {
         super(handler);
     }
 

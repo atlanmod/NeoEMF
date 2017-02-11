@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
@@ -27,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Processor} that logs every events.
  */
 @ParametersAreNonnullByDefault
-public class LoggingProcessor extends AbstractProcessor {
+public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     /**
      * The special logger.
@@ -44,7 +43,7 @@ public class LoggingProcessor extends AbstractProcessor {
      *
      * @param handler the handler to notify
      */
-    public LoggingProcessor(Handler handler) {
+    public LoggingProcessor(Processor handler) {
         super(handler);
     }
 
