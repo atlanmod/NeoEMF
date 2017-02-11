@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
+import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbContext;
@@ -41,6 +42,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -181,6 +183,7 @@ public class ImportTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testElementsAndChildren() throws IOException {
         if (ignoreWhen(IGNORED)) {
             return;
@@ -230,6 +233,7 @@ public class ImportTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testAttributes() throws IOException {
         if (ignoreWhen(IGNORED)) {
             return;
@@ -262,6 +266,7 @@ public class ImportTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testReferences() throws IOException {
         if (ignoreWhen(IGNORED)) {
             return;
@@ -315,6 +320,7 @@ public class ImportTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompare() throws IOException {
         if (ignoreWhen(IGNORED)) {
             return;
@@ -337,6 +343,7 @@ public class ImportTest extends AbstractBackendTest {
      */
     @Test
     @Ignore // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
         if (ignoreWhen(IGNORED)) {
             return;

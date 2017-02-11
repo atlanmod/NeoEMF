@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
@@ -18,6 +19,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,6 +42,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * All elements must have an id and a class name.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testElementsAndChildrenWithId() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
@@ -85,6 +88,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * Check that the attributes are properly processed.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testAttributesWithId() {
         ElementMock mock;
         ElementMock mockChild;
@@ -142,6 +146,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testReferencesWithId() {
         ElementMock mock;
         ElementMock mockChild;
@@ -207,6 +212,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * Check that the metaclasses ({@code xsi:type} or {@code xmi:type}) are properly processed.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testMetaClassesWithId() {
         ElementMock mock;
         ElementMock mockChild;

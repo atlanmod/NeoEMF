@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
@@ -18,6 +19,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,6 +39,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Check that the namespaces are properly read.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testNamespacesWithId() {
         Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
@@ -51,6 +54,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Check that the elements (and the 'xmi:id' attribute) and their children are properly read.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testElementsAndChildrenWithId() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
@@ -97,6 +101,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Most references are recognized as attributes, until the next step...
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testAttributesWithId() {
         ElementMock mock;
         ElementMock mockChild;
@@ -156,6 +161,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Most are not recognized as references yet
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testReferencesWithId() {
         ElementMock mock;
         ElementMock mockChild;
@@ -204,6 +210,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Check that the metaclasses ('xsi:type' or 'xmi:type') are properly read.
      */
     @Test
+    @Category(Tags.IOTests.class)
     public void testMetaClassesWithId() {
         ElementMock mock;
         ElementMock mockChild;
