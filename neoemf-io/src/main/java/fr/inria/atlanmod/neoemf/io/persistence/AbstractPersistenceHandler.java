@@ -215,6 +215,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         checkNotNull(id);
 
         persist(id);
+        updateInstanceOf(id, element.metaClass().name(), element.metaClass().ns().uri());
 
         if (nonNull(element.className())) {
             RawAttribute attribute = new RawAttribute(FEATURE_NAME);
@@ -222,8 +223,6 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
 
             addAttribute(id, attribute);
         }
-
-        updateInstanceOf(id, element.metaClass().name(), element.metaClass().ns().uri());
 
         // Add the current element as content of the 'ROOT' node
         if (element.root()) {
