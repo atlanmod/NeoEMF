@@ -16,6 +16,7 @@
     <description>HBase implementation of the core component.</description>
 
     <properties>
+        <!-- Think to update dependencies of "tests" -->
         <hbase.version>1.3.0</hbase.version>
         <hadoop.version>2.7.3</hadoop.version>
     </properties>
@@ -34,13 +35,6 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
-        </dependency>
-
-        <!-- Cache -->
-
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
         </dependency>
 
         <!-- Common -->
@@ -92,6 +86,13 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-testing-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
 
@@ -166,26 +167,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-testing-util</artifactId>
-                <version>${hbase.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-common</artifactId>
                 <version>${hadoop.version}</version>
@@ -209,8 +190,9 @@
 
             <dependency>
                 <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-common</artifactId>
+                <artifactId>hbase-testing-util</artifactId>
                 <version>${hbase.version}</version>
+                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -225,14 +207,14 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
-                <type>test-jar</type>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-client</artifactId>
+                <artifactId>hbase-server</artifactId>
                 <version>${hbase.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -247,36 +229,13 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hadoop</groupId>
-                <artifactId>hadoop-common</artifactId>
-                <version>${hadoop.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                </exclusions>
-                <type>test-jar</type>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-hdfs</artifactId>
                 <version>${hadoop.version}</version>
+                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -291,13 +250,14 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-hdfs</artifactId>
                 <version>${hadoop.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -312,14 +272,13 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
-                <type>test-jar</type>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-auth</artifactId>
                 <version>${hadoop.version}</version>
+                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -334,7 +293,6 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

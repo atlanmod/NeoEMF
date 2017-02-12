@@ -311,7 +311,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.12</version>
+                    <version>3.0.0</version>
                 </plugin>
 
                 <plugin>
@@ -347,15 +347,6 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-changes-plugin</artifactId>
-                    <version>2.12.1</version>
-                    <configuration>
-                        <failOnError>false</failOnError>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
@@ -363,7 +354,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                     <configuration>
                         <compilerArgs>
                             <!--<arg>-Xlint:all</arg>-->
@@ -380,7 +371,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>3.0.0</version>
                 </plugin>
 
                 <plugin>
@@ -392,7 +383,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.7.201606060606</version>
+                    <version>0.7.9</version>
                     <configuration>
                         <excludes>
                             <exclude>**/tests/*</exclude>
@@ -473,7 +464,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.0.2</version>
                 </plugin>
 
                 <plugin>

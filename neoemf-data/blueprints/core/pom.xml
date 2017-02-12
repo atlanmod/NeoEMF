@@ -44,11 +44,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
@@ -82,12 +77,6 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -128,20 +117,7 @@
                             com.tinkerpop.blueprints,
                             com.tinkerpop.blueprints.util,
                             com.tinkerpop.blueprints.util.wrappers,
-                            com.tinkerpop.blueprints.util.wrappers.id,
-
-                            org.apache.commons.configuration,
-                            org.apache.commons.configuration.beanutils,
-                            org.apache.commons.configuration.event,
-                            org.apache.commons.configuration.interpol,
-                            org.apache.commons.configuration.reloading,
-                            org.apache.commons.configuration.resolver,
-                            org.apache.commons.configuration.tree,
-
-                            org.apache.commons.lang.exception,
-                            org.apache.commons.lang.text,
-
-                            org.apache.commons.logging,
+                            com.tinkerpop.blueprints.util.wrappers.id
                         </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core

@@ -102,20 +102,7 @@
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*,
                             com.tinkerpop.blueprints.impls.neo4j.*,
                         </Export-Package>
-                        <_exportcontents>
-                            org.apache.commons.configuration,
-                            org.apache.commons.configuration.beanutils,
-                            org.apache.commons.configuration.event,
-                            org.apache.commons.configuration.interpol,
-                            org.apache.commons.configuration.reloading,
-                            org.apache.commons.configuration.resolver,
-                            org.apache.commons.configuration.tree,
-
-                            org.apache.commons.lang.exception,
-                            org.apache.commons.lang.text,
-
-                            org.apache.commons.logging,
-                        </_exportcontents>
+                        <_exportcontents />
                         <Embed-Dependency>
                             blueprints-neo4j-graph
                         </Embed-Dependency>
