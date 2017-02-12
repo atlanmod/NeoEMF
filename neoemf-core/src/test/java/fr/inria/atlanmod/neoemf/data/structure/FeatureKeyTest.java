@@ -18,13 +18,20 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test cases about {@link FeatureKey}.
+ */
 public class FeatureKeyTest extends AbstractTest {
 
+    /**
+     * Checks the comparison of 2 {@link FeatureKey}s. In this case, they are equal.
+     */
     @Test
     public void testCompareEqualTo() {
         FeatureKey key1 = FeatureKey.of(StringId.of("myobject"), "aaa");
@@ -33,6 +40,9 @@ public class FeatureKeyTest extends AbstractTest {
         assertThat(key1.compareTo(key2)).isEqualTo(0);
     }
 
+    /**
+     * Checks the comparison of 2 {@link FeatureKey}s. In this case, the first is lower than the second.
+     */
     @Test
     public void testCompareLowerThan() {
         FeatureKey key1 = FeatureKey.of(StringId.of("myobject"), "aaa");
@@ -41,6 +51,9 @@ public class FeatureKeyTest extends AbstractTest {
         assertThat(key1.compareTo(key2)).isLessThan(0);
     }
 
+    /**
+     * Checks the comparison of 2 {@link FeatureKey}s. In this case, the first is greater than the second.
+     */
     @Test
     public void testCompareGreaterThan() {
         FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
@@ -49,8 +62,14 @@ public class FeatureKeyTest extends AbstractTest {
         assertThat(key1.compareTo(key2)).isGreaterThan(0);
     }
 
+    /**
+     * Checks the serialization/deserialization of a {@link FeatureKey}.
+     *
+     * @throws ClassNotFoundException if the class of a serialized object cannot be found.
+     * @throws IOException            if an I/O error occurs during the (de)serialization
+     */
     @Test
-    public void testSerializable() throws Exception {
+    public void testSerializable() throws IOException, ClassNotFoundException {
         FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream out = new ObjectOutputStream(baos)) {
             out.writeObject(key1);

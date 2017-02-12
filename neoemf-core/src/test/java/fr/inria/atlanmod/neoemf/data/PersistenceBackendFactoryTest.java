@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.CoreContext;
 import fr.inria.atlanmod.neoemf.CoreTest;
+import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
@@ -35,17 +36,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentStore(PersistentResource,
- * PersistenceBackend, Map)}
+ * Test cases about {@link PersistenceBackendFactory#createPersistentStore(PersistentResource, PersistenceBackend,
+ * Map)}.
  */
 public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements CoreTest {
 
+    /**
+     * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
     @Test
-    public void testNoOptions() throws InvalidDataStoreException {
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, CommonOptionsBuilder.noOption());
+    public void testNoOption() throws InvalidDataStoreException {
+        Map<String, Object> options = CommonOptionsBuilder.noOption();
+
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
+    /**
+     * Checks the setup of the {@link IsSetCachingStoreDecorator}.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
     @Test
     public void testIsSetCachingOption() throws InvalidDataStoreException {
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
@@ -61,6 +74,11 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
+    /**
+     * Checks the setup of the {@link LoggingStoreDecorator}.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
     @Test
     public void testLoggingOption() throws InvalidDataStoreException {
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
@@ -76,6 +94,11 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
+    /**
+     * Checks the setup of the {@link SizeCachingStoreDecorator}.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
     @Test
     public void testSizeCachingOption() throws InvalidDataStoreException {
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
@@ -91,8 +114,13 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
+    /**
+     * Checks the setup of the {@link FeatureCachingStoreDecorator}.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
     @Test
-    public void testEStructuralFeatureCachingOption() throws InvalidDataStoreException {
+    public void testFeatureCachingOption() throws InvalidDataStoreException {
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
                 .cacheFeatures()
                 .asMap();
@@ -106,6 +134,11 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
+    /**
+     * Checks the setup of the {@link LoadedObjectCounterStoreDecorator}.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
     @Test
     public void testLoadedObjectCounterLoggingOption() throws InvalidDataStoreException {
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
@@ -122,8 +155,63 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingStoreDecorator} and {@link LoggingStoreDecorator}
+     * Checks the setup of the {@link AutocommitStoreDecorator} without chuck.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
+    @Test
+    public void testAutocommitOption() throws InvalidDataStoreException {
+        final long expectedChuck = 100_000;
+
+        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+                .autocommit()
+                .asMap();
+
+        PersistentStore store;
+
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
+
+        long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
+        assertThat(actualChuck).isEqualTo(expectedChuck);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+    }
+
+    /**
+     * Checks the setup of the {@link AutocommitStoreDecorator} with chuck.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
+     */
+    @Test
+    public void testAutocommitWithChuckOption() throws InvalidDataStoreException {
+        final long expectedChuck = 12_345;
+
+        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+                .autocommit(expectedChuck)
+                .asMap();
+
+        PersistentStore store;
+
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
+
+        long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
+        assertThat(actualChuck).isEqualTo(expectedChuck);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+    }
+
+    /**
+     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * <ul>
+     * <li>{@link IsSetCachingStoreDecorator}</li>
+     * <li>{@link LoggingStoreDecorator}</li>
+     * </ul>
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws InvalidDataStoreException {
@@ -145,8 +233,13 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingStoreDecorator} and {@link SizeCachingStoreDecorator}
+     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * <ul>
+     * <li>{@link IsSetCachingStoreDecorator}</li>
+     * <li>{@link SizeCachingStoreDecorator}</li>
+     * </ul>
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws InvalidDataStoreException {
@@ -168,11 +261,16 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link SizeCachingStoreDecorator} and {@link FeatureCachingStoreDecorator}
+     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * <ul>
+     * <li>{@link SizeCachingStoreDecorator}</li>
+     * <li>{@link FeatureCachingStoreDecorator}</li>
+     * </ul>
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testSizeCachingEStructuralFeatureCachingOptions() throws InvalidDataStoreException {
+    public void testSizeCachingFeatureCachingOptions() throws InvalidDataStoreException {
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
                 .cacheSizes()
                 .cacheFeatures()
@@ -191,22 +289,38 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 4 stores : {@link FeatureCachingStoreDecorator}, {@link IsSetCachingStoreDecorator},
-     * {@link LoggingStoreDecorator} and {@link SizeCachingStoreDecorator}
+     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * <ul>
+     * <li>{@link IsSetCachingStoreDecorator}</li>
+     * <li>{@link SizeCachingStoreDecorator}</li>
+     * <li>{@link FeatureCachingStoreDecorator}</li>
+     * <li>{@link LoggingStoreDecorator}</li>
+     * <li>{@link AutocommitStoreDecorator}</li>
+     * </ul>
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws InvalidDataStoreException {
+    public void testAllOptions() throws InvalidDataStoreException {
+        long expectedChuck = 12_345;
+
         Map<String, Object> options = CommonOptionsBuilder.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()
                 .log()
+                .autocommit(expectedChuck)
                 .asMap();
 
         PersistentStore store;
 
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
+
+        long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
+        assertThat(actualChuck).isEqualTo(expectedChuck);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);

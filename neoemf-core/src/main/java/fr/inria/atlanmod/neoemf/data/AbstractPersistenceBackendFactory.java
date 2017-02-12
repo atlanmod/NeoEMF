@@ -131,7 +131,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
             }
             if (storeOptions.contains(CommonStoreOptions.AUTOCOMMIT)) {
                 if (options.containsKey(CommonResourceOptions.AUTOCOMMIT_CHUNK)) {
-                    int autoCommitChunk = Integer.parseInt((String) options.get(CommonResourceOptions.AUTOCOMMIT_CHUNK));
+                    long autoCommitChunk = Long.valueOf((String) options.get(CommonResourceOptions.AUTOCOMMIT_CHUNK));
                     store = new AutocommitStoreDecorator(store, autoCommitChunk);
                 }
                 else {

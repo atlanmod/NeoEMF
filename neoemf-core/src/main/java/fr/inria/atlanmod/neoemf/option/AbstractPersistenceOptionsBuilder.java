@@ -210,10 +210,10 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
      */
     @Nonnull
-    public B autocommit(@Nonnegative int chunk) {
+    public B autocommit(@Nonnegative long chunk) {
         checkArgument(chunk >= 0);
 
         storeOption(CommonStoreOptions.AUTOCOMMIT);
-        return option(CommonResourceOptions.AUTOCOMMIT_CHUNK, chunk);
+        return option(CommonResourceOptions.AUTOCOMMIT_CHUNK, Long.toString(chunk));
     }
 }

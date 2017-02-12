@@ -25,29 +25,29 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     /**
      * Default number of allowed modifications (100000) between commits on the underlying {@link EStore}.
      */
-    private static final long OPS_BETWEEN_COMMITS_DEFAULT = 100000;
+    private static final long DEFAULT_AUTOCOMMIT_CHUNK = 100_000;
 
     /**
      * Number of allowed modifications between commits on the underlying {@link EStore} for this store.
      */
-    private final long opsBetweenCommits;
+    private final long autocommitChuck;
 
     /**
-     * Current number of modifications modulo {@link #opsBetweenCommits}.
+     * Current number of modifications modulo {@link #autocommitChuck}.
      */
-    private long opCount;
+    private long autocommitCount;
 
     /**
      * Constructs a new {@code AutocommitStoreDecorator} with the given {@code opsBetweenCommits}.
      *
-     * @param store             the underlying store
-     * @param opsBetweenCommits the number of modifications between commit
+     * @param store           the underlying store
+     * @param autocommitChuck the number of modifications between commit
      */
-    public AutocommitStoreDecorator(PersistentStore store, long opsBetweenCommits) {
+    public AutocommitStoreDecorator(PersistentStore store, long autocommitChuck) {
         super(store);
-        this.opCount = 0;
-        this.opsBetweenCommits = opsBetweenCommits;
-        NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), opsBetweenCommits);
+        this.autocommitCount = 0;
+        this.autocommitChuck = autocommitChuck;
+        NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), autocommitChuck);
     }
 
     /**
@@ -56,7 +56,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
      * @param store the underlying store
      */
     public AutocommitStoreDecorator(PersistentStore store) {
-        this(store, OPS_BETWEEN_COMMITS_DEFAULT);
+        this(store, DEFAULT_AUTOCOMMIT_CHUNK);
     }
 
     @Override
@@ -102,8 +102,8 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
      * Increments the number of operation, and commits if necessary, i.e when {@code opCount % opsBetweenCommits == 0}.
      */
     private void incrementAndCommit() {
-        opCount = (opCount + 1) % opsBetweenCommits;
-        if (opCount == 0) {
+        autocommitCount = (autocommitCount + 1) % autocommitChuck;
+        if (autocommitCount == 0) {
             this.save();
         }
     }
