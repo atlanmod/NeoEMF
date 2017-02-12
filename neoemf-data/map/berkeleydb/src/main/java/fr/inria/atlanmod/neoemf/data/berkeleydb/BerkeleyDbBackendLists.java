@@ -142,10 +142,16 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt sizeOf(FeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<List<V>>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.size()))
                 .orElse(OptionalInt.empty());
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        return sizeOfValue(key);
     }
 
     /**

@@ -18,20 +18,16 @@ import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
-import org.apache.hadoop.hbase.client.Connection;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * A specific {@link TestHelper} for the MapDB implementation.
@@ -42,6 +38,16 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
      * Facility for testing HBase.
      */
     private static HBaseTestingUtility hbase;
+
+    /**
+     * The Zookeeper host.
+     */
+    private static String host;
+
+    /**
+     * The Zookeeper port.
+     */
+    private static String port;
 
     /**
      * Constructs a new {@code HBaseTestHelper} with the given {@code ePackage}.
@@ -61,19 +67,13 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
      */
     @Override
     protected PersistenceBackendFactory factory() {
-        HBaseBackendFactory factory = mock(HBaseBackendFactory.class);
+        if (isNull(hbase)) {
+            initMiniCluster();
+        }
 
-        // Mocked methods
-        when(factory.configureConnection(any())).thenReturn(configureConnection());
+        NeoLogger.info("Hadoop mini-cluster running at {0}:{1}", host, port);
 
-        // Real methods
-        when(factory.getName()).thenCallRealMethod();
-        when(factory.createPersistentBackend(any(), any())).thenCallRealMethod();
-        when(factory.createTransientBackend()).thenCallRealMethod();
-        when(factory.createPersistentStore(any(), any(), any())).thenCallRealMethod();
-        when(factory.createTransientStore(any(), any())).thenCallRealMethod();
-
-        return factory;
+        return HBaseBackendFactory.getInstance();
     }
 
     @Override
@@ -88,32 +88,14 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
 
     @Override
     public HBaseTestHelper uri(URI uri) {
-        this.uri = HBaseURI.createHierarchicalURI("127.0.0.1", "0", uri);
+        this.uri = HBaseURI.createHierarchicalURI(host, port, uri);
         return me();
     }
 
     @Override
     public HBaseTestHelper file(File file) {
-        this.uri = HBaseURI.createHierarchicalURI("127.0.0.1", "0", URI.createURI(file.getName()));
+        this.uri = HBaseURI.createHierarchicalURI(host, port, URI.createURI(file.getName()));
         return me();
-    }
-
-    /**
-     * Gets the {@link Connection} to the mini-cluster.
-     *
-     * @return the connection
-     */
-    private Connection configureConnection() {
-        if (isNull(hbase)) {
-            initMiniCluster();
-        }
-
-        try {
-            return hbase.getConnection();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -121,24 +103,26 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
      */
     private void initMiniCluster() {
         try {
-            NeoLogger.info("Initializing Hadoop minicluster... (This may take several minutes)");
+            NeoLogger.info("Initializing the Hadoop mini-cluster... (This may take several minutes)");
 
             hbase = new HBaseTestingUtility();
             hbase.startMiniCluster(1);
 
+            Configuration conf = hbase.getConnection().getConfiguration();
+            host = conf.get(HBaseBackendFactory.HOST_PROPERTY);
+            port = conf.get(HBaseBackendFactory.PORT_PROPERTY);
+
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    NeoLogger.info("Shutting down Hadoop minicluster...");
+                    NeoLogger.info("Shutting down the Hadoop minicluster...");
                     hbase.shutdownMiniCluster();
                 }
                 catch (Exception ignore) {
                 }
             }));
-
-            NeoLogger.info("Hadoop minicluster is ready");
         }
         catch (Exception e) {
-            NeoLogger.error(e, "Unable to create the Hadoop minicluster");
+            NeoLogger.error(e, "Unable to create the Hadoop mini-cluster. If you're testing on Windows, you need to install Cygwin");
             throw new RuntimeException(e);
         }
     }

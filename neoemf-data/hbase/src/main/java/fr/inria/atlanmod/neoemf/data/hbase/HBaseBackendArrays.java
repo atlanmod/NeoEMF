@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
@@ -53,43 +52,9 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
-        return fromDatabase(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        return valueOf(key);
-    }
-
-    @Nonnull
-    @Override
     public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
         return this.<V[]>valueOf(key.withoutPosition())
                 .map(ts -> ts[key.position()]);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
-        return valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        Optional<V> previousValue = valueOf(key);
-
-        toDatabase(key, value);
-
-        return previousValue;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return valueFor(key, id);
     }
 
     @Nonnull
@@ -105,52 +70,6 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         valueFor(key.withoutPosition(), values);
 
         return previousValue;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
-        return valueFor(key, id);
-    }
-
-    @Override
-    public void unsetValue(FeatureKey key) {
-        outDatabase(key);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public void unsetAllValues(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        unsetReference(key);
-    }
-
-    @Override
-    public boolean hasValue(FeatureKey key) {
-        return fromDatabase(key).isPresent();
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public boolean hasAnyValue(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public boolean hasAnyReference(FeatureKey key) {
-        return hasReference(key);
     }
 
     @Override
@@ -172,11 +91,6 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         valueFor(key.withoutPosition(), values);
     }
 
-    @Override
-    public void addReference(MultivaluedFeatureKey key, Id id) {
-        addValue(key, id);
-    }
-
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
@@ -190,32 +104,11 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         return previousValue;
     }
 
-    @Nonnull
-    @Override
-    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        return removeValue(key);
-    }
-
-    @Override
-    public void cleanValues(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public void cleanReferences(FeatureKey key) {
-        unsetReference(key);
-    }
-
     @Override
     public <V> boolean containsValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> ArrayUtils.contains(ts, value))
                 .orElse(false);
-    }
-
-    @Override
-    public boolean containsReference(FeatureKey key, Id id) {
-        return containsValue(key, id);
     }
 
     @Nonnull
@@ -231,12 +124,6 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id id) {
-        return indexOfValue(key, id);
-    }
-
-    @Nonnull
-    @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
@@ -244,12 +131,6 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
-        return lastIndexOfValue(key, id);
     }
 
     @Nonnull
@@ -263,13 +144,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
-        return valuesAsList(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt sizeOf(FeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<V[]>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());

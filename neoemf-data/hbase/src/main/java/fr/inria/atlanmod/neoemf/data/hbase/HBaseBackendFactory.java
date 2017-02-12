@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackend;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
@@ -44,16 +43,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
- * A factory that creates instances of {@link HBaseBackendArrays}.
+ * A factory that creates instances of {@link HBaseBackend}.
  * <p>
- * This class only creates persistent databases that can be configured using
- * {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
- * options maps.
+ * This class only creates persistent databases that can be configured using {@link PersistentResource#save(Map)} and
+ * {@link PersistentResource#load(Map)} options maps.
  * <p>
- * Note that transient back-ends can be instantiated using this factory, but they will
- * be handed as persistent ones. This is a limitation that will be solved in next releases.
- * To avoid any consistency issue we recommend every HBase resource right after their creation,
- * ensuring the resource is using a persistent back-end.
+ * Note that transient back-ends can be instantiated using this factory, but they will be handed as persistent ones.
+ * This is a limitation that will be solved in next releases. To avoid any consistency issue we recommend every HBase
+ * resource right after their creation, ensuring the resource is using a persistent back-end.
  *
  * @see PersistentResource
  * @see HBaseBackend
@@ -66,6 +63,16 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
      * The literal description of the factory.
      */
     public static final String NAME = HBaseBackend.NAME;
+
+    /**
+     * The property to define the ZooKeeper host.
+     */
+    protected static final String HOST_PROPERTY = "hbase.zookeeper.quorum";
+
+    /**
+     * The property to define the ZooKeeper port.
+     */
+    protected static final String PORT_PROPERTY = "hbase.zookeeper.property.clientPort";
 
     /**
      * Constructs a new {@code HBaseBackendFactory}.
@@ -105,11 +112,11 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
     public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
-        return new HBaseBackendArrays(createTable(uri));
+        return new HBaseBackendStrings(createTable(uri));
     }
 
     /**
-     * Creates a new {@link Table} with the given {@code uri}.
+     * Retrieves or creates or a new {@link Table} with the given {@code uri}.
      *
      * @param uri the {@link URI} to get information about it
      *
@@ -117,7 +124,11 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
      */
     private Table createTable(URI uri) {
         try {
-            Connection connection = configureConnection(uri);
+            Configuration configuration = HBaseConfiguration.create();
+            configuration.set(HOST_PROPERTY, uri.host());
+            configuration.set(PORT_PROPERTY, isNull(uri.port()) ? "2181" : uri.port());
+
+            Connection connection = ConnectionFactory.createConnection(configuration);
             Admin admin = connection.getAdmin();
 
             TableName tableName = TableName.valueOf(HBaseURI.format(uri));
@@ -136,27 +147,6 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
             }
 
             return connection.getTable(tableName);
-        }
-        catch (IOException e) {
-            throw new InvalidDataStoreException(e);
-        }
-    }
-
-    /**
-     * Configures the {@link Connection} to the cluster.
-     *
-     * @param uri the URI used to configure the connection
-     *
-     * @return a new connection
-     */
-    @VisibleForTesting
-    protected Connection configureConnection(URI uri) {
-        try {
-            Configuration configuration = HBaseConfiguration.create();
-            configuration.set("hbase.zookeeper.quorum", uri.host());
-            configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
-
-            return ConnectionFactory.createConnection(configuration);
         }
         catch (IOException e) {
             throw new InvalidDataStoreException(e);

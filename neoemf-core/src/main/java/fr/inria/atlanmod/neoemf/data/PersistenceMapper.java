@@ -165,5 +165,8 @@ public interface PersistenceMapper {
     Iterable<Id> referencesAsList(FeatureKey key);
 
     @Nonnull
-    <V> OptionalInt sizeOf(FeatureKey key);
+    <V> OptionalInt sizeOfValue(FeatureKey key);
+
+    @Nonnull
+    OptionalInt sizeOfReference(FeatureKey key);
 }

@@ -163,10 +163,16 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt sizeOf(FeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<V[]>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        return sizeOfValue(key);
     }
 
     /**

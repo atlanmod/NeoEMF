@@ -104,7 +104,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Override
     public <V> void addValue(MultivaluedFeatureKey key, V value) {
-        int size = sizeOf(key.withoutPosition()).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
         // TODO Replace by Stream
         for (int i = size - 1; i >= key.position(); i--) {
@@ -123,7 +123,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         Optional<V> previousValue = valueOf(key);
 
-        int size = sizeOf(key.withoutPosition()).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
         // Update indexes (element to remove is overwritten)
         // TODO Replace by Stream
@@ -140,14 +140,14 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Override
     public <V> boolean containsValue(FeatureKey key, V value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .min();
     }
@@ -155,7 +155,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .max();
     }
@@ -163,7 +163,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     @Nonnull
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
                         .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
                 .collect(Collectors.toList());
@@ -171,10 +171,16 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public OptionalInt sizeOf(FeatureKey key) {
+    public OptionalInt sizeOfValue(FeatureKey key) {
         return valueOf(key)
                 .map(v -> OptionalInt.of((int) v))
                 .orElse(OptionalInt.empty());
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        return sizeOfValue(key);
     }
 
     /**

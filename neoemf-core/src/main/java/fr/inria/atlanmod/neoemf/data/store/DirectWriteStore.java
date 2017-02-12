@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -60,6 +61,11 @@ import static java.util.Objects.isNull;
 public class DirectWriteStore extends AbstractPersistentStore implements PersistentStore {
 
     /**
+     * The persistence back-end used to store the model.
+     */
+    @Nonnull
+    protected final PersistenceBackend backend;
+    /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     @Nonnull
@@ -68,13 +74,6 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
             .initialCapacity(1_000)
             .maximumSize(10_000)
             .build(new PersistentObjectLoader());
-
-    /**
-     * The persistence back-end used to store the model.
-     */
-    @Nonnull
-    protected final PersistenceBackend backend;
-
     /**
      * The resource to persist and access.
      */
@@ -280,7 +279,15 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        return backend.sizeOf(key).orElse(0);
+
+        OptionalInt size;
+        if (isAttribute(feature)) {
+            size = backend.sizeOfValue(key);
+        }
+        else {
+            size = backend.sizeOfReference(key);
+        }
+        return size.orElse(0);
     }
 
     @Override

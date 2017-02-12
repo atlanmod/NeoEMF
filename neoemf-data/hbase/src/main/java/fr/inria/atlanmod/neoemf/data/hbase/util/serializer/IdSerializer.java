@@ -94,7 +94,6 @@ public class IdSerializer {
     @Nonnull
     public static Id deserialize(byte[] data) {
         checkNotNull(data);
-
         checkArgument(data.length % (UUID_LENGTH + 1) == UUID_LENGTH);
 
         return StringId.of(Bytes.toString(data));

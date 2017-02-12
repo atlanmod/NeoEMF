@@ -272,7 +272,13 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt sizeOf(FeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 }

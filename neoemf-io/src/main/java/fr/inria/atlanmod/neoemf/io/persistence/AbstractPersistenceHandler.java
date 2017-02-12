@@ -17,7 +17,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
@@ -312,8 +311,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         }
         else {
             int index = attribute.index();
-            if (index == PersistentStore.NO_INDEX) {
-                index = backend.sizeOf(key).orElse(0);
+            if (index == -1) {
+                index = backend.sizeOfValue(key).orElse(0);
             }
             backend.addValue(key.withPosition(index), attribute.value());
         }
@@ -346,8 +345,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         }
         else {
             int index = reference.index();
-            if (index == PersistentStore.NO_INDEX) {
-                index = backend.sizeOf(key).orElse(0);
+            if (index == -1) {
+                index = backend.sizeOfReference(key).orElse(0);
             }
             backend.addReference(key.withPosition(index), idReference);
         }

@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-
 /**
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
@@ -34,14 +32,13 @@ public abstract class RawFeature extends RawNamedElement {
     private boolean many;
 
     /**
-     * Constructs a new {@code RawFeature} with the given {@code name}. Its index is initialized to
-     * {@link PersistentStore#NO_INDEX}.
+     * Constructs a new {@code RawFeature} with the given {@code name}. Its index is initialized to {@code -1}.
      *
      * @param name the name of this feature
      */
     public RawFeature(String name) {
         super(name);
-        this.index = PersistentStore.NO_INDEX;
+        this.index = -1;
         this.many = false;
     }
 

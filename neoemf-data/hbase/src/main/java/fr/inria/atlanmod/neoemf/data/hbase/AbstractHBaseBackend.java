@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.hadoop.hbase.client.Delete;
@@ -30,6 +31,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -185,6 +187,136 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         }
         catch (IOException ignore) {
         }
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(FeatureKey key) {
+        return fromDatabase(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        return valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
+        return valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        Optional<V> previousValue = valueOf(key);
+
+        toDatabase(key, value);
+
+        return previousValue;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
+
+    @Override
+    public void unsetValue(FeatureKey key) {
+        outDatabase(key);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void unsetAllValues(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void unsetAllReferences(FeatureKey key) {
+        unsetReference(key);
+    }
+
+    @Override
+    public boolean hasValue(FeatureKey key) {
+        return fromDatabase(key).isPresent();
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public boolean hasAnyValue(FeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public boolean hasAnyReference(FeatureKey key) {
+        return hasReference(key);
+    }
+
+    @Override
+    public void addReference(MultivaluedFeatureKey key, Id id) {
+        addValue(key, id);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
+        return removeValue(key);
+    }
+
+    @Override
+    public void cleanValues(FeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public void cleanReferences(FeatureKey key) {
+        unsetReference(key);
+    }
+
+    @Override
+    public boolean containsReference(FeatureKey key, Id id) {
+        return containsValue(key, id);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
+        return indexOfValue(key, id);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+        return lastIndexOfValue(key, id);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> referencesAsList(FeatureKey key) {
+        return valuesAsList(key);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        return sizeOfValue(key);
     }
 
     /**

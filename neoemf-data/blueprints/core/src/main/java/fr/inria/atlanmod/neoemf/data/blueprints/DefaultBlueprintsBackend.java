@@ -233,7 +233,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public <V> void addValue(MultivaluedFeatureKey key, V value) {
-        int size = sizeOf(key).orElse(0);
+        int size = sizeOfValue(key).orElse(0);
         int newSize = size + 1;
 
         Vertex vertex = vertex(key.id());
@@ -250,7 +250,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void addReference(MultivaluedFeatureKey key, Id id) {
-        int size = sizeOf(key).orElse(0);
+        int size = sizeOfValue(key).orElse(0);
         int newSize = size + 1;
 
         Vertex vertex = vertex(key.id());
@@ -274,7 +274,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
-        int size = sizeOf(key).orElse(0);
+        int size = sizeOfValue(key).orElse(0);
         int newSize = size - 1;
 
         Vertex vertex = vertex(key.id());
@@ -294,7 +294,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        int size = sizeOf(key).orElse(0);
+        int size = sizeOfValue(key).orElse(0);
         int newSize = size - 1;
 
         Vertex vertex = vertex(key.id());
@@ -330,7 +330,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public void cleanValues(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
-        IntStream.range(0, sizeOf(key).orElse(0))
+        IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
 
         sizeFor(key, 0);
@@ -354,7 +354,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> boolean containsValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .anyMatch(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value));
     }
 
@@ -371,7 +371,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
                 .min();
     }
@@ -394,7 +394,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
                 .max();
     }
@@ -417,7 +417,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
-        return IntStream.range(0, sizeOf(key).orElse(0))
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
                 .collect(Collectors.toList());
     }
@@ -440,12 +440,18 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public OptionalInt sizeOf(FeatureKey key) {
+    public OptionalInt sizeOfValue(FeatureKey key) {
         return Optional.ofNullable(vertex(key.id()))
                 .map(v -> Optional.<Integer>ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE)))
                         .map(OptionalInt::of)
                         .orElse(OptionalInt.empty()))
                 .orElse(OptionalInt.empty());
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        return sizeOfValue(key);
     }
 
     /**
