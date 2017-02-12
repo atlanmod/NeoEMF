@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class MultivaluedFeatureKey extends FeatureKey {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1490416524145854914L;
 
     /**
      * The position of this key.

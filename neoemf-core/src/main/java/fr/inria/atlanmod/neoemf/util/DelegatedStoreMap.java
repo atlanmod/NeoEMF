@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.util.EcoreEMap;
 public class DelegatedStoreMap<K, V> extends EcoreEMap<K, V> {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1132800653976033784L;
 
     /**
      * Constructs a {@code DelegatedStoreMap} with the given {@code owner} and {@code feature}.
@@ -48,7 +48,7 @@ public class DelegatedStoreMap<K, V> extends EcoreEMap<K, V> {
     private class EntriesList extends BasicEStoreEList<Entry<K, V>> {
 
         @SuppressWarnings("JavaDoc")
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1014158684112393931L;
 
         /**
          * Constructs a new {@code EntriesList} with the given {@code feature}.

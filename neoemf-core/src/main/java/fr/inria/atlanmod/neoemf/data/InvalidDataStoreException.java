@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 public class InvalidDataStoreException extends RuntimeException {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7803703997361736845L;
 
     /**
      * Constructs an {@code InvalidDataStoreException} with {@code null} as its error detail message.

@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class StringId implements Id {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -9144505154505018813L;
 
     /**
      * The literal representation of this {@code Id} as a {@link String}.
