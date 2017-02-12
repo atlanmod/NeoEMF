@@ -24,14 +24,6 @@ import org.eclipse.emf.compare.match.impl.MatchEngineFactoryImpl;
 import org.eclipse.emf.compare.utils.UseIdentifiers;
 
 /**
- * Overrides {@link DefaultEqualityHelperFactory} methods to create
- * {@link LazyEqualityHelper} instances instead of default
- * {@link EqualityHelper}.
- *
- * @see LazyEqualityHelper
- */
-
-/**
  * Overrides {@link MatchEngineFactoryImpl} methods to create
  * {@link LazyMatchEngine} instances instead of {@link DefaultMatchEngine} ones.
  * This class uses {@link LazyEqualityHelperFactory} to create the helper used
@@ -43,19 +35,16 @@ import org.eclipse.emf.compare.utils.UseIdentifiers;
 public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
 
     /**
-     * Constructs a default {@link LazyMatchEngine}. This match engine will use
-     * the standalone weight provider registry
+     * Constructs a default {@link LazyMatchEngine}. This match engine will use the standalone weight provider registry
      * {@link WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
      */
     public LazyMatchEngineFactory() {
-        this(UseIdentifiers.WHEN_AVAILABLE, WeightProviderDescriptorRegistryImpl
-                .createStandaloneInstance());
+        this(UseIdentifiers.WHEN_AVAILABLE, WeightProviderDescriptorRegistryImpl.createStandaloneInstance());
     }
 
     /**
-     * Constructor that instantiate a {@link LazyMatchEngineFactory} that will
-     * use identifiers as specified by the given {@code useIDs} enumeration.
-     * This match engine will use a the standalone weight provider registry
+     * Constructor that instantiate a {@code LazyMatchEngineFactory} that will use identifiers as specified by the given
+     * {@code useIDs} enumeration. This match engine will use a the standalone weight provider registry
      * {@link WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
      *
      * @param useIDs the kinds of matcher to use.
@@ -65,26 +54,23 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
     }
 
     /**
-     * Constructor that instantiate a {@link LazyMatchEngine} that will use
-     * identifiers as specified by the given {@code useIDs} enumeration.
+     * Constructor that instantiate a {@link LazyMatchEngine} that will use identifiers as specified by the given
+     * {@code useIDs} enumeration.
      *
      * @param useIDs   the kinds of matcher to use.
-     * @param registry A match engine needs a WeightProvider in case of this match engine do not use identifiers.
+     * @param registry a match engine needs a WeightProvider in case of this match engine do not use identifiers.
      */
     public LazyMatchEngineFactory(UseIdentifiers useIDs, WeightProvider.Descriptor.Registry registry) {
-        final IComparisonFactory comparisonFactory = new DefaultComparisonFactory(
-                new LazyEqualityHelperFactory());
-        final IEObjectMatcher matcher = DefaultMatchEngine.createDefaultEObjectMatcher(useIDs,
-                registry);
+        final IComparisonFactory comparisonFactory = new DefaultComparisonFactory(new LazyEqualityHelperFactory());
+        final IEObjectMatcher matcher = DefaultMatchEngine.createDefaultEObjectMatcher(useIDs, registry);
         NeoLogger.info("LazyMatchEngine with LazyEqualityHelper created");
         matchEngine = new LazyMatchEngine(matcher, comparisonFactory);
     }
 
     /**
-     * Constructor that instantiate a {@link LazyMatchEngine} with the given
-     * parameters.
+     * Constructor that instantiate a {@link LazyMatchEngine} with the given parameters.
      *
-     * @param matcher           The matcher that will be in charge of pairing EObjects together for this comparison
+     * @param matcher           the matcher that will be in charge of pairing EObjects together for this comparison
      *                          process.
      * @param comparisonFactory factory that will be use to instantiate Comparison as return by match() methods.
      */
@@ -92,5 +78,4 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
         NeoLogger.info("LazyMatchEngine with LazyEqualityHelper created");
         matchEngine = new LazyMatchEngine(matcher, comparisonFactory);
     }
-
 }

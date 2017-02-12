@@ -36,15 +36,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Overrides {@link DefaultMatchEngine} to allow lazy comparison of
- * {@link PersistentEObject}s. Elements are compared using the
- * {@link LazyEqualityHelper} provided in the {@code comparisonFactory} using
- * {@link Objects#equal(Object, Object)} instead of {@code ==} when at least one
- * of the element is stored in NeoEMF.
+ * Overrides {@link DefaultMatchEngine} to allow lazy comparison of {@link PersistentEObject}s. Elements are compared
+ * using the {@link LazyEqualityHelper} provided in the {@code comparisonFactory} using
+ * {@link Objects#equal(Object, Object)} instead of {@code ==} when at least one of the element is stored in NeoEMF.
  * <p>
- * <b>Note:</b> This class overrides all the {@code match} methods to remove old
- * Guava dependencies. It should be removed if/when Guava dependencies become
- * compatible with NeoEMF.
+ * <b>Note:</b> This class overrides all the {@code match} methods to remove old Guava dependencies. It should be
+ * removed if/when Guava dependencies become compatible with NeoEMF.
  *
  * @see LazyMatchEngineFactory
  * @see LazyEqualityHelper
@@ -62,15 +59,13 @@ public class LazyMatchEngine extends DefaultMatchEngine {
     }
 
     /**
-     * This will check that at least two of the three given booleans are
-     * <code>true</code>.
+     * This will check that at least two of the three given booleans are {@code true}.
      *
      * @param condition1 First of the three booleans.
      * @param condition2 Second of the three booleans.
      * @param condition3 Third of the three booleans.
      *
-     * @return <code>true</code> if at least two of the three given booleans are <code>true</code>, <code>false</code>
-     * otherwise.
+     * @return {@code true} if at least two of the three given booleans are {@code true}, {@code false} otherwise.
      */
     private static boolean atLeastTwo(boolean condition1, boolean condition2, boolean condition3) {
         return condition1 && (condition2 || condition3) || (condition2 && condition3);
@@ -79,16 +74,15 @@ public class LazyMatchEngine extends DefaultMatchEngine {
     /**
      * {@inheritDoc}
      * <p>
-     * <b>Note:</b> This method overrides
-     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, ResourceSet, ResourceSet, ResourceSet, Monitor)}
-     * to remove incompatible Guava dependencies. It should be removed if/when
-     * Guava dependencies become compatible with NeoEMF.
+     * <b>Note:</b> This method overrides the super-method to remove incompatible Guava dependencies. It should be
+     * removed if/when Guava dependencies become compatible with NeoEMF.
      */
     @Override
     protected void match(Comparison comparison, IComparisonScope scope, ResourceSet left, ResourceSet right, ResourceSet origin, Monitor monitor) {
         final Iterator<? extends Resource> leftChildren = scope.getCoveredResources(left);
         final Iterator<? extends Resource> rightChildren = scope.getCoveredResources(right);
         final Iterator<? extends Resource> originChildren;
+
         if (origin != null) {
             originChildren = scope.getCoveredResources(origin);
         }
@@ -97,8 +91,7 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         }
 
         final IResourceMatcher resourceMatcher = createResourceMatcher();
-        final Iterable<MatchResource> mappings = resourceMatcher.createMappings(leftChildren,
-                rightChildren, originChildren);
+        final Iterable<MatchResource> mappings = resourceMatcher.createMappings(leftChildren, rightChildren, originChildren);
 
         final List<Iterator<? extends EObject>> leftIterators = Lists.newLinkedList();
         final List<Iterator<? extends EObject>> rightIterators = Lists.newLinkedList();
@@ -125,22 +118,17 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         }
 
         final Iterator<? extends EObject> leftEObjects = Iterators.concat(leftIterators.iterator());
-        final Iterator<? extends EObject> rightEObjects = Iterators.concat(rightIterators
-                .iterator());
-        final Iterator<? extends EObject> originEObjects = Iterators.concat(originIterators
-                .iterator());
+        final Iterator<? extends EObject> rightEObjects = Iterators.concat(rightIterators.iterator());
+        final Iterator<? extends EObject> originEObjects = Iterators.concat(originIterators.iterator());
 
-        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
-                monitor);
+        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects, monitor);
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * <b>Note:</b> This method overrides
-     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, Resource, Resource, Resource, Monitor)}
-     * to remove incompatible Guava dependencies. It should be removed if/when
-     * Guava dependencies become compatible with NeoEMF.
+     * <b>Note:</b> This method overrides the super-method to remove incompatible Guava dependencies. It should be
+     * removed if/when Guava dependencies become compatible with NeoEMF.
      */
     @Override
     protected void match(Comparison comparison, IComparisonScope scope, Resource left, Resource right, Resource origin, Monitor monitor) {
@@ -190,6 +178,7 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         else {
             leftEObjects = Collections.emptyIterator();
         }
+
         final Iterator<? extends EObject> rightEObjects;
         if (right != null) {
             rightEObjects = scope.getCoveredEObjects(right);
@@ -197,6 +186,7 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         else {
             rightEObjects = Collections.emptyIterator();
         }
+
         final Iterator<? extends EObject> originEObjects;
         if (origin != null) {
             originEObjects = scope.getCoveredEObjects(origin);
@@ -223,21 +213,16 @@ public class LazyMatchEngine extends DefaultMatchEngine {
             throw new IllegalArgumentException();
         }
 
-        final Iterator<? extends EObject> leftEObjects = Iterators.concat(
-                Iterators.singletonIterator(left), scope.getChildren(left));
-        final Iterator<? extends EObject> rightEObjects = Iterators.concat(
-                Iterators.singletonIterator(right), scope.getChildren(right));
+        final Iterator<? extends EObject> leftEObjects = Iterators.concat(Iterators.singletonIterator(left), scope.getChildren(left));
+        final Iterator<? extends EObject> rightEObjects = Iterators.concat(Iterators.singletonIterator(right), scope.getChildren(right));
         final Iterator<? extends EObject> originEObjects;
         if (origin != null) {
-            originEObjects = Iterators.concat(Iterators.singletonIterator(origin),
-                    scope.getChildren(origin));
+            originEObjects = Iterators.concat(Iterators.singletonIterator(origin), scope.getChildren(origin));
         }
         else {
             originEObjects = Collections.emptyIterator();
         }
 
-        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
-                monitor);
+        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects, monitor);
     }
-
 }

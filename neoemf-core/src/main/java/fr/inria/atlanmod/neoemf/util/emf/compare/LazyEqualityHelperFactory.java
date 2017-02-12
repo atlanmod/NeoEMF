@@ -21,23 +21,22 @@ import org.eclipse.emf.compare.utils.IEqualityHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * Overrides {@link DefaultEqualityHelperFactory} methods to create
- * {@link LazyEqualityHelper} instances instead of default
- * {@link EqualityHelper} ones.
+ * Overrides {@link DefaultEqualityHelperFactory} methods to create {@link LazyEqualityHelper} instances instead of
+ * default {@link EqualityHelper} ones.
  *
  * @see LazyEqualityHelper
  */
 public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
 
     /**
-     * Constructs a new {@link LazyEqualityHelperFactory} with a default cache.
+     * Constructs a new {@code LazyEqualityHelperFactory} with a default cache.
      */
     public LazyEqualityHelperFactory() {
         super();
     }
 
     /**
-     * Constructs a new {@link LazyEqualityHelperFactory} using the given
+     * Constructs a new {@code LazyEqualityHelperFactory} using the given
      * {@code cacheBuilder}.
      *
      * @param cacheBuilder the {@link CacheBuilder} to use
@@ -56,7 +55,6 @@ public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
     @Override
     public IEqualityHelper createEqualityHelper() {
         LoadingCache<EObject, URI> cache = LazyEqualityHelper.createDefaultCache(getCacheBuilder());
-        IEqualityHelper equalityHelper = new LazyEqualityHelper(cache);
-        return equalityHelper;
+        return new LazyEqualityHelper(cache);
     }
 }
