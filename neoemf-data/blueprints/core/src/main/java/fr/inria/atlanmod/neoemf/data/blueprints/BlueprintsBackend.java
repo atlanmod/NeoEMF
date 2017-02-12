@@ -11,14 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import com.tinkerpop.blueprints.Vertex;
-
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
-import org.eclipse.emf.ecore.EcorePackage;
-
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -31,35 +25,4 @@ public interface BlueprintsBackend extends PersistenceBackend {
      * The literal description of this back-end.
      */
     String NAME = "blueprints";
-
-    /**
-     * @deprecated Don't use this field
-     */
-    @Deprecated
-    String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-
-    /**
-     * @deprecated Don't use this field
-     */
-    @Deprecated
-    String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
-
-    /**
-     * @deprecated Don't use this field
-     */
-    @Deprecated
-    String KEY_INSTANCE_OF = "kyanosInstanceOf";
-
-    /**
-     * @deprecated Don't use this method
-     */
-    @Deprecated
-    Vertex getVertex(Id id);
-
-    /**
-     * @deprecated Don't use this method
-     */
-    @Nonnull
-    @Deprecated
-    Vertex addVertex(Id id);
 }

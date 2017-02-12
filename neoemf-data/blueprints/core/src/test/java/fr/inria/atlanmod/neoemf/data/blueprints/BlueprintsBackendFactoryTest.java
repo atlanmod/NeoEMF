@@ -66,7 +66,6 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .directWrite()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
@@ -80,7 +79,6 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreManyCacheOption() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .directWriteCacheMany()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
@@ -108,7 +106,6 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreAutocommitOptionDirectWriteBase() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .directWrite()
                 .autocommit()
                 .asMap();
 
@@ -123,7 +120,6 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreAutocommitOptionCachedManyBase() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .directWriteCacheMany()
                 .autocommit()
                 .asMap();
 

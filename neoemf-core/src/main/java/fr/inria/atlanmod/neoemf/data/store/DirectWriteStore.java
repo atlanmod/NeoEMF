@@ -63,7 +63,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     @Nonnull
-    protected final LoadingCache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
+    private final LoadingCache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
             .softValues()
             .initialCapacity(1_000)
             .maximumSize(10_000)

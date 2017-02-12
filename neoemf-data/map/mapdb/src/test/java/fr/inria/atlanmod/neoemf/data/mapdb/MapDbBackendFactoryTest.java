@@ -66,7 +66,6 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
     @Test
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
-                .directWrite()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());
@@ -80,7 +79,6 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
     @Test
     public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
-                .directWriteLists()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());
@@ -94,7 +92,6 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
     @Test
     public void testCreatePersistentEStoreDirectWriteWithArraysOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
-                .directWriteArrays()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());
@@ -122,7 +119,6 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
     @Test
     public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
-                .directWriteCacheMany()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());

@@ -357,32 +357,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@code id}. If no vertex corresponds to that {@code id}, then
-     * return {@code null}.
-     *
-     * @param id the {@link Id} of the element to find
-     *
-     * @return the vertex referenced by the provided {@link Id} or {@code null} when no such vertex exists
-     */
-    @Override
-    public Vertex getVertex(Id id) {
-        return verticesCache.get(id, key -> graph.getVertex(key.toString()));
-    }
-
-    /**
-     * Create a new vertex, add it to the graph, and return the newly created vertex.
-     *
-     * @param id the identifier of the {@link Vertex}
-     *
-     * @return the newly created vertex
-     */
-    @Nonnull
-    @Override
-    public Vertex addVertex(Id id) {
-        return graph.addVertex(id.toString());
-    }
-
-    /**
      * Provides a direct access to the underlying graph.
      * <p>
      * This method is public for tool compatibility (see the

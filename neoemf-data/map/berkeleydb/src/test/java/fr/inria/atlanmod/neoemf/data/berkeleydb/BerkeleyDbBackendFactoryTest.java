@@ -69,7 +69,6 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
-                .directWrite()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
@@ -83,7 +82,6 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
-                .directWriteLists()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
@@ -97,7 +95,6 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreDirectWriteWithArraysOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
-                .directWriteArrays()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
@@ -125,7 +122,6 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
-                .directWriteCacheMany()
                 .asMap();
 
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
