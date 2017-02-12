@@ -63,7 +63,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
     @Override
     public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElseThrow(NoSuchElementException::new);
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values.set(key.position(), value));
 
@@ -95,7 +95,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
     @Override
     public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElseThrow(NoSuchElementException::new);
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values.remove(key.position()));
 
@@ -137,7 +137,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return this.<List<V>>valueOf(key)
-                .orElseThrow(NoSuchElementException::new);
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
     }
 
     @Nonnull

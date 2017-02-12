@@ -164,7 +164,8 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     @Override
     public <V> Iterable<V> valuesAsList(FeatureKey key) {
         return IntStream.range(0, sizeOf(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElseThrow(NoSuchElementException::new))
+                .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
+                        .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
                 .collect(Collectors.toList());
     }
 
