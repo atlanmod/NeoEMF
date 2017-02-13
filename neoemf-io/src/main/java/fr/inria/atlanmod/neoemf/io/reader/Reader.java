@@ -19,7 +19,9 @@ import java.io.IOException;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
+ * A {@link Notifier} able to read data from an {@link Object}.
  *
+ * @param <T> the type of the read source
  */
 @ParametersAreNonnullByDefault
 public interface Reader<T> extends Notifier<Handler> {
@@ -27,10 +29,10 @@ public interface Reader<T> extends Notifier<Handler> {
     /**
      * Reads an {@link Object} and notifies registered {@link Handler}.
      *
-     * @param input the object to read
+     * @param source the object to read
      *
      * @throws IllegalArgumentException if this reader hasn't any handler
      * @throws IOException              if an error occurred during the I/O process
      */
-    void read(T input) throws IOException;
+    void read(T source) throws IOException;
 }

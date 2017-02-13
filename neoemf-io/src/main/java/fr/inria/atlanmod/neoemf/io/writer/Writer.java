@@ -16,8 +16,8 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * A {@link Handler} that converts received notifications in write operations.
  */
 @ParametersAreNonnullByDefault
-public interface Writer<T> extends Handler {
+public interface Writer extends Handler {
 }

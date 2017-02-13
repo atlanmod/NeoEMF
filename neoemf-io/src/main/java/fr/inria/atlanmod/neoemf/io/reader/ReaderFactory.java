@@ -9,15 +9,22 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
-
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+package fr.inria.atlanmod.neoemf.io.reader;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Writer} that persists data into a {@link PersistenceBackend}.
+ * The factory that creates instances of {@link Reader}s.
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceWriter extends Writer {
+public class ReaderFactory {
+
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException every time
+     */
+    private ReaderFactory() {
+        throw new IllegalStateException("This class should not be instantiated");
+    }
 }

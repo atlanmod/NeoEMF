@@ -11,10 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,29 +20,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  */
 @ParametersAreNonnullByDefault
-public class AbstractPersistenceReader extends AbstractNotifier<Handler> implements PersistenceReader {
+public abstract class AbstractPersistenceReader extends AbstractReader<PersistenceBackend> implements PersistenceReader {
 
     /**
-     * The identifier of the root element.
-     */
-    private final static Id ROOT_ID = StringId.of("ROOT");
-
-    /**
-     * The property key used by the root element to define its content.
-     */
-    private static final String ROOT_FEATURE_NAME = "eContents";
-
-    /**
-     * Constructs a new {@code AbstractPersistenceReader} with the given {@code handler}.
+     * Constructs a new {@code AbstractPersistenceReader} with the given {@code handlers}.
      *
-     * @param handler the handler to notify
+     * @param handlers the handlers to notify
      */
-    public AbstractPersistenceReader(Handler handler) {
-        super(handler);
+    public AbstractPersistenceReader(Handler... handlers) {
+        super(handlers);
     }
 
     @Override
-    public void read(PersistenceBackend backend) {
-        // TODO Implement this method
+    public void read(PersistenceBackend source) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

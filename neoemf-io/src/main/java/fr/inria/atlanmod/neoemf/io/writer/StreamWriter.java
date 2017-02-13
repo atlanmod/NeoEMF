@@ -12,16 +12,15 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.io.Handler;
 
 import java.io.OutputStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Handler} that writes data into a {@link OutputStream}.
+ * A {@link Writer} that writes data into a {@link OutputStream}.
  */
 @Experimental
 @ParametersAreNonnullByDefault
-public interface StreamWriter extends Writer<OutputStream> {
+public interface StreamWriter extends Writer {
 }

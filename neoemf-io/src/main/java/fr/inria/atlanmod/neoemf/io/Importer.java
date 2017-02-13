@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.PersistenceProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
@@ -49,7 +49,7 @@ public final class Importer {
     public static void fromXmi(InputStream stream, PersistenceWriter... handlers) throws IOException {
         checkNotNull(handlers, "The handler must be defined");
 
-        Processor processor = new PersistenceProcessor(handlers);
+        Processor processor = new DirectWriteProcessor(handlers);
 
         // Custom options come here
 

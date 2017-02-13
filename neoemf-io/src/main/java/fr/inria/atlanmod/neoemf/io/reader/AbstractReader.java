@@ -9,15 +9,25 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
+package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
+import fr.inria.atlanmod.neoemf.io.Handler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Writer} that persists data into a {@link PersistenceBackend}.
+ *
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceWriter extends Writer {
+public abstract class AbstractReader<T> extends AbstractNotifier<Handler> implements Reader<T> {
+
+    /**
+     * Constructs a new {@code AbstractReader} with the given {@code handlers}.
+     *
+     * @param handlers the handlers to notify
+     */
+    public AbstractReader(Handler... handlers) {
+        super(handlers);
+    }
 }

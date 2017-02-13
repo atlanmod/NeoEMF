@@ -11,22 +11,22 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
+import fr.inria.atlanmod.neoemf.io.writer.Writer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that notifies registered {@link PersistenceWriter} of events, without any treatment.
+ * A {@link Processor} that notifies registered {@link Writer} of events, without any treatment.
  */
 @ParametersAreNonnullByDefault
-public final class PersistenceProcessor extends AbstractProcessor<PersistenceWriter> implements Processor {
+public final class DirectWriteProcessor extends AbstractProcessor<Writer> implements Processor {
 
     /**
-     * Constructs a new {@code PersistenceProcessor} with the given {@code handlers}.
+     * Constructs a new {@code DirectWriteProcessor} with the given {@code handlers}.
      *
      * @param handlers the handlers to notify
      */
-    public PersistenceProcessor(PersistenceWriter... handlers) {
+    public DirectWriteProcessor(Writer... handlers) {
         super(handlers);
     }
 }

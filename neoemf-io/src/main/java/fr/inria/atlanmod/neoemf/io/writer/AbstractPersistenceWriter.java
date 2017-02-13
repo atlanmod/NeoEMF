@@ -26,6 +26,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
 import fr.inria.atlanmod.neoemf.io.util.hash.Hasher;
 import fr.inria.atlanmod.neoemf.io.util.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -66,21 +67,6 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
      * The default {@link Hasher} used to create unique identifiers.
      */
     private static final Hasher DEFAULT_HASHER = HasherFactory.md5();
-
-    /**
-     * The identifier of the root element.
-     */
-    private final static Id ROOT_ID = StringId.of("ROOT");
-
-    /**
-     * The property key used by the root element to define its content.
-     */
-    private static final String ROOT_FEATURE_NAME = "eContents";
-
-    /**
-     * The feature name of the name of an element.
-     */
-    private static final String FEATURE_NAME = "name";
 
     /**
      * The persistence back-end where to store data.
@@ -152,12 +138,12 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         RawMetaclass metaClass = RawMetaclass.getDefault();
 
         RawElement rootElement = new RawElement(metaClass.ns(), metaClass.name());
-        rootElement.id(RawId.generated(ROOT_ID.toString()));
+        rootElement.id(RawId.generated(PersistenceConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.root(false);
         rootElement.metaClass(metaClass);
 
-        createElement(rootElement, ROOT_ID);
+        createElement(rootElement, PersistenceConstants.ROOT_ID);
     }
 
     @Override
@@ -218,7 +204,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         updateInstanceOf(id, element.metaClass().name(), element.metaClass().ns().uri());
 
         if (nonNull(element.className())) {
-            RawAttribute attribute = new RawAttribute(FEATURE_NAME);
+            RawAttribute attribute = new RawAttribute(PersistenceConstants.FEATURE_NAME);
             attribute.value(element.className());
 
             addAttribute(id, attribute);
@@ -226,10 +212,10 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
 
         // Add the current element as content of the 'ROOT' node
         if (element.root()) {
-            RawReference reference = new RawReference(ROOT_FEATURE_NAME);
+            RawReference reference = new RawReference(PersistenceConstants.ROOT_FEATURE_NAME);
             reference.many(true);
 
-            addReference(ROOT_ID, reference, id);
+            addReference(PersistenceConstants.ROOT_ID, reference, id);
         }
 
         incrementAndCommit();

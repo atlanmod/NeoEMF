@@ -16,17 +16,17 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates instances of {@link PersistenceWriter}s.
+ * The factory that creates instances of {@link Writer}s.
  */
 @ParametersAreNonnullByDefault
-public class PersistenceHandlerFactory {
+public class WriterFactory {
 
     /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
      */
-    private PersistenceHandlerFactory() {
+    private WriterFactory() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 
@@ -37,7 +37,7 @@ public class PersistenceHandlerFactory {
      *
      * @return a new persistence handler
      */
-    public static PersistenceWriter newAwareHandler(PersistenceBackend backend) {
+    public static PersistenceWriter newAwareWriter(PersistenceBackend backend) {
         return new PersistenceAwareWriter(backend);
     }
 
@@ -48,7 +48,7 @@ public class PersistenceHandlerFactory {
      *
      * @return a new persistence handler
      */
-    public static PersistenceWriter newNaiveHandler(PersistenceBackend backend) {
+    public static PersistenceWriter newNaiveWriter(PersistenceBackend backend) {
         return new PersistenceNaiveWriter(backend);
     }
 }

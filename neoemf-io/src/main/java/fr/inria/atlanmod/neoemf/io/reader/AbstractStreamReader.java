@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -30,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * namespaces.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractStreamReader extends AbstractNotifier<Handler> implements StreamReader {
+public abstract class AbstractStreamReader extends AbstractReader<InputStream> implements StreamReader {
 
     /**
      * The timer to log reading progress.
@@ -84,14 +83,14 @@ public abstract class AbstractStreamReader extends AbstractNotifier<Handler> imp
     }
 
     @Override
-    public final void read(InputStream stream) throws IOException {
-        checkNotNull(stream);
+    public final void read(InputStream source) throws IOException {
+        checkNotNull(source);
 
         progressTimer = new Timer(true);
-        progressTimer.schedule(new ProgressTimer(stream), 10000, 30000);
+        progressTimer.schedule(new ProgressTimer(source), 10000, 30000);
 
         try {
-            run(stream);
+            run(source);
         }
         catch (Exception e) {
             throw new IOException(e);

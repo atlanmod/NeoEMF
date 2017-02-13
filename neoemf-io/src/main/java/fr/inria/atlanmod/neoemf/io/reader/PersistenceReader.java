@@ -16,11 +16,8 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * A {@link Reader} that reads data from a {@link PersistenceBackend}.
  */
 @ParametersAreNonnullByDefault
 public interface PersistenceReader extends Reader<PersistenceBackend> {
-
-    @Override
-    void read(PersistenceBackend backend);
 }

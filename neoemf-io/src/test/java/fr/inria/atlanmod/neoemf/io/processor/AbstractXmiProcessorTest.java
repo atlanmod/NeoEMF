@@ -78,7 +78,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
     private StructuralPersistanceWriter read(File filePath) throws IOException {
         StructuralPersistanceWriter persistanceHandler = new StructuralPersistanceWriter();
 
-        Processor processor = new PersistenceProcessor(persistanceHandler);
+        Processor processor = new DirectWriteProcessor(persistanceHandler);
         processor = new CounterProcessor(processor);
         processor = new TimerProcessor(processor);
         processor = new EcoreProcessor(processor);
