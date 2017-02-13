@@ -172,7 +172,6 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
                 .orElse(idsStack.getLast());
 
         addAttribute(id, attribute);
-        incrementAndCommit();
     }
 
     @Override
@@ -184,7 +183,6 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         Id idReference = getOrCreateId(reference.idReference());
 
         addReference(id, reference, idReference);
-        incrementAndCommit();
     }
 
     @Override
@@ -316,6 +314,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
             }
             backend.addValue(key.withPosition(index), attribute.value());
         }
+
+        incrementAndCommit();
     }
 
     /**
@@ -350,6 +350,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
             }
             backend.addReference(key.withPosition(index), idReference);
         }
+
+        incrementAndCommit();
     }
 
     /**
@@ -369,6 +371,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         if (!container.isPresent() || !Objects.equals(container.get().id(), idContainer)) {
             backend.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
         }
+
+        incrementAndCommit();
     }
 
     /**
@@ -390,6 +394,8 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         else {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");
         }
+
+        incrementAndCommit();
     }
 
     /**
