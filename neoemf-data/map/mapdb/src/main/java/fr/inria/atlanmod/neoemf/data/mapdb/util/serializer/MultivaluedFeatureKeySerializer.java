@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
@@ -23,10 +23,10 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link FeatureKeySerializer} that is able to serialize {@link MultivaluedFeatureKey}.
+ * A {@link FeatureKeySerializer} that is able to serialize {@link MultiFeatureKey}.
  *
  * @see FeatureKeySerializer
- * @see MultivaluedFeatureKey
+ * @see MultiFeatureKey
  */
 public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
 
@@ -36,14 +36,14 @@ public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
     protected final Serializer<Integer> intSerializer = INTEGER;
 
     @Override
-    public void serialize(@Nonnull DataOutput2 out, @Nonnull FeatureKey key) throws IOException {
+    public void serialize(@Nonnull DataOutput2 out, @Nonnull SingleFeatureKey key) throws IOException {
         super.serialize(out, key);
-        intSerializer.serialize(out, ((MultivaluedFeatureKey) key).position());
+        intSerializer.serialize(out, ((MultiFeatureKey) key).position());
     }
 
     @Override
-    public FeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
-        return MultivaluedFeatureKey.of(
+    public SingleFeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
+        return MultiFeatureKey.of(
                 idSerializer.deserialize(in, -1),
                 stringSerializer.deserialize(in, -1),
                 intSerializer.deserialize(in, -1));

@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * "multi-valued" characteristic is identified with a position.
  */
 @ParametersAreNonnullByDefault
-public class MultivaluedFeatureKey extends FeatureKey {
+public class MultiFeatureKey extends SingleFeatureKey implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1490416524145854914L;
@@ -43,7 +44,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
     protected final int position;
 
     /**
-     * Constructs a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
+     * Constructs a new {@code MultiFeatureKey} with the given {@code id} and the given {@code name}, which are
      * used as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with
      * the {@code position}.
      *
@@ -51,14 +52,14 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      * @param position the position of the {@link EStructuralFeature}
      */
-    protected MultivaluedFeatureKey(Id id, String name, @Nonnegative int position) {
+    protected MultiFeatureKey(Id id, String name, @Nonnegative int position) {
         super(id, name);
         checkArgument(position >= 0, "Position must be >= 0");
         this.position = position;
     }
 
     /**
-     * Creates a new {@code MultivaluedFeatureKey} from the given {@code internalObject} and the given {@code feature}.
+     * Creates a new {@code MultiFeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code from(PersistentEObject.from(internalObject), feature,
      * position)}.
@@ -69,18 +70,18 @@ public class MultivaluedFeatureKey extends FeatureKey {
      *                       extracted
      * @param position       the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultivaluedFeatureKey}
+     * @return a new {@code MultiFeatureKey}
      *
      * @see #from(PersistentEObject, EStructuralFeature, int)
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
      */
-    public static MultivaluedFeatureKey from(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int position) {
+    public static MultiFeatureKey from(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int position) {
         return from(PersistentEObject.from(internalObject), feature, position);
     }
 
     /**
-     * Creates a new {@code MultivaluedFeatureKey} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code MultiFeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code of(object.id(), feature.getName(), position)}.
      *
@@ -89,18 +90,18 @@ public class MultivaluedFeatureKey extends FeatureKey {
      *                 extracted
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultivaluedFeatureKey}
+     * @return a new {@code MultiFeatureKey}
      *
      * @see #of(Id, String, int)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
-    public static MultivaluedFeatureKey from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
+    public static MultiFeatureKey from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
         return of(object.id(), feature.getName(), position);
     }
 
     /**
-     * Creates a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are used
+     * Creates a new {@code MultiFeatureKey} with the given {@code id} and the given {@code name}, which are used
      * as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
      * {@code position}.
      *
@@ -108,10 +109,10 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultivaluedFeatureKey}
+     * @return a new {@code MultiFeatureKey}
      */
-    public static MultivaluedFeatureKey of(Id id, String name, @Nonnegative int position) {
-        return new MultivaluedFeatureKey(id, name, position);
+    public static MultiFeatureKey of(Id id, String name, @Nonnegative int position) {
+        return new MultiFeatureKey(id, name, position);
     }
 
     /**
@@ -125,30 +126,30 @@ public class MultivaluedFeatureKey extends FeatureKey {
     }
 
     /**
-     * Creates a new {@link FeatureKey} with the {@link Id} and the name of this {@code MultivaluedFeatureKey}, without
+     * Creates a new {@link SingleFeatureKey} with the {@link Id} and the name of this {@code MultiFeatureKey}, without
      * its position.
      *
-     * @return a new {@link FeatureKey}
+     * @return a new {@link SingleFeatureKey}
      *
-     * @see FeatureKey#of(Id, String)
+     * @see SingleFeatureKey#of(Id, String)
      */
     @Nonnull
-    public FeatureKey withoutPosition() {
-        return FeatureKey.of(id, name);
+    public SingleFeatureKey withoutPosition() {
+        return SingleFeatureKey.of(id, name);
     }
 
     @Override
-    public int compareTo(FeatureKey o) {
+    public int compareTo(SingleFeatureKey o) {
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;
 
-        if (!(o instanceof MultivaluedFeatureKey)) {
+        if (!(o instanceof MultiFeatureKey)) {
             return AFTER;
         }
         int comparison = super.compareTo(o);
         if (comparison == EQUAL) {
-            MultivaluedFeatureKey that = (MultivaluedFeatureKey) o;
+            MultiFeatureKey that = (MultiFeatureKey) o;
             return (position > that.position) ? AFTER : (position < that.position) ? BEFORE : EQUAL;
         }
         else {
@@ -163,6 +164,6 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     @Override
     public boolean equals(@Nullable Object o) {
-        return super.equals(o) && position == ((MultivaluedFeatureKey) o).position;
+        return super.equals(o) && position == ((MultiFeatureKey) o).position;
     }
 }

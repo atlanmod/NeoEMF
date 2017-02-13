@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultivaluedFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
@@ -59,10 +59,10 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id}s,
-     * identified by the associated {@link MultivaluedFeatureKey}.
+     * identified by the associated {@link MultiFeatureKey}.
      */
     @Nonnull
-    private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
+    private final HTreeMap<MultiFeatureKey, Object> multivaluedFeatures;
 
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
@@ -88,13 +88,13 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
         return fromDatabase(multivaluedFeatures, key);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         toDatabase(multivaluedFeatures, key, value);
@@ -103,7 +103,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     }
 
     @Override
-    public <V> void addValue(MultivaluedFeatureKey key, V value) {
+    public <V> void addValue(MultiFeatureKey key, V value) {
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
         // TODO Replace by Stream
@@ -120,7 +120,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
         Optional<V> previousValue = valueOf(key);
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
@@ -139,14 +139,14 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(SingleFeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .min();
@@ -154,7 +154,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .max();
@@ -162,7 +162,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(FeatureKey key) {
+    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
                         .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
@@ -171,7 +171,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public OptionalInt sizeOfValue(FeatureKey key) {
+    public OptionalInt sizeOfValue(SingleFeatureKey key) {
         return valueOf(key)
                 .map(v -> OptionalInt.of((int) v))
                 .orElse(OptionalInt.empty());
@@ -179,7 +179,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public OptionalInt sizeOfReference(SingleFeatureKey key) {
         return sizeOfValue(key);
     }
 
@@ -189,7 +189,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
      * @param key  the key
      * @param size the new size
      */
-    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
+    protected void sizeFor(SingleFeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);
 
         valueFor(key, size);

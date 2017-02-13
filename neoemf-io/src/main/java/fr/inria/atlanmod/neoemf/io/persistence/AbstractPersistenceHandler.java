@@ -17,9 +17,9 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
@@ -304,7 +304,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
 
         checkExists(id);
 
-        FeatureKey key = FeatureKey.of(id, attribute.name());
+        SingleFeatureKey key = SingleFeatureKey.of(id, attribute.name());
 
         if (!attribute.many()) {
             backend.valueFor(key, attribute.value());
@@ -338,7 +338,7 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
             updateContainment(id, reference.name(), idReference);
         }
 
-        FeatureKey key = FeatureKey.of(id, reference.name());
+        SingleFeatureKey key = SingleFeatureKey.of(id, reference.name());
 
         if (!reference.many()) {
             backend.referenceFor(key, idReference);
@@ -365,9 +365,9 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         checkNotNull(name);
         checkNotNull(idContainment);
 
-        Optional<ContainerValue> container = backend.containerOf(idContainment);
+        Optional<ContainerDescriptor> container = backend.containerOf(idContainment);
         if (!container.isPresent() || !Objects.equals(container.get().id(), idContainer)) {
-            backend.containerFor(idContainment, ContainerValue.of(idContainer, name));
+            backend.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
         }
     }
 
@@ -383,9 +383,9 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
         checkNotNull(name);
         checkNotNull(uri);
 
-        Optional<MetaclassValue> metaclass = backend.metaclassOf(id);
+        Optional<MetaclassDescriptor> metaclass = backend.metaclassOf(id);
         if (!metaclass.isPresent()) {
-            backend.metaclassFor(id, MetaclassValue.of(name, uri));
+            backend.metaclassFor(id, MetaclassDescriptor.of(name, uri));
         }
         else {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");

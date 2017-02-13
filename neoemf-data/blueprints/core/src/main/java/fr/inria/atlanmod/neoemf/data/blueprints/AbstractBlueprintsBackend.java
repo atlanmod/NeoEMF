@@ -28,8 +28,8 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
@@ -121,10 +121,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             .build();
 
     /**
-     * List that holds indexed {@link MetaclassValue}.
+     * List that holds indexed {@link MetaclassDescriptor}.
      */
     @Nonnull
-    private final List<MetaclassValue> indexedMetaclasses;
+    private final List<MetaclassDescriptor> indexedMetaclasses;
 
     /**
      * Index containing metaclasses.
@@ -167,14 +167,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     }
 
     /**
-     * Builds the {@link Id} used to identify a {@link MetaclassValue} {@link Vertex}.
+     * Builds the {@link Id} used to identify a {@link MetaclassDescriptor} {@link Vertex}.
      *
-     * @param metaclass the {@link MetaclassValue} to build an {@link Id} from
+     * @param metaclass the {@link MetaclassDescriptor} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
     @Nonnull
-    protected static Id buildId(MetaclassValue metaclass) {
+    protected static Id buildId(MetaclassDescriptor metaclass) {
         return StringId.of(metaclass.name() + '@' + metaclass.uri());
     }
 
@@ -233,7 +233,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         GraphHelper.copyGraph(graph, to.graph);
 
-        for (MetaclassValue metaclass : indexedMetaclasses) {
+        for (MetaclassDescriptor metaclass : indexedMetaclasses) {
             Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, metaclass.name());
             checkArgument(
                     !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
@@ -288,24 +288,24 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Nonnull
     @Override
-    public Optional<ContainerValue> containerOf(Id id) {
+    public Optional<ContainerDescriptor> containerOf(Id id) {
         Vertex containmentVertex = vertex(id);
 
         Iterable<Edge> containerEdges = containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER);
         Optional<Edge> containerEdge = StreamSupport.stream(containerEdges.spliterator(), false).findAny();
 
-        Optional<ContainerValue> container = Optional.empty();
+        Optional<ContainerDescriptor> container = Optional.empty();
         if (containerEdge.isPresent()) {
             String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
             Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
-            container = Optional.of(ContainerValue.of(StringId.from(containerVertex.getId()), featureName));
+            container = Optional.of(ContainerDescriptor.of(StringId.from(containerVertex.getId()), featureName));
         }
 
         return container;
     }
 
     @Override
-    public void containerFor(Id id, ContainerValue container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         Vertex containmentVertex = vertex(id);
         Vertex containerVertex = vertex(container.id());
 
@@ -317,17 +317,17 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Nonnull
     @Override
-    public Optional<MetaclassValue> metaclassOf(Id id) {
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
         Vertex vertex = vertex(id);
 
         Iterable<Vertex> metaclassVertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF);
         Optional<Vertex> metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny();
 
-        return metaclassVertex.map(v -> MetaclassValue.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
+        return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassValue metaclass) {
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
         Vertex metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny().orElse(null);
 

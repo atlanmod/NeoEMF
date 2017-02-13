@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.serializer.ObjectSerializer;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.hadoop.hbase.client.Delete;
@@ -137,21 +137,21 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public Optional<ContainerValue> containerOf(Id id) {
+    public Optional<ContainerDescriptor> containerOf(Id id) {
         return fromDatabase(id)
                 .map(result -> {
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return Optional.of(ContainerValue.of(ObjectSerializer.deserialize(byteId), ObjectSerializer.deserialize(byteName)));
+                        return Optional.of(ContainerDescriptor.of(ObjectSerializer.deserialize(byteId), ObjectSerializer.deserialize(byteName)));
                     }
-                    return Optional.<ContainerValue>empty();
+                    return Optional.<ContainerDescriptor>empty();
                 })
                 .orElse(Optional.empty());
     }
 
     @Override
-    public void containerFor(Id id, ContainerValue container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         try {
             Put put = new Put(ObjectSerializer.serialize(id));
             put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, ObjectSerializer.serialize(container.id()));
@@ -164,21 +164,21 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public Optional<MetaclassValue> metaclassOf(Id id) {
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
         return fromDatabase(id)
                 .map(result -> {
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
                     if (nonNull(byteName) && nonNull(byteUri)) {
-                        return Optional.of(MetaclassValue.of(ObjectSerializer.deserialize(byteName), ObjectSerializer.deserialize(byteUri)));
+                        return Optional.of(MetaclassDescriptor.of(ObjectSerializer.deserialize(byteName), ObjectSerializer.deserialize(byteUri)));
                     }
-                    return Optional.<MetaclassValue>empty();
+                    return Optional.<MetaclassDescriptor>empty();
                 })
                 .orElse(Optional.empty());
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassValue metaclass) {
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
         try {
             Put put = new Put(ObjectSerializer.serialize(id));
             put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, ObjectSerializer.serialize(metaclass.name()));
@@ -191,25 +191,13 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         return fromDatabase(key);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        return valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
-        return valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         toDatabase(key, value);
@@ -217,106 +205,118 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         return previousValue;
     }
 
-    @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return valueFor(key, id);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
-        return valueFor(key, id);
-    }
-
-    @Override
-    public void unsetValue(FeatureKey key) {
+    public void unsetValue(SingleFeatureKey key) {
         outDatabase(key);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public boolean hasValue(SingleFeatureKey key) {
+        return fromDatabase(key).isPresent();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
+        return valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
+
+    @Override
+    public void unsetReference(SingleFeatureKey key) {
         unsetValue(key);
     }
 
     @Override
-    public void unsetAllValues(FeatureKey key) {
-        unsetValue(key);
+    public boolean hasReference(SingleFeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        return valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
+        return valueFor(key, id);
     }
 
     @Override
-    public void unsetAllReferences(FeatureKey key) {
+    public void unsetAllReferences(SingleFeatureKey key) {
         unsetReference(key);
     }
 
     @Override
-    public boolean hasValue(FeatureKey key) {
-        return fromDatabase(key).isPresent();
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public boolean hasAnyValue(FeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public boolean hasAnyReference(FeatureKey key) {
+    public boolean hasAnyReference(SingleFeatureKey key) {
         return hasReference(key);
     }
 
     @Override
-    public void addReference(MultivaluedFeatureKey key, Id id) {
+    public void addReference(MultiFeatureKey key, Id id) {
         addValue(key, id);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
+    public Optional<Id> removeReference(MultiFeatureKey key) {
         return removeValue(key);
     }
 
     @Override
-    public void cleanValues(FeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public void cleanReferences(FeatureKey key) {
+    public void cleanReferences(SingleFeatureKey key) {
         unsetReference(key);
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id id) {
+    public boolean containsReference(SingleFeatureKey key, Id id) {
         return containsValue(key, id);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
         return indexOfValue(key, id);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
         return lastIndexOfValue(key, id);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
+    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
         return valuesAsList(key);
     }
 
     @Nonnull
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public OptionalInt sizeOfReference(SingleFeatureKey key) {
         return sizeOfValue(key);
+    }
+
+    @Override
+    public void unsetAllValues(SingleFeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    public boolean hasAnyValue(SingleFeatureKey key) {
+        return hasValue(key);
+    }
+
+    @Override
+    public void cleanValues(SingleFeatureKey key) {
+        unsetValue(key);
     }
 
     /**
@@ -327,7 +327,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    protected <V> Optional<V> fromDatabase(FeatureKey key) {
+    protected <V> Optional<V> fromDatabase(SingleFeatureKey key) {
         return fromDatabase(key.id())
                 .map(result -> {
                     Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name())));
@@ -342,7 +342,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @param key   the key of the element to save
      * @param value the value to save
      */
-    protected <V> void toDatabase(FeatureKey key, V value) {
+    protected <V> void toDatabase(SingleFeatureKey key, V value) {
         try {
             Put put = new Put(ObjectSerializer.serialize(key.id()));
             put.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()), ObjectSerializer.serialize(value));
@@ -357,7 +357,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      *
      * @param key the key of the element to remove
      */
-    protected void outDatabase(FeatureKey key) {
+    protected void outDatabase(SingleFeatureKey key) {
         try {
             Delete delete = new Delete(ObjectSerializer.serialize(key.id()));
             delete.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()));

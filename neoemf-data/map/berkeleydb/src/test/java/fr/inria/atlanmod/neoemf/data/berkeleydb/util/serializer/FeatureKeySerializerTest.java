@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.junit.Test;
 
@@ -25,25 +25,25 @@ public class FeatureKeySerializerTest {
 
     @Test
     public void testSerialize() {
-        FeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature");
-        FeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
+        SingleFeatureKey fkIn = SingleFeatureKey.of(StringId.of("obj1"), "feature");
+        SingleFeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
 
     @Test
     public void testSerializeMFK() {
-        MultivaluedFeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature").withPosition(0);
-        MultivaluedFeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
+        MultiFeatureKey fkIn = SingleFeatureKey.of(StringId.of("obj1"), "feature").withPosition(0);
+        MultiFeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
 
     @Test
     public void testSerializeMFKBis() {
-        FeatureKey fk = FeatureKey.of(StringId.of("obj1"), "feature");
-        MultivaluedFeatureKey fk1 = fk.withPosition(0);
-        MultivaluedFeatureKey fk2 = fk.withPosition(1);
+        SingleFeatureKey fk = SingleFeatureKey.of(StringId.of("obj1"), "feature");
+        MultiFeatureKey fk1 = fk.withPosition(0);
+        MultiFeatureKey fk2 = fk.withPosition(1);
 
         byte[] ser1 = ObjectSerializer.serialize(fk1);
         byte[] ser2 = ObjectSerializer.serialize(fk2);

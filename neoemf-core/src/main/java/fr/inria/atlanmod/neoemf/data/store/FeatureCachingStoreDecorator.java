@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.store;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -32,9 +32,9 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
-     * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
+     * In-memory cache that holds loaded features, identified by their {@link SingleFeatureKey}.
      */
-    private final Cache<FeatureKey, Object> objectsCache;
+    private final Cache<SingleFeatureKey, Object> objectsCache;
 
     /**
      * Constructs a new {@code FeatureCachingStoreDecorator} with the default cache size.
@@ -58,13 +58,13 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
 
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, index);
+        SingleFeatureKey featureKey = MultiFeatureKey.from(internalObject, feature, index);
         return objectsCache.get(featureKey, key -> super.get(internalObject, feature, index));
     }
 
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, index);
+        SingleFeatureKey featureKey = MultiFeatureKey.from(internalObject, feature, index);
         Object old = super.set(internalObject, feature, index, value);
         objectsCache.put(featureKey, value);
         return old;
@@ -73,7 +73,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         if (!feature.isMany()) {
-            FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+            SingleFeatureKey featureKey = SingleFeatureKey.from(internalObject, feature);
             objectsCache.invalidate(featureKey);
         }
         else {
@@ -84,7 +84,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
 
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, index);
+        SingleFeatureKey featureKey = MultiFeatureKey.from(internalObject, feature, index);
         super.add(internalObject, feature, index, value);
         objectsCache.put(featureKey, value);
         invalidateValues(internalObject, feature, index + 1);
@@ -99,7 +99,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
 
     @Override
     public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, targetIndex);
+        SingleFeatureKey featureKey = MultiFeatureKey.from(internalObject, feature, targetIndex);
         Object old = super.move(internalObject, feature, targetIndex, sourceIndex);
         invalidateValues(internalObject, feature, Math.min(sourceIndex, targetIndex));
         objectsCache.put(featureKey, old);
@@ -119,10 +119,10 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
      * @param feature        the feature of the {@code internalObject}
      * @param index          the index from which to start the removing
      *
-     * @see FeatureKey#from(InternalEObject, EStructuralFeature)
+     * @see SingleFeatureKey#from(InternalEObject, EStructuralFeature)
      */
     private void invalidateValues(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        SingleFeatureKey featureKey = SingleFeatureKey.from(internalObject, feature);
         for (int i = index; i < size(internalObject, feature); i++) {
             objectsCache.invalidate(featureKey.withPosition(i));
         }

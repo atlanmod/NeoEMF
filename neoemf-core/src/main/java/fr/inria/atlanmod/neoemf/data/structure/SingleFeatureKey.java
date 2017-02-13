@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A simple representation of a {@link EStructuralFeature} of a {@link PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public class FeatureKey implements Comparable<FeatureKey>, Serializable {
+public class SingleFeatureKey implements Comparable<SingleFeatureKey>, Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 8486532626389142007L;
@@ -49,67 +49,67 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     protected final String name;
 
     /**
-     * Constructs a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a
-     * simple representation of a feature of an object.
+     * Constructs a new {@code SingleFeatureKey} with the given {@code id} and the given {@code name}, which are used as
+     * a simple representation of a feature of an object.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      */
-    protected FeatureKey(Id id, String name) {
+    protected SingleFeatureKey(Id id, String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
 
     /**
-     * Creates a new {@code FeatureKey} from the given {@code internalObject} and the given {@code feature}.
+     * Creates a new {@code SingleFeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code from(PersistentEObject.from(internalObject), feature)}.
      *
      * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject}
      * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject}
      *
-     * @return a new {@code FeatureKey}
+     * @return a new {@code SingleFeatureKey}
      *
      * @see #from(PersistentEObject, EStructuralFeature)
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
      */
     @Nonnull
-    public static FeatureKey from(InternalEObject internalObject, EStructuralFeature feature) {
+    public static SingleFeatureKey from(InternalEObject internalObject, EStructuralFeature feature) {
         return from(PersistentEObject.from(internalObject), feature);
     }
 
     /**
-     * Creates a new {@code FeatureKey} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code SingleFeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code of(object.id(), feature.getName())}.
      *
      * @param object  the {@link PersistentEObject}
      * @param feature the {@link EStructuralFeature} of the {@link PersistentEObject}
      *
-     * @return a new {@code FeatureKey}
+     * @return a new {@code SingleFeatureKey}
      *
      * @see #of(Id, String)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
     @Nonnull
-    public static FeatureKey from(PersistentEObject object, EStructuralFeature feature) {
+    public static SingleFeatureKey from(PersistentEObject object, EStructuralFeature feature) {
         return of(object.id(), feature.getName());
     }
 
     /**
-     * Creates a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a
+     * Creates a new {@code SingleFeatureKey} with the given {@code id} and the given {@code name}, which are used as a
      * simple representation of a feature of an object.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      *
-     * @return a new {@code FeatureKey}
+     * @return a new {@code SingleFeatureKey}
      */
     @Nonnull
-    public static FeatureKey of(Id id, String name) {
-        return new FeatureKey(id, name);
+    public static SingleFeatureKey of(Id id, String name) {
+        return new SingleFeatureKey(id, name);
     }
 
     /**
@@ -133,22 +133,22 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     }
 
     /**
-     * Creates a new {@link MultivaluedFeatureKey} with the {@link Id} and the name of this {@code FeatureKey}, and
+     * Creates a new {@link MultiFeatureKey} with the {@link Id} and the name of this {@code SingleFeatureKey}, and
      * adding the given {@code position}.
      *
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@link MultivaluedFeatureKey}
+     * @return a new {@link MultiFeatureKey}
      *
-     * @see MultivaluedFeatureKey#of(Id, String)
+     * @see MultiFeatureKey#of(Id, String)
      */
     @Nonnull
-    public MultivaluedFeatureKey withPosition(@Nonnegative int position) {
-        return MultivaluedFeatureKey.of(id, name, position);
+    public MultiFeatureKey withPosition(@Nonnegative int position) {
+        return MultiFeatureKey.of(id, name, position);
     }
 
     @Override
-    public int compareTo(FeatureKey o) {
+    public int compareTo(SingleFeatureKey o) {
         final int EQUAL = 0;
 
         if (this == o) {
@@ -174,11 +174,11 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FeatureKey)) {
+        if (!(o instanceof SingleFeatureKey)) {
             return false;
         }
 
-        FeatureKey that = (FeatureKey) o;
+        SingleFeatureKey that = (SingleFeatureKey) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 

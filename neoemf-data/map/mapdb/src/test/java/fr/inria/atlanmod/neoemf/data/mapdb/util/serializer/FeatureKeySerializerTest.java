@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.junit.Test;
 import org.mapdb.DataInput2;
@@ -30,10 +30,10 @@ public class FeatureKeySerializerTest extends AbstractTest {
         DataOutput2 out = new DataOutput2();
 
         FeatureKeySerializer serializer = new FeatureKeySerializer();
-        FeatureKey key1 = FeatureKey.of(StringId.of("anObject"), "anAttribute");
+        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("anObject"), "anAttribute");
 
         serializer.serialize(out, key1);
-        FeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);
+        SingleFeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);
 
         assertThat(key1).isEqualTo(key2);
     }

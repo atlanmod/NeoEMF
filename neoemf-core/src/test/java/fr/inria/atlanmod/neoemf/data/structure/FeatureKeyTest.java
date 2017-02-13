@@ -25,57 +25,57 @@ import java.io.ObjectOutputStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test cases about {@link FeatureKey}.
+ * Test cases about {@link SingleFeatureKey}.
  */
 public class FeatureKeyTest extends AbstractTest {
 
     /**
-     * Checks the comparison of 2 {@link FeatureKey}s. In this case, they are equal.
+     * Checks the comparison of 2 {@link SingleFeatureKey}s. In this case, they are equal.
      */
     @Test
     public void testCompareEqualTo() {
-        FeatureKey key1 = FeatureKey.of(StringId.of("myobject"), "aaa");
-        FeatureKey key2 = FeatureKey.of(StringId.of("myobject"), "aaa");
+        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("myobject"), "aaa");
+        SingleFeatureKey key2 = SingleFeatureKey.of(StringId.of("myobject"), "aaa");
 
         assertThat(key1.compareTo(key2)).isEqualTo(0);
     }
 
     /**
-     * Checks the comparison of 2 {@link FeatureKey}s. In this case, the first is lower than the second.
+     * Checks the comparison of 2 {@link SingleFeatureKey}s. In this case, the first is lower than the second.
      */
     @Test
     public void testCompareLowerThan() {
-        FeatureKey key1 = FeatureKey.of(StringId.of("myobject"), "aaa");
-        FeatureKey key2 = FeatureKey.of(StringId.of("myobject"), "bbb");
+        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("myobject"), "aaa");
+        SingleFeatureKey key2 = SingleFeatureKey.of(StringId.of("myobject"), "bbb");
 
         assertThat(key1.compareTo(key2)).isLessThan(0);
     }
 
     /**
-     * Checks the comparison of 2 {@link FeatureKey}s. In this case, the first is greater than the second.
+     * Checks the comparison of 2 {@link SingleFeatureKey}s. In this case, the first is greater than the second.
      */
     @Test
     public void testCompareGreaterThan() {
-        FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
-        FeatureKey key2 = FeatureKey.of(StringId.of("BBB"), "zzz");
+        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("AAA"), "aaa");
+        SingleFeatureKey key2 = SingleFeatureKey.of(StringId.of("BBB"), "zzz");
 
         assertThat(key1.compareTo(key2)).isGreaterThan(0);
     }
 
     /**
-     * Checks the serialization/deserialization of a {@link FeatureKey}.
+     * Checks the serialization/deserialization of a {@link SingleFeatureKey}.
      *
      * @throws ClassNotFoundException if the class of a serialized object cannot be found.
      * @throws IOException            if an I/O error occurs during the (de)serialization
      */
     @Test
     public void testSerializable() throws IOException, ClassNotFoundException {
-        FeatureKey key1 = FeatureKey.of(StringId.of("AAA"), "aaa");
+        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("AAA"), "aaa");
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream out = new ObjectOutputStream(baos)) {
             out.writeObject(key1);
 
             try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-                FeatureKey key2 = (FeatureKey) in.readObject();
+                SingleFeatureKey key2 = (SingleFeatureKey) in.readObject();
                 assertThat(key1).isEqualTo(key2);
             }
         }

@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Optional;
@@ -84,201 +84,201 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
-    public Optional<ContainerValue> containerOf(Id id) {
+    public Optional<ContainerDescriptor> containerOf(Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void containerFor(Id id, ContainerValue container) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<MetaclassValue> metaclassOf(Id id) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public void metaclassFor(Id id, MetaclassValue metaclass) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void unsetValue(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> boolean hasValue(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(MultivaluedFeatureKey key) {
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void unsetReference(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean hasReference(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void unsetAllValues(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> boolean hasAnyValue(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void addValue(MultiFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultivaluedFeatureKey key, Id id) {
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void cleanValues(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public <V> boolean hasValue(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public <V> boolean hasAnyValue(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public boolean hasAnyReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public <V> void addValue(MultivaluedFeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public void addReference(MultivaluedFeatureKey key, Id id) {
+    public <V> boolean containsValue(SingleFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
+    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultivaluedFeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public <V> void cleanValues(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public void cleanReferences(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public boolean containsReference(FeatureKey key, Id id) {
+    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id id) {
+    public <V> OptionalInt sizeOfValue(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void unsetAllReferences(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean hasAnyReference(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void addReference(MultiFeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(FeatureKey key) {
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void cleanReferences(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean containsReference(SingleFeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(FeatureKey key) {
+    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(SingleFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 }

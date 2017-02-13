@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.hadoop.hbase.client.Table;
@@ -52,14 +52,14 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultivaluedFeatureKey key) {
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
         return this.<V[]>valueOf(key.withoutPosition())
                 .map(ts -> ts[key.position()]);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultivaluedFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -73,7 +73,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     }
 
     @Override
-    public <V> void addValue(MultivaluedFeatureKey key, V value) {
+    public <V> void addValue(MultiFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(newValue());
 
@@ -93,7 +93,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultivaluedFeatureKey key) {
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -105,7 +105,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(SingleFeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> ArrayUtils.contains(ts, value))
                 .orElse(false);
@@ -113,7 +113,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.indexOf(ts, value);
@@ -124,7 +124,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.lastIndexOf(ts, value);
@@ -135,7 +135,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(FeatureKey key) {
+    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -144,7 +144,7 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> OptionalInt sizeOfValue(SingleFeatureKey key) {
         return this.<V[]>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());

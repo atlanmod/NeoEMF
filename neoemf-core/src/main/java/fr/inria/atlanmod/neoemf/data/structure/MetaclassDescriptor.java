@@ -30,66 +30,66 @@ import static java.util.Objects.isNull;
  * A simple representation of a (meta){@link EClass}.
  */
 @ParametersAreNonnullByDefault
-public class MetaclassValue implements Serializable {
+public class MetaclassDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -2995001384624228909L;
 
     /**
-     * The name of the class.
+     * The name of the metaclass.
      */
     @Nonnull
     private final String name;
 
     /**
-     * The literal representation of the {@link URI} of the class.
+     * The literal representation of the {@link URI} of the metaclass.
      */
     @Nonnull
     private final String uri;
 
     /**
-     * Constructs a new {@code MetaclassValue} with the given {@code name} and {@code uri}, which are used as a simple
-     * representation of a an {@link EClass}.
+     * Constructs a new {@code MetaclassDescriptor} with the given {@code name} and {@code uri}, which are used as a
+     * simple representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
-    protected MetaclassValue(String name, String uri) {
+    protected MetaclassDescriptor(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
 
     /**
-     * Creates a new {@code MetaclassValue} from the given {@code object}. The {@link EClass} will be found by calling
-     * the {@link PersistentEObject#eClass()} method.
+     * Creates a new {@code MetaclassDescriptor} from the given {@code object}. The {@link EClass} will be found by
+     * calling the {@link PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
      *
      * @param object the object from which the {@link EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method
      *
-     * @return a new {@code MetaclassValue}
+     * @return a new {@code MetaclassDescriptor}
      *
      * @see #of(String, String)
      */
     @Nonnull
-    public static MetaclassValue from(PersistentEObject object) {
+    public static MetaclassDescriptor from(PersistentEObject object) {
         final EClass eClass = object.eClass();
         return of(eClass.getName(), eClass.getEPackage().getNsURI());
     }
 
     /**
-     * Creates a new {@code MetaclassValue} with the given {@code name} and {@code uri}, which are used as a simple
+     * Creates a new {@code MetaclassDescriptor} with the given {@code name} and {@code uri}, which are used as a simple
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      *
-     * @return a new {@code MetaclassValue}
+     * @return a new {@code MetaclassDescriptor}
      */
     @Nonnull
-    public static MetaclassValue of(String name, String uri) {
-        return new MetaclassValue(name, uri);
+    public static MetaclassDescriptor of(String name, String uri) {
+        return new MetaclassDescriptor(name, uri);
     }
 
     /**
@@ -113,7 +113,7 @@ public class MetaclassValue implements Serializable {
     }
 
     /**
-     * Retrieves the {@link EClass} corresponding to this {@code MetaclassValue}.
+     * Retrieves the {@link EClass} corresponding to this {@code MetaclassDescriptor}.
      *
      * @return a class, or {@code null} if it can not be found
      */

@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * {@link PersistentEObject} is identified by the name the reference used to retrieve it.
  */
 @ParametersAreNonnullByDefault
-public class ContainerValue implements Serializable {
+public class ContainerDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -8317521039028966575L;
@@ -46,44 +46,44 @@ public class ContainerValue implements Serializable {
     private final String name;
 
     /**
-     * Constructs a new {@code ContainerValue} with the given {@code id} and the given {@code name}.
+     * Constructs a new {@code ContainerDescriptor} with the given {@code id} and the given {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
      */
-    protected ContainerValue(Id id, String name) {
+    protected ContainerDescriptor(Id id, String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
 
     /**
-     * Creates a new {@code ContainerValue} from the given {@code object} and {@code reference}.
+     * Creates a new {@code ContainerDescriptor} from the given {@code object} and {@code reference}.
      * <p>
      * This method behaves like: {@code of(object.id(), reference.getName())}.
      *
      * @param object    the {@link PersistentEObject}
      * @param reference the reference used to retrieve the container of the {@link PersistentEObject}
      *
-     * @return a new {@code ContainerValue}
+     * @return a new {@code ContainerDescriptor}
      *
      * @see #of(Id, String)
      */
     @Nonnull
-    public static ContainerValue from(PersistentEObject object, EReference reference) {
+    public static ContainerDescriptor from(PersistentEObject object, EReference reference) {
         return of(object.id(), reference.getName());
     }
 
     /**
-     * Creates a new {@code ContainerValue} with the given {@code id} and {@code name}.
+     * Creates a new {@code ContainerDescriptor} with the given {@code id} and {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
      *
-     * @return a new {@code ContainerValue}
+     * @return a new {@code ContainerDescriptor}
      */
     @Nonnull
-    public static ContainerValue of(Id id, String name) {
-        return new ContainerValue(id, name);
+    public static ContainerDescriptor of(Id id, String name) {
+        return new ContainerDescriptor(id, name);
     }
 
     /**

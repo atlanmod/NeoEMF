@@ -19,10 +19,10 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerValue;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassValue;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -65,6 +65,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      */
     @Nonnull
     protected final PersistenceBackend backend;
+
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
@@ -74,6 +75,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
             .initialCapacity(1_000)
             .maximumSize(10_000)
             .build(new PersistentObjectLoader());
+
     /**
      * The resource to persist and access.
      */
@@ -278,7 +280,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         checkNotNull(feature);
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(internalObject, feature);
 
         OptionalInt size;
         if (isAttribute(feature)) {
@@ -448,7 +450,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         checkNotNull(internalObject);
         checkNotNull(feature);
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(internalObject, feature);
 
         Stream<Object> stream;
         if (feature instanceof EReference) {
@@ -497,7 +499,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         checkNotNull(internalObject);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-        Optional<ContainerValue> container = backend.containerOf(object.id());
+        Optional<ContainerDescriptor> container = backend.containerOf(object.id());
         return container
                 .map(containerValue -> eObject(containerValue.id()))
                 .orElse(null);
@@ -531,9 +533,9 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         checkNotNull(referencedObject);
 
         if (reference.isContainment()) {
-            Optional<ContainerValue> container = backend.containerOf(referencedObject.id());
+            Optional<ContainerDescriptor> container = backend.containerOf(referencedObject.id());
             if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
-                backend.containerFor(referencedObject.id(), ContainerValue.from(object, reference));
+                backend.containerFor(referencedObject.id(), ContainerDescriptor.from(object, reference));
             }
         }
     }
@@ -549,11 +551,11 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         checkNotNull(id);
 
         return backend.metaclassOf(id)
-                .map(MetaclassValue::eClass);
+                .map(MetaclassDescriptor::eClass);
     }
 
     /**
-     * Computes the type of the {@code object} in a {@link MetaclassValue} object and persists it in the database.
+     * Computes the type of the {@code object} in a {@link MetaclassDescriptor} object and persists it in the database.
      *
      * @param object the {@link PersistentEObject} to store the instance-of information from
      *
@@ -562,9 +564,9 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected void updateInstanceOf(PersistentEObject object) {
         checkNotNull(object);
 
-        Optional<MetaclassValue> metaclass = backend.metaclassOf(object.id());
+        Optional<MetaclassDescriptor> metaclass = backend.metaclassOf(object.id());
         if (!metaclass.isPresent()) {
-            backend.metaclassFor(object.id(), MetaclassValue.from(object));
+            backend.metaclassFor(object.id(), MetaclassDescriptor.from(object));
         }
     }
 
@@ -580,7 +582,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #get(InternalEObject, EStructuralFeature, int)
      */
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
 
         Optional<Object> value;
         if (!attribute.isMany()) {
@@ -608,7 +610,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #get(InternalEObject, EStructuralFeature, int)
      */
     protected PersistentEObject getReference(PersistentEObject object, EReference reference, int index) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
 
         Optional<Id> value;
         if (!reference.isMany()) {
@@ -639,7 +641,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         persist(object);
 
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
 
         Optional<Object> previousValue;
         if (!attribute.isMany()) {
@@ -670,7 +672,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected PersistentEObject setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         persist(object, reference, value);
 
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
 
         Optional<Id> previousId;
         if (!reference.isMany()) {
@@ -697,7 +699,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #isSet(InternalEObject, EStructuralFeature)
      */
     protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
 
         if (!attribute.isMany()) {
             return backend.hasValue(key);
@@ -718,7 +720,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #isSet(InternalEObject, EStructuralFeature)
      */
     protected boolean isSetReference(PersistentEObject object, EReference reference) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
 
         if (!reference.isMany()) {
             return backend.hasReference(key);
@@ -737,7 +739,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #unset(InternalEObject, EStructuralFeature)
      */
     protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
 
         if (!attribute.isMany()) {
             backend.unsetValue(key);
@@ -756,7 +758,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #unset(InternalEObject, EStructuralFeature)
      */
     protected void unsetReference(PersistentEObject object, EReference reference) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
 
         if (!reference.isMany()) {
             backend.unsetReference(key);
@@ -778,7 +780,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #contains(InternalEObject, EStructuralFeature, Object)
      */
     protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
         return backend.containsValue(key, value);
     }
 
@@ -794,7 +796,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #contains(InternalEObject, EStructuralFeature, Object)
      */
     protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
         return backend.containsReference(key, value.id());
     }
 
@@ -810,7 +812,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #indexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
         return backend.indexOfValue(key, value).orElse(NO_INDEX);
     }
 
@@ -826,7 +828,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #indexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
         return backend.indexOfReference(key, value.id()).orElse(NO_INDEX);
     }
 
@@ -842,7 +844,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
         return backend.lastIndexOfValue(key, value).orElse(NO_INDEX);
     }
 
@@ -858,7 +860,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
      */
     protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
         return backend.lastIndexOfReference(key, value.id()).orElse(NO_INDEX);
     }
 
@@ -875,7 +877,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         persist(object);
 
-        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
+        MultiFeatureKey key = MultiFeatureKey.from(object, attribute, index);
         backend.addValue(key, serialize(attribute, value));
     }
 
@@ -892,7 +894,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         persist(object, reference, value);
 
-        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
+        MultiFeatureKey key = MultiFeatureKey.from(object, reference, index);
         backend.addReference(key, value.id());
     }
 
@@ -908,7 +910,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #remove(InternalEObject, EStructuralFeature, int)
      */
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
-        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, attribute, index);
+        MultiFeatureKey key = MultiFeatureKey.from(object, attribute, index);
 
         return backend.removeValue(key)
                 .map(v -> deserialize(attribute, v))
@@ -927,7 +929,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #remove(InternalEObject, EStructuralFeature, int)
      */
     protected PersistentEObject removeReference(PersistentEObject object, EReference reference, int index) {
-        MultivaluedFeatureKey key = MultivaluedFeatureKey.from(object, reference, index);
+        MultiFeatureKey key = MultiFeatureKey.from(object, reference, index);
 
         return backend.removeReference(key)
                 .map(this::eObject)
@@ -943,7 +945,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #clear(InternalEObject, EStructuralFeature)
      */
     protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
-        FeatureKey key = FeatureKey.from(object, attribute);
+        SingleFeatureKey key = SingleFeatureKey.from(object, attribute);
         backend.cleanValues(key);
     }
 
@@ -956,7 +958,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @see #clear(InternalEObject, EStructuralFeature)
      */
     protected void clearReference(PersistentEObject object, EReference reference) {
-        FeatureKey key = FeatureKey.from(object, reference);
+        SingleFeatureKey key = SingleFeatureKey.from(object, reference);
         backend.cleanReferences(key);
     }
 
