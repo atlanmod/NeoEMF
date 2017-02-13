@@ -11,13 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.PersistenceProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
-import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
+import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
+import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +46,7 @@ public final class Importer {
      * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException              if an error occurred during the import
      */
-    public static void fromXmi(InputStream stream, PersistenceHandler... handlers) throws IOException {
+    public static void fromXmi(InputStream stream, PersistenceWriter... handlers) throws IOException {
         checkNotNull(handlers, "The handler must be defined");
 
         Processor processor = new PersistenceProcessor(handlers);
@@ -57,7 +56,6 @@ public final class Importer {
         processor = new XPathProcessor(processor);
         processor = new EcoreProcessor(processor);
 
-        Reader reader = new XmiStAXCursorReader(processor);
-        reader.read(stream);
+        new XmiStAXCursorStreamReader(processor).read(stream);
     }
 }

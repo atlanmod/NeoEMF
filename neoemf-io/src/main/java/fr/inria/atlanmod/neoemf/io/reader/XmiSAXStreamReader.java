@@ -31,17 +31,17 @@ import javax.xml.stream.events.Attribute;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Reader} that uses streams for reading and parsing XMI files.
+ * A {@link StreamReader} that uses streams for reading and parsing XMI files.
  */
 @ParametersAreNonnullByDefault
-public class XmiSAXReader extends AbstractXmiReader {
+public class XmiSAXStreamReader extends AbstractXmiStreamReader {
 
     /**
-     * Constructs a new {@code XmiSAXReader} with the given {@code handler}.
+     * Constructs a new {@code XmiSAXStreamReader} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    public XmiSAXReader(Handler handler) {
+    public XmiSAXStreamReader(Handler handler) {
         super(handler);
     }
 

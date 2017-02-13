@@ -9,12 +9,16 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Handler} that process received events, in order to persist data.
+ * ???
  */
-public interface PersistenceHandler extends Handler {
+@Experimental
+@ParametersAreNonnullByDefault
+public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 }

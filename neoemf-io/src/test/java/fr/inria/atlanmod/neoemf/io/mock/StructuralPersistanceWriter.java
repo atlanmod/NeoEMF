@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- *
+ * ???
  */
-public class StructuralPersistanceHandler implements PersistenceHandler {
+public class StructuralPersistanceWriter implements PersistenceWriter {
 
     private final Map<String, ElementMock> elementMocks;
 
@@ -39,7 +39,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
 
     private final List<ElementMock> elements;
 
-    public StructuralPersistanceHandler() {
+    public StructuralPersistanceWriter() {
         this.elementMocks = new HashMap<>();
         this.elementsStack = new ArrayDeque<>();
         this.elements = new ArrayList<>();

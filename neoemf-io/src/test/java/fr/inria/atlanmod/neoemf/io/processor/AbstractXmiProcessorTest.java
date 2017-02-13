@@ -12,10 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
-import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
+import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceWriter;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
-import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
+import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
@@ -76,8 +75,8 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         assertThat(attribute.index()).isEqualTo(index);
     }
 
-    private StructuralPersistanceHandler read(File filePath) throws IOException {
-        StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
+    private StructuralPersistanceWriter read(File filePath) throws IOException {
+        StructuralPersistanceWriter persistanceHandler = new StructuralPersistanceWriter();
 
         Processor processor = new PersistenceProcessor(persistanceHandler);
         processor = new CounterProcessor(processor);
@@ -85,8 +84,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         processor = new EcoreProcessor(processor);
         processor = new XPathProcessor(processor);
 
-        Reader reader = new XmiStAXCursorReader(processor);
-        reader.read(new FileInputStream(filePath));
+        new XmiStAXCursorStreamReader(processor).read(new FileInputStream(filePath));
 
         return persistanceHandler;
     }

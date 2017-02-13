@@ -26,11 +26,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An abstract {@link Reader} that notifies {@link Handler} and provides overall behavior for the management of
+ * An abstract {@link StreamReader} that notifies {@link Handler} and provides overall behavior for the management of
  * namespaces.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractReader extends AbstractNotifier<Handler> implements Reader {
+public abstract class AbstractStreamReader extends AbstractNotifier<Handler> implements StreamReader {
 
     /**
      * The timer to log reading progress.
@@ -38,11 +38,11 @@ public abstract class AbstractReader extends AbstractNotifier<Handler> implement
     private Timer progressTimer;
 
     /**
-     * Constructs a new {@code AbstractReader} with the given {@code handler}.
+     * Constructs a new {@code AbstractStreamReader} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    public AbstractReader(Handler handler) {
+    public AbstractStreamReader(Handler handler) {
         super(handler);
     }
 

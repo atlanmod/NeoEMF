@@ -11,13 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * An abstract {@link StreamWriter}.
  */
+@Experimental
 @ParametersAreNonnullByDefault
-public interface Writer<T> extends Handler {
+public abstract class AbstractStreamWriter implements StreamWriter {
 }

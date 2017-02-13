@@ -12,10 +12,16 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
+import fr.inria.atlanmod.neoemf.io.Handler;
+
+import java.io.OutputStream;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Writer} that uses a StAX implementation with cursors for writing XMI files.
+ * A {@link Handler} that writes data into a {@link OutputStream}.
  */
 @Experimental
-public class XmiStAXCursorWriter extends AbstractXmiWriter {
+@ParametersAreNonnullByDefault
+public interface StreamWriter extends Writer<OutputStream> {
 }

@@ -9,52 +9,54 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.mock;
+package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * A persistence handler that does nothing.
- * <p>
- * Using for basic tests.
+ * A {@link StreamWriter} that uses a StAX implementation with cursors for writing XMI files.
  */
-public class DummyPersistenceHandler implements PersistenceHandler {
+@Experimental
+@ParametersAreNonnullByDefault
+public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
 
     @Override
     public void handleStartDocument() {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void handleStartElement(RawElement element) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void handleAttribute(RawAttribute attribute) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void handleReference(RawReference reference) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void handleEndElement() {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void handleEndDocument() {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void handleCharacters(String characters) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

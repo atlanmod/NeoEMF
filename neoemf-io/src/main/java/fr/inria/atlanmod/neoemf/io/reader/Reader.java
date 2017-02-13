@@ -15,25 +15,22 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Notifier} that reads data from a file.
  *
- * @note It correspond to the head of the parsing process in case of an import.
  */
 @ParametersAreNonnullByDefault
-public interface Reader extends Notifier<Handler> {
+public interface Reader<T> extends Notifier<Handler> {
 
     /**
-     * Reads a stream and notifies registered {@link Handler}.
+     * Reads an {@link Object} and notifies registered {@link Handler}.
      *
-     * @param stream the stream to read
+     * @param input the object to read
      *
      * @throws IllegalArgumentException if this reader hasn't any handler
      * @throws IOException              if an error occurred during the I/O process
      */
-    void read(InputStream stream) throws IOException;
+    void read(T input) throws IOException;
 }

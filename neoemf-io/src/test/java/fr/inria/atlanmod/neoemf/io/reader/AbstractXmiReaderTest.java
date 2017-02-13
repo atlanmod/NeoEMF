@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
-import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
+import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceWriter;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.processor.PersistenceProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
@@ -71,13 +71,12 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
         assertThat(attribute.value()).isEqualTo(value);
     }
 
-    protected StructuralPersistanceHandler read(File filePath) throws IOException {
-        StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
+    protected StructuralPersistanceWriter read(File filePath) throws IOException {
+        StructuralPersistanceWriter persistanceHandler = new StructuralPersistanceWriter();
 
         Processor processor = new PersistenceProcessor(persistanceHandler);
 
-        Reader reader = new XmiStAXCursorReader(processor);
-        reader.read(new FileInputStream(filePath));
+        new XmiStAXCursorStreamReader(processor).read(new FileInputStream(filePath));
 
         return persistanceHandler;
     }

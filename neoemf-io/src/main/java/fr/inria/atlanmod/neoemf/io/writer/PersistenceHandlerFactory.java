@@ -9,14 +9,14 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates instances of {@link PersistenceHandler}s.
+ * The factory that creates instances of {@link PersistenceWriter}s.
  */
 @ParametersAreNonnullByDefault
 public class PersistenceHandlerFactory {
@@ -31,24 +31,24 @@ public class PersistenceHandlerFactory {
     }
 
     /**
-     * Creates a {@link PersistenceHandler} on the given {@code backend} with conflict resolution feature.
+     * Creates a {@link PersistenceWriter} on the given {@code backend} with conflict resolution feature.
      *
      * @param backend the back-end where data must persist
      *
      * @return a new persistence handler
      */
-    public static PersistenceHandler newAwareHandler(PersistenceBackend backend) {
-        return new PersistenceAwareHandler(backend);
+    public static PersistenceWriter newAwareHandler(PersistenceBackend backend) {
+        return new PersistenceAwareWriter(backend);
     }
 
     /**
-     * Creates a {@link PersistenceHandler} on the given {@code backend} <b>without</b> conflict resolution feature.
+     * Creates a {@link PersistenceWriter} on the given {@code backend} <b>without</b> conflict resolution feature.
      *
      * @param backend the back-end where data must persist
      *
      * @return a new persistence handler
      */
-    public static PersistenceHandler newNaiveHandler(PersistenceBackend backend) {
-        return new PersistenceNaiveHandler(backend);
+    public static PersistenceWriter newNaiveHandler(PersistenceBackend backend) {
+        return new PersistenceNaiveWriter(backend);
     }
 }

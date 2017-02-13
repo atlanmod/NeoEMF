@@ -11,8 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.io.Handler;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * An abstract {@link Writer}.
+ * A {@link Handler} that process received events, in order to write data in a {@link PersistenceBackend}.
  */
-public abstract class AbstractWriter implements Writer {
+@ParametersAreNonnullByDefault
+public interface PersistenceWriter extends Writer<PersistenceBackend> {
 }

@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -20,18 +20,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An {@link Handler} for {@link PersistenceBackend}s, <b>without</b> key conflict resolution.
  *
- * @note Unlike the {@link PersistenceAwareHandler}, this handler does not solve key conflicts. However, they are
+ * @note Unlike the {@link PersistenceAwareWriter}, this handler does not solve key conflicts. However, they are
  * detected and an exception is raised to avoid the creation of an unusable back-end.
  */
 @ParametersAreNonnullByDefault
-public class PersistenceNaiveHandler extends AbstractPersistenceHandler {
+public class PersistenceNaiveWriter extends AbstractPersistenceWriter {
 
     /**
-     * Constructs a new {@code PersistenceNaiveHandler} on the given {@code backend}.
+     * Constructs a new {@code PersistenceNaiveWriter} on the given {@code backend}.
      *
      * @param backend the back-end where to store data
      */
-    protected PersistenceNaiveHandler(PersistenceBackend backend) {
+    protected PersistenceNaiveWriter(PersistenceBackend backend) {
         super(backend);
     }
 

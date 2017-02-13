@@ -9,15 +9,23 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
+package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.Notifier;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * An {@link Notifier} that reads data from a file.
+ *
+ * @note It correspond to the head of the parsing process in case of an import.
  */
 @ParametersAreNonnullByDefault
-public interface Writer<T> extends Handler {
+public interface StreamReader extends Reader<InputStream> {
+
+    @Override
+    void read(InputStream stream) throws IOException;
 }

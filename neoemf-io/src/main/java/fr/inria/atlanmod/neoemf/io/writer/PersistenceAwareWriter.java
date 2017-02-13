@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.writer;
 
 import com.google.common.collect.HashMultimap;
 
@@ -36,7 +36,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * conflicts resolution. Make sure you have enough memory to avoid heap space.
  */
 @ParametersAreNonnullByDefault
-public class PersistenceAwareHandler extends AbstractPersistenceHandler {
+public class PersistenceAwareWriter extends AbstractPersistenceWriter {
 
     /**
      * Map holding the unlinked elements, waiting until their reference is created.
@@ -53,11 +53,11 @@ public class PersistenceAwareHandler extends AbstractPersistenceHandler {
     private final Map<String, Id> conflictIdsCache = new HashMap<>();
 
     /**
-     * Constructs a new {@code PersistenceAwareHandler} on the given {@code backend}.
+     * Constructs a new {@code PersistenceAwareWriter} on the given {@code backend}.
      *
      * @param backend the back-end where to store data
      */
-    protected PersistenceAwareHandler(PersistenceBackend backend) {
+    protected PersistenceAwareWriter(PersistenceBackend backend) {
         super(backend);
 
         this.unlinkedElements = HashMultimap.create();

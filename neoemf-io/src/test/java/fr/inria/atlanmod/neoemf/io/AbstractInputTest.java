@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
-import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
+import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceWriter;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -40,7 +40,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     private static final String ECORE = "ecore";
     private static final String ECORE_PATH = "/io/ecore/{name}." + ECORE;
 
-    protected StructuralPersistanceHandler persistanceHandler;
+    protected StructuralPersistanceWriter persistanceHandler;
 
     protected File sample;
 

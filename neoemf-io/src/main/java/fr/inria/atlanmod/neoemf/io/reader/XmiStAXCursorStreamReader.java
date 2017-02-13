@@ -25,17 +25,17 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * A {@link Reader} that uses a StAX implementation with cursors for reading and parsing XMI files.
+ * A {@link StreamReader} that uses a StAX implementation with cursors for reading and parsing XMI files.
  */
 @ParametersAreNonnullByDefault
-public class XmiStAXCursorReader extends AbstractXmiReader {
+public class XmiStAXCursorStreamReader extends AbstractXmiStreamReader {
 
     /**
-     * Constructs a new {@code XmiStAXCursorReader} with the given {@code handler}.
+     * Constructs a new {@code XmiStAXCursorStreamReader} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    public XmiStAXCursorReader(Handler handler) {
+    public XmiStAXCursorStreamReader(Handler handler) {
         super(handler);
     }
 

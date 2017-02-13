@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.writer;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -43,10 +43,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link PersistenceHandler} that persists data in a {@link PersistenceBackend}, based on received events.
+ * A {@link PersistenceWriter} that persists data in a {@link PersistenceBackend}, based on received events.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractPersistenceHandler implements PersistenceHandler {
+public abstract class AbstractPersistenceWriter implements PersistenceWriter {
 
     /**
      * The default cache size.
@@ -109,11 +109,11 @@ public abstract class AbstractPersistenceHandler implements PersistenceHandler {
     private long autocommitCount;
 
     /**
-     * Constructs a new {@code AbstractPersistenceHandler} on top of the {@code backend}.
+     * Constructs a new {@code AbstractPersistenceWriter} on top of the {@code backend}.
      *
      * @param backend the persistence back-end where to store data
      */
-    protected AbstractPersistenceHandler(PersistenceBackend backend) {
+    protected AbstractPersistenceWriter(PersistenceBackend backend) {
         this.backend = checkNotNull(backend);
 
         this.autocommitCount = 0;

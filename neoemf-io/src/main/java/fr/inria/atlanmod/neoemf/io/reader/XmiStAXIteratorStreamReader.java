@@ -29,17 +29,17 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 /**
- * A {@link Reader} that uses a StAX implementation with iterators for reading and parsing XMI files.
+ * A {@link StreamReader} that uses a StAX implementation with iterators for reading and parsing XMI files.
  */
 @ParametersAreNonnullByDefault
-public class XmiStAXIteratorReader extends AbstractXmiReader {
+public class XmiStAXIteratorStreamReader extends AbstractXmiStreamReader {
 
     /**
-     * Constructs a new {@code XmiStAXIteratorReader} with the given {@code handler}.
+     * Constructs a new {@code XmiStAXIteratorStreamReader} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    public XmiStAXIteratorReader(Handler handler) {
+    public XmiStAXIteratorStreamReader(Handler handler) {
         super(handler);
     }
 

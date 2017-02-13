@@ -9,15 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
+package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ *
  */
 @ParametersAreNonnullByDefault
-public interface Writer<T> extends Handler {
+public interface PersistenceReader extends Reader<PersistenceBackend> {
+
+    @Override
+    void read(PersistenceBackend backend);
 }

@@ -39,10 +39,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract {@link Reader} that processes the raw structure of XMI files.
+ * An abstract {@link StreamReader} that processes the raw structure of XMI files.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractXmiReader extends AbstractReader {
+public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference). Multiple references must
@@ -79,11 +79,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private Collection<RawFeature> currentFeatures;
 
     /**
-     * Constructs a new {@code AbstractXmiReader} with the given {@code handler}.
+     * Constructs a new {@code AbstractXmiStreamReader} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    public AbstractXmiReader(Handler handler) {
+    public AbstractXmiStreamReader(Handler handler) {
         super(handler);
     }
 
