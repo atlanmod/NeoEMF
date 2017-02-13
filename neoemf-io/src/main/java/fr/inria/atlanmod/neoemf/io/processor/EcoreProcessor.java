@@ -62,12 +62,12 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private boolean previousWasAttribute;
 
     /**
-     * Constructs a new {@code EcoreProcessor} with the given {@code handler}.
+     * Constructs a new {@code EcoreProcessor} with the given {@code processors}.
      *
-     * @param handler the handler to notify
+     * @param processors the processors to notify
      */
-    public EcoreProcessor(Processor handler) {
-        super(handler);
+    public EcoreProcessor(Processor... processors) {
+        super(processors);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
         this.previousWasAttribute = false;

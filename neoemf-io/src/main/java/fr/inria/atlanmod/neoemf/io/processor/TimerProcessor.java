@@ -29,12 +29,12 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
     private Stopwatch stopWatch;
 
     /**
-     * Constructs a new {@code TimerProcessor} with the given {@code handler}.
+     * Constructs a new {@code TimerProcessor} with the given {@code processors}.
      *
-     * @param handler the handler to notify
+     * @param processors the processors to notify
      */
-    public TimerProcessor(Processor handler) {
-        super(handler);
+    public TimerProcessor(Processor... processors) {
+        super(processors);
     }
 
     @Override

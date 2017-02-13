@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -27,25 +28,28 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
     /**
      * The current number of element.
      */
+    @Nonnegative
     private long elementCount;
 
     /**
      * The current number of attribute.
      */
+    @Nonnegative
     private long attributeCount;
 
     /**
      * The current number of reference.
      */
+    @Nonnegative
     private long referenceCount;
 
     /**
-     * Constructs a new {@code CounterProcessor} with the given {@code handler}.
+     * Constructs a new {@code CounterProcessor} with the given {@code processors}.
      *
-     * @param handler the handler to notify
+     * @param processors the processors to notify
      */
-    public CounterProcessor(Processor handler) {
-        super(handler);
+    public CounterProcessor(Processor... processors) {
+        super(processors);
         this.elementCount = 0;
         this.attributeCount = 0;
         this.referenceCount = 0;

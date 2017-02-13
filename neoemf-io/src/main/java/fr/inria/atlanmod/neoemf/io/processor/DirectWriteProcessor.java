@@ -22,11 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class DirectWriteProcessor extends AbstractProcessor<Writer> implements Processor {
 
     /**
-     * Constructs a new {@code DirectWriteProcessor} with the given {@code handlers}.
+     * Constructs a new {@code DirectWriteProcessor} with the given {@code writers}.
      *
-     * @param handlers the handlers to notify
+     * @param writers the writers to notify
      */
-    public DirectWriteProcessor(Writer... handlers) {
-        super(handlers);
+    public DirectWriteProcessor(Writer... writers) {
+        super(writers);
     }
 }
