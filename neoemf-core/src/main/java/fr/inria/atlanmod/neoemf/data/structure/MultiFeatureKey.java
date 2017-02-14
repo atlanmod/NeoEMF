@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * "multi-valued" characteristic is identified with a position.
  */
 @ParametersAreNonnullByDefault
-public class MultiFeatureKey extends SingleFeatureKey implements Serializable {
+public class MultiFeatureKey extends FeatureKey implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 7159493156068733506L;
@@ -126,20 +126,20 @@ public class MultiFeatureKey extends SingleFeatureKey implements Serializable {
     }
 
     /**
-     * Creates a new {@link SingleFeatureKey} with the {@link Id} and the name of this {@code MultiFeatureKey}, without
+     * Creates a new {@link FeatureKey} with the {@link Id} and the name of this {@code MultiFeatureKey}, without
      * its position.
      *
-     * @return a new {@link SingleFeatureKey}
+     * @return a new {@link FeatureKey}
      *
-     * @see SingleFeatureKey#of(Id, String)
+     * @see FeatureKey#of(Id, String)
      */
     @Nonnull
-    public SingleFeatureKey withoutPosition() {
-        return SingleFeatureKey.of(id, name);
+    public FeatureKey withoutPosition() {
+        return FeatureKey.of(id, name);
     }
 
     @Override
-    public int compareTo(SingleFeatureKey o) {
+    public int compareTo(FeatureKey o) {
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;

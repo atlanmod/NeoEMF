@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  *
  */
-public interface MetaclassMapping {
+public interface MetaclassMapper {
 
     /**
      * Retrieves the {@link MetaclassDescriptor} for the given {@code id}.

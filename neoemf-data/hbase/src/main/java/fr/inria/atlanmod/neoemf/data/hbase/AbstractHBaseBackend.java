@@ -16,8 +16,8 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.hadoop.hbase.client.Delete;
@@ -201,13 +201,13 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(key);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         toDatabase(key, value);
@@ -216,12 +216,12 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(FeatureKey key) {
         outDatabase(key);
     }
 
     @Override
-    public boolean hasValue(SingleFeatureKey key) {
+    public boolean hasValue(FeatureKey key) {
         return fromDatabase(key).isPresent();
     }
 
@@ -233,7 +233,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    protected <V> Optional<V> fromDatabase(SingleFeatureKey key) {
+    protected <V> Optional<V> fromDatabase(FeatureKey key) {
         return fromDatabase(key.id())
                 .map(result -> {
                     Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name())));
@@ -248,7 +248,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @param key   the key of the element to save
      * @param value the value to save
      */
-    protected <V> void toDatabase(SingleFeatureKey key, V value) {
+    protected <V> void toDatabase(FeatureKey key, V value) {
         try {
             Put put = new Put(ObjectSerializer.serialize(key.id()));
             put.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()), ObjectSerializer.serialize(value));
@@ -263,7 +263,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      *
      * @param key the key of the element to remove
      */
-    protected void outDatabase(SingleFeatureKey key) {
+    protected void outDatabase(FeatureKey key) {
         try {
             Delete delete = new Delete(ObjectSerializer.serialize(key.id()));
             delete.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()));

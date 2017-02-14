@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface SingleReferenceMapping {
+public interface SingleReferenceMapper {
 
     /**
      * ???
@@ -31,7 +31,7 @@ public interface SingleReferenceMapping {
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceOf(SingleFeatureKey key);
+    Optional<Id> referenceOf(FeatureKey key);
 
     /**
      * ???
@@ -42,14 +42,14 @@ public interface SingleReferenceMapping {
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceFor(SingleFeatureKey key, Id id);
+    Optional<Id> referenceFor(FeatureKey key, Id id);
 
     /**
      * ???
      *
      * @param key ???
      */
-    void unsetReference(SingleFeatureKey key);
+    void unsetReference(FeatureKey key);
 
     /**
      * ???
@@ -58,5 +58,5 @@ public interface SingleReferenceMapping {
      *
      * @return ???
      */
-    boolean hasReference(SingleFeatureKey key);
+    boolean hasReference(FeatureKey key);
 }

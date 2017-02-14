@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.junit.Test;
 import org.mapdb.DB;
@@ -31,7 +31,7 @@ public class MapDbBackendTest extends AbstractTest {
     public void testStoreFeature() {
         DB db = DBMaker.memoryDB().make();
         MapDbBackend backend = new MapDbBackendIndices(db);
-        SingleFeatureKey key = SingleFeatureKey.of(StringId.of("object1"), "name");
+        FeatureKey key = FeatureKey.of(StringId.of("object1"), "name");
         backend.valueFor(key, "value");
 
         assertThat("value").isEqualTo(backend.valueOf(key).orElse(null));
@@ -44,7 +44,7 @@ public class MapDbBackendTest extends AbstractTest {
         MapDbBackend backend = new MapDbBackendIndices(db);
 
         MultiFeatureKey[] keys = new MultiFeatureKey[TIMES];
-        SingleFeatureKey featureKey = SingleFeatureKey.of(StringId.of("object"), "name");
+        FeatureKey featureKey = FeatureKey.of(StringId.of("object"), "name");
 
         for (int i = 0; i < 10; i++) {
             keys[i] = featureKey.withPosition(i);
@@ -60,24 +60,24 @@ public class MapDbBackendTest extends AbstractTest {
     @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
     public void testSerialize() throws Exception {
         DataOutput2 out = new DataOutput2();
-        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("object1"), "name");
+        FeatureKey key1 = FeatureKey.of(StringId.of("object1"), "name");
 
-        Serializer<SingleFeatureKey> ser = Serializer.JAVA;
-        SingleFeatureKey key2 = ser.clone(key1);
+        Serializer<FeatureKey> ser = Serializer.JAVA;
+        FeatureKey key2 = ser.clone(key1);
 
         assertThat(key1).isEqualTo(key2);
 
         ser.serialize(out, key1);
 
-        SingleFeatureKey key3 = ser.deserialize(new DataInput2.ByteArray(out.copyBytes()), out.pos);
+        FeatureKey key3 = ser.deserialize(new DataInput2.ByteArray(out.copyBytes()), out.pos);
 
         assertThat(key1).isEqualTo(key3);
     }
 
     @Test
     public void testHashCode() {
-        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("object1"), "name");
-        SingleFeatureKey key2 = SingleFeatureKey.of(StringId.of("object1"), "name");
+        FeatureKey key1 = FeatureKey.of(StringId.of("object1"), "name");
+        FeatureKey key2 = FeatureKey.of(StringId.of("object1"), "name");
 
         assertThat(key1.hashCode()).isEqualTo(key2.hashCode());
     }

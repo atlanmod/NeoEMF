@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
@@ -23,11 +23,11 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link Serializer} implementation for {@link SingleFeatureKey}.
+ * A {@link Serializer} implementation for {@link FeatureKey}.
  *
- * @see SingleFeatureKey
+ * @see FeatureKey
  */
-public class SingleFeatureKeySerializer implements Serializer<SingleFeatureKey> {
+public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
     /**
      * The {@link Serializer} that manages {@link String}s.
@@ -40,14 +40,14 @@ public class SingleFeatureKeySerializer implements Serializer<SingleFeatureKey> 
     private final Serializer<Id> idSerializer = new IdSerializer();
 
     @Override
-    public void serialize(@Nonnull DataOutput2 out, @Nonnull SingleFeatureKey key) throws IOException {
+    public void serialize(@Nonnull DataOutput2 out, @Nonnull FeatureKey key) throws IOException {
         idSerializer.serialize(out, key.id());
         stringSerializer.serialize(out, key.name());
     }
 
     @Override
-    public SingleFeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
-        return SingleFeatureKey.of(
+    public FeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
+        return FeatureKey.of(
                 idSerializer.deserialize(in, -1),
                 stringSerializer.deserialize(in, -1)
         );

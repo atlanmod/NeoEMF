@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -78,6 +78,15 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        V[] values = this.<V[]>valueOf(key)
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+
+        return Arrays.asList(values);
+    }
+
+    @Nonnull
+    @Override
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
@@ -125,7 +134,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
     }
 
     @Override
-    public <V> boolean containsValue(SingleFeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> ArrayUtils.contains(ts, value))
                 .orElse(false);
@@ -133,7 +142,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.indexOf(ts, value);
@@ -144,7 +153,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
                 .map(ts -> {
                     int index = ArrayUtils.lastIndexOf(ts, value);
@@ -155,16 +164,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
-        V[] values = this.<V[]>valueOf(key)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        return Arrays.asList(values);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt sizeOfValue(SingleFeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<V[]>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());

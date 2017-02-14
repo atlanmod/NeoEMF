@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface SingleValueMapping {
+public interface SingleValueMapper {
 
     /**
      * ???
@@ -31,7 +31,7 @@ public interface SingleValueMapping {
      * @return ???
      */
     @Nonnull
-    <V> Optional<V> valueOf(SingleFeatureKey key);
+    <V> Optional<V> valueOf(FeatureKey key);
 
     /**
      * ???
@@ -43,7 +43,7 @@ public interface SingleValueMapping {
      * @return ???
      */
     @Nonnull
-    <V> Optional<V> valueFor(SingleFeatureKey key, V value);
+    <V> Optional<V> valueFor(FeatureKey key, V value);
 
     /**
      * ???
@@ -51,7 +51,7 @@ public interface SingleValueMapping {
      * @param key ???
      * @param <V> ???
      */
-    <V> void unsetValue(SingleFeatureKey key);
+    <V> void unsetValue(FeatureKey key);
 
     /**
      * ???
@@ -61,5 +61,5 @@ public interface SingleValueMapping {
      *
      * @return ???
      */
-    <V> boolean hasValue(SingleFeatureKey key);
+    <V> boolean hasValue(FeatureKey key);
 }

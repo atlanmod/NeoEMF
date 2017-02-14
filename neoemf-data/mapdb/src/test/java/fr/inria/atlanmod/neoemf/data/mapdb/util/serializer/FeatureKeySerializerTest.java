@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.junit.Test;
 import org.mapdb.DataInput2;
@@ -23,17 +23,17 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SingleFeatureKeySerializerTest extends AbstractTest {
+public class FeatureKeySerializerTest extends AbstractTest {
 
     @Test
     public void testSerialize() throws IOException {
         DataOutput2 out = new DataOutput2();
 
-        SingleFeatureKeySerializer serializer = new SingleFeatureKeySerializer();
-        SingleFeatureKey key1 = SingleFeatureKey.of(StringId.of("anObject"), "anAttribute");
+        FeatureKeySerializer serializer = new FeatureKeySerializer();
+        FeatureKey key1 = FeatureKey.of(StringId.of("anObject"), "anAttribute");
 
         serializer.serialize(out, key1);
-        SingleFeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);
+        FeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);
 
         assertThat(key1).isEqualTo(key2);
     }

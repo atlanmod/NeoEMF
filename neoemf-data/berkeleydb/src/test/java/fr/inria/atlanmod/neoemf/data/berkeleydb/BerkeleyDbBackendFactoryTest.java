@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.junit.Test;
 
@@ -158,14 +158,14 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
 
         try (PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend()) {
             IntStream.range(0, TIMES).forEach(i -> {
-                SingleFeatureKey key = SingleFeatureKey.of(StringId.of("object" + i), "name" + i);
+                FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
                 assertThat(backend.valueFor(key, "value" + i)).isNotPresent();
             });
         }
 
         try (PersistenceBackend other = context().persistenceBackendFactory().createTransientBackend()) {
             IntStream.range(0, TIMES).forEach(i -> {
-                SingleFeatureKey key = SingleFeatureKey.of(StringId.of("object" + i), "name" + i);
+                FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
                 assertThat(other.hasValue(key)).isFalse();
             });
         }

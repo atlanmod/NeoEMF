@@ -26,8 +26,8 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -70,7 +70,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     /**
      * A persistent map that stores structural features values for {@link PersistentEObject}, identified by the
-     * associated {@link SingleFeatureKey}.
+     * associated {@link FeatureKey}.
      */
     @Nonnull
     private final Database features;
@@ -181,13 +181,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(features, key);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         toDatabase(features, key, value);
@@ -196,12 +196,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(FeatureKey key) {
         outDatabase(features, key);
     }
 
     @Override
-    public boolean hasValue(SingleFeatureKey key) {
+    public boolean hasValue(FeatureKey key) {
         return fromDatabase(features, key).isPresent();
     }
 

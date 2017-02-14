@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
@@ -78,6 +78,13 @@ class MapDbBackendLists extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        return this.<List<V>>valueOf(key)
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+    }
+
+    @Nonnull
+    @Override
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
@@ -122,7 +129,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
     }
 
     @Override
-    public <V> boolean containsValue(SingleFeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
                 .map(ts -> ts.contains(value))
                 .orElse(false);
@@ -130,7 +137,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
                 .map(ts -> {
                     int index = ts.indexOf(value);
@@ -141,7 +148,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
                 .map(ts -> {
                     int index = ts.lastIndexOf(value);
@@ -152,14 +159,7 @@ class MapDbBackendLists extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
-        return this.<List<V>>valueOf(key)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt sizeOfValue(SingleFeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<List<V>>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.size()))
                 .orElse(OptionalInt.empty());

@@ -9,15 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapping.ContainerMapping;
-import fr.inria.atlanmod.neoemf.data.mapping.MetaclassMapping;
-import fr.inria.atlanmod.neoemf.data.mapping.MultiReferenceMapping;
-import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapping;
-import fr.inria.atlanmod.neoemf.data.mapping.SingleReferenceMapping;
-import fr.inria.atlanmod.neoemf.data.mapping.SingleValueMapping;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An object capable of mapping features represented as a set of key/value pair.
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceMapper extends SingleValueMapping, SingleReferenceMapping, MultiValueMapping, MultiReferenceMapping, ContainerMapping, MetaclassMapping {
+public interface PersistenceMapper extends SingleValueMapper, SingleReferenceMapper, MultiValueMapper, MultiReferenceMapper, ContainerMapper, MetaclassMapper {
 
     /**
      * Creates the given {@code id} in this {@code PersistenceBackend}.

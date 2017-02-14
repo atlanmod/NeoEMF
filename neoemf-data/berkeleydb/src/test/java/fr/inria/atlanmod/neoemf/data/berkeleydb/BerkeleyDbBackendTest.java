@@ -19,9 +19,9 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -69,13 +69,13 @@ public class BerkeleyDbBackendTest extends AbstractTest {
         final int TIMES = 1000;
 
         IntStream.range(0, TIMES).forEach(i -> {
-            SingleFeatureKey key = SingleFeatureKey.of(StringId.of("object" + i), "name" + i);
+            FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
             assertThat(backend.valueFor(key, "value" + i)).isNotPresent();
         });
 
         backend.save();
 
-        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.valueOf(SingleFeatureKey.of(StringId.of("object" + i), "name" + i)).orElse(null)).isEqualTo("value" + i));
+        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.valueOf(FeatureKey.of(StringId.of("object" + i), "name" + i)).orElse(null)).isEqualTo("value" + i));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
         final int TIMES = 10;
 
         MultiFeatureKey[] keys = new MultiFeatureKey[TIMES];
-        SingleFeatureKey featureKey = SingleFeatureKey.of(StringId.of("object"), "name");
+        FeatureKey featureKey = FeatureKey.of(StringId.of("object"), "name");
 
         IntStream.range(0, TIMES).forEach(i -> {
             keys[i] = featureKey.withPosition(i);
@@ -95,7 +95,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
 
     @Test
     public void testIsFeatureSet() {
-        SingleFeatureKey fk1 = SingleFeatureKey.of(StringId.of("objectId"), "isSet");
+        FeatureKey fk1 = FeatureKey.of(StringId.of("objectId"), "isSet");
         assertThat(backend.hasValue(fk1)).isFalse();
 
         backend.valueFor(fk1, "yes");
@@ -104,7 +104,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
 
     @Test
     public void testRemoveFeature() {
-        SingleFeatureKey fk1 = SingleFeatureKey.of(StringId.of("objectId"), "unSet");
+        FeatureKey fk1 = FeatureKey.of(StringId.of("objectId"), "unSet");
         assertThat(backend.hasValue(fk1)).isFalse();
 
         backend.valueFor(fk1, "yes");

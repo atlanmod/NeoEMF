@@ -18,8 +18,8 @@ import com.sleepycat.je.EnvironmentConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.io.File;
 import java.util.List;
@@ -92,6 +92,15 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
 
     @Nonnull
     @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
+                        .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
+                .collect(Collectors.toList());
+    }
+
+    @Nonnull
+    @Override
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
@@ -137,14 +146,14 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
     }
 
     @Override
-    public <V> boolean containsValue(SingleFeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .min();
@@ -152,7 +161,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
                 .max();
@@ -160,16 +169,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
-                        .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
-                .collect(Collectors.toList());
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfValue(SingleFeatureKey key) {
+    public OptionalInt sizeOfValue(FeatureKey key) {
         return valueOf(key)
                 .map(v -> OptionalInt.of((int) v))
                 .orElse(OptionalInt.empty());
@@ -181,7 +181,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend {
      * @param key  the key
      * @param size the new size
      */
-    protected void sizeFor(SingleFeatureKey key, @Nonnegative int size) {
+    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);
 
         valueFor(key, size);

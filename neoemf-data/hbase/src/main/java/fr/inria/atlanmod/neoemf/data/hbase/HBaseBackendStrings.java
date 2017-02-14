@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.hadoop.hbase.client.Table;
@@ -68,14 +68,14 @@ class HBaseBackendStrings extends HBaseBackendArrays {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
+    public Optional<Id> referenceOf(FeatureKey key) {
         return this.<String>valueOf(key)
                 .map(this::parse);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
         return this.<String>valueFor(key, format(id))
                 .map(this::parse);
     }
@@ -85,6 +85,16 @@ class HBaseBackendStrings extends HBaseBackendArrays {
     public Optional<Id> referenceOf(MultiFeatureKey key) {
         return this.<String>valueOf(key.withoutPosition())
                 .map(s -> parseArray(s)[key.position()]);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        Id[] values = this.<String>valueOf(key)
+                .map(this::parseArray)
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+
+        return Arrays.asList(values);
     }
 
     @Nonnull
@@ -138,7 +148,7 @@ class HBaseBackendStrings extends HBaseBackendArrays {
     }
 
     @Override
-    public boolean containsReference(SingleFeatureKey key, Id id) {
+    public boolean containsReference(FeatureKey key, Id id) {
         return this.<String>valueOf(key)
                 .map(s -> ArrayUtils.contains(parseArray(s), id))
                 .orElse(false);
@@ -146,7 +156,7 @@ class HBaseBackendStrings extends HBaseBackendArrays {
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         return this.<String>valueOf(key)
                 .map(s -> {
                     int index = ArrayUtils.indexOf(parseArray(s), id);
@@ -157,7 +167,7 @@ class HBaseBackendStrings extends HBaseBackendArrays {
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         return this.<String>valueOf(key)
                 .map(s -> {
                     int index = ArrayUtils.lastIndexOf(parseArray(s), id);
@@ -168,17 +178,7 @@ class HBaseBackendStrings extends HBaseBackendArrays {
 
     @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
-        Id[] values = this.<String>valueOf(key)
-                .map(this::parseArray)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        return Arrays.asList(values);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
+    public OptionalInt sizeOfReference(FeatureKey key) {
         return this.<String>valueOf(key)
                 .map(s -> OptionalInt.of(parseArray(s).length))
                 .orElse(OptionalInt.empty());

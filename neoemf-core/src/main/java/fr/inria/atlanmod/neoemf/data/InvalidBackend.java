@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Optional;
@@ -106,45 +106,45 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureKey key) {
+    public <V> void unsetValue(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public <V> boolean hasValue(SingleFeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
+    public <V> boolean hasValue(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+    public Optional<Id> referenceOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void unsetReference(SingleFeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public boolean hasReference(SingleFeatureKey key) {
+    public boolean hasReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -156,17 +156,23 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public <V> void unsetAllValues(SingleFeatureKey key) {
+    public <V> void unsetAllValues(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public <V> boolean hasAnyValue(SingleFeatureKey key) {
+    public <V> boolean hasAnyValue(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -182,36 +188,30 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public <V> void cleanValues(SingleFeatureKey key) {
+    public <V> void cleanValues(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public <V> boolean containsValue(SingleFeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt sizeOfValue(SingleFeatureKey key) {
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -223,17 +223,23 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
     public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void unsetAllReferences(SingleFeatureKey key) {
+    public void unsetAllReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public boolean hasAnyReference(SingleFeatureKey key) {
+    public boolean hasAnyReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -249,36 +255,30 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public void cleanReferences(SingleFeatureKey key) {
+    public void cleanReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public boolean containsReference(SingleFeatureKey key, Id id) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
+    public boolean containsReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
+    public OptionalInt sizeOfReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 }

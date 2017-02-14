@@ -18,8 +18,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
@@ -288,7 +288,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
 
         checkExists(id);
 
-        SingleFeatureKey key = SingleFeatureKey.of(id, attribute.name());
+        FeatureKey key = FeatureKey.of(id, attribute.name());
 
         if (!attribute.many()) {
             backend.valueFor(key, attribute.value());
@@ -324,7 +324,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
             updateContainment(id, reference.name(), idReference);
         }
 
-        SingleFeatureKey key = SingleFeatureKey.of(id, reference.name());
+        FeatureKey key = FeatureKey.of(id, reference.name());
 
         if (!reference.many()) {
             backend.referenceFor(key, idReference);

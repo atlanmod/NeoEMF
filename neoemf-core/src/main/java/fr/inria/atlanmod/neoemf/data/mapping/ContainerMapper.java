@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  *
  */
-public interface ContainerMapping {
+public interface ContainerMapper {
 
     /**
      * Retrieves the {@link ContainerDescriptor} for a given {@code id}.

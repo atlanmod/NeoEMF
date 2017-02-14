@@ -21,8 +21,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -74,32 +74,32 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return Optional.ofNullable(vertex(key.id()).getProperty(key.name()));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
         vertex(key.id()).setProperty(key.name(), value);
         return previousValue;
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(FeatureKey key) {
         vertex(key.id()).removeProperty(key.name());
     }
 
     @Override
-    public boolean hasValue(SingleFeatureKey key) {
+    public boolean hasValue(FeatureKey key) {
         Vertex vertex = vertex(key.id());
         return nonNull(vertex) && Optional.ofNullable(vertex.getProperty(key.name())).isPresent();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
+    public Optional<Id> referenceOf(FeatureKey key) {
         Iterable<Vertex> referencedVertices = vertex(key.id()).getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
@@ -108,7 +108,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
@@ -127,7 +127,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void unsetReference(SingleFeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
@@ -137,7 +137,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public boolean hasReference(SingleFeatureKey key) {
+    public boolean hasReference(FeatureKey key) {
         Vertex vertex = vertex(key.id());
         return nonNull(vertex) && StreamSupport.stream(vertex.getVertices(Direction.OUT, key.name()).spliterator(), false).findAny().isPresent();
     }
@@ -156,6 +156,22 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
         return referencedVertex.map(v -> StringId.from(v.getId()));
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        Iterable<Edge> edges = vertex(key.id()).query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .edges();
+
+        Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.getProperty(KEY_POSITION));
+
+        return StreamSupport.stream(edges.spliterator(), false)
+                .sorted(byPosition)
+                .map(e -> StringId.from(e.getVertex(Direction.IN).getId()))
+                .collect(Collectors.toList());
     }
 
     @Nonnull
@@ -185,7 +201,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void unsetAllReferences(SingleFeatureKey key) {
+    public void unsetAllReferences(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex.query()
@@ -198,7 +214,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public boolean hasAnyReference(SingleFeatureKey key) {
+    public boolean hasAnyReference(FeatureKey key) {
         return hasReference(key);
     }
 
@@ -261,7 +277,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void cleanReferences(SingleFeatureKey key) {
+    public void cleanReferences(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex.query()
@@ -275,7 +291,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public boolean containsReference(SingleFeatureKey key, Id id) {
+    public boolean containsReference(FeatureKey key, Id id) {
         Iterable<Vertex> referencedVertices = vertex(key.id()).getVertices(Direction.OUT, key.name());
 
         return StreamSupport.stream(referencedVertices.spliterator(), false)
@@ -284,7 +300,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex(id).getEdges(Direction.IN, key.name());
@@ -297,7 +313,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex(id).getEdges(Direction.IN, key.name());
@@ -308,24 +324,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .max();
     }
 
-    @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
-        Iterable<Edge> edges = vertex(key.id()).query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .edges();
-
-        Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.getProperty(KEY_POSITION));
-
-        return StreamSupport.stream(edges.spliterator(), false)
-                .sorted(byPosition)
-                .map(e -> StringId.from(e.getVertex(Direction.IN).getId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void unsetAllValues(SingleFeatureKey key) {
+    public void unsetAllValues(FeatureKey key) {
         Vertex vertex = vertex(key.id());
         String property = formatProperty(key.name(), KEY_SIZE);
 
@@ -335,13 +335,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         vertex.removeProperty(property);
     }
 
-    public boolean hasAnyValue(SingleFeatureKey key) {
+    public boolean hasAnyValue(FeatureKey key) {
         Vertex vertex = vertex(key.id());
         return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE)));
     }
 
     @Override
-    public void cleanValues(SingleFeatureKey key) {
+    public void cleanValues(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         IntStream.range(0, sizeOfValue(key).orElse(0))
@@ -354,6 +354,16 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Override
     public <V> Optional<V> valueOf(MultiFeatureKey key) {
         return Optional.ofNullable(vertex(key.id()).getProperty(formatProperty(key.name(), key.position())));
+    }
+
+    @Nonnull
+    @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        Vertex vertex = vertex(key.id());
+
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
+                .collect(Collectors.toList());
     }
 
     @Nonnull
@@ -401,7 +411,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> boolean containsValue(SingleFeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOfValue(key).orElse(0))
@@ -410,7 +420,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOfValue(key).orElse(0))
@@ -420,7 +430,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         Vertex vertex = vertex(key.id());
 
         return IntStream.range(0, sizeOfValue(key).orElse(0))
@@ -430,17 +440,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
-        Vertex vertex = vertex(key.id());
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
-                .collect(Collectors.toList());
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfValue(SingleFeatureKey key) {
+    public OptionalInt sizeOfValue(FeatureKey key) {
         return Optional.ofNullable(vertex(key.id()))
                 .map(v -> Optional.<Integer>ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE)))
                         .map(OptionalInt::of)
@@ -454,7 +454,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
      * @param key  the feature key identifying the property
      * @param size the new size
      */
-    protected void sizeFor(SingleFeatureKey key, @Nonnegative int size) {
+    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);
 
         vertex(key.id()).setProperty(formatProperty(key.name(), KEY_SIZE), size);

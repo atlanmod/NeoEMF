@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -35,23 +35,23 @@ public abstract class AbstractPersistenceBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
+    public Optional<Id> referenceOf(FeatureKey key) {
         return valueOf(key);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+    public Optional<Id> referenceFor(FeatureKey key, Id id) {
         return valueFor(key, id);
     }
 
     @Override
-    public void unsetReference(SingleFeatureKey key) {
+    public void unsetReference(FeatureKey key) {
         unsetValue(key);
     }
 
     @Override
-    public boolean hasReference(SingleFeatureKey key) {
+    public boolean hasReference(FeatureKey key) {
         return hasValue(key);
     }
 
@@ -63,17 +63,23 @@ public abstract class AbstractPersistenceBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        return allValuesOf(key);
+    }
+
+    @Nonnull
+    @Override
     public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
         return valueFor(key, id);
     }
 
     @Override
-    public void unsetAllReferences(SingleFeatureKey key) {
+    public void unsetAllReferences(FeatureKey key) {
         unsetReference(key);
     }
 
     @Override
-    public boolean hasAnyReference(SingleFeatureKey key) {
+    public boolean hasAnyReference(FeatureKey key) {
         return hasReference(key);
     }
 
@@ -89,51 +95,45 @@ public abstract class AbstractPersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void cleanReferences(SingleFeatureKey key) {
+    public void cleanReferences(FeatureKey key) {
         unsetReference(key);
     }
 
     @Override
-    public boolean containsReference(SingleFeatureKey key, Id id) {
+    public boolean containsReference(FeatureKey key, Id id) {
         return containsValue(key, id);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id id) {
         return indexOfValue(key, id);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         return lastIndexOfValue(key, id);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
-        return valuesAsList(key);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
+    public OptionalInt sizeOfReference(FeatureKey key) {
         return sizeOfValue(key);
     }
 
     @Override
-    public void unsetAllValues(SingleFeatureKey key) {
+    public void unsetAllValues(FeatureKey key) {
         unsetValue(key);
     }
 
     @Override
-    public boolean hasAnyValue(SingleFeatureKey key) {
+    public boolean hasAnyValue(FeatureKey key) {
         return hasValue(key);
     }
 
     @Override
-    public void cleanValues(SingleFeatureKey key) {
+    public void cleanValues(FeatureKey key) {
         unsetValue(key);
     }
 }

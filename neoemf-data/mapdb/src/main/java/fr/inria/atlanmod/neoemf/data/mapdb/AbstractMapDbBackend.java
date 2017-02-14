@@ -16,11 +16,11 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.IdSerializer;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.SingleFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.mapdb.DB;
@@ -58,10 +58,10 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
-     * associated {@link SingleFeatureKey}.
+     * associated {@link FeatureKey}.
      */
     @Nonnull
-    private final HTreeMap<SingleFeatureKey, Object> features;
+    private final HTreeMap<FeatureKey, Object> features;
 
     /**
      * The MapDB database.
@@ -102,7 +102,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
                 .createOrOpen();
 
         features = db.hashMap("features")
-                .keySerializer(new SingleFeatureKeySerializer())
+                .keySerializer(new FeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
     }
@@ -186,23 +186,23 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(FeatureKey key) {
         return fromDatabase(features, key);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
         return toDatabase(features, key, value);
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(FeatureKey key) {
         features.remove(key);
     }
 
     @Override
-    public boolean hasValue(SingleFeatureKey key) {
+    public boolean hasValue(FeatureKey key) {
         return features.containsKey(key);
     }
 
