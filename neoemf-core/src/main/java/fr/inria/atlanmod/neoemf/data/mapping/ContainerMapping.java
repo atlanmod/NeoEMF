@@ -28,7 +28,8 @@ public interface ContainerMapping {
      *
      * @param id the {@link Id} of the contained element
      *
-     * @return a {@link ContainerDescriptor} containing element's container information
+     * @return an {@link Optional} containing the {@link ContainerDescriptor}, or {@link Optional#empty()} if the {@code
+     * id} has no defined container.
      */
     @Nonnull
     Optional<ContainerDescriptor> containerOf(Id id);

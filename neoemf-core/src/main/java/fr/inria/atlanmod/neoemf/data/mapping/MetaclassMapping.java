@@ -28,7 +28,8 @@ public interface MetaclassMapping {
      *
      * @param id the {@link Id} of the element
      *
-     * @return a {@link MetaclassDescriptor} containing element's metaclass information
+     * @return an {@link Optional} containing the {@link MetaclassDescriptor}, or {@link Optional#empty()} if the {@code
+     * id} has no defined metaclass.
      */
     @Nonnull
     Optional<MetaclassDescriptor> metaclassOf(Id id);

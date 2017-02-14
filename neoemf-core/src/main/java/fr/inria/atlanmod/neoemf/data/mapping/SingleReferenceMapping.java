@@ -19,17 +19,44 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * ???
  */
 public interface SingleReferenceMapping {
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     @Nonnull
     Optional<Id> referenceOf(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     *
+     * @return ???
+     */
     @Nonnull
     Optional<Id> referenceFor(SingleFeatureKey key, Id id);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     */
     void unsetReference(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     boolean hasReference(SingleFeatureKey key);
 }

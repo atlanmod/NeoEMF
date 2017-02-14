@@ -21,38 +21,121 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * ???
  */
 public interface MultiReferenceMapping {
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     @Nonnull
     Optional<Id> referenceOf(MultiFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     *
+     * @return ???
+     */
     @Nonnull
     Optional<Id> referenceFor(MultiFeatureKey key, Id id);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     */
     void unsetAllReferences(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     boolean hasAnyReference(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     */
     void addReference(MultiFeatureKey key, Id id);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     @Nonnull
     Optional<Id> removeReference(MultiFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     */
     void cleanReferences(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     *
+     * @return ???
+     */
     boolean containsReference(SingleFeatureKey key, Id id);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     *
+     * @return ???
+     */
     @Nonnull
     OptionalInt indexOfReference(SingleFeatureKey key, Id id);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     *
+     * @return ???
+     */
     @Nonnull
     OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     @Nonnull
     Iterable<Id> referencesAsList(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     *
+     * @return ???
+     */
     @Nonnull
     OptionalInt sizeOfReference(SingleFeatureKey key);
 }

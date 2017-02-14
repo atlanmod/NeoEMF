@@ -18,17 +18,48 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * ???
  */
 public interface SingleValueMapping {
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> Optional<V> valueOf(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> Optional<V> valueFor(SingleFeatureKey key, V value);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     */
     <V> void unsetValue(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     <V> boolean hasValue(SingleFeatureKey key);
 }

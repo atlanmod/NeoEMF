@@ -20,38 +20,133 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * ???
  */
 public interface MultiValueMapping {
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> Optional<V> valueOf(MultiFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> Optional<V> valueFor(MultiFeatureKey key, V value);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     */
     <V> void unsetAllValues(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     <V> boolean hasAnyValue(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     */
     <V> void addValue(MultiFeatureKey key, V value);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> Optional<V> removeValue(MultiFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     */
     <V> void cleanValues(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
     <V> boolean containsValue(SingleFeatureKey key, V value);
 
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> OptionalInt indexOfValue(SingleFeatureKey key, V value);
 
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> Iterable<V> valuesAsList(SingleFeatureKey key);
 
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param <V> ???
+     *
+     * @return ???
+     */
     @Nonnull
     <V> OptionalInt sizeOfValue(SingleFeatureKey key);
 }
