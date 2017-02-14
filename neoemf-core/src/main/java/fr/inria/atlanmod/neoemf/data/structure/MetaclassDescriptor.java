@@ -33,7 +33,7 @@ import static java.util.Objects.isNull;
 public class MetaclassDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = -2995001384624228909L;
+    private static final long serialVersionUID = 3630220484508625215L;
 
     /**
      * The name of the metaclass.

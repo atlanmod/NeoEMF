@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class MultiFeatureKey extends SingleFeatureKey implements Serializable {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 1490416524145854914L;
+    private static final long serialVersionUID = 7159493156068733506L;
 
     /**
      * The position of this key.

@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.impl.EStoreEObjectImpl.BasicEStoreEList;
 public class DelegatedStoreList<E> extends BasicEStoreEList<E> {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 2375216516807438922L;
+    private static final long serialVersionUID = 2630358403343923944L;
 
     /**
      * Constructs a new {@code DelegatedStoreList} with the given {@code feature}.

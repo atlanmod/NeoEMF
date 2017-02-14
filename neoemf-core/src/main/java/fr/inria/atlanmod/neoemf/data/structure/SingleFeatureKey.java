@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class SingleFeatureKey implements Comparable<SingleFeatureKey>, Serializable {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = 8486532626389142007L;
+    private static final long serialVersionUID = -2197099155190693261L;
 
     /**
      * The identifier of the object.

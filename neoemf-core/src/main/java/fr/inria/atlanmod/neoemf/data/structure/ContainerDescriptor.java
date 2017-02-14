@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ContainerDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = -8317521039028966575L;
+    private static final long serialVersionUID = -3357337595522803972L;
 
     /**
      * The identifier of the object.
