@@ -26,37 +26,37 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
 
     @Override
-    public void handleStartDocument() {
+    public void onInitialize() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleEndElement() {
+    public void onCharacters(String characters) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onEndElement() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void handleCharacters(String characters) {
+    public void onComplete() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

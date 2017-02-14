@@ -48,14 +48,14 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void handleStartDocument() {
+    public void onInitialize() {
         log.info("[#] Starting document");
 
-        super.handleStartDocument();
+        notifyInitialize();
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         log.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 element.ns().prefix(),
                 element.name(),
@@ -65,34 +65,34 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
         currentId = element.id();
 
-        super.handleStartElement(element);
+        notifyStartElement(element);
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         log.info("[A]    {0} ({1}) = {2}",
                 attribute.name(),
                 attribute.index(),
                 attribute.value());
 
-        super.handleAttribute(attribute);
+        notifyAttribute(attribute);
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         log.info("[R]    {0} ({1}) = {2} -> {3}",
                 reference.name(),
                 reference.index(),
                 Objects.isNull(reference.id()) ? "this" : reference.id(),
                 Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
 
-        super.handleReference(reference);
+        notifyReference(reference);
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onComplete() {
         log.info("[#] Ending document");
 
-        super.handleEndDocument();
+        notifyComplete();
     }
 }

@@ -56,32 +56,32 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         elementCount++;
 
-        super.handleStartElement(element);
+        notifyStartElement(element);
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         attributeCount++;
 
-        super.handleAttribute(attribute);
+        notifyAttribute(attribute);
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         referenceCount++;
 
-        super.handleReference(reference);
+        notifyReference(reference);
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onComplete() {
         NeoLogger.info("Elements   : {0}", elementCount);
         NeoLogger.info("Attributes : {0}", attributeCount);
         NeoLogger.info("References : {0}", referenceCount);
 
-        super.handleEndDocument();
+        notifyComplete();
     }
 }

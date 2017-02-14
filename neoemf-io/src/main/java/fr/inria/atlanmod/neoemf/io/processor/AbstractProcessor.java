@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -39,44 +38,37 @@ public class AbstractProcessor<P extends Handler> extends AbstractNotifier<P> im
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleStartDocument() {
-        notifyStartDocument();
+    public void onInitialize() {
+        notifyInitialize();
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         notifyStartElement(element);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         notifyReference(reference);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleEndElement() {
+    public void onCharacters(String characters) {
+        notifyCharacters(characters);
+    }
+
+    @Override
+    public void onEndElement() {
         notifyEndElement();
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleEndDocument() {
-        notifyEndDocument();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleCharacters(String characters) {
-        notifyCharacters(characters);
+    public void onComplete() {
+        notifyComplete();
     }
 }

@@ -133,7 +133,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleStartDocument() {
+    public void onInitialize() {
         // Create the 'ROOT' node with the default metaclass
         RawMetaclass metaClass = RawMetaclass.getDefault();
 
@@ -147,12 +147,12 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         idsStack.addLast(createElement(element));
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         Id id = Optional.ofNullable(attribute.id())
                 .map(this::getOrCreateId)
                 .orElse(idsStack.getLast());
@@ -161,7 +161,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         Id id = Optional.ofNullable(reference.id())
                 .map(this::getOrCreateId)
                 .orElse(idsStack.getLast());
@@ -172,18 +172,18 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleEndElement() {
+    public void onCharacters(String characters) {
+        // Do nothing
+    }
+
+    @Override
+    public void onEndElement() {
         idsStack.removeLast();
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onComplete() {
         backend.save();
-    }
-
-    @Override
-    public void handleCharacters(String characters) {
-        // Do nothing
     }
 
     /**

@@ -77,7 +77,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         // If the first element has an identifier, we assume that the file is ID-based.
         if (nonNull(element.id())) {
             hasIds = true;
@@ -104,31 +104,31 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
             }
         }
 
-        super.handleStartElement(element);
+        notifyStartElement(element);
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         if (!hasIds) {
             // Format the reference according internal XPath management
             reference.idReference(RawId.generated(formatPath(reference.idReference().value())));
         }
 
-        super.handleReference(reference);
+        notifyReference(reference);
     }
 
     @Override
-    public void handleEndElement() {
+    public void onEndElement() {
         if (!hasIds) {
             // Removes children of the last element
             paths.clearLast();
         }
 
-        super.handleEndElement();
+        notifyEndElement();
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onComplete() {
         if (!hasIds) {
             long size = paths.size();
             if (size > 1) {
@@ -136,7 +136,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
             }
         }
 
-        super.handleEndDocument();
+        notifyComplete();
     }
 
     /**

@@ -16,45 +16,46 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * A persistence handler that does nothing.
- * <p>
- * Using for basic tests.
+ * A {@link PersistenceWriter} that does nothing.
  */
+@ParametersAreNonnullByDefault
 public class DummyPersistenceWriter implements PersistenceWriter {
 
     @Override
-    public void handleStartDocument() {
+    public void onInitialize() {
         // Do nothing
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         // Do nothing
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         // Do nothing
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         // Do nothing
     }
 
     @Override
-    public void handleEndElement() {
+    public void onCharacters(String characters) {
         // Do nothing
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onEndElement() {
         // Do nothing
     }
 
     @Override
-    public void handleCharacters(String characters) {
+    public void onComplete() {
         // Do nothing
     }
 }

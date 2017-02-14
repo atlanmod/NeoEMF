@@ -25,12 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * ???
+ * A {@link PersistenceWriter} that stores all elements in {@link java.util.Collection}s.
  */
+@ParametersAreNonnullByDefault
 public class StructuralPersistanceWriter implements PersistenceWriter {
 
     private final Map<String, ElementMock> elementMocks;
@@ -50,12 +53,12 @@ public class StructuralPersistanceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleStartDocument() {
+    public void onInitialize() {
         // Do nothing
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         ElementMock mock = new ElementMock(element);
 
         if (!elementsStack.isEmpty()) {
@@ -72,7 +75,7 @@ public class StructuralPersistanceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         if (isNull(attribute.id()) || attribute.id().equals(elementsStack.getLast().id())) {
             elementsStack.getLast().attributes().add(attribute);
         }
@@ -88,7 +91,7 @@ public class StructuralPersistanceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         if (isNull(reference.id()) || reference.id().equals(elementsStack.getLast().id())) {
             elementsStack.getLast().references().add(reference);
         }
@@ -104,17 +107,17 @@ public class StructuralPersistanceWriter implements PersistenceWriter {
     }
 
     @Override
-    public void handleEndElement() {
-        elementsStack.removeLast();
-    }
-
-    @Override
-    public void handleEndDocument() {
+    public void onCharacters(String characters) {
         // Do nothing
     }
 
     @Override
-    public void handleCharacters(String characters) {
+    public void onEndElement() {
+        elementsStack.removeLast();
+    }
+
+    @Override
+    public void onComplete() {
         // Do nothing
     }
 }

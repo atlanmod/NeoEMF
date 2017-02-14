@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A object that handles events notified by a {@link Notifier}.
+ * A object that handles events received from a {@link Notifier}.
  *
  * @see Notifier
  */
@@ -26,63 +26,66 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface Handler {
 
     /**
-     * Process the start of a document.
+     * Handles the start of a task.
      *
-     * @see Notifier#notifyStartDocument()
+     * @see #onComplete()
+     * @see Notifier#notifyInitialize()
      */
-    void handleStartDocument();
+    void onInitialize();
 
     /**
-     * Process the start of an element.
+     * Handles the start of an element.
      *
      * @param element the element of the new element
      *
+     * @see #onEndElement()
      * @see Notifier#notifyStartElement(RawElement)
      */
-    void handleStartElement(RawElement element);
+    void onStartElement(RawElement element);
 
     /**
-     * Process an attribute in the current element.
-     * <p>
-     * An attribute is a simple key/value.
+     * Handles an attribute in the current element.
      *
      * @param attribute the new attribute
      *
+     * @see #onStartElement(RawElement)
      * @see Notifier#notifyAttribute(RawAttribute)
      */
-    void handleAttribute(RawAttribute attribute);
+    void onAttribute(RawAttribute attribute);
 
     /**
-     * Process a reference from the current element to another element.
-     * <p>
-     * A reference is an attribute which is link to another element.
+     * Handles a reference from the current element to another.
      *
      * @param reference the new reference
      *
+     * @see #onStartElement(RawElement)
      * @see Notifier#notifyReference(RawReference)
      */
-    void handleReference(RawReference reference);
+    void onReference(RawReference reference);
 
     /**
-     * Process the end of the current element.
-     *
-     * @see Notifier#notifyEndElement()
-     */
-    void handleEndElement();
-
-    /**
-     * Process the end of a document.
-     *
-     * @see Notifier#notifyEndDocument()
-     */
-    void handleEndDocument();
-
-    /**
-     * Process a set of characters.
+     * Handles a set of characters.
      *
      * @param characters the new characters
      *
+     * @see #onStartElement(RawElement)
      * @see Notifier#notifyCharacters(String)
      */
-    void handleCharacters(String characters);
+    void onCharacters(String characters);
+
+    /**
+     * Handles the end of the current element.
+     *
+     * @see #onStartElement(RawElement)
+     * @see Notifier#notifyEndElement()
+     */
+    void onEndElement();
+
+    /**
+     * Handles the end of the current task.
+     *
+     * @see #onInitialize()
+     * @see Notifier#notifyComplete()
+     */
+    void onComplete();
 }

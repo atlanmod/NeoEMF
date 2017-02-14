@@ -38,17 +38,17 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void handleStartDocument() {
+    public void onInitialize() {
         NeoLogger.info("Document analysis in progress...");
         stopWatch = Stopwatch.createStarted();
 
-        super.handleStartDocument();
+        notifyInitialize();
     }
 
     @Override
-    public void handleEndDocument() {
+    public void onComplete() {
         NeoLogger.info("Document analysis done in {0}", stopWatch.stop());
 
-        super.handleEndDocument();
+        notifyComplete();
     }
 }

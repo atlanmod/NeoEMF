@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.tests.io;
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.io.Importer;
+import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -514,7 +514,7 @@ public class ImportTest extends AbstractBackendTest {
 
         try (PersistenceBackend backend = context().createBackend(file())) {
             PersistenceWriter handler = WriterFactory.newNaiveWriter(backend);
-            Importer.fromXmi(new FileInputStream(file), handler);
+            IOFactory.fromXmi(new FileInputStream(file), handler);
         }
 
         PersistentResource resource = context().loadResource(null, file());

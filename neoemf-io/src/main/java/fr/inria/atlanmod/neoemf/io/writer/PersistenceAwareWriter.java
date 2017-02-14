@@ -64,15 +64,15 @@ public class PersistenceAwareWriter extends AbstractPersistenceWriter {
     }
 
     @Override
-    public void handleStartElement(RawElement element) {
-        super.handleStartElement(element);
+    public void onStartElement(RawElement element) {
+        super.onStartElement(element);
 
         tryLink(element.id().value(), idsStack.getLast());
     }
 
     @Override
-    public void handleEndDocument() {
-        super.handleEndDocument();
+    public void onComplete() {
+        super.onComplete();
 
         long unlinkedNumber = unlinkedElements.size();
         if (unlinkedNumber > 0) {

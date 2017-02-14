@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
@@ -24,16 +24,16 @@ import java.io.InputStream;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Static methods to import data into NeoEMF.
+ * Static methods to import/export data.
  */
-public final class Importer {
+public final class IOFactory {
 
     /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
      */
-    private Importer() {
+    private IOFactory() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 

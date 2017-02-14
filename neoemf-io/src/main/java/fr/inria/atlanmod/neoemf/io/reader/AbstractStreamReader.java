@@ -49,7 +49,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      * Processes the start of the document.
      */
     protected final void readStartDocument() {
-        notifyStartDocument();
+        notifyInitialize();
         progress(0);
     }
 
@@ -70,7 +70,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      */
     protected final void readEndDocument() {
         progress(100);
-        notifyEndDocument();
+        notifyComplete();
     }
 
     /**

@@ -52,7 +52,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private final Deque<RawId> idsStack;
 
     /**
-     * RawAttribute waiting a value (via {@link #handleCharacters(String)}.
+     * RawAttribute that waits a value (via {@link #onCharacters(String)}.
      */
     private RawAttribute waitingAttribute;
 
@@ -74,8 +74,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
-    public void handleStartElement(RawElement element) {
+    public void onStartElement(RawElement element) {
         // Is root
         if (classesStack.isEmpty()) {
             processElementAsRoot(element);
@@ -87,7 +86,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void handleAttribute(RawAttribute attribute) {
+    public void onAttribute(RawAttribute attribute) {
         EClass eClass = classesStack.getLast();
         EStructuralFeature feature = eClass.getEStructuralFeature(attribute.name());
 
@@ -95,17 +94,18 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         if (feature instanceof EAttribute) {
             EAttribute eAttribute = (EAttribute) feature;
             attribute.many(eAttribute.isMany());
-            super.handleAttribute(attribute);
+
+            notifyAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
         else if (feature instanceof EReference) {
-            handleReference(RawReference.from(attribute));
+            onReference(RawReference.from(attribute));
         }
     }
 
     @Override
-    public void handleReference(RawReference reference) {
+    public void onReference(RawReference reference) {
         EClass eClass = classesStack.getLast();
         EStructuralFeature feature = eClass.getEStructuralFeature(reference.name());
 
@@ -114,39 +114,39 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             EReference eReference = (EReference) feature;
             reference.containment(eReference.isContainment());
             reference.many(eReference.isMany());
-            super.handleReference(reference);
+
+            notifyReference(reference);
         }
 
         // Otherwise redirect to the attribute handler
         else if (feature instanceof EAttribute) {
-            handleAttribute(RawAttribute.from(reference));
+            onAttribute(RawAttribute.from(reference));
         }
     }
 
     @Override
-    public void handleEndElement() {
+    public void onCharacters(String characters) {
+        // Defines the value of the waiting attribute, if exists
+        if (nonNull(waitingAttribute)) {
+            waitingAttribute.value(characters);
+            onAttribute(waitingAttribute);
+
+            waitingAttribute = null;
+        }
+    }
+
+    @Override
+    public void onEndElement() {
         if (!previousWasAttribute) {
             classesStack.removeLast();
             idsStack.removeLast();
 
-            super.handleEndElement();
+            notifyEndElement();
         }
         else {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
             waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
             previousWasAttribute = false;
-        }
-    }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
-    public void handleCharacters(String characters) {
-        // Defines the value of the waiting attribute, if exists
-        if (nonNull(waitingAttribute)) {
-            waitingAttribute.value(characters);
-            handleAttribute(waitingAttribute);
-
-            waitingAttribute = null;
         }
     }
 
@@ -176,7 +176,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         element.root(true);
 
         // Notifies next handlers
-        super.handleStartElement(element);
+        notifyStartElement(element);
 
         // Saves the current EClass
         classesStack.addLast(eClass);
@@ -247,7 +247,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         element.ns(ns);
 
         // Notify next handlers of new element, and retrieve its identifier
-        super.handleStartElement(element);
+        notifyStartElement(element);
         RawId currentId = element.id();
 
         // Create a reference from the parent to this element, with the given local name
@@ -260,7 +260,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             ref.containment(reference.isContainment());
             ref.many(reference.isMany());
 
-            handleReference(ref);
+            onReference(ref);
         }
 
         // Save EClass and identifier

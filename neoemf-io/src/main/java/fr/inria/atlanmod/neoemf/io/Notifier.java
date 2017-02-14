@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
+ * An object that notifies registered {@link Handler}s of events during an I/O process.
  *
  * @param <H> the type of handlers
  *
@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public interface Notifier<H extends Handler> {
 
     /**
-     * Returns the {@link Handler} that will be notified by this {@code Notifier}.
+     * Returns the {@link Handler}s that will be notified by this {@code Notifier}.
      *
      * @return the handler to notify
      */
@@ -39,13 +39,13 @@ public interface Notifier<H extends Handler> {
     Iterable<H> next();
 
     /**
-     * Notifies all registered handlers of the start of a document.
+     * Notifies all registered handlers of the start of a task.
      *
-     * @see #notifyEndDocument()
-     * @see Handler#handleStartDocument()
+     * @see #notifyComplete()
+     * @see Handler#onInitialize()
      */
-    default void notifyStartDocument() {
-        next().forEach(Handler::handleStartDocument);
+    default void notifyInitialize() {
+        next().forEach(Handler::onInitialize);
     }
 
     /**
@@ -54,12 +54,12 @@ public interface Notifier<H extends Handler> {
      * @param element the element of the new element
      *
      * @see #notifyEndElement()
-     * @see Handler#handleStartElement(RawElement)
+     * @see Handler#onStartElement(RawElement)
      */
     default void notifyStartElement(RawElement element) {
         checkNotNull(element);
 
-        next().forEach(h -> h.handleStartElement(element));
+        next().forEach(h -> h.onStartElement(element));
     }
 
     /**
@@ -67,12 +67,12 @@ public interface Notifier<H extends Handler> {
      *
      * @param attribute the new attribute
      *
-     * @see Handler#handleAttribute(RawAttribute)
+     * @see Handler#onAttribute(RawAttribute)
      */
     default void notifyAttribute(RawAttribute attribute) {
         checkNotNull(attribute);
 
-        next().forEach(h -> h.handleAttribute(attribute));
+        next().forEach(h -> h.onAttribute(attribute));
     }
 
     /**
@@ -80,12 +80,12 @@ public interface Notifier<H extends Handler> {
      *
      * @param reference the new reference
      *
-     * @see Handler#handleReference(RawReference)
+     * @see Handler#onReference(RawReference)
      */
     default void notifyReference(RawReference reference) {
         checkNotNull(reference);
 
-        next().forEach(h -> h.handleReference(reference));
+        next().forEach(h -> h.onReference(reference));
     }
 
     /**
@@ -93,31 +93,31 @@ public interface Notifier<H extends Handler> {
      *
      * @param characters the new characters
      *
-     * @see Handler#handleCharacters(String)
+     * @see Handler#onCharacters(String)
      */
     default void notifyCharacters(String characters) {
         checkNotNull(characters);
 
-        next().forEach(h -> h.handleCharacters(characters));
+        next().forEach(h -> h.onCharacters(characters));
     }
 
     /**
      * Notifies all registered handlers of the end of the current element.
      *
      * @see #notifyStartElement(RawElement)
-     * @see Handler#handleEndElement()
+     * @see Handler#onEndElement()
      */
     default void notifyEndElement() {
-        next().forEach(Handler::handleEndElement);
+        next().forEach(Handler::onEndElement);
     }
 
     /**
-     * Notifies all registered handlers of the end of the current document.
+     * Notifies all registered handlers of the end of the current task.
      *
-     * @see #notifyStartDocument()
-     * @see Handler#handleEndDocument()
+     * @see #notifyInitialize()
+     * @see Handler#onComplete()
      */
-    default void notifyEndDocument() {
-        next().forEach(Handler::handleEndDocument);
+    default void notifyComplete() {
+        next().forEach(Handler::onComplete);
     }
 }
