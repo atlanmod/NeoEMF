@@ -106,7 +106,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
     @Nonnull
     @Override
     public PersistenceBackend createTransientBackend() {
-        return new DefaultBlueprintsBackend(new TinkerGraph());
+        return new BlueprintsBackendIndices(new TinkerGraph());
     }
 
     @Nonnull
@@ -125,7 +125,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                 Graph baseGraph = GraphFactory.open(configuration);
 
                 if (baseGraph instanceof KeyIndexableGraph) {
-                    backend = new DefaultBlueprintsBackend((KeyIndexableGraph) baseGraph);
+                    backend = new BlueprintsBackendIndices((KeyIndexableGraph) baseGraph);
                 }
                 else {
                     NeoLogger.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());

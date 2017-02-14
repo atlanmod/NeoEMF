@@ -55,20 +55,20 @@ import static java.util.Objects.nonNull;
  * @see BlueprintsBackendFactory
  */
 @ParametersAreNonnullByDefault
-class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
+class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     /**
-     * Constructs a new {@code DefaultBlueprintsBackend} wrapping the provided {@code baseGraph}.
+     * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is protected. To create a new {@code DefaultBlueprintsBackend} use {@link
+     * @note This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
      * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see BlueprintsBackendFactory
      */
-    protected DefaultBlueprintsBackend(KeyIndexableGraph baseGraph) {
+    protected BlueprintsBackendIndices(KeyIndexableGraph baseGraph) {
         super(baseGraph);
     }
 
