@@ -73,9 +73,10 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> void addValue(MultiFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElse(newValue());
+                .orElse((V[]) new Object[0]);
 
         while (key.position() > values.length) {
             values = ArrayUtils.add(values, values.length, null);
@@ -148,18 +149,5 @@ class HBaseBackendArrays extends AbstractHBaseBackend {
         return this.<V[]>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.length))
                 .orElse(OptionalInt.empty());
-    }
-
-    /**
-     * Creates a new multi-value.
-     *
-     * @param <V> the type of the multi-value
-     *
-     * @return a new multi-value
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private <V> V[] newValue() {
-        return (V[]) new Object[0];
     }
 }

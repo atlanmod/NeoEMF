@@ -144,130 +144,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()).getProperty(formatProperty(key.name(), key.position())));
-    }
-
-    @Nonnull
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
-        Optional<V> previousValue = valueOf(key);
-        vertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
-        return previousValue;
-    }
-
-    @Override
-    public void unsetAllValues(SingleFeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        String property = formatProperty(key.name(), KEY_SIZE);
-
-        IntStream.range(0, vertex.getProperty(property))
-                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
-
-        vertex.removeProperty(property);
-    }
-
-    public boolean hasAnyValue(SingleFeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE)));
-    }
-
-    @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
-        int size = sizeOfValue(key).orElse(0);
-        int newSize = size + 1;
-
-        Vertex vertex = vertex(key.id());
-
-        // TODO Replace by Stream
-        for (int i = size; i > key.position(); i--) {
-            vertex.setProperty(formatProperty(key.name(), i), vertex.getProperty(formatProperty(key.name(), (i - 1))));
-        }
-
-        vertex.setProperty(formatProperty(key.name(), key.position()), value);
-
-        sizeFor(key, newSize);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
-        int size = sizeOfValue(key).orElse(0);
-        int newSize = size - 1;
-
-        Vertex vertex = vertex(key.id());
-
-        Optional<V> previousValue = Optional.ofNullable(vertex.getProperty(formatProperty(key.name(), key.position())));
-
-        // TODO Replace by Stream
-        for (int i = newSize; i > key.position(); i--) {
-            vertex.setProperty(formatProperty(key.name(), i - 1), vertex.getProperty(formatProperty(key.name(), i)));
-        }
-
-        sizeFor(key, newSize);
-
-        return previousValue;
-    }
-
-    @Override
-    public void cleanValues(SingleFeatureKey key) {
-        Vertex vertex = vertex(key.id());
-
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
-
-        sizeFor(key, 0);
-    }
-
-    @Override
-    public <V> boolean containsValue(SingleFeatureKey key, V value) {
-        Vertex vertex = vertex(key.id());
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .anyMatch(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value));
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
-        Vertex vertex = vertex(key.id());
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
-                .min();
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
-        Vertex vertex = vertex(key.id());
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
-                .max();
-    }
-
-    @Nonnull
-    @Override
-    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
-        Vertex vertex = vertex(key.id());
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
-                .collect(Collectors.toList());
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfValue(SingleFeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()))
-                .map(v -> Optional.<Integer>ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE)))
-                        .map(OptionalInt::of)
-                        .orElse(OptionalInt.empty()))
-                .orElse(OptionalInt.empty());
-    }
-
-    @Nonnull
-    @Override
     public Optional<Id> referenceOf(MultiFeatureKey key) {
         Vertex vertex = vertex(key.id());
 
@@ -448,10 +324,128 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void unsetAllValues(SingleFeatureKey key) {
+        Vertex vertex = vertex(key.id());
+        String property = formatProperty(key.name(), KEY_SIZE);
+
+        IntStream.range(0, vertex.getProperty(property))
+                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+
+        vertex.removeProperty(property);
+    }
+
+    public boolean hasAnyValue(SingleFeatureKey key) {
+        Vertex vertex = vertex(key.id());
+        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE)));
+    }
+
+    @Override
+    public void cleanValues(SingleFeatureKey key) {
+        Vertex vertex = vertex(key.id());
+
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+
+        sizeFor(key, 0);
+    }
+
     @Nonnull
     @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
-        return sizeOfValue(key);
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+        return Optional.ofNullable(vertex(key.id()).getProperty(formatProperty(key.name(), key.position())));
+    }
+
+    @Nonnull
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        Optional<V> previousValue = valueOf(key);
+        vertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
+        return previousValue;
+    }
+
+    @Override
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        int size = sizeOfValue(key).orElse(0);
+        int newSize = size + 1;
+
+        Vertex vertex = vertex(key.id());
+
+        // TODO Replace by Stream
+        for (int i = size; i > key.position(); i--) {
+            vertex.setProperty(formatProperty(key.name(), i), vertex.getProperty(formatProperty(key.name(), (i - 1))));
+        }
+
+        vertex.setProperty(formatProperty(key.name(), key.position()), value);
+
+        sizeFor(key, newSize);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        int size = sizeOfValue(key).orElse(0);
+        int newSize = size - 1;
+
+        Vertex vertex = vertex(key.id());
+
+        Optional<V> previousValue = Optional.ofNullable(vertex.getProperty(formatProperty(key.name(), key.position())));
+
+        // TODO Replace by Stream
+        for (int i = newSize; i > key.position(); i--) {
+            vertex.setProperty(formatProperty(key.name(), i - 1), vertex.getProperty(formatProperty(key.name(), i)));
+        }
+
+        sizeFor(key, newSize);
+
+        return previousValue;
+    }
+
+    @Override
+    public <V> boolean containsValue(SingleFeatureKey key, V value) {
+        Vertex vertex = vertex(key.id());
+
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .anyMatch(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value));
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt indexOfValue(SingleFeatureKey key, V value) {
+        Vertex vertex = vertex(key.id());
+
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
+                .min();
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt lastIndexOfValue(SingleFeatureKey key, V value) {
+        Vertex vertex = vertex(key.id());
+
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
+                .max();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Iterable<V> valuesAsList(SingleFeatureKey key) {
+        Vertex vertex = vertex(key.id());
+
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
+                .collect(Collectors.toList());
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfValue(SingleFeatureKey key) {
+        return Optional.ofNullable(vertex(key.id()))
+                .map(v -> Optional.<Integer>ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE)))
+                        .map(OptionalInt::of)
+                        .orElse(OptionalInt.empty()))
+                .orElse(OptionalInt.empty());
     }
 
     /**

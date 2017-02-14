@@ -75,7 +75,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
     @Override
     public <V> void addValue(MultiFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElse(newValue());
+                .orElse(new ArrayList<>());
 
         while (key.position() > values.size()) {
             values.add(null);
@@ -146,23 +146,5 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend {
         return this.<List<V>>valueOf(key)
                 .map(ts -> OptionalInt.of(ts.size()))
                 .orElse(OptionalInt.empty());
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
-        return sizeOfValue(key);
-    }
-
-    /**
-     * Creates a new multi-value.
-     *
-     * @param <V> the type of the multi-value
-     *
-     * @return a new multi-value
-     */
-    @Nonnull
-    private <V> List<V> newValue() {
-        return new ArrayList<>();
     }
 }

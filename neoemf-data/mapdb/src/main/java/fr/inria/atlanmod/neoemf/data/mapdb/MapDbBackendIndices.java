@@ -177,12 +177,6 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
                 .orElse(OptionalInt.empty());
     }
 
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
-        return sizeOfValue(key);
-    }
-
     /**
      * Defines the {@code size} of the given {@code key}.
      *

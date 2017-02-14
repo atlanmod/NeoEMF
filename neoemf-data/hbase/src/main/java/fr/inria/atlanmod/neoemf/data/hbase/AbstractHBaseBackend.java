@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -31,7 +30,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -86,6 +84,11 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     protected final Table table;
 
     /**
+     * ???
+     */
+    private boolean isClosed;
+
+    /**
      * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
      * BerkeleyDB doesn't support {@link Id} creation.
      */
@@ -98,6 +101,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      */
     protected AbstractHBaseBackend(Table table) {
         this.table = checkNotNull(table);
+        this.isClosed = false;
     }
 
     @Override
@@ -109,6 +113,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     public void close() {
         try {
             table.close();
+            isClosed = true;
         }
         catch (IOException e) {
             NeoLogger.error(e);
@@ -117,7 +122,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public boolean isClosed() {
-        return false;
+        return isClosed;
     }
 
     @Override
@@ -218,110 +223,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Override
     public boolean hasValue(SingleFeatureKey key) {
         return fromDatabase(key).isPresent();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
-        return valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
-        return valueFor(key, id);
-    }
-
-    @Override
-    public void unsetReference(SingleFeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public boolean hasReference(SingleFeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
-        return valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
-        return valueFor(key, id);
-    }
-
-    @Override
-    public void unsetAllReferences(SingleFeatureKey key) {
-        unsetReference(key);
-    }
-
-    @Override
-    public boolean hasAnyReference(SingleFeatureKey key) {
-        return hasReference(key);
-    }
-
-    @Override
-    public void addReference(MultiFeatureKey key, Id id) {
-        addValue(key, id);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
-        return removeValue(key);
-    }
-
-    @Override
-    public void cleanReferences(SingleFeatureKey key) {
-        unsetReference(key);
-    }
-
-    @Override
-    public boolean containsReference(SingleFeatureKey key, Id id) {
-        return containsValue(key, id);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt indexOfReference(SingleFeatureKey key, Id id) {
-        return indexOfValue(key, id);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt lastIndexOfReference(SingleFeatureKey key, Id id) {
-        return lastIndexOfValue(key, id);
-    }
-
-    @Nonnull
-    @Override
-    public Iterable<Id> referencesAsList(SingleFeatureKey key) {
-        return valuesAsList(key);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfReference(SingleFeatureKey key) {
-        return sizeOfValue(key);
-    }
-
-    @Override
-    public void unsetAllValues(SingleFeatureKey key) {
-        unsetValue(key);
-    }
-
-    @Override
-    public boolean hasAnyValue(SingleFeatureKey key) {
-        return hasValue(key);
-    }
-
-    @Override
-    public void cleanValues(SingleFeatureKey key) {
-        unsetValue(key);
     }
 
     /**

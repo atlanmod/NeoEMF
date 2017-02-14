@@ -75,16 +75,16 @@ class HBaseBackendStrings extends HBaseBackendArrays {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
-        return this.<String>valueOf(key.withoutPosition())
-                .map(s -> parseArray(s)[key.position()]);
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
+        return this.<String>valueFor(key, format(id))
+                .map(this::parse);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id id) {
-        return this.<String>valueFor(key, format(id))
-                .map(this::parse);
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        return this.<String>valueOf(key.withoutPosition())
+                .map(s -> parseArray(s)[key.position()]);
     }
 
     @Nonnull
