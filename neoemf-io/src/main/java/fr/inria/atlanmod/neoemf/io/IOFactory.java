@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
-import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
+import fr.inria.atlanmod.neoemf.io.writer.Writer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,18 +38,18 @@ public final class IOFactory {
     }
 
     /**
-     * Imports a XMI file into persistence handlers.
+     * Imports an XMI file into writers.
      *
-     * @param stream   the stream of XMI data
-     * @param handlers the persistence handlers where to store the read data
+     * @param stream  the stream of XMI data
+     * @param writers the writers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException              if an error occurred during the import
      */
-    public static void fromXmi(InputStream stream, PersistenceWriter... handlers) throws IOException {
-        checkNotNull(handlers, "The handler must be defined");
+    public static void fromXmi(InputStream stream, Writer... writers) throws IOException {
+        checkNotNull(writers);
 
-        Processor processor = new DirectWriteProcessor(handlers);
+        Processor processor = new DirectWriteProcessor(writers);
 
         // Custom options come here
 
