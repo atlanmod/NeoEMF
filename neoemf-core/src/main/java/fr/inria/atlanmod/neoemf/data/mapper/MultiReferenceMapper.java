@@ -99,7 +99,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @param id  ???
      */
     default void appendReference(FeatureKey key, Id id) {
-        appendValue(key.withPosition(sizeOfReference(key).orElse(0)), id);
+        addReference(key.withPosition(sizeOfReference(key).orElse(0)), id);
     }
 
     /**
