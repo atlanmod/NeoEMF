@@ -142,9 +142,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
         checkArgument(target instanceof AbstractBerkeleyDbBackend);
         AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
 
-        copyDatabaseTo(instances, to.instances);
-        copyDatabaseTo(features, to.features);
-        copyDatabaseTo(containers, to.containers);
+        copy(instances, to.instances);
+        copy(features, to.features);
+        copy(containers, to.containers);
     }
 
     @Override
@@ -160,29 +160,29 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        return fromDatabase(containers, id);
+        return get(containers, id);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        toDatabase(containers, id, container);
+        put(containers, id, container);
     }
 
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
-        return fromDatabase(instances, id);
+        return get(instances, id);
     }
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
-        toDatabase(instances, id, metaclass);
+        put(instances, id, metaclass);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return fromDatabase(features, key);
+        return get(features, key);
     }
 
     @Nonnull
@@ -190,19 +190,19 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
-        toDatabase(features, key, value);
+        put(features, key, value);
 
         return previousValue;
     }
 
     @Override
     public void unsetValue(FeatureKey key) {
-        outDatabase(features, key);
+        delete(features, key);
     }
 
     @Override
     public boolean hasValue(FeatureKey key) {
-        return fromDatabase(features, key).isPresent();
+        return get(features, key).isPresent();
     }
 
     /**
@@ -231,7 +231,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * found
      */
     @Nonnull
-    protected <K, V> Optional<V> fromDatabase(Database database, K key) {
+    protected <K, V> Optional<V> get(Database database, K key) {
         DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry();
 
@@ -254,7 +254,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * @param <K>      the type of the key
      * @param <V>      the type of the value
      */
-    protected <K, V> void toDatabase(Database database, K key, V value) {
+    protected <K, V> void put(Database database, K key, V value) {
         DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry(ObjectSerializer.serialize(value));
 
@@ -268,7 +268,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * @param key      the key of the element to remove
      * @param <K>      the type of the key
      */
-    protected <K> void outDatabase(Database database, K key) {
+    protected <K> void delete(Database database, K key) {
         DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
 
         database.delete(null, dbKey);
@@ -280,7 +280,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * @param from the database to copy
      * @param to   the database to copy the database contents to
      */
-    protected void copyDatabaseTo(Database from, Database to) {
+    protected void copy(Database from, Database to) {
         try (Cursor cursor = from.openCursor(null, null)) {
             DatabaseEntry dbKey = new DatabaseEntry();
             DatabaseEntry dbValue = new DatabaseEntry();

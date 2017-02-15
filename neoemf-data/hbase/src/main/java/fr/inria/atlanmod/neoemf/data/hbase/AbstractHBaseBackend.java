@@ -148,7 +148,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        return fromDatabase(id)
+        return get(id)
                 .map(result -> {
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
@@ -175,7 +175,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
-        return fromDatabase(id)
+        return get(id)
                 .map(result -> {
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
@@ -202,7 +202,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return fromDatabase(key);
+        return get(key);
     }
 
     @Nonnull
@@ -210,19 +210,19 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
-        toDatabase(key, value);
+        put(key, value);
 
         return previousValue;
     }
 
     @Override
     public void unsetValue(FeatureKey key) {
-        outDatabase(key);
+        delete(key);
     }
 
     @Override
     public boolean hasValue(FeatureKey key) {
-        return fromDatabase(key).isPresent();
+        return get(key).isPresent();
     }
 
     /**
@@ -233,8 +233,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    protected <V> Optional<V> fromDatabase(FeatureKey key) {
-        return fromDatabase(key.id())
+    protected <V> Optional<V> get(FeatureKey key) {
+        return get(key.id())
                 .map(result -> {
                     Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name())));
                     return value.map(bytes -> Optional.<V>of(ObjectSerializer.deserialize(bytes))).orElse(Optional.empty());
@@ -248,7 +248,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @param key   the key of the element to save
      * @param value the value to save
      */
-    protected <V> void toDatabase(FeatureKey key, V value) {
+    protected <V> void put(FeatureKey key, V value) {
         try {
             Put put = new Put(ObjectSerializer.serialize(key.id()));
             put.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()), ObjectSerializer.serialize(value));
@@ -263,7 +263,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      *
      * @param key the key of the element to remove
      */
-    protected void outDatabase(FeatureKey key) {
+    protected void delete(FeatureKey key) {
         try {
             Delete delete = new Delete(ObjectSerializer.serialize(key.id()));
             delete.addColumn(PROPERTY_FAMILY, ObjectSerializer.serialize(key.name()));
@@ -281,7 +281,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
      * @return on {@link Optional} containing the {@link Result}, or an empty {@link Optional} if the element has not
      * been found
      */
-    private Optional<Result> fromDatabase(Id id) {
+    private Optional<Result> get(Id id) {
         Optional<Result> value = Optional.empty();
 
         try {

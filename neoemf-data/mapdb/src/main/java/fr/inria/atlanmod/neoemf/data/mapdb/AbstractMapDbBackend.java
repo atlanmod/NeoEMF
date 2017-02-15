@@ -165,35 +165,35 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        return fromDatabase(containersMap, id);
+        return get(containersMap, id);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        toDatabase(containersMap, id, container);
+        put(containersMap, id, container);
     }
 
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
-        return fromDatabase(instanceOfMap, id);
+        return get(instanceOfMap, id);
     }
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
-        toDatabase(instanceOfMap, id, metaclass);
+        put(instanceOfMap, id, metaclass);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return fromDatabase(features, key);
+        return get(features, key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        return toDatabase(features, key, value);
+        return put(features, key, value);
     }
 
     @Override
@@ -219,7 +219,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> fromDatabase(HTreeMap<K, ? super V> database, K key) {
+    protected <K, V> Optional<V> get(HTreeMap<K, ? super V> database, K key) {
         return Optional.ofNullable((V) database.get(key));
     }
 
@@ -237,7 +237,9 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> toDatabase(HTreeMap<K, ? super V> database, K key, V value) {
+    protected <K, V> Optional<V> put(HTreeMap<K, ? super V> database, K key, V value) {
         return Optional.ofNullable((V) database.put(key, value));
     }
+
+
 }

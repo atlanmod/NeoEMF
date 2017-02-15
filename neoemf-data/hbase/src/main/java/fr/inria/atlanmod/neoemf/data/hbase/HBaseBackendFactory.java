@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -55,7 +54,6 @@ import static java.util.Objects.isNull;
  * @see PersistentResource
  * @see HBaseBackend
  * @see HBaseOptionsBuilder
- * @see HBaseResourceOptions
  */
 public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 

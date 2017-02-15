@@ -81,7 +81,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultiFeatureKey key) {
-        return fromDatabase(multivaluedFeatures, key);
+        return get(multivaluedFeatures, key);
     }
 
     @Nonnull
@@ -89,7 +89,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
-        toDatabase(multivaluedFeatures, key, value);
+        put(multivaluedFeatures, key, value);
 
         return previousValue;
     }

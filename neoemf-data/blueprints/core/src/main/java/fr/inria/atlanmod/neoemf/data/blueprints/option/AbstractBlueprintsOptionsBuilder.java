@@ -18,8 +18,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 /**
  * An abstract {@link PersistenceOptionsBuilder} that provides utility methods to create generic Blueprints options.
  * <p>
- * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features, or {@link
- * BlueprintsStoreOptions} if they define database access feature.
+ * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  *
@@ -27,7 +26,6 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
  * @param <O> the type of {@link PersistenceOptions} built by this builder
  *
  * @see BlueprintsResourceOptions
- * @see BlueprintsStoreOptions
  */
 public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBlueprintsOptionsBuilder<B, O>, O extends AbstractBlueprintsOptions> extends AbstractPersistenceOptionsBuilder<B, O> {
 
@@ -48,29 +46,5 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      */
     protected B graph(String graphType) {
         return option(BlueprintsResourceOptions.GRAPH_TYPE, graphType);
-    }
-
-    /**
-     * Adds the {@code direct-write} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see BlueprintsStoreOptions#DIRECT_WRITE
-     */
-    @Deprecated
-    public B directWrite() {
-        return storeOption(BlueprintsStoreOptions.DIRECT_WRITE);
-    }
-
-    /**
-     * Adds the {@code direct-write-cache-many} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see BlueprintsStoreOptions#CACHE_MANY
-     */
-    @Deprecated
-    public B directWriteCacheMany() {
-        return storeOption(BlueprintsStoreOptions.CACHE_MANY);
     }
 }

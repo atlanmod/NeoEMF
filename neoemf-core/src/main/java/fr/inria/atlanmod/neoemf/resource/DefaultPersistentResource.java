@@ -260,8 +260,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     protected void finalize() throws Throwable {
-        unload();
-        super.finalize();
+        try {
+            unload();
+        }
+        finally {
+            super.finalize();
+        }
     }
 
     /**

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -42,13 +41,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
  * PersistentResource#load(Map)} option maps.
  * <p>
- * The factory handles transient back-ends by creating in-memory {@link Map} instances. Persistent back-ends are created
- * according to the provided resource options ({@link MapDbStoreOptions}).
+ * The factory handles transient back-ends by creating in-memory {@link Map} instances.
  *
  * @see PersistentResource
  * @see MapDbBackendIndices
  * @see MapDbOptionsBuilder
- * @see MapDbStoreOptions
  */
 public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
 

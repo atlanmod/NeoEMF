@@ -121,6 +121,8 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
         catch (Exception e) {
             NeoLogger.error(e);
         }
-        super.finalize();
+        finally {
+            super.finalize();
+        }
     }
 }

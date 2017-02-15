@@ -29,6 +29,8 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
 
     /**
      * The option key to define the cache type used by Neo4j.
+     *
+     * @see CacheType
      */
     String CACHE_TYPE = "blueprints.neo4j.conf.cache_type";
 

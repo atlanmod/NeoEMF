@@ -64,19 +64,16 @@ public class NeoEditor extends EcoreEditor {
         if (Objects.equals(scheme, BlueprintsURI.SCHEME)) {
             options = BlueprintsOptionsBuilder.newBuilder()
 //                  .log()
-                    .directWriteCacheMany()
                     .asMap();
         }
         else if (Objects.equals(scheme, MapDbURI.SCHEME)) {
             options = MapDbOptionsBuilder.newBuilder()
 //                  .log()
-                    .directWriteCacheMany()
                     .asMap();
         }
         else if (Objects.equals(scheme, BerkeleyDbURI.SCHEME)) {
             options = BerkeleyDbOptionsBuilder.newBuilder()
 //                  .log()
-                    .directWriteCacheMany()
                     .asMap();
         }
         else {

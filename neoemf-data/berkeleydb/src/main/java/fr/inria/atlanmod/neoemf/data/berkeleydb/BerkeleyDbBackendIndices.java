@@ -67,7 +67,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
         BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
 
         super.copyTo(target);
-        this.copyDatabaseTo(multivaluedFeatures, to.multivaluedFeatures);
+        this.copy(multivaluedFeatures, to.multivaluedFeatures);
     }
 
     @Nonnull
@@ -81,7 +81,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultiFeatureKey key) {
-        return fromDatabase(multivaluedFeatures, key);
+        return get(multivaluedFeatures, key);
     }
 
     @Nonnull
@@ -89,7 +89,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
-        toDatabase(multivaluedFeatures, key, value);
+        put(multivaluedFeatures, key, value);
 
         return previousValue;
     }

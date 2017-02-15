@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
 import java.util.Map;
@@ -23,7 +22,6 @@ import javax.annotation.Nonnull;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
-@Experimental
 public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<BerkeleyDbOptionsBuilder, BerkeleyDbOptions> {
 
     /**
@@ -53,49 +51,5 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     @Nonnull
     public static BerkeleyDbOptionsBuilder newBuilder() {
         return new BerkeleyDbOptionsBuilder();
-    }
-
-    /**
-     * ???
-     *
-     * @return this builder (for chaining)
-     */
-    @Nonnull
-    @Deprecated
-    public BerkeleyDbOptionsBuilder directWrite() {
-        return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE);
-    }
-
-    /**
-     * ???
-     *
-     * @return this builder (for chaining)
-     */
-    @Nonnull
-    @Deprecated
-    public BerkeleyDbOptionsBuilder directWriteLists() {
-        return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS);
-    }
-
-    /**
-     * ???
-     *
-     * @return this builder (for chaining)
-     */
-    @Nonnull
-    @Deprecated
-    public BerkeleyDbOptionsBuilder directWriteArrays() {
-        return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_ARRAYS);
-    }
-
-    /**
-     * ?
-     *
-     * @return this builder (for chaining)
-     */
-    @Nonnull
-    @Deprecated
-    public BerkeleyDbOptionsBuilder directWriteCacheMany() {
-        return storeOption(BerkeleyDbStoreOptions.CACHE_MANY);
     }
 }

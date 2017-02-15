@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptions
 
 import java.util.Map;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -60,6 +61,17 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     @Nonnull
     public static BlueprintsNeo4jOptionsBuilder newBuilder() {
         return new BlueprintsNeo4jOptionsBuilder();
+    }
+
+    /**
+     * Formats a {@code size} with the megabytes suffix.
+     *
+     * @param size the size to format
+     *
+     * @return the formatted size
+     */
+    private static String formatSize(int size) {
+        return size + "M";
     }
 
     /**
@@ -167,8 +179,8 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * @see BlueprintsNeo4jResourceOptions#STRINGS_MAPPED_MEMORY
      */
     @Nonnull
-    public BlueprintsNeo4jOptionsBuilder stringsMappedBuffer(String size) {
-        return option(BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, size);
+    public BlueprintsNeo4jOptionsBuilder stringsMappedBuffer(@Nonnegative int size) {
+        return option(BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -182,8 +194,8 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * @see BlueprintsNeo4jResourceOptions#ARRAYS_MAPPED_MEMORY
      */
     @Nonnull
-    public BlueprintsNeo4jOptionsBuilder arraysMappedBuffer(String size) {
-        return option(BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, size);
+    public BlueprintsNeo4jOptionsBuilder arraysMappedBuffer(@Nonnegative int size) {
+        return option(BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -197,8 +209,8 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * @see BlueprintsNeo4jResourceOptions#NODES_MAPPED_MEMORY
      */
     @Nonnull
-    public BlueprintsNeo4jOptionsBuilder nodesMappedBuffer(String size) {
-        return option(BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, size);
+    public BlueprintsNeo4jOptionsBuilder nodesMappedBuffer(@Nonnegative int size) {
+        return option(BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -212,8 +224,8 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * @see BlueprintsNeo4jResourceOptions#PROPERTIES_MAPPED_MEMORY
      */
     @Nonnull
-    public BlueprintsNeo4jOptionsBuilder propertiesMappedBuffer(String size) {
-        return option(BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, size);
+    public BlueprintsNeo4jOptionsBuilder propertiesMappedBuffer(@Nonnegative int size) {
+        return option(BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -227,7 +239,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * @see BlueprintsNeo4jResourceOptions#RELATIONSHIPS_MAPPED_MEMORY
      */
     @Nonnull
-    public BlueprintsNeo4jOptionsBuilder relationshipsMappedBuffer(String size) {
-        return option(BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, size);
+    public BlueprintsNeo4jOptionsBuilder relationshipsMappedBuffer(@Nonnegative int size) {
+        return option(BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, formatSize(size));
     }
 }
