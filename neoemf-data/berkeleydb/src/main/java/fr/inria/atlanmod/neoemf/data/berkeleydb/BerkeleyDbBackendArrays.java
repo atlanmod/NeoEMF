@@ -15,7 +15,7 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithArrays;
 
 import java.io.File;
 import java.util.Map;

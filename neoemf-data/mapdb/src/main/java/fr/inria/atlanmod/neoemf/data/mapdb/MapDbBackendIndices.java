@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultiFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;

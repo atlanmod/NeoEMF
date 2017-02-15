@@ -9,14 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapping;
+package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -28,33 +27,29 @@ import static java.util.Objects.isNull;
 /**
  *
  */
-public interface MultiValueMapperWithArrays extends SingleValueMapper, MultiValueMapper {
+public interface MultiValueMapperWithLists extends SingleValueMapper, MultiValueMapper {
 
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(MultiFeatureKey key) {
-        return this.<V[]>valueOf(key.withoutPosition())
-                .map(ts -> ts[key.position()]);
+        return this.<List<V>>valueOf(key.withoutPosition())
+                .map(ts -> ts.get(key.position()));
     }
 
     @Nonnull
     @Override
     default <V> Iterable<V> allValuesOf(FeatureKey key) {
-        V[] values = this.<V[]>valueOf(key)
+        return this.<List<V>>valueOf(key)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        return Arrays.asList(values);
     }
 
     @Nonnull
     @Override
     default <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        Optional<V> previousValue = Optional.of(values[key.position()]);
-
-        values[key.position()] = value;
+        Optional<V> previousValue = Optional.of(values.set(key.position(), value));
 
         valueFor(key.withoutPosition(), values);
 
@@ -62,20 +57,19 @@ public interface MultiValueMapperWithArrays extends SingleValueMapper, MultiValu
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     default <V> void addValue(MultiFeatureKey key, V value) {
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElse((V[]) new Object[0]);
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+                .orElse(new ArrayList<>());
 
-        while (key.position() > values.length) {
-            values = ArrayUtils.add(values, values.length, null);
+        while (key.position() > values.size()) {
+            values.add(null);
         }
 
-        if (key.position() < values.length && isNull(values[key.position()])) {
-            values[key.position()] = value;
+        if (key.position() < values.size() && isNull(values.get(key.position()))) {
+            values.set(key.position(), value);
         }
         else {
-            values = ArrayUtils.add(values, key.position(), value);
+            values.add(key.position(), value);
         }
 
         valueFor(key.withoutPosition(), values);
@@ -84,29 +78,29 @@ public interface MultiValueMapperWithArrays extends SingleValueMapper, MultiValu
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(MultiFeatureKey key) {
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        Optional<V> previousValue = Optional.of(values[key.position()]);
+        Optional<V> previousValue = Optional.of(values.remove(key.position()));
 
-        valueFor(key.withoutPosition(), ArrayUtils.remove(values, key.position()));
+        valueFor(key.withoutPosition(), values);
 
         return previousValue;
     }
 
     @Override
     default <V> boolean containsValue(FeatureKey key, V value) {
-        return this.<V[]>valueOf(key)
-                .map(ts -> ArrayUtils.contains(ts, value))
+        return this.<List<V>>valueOf(key)
+                .map(ts -> ts.contains(value))
                 .orElse(false);
     }
 
     @Nonnull
     @Override
     default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
-        return this.<V[]>valueOf(key)
+        return this.<List<V>>valueOf(key)
                 .map(ts -> {
-                    int index = ArrayUtils.indexOf(ts, value);
+                    int index = ts.indexOf(value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -115,9 +109,9 @@ public interface MultiValueMapperWithArrays extends SingleValueMapper, MultiValu
     @Nonnull
     @Override
     default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
-        return this.<V[]>valueOf(key)
+        return this.<List<V>>valueOf(key)
                 .map(ts -> {
-                    int index = ArrayUtils.lastIndexOf(ts, value);
+                    int index = ts.lastIndexOf(value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -126,8 +120,8 @@ public interface MultiValueMapperWithArrays extends SingleValueMapper, MultiValu
     @Nonnull
     @Override
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
-        return this.<V[]>valueOf(key)
-                .map(ts -> OptionalInt.of(ts.length))
+        return this.<List<V>>valueOf(key)
+                .map(ts -> OptionalInt.of(ts.size()))
                 .orElse(OptionalInt.empty());
     }
 }

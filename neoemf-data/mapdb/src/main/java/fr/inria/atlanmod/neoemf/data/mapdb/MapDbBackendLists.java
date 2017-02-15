@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithLists;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithLists;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithArrays;
 
 import org.apache.hadoop.hbase.client.Table;
 

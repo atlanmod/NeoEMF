@@ -9,9 +9,8 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapping;
+package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
@@ -23,119 +22,131 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface MultiReferenceMapper {
+public interface MultiValueMapper {
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      *
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceOf(MultiFeatureKey key);
+    <V> Optional<V> valueOf(MultiFeatureKey key);
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      *
      * @return ???
      */
     @Nonnull
-    Iterable<Id> allReferencesOf(FeatureKey key);
+    <V> Iterable<V> allValuesOf(FeatureKey key);
 
     /**
      * ???
      *
-     * @param key ???
-     * @param id  ???
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
      *
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceFor(MultiFeatureKey key, Id id);
+    <V> Optional<V> valueFor(MultiFeatureKey key, V value);
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      */
-    void unsetAllReferences(FeatureKey key);
+    <V> void unsetAllValues(FeatureKey key);
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      *
      * @return ???
      */
-    boolean hasAnyReference(FeatureKey key);
+    <V> boolean hasAnyValue(FeatureKey key);
 
     /**
      * ???
      *
-     * @param key ???
-     * @param id  ???
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
      */
-    void addReference(MultiFeatureKey key, Id id);
+    <V> void addValue(MultiFeatureKey key, V value);
 
     /**
      * ???
      *
      * @param key ???
-     *
-     * @return ???
-     */
-    @Nonnull
-    Optional<Id> removeReference(MultiFeatureKey key);
-
-    /**
-     * ???
-     *
-     * @param key ???
-     */
-    void cleanReferences(FeatureKey key);
-
-    /**
-     * ???
-     *
-     * @param key ???
-     * @param id  ???
-     *
-     * @return ???
-     */
-    boolean containsReference(FeatureKey key, Id id);
-
-    /**
-     * ???
-     *
-     * @param key ???
-     * @param id  ???
+     * @param <V> ???
      *
      * @return ???
      */
     @Nonnull
-    OptionalInt indexOfReference(FeatureKey key, Id id);
+    <V> Optional<V> removeValue(MultiFeatureKey key);
 
     /**
      * ???
      *
      * @param key ???
-     * @param id  ???
+     * @param <V> ???
+     */
+    <V> void cleanValues(FeatureKey key);
+
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
+    <V> boolean containsValue(FeatureKey key, V value);
+
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
      *
      * @return ???
      */
     @Nonnull
-    OptionalInt lastIndexOfReference(FeatureKey key, Id id);
+    <V> OptionalInt indexOfValue(FeatureKey key, V value);
+
+    /**
+     * ???
+     *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     *
+     * @return ???
+     */
+    @Nonnull
+    <V> OptionalInt lastIndexOfValue(FeatureKey key, V value);
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      *
      * @return ???
      */
     @Nonnull
-    OptionalInt sizeOfReference(FeatureKey key);
+    <V> OptionalInt sizeOfValue(FeatureKey key);
 }
