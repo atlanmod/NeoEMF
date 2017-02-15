@@ -114,8 +114,8 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      *
      * @see EcoreUtil#createFromString(EDataType, String)
      */
-    protected static Object deserialize(EAttribute attribute, Object property) {
-        return EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
+    protected static Object deserialize(EAttribute attribute, String property) {
+        return EcoreUtil.createFromString(attribute.getEAttributeType(), property);
     }
 
     /**
@@ -467,13 +467,13 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
                     .map(this::eObject);
         }
         else {
-            Iterable<Object> values;
+            Iterable<String> values;
 
             if (feature.isMany()) {
                 values = backend.allValuesOf(key);
             }
             else {
-                values = backend.valueOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
+                values = backend.<String>valueOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
             }
 
             stream = StreamSupport.stream(values.spliterator(), false)
@@ -584,7 +584,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         FeatureKey key = FeatureKey.from(object, attribute);
 
-        Optional<Object> value;
+        Optional<String> value;
         if (!attribute.isMany()) {
             value = backend.valueOf(key);
         }
@@ -643,13 +643,13 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
 
         FeatureKey key = FeatureKey.from(object, attribute);
 
-        Optional<Object> previousValue;
+        Optional<String> previousValue;
         if (!attribute.isMany()) {
-            previousValue = backend.valueFor(key, value);
+            previousValue = backend.valueFor(key, serialize(attribute, value));
         }
         else {
             checkElementIndex(index, size(object, attribute));
-            previousValue = backend.valueFor(key.withPosition(index), value);
+            previousValue = backend.valueFor(key.withPosition(index), serialize(attribute, value));
         }
 
         return previousValue
@@ -781,7 +781,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      */
     protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         FeatureKey key = FeatureKey.from(object, attribute);
-        return backend.containsValue(key, value);
+        return backend.containsValue(key, serialize(attribute, value));
     }
 
     /**
@@ -813,7 +813,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      */
     protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         FeatureKey key = FeatureKey.from(object, attribute);
-        return backend.indexOfValue(key, value).orElse(NO_INDEX);
+        return backend.indexOfValue(key, serialize(attribute, value)).orElse(NO_INDEX);
     }
 
     /**
@@ -845,7 +845,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      */
     protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         FeatureKey key = FeatureKey.from(object, attribute);
-        return backend.lastIndexOfValue(key, value).orElse(NO_INDEX);
+        return backend.lastIndexOfValue(key, serialize(attribute, value)).orElse(NO_INDEX);
     }
 
     /**
@@ -878,7 +878,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         persist(object);
 
         MultiFeatureKey key = MultiFeatureKey.from(object, attribute, index);
-        backend.addValue(key, serialize(attribute, value));
+        backend.addValue(key, serialize(attribute, serialize(attribute, value)));
     }
 
     /**
@@ -912,7 +912,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         MultiFeatureKey key = MultiFeatureKey.from(object, attribute, index);
 
-        return backend.removeValue(key)
+        return backend.<String>removeValue(key)
                 .map(v -> deserialize(attribute, v))
                 .orElse(null);
     }
