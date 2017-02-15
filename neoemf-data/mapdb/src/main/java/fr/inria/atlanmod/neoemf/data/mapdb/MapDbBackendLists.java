@@ -13,25 +13,16 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithLists;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
 import org.mapdb.Serializer;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.OptionalInt;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static java.util.Objects.isNull;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -51,7 +42,7 @@ import static java.util.Objects.isNull;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendLists extends AbstractMapDbBackend {
+class MapDbBackendLists extends AbstractMapDbBackend implements MultiValueMapperWithLists {
 
     /**
      * Constructs a new {@code MapDbBackendLists} wrapping the provided {@code db}.
@@ -67,101 +58,5 @@ class MapDbBackendLists extends AbstractMapDbBackend {
      */
     protected MapDbBackendLists(DB db) {
         super(db);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
-        return this.<List<V>>valueOf(key.withoutPosition())
-                .map(ts -> ts.get(key.position()));
-    }
-
-    @Nonnull
-    @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
-        return this.<List<V>>valueOf(key)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        Optional<V> previousValue = Optional.of(values.set(key.position(), value));
-
-        valueFor(key.withoutPosition(), values);
-
-        return previousValue;
-    }
-
-    @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElse(new ArrayList<>());
-
-        while (key.position() > values.size()) {
-            values.add(null);
-        }
-
-        if (key.position() < values.size() && isNull(values.get(key.position()))) {
-            values.set(key.position(), value);
-        }
-        else {
-            values.add(key.position(), value);
-        }
-
-        valueFor(key.withoutPosition(), values);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        Optional<V> previousValue = Optional.of(values.remove(key.position()));
-
-        valueFor(key.withoutPosition(), values);
-
-        return previousValue;
-    }
-
-    @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
-        return this.<List<V>>valueOf(key)
-                .map(ts -> ts.contains(value))
-                .orElse(false);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
-        return this.<List<V>>valueOf(key)
-                .map(ts -> {
-                    int index = ts.indexOf(value);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElse(OptionalInt.empty());
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
-        return this.<List<V>>valueOf(key)
-                .map(ts -> {
-                    int index = ts.lastIndexOf(value);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElse(OptionalInt.empty());
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        return this.<List<V>>valueOf(key)
-                .map(ts -> OptionalInt.of(ts.size()))
-                .orElse(OptionalInt.empty());
     }
 }

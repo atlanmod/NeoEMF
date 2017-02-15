@@ -12,7 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapping.MultiReferenceMapperWithStrings;
 import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapping.SingleReferenceMapperWithStrings;
 
 import org.apache.hadoop.hbase.client.Table;
 
@@ -29,14 +31,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-class HBaseBackendArrays extends AbstractHBaseBackend implements MultiValueMapperWithArrays {
+class HBaseBackendArraysStrings extends AbstractHBaseBackend implements MultiValueMapperWithArrays, SingleReferenceMapperWithStrings, MultiReferenceMapperWithStrings {
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
      *
      * @param table the HBase table
      */
-    protected HBaseBackendArrays(Table table) {
+    protected HBaseBackendArraysStrings(Table table) {
         super(table);
     }
 }

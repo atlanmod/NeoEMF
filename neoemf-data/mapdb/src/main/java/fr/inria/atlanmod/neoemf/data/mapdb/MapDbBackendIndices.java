@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultiFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.mapping.MultiValueMapperWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -24,18 +24,10 @@ import org.mapdb.Serializer;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -55,7 +47,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendIndices extends AbstractMapDbBackend {
+class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueMapperWithIndices {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id}s,
@@ -94,98 +86,11 @@ class MapDbBackendIndices extends AbstractMapDbBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
-                        .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
-                .collect(Collectors.toList());
-    }
-
-    @Nonnull
-    @Override
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         toDatabase(multivaluedFeatures, key, value);
 
         return previousValue;
-    }
-
-    @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
-
-        // TODO Replace by Stream
-        for (int i = size - 1; i >= key.position(); i--) {
-            Optional<V> movingValue = valueOf(key.withPosition(i));
-            if (movingValue.isPresent()) {
-                valueFor(key.withPosition(i + 1), movingValue.get());
-            }
-        }
-        sizeFor(key.withoutPosition(), size + 1);
-
-        valueFor(key, value);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
-        Optional<V> previousValue = valueOf(key);
-
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
-
-        // Update indexes (element to remove is overwritten)
-        // TODO Replace by Stream
-        for (int i = key.position() + 1; i < size; i++) {
-            Optional<V> movingValue = valueOf(key.withPosition(i));
-            if (movingValue.isPresent()) {
-                valueFor(key.withPosition(i - 1), movingValue.get());
-            }
-        }
-        sizeFor(key.withoutPosition(), size - 1);
-
-        return previousValue;
-    }
-
-    @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
-                .min();
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
-                .max();
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfValue(FeatureKey key) {
-        return valueOf(key)
-                .map(v -> OptionalInt.of((int) v))
-                .orElse(OptionalInt.empty());
-    }
-
-    /**
-     * Defines the {@code size} of the given {@code key}.
-     *
-     * @param key  the key
-     * @param size the new size
-     */
-    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
-        checkArgument(size >= 0);
-
-        valueFor(key, size);
     }
 }

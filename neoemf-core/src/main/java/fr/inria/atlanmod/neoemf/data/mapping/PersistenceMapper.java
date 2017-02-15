@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An object capable of mapping features represented as a set of key/value pair.
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceMapper extends SingleValueMapper, SingleReferenceMapper, MultiValueMapper, MultiReferenceMapper, ContainerMapper, MetaclassMapper {
+public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, SingleValueMapper, MultiValueMapper, SingleReferenceMapper, MultiReferenceMapper {
 
     /**
      * Creates the given {@code id} in this {@code PersistenceBackend}.
