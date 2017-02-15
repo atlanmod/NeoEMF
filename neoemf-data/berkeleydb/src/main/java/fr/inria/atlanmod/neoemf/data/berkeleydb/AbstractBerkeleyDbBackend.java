@@ -50,7 +50,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend implements BerkeleyDbBackend {
 
     /**
-     * ???
+     * The databases environment.
      */
     @Nonnull
     protected final Environment environment;
@@ -76,7 +76,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     private final Database features;
 
     /**
-     * ???
+     * Whether the databases are closed.
      */
     private boolean isClosed;
 
@@ -87,11 +87,11 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     private Id lastId;
 
     /**
-     * ???
+     * Creates a new {@code AbstractBerkeleyDbBackend} with the configuration of the databases.
      *
-     * @param file      ???
-     * @param envConfig ???
-     * @param dbConfig  ???
+     * @param file      the file to store the databases
+     * @param envConfig the configuration of the environment
+     * @param dbConfig  the configuration of databases
      */
     protected AbstractBerkeleyDbBackend(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         checkNotNull(file);
@@ -109,13 +109,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void save() {
-        allDatabases().forEach(Database::sync);
+        allDatabases().stream()
+                .filter(db -> db.getConfig().getDeferredWrite())
+                .forEach(Database::sync);
     }
 
     @Override
     public void close() {
-        this.save();
-
         allDatabases().forEach(Database::close);
 
         environment.close();
