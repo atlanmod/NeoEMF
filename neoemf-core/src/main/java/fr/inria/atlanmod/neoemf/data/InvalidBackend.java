@@ -181,6 +181,11 @@ public final class InvalidBackend implements PersistenceBackend {
         throw new UnsupportedOperationException(MSG);
     }
 
+    @Override
+    public <V> void appendValue(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultiFeatureKey key) {
@@ -188,7 +193,7 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public <V> void cleanValues(FeatureKey key) {
+    public <V> void removeAllValues(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -248,6 +253,11 @@ public final class InvalidBackend implements PersistenceBackend {
         throw new UnsupportedOperationException(MSG);
     }
 
+    @Override
+    public void appendReference(FeatureKey key, Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
     @Nonnull
     @Override
     public Optional<Id> removeReference(MultiFeatureKey key) {
@@ -255,7 +265,7 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public void cleanReferences(FeatureKey key) {
+    public void removeAllReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 

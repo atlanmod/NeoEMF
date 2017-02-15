@@ -296,9 +296,11 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         else {
             int index = attribute.index();
             if (index == -1) {
-                index = backend.sizeOfValue(key).orElse(0);
+                backend.appendValue(key, attribute.value());
             }
-            backend.addValue(key.withPosition(index), attribute.value());
+            else {
+                backend.addValue(key.withPosition(index), attribute.value());
+            }
         }
 
         incrementAndCommit();
@@ -332,9 +334,11 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         else {
             int index = reference.index();
             if (index == -1) {
-                index = backend.sizeOfReference(key).orElse(0);
+                backend.appendReference(key, idReference);
             }
-            backend.addReference(key.withPosition(index), idReference);
+            else {
+                backend.addReference(key.withPosition(index), idReference);
+            }
         }
 
         incrementAndCommit();

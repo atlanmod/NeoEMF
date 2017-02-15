@@ -277,7 +277,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void cleanReferences(FeatureKey key) {
+    public void removeAllReferences(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex.query()
@@ -401,7 +401,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void cleanValues(FeatureKey key) {
+    public void removeAllValues(FeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         IntStream.range(0, sizeOfValue(key).orElse(0))

@@ -92,6 +92,17 @@ public interface MultiValueMapper extends ValueMapper {
     /**
      * ???
      *
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
+     */
+    default <V> void appendValue(FeatureKey key, V value) {
+        addValue(key.withPosition(sizeOfValue(key).orElse(0)), value);
+    }
+
+    /**
+     * ???
+     *
      * @param key ???
      * @param <V> ???
      *
@@ -106,7 +117,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @param key ???
      * @param <V> ???
      */
-    default <V> void cleanValues(FeatureKey key) {
+    default <V> void removeAllValues(FeatureKey key) {
         unsetValue(key);
     }
 

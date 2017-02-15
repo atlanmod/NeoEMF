@@ -68,7 +68,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @param key ???
      */
     default void unsetAllReferences(FeatureKey key) {
-        unsetReference(key);
+        unsetAllValues(key);
     }
 
     /**
@@ -79,7 +79,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @return ???
      */
     default boolean hasAnyReference(FeatureKey key) {
-        return hasReference(key);
+        return hasAnyValue(key);
     }
 
     /**
@@ -90,6 +90,16 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      */
     default void addReference(MultiFeatureKey key, Id id) {
         addValue(key, id);
+    }
+
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     */
+    default void appendReference(FeatureKey key, Id id) {
+        appendValue(key.withPosition(sizeOfReference(key).orElse(0)), id);
     }
 
     /**
@@ -109,8 +119,8 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @param key ???
      */
-    default void cleanReferences(FeatureKey key) {
-        unsetReference(key);
+    default void removeAllReferences(FeatureKey key) {
+        removeAllValues(key);
     }
 
     /**
