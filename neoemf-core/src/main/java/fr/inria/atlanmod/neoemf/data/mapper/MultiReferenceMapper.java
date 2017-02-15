@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface MultiReferenceMapper extends MultiValueMapper {
+public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper {
 
     /**
      * ???
@@ -33,7 +33,9 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceOf(MultiFeatureKey key);
+    default Optional<Id> referenceOf(MultiFeatureKey key) {
+        return valueOf(key);
+    }
 
     /**
      * ???
@@ -43,7 +45,9 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @return ???
      */
     @Nonnull
-    Iterable<Id> allReferencesOf(FeatureKey key);
+    default Iterable<Id> allReferencesOf(FeatureKey key) {
+        return allValuesOf(key);
+    }
 
     /**
      * ???
@@ -54,14 +58,18 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceFor(MultiFeatureKey key, Id id);
+    default Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
 
     /**
      * ???
      *
      * @param key ???
      */
-    void unsetAllReferences(FeatureKey key);
+    default void unsetAllReferences(FeatureKey key) {
+        unsetReference(key);
+    }
 
     /**
      * ???
@@ -70,7 +78,9 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      *
      * @return ???
      */
-    boolean hasAnyReference(FeatureKey key);
+    default boolean hasAnyReference(FeatureKey key) {
+        return hasReference(key);
+    }
 
     /**
      * ???
@@ -78,7 +88,9 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @param key ???
      * @param id  ???
      */
-    void addReference(MultiFeatureKey key, Id id);
+    default void addReference(MultiFeatureKey key, Id id) {
+        addValue(key, id);
+    }
 
     /**
      * ???
@@ -88,24 +100,18 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @return ???
      */
     @Nonnull
-    Optional<Id> removeReference(MultiFeatureKey key);
+    default Optional<Id> removeReference(MultiFeatureKey key) {
+        return removeValue(key);
+    }
 
     /**
      * ???
      *
      * @param key ???
      */
-    void cleanReferences(FeatureKey key);
-
-    /**
-     * ???
-     *
-     * @param key ???
-     * @param id  ???
-     *
-     * @return ???
-     */
-    boolean containsReference(FeatureKey key, Id id);
+    default void cleanReferences(FeatureKey key) {
+        unsetReference(key);
+    }
 
     /**
      * ???
@@ -115,8 +121,9 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      *
      * @return ???
      */
-    @Nonnull
-    OptionalInt indexOfReference(FeatureKey key, Id id);
+    default boolean containsReference(FeatureKey key, Id id) {
+        return containsValue(key, id);
+    }
 
     /**
      * ???
@@ -127,7 +134,22 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @return ???
      */
     @Nonnull
-    OptionalInt lastIndexOfReference(FeatureKey key, Id id);
+    default OptionalInt indexOfReference(FeatureKey key, Id id) {
+        return indexOfValue(key, id);
+    }
+
+    /**
+     * ???
+     *
+     * @param key ???
+     * @param id  ???
+     *
+     * @return ???
+     */
+    @Nonnull
+    default OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+        return lastIndexOfValue(key, id);
+    }
 
     /**
      * ???
@@ -137,5 +159,7 @@ public interface MultiReferenceMapper extends MultiValueMapper {
      * @return ???
      */
     @Nonnull
-    OptionalInt sizeOfReference(FeatureKey key);
+    default OptionalInt sizeOfReference(FeatureKey key) {
+        return sizeOfValue(key);
+    }
 }

@@ -31,7 +31,9 @@ public interface ReferenceMapper extends ValueMapper {
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceOf(FeatureKey key);
+    default Optional<Id> referenceOf(FeatureKey key) {
+        return valueOf(key);
+    }
 
     /**
      * ???
@@ -42,14 +44,18 @@ public interface ReferenceMapper extends ValueMapper {
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceFor(FeatureKey key, Id id);
+    default Optional<Id> referenceFor(FeatureKey key, Id id) {
+        return valueFor(key, id);
+    }
 
     /**
      * ???
      *
      * @param key ???
      */
-    void unsetReference(FeatureKey key);
+    default void unsetReference(FeatureKey key) {
+        unsetValue(key);
+    }
 
     /**
      * ???
@@ -58,5 +64,7 @@ public interface ReferenceMapper extends ValueMapper {
      *
      * @return ???
      */
-    boolean hasReference(FeatureKey key);
+    default boolean hasReference(FeatureKey key) {
+        return hasValue(key);
+    }
 }

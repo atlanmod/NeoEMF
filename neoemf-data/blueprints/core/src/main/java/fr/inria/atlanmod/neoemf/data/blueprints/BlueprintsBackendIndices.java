@@ -324,32 +324,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .max();
     }
 
-    @Override
-    public void unsetAllValues(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        String property = formatProperty(key.name(), KEY_SIZE);
-
-        IntStream.range(0, vertex.getProperty(property))
-                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
-
-        vertex.removeProperty(property);
-    }
-
-    public boolean hasAnyValue(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE)));
-    }
-
-    @Override
-    public void cleanValues(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
-
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
-
-        sizeFor(key, 0);
-    }
-
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(MultiFeatureKey key) {
@@ -371,6 +345,22 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         Optional<V> previousValue = valueOf(key);
         vertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
         return previousValue;
+    }
+
+    @Override
+    public void unsetAllValues(FeatureKey key) {
+        Vertex vertex = vertex(key.id());
+        String property = formatProperty(key.name(), KEY_SIZE);
+
+        IntStream.range(0, vertex.getProperty(property))
+                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+
+        vertex.removeProperty(property);
+    }
+
+    public boolean hasAnyValue(FeatureKey key) {
+        Vertex vertex = vertex(key.id());
+        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE)));
     }
 
     @Override
@@ -408,6 +398,16 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         sizeFor(key, newSize);
 
         return previousValue;
+    }
+
+    @Override
+    public void cleanValues(FeatureKey key) {
+        Vertex vertex = vertex(key.id());
+
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+
+        sizeFor(key, 0);
     }
 
     @Override

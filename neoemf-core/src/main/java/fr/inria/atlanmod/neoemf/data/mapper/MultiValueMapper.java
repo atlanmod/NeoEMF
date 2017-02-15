@@ -64,7 +64,9 @@ public interface MultiValueMapper extends ValueMapper {
      * @param key ???
      * @param <V> ???
      */
-    <V> void unsetAllValues(FeatureKey key);
+    default <V> void unsetAllValues(FeatureKey key) {
+        unsetValue(key);
+    }
 
     /**
      * ???
@@ -74,7 +76,9 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @return ???
      */
-    <V> boolean hasAnyValue(FeatureKey key);
+    default <V> boolean hasAnyValue(FeatureKey key) {
+        return hasValue(key);
+    }
 
     /**
      * ???
@@ -102,7 +106,9 @@ public interface MultiValueMapper extends ValueMapper {
      * @param key ???
      * @param <V> ???
      */
-    <V> void cleanValues(FeatureKey key);
+    default <V> void cleanValues(FeatureKey key) {
+        unsetValue(key);
+    }
 
     /**
      * ???
