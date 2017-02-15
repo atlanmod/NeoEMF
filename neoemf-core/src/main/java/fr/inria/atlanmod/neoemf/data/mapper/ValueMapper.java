@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import java.util.Optional;
@@ -21,42 +20,46 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface SingleReferenceMapper {
+public interface ValueMapper {
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      *
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceOf(FeatureKey key);
+    <V> Optional<V> valueOf(FeatureKey key);
 
     /**
      * ???
      *
-     * @param key ???
-     * @param id  ???
+     * @param key   ???
+     * @param value ???
+     * @param <V>   ???
      *
      * @return ???
      */
     @Nonnull
-    Optional<Id> referenceFor(FeatureKey key, Id id);
+    <V> Optional<V> valueFor(FeatureKey key, V value);
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      */
-    void unsetReference(FeatureKey key);
+    <V> void unsetValue(FeatureKey key);
 
     /**
      * ???
      *
      * @param key ???
+     * @param <V> ???
      *
      * @return ???
      */
-    boolean hasReference(FeatureKey key);
+    <V> boolean hasValue(FeatureKey key);
 }

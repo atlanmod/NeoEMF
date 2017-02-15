@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface MultiReferenceMapper {
+public interface MultiReferenceMapper extends MultiValueMapper {
 
     /**
      * ???

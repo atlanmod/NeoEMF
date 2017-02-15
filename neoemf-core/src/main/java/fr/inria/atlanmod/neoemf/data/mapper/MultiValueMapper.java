@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 /**
  * ???
  */
-public interface MultiValueMapper {
+public interface MultiValueMapper extends ValueMapper {
 
     /**
      * ???

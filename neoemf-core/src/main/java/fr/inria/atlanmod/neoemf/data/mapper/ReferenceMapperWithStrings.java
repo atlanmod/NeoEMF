@@ -24,45 +24,41 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  *
  */
-public interface SingleReferenceMapperWithStrings extends SingleValueMapper, SingleReferenceMapper {
-
-    /**
-     * ???
-     *
-     * @param value ???
-     *
-     * @return ???
-     */
-    static String format(Id value) {
-        checkNotNull(value);
-
-        return value.toString();
-    }
-
-    /**
-     * ???
-     *
-     * @param value ???
-     *
-     * @return ???
-     */
-    static Id parse(String value) {
-        checkNotNull(value);
-
-        return StringId.of(value);
-    }
+public interface ReferenceMapperWithStrings extends ReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(FeatureKey key) {
         return this.<String>valueOf(key)
-                .map(SingleReferenceMapperWithStrings::parse);
+                .map(this::parse);
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(FeatureKey key, Id id) {
         return this.valueFor(key, format(id))
-                .map(SingleReferenceMapperWithStrings::parse);
+                .map(this::parse);
+    }
+
+    /**
+     * ???
+     *
+     * @param value ???
+     *
+     * @return ???
+     */
+    default String format(Id value) {
+        return checkNotNull(value).toString();
+    }
+
+    /**
+     * ???
+     *
+     * @param value ???
+     *
+     * @return ???
+     */
+    default Id parse(String value) {
+        return StringId.of(checkNotNull(value));
     }
 }

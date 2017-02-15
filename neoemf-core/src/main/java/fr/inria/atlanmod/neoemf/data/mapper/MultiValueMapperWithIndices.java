@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  *
  */
-public interface MultiValueMapperWithIndices extends SingleValueMapper, MultiValueMapper {
+public interface MultiValueMapperWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override

@@ -27,7 +27,7 @@ import static java.util.Objects.isNull;
 /**
  *
  */
-public interface MultiValueMapperWithLists extends SingleValueMapper, MultiValueMapper {
+public interface MultiValueMapperWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override
