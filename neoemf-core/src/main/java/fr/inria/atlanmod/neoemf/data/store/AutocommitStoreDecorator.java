@@ -61,9 +61,9 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
 
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        Object old = super.set(internalObject, feature, index, value);
+        Object previous = super.set(internalObject, feature, index, value);
         incrementAndCommit();
-        return old;
+        return previous;
     }
 
     @Override
@@ -80,16 +80,16 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
 
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        Object old = super.remove(internalObject, feature, index);
+        Object previous = super.remove(internalObject, feature, index);
         incrementAndCommit();
-        return old;
+        return previous;
     }
 
     @Override
     public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        Object old = super.move(internalObject, feature, targetIndex, sourceIndex);
+        Object previous = super.move(internalObject, feature, targetIndex, sourceIndex);
         incrementAndCommit();
-        return old;
+        return previous;
     }
 
     @Override

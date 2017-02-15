@@ -44,10 +44,10 @@ public class MapDbBackendTest extends AbstractTest {
         MapDbBackend backend = new MapDbBackendIndices(db);
 
         MultiFeatureKey[] keys = new MultiFeatureKey[TIMES];
-        FeatureKey featureKey = FeatureKey.of(StringId.of("object"), "name");
+        FeatureKey key = FeatureKey.of(StringId.of("object"), "name");
 
         for (int i = 0; i < 10; i++) {
-            keys[i] = featureKey.withPosition(i);
+            keys[i] = key.withPosition(i);
             backend.addValue(keys[i], i);
         }
 

@@ -44,9 +44,9 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         setAsLoaded(internalObject);
-        Object soughtValue = super.get(internalObject, feature, index);
-        setAsLoaded(soughtValue);
-        return soughtValue;
+        Object value = super.get(internalObject, feature, index);
+        setAsLoaded(value);
+        return value;
     }
 
     @Override

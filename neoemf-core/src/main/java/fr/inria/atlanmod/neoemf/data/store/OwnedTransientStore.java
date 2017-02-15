@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -26,14 +28,14 @@ public class OwnedTransientStore extends AbstractTransientStore {
     /**
      * The owner of this store.
      */
-    private final EObject owner;
+    private final PersistentEObject owner;
 
     /**
      * Constructs a new {@code OwnedTransientStore} with the given {@code owner}.
      *
      * @param owner the owner of this store
      */
-    public OwnedTransientStore(EObject owner) {
+    public OwnedTransientStore(PersistentEObject owner) {
         this.owner = owner;
     }
 

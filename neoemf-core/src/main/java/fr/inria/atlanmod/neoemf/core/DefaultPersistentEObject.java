@@ -133,7 +133,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public void resource(Resource.Internal resource) {
         this.resource = resource;
-        EStore oldStore = store;
+        EStore previousStore = store;
 
         // Set the new EStore
         if (resource instanceof PersistentResource) {
@@ -143,21 +143,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             store = new OwnedTransientStore(this);
         }
 
-        // Move contents from oldStore to store
-        if (nonNull(oldStore) && nonNull(store) && store != oldStore) {
+        // Move contents from the previous store to the new
+        if (nonNull(previousStore) && nonNull(store) && store != previousStore) {
             // If the new store is different, initialize the new store with the data stored in the old store
             for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
-                if (oldStore.isSet(this, feature)) {
+                if (previousStore.isSet(this, feature)) {
                     if (!feature.isMany()) {
-                        Object value = getAdaptedValue(oldStore, feature, PersistentStore.NO_INDEX);
+                        Object value = getAdaptedValue(previousStore, feature, PersistentStore.NO_INDEX);
                         if (nonNull(value)) {
                             store.set(this, feature, PersistentStore.NO_INDEX, value);
                         }
                     }
                     else {
                         store.clear(this, feature);
-                        for (int i = 0; i < oldStore.size(this, feature); i++) {
-                            Object value = getAdaptedValue(oldStore, feature, i);
+                        for (int i = 0; i < previousStore.size(this, feature); i++) {
+                            Object value = getAdaptedValue(previousStore, feature, i);
                             if (nonNull(value)) {
                                 store.add(this, feature, i, value);
                             }
