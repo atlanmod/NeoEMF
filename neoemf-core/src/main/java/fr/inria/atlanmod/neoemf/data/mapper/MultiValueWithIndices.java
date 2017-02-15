@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- *
+ * ???
  */
-public interface MultiValueMapperWithIndices extends MultiValueMapper {
+public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
@@ -107,10 +107,10 @@ public interface MultiValueMapperWithIndices extends MultiValueMapper {
     }
 
     /**
-     * Defines the {@code size} of the given {@code key}.
+     * ???
      *
-     * @param key  the key
-     * @param size the new size
+     * @param key  ???
+     * @param size ???
      */
     default void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);

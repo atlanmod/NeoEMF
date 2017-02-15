@@ -18,7 +18,7 @@ import com.sleepycat.je.EnvironmentConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
 import java.io.File;
@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * ???
  */
 @ParametersAreNonnullByDefault
-class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements MultiValueMapperWithIndices {
+class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements MultiValueWithIndices {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link Id}, identified by the associated

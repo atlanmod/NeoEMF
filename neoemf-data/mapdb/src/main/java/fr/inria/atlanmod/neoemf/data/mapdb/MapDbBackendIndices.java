@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultiFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -47,7 +47,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueMapperWithIndices {
+class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWithIndices {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id}s,

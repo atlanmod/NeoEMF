@@ -31,22 +31,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- *
+ * ???
  */
-public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArrays, MultiReferenceMapper {
+public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(MultiFeatureKey key) {
         return this.<String>valueOf(key.withoutPosition())
-                .map(s -> parseMulti(s)[key.position()]);
+                .map(s -> arrayFromString(s)[key.position()]);
     }
 
     @Nonnull
     @Override
     default Iterable<Id> allReferencesOf(FeatureKey key) {
         Id[] values = this.<String>valueOf(key)
-                .map(this::parseMulti)
+                .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);
 
         return Arrays.asList(values);
@@ -56,14 +56,14 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
     @Override
     default Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
-                .map(this::parseMulti)
+                .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousValue = Optional.of(values[key.position()]);
 
         values[key.position()] = id;
 
-        valueFor(key.withoutPosition(), formatMulti(values));
+        valueFor(key.withoutPosition(), arrayToString(values));
 
         return previousValue;
     }
@@ -71,7 +71,7 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
     @Override
     default void addReference(MultiFeatureKey key, Id id) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
-                .map(this::parseMulti)
+                .map(this::arrayFromString)
                 .orElse(new Id[0]);
 
         while (key.position() > values.length) {
@@ -85,19 +85,19 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
             values = ArrayUtils.add(values, key.position(), id);
         }
 
-        valueFor(key.withoutPosition(), formatMulti(values));
+        valueFor(key.withoutPosition(), arrayToString(values));
     }
 
     @Nonnull
     @Override
     default Optional<Id> removeReference(MultiFeatureKey key) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
-                .map(this::parseMulti)
+                .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousValue = Optional.of(values[key.position()]);
 
-        valueFor(key.withoutPosition(), formatMulti(ArrayUtils.remove(values, key.position())));
+        valueFor(key.withoutPosition(), arrayToString(ArrayUtils.remove(values, key.position())));
 
         return previousValue;
     }
@@ -105,7 +105,7 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
     @Override
     default boolean containsReference(FeatureKey key, Id id) {
         return this.<String>valueOf(key)
-                .map(s -> ArrayUtils.contains(parseMulti(s), id))
+                .map(s -> ArrayUtils.contains(arrayFromString(s), id))
                 .orElse(false);
     }
 
@@ -114,7 +114,7 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
     default OptionalInt indexOfReference(FeatureKey key, Id id) {
         return this.<String>valueOf(key)
                 .map(s -> {
-                    int index = ArrayUtils.indexOf(parseMulti(s), id);
+                    int index = ArrayUtils.indexOf(arrayFromString(s), id);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -125,7 +125,7 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
     default OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
         return this.<String>valueOf(key)
                 .map(s -> {
-                    int index = ArrayUtils.lastIndexOf(parseMulti(s), id);
+                    int index = ArrayUtils.lastIndexOf(arrayFromString(s), id);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -135,7 +135,7 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
     @Override
     default OptionalInt sizeOfReference(FeatureKey key) {
         return this.<String>valueOf(key)
-                .map(s -> OptionalInt.of(parseMulti(s).length))
+                .map(s -> OptionalInt.of(arrayFromString(s).length))
                 .orElse(OptionalInt.empty());
     }
 
@@ -146,10 +146,8 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
      *
      * @return ???
      */
-    default String formatMulti(Id[] values) {
-        checkNotNull(values);
-
-        return Stream.of(values)
+    default String arrayToString(Id[] values) {
+        return Stream.of(checkNotNull(values))
                 .map(Id::toString)
                 .collect(Collectors.joining(","));
     }
@@ -161,10 +159,8 @@ public interface MultiReferenceMapperWithStrings extends MultiValueMapperWithArr
      *
      * @return ???
      */
-    default Id[] parseMulti(String value) {
-        checkNotNull(value);
-
-        return Stream.of(value.split(","))
+    default Id[] arrayFromString(String value) {
+        return Stream.of(checkNotNull(value).split(","))
                 .map(StringId::of)
                 .toArray(Id[]::new);
     }

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueMapperWithLists;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithLists;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
@@ -42,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendLists extends AbstractMapDbBackend implements MultiValueMapperWithLists {
+class MapDbBackendLists extends AbstractMapDbBackend implements MultiValueWithLists {
 
     /**
      * Constructs a new {@code MapDbBackendLists} wrapping the provided {@code db}.

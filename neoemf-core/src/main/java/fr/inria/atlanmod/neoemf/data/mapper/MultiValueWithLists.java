@@ -25,9 +25,9 @@ import javax.annotation.Nonnull;
 import static java.util.Objects.isNull;
 
 /**
- *
+ * ???
  */
-public interface MultiValueMapperWithLists extends MultiValueMapper {
+public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override

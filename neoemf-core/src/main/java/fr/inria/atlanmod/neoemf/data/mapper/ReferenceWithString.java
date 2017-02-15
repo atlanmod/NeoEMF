@@ -22,22 +22,22 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- *
+ * ???
  */
-public interface ReferenceMapperWithStrings extends ReferenceMapper {
+public interface ReferenceWithString extends ReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(FeatureKey key) {
         return this.<String>valueOf(key)
-                .map(this::parse);
+                .map(this::fromString);
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return this.valueFor(key, format(id))
-                .map(this::parse);
+        return this.valueFor(key, toString(id))
+                .map(this::fromString);
     }
 
     /**
@@ -47,7 +47,7 @@ public interface ReferenceMapperWithStrings extends ReferenceMapper {
      *
      * @return ???
      */
-    default String format(Id value) {
+    default String toString(Id value) {
         return checkNotNull(value).toString();
     }
 
@@ -58,7 +58,7 @@ public interface ReferenceMapperWithStrings extends ReferenceMapper {
      *
      * @return ???
      */
-    default Id parse(String value) {
+    default Id fromString(String value) {
         return StringId.of(checkNotNull(value));
     }
 }
