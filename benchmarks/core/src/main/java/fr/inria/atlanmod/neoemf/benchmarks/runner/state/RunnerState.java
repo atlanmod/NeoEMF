@@ -15,6 +15,7 @@ import com.google.common.base.CaseFormat;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoBerkeleydbBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapdbBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoTinkerBackend;
@@ -57,6 +58,7 @@ public class RunnerState {
             XmiBackend.NAME,
             CdoBackend.NAME,
             NeoMapdbBackend.NAME,
+            NeoBerkeleydbBackend.NAME,
             NeoTinkerBackend.NAME,
             NeoNeo4jBackend.NAME,
     })
