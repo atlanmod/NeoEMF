@@ -25,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A simple representation of a (meta){@link EClass}.
@@ -48,6 +49,11 @@ public class MetaclassDescriptor implements Serializable {
     private final String uri;
 
     /**
+     * The represented {@link EClass}.
+     */
+    private transient EClass eClass;
+
+    /**
      * Constructs a new {@code MetaclassDescriptor} with the given {@code name} and {@code uri}, which are used as a
      * simple representation of a an {@link EClass}.
      *
@@ -57,6 +63,16 @@ public class MetaclassDescriptor implements Serializable {
     protected MetaclassDescriptor(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
+    }
+
+    /**
+     * Constructs a new {@code MetaclassDescriptor} for the represented {@code eClass}.
+     *
+     * @param eClass the represented {@link EClass}
+     */
+    private MetaclassDescriptor(EClass eClass) {
+        this(eClass.getName(), eClass.getEPackage().getNsURI());
+        this.eClass = eClass;
     }
 
     /**
@@ -74,8 +90,7 @@ public class MetaclassDescriptor implements Serializable {
      */
     @Nonnull
     public static MetaclassDescriptor from(PersistentEObject object) {
-        final EClass eClass = object.eClass();
-        return of(eClass.getName(), eClass.getEPackage().getNsURI());
+        return new MetaclassDescriptor(object.eClass());
     }
 
     /**
@@ -118,13 +133,14 @@ public class MetaclassDescriptor implements Serializable {
      * @return a class, or {@code null} if it can not be found
      */
     public EClass eClass() {
-        EClass eClass = null;
-        EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
-        if (isNull(ePackage)) {
-            NeoLogger.warn("Unable to find EPackage for URI: {0}", uri);
-        }
-        else {
-            eClass = (EClass) ePackage.getEClassifier(name);
+        if (isNull(eClass)) {
+            EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
+            if (nonNull(ePackage)) {
+                eClass = (EClass) ePackage.getEClassifier(name);
+            }
+            else {
+                NeoLogger.warn("Unable to find EPackage for URI: {0}", uri);
+            }
         }
         return eClass;
     }
