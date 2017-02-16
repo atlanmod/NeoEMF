@@ -25,9 +25,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EReference;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -41,6 +39,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend> implements PersistenceReader {
 
     /**
+     * The backend to read.
+     */
+    private PersistenceBackend backend;
+
+    /**
      * Constructs a new {@code DefaultPersistenceReader} with the given {@code handlers}.
      *
      * @param handlers the handlers to notify
@@ -51,120 +54,169 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
 
     @Override
     public void read(PersistenceBackend source) {
+        backend = source;
+
         notifyInitialize();
 
         FeatureKey rootKey = FeatureKey.of(PersistenceConstants.ROOT_ID, PersistenceConstants.ROOT_FEATURE_NAME);
-        source.allReferencesOf(rootKey).forEach(id -> readElement(source, id, true));
+        source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();
+
+        backend = null;
     }
 
-    protected void readElement(PersistenceBackend backend, Id id, boolean isRoot) {
+    /**
+     * Reads the element identified by its {@code id}.
+     *
+     * @param id the identifier of the element
+     */
+    protected void readElement(Id id) {
+        readElement(id, false);
+    }
+
+    /**
+     * Reads the element identified by its {@code id}.
+     *
+     * @param id     the identifier of the element
+     * @param isRoot {@code true} if the element is a root element
+     */
+    protected void readElement(Id id, boolean isRoot) {
+        // Retrieve the metaclass and namespace
         MetaclassDescriptor metaclass = backend.metaclassOf(id).orElseThrow(IllegalArgumentException::new);
-        EClass eClass = metaclass.eClass();
-        Namespace ns = Namespace.Registry.getInstance().register(eClass.getEPackage().getNsPrefix(), eClass.getEPackage().getNsURI());
+        EClass realMetaclass = metaclass.eClass();
 
-        String name = isRoot ? metaclass.name() : backend.containerOf(id).map(ContainerDescriptor::name).orElse(null);
+        Namespace ns = Namespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
 
-        RawElement element = new RawElement(ns, name);
+        // Retrieve the name of the element
+        // If root it's the name of the metaclass, otherwise the name of the containing feature
+        String elementName = isRoot ? metaclass.name() : backend.containerOf(id).map(ContainerDescriptor::name).orElse(null);
+
+        // Create the element
+        RawElement element = new RawElement(ns, elementName);
         element.id(RawId.original(id.toString()));
         element.metaClass(new RawMetaclass(ns, metaclass.name()));
-        element.className(backend.valueOf(FeatureKey.of(id, PersistenceConstants.FEATURE_NAME)).map(Object::toString).orElse(null));
         element.root(isRoot);
+
+        // Retrieve the real name of this element
+        String name = backend.valueOf(FeatureKey.of(id, PersistenceConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
+        element.className(name);
 
         notifyStartElement(element);
 
-        eClass.getEAttributes().stream()
-                .filter(a -> !Objects.equals(PersistenceConstants.FEATURE_NAME, a.getName()))
-                .forEach(a -> readAttributes(backend, id, a));
+        // Process all attributes
+        realMetaclass.getEAllAttributes().stream()
+                .filter(attribute -> !Objects.equals(PersistenceConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
+                .forEach(attribute -> {
+                    FeatureKey key = FeatureKey.of(id, attribute.getName());
+                    if (!attribute.isMany()) {
+                        readValue(key);
+                    }
+                    else {
+                        readAllValues(key);
+                    }
+                });
 
-        eClass.getEReferences()
-                .forEach(r -> readReferences(backend, id, r));
+        // Process all references
+        realMetaclass.getEAllReferences()
+                .forEach(reference -> {
+                    FeatureKey key = FeatureKey.of(id, reference.getName());
+                    if (!reference.isMany()) {
+                        readReference(key);
+                    }
+                    else {
+                        readAllReferences(key);
+                    }
+                });
 
         notifyEndElement();
     }
 
-    protected void readAttributes(PersistenceBackend backend, Id id, EAttribute eAttribute) {
-        FeatureKey key = FeatureKey.of(id, eAttribute.getName());
+    /**
+     * Reads the single-valued attribute of the specified {@code key}.
+     *
+     * @param key the key identifying the attribute
+     */
+    protected void readValue(FeatureKey key) {
+        backend.valueOf(key).ifPresent(value -> {
+            RawAttribute attribute = new RawAttribute(key.name());
+            attribute.id(RawId.original(key.id().toString()));
+            attribute.value(value);
 
-        if (!eAttribute.isMany()) {
-            backend.valueOf(key).ifPresent(value -> {
-
-                RawAttribute rawAttribute = new RawAttribute(key.name());
-                rawAttribute.id(RawId.original(id.toString()));
-                rawAttribute.value(value);
-
-                notifyAttribute(rawAttribute);
-            });
-        }
-        else {
-            IntStream.range(0, backend.sizeOfValue(key).orElse(0)).forEach(position ->
-                    backend.valueOf(key.withPosition(0)).ifPresent(value -> {
-
-                        RawAttribute rawAttribute = new RawAttribute(key.name());
-                        rawAttribute.id(RawId.original(key.id().toString()));
-                        rawAttribute.value(value);
-                        rawAttribute.many(true);
-                        rawAttribute.index(position);
-
-                        notifyAttribute(rawAttribute);
-                    }));
-        }
+            notifyAttribute(attribute);
+        });
     }
 
-    protected void readReferences(PersistenceBackend backend, Id id, EReference eReference) {
-        FeatureKey key = FeatureKey.of(id, eReference.getName());
+    /**
+     * Reads all multi-valued attributes of the specified {@code key}.
+     *
+     * @param key the key identifying the attributes
+     */
+    protected void readAllValues(FeatureKey key) {
+        int size = backend.sizeOfValue(key).orElse(0);
 
-        if (!eReference.isMany()) {
-            backend.referenceOf(key).ifPresent(idReference -> {
+        IntStream.range(0, size).forEach(position ->
+                backend.valueOf(key.withPosition(0)).ifPresent(value -> {
+                    RawAttribute attribute = new RawAttribute(key.name());
+                    attribute.id(RawId.original(key.id().toString()));
+                    attribute.value(value);
+                    attribute.many(true);
+                    attribute.index(position);
 
-                RawReference rawReference = new RawReference(key.name());
-                rawReference.id(RawId.original(key.id().toString()));
-                rawReference.idReference(RawId.original(idReference.toString()));
-                rawReference.containment(false);
+                    notifyAttribute(attribute);
+                }));
+    }
 
-                notifyReference(rawReference);
+    /**
+     * Reads the single-valued reference of the specified {@code key}.
+     *
+     * @param key the key identifying the reference
+     */
+    protected void readReference(FeatureKey key) {
+        backend.referenceOf(key).ifPresent(id -> {
+            RawReference reference = new RawReference(key.name());
+            reference.id(RawId.original(key.id().toString()));
+            reference.idReference(RawId.original(id.toString()));
 
-                backend.containerOf(idReference).ifPresent(c -> {
-                    RawReference reverseReference = new RawReference(c.name());
-                    reverseReference.id(RawId.original(idReference.toString()));
-                    reverseReference.idReference(RawId.original(key.id().toString()));
-                    reverseReference.containment(true);
+            notifyReference(reference);
 
-                    notifyReference(reverseReference);
+            next(key.id(), id);
+        });
+    }
 
-                    if (Objects.equals(c.id(), id)) {
-                        readElement(backend, idReference, false);
-                    }
-                });
-            });
-        }
-        else {
-            IntStream.range(0, backend.sizeOfReference(key).orElse(0)).forEach(position ->
-                    backend.referenceOf(key.withPosition(position)).ifPresent(idReference -> {
+    /**
+     * Reads all multi-valued references of the specified {@code key}.
+     *
+     * @param key the key identifying the references
+     */
+    protected void readAllReferences(FeatureKey key) {
+        int size = backend.sizeOfReference(key).orElse(0);
 
-                        RawReference rawReference = new RawReference(key.name());
-                        rawReference.id(RawId.original(key.id().toString()));
-                        rawReference.idReference(RawId.original(idReference.toString()));
-                        rawReference.containment(false);
-                        rawReference.many(true);
-                        rawReference.index(position);
+        IntStream.range(0, size).forEach(position ->
+                backend.referenceOf(key.withPosition(position)).ifPresent(id -> {
+                    RawReference reference = new RawReference(key.name());
+                    reference.id(RawId.original(key.id().toString()));
+                    reference.idReference(RawId.original(id.toString()));
+                    reference.many(true);
+                    reference.index(position);
 
-                        notifyReference(rawReference);
+                    notifyReference(reference);
 
-                        backend.containerOf(idReference).ifPresent(c -> {
-                            RawReference reverseReference = new RawReference(c.name());
-                            reverseReference.id(RawId.original(idReference.toString()));
-                            reverseReference.idReference(RawId.original(key.id().toString()));
-                            reverseReference.containment(true);
+                    next(key.id(), id);
+                }));
+    }
 
-                            notifyReference(reverseReference);
-
-                            if (Objects.equals(c.id(), id)) {
-                                readElement(backend, idReference, false);
-                            }
-                        });
-                    }));
-        }
+    /**
+     * Reads the {@code next} element if {@code containerOf(next) == parent}.
+     *
+     * @param parent the parent identifier of {@code next}
+     * @param next   the next identifier
+     */
+    protected void next(Id parent, Id next) {
+        backend.containerOf(next).ifPresent(container -> {
+            if (Objects.equals(container.id(), parent)) {
+                readElement(next);
+            }
+        });
     }
 }

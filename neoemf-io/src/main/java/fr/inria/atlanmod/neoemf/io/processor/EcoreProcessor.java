@@ -252,8 +252,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
         // Create a reference from the parent to this element, with the given local name
         if (reference.isContainment()) {
-            NeoLogger.debug("{0}#{1} is a containment : creating the reverse reference.", element.metaClass(), reference.getName());
-
             RawReference ref = new RawReference(reference.getName());
             ref.id(idsStack.getLast());
             ref.idReference(currentId);

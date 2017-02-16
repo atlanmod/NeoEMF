@@ -18,17 +18,16 @@ import fr.inria.atlanmod.neoemf.io.reader.DefaultPersistenceReader;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * A test case about the export from {@link PersistenceBackend}s.
  */
-@Ignore
 public class ExportTest extends AbstractIOTest {
 
     /**
@@ -41,7 +40,7 @@ public class ExportTest extends AbstractIOTest {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
         File sourceFile = file();
-        File targetFile = file().toPath().resolve("copy").toFile();
+        File targetFile = Paths.get(sourceFile + "-copy").toFile();
 
         try (PersistenceBackend backend = context().createBackend(sourceFile)) {
             IOFactory.fromXmi(new FileInputStream(getXmiStandard()), WriterFactory.newNaiveWriter(backend));
