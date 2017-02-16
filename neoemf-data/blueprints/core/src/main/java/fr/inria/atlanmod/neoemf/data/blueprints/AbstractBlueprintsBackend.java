@@ -72,11 +72,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     protected static final String KEY_CONTAINER = "eContainer";
 
     /**
-     * The label used to link root vertex to top-level elements.
-     */
-    protected static final String KEY_CONTENTS = "eContents";
-
-    /**
      * The property key used to define the opposite containing feature in container {@link Edge}s.
      */
     protected static final String KEY_CONTAINING_FEATURE = "containingFeature";
@@ -99,7 +94,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     /**
      * The label of type conformance {@link Edge}s.
      */
-    private static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
+    private static final String KEY_INSTANCE_OF = "neoInstanceOf";
 
     /**
      * The name of the index entry holding metaclass {@link Vertex}s.
@@ -174,7 +169,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * @return the create {@link Id}
      */
     @Nonnull
-    protected static Id buildId(MetaclassDescriptor metaclass) {
+    private static Id buildId(MetaclassDescriptor metaclass) {
         return StringId.of(metaclass.name() + '@' + metaclass.uri());
     }
 
@@ -269,7 +264,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             // Get all the vertices that are indexed with one of the EClass
             return eClassToFind.stream()
                     .flatMap(ec -> StreamSupport.stream(metaclassIndex.get(KEY_NAME, ec.getName()).spliterator(), false)
-                            .flatMap(mcv -> StreamSupport.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF).spliterator(), false)
+                            .flatMap(mcv -> StreamSupport.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf").spliterator(), false)
                                     .map(v -> StringId.from(v.getId()))))
                     .collect(Collectors.toList());
         }
@@ -320,7 +315,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
         Vertex vertex = vertex(id);
 
-        Iterable<Vertex> metaclassVertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF);
+        Iterable<Vertex> metaclassVertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
         Optional<Vertex> metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny();
 
         return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
@@ -342,6 +337,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         Vertex vertex = vertex(id);
         vertex.addEdge(KEY_INSTANCE_OF, metaclassVertex);
+
+        // Remove old link
+        vertex.getEdges(Direction.OUT, "kyanosInstanceOf")
+                .forEach(Element::remove);
     }
 
     /**

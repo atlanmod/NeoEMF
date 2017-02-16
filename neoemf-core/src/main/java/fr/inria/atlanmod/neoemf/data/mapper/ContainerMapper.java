@@ -17,14 +17,18 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * An object capable of mapping containers represented as a set of key/value pair.
+ *
+ * @see ContainerDescriptor
  */
+@ParametersAreNonnullByDefault
 public interface ContainerMapper {
 
     /**
-     * Retrieves the {@link ContainerDescriptor} for a given {@code id}.
+     * Retrieves the {@link ContainerDescriptor} for the specified {@code id}.
      *
      * @param id the {@link Id} of the contained element
      *
@@ -35,7 +39,7 @@ public interface ContainerMapper {
     Optional<ContainerDescriptor> containerOf(Id id);
 
     /**
-     * Stores the {@link ContainerDescriptor} for a given {@code id}.
+     * Stores the {@link ContainerDescriptor} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the contained element
      * @param container the {@link ContainerDescriptor} containing element's container information to store

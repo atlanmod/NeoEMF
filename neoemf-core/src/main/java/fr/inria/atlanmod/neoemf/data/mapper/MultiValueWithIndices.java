@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -23,20 +22,23 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * ???
+ * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
+ * <p>
+ * It provides a default behavior to represent the "multi-valued" directly with their position.
  */
+@ParametersAreNonnullByDefault
 public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
     default <V> Iterable<V> allValuesOf(FeatureKey key) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i))
-                        .<NoSuchElementException>orElseThrow(NoSuchElementException::new))
+                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
                 .collect(Collectors.toList());
     }
 
@@ -107,10 +109,10 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     /**
-     * ???
+     * Defines the number of values of the specified {@code key}.
      *
-     * @param key  ???
-     * @param size ???
+     * @param key  the key identifying the multi-valued attribute
+     * @param size the number of values
      */
     default void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);

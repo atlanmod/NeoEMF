@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
 
     /**
-     * Creates the given {@code id} in this {@code PersistenceBackend}.
+     * Creates the specified {@code id}.
      *
      * @param id the id to create
      *
@@ -32,7 +32,7 @@ public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, Val
     void create(Id id);
 
     /**
-     * Checks whether the given {@code id} is already present in this {@code PersistenceBackend}.
+     * Checks whether the specified {@code id} is already present.
      *
      * @param id the id to check to presence
      *

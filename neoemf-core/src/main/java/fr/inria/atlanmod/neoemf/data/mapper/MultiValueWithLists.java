@@ -15,18 +15,23 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 
 /**
- * ???
+ * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
+ * <p>
+ * It provides a default behavior to represent the "multi-valued" characteristic as {@link List}s.
  */
+@ParametersAreNonnullByDefault
 public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
@@ -40,7 +45,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> Iterable<V> allValuesOf(FeatureKey key) {
         return this.<List<V>>valueOf(key)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+                .orElse(Collections.emptyList());
     }
 
     @Nonnull

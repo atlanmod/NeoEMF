@@ -108,7 +108,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
@@ -121,7 +121,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             referenceEdge.get().remove();
         }
 
-        vertex(key.id()).addEdge(key.name(), vertex(id));
+        vertex(key.id()).addEdge(key.name(), vertex(reference));
 
         return previousId;
     }
@@ -176,7 +176,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex.query()
@@ -194,7 +194,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             previousEdge.get().remove();
         }
 
-        Edge edge = vertex(key.id()).addEdge(key.name(), vertex(id));
+        Edge edge = vertex(key.id()).addEdge(key.name(), vertex(reference));
         edge.setProperty(KEY_POSITION, key.position());
 
         return previousId;
@@ -219,7 +219,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id id) {
+    public void addReference(MultiFeatureKey key, Id reference) {
         int size = sizeOfValue(key).orElse(0);
         int newSize = size + 1;
 
@@ -235,7 +235,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             edges.forEach(e -> e.setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
         }
 
-        Edge edge = vertex.addEdge(key.name(), vertex(id));
+        Edge edge = vertex.addEdge(key.name(), vertex(reference));
         edge.setProperty(KEY_POSITION, key.position());
 
         sizeFor(key, newSize);
@@ -291,19 +291,19 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id id) {
+    public boolean containsReference(FeatureKey key, Id reference) {
         Iterable<Vertex> referencedVertices = vertex(key.id()).getVertices(Direction.OUT, key.name());
 
         return StreamSupport.stream(referencedVertices.spliterator(), false)
-                .anyMatch(v -> Objects.equals(v.getId().toString(), id.toString()));
+                .anyMatch(v -> Objects.equals(v.getId().toString(), reference.toString()));
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
         Vertex vertex = vertex(key.id());
 
-        Iterable<Edge> edges = vertex(id).getEdges(Direction.IN, key.name());
+        Iterable<Edge> edges = vertex(reference).getEdges(Direction.IN, key.name());
 
         return StreamSupport.stream(edges.spliterator(), false)
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex))
@@ -313,10 +313,10 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
         Vertex vertex = vertex(key.id());
 
-        Iterable<Edge> edges = vertex(id).getEdges(Direction.IN, key.name());
+        Iterable<Edge> edges = vertex(reference).getEdges(Direction.IN, key.name());
 
         return StreamSupport.stream(edges.spliterator(), false)
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex))

@@ -17,18 +17,23 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * An object capable of mapping single-valued references represented as a set of key/value pair.
+ * <p>
+ * By default, the references are processed as values with {@link ValueMapper}.
  */
+@ParametersAreNonnullByDefault
 public interface ReferenceMapper extends ValueMapper {
 
     /**
-     * ???
+     * Retrieves the reference of the specified {@code key}.
      *
-     * @param key ???
+     * @param key the key identifying the reference
      *
-     * @return ???
+     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the key hasn't any reference
+     * or doesn't exist
      */
     @Nonnull
     default Optional<Id> referenceOf(FeatureKey key) {
@@ -36,33 +41,34 @@ public interface ReferenceMapper extends ValueMapper {
     }
 
     /**
-     * ???
+     * Defines the reference of the specified {@code key}.
      *
-     * @param key ???
-     * @param id  ???
+     * @param key       the key identifying the reference
+     * @param reference the reference to set
      *
-     * @return ???
+     * @return an {@link Optional} containing the previous reference of the {@code key}, or {@link Optional#empty()} if
+     * the key has no reference before
      */
     @Nonnull
-    default Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return valueFor(key, id);
+    default Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        return valueFor(key, reference);
     }
 
     /**
-     * ???
+     * Unsets the reference of the specified {@code key}.
      *
-     * @param key ???
+     * @param key the key identifying the reference
      */
     default void unsetReference(FeatureKey key) {
         unsetValue(key);
     }
 
     /**
-     * ???
+     * Checks whether the specified {@code key} has a defined reference.
      *
-     * @param key ???
+     * @param key the key identifying the reference
      *
-     * @return ???
+     * @return {@code true} if the {@code key} has a reference, {@code false} otherwise
      */
     default boolean hasReference(FeatureKey key) {
         return hasValue(key);

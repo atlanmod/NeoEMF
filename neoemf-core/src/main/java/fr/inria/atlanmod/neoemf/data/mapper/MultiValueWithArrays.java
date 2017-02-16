@@ -22,12 +22,16 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 
 /**
- * ???
+ * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
+ * <p>
+ * It provides a default behavior to represent the "multi-valued" characteristic as arrays.
  */
+@ParametersAreNonnullByDefault
 public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
@@ -39,9 +43,10 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
     @Override
+    @SuppressWarnings("unchecked")
     default <V> Iterable<V> allValuesOf(FeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+                .orElse((V[]) new Object[0]);
 
         return Arrays.asList(values);
     }

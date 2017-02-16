@@ -26,13 +26,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * ???
+ * An object capable of mapping multi-valued references represented as a set of key/value pair.
+ * <p>
+ * It provides a default behavior to use {@link String} instead of {@link Id[]} for multi-valued references. This
+ * behavior is specified by the {@link #arrayToString(Id[])} and {@link #arrayFromString(String)} methods.
  */
+@ParametersAreNonnullByDefault
 public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
@@ -54,14 +59,14 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
+    default Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousValue = Optional.of(values[key.position()]);
 
-        values[key.position()] = id;
+        values[key.position()] = reference;
 
         valueFor(key.withoutPosition(), arrayToString(values));
 
@@ -69,7 +74,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     }
 
     @Override
-    default void addReference(MultiFeatureKey key, Id id) {
+    default void addReference(MultiFeatureKey key, Id reference) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElse(new Id[0]);
@@ -79,10 +84,10 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
         }
 
         if (key.position() < values.length && isNull(values[key.position()])) {
-            values[key.position()] = id;
+            values[key.position()] = reference;
         }
         else {
-            values = ArrayUtils.add(values, key.position(), id);
+            values = ArrayUtils.add(values, key.position(), reference);
         }
 
         valueFor(key.withoutPosition(), arrayToString(values));
@@ -103,18 +108,18 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     }
 
     @Override
-    default boolean containsReference(FeatureKey key, Id id) {
+    default boolean containsReference(FeatureKey key, Id reference) {
         return this.<String>valueOf(key)
-                .map(s -> ArrayUtils.contains(arrayFromString(s), id))
+                .map(s -> ArrayUtils.contains(arrayFromString(s), reference))
                 .orElse(false);
     }
 
     @Nonnull
     @Override
-    default OptionalInt indexOfReference(FeatureKey key, Id id) {
+    default OptionalInt indexOfReference(FeatureKey key, Id reference) {
         return this.<String>valueOf(key)
                 .map(s -> {
-                    int index = ArrayUtils.indexOf(arrayFromString(s), id);
+                    int index = ArrayUtils.indexOf(arrayFromString(s), reference);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -122,10 +127,10 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+    default OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
         return this.<String>valueOf(key)
                 .map(s -> {
-                    int index = ArrayUtils.lastIndexOf(arrayFromString(s), id);
+                    int index = ArrayUtils.lastIndexOf(arrayFromString(s), reference);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -140,27 +145,27 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     }
 
     /**
-     * ???
+     * Converts a multi-valued reference as a {@link String}.
      *
-     * @param values ???
+     * @param references the array containing all references of convert
      *
-     * @return ???
+     * @return the converted multi-valued reference
      */
-    default String arrayToString(Id[] values) {
-        return Stream.of(checkNotNull(values))
+    default String arrayToString(Id[] references) {
+        return Stream.of(checkNotNull(references))
                 .map(Id::toString)
                 .collect(Collectors.joining(","));
     }
 
     /**
-     * ???
+     * Converts a multi-valued reference as an {@link Id[]}.
      *
-     * @param value ???
+     * @param references the multi-valued reference to convert
      *
-     * @return ???
+     * @return an array containing all references
      */
-    default Id[] arrayFromString(String value) {
-        return Stream.of(checkNotNull(value).split(","))
+    default Id[] arrayFromString(String references) {
+        return Stream.of(checkNotNull(references).split(","))
                 .map(StringId::of)
                 .toArray(Id[]::new);
     }

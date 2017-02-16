@@ -17,14 +17,18 @@ import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * An object capable of mapping metaclasses represented as a set of key/value pair.
+ *
+ * @see MetaclassDescriptor
  */
+@ParametersAreNonnullByDefault
 public interface MetaclassMapper {
 
     /**
-     * Retrieves the {@link MetaclassDescriptor} for the given {@code id}.
+     * Retrieves the {@link MetaclassDescriptor} for the specified {@code id}.
      *
      * @param id the {@link Id} of the element
      *
@@ -35,7 +39,7 @@ public interface MetaclassMapper {
     Optional<MetaclassDescriptor> metaclassOf(Id id);
 
     /**
-     * Stores the {@link MetaclassDescriptor} for the given {@code id}.
+     * Stores the {@link MetaclassDescriptor} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the element
      * @param metaclass the {@link MetaclassDescriptor} containing element's metaclass information to store

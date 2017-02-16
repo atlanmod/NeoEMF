@@ -37,13 +37,6 @@ public final class InvalidBackend implements PersistenceBackend {
      */
     private static final String MSG = "The back-end you are using doesn't provide a transient layer. You must save/load your resource before using it";
 
-    /**
-     * Constructs a new {@code InvalidBackend}.
-     */
-    public InvalidBackend() {
-        super();
-    }
-
     @Override
     public void save() {
         // Do nothing
@@ -134,7 +127,7 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id id) {
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -234,7 +227,7 @@ public final class InvalidBackend implements PersistenceBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id id) {
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -249,12 +242,12 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id id) {
+    public void addReference(MultiFeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id id) {
+    public void appendReference(FeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -270,19 +263,19 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id id) {
+    public boolean containsReference(FeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id id) {
+    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id id) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 

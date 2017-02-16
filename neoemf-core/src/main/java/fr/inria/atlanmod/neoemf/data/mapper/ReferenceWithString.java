@@ -18,12 +18,17 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * ???
+ * An object capable of mapping single-valued references represented as a set of key/value pair.
+ * <p>
+ * It provides a default behavior to use {@link String} instead of {@link Id} for references. This behavior is specified
+ * by the {@link #toString(Id)} and {@link #fromString(String)} methods.
  */
+@ParametersAreNonnullByDefault
 public interface ReferenceWithString extends ReferenceMapper {
 
     @Nonnull
@@ -35,28 +40,28 @@ public interface ReferenceWithString extends ReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(FeatureKey key, Id id) {
-        return this.valueFor(key, toString(id))
+    default Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        return this.valueFor(key, toString(reference))
                 .map(this::fromString);
     }
 
     /**
-     * ???
+     * Converts a reference as a {@link String}.
      *
-     * @param value ???
+     * @param value the value of convert
      *
-     * @return ???
+     * @return the converted reference
      */
     default String toString(Id value) {
         return checkNotNull(value).toString();
     }
 
     /**
-     * ???
+     * Converts a reference as an {@link Id}.
      *
-     * @param value ???
+     * @param value the value to convert
      *
-     * @return ???
+     * @return the converted reference
      */
     default Id fromString(String value) {
         return StringId.of(checkNotNull(value));
