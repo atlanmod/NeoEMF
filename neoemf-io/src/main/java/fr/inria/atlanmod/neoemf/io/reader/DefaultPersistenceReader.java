@@ -12,7 +12,10 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,6 +36,9 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
 
     @Override
     public void read(PersistenceBackend source) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        FeatureKey key = FeatureKey.of(PersistenceConstants.ROOT_ID, PersistenceConstants.ROOT_FEATURE_NAME);
+
+        NeoLogger.info("References...");
+        source.allReferencesOf(key).forEach(o -> NeoLogger.info("[R] {0}", o));
     }
 }
