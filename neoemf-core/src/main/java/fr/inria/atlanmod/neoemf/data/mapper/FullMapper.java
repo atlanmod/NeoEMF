@@ -16,10 +16,17 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object capable of mapping features represented as a set of key/value pair.
+ * An object capable of mapping features, containers and metaclasses represented as a set of key/value pair.
+ *
+ * @see ContainerMapper
+ * @see MetaclassMapper
+ * @see ValueMapper
+ * @see ReferenceMapper
+ * @see MultiValueMapper
+ * @see MultiReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
+public interface FullMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
 
     /**
      * Creates the specified {@code id}.

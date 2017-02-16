@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.mapper.FullMapper;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -30,13 +30,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * It does not provide model-level translation; these functions are handled by
  * {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}s.
  *
- * @future an abstraction of {@code PersistenceBackend}s will be implemented to define a global behaviour. For now, it
- * provides only basic methods for closing or saving a model, but later, it will provide generic methods to add, delete
- * or get a value.
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceBackend extends PersistenceMapper, Closeable {
+public interface PersistenceBackend extends FullMapper, Closeable {
 
     /**
      * Saves the modifications of the owned {@link EObject}s in the underlying database.
