@@ -156,11 +156,14 @@ public class Namespace {
          *
          * @param prefix the prefix of the new namespace
          * @param uri    the URI associated with the prefix
+         *
+         * @return the new {@link Namespace}
          */
-        public void register(String prefix, String uri) {
+        public Namespace register(String prefix, String uri) {
             Namespace ns = new Namespace(prefix, uri);
             namespacesByPrefix.put(prefix, ns);
             namespacesByUri.put(uri, ns);
+            return ns;
         }
 
         /**
