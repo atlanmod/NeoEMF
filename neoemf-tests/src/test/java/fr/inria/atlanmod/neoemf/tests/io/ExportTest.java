@@ -15,12 +15,13 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultPersistenceReader;
-import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 
+import org.eclipse.emf.ecore.EObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -39,13 +40,20 @@ public class ExportTest extends AbstractIOTest {
     public void testCopy() throws IOException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
-        try (PersistenceBackend backend = context().createBackend(file())) {
-            PersistenceWriter handler = WriterFactory.newNaiveWriter(backend);
-            IOFactory.fromXmi(new FileInputStream(getXmiStandard()), handler);
+        File sourceFile = file();
+        File targetFile = file().toPath().resolve("copy").toFile();
 
-            try (PersistenceBackend target = context.createBackend(file().toPath().resolve("tmp").toFile())) {
+        try (PersistenceBackend backend = context().createBackend(sourceFile)) {
+            IOFactory.fromXmi(new FileInputStream(getXmiStandard()), WriterFactory.newNaiveWriter(backend));
+
+            try (PersistenceBackend target = context().createBackend(targetFile)) {
                 new DefaultPersistenceReader(WriterFactory.newNaiveWriter(target)).read(backend);
             }
         }
+
+        EObject sourceModel = context().loadResource(null, sourceFile).getContents().get(0);
+        EObject targetModel = context().loadResource(null, targetFile).getContents().get(0);
+
+        assertEqualEObject(targetModel, sourceModel);
     }
 }
