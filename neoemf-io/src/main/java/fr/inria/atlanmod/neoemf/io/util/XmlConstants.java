@@ -17,6 +17,16 @@ package fr.inria.atlanmod.neoemf.io.util;
 public interface XmlConstants {
 
     /**
+     * The default encoding of XML files.
+     */
+    String ENCODING = "utf-8";
+
+    /**
+     * The default version of XML files.
+     */
+    String VERSION = "1.0";
+
+    /**
      * The namespace prefix of XML.
      */
     String XML_NS = "xmlns";
