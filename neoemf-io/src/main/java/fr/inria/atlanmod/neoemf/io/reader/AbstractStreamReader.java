@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Timer;
@@ -90,7 +91,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
         progressTimer.schedule(new ProgressTimer(source), 10000, 30000);
 
         try {
-            run(source);
+            run(new BufferedInputStream(source));
         }
         catch (Exception e) {
             throw new IOException(e);
