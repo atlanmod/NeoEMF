@@ -15,6 +15,8 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
+import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import org.codehaus.stax2.XMLOutputFactory2;
@@ -26,6 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link StreamWriter} that uses a StAX implementation with cursors for writing XMI files.
@@ -46,6 +50,7 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
      */
     public XmiStAXCursorStreamWriter(OutputStream stream) {
         XMLOutputFactory factory = XMLOutputFactory2.newInstance();
+        factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
 
         try {
             writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmlConstants.ENCODING);
@@ -67,27 +72,58 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
 
     @Override
     public void onStartElement(RawElement element) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            if (element.root()) {
+                writer.writeStartElement(element.ns().prefix() + ":" + element.name());
+
+                // TODO Write all used namespaces
+
+                writer.writeAttribute(XmiConstants.XMI_VERSION_ATTR, XmiConstants.XMI_VERSION);
+            }
+            else {
+                writer.writeStartElement(element.name());
+            }
+
+            writer.writeAttribute(XmiConstants.XMI_TYPE, element.metaClass().ns().prefix() + ":" + element.metaClass().name());
+            writer.writeAttribute(XmiConstants.XMI_ID, element.id().value());
+
+            if (nonNull(element.className())) {
+                writer.writeAttribute(PersistenceConstants.FEATURE_NAME, element.className());
+            }
+        }
+        catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onAttribute(RawAttribute attribute) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            writer.writeAttribute(attribute.name(), String.valueOf(attribute.value()));
+        }
+        catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onReference(RawReference reference) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // TODO Handle references
     }
 
     @Override
     public void onCharacters(String characters) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Do nothing
     }
 
     @Override
     public void onEndElement() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            writer.writeEndElement();
+        }
+        catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

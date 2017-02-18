@@ -16,12 +16,15 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultPersistenceReader;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
+import fr.inria.atlanmod.neoemf.io.writer.XmiStAXCursorStreamWriter;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -54,5 +57,26 @@ public class ExportTest extends AbstractIOTest {
         EObject targetModel = context().loadResource(null, targetFile).getContents().get(0);
 
         assertEqualEObject(targetModel, sourceModel);
+    }
+
+    /**
+     * Checks the copy from a {@link PersistenceBackend} to another.
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    @Test
+    public void testExportToXmi() throws IOException {
+        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+
+        File sourceFile = file();
+        File targetFile = new File(sourceFile + ".xmi");
+
+        NeoLogger.info("Writing to {0}", targetFile);
+
+        try (PersistenceBackend backend = context().createBackend(sourceFile)) {
+            IOFactory.fromXmi(new FileInputStream(getXmiStandard()), WriterFactory.newNaiveWriter(backend));
+
+            new DefaultPersistenceReader(new XmiStAXCursorStreamWriter(new FileOutputStream(targetFile))).read(backend);
+        }
     }
 }

@@ -47,6 +47,11 @@ public interface XmiConstants extends XmlConstants {
     String XMI_IDREF = format(XMI_NS, "idref");
 
     /**
+     * The default attribute key representing the metaclass of an element.
+     */
+    String XMI_TYPE = format(XMI_NS, TYPE);
+
+    /**
      * The attribute key representing the metaclass of an element.
      */
     String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", TYPE);
@@ -55,6 +60,11 @@ public interface XmiConstants extends XmlConstants {
      * The attribute key representing the version of the parsed XMI file.
      */
     String XMI_VERSION_ATTR = format(XMI_NS, "version");
+
+    /**
+     * The default XMI version.
+     */
+    String XMI_VERSION = "2.0";
 
     /**
      * The attribute key representing a name of an element.
