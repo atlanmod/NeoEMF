@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,8 +52,16 @@ public class ExportTest extends AbstractIOTest {
             }
         }
 
-        EObject sourceModel = context().loadResource(null, sourceBackend).getContents().get(0);
-        EObject targetModel = context().loadResource(null, targetBackend).getContents().get(0);
+        // Comparing PersistenceBackend
+        Resource sourceResource = closeAtExit(context().loadResource(null, sourceBackend));
+        Resource targetResource = closeAtExit(context().loadResource(null, targetBackend));
+
+        EObject sourceModel = sourceResource.getContents().get(0);
+        EObject targetModel = targetResource.getContents().get(0);
+        assertEqualEObject(targetModel, sourceModel);
+
+        // Comparing with EMF
+        sourceModel = loadWithEMF(getXmiStandard());
         assertEqualEObject(targetModel, sourceModel);
     }
 
