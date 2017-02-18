@@ -287,13 +287,15 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
     }
 
 
-    private <T> T[] monoValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
+    @SuppressWarnings("unchecked")
+	private <T> T[] monoValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
         FeatureKey fk = FeatureKey.from(object,attr);
         output[0] = (T) parseProperty(attr, backend.valueOf(fk));
         return output;
     }
 
-    private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr,  T[] output) {
+    @SuppressWarnings("unchecked")
+	private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr,  T[] output) {
         FeatureKey fk = FeatureKey.from(object,attr);
         for (int i = 0; i < output.length; i++) {
             output[i] = (T) parseProperty(attr,backend.valueAtIndex(fk.withPosition(i)));
@@ -301,14 +303,16 @@ public class DirectWriteMapStoreWithIndices<P extends MapBackend> extends Direct
         return output;
     }
 
-    private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
+    @SuppressWarnings("unchecked")
+	private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
         FeatureKey fk = FeatureKey.from(object,ref);
         Id id = (Id) backend.valueOf(fk);
         output[0] = (T) eObject(id);
         return output;
     }
 
-    private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
+    @SuppressWarnings("unchecked")
+	private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
         FeatureKey fk = FeatureKey.from(object,ref);
         for (int i = 0; i < output.length ; i++) {
             Id id = (Id) backend.valueAtIndex(fk.withPosition(i));

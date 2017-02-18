@@ -20,10 +20,6 @@ import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -44,17 +40,17 @@ import java.util.Map;
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
  * between elements</li> <li><b>InstanceOf Map: </b> holds metaclass information for each element</li> <li><b>Features
  * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
- * optional Map used in {@link DirectWriteMapDbIndicesStore} that stores {@link Collection} indices instead of a
+ * optional Map used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices} that stores {@link Collection} indices instead of a
  * serialized version of the collection itself</li> </ul>
  *
- * @note This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate the database.
+ * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore} and its subclasses to access and manipulate the database.
  * @note Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
  * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbPersistenceBackendFactory
- * @see DirectWriteMapDbStore
- * @see DirectWriteMapDbListsStore
- * @see DirectWriteMapDbIndicesStore
- * @see DirectWriteMapDbCacheManyStore
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithLists
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices
+ * @see fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteCachedMapStore
  */
 public class MapDbPersistenceBackend extends AbstractPersistenceBackend implements MapBackend {
 

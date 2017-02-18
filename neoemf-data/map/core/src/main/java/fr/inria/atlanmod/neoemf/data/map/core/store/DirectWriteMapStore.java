@@ -48,7 +48,7 @@ import static java.util.Objects.nonNull;
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
-public abstract class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWriteStore<P> {
+public class DirectWriteMapStore<P extends MapBackend> extends AbstractDirectWriteStore<P> {
 
     /**
      * The default cache size (10 000).

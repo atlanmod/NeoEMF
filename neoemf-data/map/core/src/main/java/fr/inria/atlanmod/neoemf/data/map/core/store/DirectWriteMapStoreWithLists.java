@@ -170,7 +170,8 @@ public class DirectWriteMapStoreWithLists<P extends MapBackend> extends DirectWr
         return parseProperty(attribute, old);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected Object getReference(PersistentEObject object, EReference reference, int index) {
         checkNotNull(object);
         checkNotNull(reference);
