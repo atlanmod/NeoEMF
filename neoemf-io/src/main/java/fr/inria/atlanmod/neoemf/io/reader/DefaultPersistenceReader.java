@@ -96,7 +96,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
         RawElement element = new RawElement(ns, elementName);
         element.id(RawId.original(id.toString()));
         element.metaClass(new RawMetaclass(ns, metaclass.name()));
-        element.root(isRoot);
+        element.isRoot(isRoot);
 
         // Retrieve the real name of this element
         String name = backend.valueOf(FeatureKey.of(id, PersistenceConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
@@ -160,7 +160,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
                     RawAttribute attribute = new RawAttribute(key.name());
                     attribute.id(RawId.original(key.id().toString()));
                     attribute.value(value);
-                    attribute.many(true);
+                    attribute.isMany(true);
                     attribute.index(position);
 
                     notifyAttribute(attribute);
@@ -197,7 +197,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
                     RawReference reference = new RawReference(key.name());
                     reference.id(RawId.original(key.id().toString()));
                     reference.idReference(RawId.original(id.toString()));
-                    reference.many(true);
+                    reference.isMany(true);
                     reference.index(position);
 
                     notifyReference(reference);

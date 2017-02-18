@@ -140,7 +140,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         RawElement rootElement = new RawElement(metaClass.ns(), metaClass.name());
         rootElement.id(RawId.generated(PersistenceConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
-        rootElement.root(false);
+        rootElement.isRoot(false);
         rootElement.metaClass(metaClass);
 
         createElement(rootElement, PersistenceConstants.ROOT_ID);
@@ -211,9 +211,9 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         }
 
         // Add the current element as content of the 'ROOT' node
-        if (element.root()) {
+        if (element.isRoot()) {
             RawReference reference = new RawReference(PersistenceConstants.ROOT_FEATURE_NAME);
-            reference.many(true);
+            reference.isMany(true);
 
             addReference(PersistenceConstants.ROOT_ID, reference, id);
         }
@@ -290,7 +290,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
 
         FeatureKey key = FeatureKey.of(id, attribute.name());
 
-        if (!attribute.many()) {
+        if (!attribute.isMany()) {
             backend.valueFor(key, attribute.value());
         }
         else {
@@ -322,13 +322,13 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         checkExists(idReference);
 
         // Update the containment reference if needed
-        if (reference.containment()) {
+        if (reference.isContainment()) {
             updateContainment(id, reference.name(), idReference);
         }
 
         FeatureKey key = FeatureKey.of(id, reference.name());
 
-        if (!reference.many()) {
+        if (!reference.isMany()) {
             backend.referenceFor(key, idReference);
         }
         else {

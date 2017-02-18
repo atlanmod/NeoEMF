@@ -24,7 +24,7 @@ public class RawReference extends RawFeature {
     /**
      * Whether this reference is a containment.
      */
-    private boolean containment;
+    private boolean isContainment;
 
     /**
      * Constructs a new {@code RawReference} with the given {@code name}.
@@ -33,7 +33,7 @@ public class RawReference extends RawFeature {
      */
     public RawReference(String name) {
         super(name);
-        this.containment = false;
+        this.isContainment = false;
     }
 
     /**
@@ -79,16 +79,16 @@ public class RawReference extends RawFeature {
      *
      * @return {@code true} if this reference is a containment
      */
-    public boolean containment() {
-        return containment;
+    public boolean isContainment() {
+        return isContainment;
     }
 
     /**
      * Defines whether this reference is a containment.
      *
-     * @param containment {@code true} if this reference is a containment
+     * @param isContainment {@code true} if this reference is a containment
      */
-    public void containment(boolean containment) {
-        this.containment = containment;
+    public void isContainment(boolean isContainment) {
+        this.isContainment = isContainment;
     }
 }

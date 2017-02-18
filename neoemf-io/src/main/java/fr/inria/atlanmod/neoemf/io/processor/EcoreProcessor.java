@@ -93,7 +93,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Checks that the attribute is well a attribute
         if (feature instanceof EAttribute) {
             EAttribute eAttribute = (EAttribute) feature;
-            attribute.many(eAttribute.isMany());
+            attribute.isMany(eAttribute.isMany());
 
             notifyAttribute(attribute);
         }
@@ -112,8 +112,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Checks that the reference is well a reference
         if (feature instanceof EReference) {
             EReference eReference = (EReference) feature;
-            reference.containment(eReference.isContainment());
-            reference.many(eReference.isMany());
+            reference.isContainment(eReference.isContainment());
+            reference.isMany(eReference.isMany());
 
             notifyReference(reference);
         }
@@ -173,7 +173,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
 
         // Defines the element as root node
-        element.root(true);
+        element.isRoot(true);
 
         // Notifies next handlers
         notifyStartElement(element);
@@ -227,7 +227,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Waiting a plain text value
         waitingAttribute = new RawAttribute(attribute.getName());
         waitingAttribute.id(idsStack.getLast());
-        waitingAttribute.many(attribute.isMany());
+        waitingAttribute.isMany(attribute.isMany());
 
         previousWasAttribute = true;
     }
@@ -255,8 +255,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             RawReference ref = new RawReference(reference.getName());
             ref.id(idsStack.getLast());
             ref.idReference(currentId);
-            ref.containment(reference.isContainment());
-            ref.many(reference.isMany());
+            ref.isContainment(reference.isContainment());
+            ref.isMany(reference.isMany());
 
             onReference(ref);
         }

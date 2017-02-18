@@ -175,8 +175,8 @@ public class PersistenceAwareWriter extends AbstractPersistenceWriter {
             this.id = id;
 
             id(reference.id());
-            containment(reference.containment());
-            many(reference.many());
+            isContainment(reference.isContainment());
+            isMany(reference.isMany());
             index(reference.index());
             idReference(reference.idReference());
         }

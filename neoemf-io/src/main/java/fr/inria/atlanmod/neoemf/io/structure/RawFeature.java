@@ -29,7 +29,7 @@ public abstract class RawFeature extends RawNamedElement {
     /**
      * Whether this feature is multi-valued.
      */
-    private boolean many;
+    private boolean isMany;
 
     /**
      * Constructs a new {@code RawFeature} with the given {@code name}. Its index is initialized to {@code -1}.
@@ -39,7 +39,7 @@ public abstract class RawFeature extends RawNamedElement {
     public RawFeature(String name) {
         super(name);
         this.index = -1;
-        this.many = false;
+        this.isMany = false;
     }
 
     /**
@@ -83,17 +83,17 @@ public abstract class RawFeature extends RawNamedElement {
      *
      * @return {@code true} if this feature is multi-valued
      */
-    public boolean many() {
-        return many;
+    public boolean isMany() {
+        return isMany;
     }
 
     /**
      * Defines whether this feature is multi-valued.
      *
-     * @param many {@code true} if this feature is multi-valued
+     * @param isMany {@code true} if this feature is multi-valued
      */
-    public void many(boolean many) {
-        this.many = many;
+    public void isMany(boolean isMany) {
+        this.isMany = isMany;
     }
 
     /**

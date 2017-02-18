@@ -11,6 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
+
 /**
  * A utility class that contains all the constants used in an XML file.
  */
@@ -60,4 +66,20 @@ public interface XmlConstants {
      * The attribute key representing a link to another document.
      */
     String HREF = "href";
+
+    /**
+     * Formats a prefixed value as {@code "prefix:value"}. If the {@code prefix} is {@code null}, the returned value
+     * only contains the {@code value}.
+     *
+     * @param prefix the prefix of the value
+     * @param value  the value
+     *
+     * @return the formatted value as {@code "prefix:value"}
+     */
+    @Nonnull
+    static String format(@Nullable String prefix, String value) {
+        checkNotNull(value);
+
+        return (isNull(prefix) ? "" : prefix + ':') + value;
+    }
 }

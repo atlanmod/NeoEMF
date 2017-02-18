@@ -64,7 +64,7 @@ public class ElementMock {
     }
 
     public boolean isRoot() {
-        return element.root();
+        return element.isRoot();
     }
 
     public String className() {

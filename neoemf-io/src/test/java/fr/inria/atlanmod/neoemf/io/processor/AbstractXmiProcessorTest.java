@@ -65,8 +65,8 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
-        assertThat(reference.containment()).isEqualTo(containment);
-        assertThat(reference.many()).isEqualTo(many);
+        assertThat(reference.isContainment()).isEqualTo(containment);
+        assertThat(reference.isMany()).isEqualTo(many);
     }
 
     protected void assertValidAttribute(final RawAttribute attribute, final String name, final int index, final Object value) {

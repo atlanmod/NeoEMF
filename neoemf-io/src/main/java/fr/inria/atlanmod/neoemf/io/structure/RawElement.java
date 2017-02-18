@@ -34,7 +34,7 @@ public class RawElement extends RawMetaclass {
     /**
      * Whether this classifier is the root element of a structure.
      */
-    private boolean root;
+    private boolean isRoot;
 
     /**
      * Constructs a new {@code RawElement} with the given {@code ns} and {@code name}.
@@ -44,7 +44,7 @@ public class RawElement extends RawMetaclass {
      */
     public RawElement(Namespace ns, String name) {
         super(ns, name);
-        this.root = false;
+        this.isRoot = false;
     }
 
     /**
@@ -106,16 +106,16 @@ public class RawElement extends RawMetaclass {
      *
      * @return {@code true} if this classifier is a root element
      */
-    public boolean root() {
-        return root;
+    public boolean isRoot() {
+        return isRoot;
     }
 
     /**
      * Defines whether this classifier is the root element of a structure.
      *
-     * @param root {@code true} if this classifier is a root element
+     * @param isRoot {@code true} if this classifier is a root element
      */
-    public void root(boolean root) {
-        this.root = root;
+    public void isRoot(boolean isRoot) {
+        this.isRoot = isRoot;
     }
 }
