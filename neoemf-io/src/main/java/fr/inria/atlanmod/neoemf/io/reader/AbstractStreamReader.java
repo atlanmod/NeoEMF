@@ -116,7 +116,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      * @param percent the percentage of data read on the total size of the data
      */
     protected void progress(double percent) {
-        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
+        NeoLogger.info("Reading: {0}", String.format("%5s", String.format("%,.0f %%", percent)));
 
         if (percent >= 100) {
             progressTimer.cancel();

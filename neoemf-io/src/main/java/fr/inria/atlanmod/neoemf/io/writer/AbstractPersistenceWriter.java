@@ -105,7 +105,6 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         this.autocommitCount = 0;
 
         NeoLogger.info("{0} created", getClass().getSimpleName());
-        NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), DEFAULT_AUTOCOMMIT_CHUNK);
     }
 
     /**

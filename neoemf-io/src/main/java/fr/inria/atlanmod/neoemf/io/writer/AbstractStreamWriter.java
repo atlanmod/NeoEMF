@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,4 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Experimental
 @ParametersAreNonnullByDefault
 public abstract class AbstractStreamWriter implements StreamWriter {
+
+    /**
+     * Constructs a new {@code AbstractStreamWriter}.
+     */
+    protected AbstractStreamWriter() {
+        NeoLogger.info("{0} created", getClass().getSimpleName());
+    }
 }
