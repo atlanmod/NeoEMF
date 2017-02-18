@@ -116,19 +116,19 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      */
     protected void readAttribute(@Nullable String prefix, String name, String value) {
         if (!ignoreElement) {
-            List<RawFeature> localFeatures = getFeatures(prefix, name, value);
+            List<RawFeature> features = processFeatures(prefix, name, value);
 
             if (ignoreElement) {
                 // No need to go further
                 return;
             }
 
-            if (!localFeatures.isEmpty()) {
-                if (localFeatures.get(0).isAttribute()) {
-                    currentAttributes.addAll(localFeatures);
+            if (!features.isEmpty()) {
+                if (features.get(0).isAttribute()) {
+                    currentAttributes.addAll(features);
                 }
                 else {
-                    currentReferences.addAll(localFeatures);
+                    currentReferences.addAll(features);
                 }
             }
         }
@@ -144,12 +144,10 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
             // Notifies the features
             currentAttributes.stream()
-                    .sorted((a1, a2) -> Boolean.compare(a1.isMany(), a2.isMany())) // Single-valued first
                     .map(RawAttribute.class::cast)
                     .forEach(this::notifyAttribute);
 
             currentReferences.stream()
-                    .sorted((r1, r2) -> Boolean.compare(r1.isMany(), r2.isMany())) // Single-valued first
                     .map(RawReference.class::cast)
                     .forEach(this::notifyReference);
 
@@ -181,21 +179,21 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      *
      * @return a list of {@link RawFeature} that can be empty.
      *
-     * @see #getAttribute(String, String)
-     * @see #getReferences(String, Iterable)
+     * @see #processAttributes(String, String)
+     * @see #processReferences(String, Iterable)
      */
     @Nonnull
-    private List<RawFeature> getFeatures(@Nullable String prefix, String name, String value) {
+    private List<RawFeature> processFeatures(@Nullable String prefix, String name, String value) {
         List<RawFeature> features;
 
         if (!processSpecialFeature(prefix, name, value)) {
             List<String> references = parseReference(value);
 
             if (!references.isEmpty()) {
-                features = getReferences(name, references);
+                features = processReferences(name, references);
             }
             else {
-                features = getAttribute(name, value);
+                features = processAttributes(name, value);
             }
         }
         else {
@@ -299,7 +297,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @return a singleton list of {@link RawFeature} containing the processed attribute.
      */
     @Nonnull
-    private List<RawFeature> getAttribute(String name, String value) {
+    private List<RawFeature> processAttributes(String name, String value) {
         List<RawFeature> features = new ArrayList<>();
 
         RawAttribute attribute = new RawAttribute(name);
@@ -320,7 +318,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @return a list of {@link RawReference} from the given {@code references}
      */
     @Nonnull
-    private List<RawFeature> getReferences(String name, Iterable<String> references) {
+    private List<RawFeature> processReferences(String name, Iterable<String> references) {
         List<RawFeature> features = new ArrayList<>();
 
         int index = 0;

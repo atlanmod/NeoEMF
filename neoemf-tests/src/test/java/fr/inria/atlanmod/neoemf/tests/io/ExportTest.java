@@ -62,7 +62,7 @@ public class ExportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occurs
      */
     @Test
-    @Ignore
+    @Ignore // FIXME Some attributes cannot be written
     public void testCopyFile() throws IOException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
@@ -83,7 +83,7 @@ public class ExportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occurs
      */
     @Test
-    @Ignore
+    @Ignore // FIXME Some elements are missing
     public void testExportToXmi() throws IOException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
