@@ -65,7 +65,7 @@ public class WriterFactory {
      * @return a new stream writer
      */
     public static StreamWriter toXmi(File file) throws IOException {
-        return new XmiStAXCursorStreamWriter(new FileOutputStream(file));
+        return toXmi(new FileOutputStream(file));
     }
 
     /**

@@ -106,7 +106,6 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
 
         // Process all attributes
         realMetaclass.getEAllAttributes().stream()
-                .sorted((a1, a2) -> Boolean.compare(a1.isMany(), a2.isMany())) // Single-valued first
                 .filter(attribute -> !Objects.equals(PersistenceConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
                 .forEach(attribute -> {
                     FeatureKey key = FeatureKey.of(id, attribute.getName());
@@ -119,8 +118,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
                 });
 
         // Process all references
-        realMetaclass.getEAllReferences().stream()
-                .sorted((r1, r2) -> Boolean.compare(r1.isMany(), r2.isMany())) // Single-valued first
+        realMetaclass.getEAllReferences()
                 .forEach(reference -> {
                     FeatureKey key = FeatureKey.of(id, reference.getName());
                     if (!reference.isMany()) {

@@ -230,7 +230,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Waiting a plain text value
         waitingAttribute = new RawAttribute(attribute.getName());
         waitingAttribute.id(idsStack.getLast());
-        waitingAttribute.isMany(attribute.isMany());
 
         previousWasAttribute = true;
     }
@@ -258,8 +257,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             RawReference ref = new RawReference(reference.getName());
             ref.id(idsStack.getLast());
             ref.idReference(currentId);
-            ref.isContainment(reference.isContainment());
-            ref.isMany(reference.isMany());
 
             onReference(ref);
         }

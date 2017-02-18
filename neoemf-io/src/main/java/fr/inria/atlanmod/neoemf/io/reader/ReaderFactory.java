@@ -52,16 +52,7 @@ public class ReaderFactory {
      * @throws IOException              if an error occurred during the import
      */
     public static void fromXmi(File file, Writer... writers) throws IOException {
-        checkNotNull(writers);
-
-        Processor processor = new DirectWriteProcessor(writers);
-
-        // Custom options come here
-
-        processor = new XPathProcessor(processor);
-        processor = new EcoreProcessor(processor);
-
-        new XmiStAXCursorStreamReader(processor).read(new FileInputStream(file));
+        fromXmi(new FileInputStream(file), writers);
     }
 
     /**

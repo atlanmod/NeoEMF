@@ -22,19 +22,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link Processor} that delegates all methods to its underlying processor.
  *
- * @param <P> the type of notified {@link Handler}
+ * @param <H> the type of notified {@link Handler}
  */
 @ParametersAreNonnullByDefault
-public class AbstractProcessor<P extends Handler> extends AbstractNotifier<P> implements Processor {
+public class AbstractProcessor<H extends Handler> extends AbstractNotifier<H> implements Processor {
 
     /**
-     * Constructs a new {@code AbstractProcessor} with the given {@code handler}.
+     * Constructs a new {@code AbstractProcessor} with the given {@code handlers}.
      *
-     * @param handler the handler to notify
+     * @param handlers the handlers to notify
      */
     @SafeVarargs
-    public AbstractProcessor(P... handler) {
-        super(handler);
+    public AbstractProcessor(H... handlers) {
+        super(handlers);
     }
 
     @Override
