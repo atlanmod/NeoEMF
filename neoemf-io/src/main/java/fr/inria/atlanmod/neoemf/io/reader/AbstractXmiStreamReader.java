@@ -74,9 +74,14 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     private RawElement currentElement;
 
     /**
-     * A collection that holds all features of the {@link #currentElement}.
+     * A collection that holds all attributes of the {@link #currentElement}.
      */
-    private Collection<RawFeature> currentFeatures;
+    private Collection<RawFeature> currentAttributes;
+
+    /**
+     * A collection that holds all references of the {@link #currentElement}.
+     */
+    private Collection<RawFeature> currentReferences;
 
     /**
      * Constructs a new {@code AbstractXmiStreamReader} with the given {@code handler}.
@@ -98,7 +103,8 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      */
     protected void readStartElement(String uri, String name) {
         currentElement = new RawElement(Namespace.Registry.getInstance().getFromUri(uri), name);
-        currentFeatures = new ArrayList<>();
+        currentAttributes = new ArrayList<>();
+        currentReferences = new ArrayList<>();
     }
 
     /**
@@ -110,7 +116,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      */
     protected void readAttribute(@Nullable String prefix, String name, String value) {
         if (!ignoreElement) {
-            Collection<RawFeature> localFeatures = getFeatures(prefix, name, value);
+            List<RawFeature> localFeatures = getFeatures(prefix, name, value);
 
             if (ignoreElement) {
                 // No need to go further
@@ -118,7 +124,12 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             }
 
             if (!localFeatures.isEmpty()) {
-                currentFeatures.addAll(localFeatures);
+                if (localFeatures.get(0).isAttribute()) {
+                    currentAttributes.addAll(localFeatures);
+                }
+                else {
+                    currentReferences.addAll(localFeatures);
+                }
             }
         }
     }
@@ -132,18 +143,20 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             notifyStartElement(currentElement);
 
             // Notifies the features
-            for (RawFeature feature : currentFeatures) {
-                if (feature.isAttribute()) {
-                    notifyAttribute((RawAttribute) feature);
-                }
-                else {
-                    notifyReference((RawReference) feature);
-                }
-            }
+            currentAttributes.stream()
+                    .sorted((a1, a2) -> Boolean.compare(a1.isMany(), a2.isMany())) // Single-valued first
+                    .map(RawAttribute.class::cast)
+                    .forEach(this::notifyAttribute);
+
+            currentReferences.stream()
+                    .sorted((r1, r2) -> Boolean.compare(r1.isMany(), r2.isMany())) // Single-valued first
+                    .map(RawReference.class::cast)
+                    .forEach(this::notifyReference);
 
             // Reset the current element/features
             currentElement = null;
-            currentFeatures = null;
+            currentAttributes = null;
+            currentReferences = null;
         }
     }
 
@@ -172,11 +185,11 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @see #getReferences(String, Iterable)
      */
     @Nonnull
-    private Collection<RawFeature> getFeatures(@Nullable String prefix, String name, String value) {
-        Collection<RawFeature> features;
+    private List<RawFeature> getFeatures(@Nullable String prefix, String name, String value) {
+        List<RawFeature> features;
 
         if (!processSpecialFeature(prefix, name, value)) {
-            Collection<String> references = parseReference(value);
+            List<String> references = parseReference(value);
 
             if (!references.isEmpty()) {
                 features = getReferences(name, references);
@@ -255,7 +268,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @see #PATTERN_WELL_FORMED_REF
      */
     @Nonnull
-    private Collection<String> parseReference(String value) {
+    private List<String> parseReference(String value) {
         List<String> references;
 
         if (!value.trim().isEmpty()) {
@@ -286,12 +299,16 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @return a singleton list of {@link RawFeature} containing the processed attribute.
      */
     @Nonnull
-    private Collection<RawFeature> getAttribute(String name, String value) {
+    private List<RawFeature> getAttribute(String name, String value) {
+        List<RawFeature> features = new ArrayList<>();
+
         RawAttribute attribute = new RawAttribute(name);
         attribute.index(0);
         attribute.value(value);
 
-        return Collections.singleton(attribute);
+        features.add(attribute);
+
+        return features;
     }
 
     /**
@@ -303,8 +320,8 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @return a list of {@link RawReference} from the given {@code references}
      */
     @Nonnull
-    private Collection<RawFeature> getReferences(String name, Iterable<String> references) {
-        Collection<RawFeature> features = new ArrayList<>();
+    private List<RawFeature> getReferences(String name, Iterable<String> references) {
+        List<RawFeature> features = new ArrayList<>();
 
         int index = 0;
         for (String rawReference : references) {

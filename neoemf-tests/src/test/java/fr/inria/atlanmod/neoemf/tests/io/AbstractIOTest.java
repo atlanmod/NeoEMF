@@ -13,8 +13,7 @@ package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.io.IOFactory;
-import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
+import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
@@ -47,6 +46,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -175,6 +175,10 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
 
         if (!testedObjects.contains(expected)) {
             testedObjects.add(expected);
+
+            if (nonNull(expected)) {
+                assertThat(actual).isNotNull();
+            }
 
             assertThat(actual.eClass().getName()).isEqualTo(expected.eClass().getName());
             assertThat(actual.eContents()).hasSameSizeAs(expected.eContents());
@@ -347,8 +351,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
         try (PersistenceBackend backend = context().createBackend(file())) {
-            PersistenceWriter handler = WriterFactory.newNaiveWriter(backend);
-            IOFactory.fromXmi(new FileInputStream(file), handler);
+            ReaderFactory.fromXmi(file, WriterFactory.toNaiveBackend(backend));
         }
 
         PersistentResource resource = context().loadResource(null, file());

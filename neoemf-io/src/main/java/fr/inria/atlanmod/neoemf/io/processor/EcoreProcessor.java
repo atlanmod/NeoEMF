@@ -115,6 +115,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             reference.isContainment(eReference.isContainment());
             reference.isMany(eReference.isMany());
 
+            EClass referenceType = eReference.getEReferenceType();
+            reference.metaclassReference(new RawMetaclass(Namespace.Registry.getInstance().getFromUri(referenceType.getEPackage().getNsURI()), referenceType.getName()));
+
             notifyReference(reference);
         }
 

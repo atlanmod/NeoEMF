@@ -11,7 +11,21 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
+import fr.inria.atlanmod.neoemf.io.writer.Writer;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The factory that creates instances of {@link Reader}s.
@@ -26,5 +40,68 @@ public class ReaderFactory {
      */
     private ReaderFactory() {
         throw new IllegalStateException("This class should not be instantiated");
+    }
+
+    /**
+     * Reads an XMI file into writers.
+     *
+     * @param file    the file to read
+     * @param writers the writers where to store the read data
+     *
+     * @throws IllegalArgumentException if there is no handler to notify
+     * @throws IOException              if an error occurred during the import
+     */
+    public static void fromXmi(File file, Writer... writers) throws IOException {
+        checkNotNull(writers);
+
+        Processor processor = new DirectWriteProcessor(writers);
+
+        // Custom options come here
+
+        processor = new XPathProcessor(processor);
+        processor = new EcoreProcessor(processor);
+
+        new XmiStAXCursorStreamReader(processor).read(new FileInputStream(file));
+    }
+
+    /**
+     * Reads an XMI file into writers.
+     *
+     * @param stream  the stream of XMI data
+     * @param writers the writers where to store the read data
+     *
+     * @throws IllegalArgumentException if there is no handler to notify
+     * @throws IOException              if an error occurred during the import
+     */
+    public static void fromXmi(InputStream stream, Writer... writers) throws IOException {
+        checkNotNull(writers);
+
+        Processor processor = new DirectWriteProcessor(writers);
+
+        // Custom options come here
+
+        processor = new XPathProcessor(processor);
+        processor = new EcoreProcessor(processor);
+
+        new XmiStAXCursorStreamReader(processor).read(stream);
+    }
+
+    /**
+     * Reads a {@link PersistenceBackend} file into writers.
+     *
+     * @param backend the backend of XMI data
+     * @param writers the writers where to store the read data
+     *
+     * @throws IllegalArgumentException if there is no handler to notify
+     * @throws IOException              if an error occurred during the import
+     */
+    public static void fromBackend(PersistenceBackend backend, Writer... writers) throws IOException {
+        checkNotNull(writers);
+
+        Processor processor = new DirectWriteProcessor(writers);
+
+        // Custom options come here
+
+        new DefaultPersistenceReader(processor).read(backend);
     }
 }

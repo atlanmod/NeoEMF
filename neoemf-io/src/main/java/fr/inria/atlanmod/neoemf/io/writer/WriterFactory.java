@@ -13,6 +13,11 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -35,9 +40,9 @@ public class WriterFactory {
      *
      * @param backend the back-end where data must persist
      *
-     * @return a new persistence handler
+     * @return a new persistence writer
      */
-    public static PersistenceWriter newAwareWriter(PersistenceBackend backend) {
+    public static PersistenceWriter toAwareBackend(PersistenceBackend backend) {
         return new PersistenceAwareWriter(backend);
     }
 
@@ -46,9 +51,31 @@ public class WriterFactory {
      *
      * @param backend the back-end where data must persist
      *
-     * @return a new persistence handler
+     * @return a new persistence writer
      */
-    public static PersistenceWriter newNaiveWriter(PersistenceBackend backend) {
+    public static PersistenceWriter toNaiveBackend(PersistenceBackend backend) {
         return new PersistenceNaiveWriter(backend);
+    }
+
+    /**
+     * Creates a {@link StreamWriter} on the given {@code stream}.
+     *
+     * @param file the file where data must be written
+     *
+     * @return a new stream writer
+     */
+    public static StreamWriter toXmi(File file) throws IOException {
+        return new XmiStAXCursorStreamWriter(new FileOutputStream(file));
+    }
+
+    /**
+     * Creates a {@link StreamWriter} on the given {@code stream}.
+     *
+     * @param stream the stream where data must be written
+     *
+     * @return a new stream writer
+     */
+    public static StreamWriter toXmi(OutputStream stream) throws IOException {
+        return new XmiStAXCursorStreamWriter(stream);
     }
 }
