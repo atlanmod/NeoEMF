@@ -29,7 +29,7 @@ public class RawElement extends RawMetaclass {
     /**
      * The metaclassifier of this classifier.
      */
-    private RawMetaclass metaClass;
+    private RawMetaclass metaclass;
 
     /**
      * Whether this classifier is the root element of a structure.
@@ -88,8 +88,8 @@ public class RawElement extends RawMetaclass {
      *
      * @return the metaclassifier
      */
-    public RawMetaclass metaClass() {
-        return metaClass;
+    public RawMetaclass metaclass() {
+        return metaclass;
     }
 
     /**
@@ -97,8 +97,8 @@ public class RawElement extends RawMetaclass {
      *
      * @param metaClass the metaclassifier
      */
-    public void metaClass(RawMetaclass metaClass) {
-        this.metaClass = metaClass;
+    public void metaclass(RawMetaclass metaClass) {
+        this.metaclass = metaClass;
     }
 
     /**

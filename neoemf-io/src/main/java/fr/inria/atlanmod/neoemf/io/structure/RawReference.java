@@ -22,6 +22,11 @@ public class RawReference extends RawFeature {
     private RawId idReference;
 
     /**
+     * The metaclassifier of the referenced element.
+     */
+    private RawMetaclass metaclassReference;
+
+    /**
      * Whether this reference is a containment.
      */
     private boolean isContainment;
@@ -72,6 +77,14 @@ public class RawReference extends RawFeature {
     @Override
     public boolean isReference() {
         return true;
+    }
+
+    public RawMetaclass metaclassReference() {
+        return metaclassReference;
+    }
+
+    public void metaclassReference(RawMetaclass metaclassReference) {
+        this.metaclassReference = metaclassReference;
     }
 
     /**

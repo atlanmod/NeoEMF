@@ -334,7 +334,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             String name = m.group(2);
 
             RawMetaclass metaClass = new RawMetaclass(ns, name);
-            currentElement.metaClass(metaClass);
+            currentElement.metaclass(metaClass);
         }
         else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);

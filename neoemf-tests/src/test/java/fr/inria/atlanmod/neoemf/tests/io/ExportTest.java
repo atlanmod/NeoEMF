@@ -55,7 +55,6 @@ public class ExportTest extends AbstractIOTest {
 
         EObject sourceModel = context().loadResource(null, sourceFile).getContents().get(0);
         EObject targetModel = context().loadResource(null, targetFile).getContents().get(0);
-
         assertEqualEObject(targetModel, sourceModel);
     }
 
@@ -78,5 +77,9 @@ public class ExportTest extends AbstractIOTest {
 
             new DefaultPersistenceReader(new XmiStAXCursorStreamWriter(new FileOutputStream(targetFile))).read(backend);
         }
+
+//        EObject sourceModel = loadWithEMF(getXmiStandard());
+//        EObject targetModel = loadWithEMF(targetFile);
+//        assertEqualEObject(targetModel, sourceModel);
     }
 }

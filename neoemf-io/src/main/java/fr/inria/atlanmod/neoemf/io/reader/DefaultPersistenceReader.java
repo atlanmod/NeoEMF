@@ -95,7 +95,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
         // Create the element
         RawElement element = new RawElement(ns, elementName);
         element.id(RawId.original(id.toString()));
-        element.metaClass(new RawMetaclass(ns, metaclass.name()));
+        element.metaclass(new RawMetaclass(ns, metaclass.name()));
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
@@ -106,6 +106,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
 
         // Process all attributes
         realMetaclass.getEAllAttributes().stream()
+                .sorted((a1, a2) -> Boolean.compare(a1.isMany(), a2.isMany())) // Single-valued first
                 .filter(attribute -> !Objects.equals(PersistenceConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
                 .forEach(attribute -> {
                     FeatureKey key = FeatureKey.of(id, attribute.getName());
@@ -118,14 +119,15 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
                 });
 
         // Process all references
-        realMetaclass.getEAllReferences()
+        realMetaclass.getEAllReferences().stream()
+                .sorted((r1, r2) -> Boolean.compare(r1.isMany(), r2.isMany())) // Single-valued first
                 .forEach(reference -> {
                     FeatureKey key = FeatureKey.of(id, reference.getName());
                     if (!reference.isMany()) {
-                        readReference(key);
+                        readReference(key, reference.isContainment());
                     }
                     else {
-                        readAllReferences(key);
+                        readAllReferences(key, reference.isContainment());
                     }
                 });
 
@@ -148,7 +150,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
     }
 
     /**
-     * Reads all multi-valued attributes of the specified {@code key}.
+     * Reads the multi-valued attribute of the specified {@code key}.
      *
      * @param key the key identifying the attributes
      */
@@ -170,13 +172,20 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
     /**
      * Reads the single-valued reference of the specified {@code key}.
      *
-     * @param key the key identifying the reference
+     * @param key           the key identifying the reference
+     * @param isContainment {@code true} if the reference is a containment
      */
-    protected void readReference(FeatureKey key) {
+    protected void readReference(FeatureKey key, boolean isContainment) {
         backend.referenceOf(key).ifPresent(id -> {
             RawReference reference = new RawReference(key.name());
             reference.id(RawId.original(key.id().toString()));
             reference.idReference(RawId.original(id.toString()));
+            reference.isContainment(isContainment);
+
+            backend.metaclassOf(id).ifPresent(m -> {
+                Namespace ns = Namespace.Registry.getInstance().getFromUri(m.uri());
+                reference.metaclassReference(new RawMetaclass(ns, m.name()));
+            });
 
             notifyReference(reference);
 
@@ -185,11 +194,12 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
     }
 
     /**
-     * Reads all multi-valued references of the specified {@code key}.
+     * Reads the multi-valued reference of the specified {@code key}.
      *
-     * @param key the key identifying the references
+     * @param key           the key identifying the reference
+     * @param isContainment {@code true} if the reference is a containment
      */
-    protected void readAllReferences(FeatureKey key) {
+    protected void readAllReferences(FeatureKey key, boolean isContainment) {
         int size = backend.sizeOfReference(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->
@@ -197,8 +207,14 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
                     RawReference reference = new RawReference(key.name());
                     reference.id(RawId.original(key.id().toString()));
                     reference.idReference(RawId.original(id.toString()));
+                    reference.isContainment(isContainment);
                     reference.isMany(true);
                     reference.index(position);
+
+                    backend.metaclassOf(id).ifPresent(m -> {
+                        Namespace ns = Namespace.Registry.getInstance().getFromUri(m.uri());
+                        reference.metaclassReference(new RawMetaclass(ns, m.name()));
+                    });
 
                     notifyReference(reference);
 

@@ -141,7 +141,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         rootElement.id(RawId.generated(PersistenceConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.isRoot(false);
-        rootElement.metaClass(metaClass);
+        rootElement.metaclass(metaClass);
 
         createElement(rootElement, PersistenceConstants.ROOT_ID);
     }
@@ -201,7 +201,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         checkNotNull(id);
 
         persist(id);
-        updateInstanceOf(id, element.metaClass().name(), element.metaClass().ns().uri());
+        updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
         if (nonNull(element.className())) {
             RawAttribute attribute = new RawAttribute(PersistenceConstants.FEATURE_NAME);

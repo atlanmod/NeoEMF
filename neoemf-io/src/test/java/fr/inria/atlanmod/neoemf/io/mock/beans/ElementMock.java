@@ -76,7 +76,7 @@ public class ElementMock {
     }
 
     public RawMetaclass metaClass() {
-        return element.metaClass();
+        return element.metaclass();
     }
 
     public List<RawAttribute> attributes() {

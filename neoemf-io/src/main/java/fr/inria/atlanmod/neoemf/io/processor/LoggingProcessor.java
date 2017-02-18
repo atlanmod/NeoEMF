@@ -60,7 +60,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
                 element.ns().prefix(),
                 element.name(),
                 element.className(),
-                element.metaClass().name(),
+                element.metaclass().name(),
                 element.id());
 
         currentId = element.id();

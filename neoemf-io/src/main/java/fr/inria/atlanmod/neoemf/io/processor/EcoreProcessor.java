@@ -168,8 +168,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EClass eClass = (EClass) ePackage.getEClassifier(element.name());
 
         // Defines the metaclass of the current element if not present
-        if (isNull(element.metaClass())) {
-            element.metaClass(new RawMetaclass(ns, eClass.getName()));
+        if (isNull(element.metaclass())) {
+            element.metaclass(new RawMetaclass(ns, eClass.getName()));
         }
 
         // Defines the element as root node
@@ -280,7 +280,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     @Nonnull
     private EClass resolveInstanceOf(RawElement element, Namespace ns, EClass superClass, EPackage ePackage) {
-        RawMetaclass metaClass = element.metaClass();
+        RawMetaclass metaClass = element.metaclass();
 
         if (nonNull(metaClass)) {
             EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.name());
@@ -298,7 +298,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // If not present, create the metaclass from the current class
         else {
             metaClass = new RawMetaclass(ns, superClass.getName());
-            element.metaClass(metaClass);
+            element.metaclass(metaClass);
         }
 
         return superClass;

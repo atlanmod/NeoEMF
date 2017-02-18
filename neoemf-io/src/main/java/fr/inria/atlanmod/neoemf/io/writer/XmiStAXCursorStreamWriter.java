@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.io.writer;
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
@@ -23,13 +24,12 @@ import org.codehaus.stax2.XMLOutputFactory2;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link StreamWriter} that uses a StAX implementation with cursors for writing XMI files.
@@ -50,7 +50,9 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
      */
     public XmiStAXCursorStreamWriter(OutputStream stream) {
         XMLOutputFactory factory = XMLOutputFactory2.newInstance();
-        factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+        factory.setProperty(XMLOutputFactory2.IS_REPAIRING_NAMESPACES, true);
+        factory.setProperty(XMLOutputFactory2.XSP_NAMESPACE_AWARE, true);
+        factory.setProperty(XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS, true);
 
         try {
             writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmlConstants.ENCODING);
@@ -73,22 +75,26 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
     @Override
     public void onStartElement(RawElement element) {
         try {
-            if (element.root()) {
-                writer.writeStartElement(element.ns().prefix() + ":" + element.name());
+            if (element.isRoot()) {
+                writer.writeStartElement(XmlConstants.format(element.ns().prefix(), element.name()));
 
-                // TODO Write all used namespaces
+                // Namespaces
+                writer.writeNamespace(element.ns().prefix(), element.ns().uri());
+                writer.writeNamespace(XmiConstants.XMI_NS, XmiConstants.XMI_URI);
 
+                // XMI version
                 writer.writeAttribute(XmiConstants.XMI_VERSION_ATTR, XmiConstants.XMI_VERSION);
             }
             else {
                 writer.writeStartElement(element.name());
             }
 
-            writer.writeAttribute(XmiConstants.XMI_TYPE, element.metaClass().ns().prefix() + ":" + element.metaClass().name());
+            writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(element.metaclass().ns().prefix(), element.metaclass().name()));
             writer.writeAttribute(XmiConstants.XMI_ID, element.id().value());
 
-            if (nonNull(element.className())) {
-                writer.writeAttribute(PersistenceConstants.FEATURE_NAME, element.className());
+            Optional<String> name = Optional.ofNullable(element.className());
+            if (name.isPresent()) {
+                writer.writeAttribute(PersistenceConstants.FEATURE_NAME, name.get());
             }
         }
         catch (XMLStreamException e) {
@@ -108,7 +114,29 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
 
     @Override
     public void onReference(RawReference reference) {
-        // TODO Handle references
+        try {
+            if (reference.isContainment()) {
+                return;
+            }
+
+            if (!reference.isMany()) {
+                writer.writeAttribute(reference.name(), reference.idReference().value());
+            }
+            else {
+                writer.writeStartElement(reference.name());
+
+                Optional<RawMetaclass> metaclass = Optional.ofNullable(reference.metaclassReference());
+                if (metaclass.isPresent()) {
+                    writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaclass.get().ns().prefix(), metaclass.get().name()));
+                }
+
+                writer.writeAttribute(XmiConstants.XMI_IDREF, reference.idReference().value());
+                writer.writeEndElement();
+            }
+        }
+        catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
