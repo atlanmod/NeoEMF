@@ -105,7 +105,14 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
     @Override
     public void onAttribute(RawAttribute attribute) {
         try {
-            writer.writeAttribute(attribute.name(), String.valueOf(attribute.value()));
+            if (!attribute.isMany()) {
+                writer.writeAttribute(attribute.name(), String.valueOf(attribute.value()));
+            }
+            else {
+                writer.writeStartElement(attribute.name());
+                writer.writeCharacters(String.valueOf(attribute.value()));
+                writer.writeEndElement();
+            }
         }
         catch (XMLStreamException e) {
             throw new RuntimeException(e);
