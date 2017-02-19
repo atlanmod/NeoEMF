@@ -41,9 +41,12 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
     void save();
 
     /**
-     * {@inheritDoc}
+     * Cleanly stops the underlying database and releases any system resources associated with it. If the database is
+     * already closed then invoking this method has no effect.
      * <p>
-     * In our case, it cleanly stops the underlying database.
+     * All modifications are saved before closing.
+     *
+     * @see #isClosed()
      */
     @Override
     void close();
@@ -52,18 +55,20 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      * Returns whether the underlying database is closed.
      *
      * @return {@code true} if the database is closed, otherwise {@code false}
+     *
+     * @see #close()
      */
     boolean isClosed();
 
     /**
-     * Returns {@code true} if this {@code PersistenceBackend} is distributed.
+     * Returns whether this {@code PersistenceBackend} is distributed.
      *
      * @return {@code true} if the back-end is distributed, {@code false} otherwise.
      */
     boolean isDistributed();
 
     /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
+     * Copies all the contents from this {@code PersistenceBackend} to the {@code target}.
      *
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */

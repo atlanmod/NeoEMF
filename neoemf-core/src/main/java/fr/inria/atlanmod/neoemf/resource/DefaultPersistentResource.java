@@ -63,17 +63,18 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
     /**
-     * ???
+     * An unknown URI fragment.
      */
     private static final String URI_UNKNOWN = "/-1";
 
     /**
-     * ???
+     * The {@link org.eclipse.emf.ecore.EReference} representing the link between the {@link #dummyRootEObject} and its
+     * content.
      */
     private static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
     /**
-     * ???
+     * The {@link PersistentEObject} representing the root and the entry-point of this {@link PersistentResource}.
      */
     private final DummyRootEObject dummyRootEObject;
 
@@ -88,12 +89,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     protected PersistenceBackend backend;
 
     /**
-     * ???
+     * The last options used during {@link #load(Map)}.
      */
     private Map<?, ?> options;
 
     /**
-     * ???
+     * Whether this {@link PersistentResource} is stored in a {@link PersistenceBackend}, non-transient.
      */
     private boolean isPersistent;
 
@@ -141,14 +142,15 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void save(Map<?, ?> options) throws IOException {
+        // Check that the save options do not collide with previous load options
         if (nonNull(this.options)) {
-            // Check that the save options do not collide with previous load options
             for (Entry<?, ?> entry : options.entrySet()) {
                 if (this.options.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), this.options.get(entry.getKey()))) {
                     throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString()));
                 }
             }
         }
+
         if (!isLoaded() || !isPersistent) {
             PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
 
@@ -209,9 +211,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void close() {
-        if (!backend.isClosed()) {
-            this.backend.close();
-        }
+        this.backend.close();
 
         this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
         this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
@@ -275,7 +275,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private static class ResourceContentsEStructuralFeature extends EReferenceImpl {
 
         /**
-         * ???
+         * The name of this reference.
          */
         private static final String CONTENTS = "eContents";
 
@@ -286,14 +286,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
             setLowerBound(0);
             setName(CONTENTS);
-            setEType(new EClassifierImpl() {
-            });
+            setEType(new EClassifierImpl() {});
             setFeatureID(RESOURCE__CONTENTS);
         }
     }
 
     /**
-     * Dummy {@link EObject} that represents the root entry point for this {@link Resource}.
+     * Dummy {@link PersistentEObject} that represents the root entry point for this {@link PersistentResource}.
      */
     private static final class DummyRootEObject extends DefaultPersistentEObject {
 
@@ -358,10 +357,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          */
         @Override
         public void run() {
-            if (!backend.isClosed()) {
-                backend.close();
-                NeoLogger.debug("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
-            }
+            backend.close();
+            NeoLogger.debug("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
         }
     }
 

@@ -196,13 +196,19 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void close() {
+        if (isClosed()) {
+            return;
+        }
+
         try {
             graph.shutdown();
         }
         catch (Exception e) {
             NeoLogger.warn(e);
         }
-        isClosed = true;
+        finally {
+            isClosed = true;
+        }
     }
 
     @Override

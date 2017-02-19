@@ -28,6 +28,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.ObjectSerializer
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -116,10 +117,20 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void close() {
-        allDatabases().forEach(Database::close);
+        if (isClosed()) {
+            return;
+        }
 
-        environment.close();
-        isClosed = true;
+        try {
+            allDatabases().forEach(Database::close);
+            environment.close();
+        }
+        catch (Exception e) {
+            NeoLogger.warn(e);
+        }
+        finally {
+            isClosed = true;
+        }
     }
 
     @Override

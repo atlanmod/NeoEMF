@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -40,13 +39,11 @@ public final class InvalidBackend implements PersistenceBackend {
     @Override
     public void save() {
         // Do nothing
-        NeoLogger.warn(MSG);
     }
 
     @Override
     public void close() {
         // Do nothing
-        NeoLogger.warn(MSG);
     }
 
     @Override
@@ -62,7 +59,6 @@ public final class InvalidBackend implements PersistenceBackend {
     @Override
     public void copyTo(PersistenceBackend target) {
         // Do nothing
-        NeoLogger.warn(MSG);
     }
 
     @Override

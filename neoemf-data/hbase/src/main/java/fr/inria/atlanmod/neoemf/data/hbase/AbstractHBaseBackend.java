@@ -111,12 +111,18 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void close() {
+        if (isClosed()) {
+            return;
+        }
+
         try {
             table.close();
-            isClosed = true;
         }
         catch (IOException e) {
-            NeoLogger.error(e);
+            NeoLogger.warn(e);
+        }
+        finally {
+            isClosed = true;
         }
     }
 
