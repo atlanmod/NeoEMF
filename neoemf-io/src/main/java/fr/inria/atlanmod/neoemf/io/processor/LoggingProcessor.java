@@ -23,7 +23,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Processor} that logs every events.
+ * A {@link Processor} that logs every events.
  */
 @ParametersAreNonnullByDefault
 public class LoggingProcessor extends AbstractProcessor<Processor> {
@@ -70,9 +70,9 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(RawAttribute attribute) {
-        log.info("[A]    {0} ({1}) = {2}",
+        log.info("[A]    {0}{1} = {2}",
                 attribute.name(),
-                attribute.index(),
+                attribute.isMany() ? " many[" + attribute.index() + "]" : "",
                 attribute.value());
 
         notifyAttribute(attribute);
@@ -80,10 +80,11 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(RawReference reference) {
-        log.info("[R]    {0} ({1}) = {2} -> {3}",
+        log.info("[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
-                reference.index(),
+                reference.isMany() ? " many[" + reference.index() + "]" : "",
                 Objects.isNull(reference.id()) ? "this" : reference.id(),
+                reference.isContainment() ? "C" : "-",
                 Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
 
         notifyReference(reference);

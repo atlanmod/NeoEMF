@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.io.reader.DefaultPersistenceReader;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -48,7 +47,7 @@ public class ExportTest extends AbstractIOTest {
             ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toNaiveBackend(backend));
 
             try (PersistenceBackend target = context().createBackend(targetBackend)) {
-                new DefaultPersistenceReader(WriterFactory.toNaiveBackend(target)).read(backend);
+                ReaderFactory.fromBackend(backend, WriterFactory.toNaiveBackend(target));
             }
         }
 
@@ -102,8 +101,7 @@ public class ExportTest extends AbstractIOTest {
 
         try (PersistenceBackend backend = context().createBackend(file())) {
             ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toNaiveBackend(backend));
-
-            new DefaultPersistenceReader(WriterFactory.toXmi(targetFile)).read(backend);
+            ReaderFactory.fromBackend(backend, WriterFactory.toXmi(targetFile));
         }
 
         EObject sourceModel = loadWithEMF(getXmiStandard());

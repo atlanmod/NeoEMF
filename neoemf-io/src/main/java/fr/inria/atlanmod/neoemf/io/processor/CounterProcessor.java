@@ -20,7 +20,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Processor} that counts the number of different element.
+ * A {@link Processor} that counts the number of different element.
  */
 @ParametersAreNonnullByDefault
 public class CounterProcessor extends AbstractProcessor<Processor> {
