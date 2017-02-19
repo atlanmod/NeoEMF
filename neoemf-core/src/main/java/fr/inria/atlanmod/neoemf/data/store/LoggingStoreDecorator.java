@@ -148,8 +148,8 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
     }
 
     @Override
-    public PersistentEObject eObject(Id id) {
+    public PersistentEObject object(Id id) {
         NeoLogger.info("Called getEObject with value {0}", id);
-        return super.eObject(id);
+        return super.object(id);
     }
 }

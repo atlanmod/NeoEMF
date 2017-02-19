@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -116,7 +117,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EList<EObject> getContents() {
-        return new ResourceContentsEStoreEList<>(dummyRootEObject, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
+        return new ResourceContentsEStoreEList<>(dummyRootEObject, ROOT_CONTENTS_ESTRUCTURALFEATURE, store());
     }
 
     @Override
@@ -134,7 +135,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return Optional.<EObject>ofNullable(store.eObject(StringId.of(uriFragment)))
+        return Optional.<EObject>ofNullable(store.object(StringId.of(uriFragment)))
                 .orElseGet(() -> super.getEObject(uriFragment));
     }
 
@@ -222,7 +223,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
-    public InternalEObject.EStore eStore() {
+    public Store store() {
         return store;
     }
 
@@ -235,7 +236,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
-            allInstances = store.getAllInstances(eClass, strict);
+            allInstances = store.allInstances(eClass, strict);
         }
         catch (UnsupportedOperationException e) {
             NeoLogger.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");

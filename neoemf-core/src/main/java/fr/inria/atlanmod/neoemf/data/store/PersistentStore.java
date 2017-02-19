@@ -17,19 +17,12 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * An {@link EStore} to establish a mapping between {@link Resource}s and {@link
- * fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
+ * An {@link Store} to establish a mapping between {@link Resource}s and {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
  */
-public interface PersistentStore extends EStore {
-
-    /**
-     * A value indicating that no index is specified.
-     */
-    int NO_INDEX = EStore.NO_INDEX;
+public interface PersistentStore extends Store {
 
     /**
      * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
@@ -50,7 +43,7 @@ public interface PersistentStore extends EStore {
      *
      * @return the resolved {@link PersistentEObject}, or {@code null} if no {@link PersistentEObject} can be resolved
      */
-    PersistentEObject eObject(Id id);
+    PersistentEObject object(Id id);
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
@@ -62,10 +55,5 @@ public interface PersistentStore extends EStore {
      *
      * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
      */
-    Iterable<EObject> getAllInstances(EClass metaclass, boolean strict);
-
-    @Override
-    default EObject create(EClass eClass) {
-        throw new IllegalStateException("This method should not be called");
-    }
+    Iterable<EObject> allInstances(EClass metaclass, boolean strict);
 }

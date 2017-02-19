@@ -52,7 +52,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
-        if (index == PersistentStore.NO_INDEX) {
+        if (index == NO_INDEX) {
             return singleMap.get(key);
         }
         else {
@@ -66,7 +66,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
-        return index == PersistentStore.NO_INDEX ? singleMap.put(key, value) : manyMap.get(key).set(index, value);
+        return index == NO_INDEX ? singleMap.put(key, value) : manyMap.get(key).set(index, value);
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class AbstractTransientStore implements TransientStore {
 
         return Optional.ofNullable(manyMap.get(key))
                 .map(v -> v.indexOf(value))
-                .orElse(PersistentStore.NO_INDEX);
+                .orElse(NO_INDEX);
     }
 
     @Override
@@ -121,7 +121,7 @@ public abstract class AbstractTransientStore implements TransientStore {
 
         return Optional.ofNullable(manyMap.get(key))
                 .map(v -> v.lastIndexOf(value))
-                .orElse(PersistentStore.NO_INDEX);
+                .orElse(NO_INDEX);
     }
 
     @Override
@@ -130,7 +130,7 @@ public abstract class AbstractTransientStore implements TransientStore {
 
         List<Object> values = manyMap.get(key);
         if (nonNull(values)) {
-            if (index == PersistentStore.NO_INDEX) {
+            if (index == NO_INDEX) {
                 index = size(internalObject, feature);
             }
             values.add(index, value);

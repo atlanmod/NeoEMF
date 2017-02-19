@@ -11,9 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.data.store.Store;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
@@ -30,11 +31,11 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     void close();
 
     /**
-     * Returns the {@link EStore} used to store the model.
+     * Returns the {@link Store} used to store the model.
      *
-     * @return the {@link EStore}
+     * @return the {@link Store}
      */
-    EStore eStore();
+    Store store();
 
     /**
      * Returns {@code true} if the resource is distributed, {@code false} otherwise.

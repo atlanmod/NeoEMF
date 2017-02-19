@@ -140,12 +140,12 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
-    public PersistentEObject eObject(Id id) {
-        return store.eObject(id);
+    public PersistentEObject object(Id id) {
+        return store.object(id);
     }
 
     @Override
-    public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
-        return store.getAllInstances(metaclass, strict);
+    public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
+        return store.allInstances(metaclass, strict);
     }
 }

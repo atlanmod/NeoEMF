@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.data.store.OwnedTransientStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.DelegatedContentsList;
 import fr.inria.atlanmod.neoemf.util.DelegatedStoreList;
@@ -73,7 +73,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The internal cached value of the eContainer.
      * <p>
-     * This information should be also maintained in the underlying {@link EStore}.
+     * This information should be also maintained in the underlying {@link Store}.
      */
     private InternalEObject eContainer;
 
@@ -85,7 +85,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * ???
      */
-    private EStore store;
+    private Store store;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
@@ -139,7 +139,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         EStore previousStore = store;
 
         // Set the new store
-        store = resource instanceof PersistentResource ? ((PersistentResource) resource).eStore() : new OwnedTransientStore(this);
+        store = resource instanceof PersistentResource ? ((PersistentResource) resource).store() : new OwnedTransientStore(this);
 
         // Move contents from the previous store to the new
         if (nonNull(previousStore) && nonNull(store) && store != previousStore) {
@@ -159,8 +159,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
             if (source.isSet(this, feature)) {
                 if (!feature.isMany()) {
-                    Optional.ofNullable(adaptValue(source, feature, PersistentStore.NO_INDEX))
-                            .ifPresent(v -> target.set(this, feature, PersistentStore.NO_INDEX, v));
+                    Optional.ofNullable(adaptValue(source, feature, Store.NO_INDEX))
+                            .ifPresent(v -> target.set(this, feature, Store.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, feature);
@@ -186,7 +186,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Object adaptValue(EStore store, EStructuralFeature feature, int index) {
         Object value = store.get(this, feature, index);
 
-        // FIXME Same code as in `DirectWriteStore#eObject()`
+        // FIXME Same code as in `DirectWriteStore#object()`
         if (nonNull(value)) {
             if (feature instanceof EReference) {
                 EReference eRef = (EReference) feature;
@@ -306,7 +306,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            value = eStore().get(this, feature, PersistentStore.NO_INDEX);
+            value = eStore().get(this, feature, Store.NO_INDEX);
         }
         return value;
     }
@@ -327,7 +327,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            eStore().set(this, feature, PersistentStore.NO_INDEX, value);
+            eStore().set(this, feature, Store.NO_INDEX, value);
         }
     }
 

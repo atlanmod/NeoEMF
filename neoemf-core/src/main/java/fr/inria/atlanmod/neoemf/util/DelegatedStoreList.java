@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -48,7 +48,7 @@ public class DelegatedStoreList<E> extends BasicEStoreEList<E> {
      * {@inheritDoc}
      * <p>
      * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-     * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
+     * providing a custom {@link Store#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
      * to append the result to the existing list.
      * <p>
      * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
@@ -64,7 +64,7 @@ public class DelegatedStoreList<E> extends BasicEStoreEList<E> {
                 addUnique(object);
             }
             else {
-                int index = size() == 0 ? 0 : PersistentStore.NO_INDEX;
+                int index = size() == 0 ? 0 : Store.NO_INDEX;
                 addUnique(index, object);
             }
             return true;

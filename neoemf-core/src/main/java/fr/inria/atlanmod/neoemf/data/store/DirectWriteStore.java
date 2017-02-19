@@ -143,7 +143,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
     }
 
     @Override
-    public PersistentEObject eObject(Id id) {
+    public PersistentEObject object(Id id) {
         if (isNull(id)) {
             return null;
         }
@@ -164,9 +164,9 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      *                  {@code false} if the method should also return elements that are subclasses of {@code eClass}
      */
     @Override
-    public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
+    public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
         return StreamSupport.stream(backend.allInstances(metaclass, strict).spliterator(), false)
-                .map(this::eObject)
+                .map(this::object)
                 .collect(Collectors.toList());
     }
 
@@ -461,7 +461,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
             }
 
             stream = StreamSupport.stream(references.spliterator(), false)
-                    .map(this::eObject);
+                    .map(this::object);
         }
         else {
             Iterable<String> values;
@@ -498,7 +498,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         PersistentEObject object = PersistentEObject.from(internalObject);
         Optional<ContainerDescriptor> container = backend.containerOf(object.id());
         return container
-                .map(containerValue -> eObject(containerValue.id()))
+                .map(containerValue -> object(containerValue.id()))
                 .orElse(null);
     }
 
@@ -509,7 +509,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return backend.containerOf(object.id())
-                .map(containerValue -> eObject(containerValue.id()).eClass().getEStructuralFeature(containerValue.name()))
+                .map(containerValue -> object(containerValue.id()).eClass().getEStructuralFeature(containerValue.name()))
                 .orElse(null);
     }
 
@@ -572,7 +572,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      *
      * @param object    the object
      * @param attribute an attribute of the {@code object}
-     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     * @param index     an index within the content or {@link #NO_INDEX}
      *
      * @return the value
      *
@@ -600,7 +600,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      *
      * @param object    the object
      * @param reference a reference of the {@code object}
-     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     * @param index     an index within the content or {@link #NO_INDEX}
      *
      * @return the value
      *
@@ -619,7 +619,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         }
 
         return value
-                .map(this::eObject)
+                .map(this::object)
                 .orElse(null);
     }
 
@@ -628,7 +628,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      *
      * @param object    the object
      * @param attribute an attribute of the {@code object}
-     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     * @param index     an index within the content or {@link #NO_INDEX}
      * @param value     the new value
      *
      * @return the previous value
@@ -659,7 +659,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      *
      * @param object    the object
      * @param reference a reference of the {@code object}
-     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     * @param index     an index within the content or {@link #NO_INDEX}
      * @param value     the new value
      *
      * @return the previous value
@@ -681,7 +681,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         }
 
         return previousId
-                .map(this::eObject)
+                .map(this::object)
                 .orElse(null);
     }
 
@@ -804,7 +804,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @param attribute a many-valued attribute of the {@code object}
      * @param value     the value to look for
      *
-     * @return the first index of the given value, or {@link PersistentStore#NO_INDEX} if it is not found
+     * @return the first index of the given value, or {@link #NO_INDEX} if it is not found
      *
      * @see #indexOf(InternalEObject, EStructuralFeature, Object)
      */
@@ -820,7 +820,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @param reference a many-valued reference of the {@code object}
      * @param value     the value to look for
      *
-     * @return the first index of the given value, or {@link PersistentStore#NO_INDEX} if it is not found
+     * @return the first index of the given value, or {@link #NO_INDEX} if it is not found
      *
      * @see #indexOf(InternalEObject, EStructuralFeature, Object)
      */
@@ -836,7 +836,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @param attribute a many-valued attribute of the {@code object}
      * @param value     the value to look for
      *
-     * @return the last index of the given value, or {@link PersistentStore#NO_INDEX} if it is not found
+     * @return the last index of the given value, or {@link #NO_INDEX} if it is not found
      *
      * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
      */
@@ -852,7 +852,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
      * @param reference a many-valued reference of the {@code object}
      * @param value     the value to look for
      *
-     * @return the last index of the given value, or {@link PersistentStore#NO_INDEX} if it is not
+     * @return the last index of the given value, or {@link #NO_INDEX} if it is not
      *
      * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
      */
@@ -939,7 +939,7 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         MultiFeatureKey key = MultiFeatureKey.from(object, reference, index);
 
         return backend.removeReference(key)
-                .map(this::eObject)
+                .map(this::object)
                 .orElse(null);
     }
 
@@ -999,15 +999,15 @@ public class DirectWriteStore extends AbstractPersistentStore implements Persist
         }
 
         /**
-         * Creates an {@link PersistentEObject} from the given {@code eObject} and the {@code id}.
+         * Creates an {@link PersistentEObject} from the given {@code object} and the {@code id}.
          *
-         * @param eObject the {@link EObject} from which to create the {@link PersistentEObject}
+         * @param object the {@link EObject} from which to create the {@link PersistentEObject}
          * @param id      the identifier of the created {@link PersistentEObject}
          *
          * @return a new {@link PersistentEObject}
          */
-        private PersistentEObject create(EObject eObject, Id id) {
-            PersistentEObject persistentObject = PersistentEObject.from(eObject);
+        private PersistentEObject create(EObject object, Id id) {
+            PersistentEObject persistentObject = PersistentEObject.from(object);
 
             persistentObject.id(id);
             persistentObject.setMapped(true);

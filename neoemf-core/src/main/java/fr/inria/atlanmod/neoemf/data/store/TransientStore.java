@@ -11,19 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
-import org.eclipse.emf.ecore.resource.Resource;
-
 /**
- * An {@link EStore} to establish a mapping between {@link Resource}s and {@link EStore}s in a transient context, i.e,
- * when storing data in memory.
+ * A {@link Store} used in a transient context, i.e, when storing data in memory.
  */
-public interface TransientStore extends EStore {
-
-    @Override
-    default EObject create(EClass eClass) {
-        throw new IllegalStateException("This method should not be called");
-    }
+public interface TransientStore extends Store {
 }

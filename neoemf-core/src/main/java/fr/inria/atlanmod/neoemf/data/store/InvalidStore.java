@@ -203,7 +203,7 @@ public final class InvalidStore implements PersistentStore {
      * @throws UnsupportedOperationException every time
      */
     @Override
-    public PersistentEObject eObject(Id id) {
+    public PersistentEObject object(Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -211,7 +211,7 @@ public final class InvalidStore implements PersistentStore {
      * @throws UnsupportedOperationException every time
      */
     @Override
-    public Iterable<EObject> getAllInstances(EClass metaclass, boolean strict) {
+    public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
         throw new UnsupportedOperationException(MSG);
     }
 }
