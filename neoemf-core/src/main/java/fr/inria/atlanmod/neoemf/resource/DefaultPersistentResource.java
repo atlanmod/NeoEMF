@@ -48,9 +48,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -134,8 +134,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        EObject eObject = store.eObject(StringId.of(uriFragment));
-        return isNull(eObject) ? super.getEObject(uriFragment) : eObject;
+        return Optional.<EObject>ofNullable(store.eObject(StringId.of(uriFragment)))
+                .orElseGet(() -> super.getEObject(uriFragment));
     }
 
     @Override

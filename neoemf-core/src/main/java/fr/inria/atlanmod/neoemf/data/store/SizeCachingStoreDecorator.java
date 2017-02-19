@@ -19,19 +19,12 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import java.util.Optional;
 
 /**
  * A {@link PersistentStore} wrapper that caches the size data.
  */
 public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator {
-
-    /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
      * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
@@ -44,7 +37,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
      * @param store the underlying store
      */
     public SizeCachingStoreDecorator(PersistentStore store) {
-        this(store, DEFAULT_CACHE_SIZE);
+        this(store, 10_000);
     }
 
     /**
@@ -68,33 +61,36 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
     @Override
     public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        Integer size = sizesCache.getIfPresent(key);
-        return isNull(size) ? super.isEmpty(internalObject, feature) : (size == 0);
+
+        return Optional.ofNullable(sizesCache.getIfPresent(key))
+                .map(v -> v == 0)
+                .orElseGet(() -> super.isEmpty(internalObject, feature));
     }
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
         return sizesCache.get(key, k -> super.size(internalObject, feature));
     }
 
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        Integer size = sizesCache.getIfPresent(key);
-        if (nonNull(size)) {
-            sizesCache.put(key, size + 1);
-        }
+
+        Optional.ofNullable(sizesCache.getIfPresent(key))
+                .ifPresent(s -> sizesCache.put(key, s + 1));
+
         super.add(internalObject, feature, index, value);
     }
 
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        Integer size = sizesCache.getIfPresent(key);
-        if (nonNull(size)) {
-            sizesCache.put(key, size - 1);
-        }
+
+        Optional.ofNullable(sizesCache.getIfPresent(key))
+                .ifPresent(s -> sizesCache.put(key, s - 1));
+
         return super.remove(internalObject, feature, index);
     }
 

@@ -26,11 +26,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
-     * The default cache size (10 000).
-     */
-    private static final int DEFAULT_CACHE_SIZE = 10_000;
-
-    /**
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Object> objectsCache;
@@ -41,7 +36,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
      * @param store the underlying store
      */
     public FeatureCachingStoreDecorator(PersistentStore store) {
-        this(store, DEFAULT_CACHE_SIZE);
+        this(store, 10_000);
     }
 
     /**

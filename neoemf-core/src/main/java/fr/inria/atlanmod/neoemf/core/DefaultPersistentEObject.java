@@ -28,6 +28,8 @@ import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -133,39 +135,70 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public void resource(Resource.Internal resource) {
         this.resource = resource;
+
         EStore previousStore = store;
 
-        // Set the new EStore
-        if (resource instanceof PersistentResource) {
-            store = ((PersistentResource) resource).eStore();
-        }
-        else {
-            store = new OwnedTransientStore(this);
-        }
+        // Set the new store
+        store = resource instanceof PersistentResource ? ((PersistentResource) resource).eStore() : new OwnedTransientStore(this);
 
         // Move contents from the previous store to the new
         if (nonNull(previousStore) && nonNull(store) && store != previousStore) {
-            // If the new store is different, initialize the new store with the data stored in the old store
-            for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
-                if (previousStore.isSet(this, feature)) {
-                    if (!feature.isMany()) {
-                        Object value = getAdaptedValue(previousStore, feature, PersistentStore.NO_INDEX);
-                        if (nonNull(value)) {
-                            store.set(this, feature, PersistentStore.NO_INDEX, value);
-                        }
-                    }
-                    else {
-                        store.clear(this, feature);
-                        for (int i = 0; i < previousStore.size(this, feature); i++) {
-                            Object value = getAdaptedValue(previousStore, feature, i);
-                            if (nonNull(value)) {
-                                store.add(this, feature, i, value);
-                            }
-                        }
+            copyStore(previousStore, store);
+        }
+    }
+
+    /**
+     * Move the content from the {@code source} {@link org.eclipse.emf.ecore.InternalEObject.EStore} to the
+     * {@code target}.
+     *
+     * @param source the {@link org.eclipse.emf.ecore.InternalEObject.EStore} to copy
+     * @param target the {@link org.eclipse.emf.ecore.InternalEObject.EStore} where to store data
+     */
+    private void copyStore(EStore source, EStore target) {
+        // If the new store is different, initialize the new store with the data stored in the old store
+        for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
+            if (source.isSet(this, feature)) {
+                if (!feature.isMany()) {
+                    Optional.ofNullable(adaptValue(source, feature, PersistentStore.NO_INDEX))
+                            .ifPresent(v -> target.set(this, feature, PersistentStore.NO_INDEX, v));
+                }
+                else {
+                    target.clear(this, feature);
+
+                    IntStream.range(0, source.size(this, feature)).forEach(i ->
+                            Optional.ofNullable(adaptValue(source, feature, i))
+                                    .ifPresent(v -> target.add(this, feature, i, v)));
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieves the value from the {@code store}.
+     *
+     * @param store   the store to look for the value
+     * @param feature the feature
+     * @param index   the index. If {@code feature.isMany() == true}, then it's ignored.
+     *
+     * @return the adapted value, or {@code null} if the value doesn't exist in the {@code store}
+     */
+    @Nullable
+    private Object adaptValue(EStore store, EStructuralFeature feature, int index) {
+        Object value = store.get(this, feature, index);
+
+        // FIXME Same code as in `DirectWriteStore#eObject()`
+        if (nonNull(value)) {
+            if (feature instanceof EReference) {
+                EReference eRef = (EReference) feature;
+                if (eRef.isContainment()) {
+                    PersistentEObject internalElement = PersistentEObject.from(value);
+                    if (internalElement.resource() != resource()) {
+                        internalElement.resource(resource());
                     }
                 }
             }
         }
+        return value;
     }
 
     @Override
@@ -196,7 +229,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public Resource eResource() {
-        return isNull(resource) ? super.eResource() : resource;
+        return Optional.<Resource>ofNullable(resource)
+                .orElseGet(super::eResource);
     }
 
     @Override
@@ -243,31 +277,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public EList<EObject> eContents() {
         return DelegatedContentsList.newList(this);
-    }
-
-    /**
-     * ???
-     *
-     * @param store   ???
-     * @param feature ???
-     * @param index   ???
-     *
-     * @return ???
-     */
-    private Object getAdaptedValue(EStore store, EStructuralFeature feature, int index) {
-        Object value = store.get(this, feature, index);
-        if (nonNull(value)) {
-            if (feature instanceof EReference) {
-                EReference eRef = (EReference) feature;
-                if (eRef.isContainment()) {
-                    PersistentEObject internalElement = PersistentEObject.from(value);
-                    if (internalElement.resource() != resource()) {
-                        internalElement.resource(resource());
-                    }
-                }
-            }
-        }
-        return value;
     }
 
     @Override

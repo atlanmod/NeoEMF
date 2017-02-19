@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -50,92 +50,90 @@ public abstract class AbstractTransientStore implements TransientStore {
 
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        Object value;
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
         if (index == PersistentStore.NO_INDEX) {
-            value = singleMap.get(key);
+            return singleMap.get(key);
         }
         else {
-            List<Object> values = manyMap.get(key);
-            if (nonNull(values)) {
-                value = values.get(index);
-            }
-            else {
-                // The list is empty (since it is not persisted in the manyMap object)
-                throw new IndexOutOfBoundsException();
-            }
+            return Optional.ofNullable(manyMap.get(key))
+                    .map(values -> values.get(index))
+                    .orElseThrow(IndexOutOfBoundsException::new);
         }
-        return value;
     }
 
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
         return index == PersistentStore.NO_INDEX ? singleMap.put(key, value) : manyMap.get(key).set(index, value);
     }
 
     @Override
     public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        return !feature.isMany() ? singleMap.containsKey(key) : manyMap.containsKey(key);
+
+        return (!feature.isMany() ? singleMap : manyMap).containsKey(key);
     }
 
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        Map<FeatureKey, ?> concernedMap = !feature.isMany() ? singleMap : manyMap;
-        concernedMap.remove(key);
+
+        (!feature.isMany() ? singleMap : manyMap).remove(key);
     }
 
     @Override
     public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
-        FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> res = manyMap.get(key);
-        return isNull(res) || res.isEmpty();
+        return size(internalObject, feature) == 0;
     }
 
     @Override
     public int size(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        return isNull(list) ? 0 : list.size();
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(List::size)
+                .orElse(0);
     }
 
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        return nonNull(list) && list.contains(value);
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(v -> v.contains(value))
+                .orElse(false);
     }
 
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        return isNull(list) ? PersistentStore.NO_INDEX : list.indexOf(value);
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(v -> v.indexOf(value))
+                .orElse(PersistentStore.NO_INDEX);
     }
 
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        return isNull(list) ? PersistentStore.NO_INDEX : list.lastIndexOf(value);
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(v -> v.lastIndexOf(value))
+                .orElse(PersistentStore.NO_INDEX);
     }
 
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> saved = manyMap.get(key);
-        if (nonNull(saved)) {
+
+        List<Object> values = manyMap.get(key);
+        if (nonNull(values)) {
             if (index == PersistentStore.NO_INDEX) {
-                /*
-                 * Handle NO_INDEX index, which represent direct-append feature.
-		         * The call to size should not cause an overhead because it would have been done in regular
-		         * addUnique() otherwise.
-		         */
                 index = size(internalObject, feature);
             }
-            saved.add(index, value);
+            values.add(index, value);
         }
         else {
             List<Object> list = createValue();
@@ -147,55 +145,57 @@ public abstract class AbstractTransientStore implements TransientStore {
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> saved = manyMap.get(key);
-        if (nonNull(saved)) {
-            return saved.remove(index);
-        }
-        else {
-            // The list is empty (since it is not persisted in the manyMap object)
-            throw new IndexOutOfBoundsException();
-        }
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(v -> v.remove(index))
+                .orElseThrow(IndexOutOfBoundsException::new);
     }
 
     @Override
     public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
         List<Object> list = manyMap.get(key);
         Object movedObject = list.remove(sourceIndex);
         list.add(targetIndex, movedObject);
+
         return movedObject;
     }
 
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        if (nonNull(list)) {
-            list.clear();
-        }
+
+        Optional.ofNullable(manyMap.get(key))
+                .ifPresent(List::clear);
     }
 
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        return isNull(list) ? new Object[]{} : list.toArray();
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(List::toArray)
+                .orElse(new Object[0]);
     }
 
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast: List<Object> to List<T>
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<T> list = (List<T>) manyMap.get(key);
-        return isNull(list) ? Arrays.copyOf(array, 0) : list.toArray(array);
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(v -> v.toArray(array))
+                .orElse(Arrays.copyOf(array, 0));
     }
 
     @Override
     public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey key = FeatureKey.from(internalObject, feature);
-        List<Object> list = manyMap.get(key);
-        // Return the default hashCode value if the list is empty
-        return isNull(list) ? 1 : list.hashCode();
+
+        return Optional.ofNullable(manyMap.get(key))
+                .map(List::hashCode)
+                .orElse(0);
     }
 
     @Override

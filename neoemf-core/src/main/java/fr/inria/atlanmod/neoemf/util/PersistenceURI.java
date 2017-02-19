@@ -22,13 +22,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
@@ -109,14 +109,12 @@ public class PersistenceURI extends URI {
     @Nonnull
     public static URI createFileURI(@Nonnull File file, @Nullable String scheme) {
         checkNotNull(file);
+
         URI fileUri = createFileURI(file.getAbsolutePath());
 
-        if (isNull(scheme)) {
-            return createURI(fileUri);
-        }
-        else {
-            return createFileURI(fileUri, scheme);
-        }
+        return Optional.ofNullable(scheme)
+                .map(v -> createFileURI(fileUri, v))
+                .orElseGet(() -> createURI(fileUri));
     }
 
     /**
@@ -133,12 +131,10 @@ public class PersistenceURI extends URI {
     @Nonnull
     public static URI createFileURI(@Nonnull URI uri, @Nullable String scheme) {
         checkNotNull(uri);
-        if (isNull(scheme)) {
-            return createURI(uri);
-        }
-        else {
-            return createURI(createHierarchicalURI(scheme, uri.authority(), uri.device(), uri.segments(), uri.query(), uri.fragment()));
-        }
+
+        return Optional.ofNullable(scheme)
+                .map(v -> createURI(createHierarchicalURI(v, uri.authority(), uri.device(), uri.segments(), uri.query(), uri.fragment())))
+                .orElseGet(() -> createURI(uri));
     }
 
     @Override

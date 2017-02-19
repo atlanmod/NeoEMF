@@ -53,7 +53,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  *
@@ -278,7 +277,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public boolean has(Id id) {
-        return nonNull(vertex(id));
+        return Optional.ofNullable(vertex(id)).isPresent();
     }
 
     @Nonnull
@@ -402,7 +401,9 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
          * @return an {@link AutoCleanerIdEdge}
          */
         private Edge createFrom(@Nullable Edge edge) {
-            return isNull(edge) ? null : new AutoCleanerIdEdge(edge);
+            return Optional.ofNullable(edge)
+                    .map(AutoCleanerIdEdge::new)
+                    .orElse(null);
         }
 
         /**

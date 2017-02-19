@@ -14,13 +14,12 @@ package fr.inria.atlanmod.neoemf.util.logging;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.Objects.isNull;
 
 /**
  * A {@link Logger} that asynchronously invokes logging operations, respecting the order of invocation.
@@ -56,11 +55,9 @@ class AsyncLogger extends AbstractLogger {
 
     @Override
     public void log(Level level, Throwable e, CharSequence message, Object... params) {
-        CharSequence notNullMessage = isNull(message) ? "" : message;
-
         execute(() -> {
             try {
-                logger().log(level.level(), () -> MessageFormat.format(notNullMessage.toString(), params), e);
+                logger().log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse("").toString(), params), e);
             }
             catch (Exception ignore) {
             }

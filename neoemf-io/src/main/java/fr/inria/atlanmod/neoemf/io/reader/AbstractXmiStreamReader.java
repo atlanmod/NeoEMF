@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
+import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayList;
@@ -217,7 +218,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
         // A special feature always has a prefix
         if (nonNull(prefix) && !prefix.isEmpty()) {
-            final String prefixedValue = prefix + ':' + name;
+            final String prefixedValue = XmlConstants.format(prefix, name);
 
             if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) {
                 processMetaClass(value);

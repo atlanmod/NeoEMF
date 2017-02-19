@@ -25,8 +25,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-
-import static java.util.Objects.nonNull;
+import java.util.Optional;
 
 /**
  * An abstract {@link TestHelper} that manages the assembly and the construction of {@link PersistentResource}.
@@ -94,9 +93,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
         resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(uriScheme(), PersistentResourceFactory.getInstance());
 
-        if (nonNull(ePackage)) {
-            EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
-        }
+        Optional.ofNullable(ePackage).ifPresent(p -> EPackage.Registry.INSTANCE.put(p.getNsURI(), p));
     }
 
     /**

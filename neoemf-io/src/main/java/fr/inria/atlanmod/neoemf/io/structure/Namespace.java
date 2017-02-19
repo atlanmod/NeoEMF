@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.io.structure;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-
-import static java.util.Objects.isNull;
+import javax.annotation.Nullable;
 
 /**
  * A simple representation of a namespace with a prefix and an URI.
@@ -128,11 +128,10 @@ public class Namespace {
          * @return a {@code Namespace} identified by the given {@code prefix}, or {@code null} if no namespace is
          * registered with this {@code prefix}
          */
-        public Namespace getFromPrefix(String prefix) {
-            if (isNull(prefix)) {
-                return null;
-            }
-            return namespacesByPrefix.get(prefix);
+        public Namespace getFromPrefix(@Nullable String prefix) {
+            return Optional.ofNullable(prefix)
+                    .map(namespacesByPrefix::get)
+                    .orElse(null);
         }
 
         /**
@@ -144,11 +143,10 @@ public class Namespace {
          * @return a {@code Namespace} identified by the given {@code uri}, or {@code null} if no namespace is
          * registered with this {@code uri}.
          */
-        public Namespace getFromUri(String uri) {
-            if (isNull(uri)) {
-                return null;
-            }
-            return namespacesByUri.get(uri);
+        public Namespace getFromUri(@Nullable String uri) {
+            return Optional.ofNullable(uri)
+                    .map(v -> namespacesByUri.get(uri))
+                    .orElse(null);
         }
 
         /**

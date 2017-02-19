@@ -88,7 +88,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
         checkNotNull(source);
 
         progressTimer = new Timer(true);
-        progressTimer.schedule(new ProgressTimer(source), 10000, 30000);
+        progressTimer.schedule(new ProgressTimer(source), 10_000, 30_000);
 
         try {
             run(new BufferedInputStream(source));

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -68,9 +69,8 @@ public class StructuralPersistanceWriter implements PersistenceWriter {
             elements.add(mock);
         }
 
-        if (nonNull(element.id())) {
-            elementMocks.put(element.id().value(), mock);
-        }
+        Optional.ofNullable(element.id()).ifPresent(v -> elementMocks.put(element.id().value(), mock));
+
         elementsStack.addLast(mock);
     }
 

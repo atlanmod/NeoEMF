@@ -38,7 +38,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
@@ -93,8 +92,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Override
     public boolean hasValue(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        return nonNull(vertex) && Optional.ofNullable(vertex.getProperty(key.name())).isPresent();
+        return Optional.ofNullable(vertex(key.id()))
+                .map(v -> Optional.ofNullable(v.getProperty(key.name())).isPresent())
+                .orElse(false);
     }
 
     @Nonnull
@@ -138,8 +138,11 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Override
     public boolean hasReference(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        return nonNull(vertex) && StreamSupport.stream(vertex.getVertices(Direction.OUT, key.name()).spliterator(), false).findAny().isPresent();
+        return Optional.ofNullable(vertex(key.id()))
+                .map(v -> StreamSupport.stream(v.getVertices(Direction.OUT, key.name()).spliterator(), false)
+                        .findAny()
+                        .isPresent())
+                .orElse(false);
     }
 
     @Nonnull
@@ -359,8 +362,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     public boolean hasAnyValue(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
-        return nonNull(vertex) && nonNull(vertex.getProperty(formatProperty(key.name(), KEY_SIZE)));
+        return Optional.ofNullable(vertex(key.id()))
+                .map(v -> Optional.ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE))).isPresent())
+                .orElse(false);
     }
 
     @Override

@@ -41,7 +41,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistenceWriter} that persists data in a {@link PersistenceBackend}, based on received events.
@@ -54,14 +53,14 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
      *
      * @note It is calculated according to the maximum memory dedicated to the JVM.
      */
-    private static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2000L);
+    private static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2_000L);
 
     /**
      * The default operation between commits.
      *
      * @note It is calculated according to the maximum memory dedicated to the JVM.
      */
-    private static final long DEFAULT_AUTOCOMMIT_CHUNK = adaptFromMemory(50000L);
+    private static final long DEFAULT_AUTOCOMMIT_CHUNK = adaptFromMemory(50_000L);
 
     /**
      * The default {@link Hasher} used to create unique identifiers.
@@ -202,12 +201,11 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         persist(id);
         updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
-        if (nonNull(element.className())) {
+        Optional.ofNullable(element.className()).ifPresent(c -> {
             RawAttribute attribute = new RawAttribute(PersistenceConstants.FEATURE_NAME);
-            attribute.value(element.className());
-
+            attribute.value(c);
             addAttribute(id, attribute);
-        }
+        });
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {

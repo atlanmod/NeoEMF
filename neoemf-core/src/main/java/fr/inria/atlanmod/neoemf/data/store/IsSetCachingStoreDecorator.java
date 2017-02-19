@@ -27,12 +27,6 @@ import static java.util.Objects.nonNull;
 public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10_000;
-
-    /**
      * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Boolean> isSetCache;
@@ -43,7 +37,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
      * @param store the underlying store
      */
     public IsSetCachingStoreDecorator(PersistentStore store) {
-        this(store, DEFAULT_CACHE_SIZE);
+        this(store, 10_000);
     }
 
     /**

@@ -42,11 +42,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -176,9 +176,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         if (!testedObjects.contains(expected)) {
             testedObjects.add(expected);
 
-            if (nonNull(expected)) {
-                assertThat(actual).isNotNull();
-            }
+            Optional.ofNullable(expected).ifPresent(e -> assertThat(actual).isNotNull());
 
             assertThat(actual.eClass().getName()).isEqualTo(expected.eClass().getName());
             assertThat(actual.eContents()).hasSameSizeAs(expected.eContents());

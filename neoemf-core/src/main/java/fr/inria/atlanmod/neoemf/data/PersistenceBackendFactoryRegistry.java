@@ -17,14 +17,13 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import org.eclipse.emf.common.util.URI;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -44,7 +43,7 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * A map containing all registered {@link PersistenceBackendFactory} identified by a {@link URI} scheme.
      */
-    private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
+    private static final Map<String, PersistenceBackendFactory> FACTORIES = new ConcurrentHashMap<>();
 
     /**
      * This class should not be instantiated.
@@ -90,7 +89,7 @@ public class PersistenceBackendFactoryRegistry {
      * @return {@code true} if a back-end factory is registered for the given {@code scheme}
      */
     public static boolean isRegistered(@Nullable String scheme) {
-        return !isNull(scheme) && FACTORIES.containsKey(scheme);
+        return nonNull(scheme) && FACTORIES.containsKey(scheme);
     }
 
     /**
@@ -105,6 +104,7 @@ public class PersistenceBackendFactoryRegistry {
     public static void register(@Nonnull String scheme, @Nonnull PersistenceBackendFactory factory) {
         checkNotNull(scheme);
         checkNotNull(factory);
+
         FACTORIES.put(scheme, factory);
     }
 
