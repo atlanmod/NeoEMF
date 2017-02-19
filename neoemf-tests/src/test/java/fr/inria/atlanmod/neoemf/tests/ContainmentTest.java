@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContentComment;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
@@ -51,10 +51,10 @@ public class ContainmentTest extends AbstractBackendTest {
 
         p1.getPacks().add(p2);
 
-        assertThat(p1.eStore()).isInstanceOf(DirectWriteStore.class);
-        assertThat(p2.eStore()).isInstanceOf(DirectWriteStore.class);
-        assertThat(p3.eStore()).isInstanceOf(DirectWriteStore.class);
-        assertThat(pc1.eStore()).isInstanceOf(DirectWriteStore.class);
+        assertThat(p1.eStore()).isInstanceOf(PersistentStore.class);
+        assertThat(p2.eStore()).isInstanceOf(PersistentStore.class);
+        assertThat(p3.eStore()).isInstanceOf(PersistentStore.class);
+        assertThat(pc1.eStore()).isInstanceOf(PersistentStore.class);
 
         assertThat(p1.resource()).isSameAs(resource);
         assertThat(p2.resource()).isSameAs(resource);
@@ -88,7 +88,7 @@ public class ContainmentTest extends AbstractBackendTest {
         // Then add the element to the resource tree using the containment reference
         pc1.getContainmentNoOppositeRefComment().add(com1);
 
-        assertThat(com1.eStore()).isInstanceOf(DirectWriteStore.class);
+        assertThat(com1.eStore()).isInstanceOf(PersistentStore.class);
         assertThat(com1.resource()).isSameAs(resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)

@@ -18,8 +18,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.util.Map;
-
 /**
  * A specific {@link TestHelper} for the Blueprints Neo4j implementation.
  */
@@ -37,7 +35,7 @@ public class BlueprintsNeo4JTestHelper extends AbstractBlueprintsTestHelper<Blue
     }
 
     @Override
-    protected Map<String, Object> defaultOptions() {
-        return BlueprintsNeo4jOptionsBuilder.noOption();
+    protected BlueprintsNeo4jOptionsBuilder optionsBuilder() {
+        return BlueprintsNeo4jOptionsBuilder.newBuilder();
     }
 }

@@ -12,24 +12,30 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import java.util.HashSet;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
+import java.util.TreeSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistentStore} wrapper that count the number elements used.
  */
-public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator {
+@ParametersAreNonnullByDefault
+public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
 
     /**
      * Set that holds loaded objects.
      */
-    private final Set<Id> loadedObjects = new HashSet<>();
+    private final Set<Id> loadedObjects;
 
     /**
      * Constructs a new {@code LoadedObjectCounterStoreDecorator}.
@@ -38,141 +44,256 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
      */
     public LoadedObjectCounterStoreDecorator(PersistentStore store) {
         super(store);
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        loadedObjects = new TreeSet<>();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size())));
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        return super.valueFor(key, value);
     }
 
     @Override
-    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        setAsLoaded(internalObject);
-        Object value = super.get(internalObject, feature, index);
-        setAsLoaded(value);
-        return value;
+    public <V> void unsetValue(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.unsetValue(key);
     }
 
     @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        setAsLoaded(internalObject);
-        return super.set(internalObject, feature, index, value);
+    public <V> boolean hasValue(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.hasValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        loadedObjects.add(id);
+        return super.metaclassOf(id);
     }
 
     @Override
-    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        return super.isSet(internalObject, feature);
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        loadedObjects.add(id);
+        super.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        loadedObjects.add(id);
+        return super.containerOf(id);
     }
 
     @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        super.unset(internalObject, feature);
+    public void containerFor(Id id, ContainerDescriptor container) {
+        loadedObjects.add(id);
+        super.containerFor(id, container);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.allValuesOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        return super.valueFor(key, value);
     }
 
     @Override
-    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        return super.isEmpty(internalObject, feature);
+    public <V> void unsetAllValues(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.unsetAllValues(key);
     }
 
     @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        return super.size(internalObject, feature);
+    public <V> boolean hasAnyValue(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.hasAnyValue(key);
     }
 
     @Override
-    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        setAsLoaded(internalObject);
-        return super.contains(internalObject, feature, value);
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        super.addValue(key, value);
     }
 
     @Override
-    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        setAsLoaded(internalObject);
-        return super.indexOf(internalObject, feature, value);
+    public <V> void appendValue(FeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        super.appendValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.removeValue(key);
     }
 
     @Override
-    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        setAsLoaded(internalObject);
-        return super.lastIndexOf(internalObject, feature, value);
+    public <V> void removeAllValues(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.removeAllValues(key);
     }
 
     @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        setAsLoaded(internalObject);
-        super.add(internalObject, feature, index, value);
+    public <V> boolean containsValue(FeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        return super.containsValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        return super.indexOfValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+        loadedObjects.add(key.id());
+        return super.lastIndexOfValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.sizeOfValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        return super.referenceFor(key, reference);
     }
 
     @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        setAsLoaded(internalObject);
-        return super.remove(internalObject, feature, index);
+    public void unsetReference(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.unsetReference(key);
     }
 
     @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        setAsLoaded(internalObject);
-        return super.move(internalObject, feature, targetIndex, sourceIndex);
+    public boolean hasReference(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.hasReference(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.allReferencesOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        return super.referenceFor(key, reference);
     }
 
     @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        super.clear(internalObject, feature);
+    public void unsetAllReferences(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.unsetAllReferences(key);
     }
 
     @Override
-    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        return super.toArray(internalObject, feature);
+    public boolean hasAnyReference(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.hasAnyReference(key);
     }
 
     @Override
-    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        setAsLoaded(internalObject);
-        return super.toArray(internalObject, feature, array);
+    public void addReference(MultiFeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        super.addReference(key, reference);
     }
 
     @Override
-    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        setAsLoaded(internalObject);
-        return super.hashCode(internalObject, feature);
+    public void appendReference(FeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        super.appendReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.removeReference(key);
     }
 
     @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        setAsLoaded(internalObject);
-        return super.getContainer(internalObject);
+    public void removeAllReferences(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.removeAllReferences(key);
     }
 
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        setAsLoaded(internalObject);
-        return super.getContainingFeature(internalObject);
+    public boolean containsReference(FeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        return super.containsReference(key, reference);
     }
 
-    /**
-     * Defines the {@code object} as loaded, and adds it into {@link #loadedObjects}
-     *
-     * @param object the object to add
-     */
-    private void setAsLoaded(Object object) {
-        if (object instanceof PersistentEObject) {
-            loadedObjects.add(PersistentEObject.from(object).id());
-        }
-        else {
-            NeoLogger.debug("Not a {0} : This object will be ignored in the final count.", PersistentEObject.class.getSimpleName());
-        }
+    @Nonnull
+    @Override
+    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        return super.indexOfReference(key, reference);
     }
 
-    /**
-     * A shutdown hook that logs the total number of loaded objects when then application exits.
-     */
-    private class ShutdownHook extends Thread {
+    @Nonnull
+    @Override
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        return super.lastIndexOfReference(key, reference);
+    }
 
-        @Override
-        public void run() {
-            NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());
-        }
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.sizeOfReference(key);
     }
 }

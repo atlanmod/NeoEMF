@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -104,11 +105,11 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     protected abstract PersistenceBackendFactory factory();
 
     /**
-     * Returns the default options of this helper.
+     * Returns the {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} of this helper.
      *
-     * @return a map of options
+     * @return a builder
      */
-    protected abstract Map<String, Object> defaultOptions();
+    protected abstract AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder();
 
     /**
      * Returns the URI scheme of this helper.
@@ -147,6 +148,21 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     public final B persistent() {
         isPersistent = true;
         return me();
+    }
+
+    /**
+     * Returns the default options of this helper.
+     *
+     * @return a map of options
+     */
+    private Map<String, Object> defaultOptions() {
+        return optionsBuilder()
+                .log()
+                .autocommit()
+                .cacheIsSet()
+                .cacheSizes()
+//                .cacheFeatures()
+                .asMap();
     }
 
     @Override

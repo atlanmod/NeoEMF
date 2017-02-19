@@ -17,7 +17,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link InternalEObject.EStore}s.
+ * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link
+ * InternalEObject.EStore}s.
  */
 public interface Store extends InternalEObject.EStore {
 

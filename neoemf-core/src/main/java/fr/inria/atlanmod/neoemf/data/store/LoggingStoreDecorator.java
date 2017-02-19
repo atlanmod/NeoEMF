@@ -12,17 +12,36 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.util.logging.Level;
+import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
+import java.util.Optional;
+import java.util.OptionalInt;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistentStore} wrapper that logs every call to its methods in the {@link NeoLogger}.
  */
-public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
+@ParametersAreNonnullByDefault
+public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+
+    /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger log = NeoLogger.customLogger(LoggingStoreDecorator.class.getName());
+
+    /**
+     * The default {@link Level} for the {@link #log}.
+     */
+    private final Level level;
 
     /**
      * Constructs a new {@code LoggingStoreDecorator}.
@@ -30,126 +49,266 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
      * @param store the underlying store
      */
     public LoggingStoreDecorator(PersistentStore store) {
+        this(store, Level.DEBUG);
+    }
+
+    /**
+     * Constructs a new {@code LoggingStoreDecorator} with the given logging {@code level}.
+     *
+     * @param store the underlying store
+     * @param level the logging level to use
+     */
+    public LoggingStoreDecorator(PersistentStore store, Level level) {
         super(store);
+        this.level = level;
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(FeatureKey key) {
+        called("get", key);
+        return super.valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        called("set", key, value);
+        return super.valueFor(key, value);
     }
 
     @Override
-    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        NeoLogger.info("Called get for {0}.{1}[{2}]", internalObject, feature.getName(), index);
-        return super.get(internalObject, feature, index);
+    public <V> void unsetValue(FeatureKey key) {
+        called("unSet", key);
+        super.unsetValue(key);
     }
 
     @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        NeoLogger.info("Called set for {0}.{1}[{2}] with value {3}", internalObject, feature.getName(), index, value);
-        return super.set(internalObject, feature, index, value);
+    public <V> boolean hasValue(FeatureKey key) {
+        called("isSet", key);
+        return super.hasValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+        called("get", key);
+        return super.valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        called("toArray", key);
+        return super.allValuesOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        called("set", key, value);
+        return super.valueFor(key, value);
     }
 
     @Override
-    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called isSet for {0}.{1}", internalObject, feature.getName());
-        return super.isSet(internalObject, feature);
+    public <V> void unsetAllValues(FeatureKey key) {
+        called("unSet", key);
+        super.unsetAllValues(key);
     }
 
     @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called unSet for {0}.{1}", internalObject, feature.getName());
-        super.unset(internalObject, feature);
+    public <V> boolean hasAnyValue(FeatureKey key) {
+        called("isSet", key);
+        return super.hasAnyValue(key);
     }
 
     @Override
-    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called isEmtpy for {0}.{1}", internalObject, feature.getName());
-        return super.isEmpty(internalObject, feature);
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        called("add", key, value);
+        super.addValue(key, value);
     }
 
     @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called size for {0}.{1}", internalObject, feature.getName());
-        return super.size(internalObject, feature);
+    public <V> void appendValue(FeatureKey key, V value) {
+        called("append", key, value);
+        super.appendValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        called("remove", key);
+        return super.removeValue(key);
     }
 
     @Override
-    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.info("Called contains for {0}.{1} with value {2}", internalObject, feature.getName(), value);
-        return super.contains(internalObject, feature, value);
+    public <V> void removeAllValues(FeatureKey key) {
+        called("clean", key);
+        super.removeAllValues(key);
     }
 
     @Override
-    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.info("Called indexOf for {0}.{1} with value {2}", internalObject, feature.getName(), value);
-        return super.indexOf(internalObject, feature, value);
+    public <V> boolean containsValue(FeatureKey key, V value) {
+        called("contains", key, value);
+        return super.containsValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+        called("indexOf", key, value);
+        return super.indexOfValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+        called("lastIndexOf", key, value);
+        return super.lastIndexOfValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+        called("size", key);
+        return super.sizeOfValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        called("get", key);
+        return super.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        called("set", key, reference);
+        return super.referenceFor(key, reference);
     }
 
     @Override
-    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        NeoLogger.info("Called lastIndexOf for {0}.{1} with value {2}", internalObject, feature.getName(), value);
-        return super.lastIndexOf(internalObject, feature, value);
+    public void unsetReference(FeatureKey key) {
+        called("unSet", key);
+        super.unsetReference(key);
     }
 
     @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        NeoLogger.info("Called add for {0}.{1}[{2}] with value {3}", internalObject, feature.getName(), index, value);
-        super.add(internalObject, feature, index, value);
+    public boolean hasReference(FeatureKey key) {
+        called("isSet", key);
+        return super.hasReference(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        called("get", key);
+        return super.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        called("toArray", key);
+        return super.allReferencesOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        called("set", key, reference);
+        return super.referenceFor(key, reference);
     }
 
     @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        NeoLogger.info("Called remove for {0}.{1}[{2}]", internalObject, feature.getName(), index);
-        return super.remove(internalObject, feature, index);
+    public void unsetAllReferences(FeatureKey key) {
+        called("unSet", key);
+        super.unsetAllReferences(key);
     }
 
     @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        NeoLogger.info("Called move for {0}.{1} from [{2}] to [{3}]", internalObject, feature.getName(), sourceIndex, targetIndex);
-        return super.move(internalObject, feature, targetIndex, sourceIndex);
+    public boolean hasAnyReference(FeatureKey key) {
+        called("isSet", key);
+        return super.hasAnyReference(key);
     }
 
     @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called clear for {0}.{1}", internalObject, feature.getName());
-        super.clear(internalObject, feature);
+    public void addReference(MultiFeatureKey key, Id reference) {
+        called("add", key, reference);
+        super.addReference(key, reference);
     }
 
     @Override
-    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called toArray for {0}.{1}", internalObject, feature.getName());
-        return super.toArray(internalObject, feature);
+    public void appendReference(FeatureKey key, Id reference) {
+        called("append", key, reference);
+        super.appendReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        called("remove", key);
+        return super.removeReference(key);
     }
 
     @Override
-    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        NeoLogger.info("Called toArray for {0}.{1}", internalObject, feature.getName());
-        return super.toArray(internalObject, feature, array);
+    public void removeAllReferences(FeatureKey key) {
+        called("clean", key);
+        super.removeAllReferences(key);
     }
 
     @Override
-    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        NeoLogger.info("Called hashCode for {0}.{1}", internalObject, feature.getName());
-        return super.hashCode(internalObject, feature);
+    public boolean containsReference(FeatureKey key, Id reference) {
+        called("contains", key, reference);
+        return super.containsReference(key, reference);
     }
 
+    @Nonnull
     @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        NeoLogger.info("Called getContainer for {0}", internalObject);
-        return super.getContainer(internalObject);
+    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+        called("indexOf", key, reference);
+        return super.indexOfReference(key, reference);
     }
 
+    @Nonnull
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        NeoLogger.info("Called getContainingFeature for {0}", internalObject);
-        return super.getContainingFeature(internalObject);
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+        called("lastIndexOf", key, reference);
+        return super.lastIndexOfReference(key, reference);
     }
 
+    @Nonnull
     @Override
-    public Resource resource() {
-        NeoLogger.info("Called getResource");
-        return super.resource();
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        called("size", key);
+        return super.sizeOfReference(key);
     }
 
-    @Override
-    public PersistentEObject object(Id id) {
-        NeoLogger.info("Called getEObject with value {0}", id);
-        return super.object(id);
+    /**
+     * Logs the call of a method.
+     *
+     * @param method the name of the called method
+     * @param key    the key used during the call
+     */
+    private void called(String method, FeatureKey key) {
+        called(method, key, null);
+    }
+
+    /**
+     * Logs the call of a method with a value.
+     *
+     * @param method the name of the called method
+     * @param key    the key used during the call
+     * @param value  the value of the key
+     */
+    private void called(String method, FeatureKey key, @Nullable Object value) {
+        if (key instanceof MultiFeatureKey) {
+            MultiFeatureKey multiKey = (MultiFeatureKey) key;
+            log.log(level, "Called {0}() for {1}.{2} [{3}]" + (nonNull(value) ? " with {4}" : ""), method, multiKey.id(), multiKey.name(), multiKey.position(), value);
+        }
+        else {
+            log.log(level, "Called {0}() for {1}.{2}" + (nonNull(value) ? " with {3}" : ""), method, key.id(), key.name(), value);
+        }
     }
 }

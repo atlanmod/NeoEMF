@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
-import java.util.Map;
 
 /**
  * A specific {@link TestHelper} for the BerkeleyDB implementation.
@@ -46,8 +45,8 @@ public class BerkeleyDbTestHelper extends AbstractTestHelper<BerkeleyDbTestHelpe
     }
 
     @Override
-    protected Map<String, Object> defaultOptions() {
-        return BerkeleyDbOptionsBuilder.noOption();
+    protected BerkeleyDbOptionsBuilder optionsBuilder() {
+        return BerkeleyDbOptionsBuilder.newBuilder();
     }
 
     @Override

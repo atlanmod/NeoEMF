@@ -12,20 +12,28 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
+
+import java.util.Optional;
+import java.util.OptionalInt;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * {@link PersistentStore} which can be used by back-end implementations that do not provide transient layer.
  * <p>
  * All methods throws an {@link UnsupportedOperationException}.
  */
-public final class InvalidStore implements PersistentStore {
+@ParametersAreNonnullByDefault
+public final class InvalidStore extends AbstractPersistentStore {
 
     /**
      * The message of the exceptions thrown when calling methods.
@@ -39,179 +47,238 @@ public final class InvalidStore implements PersistentStore {
         super();
     }
 
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
     @Override
     public void save() {
         throw new UnsupportedOperationException(MSG);
     }
 
-    /**
-     * @throws UnsupportedOperationException every time
-     */
     @Override
-    public Resource resource() {
+    public PersistentResource resource() {
         throw new UnsupportedOperationException(MSG);
     }
 
-    /**
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public PersistentEObject object(Id id) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time
-     */
     @Override
     public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void create(Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean has(Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void unsetValue(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> boolean hasValue(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void unsetAllValues(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> boolean hasAnyValue(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void appendValue(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> void removeAllValues(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public <V> boolean containsValue(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void unsetAllReferences(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean hasAnyReference(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void addReference(MultiFeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void appendReference(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void removeAllReferences(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public boolean containsReference(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public OptionalInt sizeOfReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 }

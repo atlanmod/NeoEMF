@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see MultiReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface FullMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
+public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
 
     /**
      * Creates the specified {@code id}.

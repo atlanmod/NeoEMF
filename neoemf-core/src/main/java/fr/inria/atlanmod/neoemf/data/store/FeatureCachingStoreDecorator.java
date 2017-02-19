@@ -14,21 +14,28 @@ package fr.inria.atlanmod.neoemf.data.store;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
+
+import java.util.Optional;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistentStore} wrapper that caches {@link EStructuralFeature}.
  */
-public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator {
+@ParametersAreNonnullByDefault
+public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
 
     /**
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, Object> objectsCache;
+    private final Cache<FeatureKey, Object> valuesCache;
 
     /**
      * Constructs a new {@code FeatureCachingStoreDecorator} with the default cache size.
@@ -47,78 +54,164 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
      */
     public FeatureCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
-        this.objectsCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
+        this.valuesCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    public <V> Optional<V> valueOf(FeatureKey key) {
+        return (Optional<V>) valuesCache.get(key, super::valueOf);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        valuesCache.put(key, value);
+
+        return super.valueFor(key, value);
     }
 
     @Override
-    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        FeatureKey key = MultiFeatureKey.from(internalObject, feature, index);
-        return objectsCache.get(key, k -> super.get(internalObject, feature, index));
+    public <V> void unsetValue(FeatureKey key) {
+        valuesCache.invalidate(key);
+
+        super.unsetValue(key);
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+        return (Optional<V>) valuesCache.get(key, k -> super.valueOf((MultiFeatureKey) k));
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        valuesCache.put(key, value);
+
+        return super.valueFor(key, value);
     }
 
     @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        FeatureKey key = MultiFeatureKey.from(internalObject, feature, index);
-        Object previous = super.set(internalObject, feature, index, value);
-        objectsCache.put(key, value);
-        return previous;
+    public <V> void unsetAllValues(FeatureKey key) {
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        super.unsetAllValues(key);
     }
 
     @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        if (!feature.isMany()) {
-            FeatureKey key = FeatureKey.from(internalObject, feature);
-            objectsCache.invalidate(key);
-        }
-        else {
-            invalidateValues(internalObject, feature, 0);
-        }
-        super.unset(internalObject, feature);
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        valuesCache.put(key, value);
+
+        IntStream.range(key.position() + 1, sizeOfValue(key).orElse(key.position() + 1))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        super.addValue(key, value);
     }
 
     @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        FeatureKey key = MultiFeatureKey.from(internalObject, feature, index);
-        super.add(internalObject, feature, index, value);
-        objectsCache.put(key, value);
-        invalidateValues(internalObject, feature, index + 1);
+    public <V> void appendValue(FeatureKey key, V value) {
+        valuesCache.put(key, value);
+
+        super.appendValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        IntStream.range(key.position(), sizeOfValue(key).orElse(key.position()))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        return super.removeValue(key);
     }
 
     @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        Object previous = super.remove(internalObject, feature, index);
-        invalidateValues(internalObject, feature, index);
-        return previous;
+    public <V> void removeAllValues(FeatureKey key) {
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        super.removeAllValues(key);
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    public Optional<Id> referenceOf(FeatureKey key) {
+        return (Optional<Id>) valuesCache.get(key, super::referenceOf);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        valuesCache.put(key, reference);
+
+        return super.referenceFor(key, reference);
     }
 
     @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        FeatureKey key = MultiFeatureKey.from(internalObject, feature, targetIndex);
-        Object previous = super.move(internalObject, feature, targetIndex, sourceIndex);
-        invalidateValues(internalObject, feature, Math.min(sourceIndex, targetIndex));
-        objectsCache.put(key, previous);
-        return previous;
+    public void unsetReference(FeatureKey key) {
+        valuesCache.invalidate(key);
+
+        super.unsetReference(key);
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        return (Optional<Id>) valuesCache.get(key, k -> super.referenceOf((MultiFeatureKey) k));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        valuesCache.put(key, reference);
+
+        return super.referenceFor(key, reference);
     }
 
     @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        super.clear(internalObject, feature);
-        invalidateValues(internalObject, feature, 0);
+    public void unsetAllReferences(FeatureKey key) {
+        IntStream.range(0, sizeOfReference(key).orElse(0))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        super.unsetAllReferences(key);
     }
 
-    /**
-     * Remove cached elements, from an initial {@code index} to the size of an element.
-     *
-     * @param internalObject the concerned object
-     * @param feature        the feature of the {@code internalObject}
-     * @param index          the index from which to start the removing
-     *
-     * @see FeatureKey#from(InternalEObject, EStructuralFeature)
-     */
-    private void invalidateValues(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        FeatureKey key = FeatureKey.from(internalObject, feature);
-        for (int i = index; i < size(internalObject, feature); i++) {
-            objectsCache.invalidate(key.withPosition(i));
-        }
+    @Override
+    public void addReference(MultiFeatureKey key, Id reference) {
+        valuesCache.put(key, reference);
+
+        IntStream.range(key.position() + 1, sizeOfReference(key).orElse(key.position() + 1))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        super.addReference(key, reference);
+    }
+
+    @Override
+    public void appendReference(FeatureKey key, Id reference) {
+        valuesCache.put(key, reference);
+
+        super.appendReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        IntStream.range(key.position(), sizeOfReference(key).orElse(key.position()))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        return super.removeReference(key);
+    }
+
+    @Override
+    public void removeAllReferences(FeatureKey key) {
+        IntStream.range(0, sizeOfReference(key).orElse(0))
+                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+
+        super.removeAllReferences(key);
     }
 }

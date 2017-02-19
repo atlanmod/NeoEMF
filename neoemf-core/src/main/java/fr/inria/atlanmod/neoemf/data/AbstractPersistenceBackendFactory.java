@@ -25,6 +25,7 @@ import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.logging.Level;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -121,7 +122,14 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
                 store = new SizeCachingStoreDecorator(store);
             }
             if (storeOptions.contains(CommonStoreOptions.LOG)) {
-                store = new LoggingStoreDecorator(store);
+                if (options.containsKey(CommonResourceOptions.LOGGING_LEVEL)) {
+                    Level level = Level.valueOf(String.valueOf(options.get(CommonResourceOptions.LOGGING_LEVEL)));
+                    store = new LoggingStoreDecorator(store, level);
+                }
+                else {
+                    store = new LoggingStoreDecorator(store);
+                }
+
             }
             if (storeOptions.contains(CommonStoreOptions.COUNT_LOADED_OBJECT)) {
                 store = new LoadedObjectCounterStoreDecorator(store);

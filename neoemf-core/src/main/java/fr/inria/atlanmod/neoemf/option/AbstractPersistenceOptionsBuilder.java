@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.util.logging.Level;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -162,6 +164,20 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     @Nonnull
     public B log() {
         return storeOption(CommonStoreOptions.LOG);
+    }
+
+    /**
+     * Adds the {@code log} feature in the created options.
+     *
+     * @param level the logging {@link Level} to use
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     */
+    public B log(Level level) {
+        storeOption(CommonStoreOptions.LOG);
+        return option(CommonResourceOptions.LOGGING_LEVEL, level.name());
     }
 
     /**

@@ -28,7 +28,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
     /**
      * The field name describing the inner {@link PersistentStore} in a {@link AbstractPersistentStoreDecorator}.
      */
-    private static final String INNER_STORE_FIELDNAME = "store";
+    private static final String INNER_STORE_FIELDNAME = "next";
 
     /**
      * The field name describing the inner {@link PersistenceBackend} in a {@link DirectWriteStore}.

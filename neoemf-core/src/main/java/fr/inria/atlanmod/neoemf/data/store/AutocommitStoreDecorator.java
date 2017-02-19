@@ -11,21 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
+
+import java.util.Optional;
+import java.util.concurrent.Callable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistentStore} wrapper that automatically saves modifications as calls are made.
  */
-public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
-
-    /**
-     * Default number of allowed modifications (100000) between commits on the underlying {@link EStore}.
-     */
-    private static final long DEFAULT_AUTOCOMMIT_CHUNK = 100_000;
+@ParametersAreNonnullByDefault
+@SuppressWarnings("MethodDoesntCallSuperMethod")
+public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
 
     /**
      * Number of allowed modifications between commits on the underlying {@link EStore} for this store.
@@ -56,52 +60,132 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
      * @param store the underlying store
      */
     public AutocommitStoreDecorator(PersistentStore store) {
-        this(store, DEFAULT_AUTOCOMMIT_CHUNK);
+        this(store, 100_000);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        return thenIncrementAndCommit(() -> super.valueFor(key, value));
     }
 
     @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        Object previous = super.set(internalObject, feature, index, value);
-        incrementAndCommit();
-        return previous;
+    public <V> void unsetValue(FeatureKey key) {
+        thenIncrementAndCommit(() -> super.unsetValue(key));
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        return thenIncrementAndCommit(() -> super.valueFor(key, value));
     }
 
     @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        super.unset(internalObject, feature);
-        incrementAndCommit();
+    public <V> void unsetAllValues(FeatureKey key) {
+        thenIncrementAndCommit(() -> super.unsetAllValues(key));
     }
 
     @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        super.add(internalObject, feature, index, value);
-        incrementAndCommit();
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        thenIncrementAndCommit(() -> super.addValue(key, value));
     }
 
     @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        Object previous = super.remove(internalObject, feature, index);
-        incrementAndCommit();
-        return previous;
+    public <V> void appendValue(FeatureKey key, V value) {
+        thenIncrementAndCommit(() -> super.appendValue(key, value));
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        return thenIncrementAndCommit(() -> super.removeValue(key));
     }
 
     @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        Object previous = super.move(internalObject, feature, targetIndex, sourceIndex);
-        incrementAndCommit();
-        return previous;
+    public <V> void removeAllValues(FeatureKey key) {
+        thenIncrementAndCommit(() -> super.removeAllValues(key));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        return thenIncrementAndCommit(() -> super.referenceFor(key, reference));
     }
 
     @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        super.clear(internalObject, feature);
-        incrementAndCommit();
+    public void unsetReference(FeatureKey key) {
+        thenIncrementAndCommit(() -> super.unsetReference(key));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        return thenIncrementAndCommit(() -> super.referenceFor(key, reference));
+    }
+
+    @Override
+    public void unsetAllReferences(FeatureKey key) {
+        thenIncrementAndCommit(() -> super.unsetAllReferences(key));
+    }
+
+    @Override
+    public void addReference(MultiFeatureKey key, Id reference) {
+        thenIncrementAndCommit(() -> super.addReference(key, reference));
+    }
+
+    @Override
+    public void appendReference(FeatureKey key, Id reference) {
+        thenIncrementAndCommit(() -> super.appendReference(key, reference));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        return thenIncrementAndCommit(() -> super.removeReference(key));
+    }
+
+    @Override
+    public void removeAllReferences(FeatureKey key) {
+        thenIncrementAndCommit(() -> super.removeAllReferences(key));
+    }
+
+    /**
+     * Calls the given {@code method}, and increments the number of operation, and commits if necessary, i.e when
+     * {@code opCount % opsBetweenCommits == 0}.
+     *
+     * @param method the method to call before committing
+     *
+     * @return the result of the {@code method}
+     */
+    private <V> V thenIncrementAndCommit(Callable<V> method) {
+        V result;
+        try {
+            result = method.call();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        incremendAndCommit();
+
+        return result;
+    }
+
+    /**
+     * Calls the given {@code method}, and increments the number of operation, and commits if necessary, i.e when
+     * {@code opCount % opsBetweenCommits == 0}.
+     *
+     * @param method the method to call before committing
+     */
+    private void thenIncrementAndCommit(Runnable method) {
+        method.run();
+        incremendAndCommit();
     }
 
     /**
      * Increments the number of operation, and commits if necessary, i.e when {@code opCount % opsBetweenCommits == 0}.
      */
-    private void incrementAndCommit() {
+    private void incremendAndCommit() {
         autocommitCount = (autocommitCount + 1) % autocommitChuck;
         if (autocommitCount == 0) {
             this.save();

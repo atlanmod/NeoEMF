@@ -109,9 +109,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void save() {
-        allDatabases().stream()
-                .filter(db -> db.getConfig().getDeferredWrite())
-                .forEach(Database::sync);
+//        allDatabases().stream()
+//                .filter(db -> db.getConfig().getDeferredWrite())
+//                .forEach(Database::sync);
     }
 
     @Override

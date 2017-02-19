@@ -19,5 +19,10 @@ public interface CommonResourceOptions extends PersistentResourceOptions {
     /**
      * The option key to define the number of operations between each commit in autocommit mode.
      */
-    String AUTOCOMMIT_CHUNK = "autocommit.chunk";
+    String AUTOCOMMIT_CHUNK = "store.autocommit.chunk";
+
+    /**
+     * The option key to define the logging level in log mode.
+     */
+    String LOGGING_LEVEL = "store.logging.level";
 }

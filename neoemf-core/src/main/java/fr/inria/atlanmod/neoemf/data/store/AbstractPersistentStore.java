@@ -11,7 +11,44 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
 
 /**
  * The abstract implementation of a {@link PersistentStore}.
@@ -19,9 +56,610 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 public abstract class AbstractPersistentStore implements PersistentStore {
 
     /**
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
+     */
+    @Nonnull
+    private final LoadingCache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
+            .softValues()
+            .initialCapacity(1_000)
+            .maximumSize(10_000)
+            .build(new PersistentObjectLoader());
+
+    /**
      * Constructs a new {@code AbstractPersistentStore}.
      */
     public AbstractPersistentStore() {
         NeoLogger.info("{0} created", getClass().getSimpleName());
+    }
+
+    /**
+     * Checks whether the {@code feature} is an {@link EAttribute}.
+     *
+     * @param feature the feature for which to check the type
+     *
+     * @return {@code true} if the {@code feature} is an {@link EAttribute}, {@code false} is it is a {@link EReference}
+     */
+    private static boolean isAttribute(EStructuralFeature feature) {
+        return EAttribute.class.isInstance(feature);
+    }
+
+    /**
+     * Creates an instance of the {@code attribute}.
+     *
+     * @param attribute the attribute to instantiate
+     * @param property  the string value of the attribute
+     *
+     * @return an instance of the attribute
+     *
+     * @see EcoreUtil#createFromString(EDataType, String)
+     */
+    private static Object deserialize(EAttribute attribute, String property) {
+        return EcoreUtil.createFromString(attribute.getEAttributeType(), property);
+    }
+
+    /**
+     * Converts an instance of the {@code attribute} to a string literal representation.
+     *
+     * @param attribute the attribute to instantiate
+     * @param value     a value of the attribute
+     *
+     * @return the string literal representation of the value
+     *
+     * @see EcoreUtil#convertToString(EDataType, Object)
+     */
+    private static String serialize(EAttribute attribute, Object value) {
+        return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
+    }
+
+    @Override
+    public final Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        if (feature.isMany()) {
+            checkElementIndex(index, size(internalObject, feature));
+        }
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (isAttribute(feature)) {
+            Optional<String> value;
+            if (!feature.isMany()) {
+                value = valueOf(key);
+            }
+            else {
+                value = valueOf(key.withPosition(index));
+            }
+
+            return value.map(v -> deserialize((EAttribute) feature, v)).orElse(null);
+        }
+        else {
+            Optional<Id> value;
+            if (!feature.isMany()) {
+                value = referenceOf(key);
+            }
+            else {
+                value = referenceOf(key.withPosition(index));
+            }
+
+            return value.map(this::object).orElse(null);
+        }
+    }
+
+    @Override
+    public final Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        if (isNull(value)) {
+            Object previousValue = get(internalObject, feature, index);
+            unset(internalObject, feature);
+            return previousValue;
+        }
+
+        if (feature.isMany()) {
+            checkElementIndex(index, size(internalObject, feature));
+        }
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        FeatureKey key = FeatureKey.from(object, feature);
+
+        if (isAttribute(feature)) {
+            persist(object);
+
+            Optional<String> previousValue;
+            if (!feature.isMany()) {
+                previousValue = valueFor(key, serialize((EAttribute) feature, value));
+            }
+            else {
+                previousValue = valueFor(key.withPosition(index), serialize((EAttribute) feature, value));
+            }
+
+            return previousValue.map(v -> deserialize((EAttribute) feature, v)).orElse(null);
+        }
+        else {
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            persist(object, (EReference) feature, referencedObject);
+
+            Optional<Id> previousId;
+            if (!feature.isMany()) {
+                previousId = referenceFor(key, referencedObject.id());
+            }
+            else {
+                previousId = referenceFor(key.withPosition(index), referencedObject.id());
+            }
+
+            return previousId.map(this::object).orElse(null);
+        }
+    }
+
+    @Override
+    public final boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (isAttribute(feature)) {
+            if (!feature.isMany()) {
+                return hasValue(key);
+            }
+            else {
+                return hasAnyValue(key);
+            }
+        }
+        else {
+            if (!feature.isMany()) {
+                return hasReference(key);
+            }
+            else {
+                return hasAnyReference(key);
+            }
+        }
+    }
+
+    @Override
+    public final void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (isAttribute(feature)) {
+            if (!feature.isMany()) {
+                unsetValue(key);
+            }
+            else {
+                unsetAllValues(key);
+            }
+        }
+        else {
+            if (!feature.isMany()) {
+                unsetReference(key);
+            }
+            else {
+                unsetAllReferences(key);
+            }
+        }
+    }
+
+    @Override
+    public final boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute isEmpty() of a single-valued feature");
+
+        return size(internalObject, feature) == 0;
+    }
+
+    @Override
+    public final int size(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        OptionalInt size;
+        if (isAttribute(feature)) {
+            size = sizeOfValue(key);
+        }
+        else {
+            size = sizeOfReference(key);
+        }
+        return size.orElse(0);
+    }
+
+    @Override
+    public final boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute contains() of a single-valued feature");
+
+        if (isNull(value)) {
+            return false;
+        }
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (!has(key.id())) {
+            return false;
+        }
+
+        if (isAttribute(feature)) {
+            return containsValue(key, serialize((EAttribute) feature, value));
+        }
+        else {
+            return containsReference(key, PersistentEObject.from(value).id());
+        }
+    }
+
+    @Override
+    public final int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
+        }
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        OptionalInt index;
+        if (isAttribute(feature)) {
+            index = indexOfValue(key, serialize((EAttribute) feature, value));
+        }
+        else {
+            index = indexOfReference(key, PersistentEObject.from(value).id());
+        }
+        return index.orElse(NO_INDEX);
+    }
+
+    @Override
+    public final int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
+
+        if (isNull(value)) {
+            return NO_INDEX;
+        }
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        OptionalInt index;
+        if (isAttribute(feature)) {
+            index = lastIndexOfValue(key, serialize((EAttribute) feature, value));
+        }
+        else {
+            index = lastIndexOfReference(key, PersistentEObject.from(value).id());
+        }
+        return index.orElse(NO_INDEX);
+    }
+
+    @Override
+    public final void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+        checkNotNull(value);
+        checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
+
+        if (index != NO_INDEX) {
+            checkPositionIndex(index, size(internalObject, feature));
+        }
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        FeatureKey key = FeatureKey.from(object, feature);
+
+        if (isAttribute(feature)) {
+            persist(object);
+
+            if (index == NO_INDEX) {
+                appendValue(key, serialize((EAttribute) feature, value));
+            }
+            else {
+                addValue(key.withPosition(index), serialize((EAttribute) feature, value));
+            }
+        }
+        else {
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            persist(object, (EReference) feature, referencedObject);
+
+            if (index == NO_INDEX) {
+                appendReference(key, referencedObject.id());
+            }
+            else {
+                addReference(key.withPosition(index), referencedObject.id());
+            }
+        }
+    }
+
+    @Override
+    public final Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute remove() of a single-valued feature");
+
+        checkElementIndex(index, size(internalObject, feature));
+
+        MultiFeatureKey key = MultiFeatureKey.from(internalObject, feature, index);
+
+        if (isAttribute(feature)) {
+            return this.<String>removeValue(key).map(v -> deserialize((EAttribute) feature, v)).orElse(null);
+        }
+        else {
+            PersistentEObject removedElement = removeReference(key).map(this::object).orElse(null);
+
+            if (((EReference) feature).isContainment()) {
+                removedElement.eBasicSetContainer(null, -1, null);
+                removedElement.resource(null);
+            }
+
+            return removedElement;
+        }
+    }
+
+    @Override
+    public final Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
+
+        Object movedElement = remove(internalObject, feature, sourceIndex);
+        add(internalObject, feature, targetIndex, movedElement);
+        return movedElement;
+    }
+
+    @Override
+    public final void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        checkArgument(feature.isMany(), "Cannot compute clear() of a single-valued feature");
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        if (!has(object.id())) {
+            return;
+        }
+
+        FeatureKey key = FeatureKey.from(object, feature);
+
+        if (isAttribute(feature)) {
+            removeAllValues(key);
+        }
+        else {
+            removeAllReferences(key);
+        }
+    }
+
+    @Override
+    public final Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        return toArray(internalObject, feature, null);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        Stream<Object> stream;
+        if (feature instanceof EReference) {
+            Iterable<Id> references;
+
+            if (feature.isMany()) {
+                references = allReferencesOf(key);
+            }
+            else {
+                references = referenceOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
+            }
+
+            stream = StreamSupport.stream(references.spliterator(), false)
+                    .map(this::object);
+        }
+        else {
+            Iterable<String> values;
+
+            if (feature.isMany()) {
+                values = allValuesOf(key);
+            }
+            else {
+                values = this.<String>valueOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
+            }
+
+            stream = StreamSupport.stream(values.spliterator(), false)
+                    .map(v -> deserialize((EAttribute) feature, v));
+        }
+
+        if (isNull(array)) {
+            return (T[]) stream.toArray();
+        }
+        else {
+            array = stream.collect(Collectors.toList()).toArray(array);
+            return array;
+        }
+    }
+
+    @Override
+    public final int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
+        return 0;
+    }
+
+    @Override
+    public final InternalEObject getContainer(InternalEObject internalObject) {
+        checkNotNull(internalObject);
+
+        return containerOf(PersistentEObject.from(internalObject).id())
+                .map(containerValue -> object(containerValue.id()))
+                .orElse(null);
+    }
+
+    @Override
+    public final EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        checkNotNull(internalObject);
+
+        return containerOf(PersistentEObject.from(internalObject).id())
+                .map(containerValue -> object(containerValue.id()).eClass().getEStructuralFeature(containerValue.name()))
+                .orElse(null);
+    }
+
+    /**
+     * Creates the given {@code object} in the underlying database if it doesn't already exist.
+     *
+     * @param object the object to persist
+     *
+     * @see #updateInstanceOf(PersistentEObject)
+     */
+    private void persist(PersistentEObject object) {
+        if (!has(object.id())) {
+            create(object.id());
+            persistentObjectsCache.put(object.id(), object);
+            updateInstanceOf(object);
+        }
+    }
+
+    /**
+     * Creates the given {@code object} and {@code referencedObject} in the underlying back-end if they don't already
+     * exist, and update the containment link between them.
+     *
+     * @param object           the object to persist
+     * @param reference        the reference to link the two objects
+     * @param referencedObject the referenced object to persist
+     *
+     * @see #persist(PersistentEObject)
+     * @see #updateContainment(PersistentEObject, EReference, PersistentEObject)
+     */
+    private void persist(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        persist(object);
+        persist(referencedObject);
+        updateContainment(object, reference, referencedObject);
+    }
+
+    /**
+     * Creates a new container edge between {@code object} and {@code referencedObject}, and deletes any
+     * container edge previously linked to {@code referencedObject}. Tells the underlying database to put the
+     * {@code referencedObject} in the containment list of the {@code object}.
+     * <p>
+     * The method checks if an existing container is stored and update it if needed.
+     *
+     * @param object           the container {@link PersistentEObject}
+     * @param reference        the containment {@link EReference}
+     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
+     */
+    private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        checkNotNull(object);
+        checkNotNull(reference);
+        checkNotNull(referencedObject);
+
+        if (reference.isContainment()) {
+            Optional<ContainerDescriptor> container = containerOf(referencedObject.id());
+            if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
+                containerFor(referencedObject.id(), ContainerDescriptor.from(object, reference));
+            }
+        }
+    }
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
+     *
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the metaclass of the element
+     */
+    private Optional<EClass> resolveInstanceOf(Id id) {
+        checkNotNull(id);
+
+        return metaclassOf(id)
+                .map(MetaclassDescriptor::eClass);
+    }
+
+    /**
+     * Computes the type of the {@code object} in a {@link MetaclassDescriptor} object and persists it in the database.
+     *
+     * @param object the {@link PersistentEObject} to store the instance-of information from
+     *
+     * @note The type is not updated if {@code object} was previously mapped to another type.
+     */
+    private void updateInstanceOf(PersistentEObject object) {
+        checkNotNull(object);
+
+        Optional<MetaclassDescriptor> metaclass = metaclassOf(object.id());
+        if (!metaclass.isPresent()) {
+            metaclassFor(object.id(), MetaclassDescriptor.from(object));
+        }
+    }
+
+    @Override
+    public final PersistentEObject object(Id id) {
+        if (isNull(id)) {
+            return null;
+        }
+
+        PersistentEObject object = persistentObjectsCache.get(id);
+        if (object.resource() != resource()) {
+            object.resource(resource());
+        }
+        return object;
+    }
+
+    /**
+     * A {@link CacheLoader} to retrieve a {@link PersistentEObject} stored in the database.
+     */
+    private class PersistentObjectLoader implements CacheLoader<Id, PersistentEObject> {
+
+        @SuppressWarnings("JavaDoc")
+        private final PersistenceFactory persistenceFactory = PersistenceFactory.getInstance();
+
+        @Override
+        public PersistentEObject load(@Nonnull Id id) throws Exception {
+            Optional<EClass> eClass = resolveInstanceOf(id);
+            if (eClass.isPresent()) {
+                EObject eObject;
+
+                if (Objects.equals(eClass.get().getEPackage().getClass(), EPackageImpl.class)) {
+                    // Dynamic EMF
+                    eObject = persistenceFactory.create(eClass.get());
+                }
+                else {
+                    eObject = EcoreUtil.create(eClass.get());
+                }
+
+                return create(eObject, id);
+            }
+            else {
+                throw new RuntimeException("Element " + id + " does not have an associated EClass");
+            }
+        }
+
+        /**
+         * Creates an {@link PersistentEObject} from the given {@code object} and the {@code id}.
+         *
+         * @param object the {@link EObject} from which to create the {@link PersistentEObject}
+         * @param id     the identifier of the created {@link PersistentEObject}
+         *
+         * @return a new {@link PersistentEObject}
+         */
+        private PersistentEObject create(EObject object, Id id) {
+            PersistentEObject persistentObject = PersistentEObject.from(object);
+
+            persistentObject.id(id);
+            persistentObject.setMapped(true);
+
+            return persistentObject;
+        }
     }
 }

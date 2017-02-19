@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
-import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -77,8 +76,8 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
     }
 
     @Override
-    protected Map<String, Object> defaultOptions() {
-        return HBaseOptionsBuilder.noOption();
+    protected HBaseOptionsBuilder optionsBuilder() {
+        return HBaseOptionsBuilder.newBuilder();
     }
 
     @Override

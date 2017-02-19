@@ -11,8 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistentStore} that only allows read operations on the underlying database.
@@ -21,7 +27,9 @@ import org.eclipse.emf.ecore.InternalEObject;
  * calls. This store re-implements all the mutators and throws an {@link UnsupportedOperationException} when they are
  * called, preventing resource corruption.
  */
-public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator {
+@ParametersAreNonnullByDefault
+@SuppressWarnings("MethodDoesntCallSuperMethod")
+public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
 
     /**
      * The message of the exceptions thrown when calling methods.
@@ -41,55 +49,141 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator {
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
     public void save() {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public <V> void unsetValue(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public <V> void unsetAllValues(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public <V> void appendValue(FeatureKey key, V value) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public <V> void removeAllValues(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void unsetReference(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void unsetAllReferences(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void addReference(MultiFeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void appendReference(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void removeAllReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 }

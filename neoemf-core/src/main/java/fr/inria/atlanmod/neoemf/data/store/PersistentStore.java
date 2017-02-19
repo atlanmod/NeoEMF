@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -22,7 +24,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 /**
  * An {@link Store} to establish a mapping between {@link Resource}s and {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
  */
-public interface PersistentStore extends Store {
+public interface PersistentStore extends Store, PersistenceMapper {
 
     /**
      * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
@@ -34,7 +36,7 @@ public interface PersistentStore extends Store {
      *
      * @return the resource to persist and access
      */
-    Resource resource();
+    PersistentResource resource();
 
     /**
      * Returns the resolved {@link PersistentEObject} identified by the given {@code id} or {@code null}.

@@ -12,140 +12,319 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
+
+import java.util.Optional;
+import java.util.OptionalInt;
+
+import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An abstract {@link PersistentStore} wrapper that delegates method calls to an internal {@link PersistentStore}.
+ *
+ * @param <S> the type of the underlying {@link PersistentStore}
  */
-public abstract class AbstractPersistentStoreDecorator extends AbstractPersistentStore {
+@ParametersAreNonnullByDefault
+public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore> extends AbstractPersistentStore {
 
     /**
      * The underlying store.
      */
-    private final PersistentStore store;
+    private final S next;
 
     /**
      * Constructs a new {@code AbstractPersistentStoreDecorator} on the given {@code store}.
      *
-     * @param store the underlying store
+     * @param next the underlying store
      */
-    public AbstractPersistentStoreDecorator(PersistentStore store) {
-        this.store = store;
+    public AbstractPersistentStoreDecorator(S next) {
+        this.next = next;
     }
 
     @Override
-    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        return store.get(internalObject, feature, index);
-    }
-
-    @Override
-    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        return store.set(internalObject, feature, index, value);
-    }
-
-    @Override
-    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        return store.isSet(internalObject, feature);
-    }
-
-    @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        store.unset(internalObject, feature);
-    }
-
-    @Override
-    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
-        return store.isEmpty(internalObject, feature);
-    }
-
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        return store.size(internalObject, feature);
-    }
-
-    @Override
-    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        return store.contains(internalObject, feature, value);
-    }
-
-    @Override
-    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        return store.indexOf(internalObject, feature, value);
-    }
-
-    @Override
-    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
-        return store.lastIndexOf(internalObject, feature, value);
-    }
-
-    @Override
-    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        store.add(internalObject, feature, index, value);
-    }
-
-    @Override
-    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
-        return store.remove(internalObject, feature, index);
-    }
-
-    @Override
-    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        return store.move(internalObject, feature, targetIndex, sourceIndex);
-    }
-
-    @Override
-    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        store.clear(internalObject, feature);
-    }
-
-    @Override
-    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        return store.toArray(internalObject, feature);
-    }
-
-    @Override
-    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        return store.toArray(internalObject, feature, array);
-    }
-
-    @Override
-    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        return store.hashCode(internalObject, feature);
-    }
-
-    @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        return store.getContainer(internalObject);
-    }
-
-    @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        return store.getContainingFeature(internalObject);
-    }
-
-    @Override
+    @OverridingMethodsMustInvokeSuper
     public void save() {
-        store.save();
+        next.save();
     }
 
     @Override
-    public Resource resource() {
-        return store.resource();
+    @OverridingMethodsMustInvokeSuper
+    public PersistentResource resource() {
+        return next.resource();
     }
 
     @Override
-    public PersistentEObject object(Id id) {
-        return store.object(id);
-    }
-
-    @Override
+    @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
-        return store.allInstances(metaclass, strict);
+        return next.allInstances(metaclass, strict);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void create(Id id) {
+        next.create(id);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean has(Id id) {
+        return next.has(id);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Optional<V> valueOf(FeatureKey key) {
+        return next.valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        return next.valueFor(key, value);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> void unsetValue(FeatureKey key) {
+        next.unsetValue(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> boolean hasValue(FeatureKey key) {
+        return next.hasValue(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        return next.metaclassOf(id);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        next.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        return next.containerOf(id);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void containerFor(Id id, ContainerDescriptor container) {
+        next.containerFor(id, container);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+        return next.valueOf(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+        return next.allValuesOf(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        return next.valueFor(key, value);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> void unsetAllValues(FeatureKey key) {
+        next.unsetAllValues(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> boolean hasAnyValue(FeatureKey key) {
+        return next.hasAnyValue(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> void addValue(MultiFeatureKey key, V value) {
+        next.addValue(key, value);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> void appendValue(FeatureKey key, V value) {
+        next.appendValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+        return next.removeValue(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> void removeAllValues(FeatureKey key) {
+        next.removeAllValues(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> boolean containsValue(FeatureKey key, V value) {
+        return next.containsValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+        return next.indexOfValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+        return next.lastIndexOfValue(key, value);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+        return next.sizeOfValue(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> referenceOf(FeatureKey key) {
+        return next.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        return next.referenceFor(key, reference);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void unsetReference(FeatureKey key) {
+        next.unsetReference(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean hasReference(FeatureKey key) {
+        return next.hasReference(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> referenceOf(MultiFeatureKey key) {
+        return next.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<Id> allReferencesOf(FeatureKey key) {
+        return next.allReferencesOf(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        return next.referenceFor(key, reference);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void unsetAllReferences(FeatureKey key) {
+        next.unsetAllReferences(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean hasAnyReference(FeatureKey key) {
+        return next.hasAnyReference(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void addReference(MultiFeatureKey key, Id reference) {
+        next.addReference(key, reference);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void appendReference(FeatureKey key, Id reference) {
+        next.appendReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> removeReference(MultiFeatureKey key) {
+        return next.removeReference(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void removeAllReferences(FeatureKey key) {
+        next.removeAllReferences(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean containsReference(FeatureKey key, Id reference) {
+        return next.containsReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+        return next.indexOfReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+        return next.lastIndexOfReference(key, reference);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public OptionalInt sizeOfReference(FeatureKey key) {
+        return next.sizeOfReference(key);
     }
 }

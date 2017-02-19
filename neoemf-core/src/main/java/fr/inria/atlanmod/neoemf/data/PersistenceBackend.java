@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.FullMapper;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceBackend extends FullMapper, Closeable {
+public interface PersistenceBackend extends PersistenceMapper, Closeable {
 
     /**
      * Saves the modifications of the owned {@link EObject}s in the underlying database.
