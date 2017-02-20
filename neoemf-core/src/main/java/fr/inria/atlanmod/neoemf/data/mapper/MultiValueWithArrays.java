@@ -38,7 +38,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     default <V> Optional<V> valueOf(ManyFeatureKey key) {
         return this.<V[]>valueOf(key.withoutPosition())
-                .map(ts -> ts[key.position()]);
+                .map(values -> values[key.position()]);
     }
 
     @Nonnull
@@ -109,7 +109,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     default <V> boolean containsValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
-                .map(ts -> ArrayUtils.contains(ts, value))
+                .map(values -> ArrayUtils.contains(values, value))
                 .orElse(false);
     }
 
@@ -117,8 +117,8 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
-                .map(ts -> {
-                    int index = ArrayUtils.indexOf(ts, value);
+                .map(values -> {
+                    int index = ArrayUtils.indexOf(values, value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -128,8 +128,8 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<V[]>valueOf(key)
-                .map(ts -> {
-                    int index = ArrayUtils.lastIndexOf(ts, value);
+                .map(values -> {
+                    int index = ArrayUtils.lastIndexOf(values, value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -139,7 +139,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<V[]>valueOf(key)
-                .map(ts -> OptionalInt.of(ts.length))
+                .map(values -> OptionalInt.of(values.length))
                 .orElse(OptionalInt.empty());
     }
 }

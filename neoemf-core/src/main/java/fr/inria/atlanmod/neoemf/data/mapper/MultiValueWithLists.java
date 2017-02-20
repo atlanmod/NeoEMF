@@ -38,7 +38,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> Optional<V> valueOf(ManyFeatureKey key) {
         return this.<List<V>>valueOf(key.withoutPosition())
-                .map(ts -> ts.get(key.position()));
+                .map(values -> values.get(key.position()));
     }
 
     @Nonnull
@@ -64,7 +64,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> void addValue(ManyFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElse(new ArrayList<>());
+                .orElse(newList());
 
         while (key.position() > values.size()) {
             values.add(null);
@@ -101,7 +101,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> boolean containsValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
-                .map(ts -> ts.contains(value))
+                .map(values -> values.contains(value))
                 .orElse(false);
     }
 
@@ -109,8 +109,8 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
-                .map(ts -> {
-                    int index = ts.indexOf(value);
+                .map(values -> {
+                    int index = values.indexOf(value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -120,8 +120,8 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return this.<List<V>>valueOf(key)
-                .map(ts -> {
-                    int index = ts.lastIndexOf(value);
+                .map(values -> {
+                    int index = values.lastIndexOf(value);
                     return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -131,7 +131,21 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Override
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<List<V>>valueOf(key)
-                .map(ts -> OptionalInt.of(ts.size()))
+                .map(values -> OptionalInt.of(values.size()))
                 .orElse(OptionalInt.empty());
+    }
+
+    /**
+     * Creates a new {@link List} to store multi-valued features.
+     * <p>
+     * By default, this method creates an {@link ArrayList} which favor random read access method, to the detriment of
+     * insertions and deletions.
+     *
+     * @param <V> the type of elements in this list
+     *
+     * @return a new {@link List}
+     */
+    default <V> List<V> newList() {
+        return new ArrayList<>();
     }
 }
