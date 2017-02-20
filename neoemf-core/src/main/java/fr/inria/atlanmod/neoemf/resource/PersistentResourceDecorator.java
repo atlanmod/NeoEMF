@@ -210,18 +210,22 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
+    public boolean isPersistent() {
+        return resource.isPersistent();
+    }
+
+    @Override
     public boolean isDistributed() {
         return resource.isDistributed();
     }
 
     @Override
-    public Iterable<EObject> getAllInstances(EClass eClass) {
-        return resource.getAllInstances(eClass);
+    public Iterable<EObject> allInstances(EClass eClass) {
+        return resource.allInstances(eClass);
     }
 
     @Override
-    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
-        return resource.getAllInstances(eClass, strict);
+    public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
+        return resource.allInstances(eClass, strict);
     }
-
 }

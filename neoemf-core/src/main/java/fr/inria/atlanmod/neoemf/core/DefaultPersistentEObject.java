@@ -97,7 +97,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
      */
-    public DefaultPersistentEObject() {
+    protected DefaultPersistentEObject() {
         this(StringId.generate());
     }
 
@@ -129,8 +129,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public void setMapped(boolean mapped) {
+    public PersistentEObject setMapped(boolean mapped) {
         this.isMapped = mapped;
+        return this;
     }
 
     @Override
@@ -146,7 +147,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         EStore previousStore = store;
 
         // Set the new store
-        store = resource instanceof PersistentResource ? ((PersistentResource) resource).store() : new OwnedTransientStore(this);
+        if (resource instanceof PersistentResource) {
+            store = ((PersistentResource) resource).store();
+        }
+        else {
+            store = new OwnedTransientStore(this);
+        }
 
         // Move contents from the previous store to the new
         if (nonNull(previousStore) && nonNull(store) && store != previousStore) {
@@ -188,6 +194,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param index   the index. If {@code feature.isMany() == true}, then it's ignored.
      *
      * @return the adapted value, or {@code null} if the value doesn't exist in the {@code store}
+     *
+     * @see EStore#get(InternalEObject, EStructuralFeature, int)
      */
     @Nullable
     private Object adaptValue(EStore store, EStructuralFeature feature, int index) {
@@ -213,9 +221,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         EObject container;
         if (resource instanceof PersistentResource) {
             /*
-             * If the resource is not distributed and if the value of the eContainer field
-             * is set it is not needed to get it from the backend.
-             * This is not true in a distributed context when another client can the database
+             * If the resource is not distributed and if the value of the eContainer field is set, it is not needed to
+             * get it from the backend. This is not true in a distributed context when another client can the database
              * without notifying others.
              */
             if (!((PersistentResource) resource).isDistributed() && nonNull(eContainer)) {
@@ -242,28 +249,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getName());
-        sb.append('@');
-        sb.append(Integer.toHexString(hashCode()));
+        StringBuilder sb = new StringBuilder(getClass().getName()).append('@').append(Integer.toHexString(hashCode()));
 
         if (eIsProxy()) {
-            sb.append(" (eProxyURI: ");
-            sb.append(eProxyURI());
+            sb.append(" (eProxyURI: ").append(eProxyURI());
             if (nonNull(eDynamicClass())) {
-                sb.append(" eClass: ");
-                sb.append(eDynamicClass());
+                sb.append(" eClass: ").append(eDynamicClass());
             }
             sb.append(')');
         }
         else if (nonNull(eDynamicClass())) {
-            sb.append(" (eClass: ");
-            sb.append(eDynamicClass());
-            sb.append(')');
+            sb.append(" (eClass: ").append(eDynamicClass()).append(')');
         }
         else if (nonNull(eStaticClass())) {
-            sb.append(" (eClass: ");
-            sb.append(eStaticClass());
-            sb.append(')');
+            sb.append(" (eClass: ").append(eStaticClass()).append(')');
         }
         return sb.toString();
     }
@@ -302,8 +301,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public Object dynamicGet(int dynamicFeatureId) {
         Object value;
-        final EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
-        final EClassifier eType = feature.getEType();
+
+        EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
+        EClassifier eType = feature.getEType();
+
         if (feature.isMany()) {
             if (Objects.equals(eType.getInstanceClassName(), java.util.Map.Entry.class.getName())) {
                 value = new DelegatedStoreMap<>(feature);
@@ -315,23 +316,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         else {
             value = eStore().get(this, feature, Store.NO_INDEX);
         }
+
         return value;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void dynamicSet(int dynamicFeatureId, Object value) {
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
+
         if (feature.isMany()) {
-            /*
-             * TODO This operation should be atomic.
-		     * Reset the old value in case the operation fails in the middle
-		     */
+             // TODO This operation should be atomic. Reset the old value in case the operation fails in the middle
             eStore().unset(this, feature);
-            @SuppressWarnings("rawtypes")
-            EList collection = (EList) value;
-            for (int index = 0; index < collection.size(); index++) {
-                eStore().set(this, feature, index, collection.get(index));
-            }
+
+            List<Object> collection = (List<Object>) value;
+            IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
         }
         else {
             eStore().set(this, feature, Store.NO_INDEX, value);
@@ -340,8 +339,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void dynamicUnset(int dynamicFeatureId) {
-        EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
-        eStore().unset(this, feature);
+        eStore().unset(this, eDynamicFeature(dynamicFeatureId));
     }
 
     /**
@@ -370,9 +368,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
                 }
                 else {
-                    eBasicSetContainerFeatureID(
-                            InternalEObject.EOPPOSITE_FEATURE_BASE
-                                    - eInternalContainer().eClass().getFeatureID(containingFeature));
+                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - eInternalContainer().eClass().getFeatureID(containingFeature));
                 }
             }
         }
@@ -381,7 +377,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return id.hashCode();
     }
 
     @Override

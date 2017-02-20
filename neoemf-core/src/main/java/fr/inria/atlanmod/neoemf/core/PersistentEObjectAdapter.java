@@ -47,8 +47,7 @@ class PersistentEObjectAdapter {
      * has been garbage collected.
      */
     @Nonnull
-    private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
-            Caffeine.newBuilder().weakKeys().build();
+    private static final Cache<InternalEObject, PersistentEObject> CACHE = Caffeine.newBuilder().weakKeys().build();
 
     /**
      * This class should not be instantiated.
@@ -82,10 +81,10 @@ class PersistentEObjectAdapter {
             adapter = adaptableObject;
         }
         else if (adaptableObject instanceof InternalEObject) {
-            adapter = ADAPTED_OBJECTS_CACHE.getIfPresent(adaptableObject);
+            adapter = CACHE.getIfPresent(adaptableObject);
             if (isNull(adapter) || !adapterType.isAssignableFrom(adapter.getClass())) {
                 adapter = createAdapter(adaptableObject, adapterType);
-                ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (PersistentEObject) adapter);
+                CACHE.put((InternalEObject) adaptableObject, (PersistentEObject) adapter);
             }
         }
 

@@ -63,8 +63,10 @@ public interface PersistentEObject extends InternalEObject {
      * Defines whether this {@code PersistentEObject} is mapped to an entity stored in a database.
      *
      * @param mapped {@code true} if this {@code PersistentEObject} is mapped, otherwise {@code false}
+     *
+     * @return this object (for chaining)
      */
-    void setMapped(boolean mapped);
+    PersistentEObject setMapped(boolean mapped);
 
     /**
      * Returns the resource that contains this {@code PersistentEObject}.

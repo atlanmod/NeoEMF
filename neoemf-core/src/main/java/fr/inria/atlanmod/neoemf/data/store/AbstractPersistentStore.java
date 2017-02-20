@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
@@ -27,11 +26,9 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Collections;
@@ -63,7 +60,9 @@ public abstract class AbstractPersistentStore implements PersistentStore {
             .softValues()
             .initialCapacity(1_000)
             .maximumSize(10_000)
-            .build(new PersistentObjectLoader());
+            .build(id -> resolveInstanceOf(id)
+                    .map(c -> PersistenceFactory.getInstance().create(c, id).setMapped(true))
+                    .orElseThrow(() -> new RuntimeException("Element " + id + " does not have an associated EClass")));
 
     /**
      * Constructs a new {@code AbstractPersistentStore}.
@@ -605,61 +604,12 @@ public abstract class AbstractPersistentStore implements PersistentStore {
 
     @Override
     public final PersistentEObject object(Id id) {
-        if (isNull(id)) {
-            return null;
-        }
+        checkNotNull(id);
 
         PersistentEObject object = persistentObjectsCache.get(id);
         if (object.resource() != resource()) {
             object.resource(resource());
         }
         return object;
-    }
-
-    /**
-     * A {@link CacheLoader} to retrieve a {@link PersistentEObject} stored in the database.
-     */
-    private class PersistentObjectLoader implements CacheLoader<Id, PersistentEObject> {
-
-        @SuppressWarnings("JavaDoc")
-        private final PersistenceFactory persistenceFactory = PersistenceFactory.getInstance();
-
-        @Override
-        public PersistentEObject load(@Nonnull Id id) throws Exception {
-            Optional<EClass> eClass = resolveInstanceOf(id);
-            if (eClass.isPresent()) {
-                EObject eObject;
-
-                if (Objects.equals(eClass.get().getEPackage().getClass(), EPackageImpl.class)) {
-                    // Dynamic EMF
-                    eObject = persistenceFactory.create(eClass.get());
-                }
-                else {
-                    eObject = EcoreUtil.create(eClass.get());
-                }
-
-                return create(eObject, id);
-            }
-            else {
-                throw new RuntimeException("Element " + id + " does not have an associated EClass");
-            }
-        }
-
-        /**
-         * Creates an {@link PersistentEObject} from the given {@code object} and the {@code id}.
-         *
-         * @param object the {@link EObject} from which to create the {@link PersistentEObject}
-         * @param id     the identifier of the created {@link PersistentEObject}
-         *
-         * @return a new {@link PersistentEObject}
-         */
-        private PersistentEObject create(EObject object, Id id) {
-            PersistentEObject persistentObject = PersistentEObject.from(object);
-
-            persistentObject.id(id);
-            persistentObject.setMapped(true);
-
-            return persistentObject;
-        }
     }
 }

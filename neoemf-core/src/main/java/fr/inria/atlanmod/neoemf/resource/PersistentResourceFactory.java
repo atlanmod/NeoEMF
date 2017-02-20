@@ -51,11 +51,8 @@ public class PersistentResourceFactory implements Resource.Factory {
     @Override
     public Resource createResource(@Nonnull URI uri) {
         checkNotNull(uri);
-        Resource resource = null;
-        if (PersistenceBackendFactoryRegistry.isRegistered(uri.scheme())) {
-            resource = new DefaultPersistentResource(uri);
-        }
-        return resource;
+
+        return PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()) ? new DefaultPersistentResource(uri) : null;
     }
 
     /**

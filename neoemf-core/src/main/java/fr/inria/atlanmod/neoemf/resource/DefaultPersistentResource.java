@@ -228,12 +228,17 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
+    public boolean isPersistent() {
+        return isPersistent;
+    }
+
+    @Override
     public boolean isDistributed() {
         return backend.isDistributed();
     }
 
     @Override
-    public Iterable<EObject> getAllInstances(EClass eClass, boolean strict) {
+    public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
             allInstances = store.allInstances(eClass, strict);

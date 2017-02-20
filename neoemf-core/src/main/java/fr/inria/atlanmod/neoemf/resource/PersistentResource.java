@@ -38,7 +38,16 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     Store store();
 
     /**
-     * Returns {@code true} if the resource is distributed, {@code false} otherwise.
+     * Checks whether this {@code PersistentResource} is mapped to a non-transient
+     * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     *
+     * @return {@code true} if the resource is persistent, {@code false} otherwise
+     */
+    boolean isPersistent();
+
+    /**
+     * Checks whether this {@code PersistentResource} is mapped to a distributed
+     * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
      *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
      */
@@ -47,14 +56,14 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).
      * <p>
-     * This method is similar to {@link #getAllInstances(EClass, boolean)} with {@code strict=false}.
+     * This method is similar to {@link #allInstances(EClass, boolean)} with {@code strict=false}.
      *
      * @param eClass the {@link EClass} for which look for instances
      *
      * @return all the instances of the given {@link EClass} from the resource
      */
-    default Iterable<EObject> getAllInstances(EClass eClass) {
-        return getAllInstances(eClass, false);
+    default Iterable<EObject> allInstances(EClass eClass) {
+        return allInstances(eClass, false);
     }
 
     /**
@@ -66,5 +75,5 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return if {@code true} then the method returns only the strict instances of the given {@link EClass}, otherwise
      * it also returns the instances of the sub-types of {@code eClass}.
      */
-    Iterable<EObject> getAllInstances(EClass eClass, boolean strict);
+    Iterable<EObject> allInstances(EClass eClass, boolean strict);
 }
