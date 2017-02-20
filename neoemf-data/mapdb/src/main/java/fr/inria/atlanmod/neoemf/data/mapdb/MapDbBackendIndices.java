@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultiFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
@@ -52,10 +52,10 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
 
     /**
      * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s,
-     * identified by the associated {@link MultiFeatureKey}.
+     * identified by the associated {@link ManyFeatureKey}.
      */
     @Nonnull
-    private final HTreeMap<MultiFeatureKey, Object> multivaluedFeatures;
+    private final HTreeMap<ManyFeatureKey, Object> multivaluedFeatures;
 
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
@@ -81,13 +81,13 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return get(multivaluedFeatures, key);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         put(multivaluedFeatures, key, value);

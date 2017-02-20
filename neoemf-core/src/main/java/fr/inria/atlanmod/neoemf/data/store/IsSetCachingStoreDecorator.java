@@ -16,7 +16,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -84,7 +84,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         Optional<V> value = super.valueOf(key);
         isSetCache.put(key.withoutPosition(), value.isPresent());
         return value;
@@ -92,7 +92,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         isSetCache.put(key.withoutPosition(), true);
         return super.valueFor(key, value);
     }
@@ -110,7 +110,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         isSetCache.put(key.withoutPosition(), true);
         super.addValue(key, value);
     }
@@ -123,7 +123,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         isSetCache.invalidate(key.withoutPosition());
         return super.removeValue(key);
     }
@@ -171,7 +171,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
+    public Optional<Id> referenceOf(ManyFeatureKey key) {
         Optional<Id> value = super.referenceOf(key);
         isSetCache.put(key.withoutPosition(), value.isPresent());
         return value;
@@ -179,7 +179,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         isSetCache.put(key.withoutPosition(), true);
         return super.referenceFor(key, reference);
     }
@@ -197,7 +197,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         isSetCache.put(key.withoutPosition(), true);
         super.addReference(key, reference);
     }
@@ -210,7 +210,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         isSetCache.invalidate(key.withoutPosition());
         return super.removeReference(key);
     }

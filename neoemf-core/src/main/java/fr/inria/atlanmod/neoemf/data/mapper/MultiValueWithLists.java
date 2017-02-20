@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +36,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueOf(MultiFeatureKey key) {
+    default <V> Optional<V> valueOf(ManyFeatureKey key) {
         return this.<List<V>>valueOf(key.withoutPosition())
                 .map(ts -> ts.get(key.position()));
     }
@@ -50,7 +50,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -62,7 +62,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
     }
 
     @Override
-    default <V> void addValue(MultiFeatureKey key, V value) {
+    default <V> void addValue(ManyFeatureKey key, V value) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(new ArrayList<>());
 
@@ -82,7 +82,7 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(MultiFeatureKey key) {
+    default <V> Optional<V> removeValue(ManyFeatureKey key) {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 

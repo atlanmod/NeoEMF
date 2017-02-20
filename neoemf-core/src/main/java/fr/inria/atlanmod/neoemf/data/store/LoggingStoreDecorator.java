@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.Level;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -91,7 +91,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         called("get", key);
         return super.valueOf(key);
     }
@@ -105,7 +105,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         called("set", key, value);
         return super.valueFor(key, value);
     }
@@ -123,7 +123,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         called("add", key, value);
         super.addValue(key, value);
     }
@@ -136,7 +136,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         called("remove", key);
         return super.removeValue(key);
     }
@@ -202,7 +202,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
+    public Optional<Id> referenceOf(ManyFeatureKey key) {
         called("get", key);
         return super.referenceOf(key);
     }
@@ -216,7 +216,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         called("set", key, reference);
         return super.referenceFor(key, reference);
     }
@@ -234,7 +234,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         called("add", key, reference);
         super.addReference(key, reference);
     }
@@ -247,7 +247,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         called("remove", key);
         return super.removeReference(key);
     }
@@ -303,8 +303,8 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
      * @param value  the value of the key
      */
     private void called(String method, FeatureKey key, @Nullable Object value) {
-        if (key instanceof MultiFeatureKey) {
-            MultiFeatureKey multiKey = (MultiFeatureKey) key;
+        if (key instanceof ManyFeatureKey) {
+            ManyFeatureKey multiKey = (ManyFeatureKey) key;
             log.log(level, "Called {0}() for {1}.{2} [{3}]" + (nonNull(value) ? " with {4}" : ""), method, multiKey.id(), multiKey.name(), multiKey.position(), value);
         }
         else {

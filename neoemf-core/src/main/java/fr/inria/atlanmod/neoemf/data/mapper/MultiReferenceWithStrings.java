@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -42,7 +42,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(MultiFeatureKey key) {
+    default Optional<Id> referenceOf(ManyFeatureKey key) {
         return this.<String>valueOf(key.withoutPosition())
                 .map(s -> arrayFromString(s)[key.position()]);
     }
@@ -59,7 +59,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);
@@ -74,7 +74,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     }
 
     @Override
-    default void addReference(MultiFeatureKey key, Id reference) {
+    default void addReference(ManyFeatureKey key, Id reference) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElse(new Id[0]);
@@ -95,7 +95,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> removeReference(MultiFeatureKey key) {
+    default Optional<Id> removeReference(ManyFeatureKey key) {
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);

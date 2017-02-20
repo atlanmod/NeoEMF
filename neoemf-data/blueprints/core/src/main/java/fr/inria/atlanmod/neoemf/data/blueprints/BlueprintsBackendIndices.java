@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -154,7 +154,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
+    public Optional<Id> referenceOf(ManyFeatureKey key) {
         Vertex vertex = vertex(key.id());
 
         Iterable<Vertex> referencedVertices = vertex.query()
@@ -186,7 +186,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         checkNotNull(reference);
 
         Vertex vertex = vertex(key.id());
@@ -231,7 +231,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         checkNotNull(reference);
 
         int size = sizeOfValue(key).orElse(0);
@@ -256,7 +256,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         int size = sizeOfValue(key).orElse(0);
         if (size == 0) {
             return Optional.empty();
@@ -341,7 +341,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return Optional.ofNullable(vertex(key.id()).getProperty(formatProperty(key.name(), key.position())));
     }
 
@@ -356,7 +356,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     }
 
     @Nonnull
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
@@ -381,7 +381,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(value);
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
@@ -401,7 +401,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         int size = sizeOfValue(key).orElse(0);
         if (size == 0) {
             return Optional.empty();

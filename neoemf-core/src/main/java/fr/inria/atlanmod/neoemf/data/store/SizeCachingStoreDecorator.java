@@ -16,7 +16,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -74,7 +74,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
 
@@ -91,7 +91,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
 
@@ -124,7 +124,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
 
@@ -141,7 +141,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
 

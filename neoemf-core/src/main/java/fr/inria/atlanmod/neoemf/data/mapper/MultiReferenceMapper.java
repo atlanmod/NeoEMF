@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -38,7 +38,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * or doesn't exist
      */
     @Nonnull
-    default Optional<Id> referenceOf(MultiFeatureKey key) {
+    default Optional<Id> referenceOf(ManyFeatureKey key) {
         return valueOf(key);
     }
 
@@ -66,7 +66,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
      */
     @Nonnull
-    default Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return valueFor(key, reference);
     }
 
@@ -97,7 +97,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
      */
-    default void addReference(MultiFeatureKey key, Id reference) {
+    default void addReference(ManyFeatureKey key, Id reference) {
         addValue(key, reference);
     }
 
@@ -122,7 +122,7 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
      */
     @Nonnull
-    default Optional<Id> removeReference(MultiFeatureKey key) {
+    default Optional<Id> removeReference(ManyFeatureKey key) {
         return removeValue(key);
     }
 

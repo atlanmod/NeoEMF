@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * "multi-valued" characteristic is identified with a position.
  */
 @ParametersAreNonnullByDefault
-public class MultiFeatureKey extends FeatureKey implements Serializable {
+public class ManyFeatureKey extends FeatureKey implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 7159493156068733506L;
@@ -44,7 +44,7 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
     protected final int position;
 
     /**
-     * Constructs a new {@code MultiFeatureKey} with the given {@code id} and the given {@code name}, which are
+     * Constructs a new {@code ManyFeatureKey} with the given {@code id} and the given {@code name}, which are
      * used as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with
      * the {@code position}.
      *
@@ -52,14 +52,14 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
      * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      * @param position the position of the {@link EStructuralFeature}
      */
-    protected MultiFeatureKey(Id id, String name, @Nonnegative int position) {
+    protected ManyFeatureKey(Id id, String name, @Nonnegative int position) {
         super(id, name);
         checkArgument(position >= 0, "Position must be >= 0");
         this.position = position;
     }
 
     /**
-     * Creates a new {@code MultiFeatureKey} from the given {@code internalObject} and the given {@code feature}.
+     * Creates a new {@code ManyFeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code from(PersistentEObject.from(internalObject), feature,
      * position)}.
@@ -70,18 +70,18 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
      *                       extracted
      * @param position       the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultiFeatureKey}
+     * @return a new {@code ManyFeatureKey}
      *
      * @see #from(PersistentEObject, EStructuralFeature, int)
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
      */
-    public static MultiFeatureKey from(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int position) {
+    public static ManyFeatureKey from(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int position) {
         return from(PersistentEObject.from(internalObject), feature, position);
     }
 
     /**
-     * Creates a new {@code MultiFeatureKey} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code ManyFeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code of(object.id(), feature.getName(), position)}.
      *
@@ -90,18 +90,18 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
      *                 extracted
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultiFeatureKey}
+     * @return a new {@code ManyFeatureKey}
      *
      * @see #of(Id, String, int)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
-    public static MultiFeatureKey from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
+    public static ManyFeatureKey from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
         return of(object.id(), feature.getName(), position);
     }
 
     /**
-     * Creates a new {@code MultiFeatureKey} with the given {@code id} and the given {@code name}, which are used
+     * Creates a new {@code ManyFeatureKey} with the given {@code id} and the given {@code name}, which are used
      * as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
      * {@code position}.
      *
@@ -109,10 +109,10 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
      * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultiFeatureKey}
+     * @return a new {@code ManyFeatureKey}
      */
-    public static MultiFeatureKey of(Id id, String name, @Nonnegative int position) {
-        return new MultiFeatureKey(id, name, position);
+    public static ManyFeatureKey of(Id id, String name, @Nonnegative int position) {
+        return new ManyFeatureKey(id, name, position);
     }
 
     /**
@@ -126,7 +126,7 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
     }
 
     /**
-     * Creates a new {@link FeatureKey} with the {@link Id} and the name of this {@code MultiFeatureKey}, without
+     * Creates a new {@link FeatureKey} with the {@link Id} and the name of this {@code ManyFeatureKey}, without
      * its position.
      *
      * @return a new {@link FeatureKey}
@@ -144,12 +144,12 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
         final int EQUAL = 0;
         final int AFTER = 1;
 
-        if (!(o instanceof MultiFeatureKey)) {
+        if (!(o instanceof ManyFeatureKey)) {
             return AFTER;
         }
         int comparison = super.compareTo(o);
         if (comparison == EQUAL) {
-            MultiFeatureKey that = (MultiFeatureKey) o;
+            ManyFeatureKey that = (ManyFeatureKey) o;
             return (position > that.position) ? AFTER : (position < that.position) ? BEFORE : EQUAL;
         }
         else {
@@ -173,7 +173,7 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
         if (!super.equals(o)) {
             return false;
         }
-        MultiFeatureKey that = (MultiFeatureKey) o;
+        ManyFeatureKey that = (ManyFeatureKey) o;
         return position == that.position;
     }
 

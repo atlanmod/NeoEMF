@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.io.File;
 import java.util.List;
@@ -39,7 +39,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
 
     /**
      * A persistent map that store the values of multi-valued features for {@link Id}, identified by the associated
-     * {@link MultiFeatureKey}.
+     * {@link ManyFeatureKey}.
      */
     @Nonnull
     private final Database multivaluedFeatures;
@@ -80,13 +80,13 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return get(multivaluedFeatures, key);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         Optional<V> previousValue = valueOf(key);
 
         put(multivaluedFeatures, key, value);

@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import java.util.Map;
@@ -53,9 +53,9 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     /**
      * An in-memory map that store the values of multi-valued features for {@link PersistentEObject}s,
-     * identified by the associated {@link MultiFeatureKey}.
+     * identified by the associated {@link ManyFeatureKey}.
      */
-    private final Map<MultiFeatureKey, Object> multiFeatures = new ConcurrentHashMap<>();
+    private final Map<ManyFeatureKey, Object> multiFeatures = new ConcurrentHashMap<>();
 
     /**
      * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
@@ -174,13 +174,13 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return Optional.ofNullable(cast(multiFeatures.get(key)));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         checkNotNull(value);
 
         return Optional.ofNullable(cast(multiFeatures.put(key, value)));

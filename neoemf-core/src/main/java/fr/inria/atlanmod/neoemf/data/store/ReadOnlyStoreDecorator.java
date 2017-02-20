@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Optional;
 
@@ -75,7 +75,7 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      */
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -91,7 +91,7 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -108,7 +108,7 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      */
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -142,7 +142,7 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      */
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -158,7 +158,7 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -175,7 +175,7 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      */
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 

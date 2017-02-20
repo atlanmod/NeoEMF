@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -35,7 +35,7 @@ public interface MultiValueMapper extends ValueMapper {
      * doesn't exist
      */
     @Nonnull
-    <V> Optional<V> valueOf(MultiFeatureKey key);
+    <V> Optional<V> valueOf(ManyFeatureKey key);
 
     /**
      * Retrieves all values of the specified {@code key}.
@@ -60,7 +60,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
      */
     @Nonnull
-    <V> Optional<V> valueFor(MultiFeatureKey key, V value);
+    <V> Optional<V> valueFor(ManyFeatureKey key, V value);
 
     /**
      * Unsets all values of the specified {@code key}.
@@ -92,7 +92,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @param value the value to add
      * @param <V>   the type of value
      */
-    <V> void addValue(MultiFeatureKey key, V value);
+    <V> void addValue(ManyFeatureKey key, V value);
 
     /**
      * Adds the {@code value} to the specified {@code key} at the last position.
@@ -117,7 +117,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
      */
     @Nonnull
-    <V> Optional<V> removeValue(MultiFeatureKey key);
+    <V> Optional<V> removeValue(ManyFeatureKey key);
 
     /**
      * Removes all values of the specified {@code key}.

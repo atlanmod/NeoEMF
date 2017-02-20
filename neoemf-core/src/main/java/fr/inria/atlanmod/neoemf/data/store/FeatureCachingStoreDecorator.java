@@ -16,7 +16,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -82,13 +82,13 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Nonnull
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
-        return (Optional<V>) valuesCache.get(key, k -> super.valueOf((MultiFeatureKey) k));
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
+        return (Optional<V>) valuesCache.get(key, k -> super.valueOf((ManyFeatureKey) k));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         valuesCache.put(key, value);
 
         return super.valueFor(key, value);
@@ -103,7 +103,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         valuesCache.put(key, value);
 
         IntStream.range(key.position() + 1, sizeOfValue(key).orElse(key.position() + 1))
@@ -121,7 +121,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         IntStream.range(key.position(), sizeOfValue(key).orElse(key.position()))
                 .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
 
@@ -161,13 +161,13 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Nonnull
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
-        return (Optional<Id>) valuesCache.get(key, k -> super.referenceOf((MultiFeatureKey) k));
+    public Optional<Id> referenceOf(ManyFeatureKey key) {
+        return (Optional<Id>) valuesCache.get(key, k -> super.referenceOf((ManyFeatureKey) k));
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         valuesCache.put(key, reference);
 
         return super.referenceFor(key, reference);
@@ -182,7 +182,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         valuesCache.put(key, reference);
 
         IntStream.range(key.position() + 1, sizeOfReference(key).orElse(key.position() + 1))
@@ -200,7 +200,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         IntStream.range(key.position(), sizeOfReference(key).orElse(key.position()))
                 .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
 

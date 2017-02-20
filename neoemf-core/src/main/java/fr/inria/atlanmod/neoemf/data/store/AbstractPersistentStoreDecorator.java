@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -135,7 +135,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return next.valueOf(key);
     }
 
@@ -149,7 +149,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         return next.valueFor(key, value);
     }
 
@@ -167,7 +167,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         next.addValue(key, value);
     }
 
@@ -180,7 +180,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         return next.removeValue(key);
     }
 
@@ -246,7 +246,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
+    public Optional<Id> referenceOf(ManyFeatureKey key) {
         return next.referenceOf(key);
     }
 
@@ -260,7 +260,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return next.referenceFor(key, reference);
     }
 
@@ -278,7 +278,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         next.addReference(key, reference);
     }
 
@@ -291,7 +291,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         return next.removeReference(key);
     }
 

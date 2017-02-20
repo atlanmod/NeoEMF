@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import org.junit.After;
@@ -455,12 +455,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueOf(MultiFeatureKey)} and {@link
-     * MultiValueMapper#valueFor(MultiFeatureKey, Object)}.
+     * Checks the behavior of {@link MultiValueMapper#valueOf(ManyFeatureKey)} and {@link
+     * MultiValueMapper#valueFor(ManyFeatureKey, Object)}.
      */
     @Test
     public void testGetSetManyValue() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
@@ -486,7 +486,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueOf(MultiFeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link MultiValueMapper#valueOf(ManyFeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testGetInexistingManyValue() {
@@ -494,12 +494,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.create(id);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(MultiFeatureKey.of(id, randomString(), 15))).isNotPresent())
+                assertThat(mapper.valueOf(ManyFeatureKey.of(id, randomString(), 15))).isNotPresent())
         ).isNull();
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueFor(MultiFeatureKey, Object)} with a {@code null} value.
+     * Checks the behavior of {@link MultiValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
      */
     @Test
     public void testSetNullManyValue() {
@@ -508,7 +508,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(MultiFeatureKey.of(id, randomString(), 15), null)).isNotPresent())
+                assertThat(mapper.valueFor(ManyFeatureKey.of(id, randomString(), 15), null)).isNotPresent())
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -605,7 +605,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.create(id);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyValue(MultiFeatureKey.of(id, randomString(), 15))).isFalse())
+                assertThat(mapper.hasAnyValue(ManyFeatureKey.of(id, randomString(), 15))).isFalse())
         ).isNull();
     }
 
@@ -623,11 +623,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#addValue(MultiFeatureKey, Object)}.
+     * Checks the behavior of {@link MultiValueMapper#addValue(ManyFeatureKey, Object)}.
      */
     @Test
     public void testAddValue() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
@@ -659,11 +659,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#addValue(MultiFeatureKey, Object)}.
+     * Checks the behavior of {@link MultiValueMapper#addValue(ManyFeatureKey, Object)}.
      */
     @Test
     public void testAnyOrderAddValue() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
@@ -698,14 +698,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#addValue(MultiFeatureKey, Object)} with a {@code null} value.
+     * Checks the behavior of {@link MultiValueMapper#addValue(ManyFeatureKey, Object)} with a {@code null} value.
      */
     @Test
     public void testAddNullValue() {
         Id id = randomId();
         mapper.create(id);
 
-        MultiFeatureKey key = MultiFeatureKey.of(id, randomString(), 17);
+        ManyFeatureKey key = ManyFeatureKey.of(id, randomString(), 17);
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
@@ -718,7 +718,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendValue() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
@@ -764,11 +764,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeValue(MultiFeatureKey)}.
+     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
     public void testRemoveValue() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
@@ -814,7 +814,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeValue(MultiFeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testRemoveInexistingValue() {
@@ -822,7 +822,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.create(id);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeValue(MultiFeatureKey.of(id, randomString(), 15))).isNotPresent())
+                assertThat(mapper.removeValue(ManyFeatureKey.of(id, randomString(), 15))).isNotPresent())
         ).isNull();
     }
 
@@ -831,7 +831,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveAllValues() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
@@ -887,7 +887,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContainsValue() {
-        Map<MultiFeatureKey, String> allValues = new LinkedHashMap<>();
+        Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());

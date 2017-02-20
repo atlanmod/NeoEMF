@@ -133,18 +133,18 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     }
 
     /**
-     * Creates a new {@link MultiFeatureKey} with the {@link Id} and the name of this {@code FeatureKey}, and
+     * Creates a new {@link ManyFeatureKey} with the {@link Id} and the name of this {@code FeatureKey}, and
      * adding the given {@code position}.
      *
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@link MultiFeatureKey}
+     * @return a new {@link ManyFeatureKey}
      *
-     * @see MultiFeatureKey#of(Id, String)
+     * @see ManyFeatureKey#of(Id, String)
      */
     @Nonnull
-    public MultiFeatureKey withPosition(@Nonnegative int position) {
-        return MultiFeatureKey.of(id, name, position);
+    public ManyFeatureKey withPosition(@Nonnegative int position) {
+        return ManyFeatureKey.of(id, name, position);
     }
 
     @Override

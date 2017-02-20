@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.junit.Test;
 import org.mapdb.DB;
@@ -43,7 +43,7 @@ public class MapDbBackendTest extends AbstractTest {
         DB db = DBMaker.memoryDB().make();
         MapDbBackend backend = new MapDbBackendIndices(db);
 
-        MultiFeatureKey[] keys = new MultiFeatureKey[TIMES];
+        ManyFeatureKey[] keys = new ManyFeatureKey[TIMES];
         FeatureKey key = FeatureKey.of(StringId.of("object"), "name");
 
         for (int i = 0; i < 10; i++) {

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -44,7 +44,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     @Override
-    default <V> void addValue(MultiFeatureKey key, V value) {
+    default <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(value);
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
@@ -65,7 +65,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(MultiFeatureKey key) {
+    default <V> Optional<V> removeValue(ManyFeatureKey key) {
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
         if (size == 0) {
             return Optional.empty();

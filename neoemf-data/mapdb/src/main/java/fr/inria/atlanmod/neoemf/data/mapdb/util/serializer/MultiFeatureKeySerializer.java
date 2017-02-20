@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
@@ -23,11 +23,11 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link Serializer} that is able to serialize {@link MultiFeatureKey}.
+ * A {@link Serializer} that is able to serialize {@link ManyFeatureKey}.
  *
- * @see MultiFeatureKey
+ * @see ManyFeatureKey
  */
-public class MultiFeatureKeySerializer implements Serializer<MultiFeatureKey> {
+public class MultiFeatureKeySerializer implements Serializer<ManyFeatureKey> {
 
     /**
      * An embedded {@link Integer} {@link Serializer} used to handle collection indices.
@@ -40,13 +40,13 @@ public class MultiFeatureKeySerializer implements Serializer<MultiFeatureKey> {
     private final Serializer<FeatureKey> featureKeySerializer = new FeatureKeySerializer();
 
     @Override
-    public void serialize(@Nonnull DataOutput2 out, @Nonnull MultiFeatureKey key) throws IOException {
+    public void serialize(@Nonnull DataOutput2 out, @Nonnull ManyFeatureKey key) throws IOException {
         featureKeySerializer.serialize(out, key);
         intSerializer.serialize(out, key.position());
     }
 
     @Override
-    public MultiFeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
+    public ManyFeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
         FeatureKey key = featureKeySerializer.deserialize(in, i);
         return key.withPosition(intSerializer.deserialize(in, -1));
     }

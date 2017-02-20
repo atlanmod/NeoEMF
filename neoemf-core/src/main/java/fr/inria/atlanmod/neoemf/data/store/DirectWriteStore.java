@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -109,7 +109,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(MultiFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return backend.valueOf(key);
     }
 
@@ -121,7 +121,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         return backend.valueFor(key, value);
     }
 
@@ -136,7 +136,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         backend.addValue(key, value);
     }
 
@@ -147,7 +147,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         return backend.removeValue(key);
     }
 
@@ -203,7 +203,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(MultiFeatureKey key) {
+    public Optional<Id> referenceOf(ManyFeatureKey key) {
         return backend.referenceOf(key);
     }
 
@@ -215,7 +215,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return backend.referenceFor(key, reference);
     }
 
@@ -230,7 +230,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         backend.addReference(key, reference);
     }
 
@@ -241,7 +241,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         return backend.removeReference(key);
     }
 

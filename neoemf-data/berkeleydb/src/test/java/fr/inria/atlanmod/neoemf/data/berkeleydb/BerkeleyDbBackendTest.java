@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import org.eclipse.emf.ecore.EClass;
@@ -82,7 +82,7 @@ public class BerkeleyDbBackendTest extends AbstractTest {
     public void testStoreMultivaluedFeature() {
         final int TIMES = 10;
 
-        MultiFeatureKey[] keys = new MultiFeatureKey[TIMES];
+        ManyFeatureKey[] keys = new ManyFeatureKey[TIMES];
         FeatureKey key = FeatureKey.of(StringId.of("object"), "name");
 
         IntStream.range(0, TIMES).forEach(i -> {

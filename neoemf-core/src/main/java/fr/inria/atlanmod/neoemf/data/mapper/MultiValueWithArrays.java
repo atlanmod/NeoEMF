@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -36,7 +36,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueOf(MultiFeatureKey key) {
+    default <V> Optional<V> valueOf(ManyFeatureKey key) {
         return this.<V[]>valueOf(key.withoutPosition())
                 .map(ts -> ts[key.position()]);
     }
@@ -53,7 +53,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -68,7 +68,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Override
     @SuppressWarnings("unchecked")
-    default <V> void addValue(MultiFeatureKey key, V value) {
+    default <V> void addValue(ManyFeatureKey key, V value) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse((V[]) new Object[0]);
 
@@ -88,7 +88,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(MultiFeatureKey key) {
+    default <V> Optional<V> removeValue(ManyFeatureKey key) {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 

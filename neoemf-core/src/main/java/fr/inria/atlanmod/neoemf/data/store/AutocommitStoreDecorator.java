@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -76,7 +76,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         return thenIncrementAndCommit(() -> super.valueFor(key, value));
     }
 
@@ -86,7 +86,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
     }
 
     @Override
-    public <V> void addValue(MultiFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureKey key, V value) {
         thenIncrementAndCommit(() -> super.addValue(key, value));
     }
 
@@ -97,7 +97,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(MultiFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureKey key) {
         return thenIncrementAndCommit(() -> super.removeValue(key));
     }
 
@@ -119,7 +119,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return thenIncrementAndCommit(() -> super.referenceFor(key, reference));
     }
 
@@ -129,7 +129,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
     }
 
     @Override
-    public void addReference(MultiFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureKey key, Id reference) {
         thenIncrementAndCommit(() -> super.addReference(key, reference));
     }
 
@@ -140,7 +140,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(MultiFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureKey key) {
         return thenIncrementAndCommit(() -> super.removeReference(key));
     }
 

@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -388,7 +388,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
 
         checkElementIndex(index, size(internalObject, feature));
 
-        MultiFeatureKey key = MultiFeatureKey.from(internalObject, feature, index);
+        ManyFeatureKey key = ManyFeatureKey.from(internalObject, feature, index);
 
         if (isAttribute(feature)) {
             return this.<String>removeValue(key).map(v -> deserialize((EAttribute) feature, v)).orElse(null);
