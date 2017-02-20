@@ -190,7 +190,12 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             graph.commit();
         }
         else {
-            graph.shutdown();
+            try {
+                graph.shutdown();
+            }
+            catch (Exception e) {
+                NeoLogger.warn(e);
+            }
         }
     }
 
@@ -306,6 +311,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(container);
+
         Vertex containmentVertex = vertex(id);
         Vertex containerVertex = vertex(container.id());
 
@@ -328,6 +335,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(metaclass);
+
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
         Vertex metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny().orElse(null);
 

@@ -102,7 +102,14 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
         Optional<Id> previousValue = Optional.of(values[key.position()]);
 
-        valueFor(key.withoutPosition(), arrayToString(ArrayUtils.remove(values, key.position())));
+        values = ArrayUtils.remove(values, key.position());
+
+        if (values.length == 0) {
+            removeAllReferences(key.withoutPosition());
+        }
+        else {
+            valueFor(key.withoutPosition(), arrayToString(values));
+        }
 
         return previousValue;
     }

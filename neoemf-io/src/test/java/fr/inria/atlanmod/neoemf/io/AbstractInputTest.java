@@ -80,7 +80,7 @@ public abstract class AbstractInputTest extends AbstractTest {
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        assertThat(ePackage).isNotNull(); // "EPackage does not exist"
+        assertThat(ePackage).isNotNull();
 
         Registry.INSTANCE.put(uri, ePackage);
     }

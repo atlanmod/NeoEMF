@@ -69,7 +69,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     private List<PersistentResource> loadedResources;
 
     /**
-     * The temporary file.
+     * The current temporary file.
      */
     private File file;
 
@@ -138,7 +138,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return the {@code resource}
      */
-    public PersistentResource closeAtExit(final PersistentResource resource) {
+    public PersistentResource closeAtExit(PersistentResource resource) {
         loadedResources.add(resource);
         return resource;
     }

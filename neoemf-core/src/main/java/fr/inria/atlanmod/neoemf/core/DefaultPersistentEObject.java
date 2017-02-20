@@ -326,7 +326,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 
         if (feature.isMany()) {
-             // TODO This operation should be atomic. Reset the old value in case the operation fails in the middle
+            // TODO This operation should be atomic. Reset the old value in case the operation fails in the middle
             eStore().unset(this, feature);
 
             List<Object> collection = (List<Object>) value;

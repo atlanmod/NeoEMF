@@ -34,10 +34,10 @@ public class EMapSupportTest extends AbstractBackendTest {
         resource.getContents().add(EFACTORY.createSampleModel());
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
-        assertThat(model.getMap()).isInstanceOf(EMap.class); // "Map field is not an instance of EMap"
+        assertThat(model.getMap()).isInstanceOf(EMap.class);
 
         EMap<String, String> map = model.getMap();
-        assertThat(map).isEmpty(); // "EMap is not empty"
+        assertThat(map).isEmpty();
     }
 
     @Test
@@ -51,11 +51,11 @@ public class EMapSupportTest extends AbstractBackendTest {
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
 
-        assertThat(map.containsKey(KEY1)).isTrue(); // "Map does not contain KEY1"
-        assertThat(map.containsKey(KEY2)).isTrue(); // "Map does not contain KEY2"
+        assertThat(map.containsKey(KEY1)).isTrue();
+        assertThat(map.containsKey(KEY2)).isTrue();
 
-        assertThat(map.get(KEY1)).isEqualTo(VALUE1); // "Wrong value for KEY1"
-        assertThat(map.get(KEY2)).isEqualTo(VALUE2); // "Wrong value for KEY2"
+        assertThat(map.get(KEY1)).isEqualTo(VALUE1);
+        assertThat(map.get(KEY2)).isEqualTo(VALUE2);
     }
 
     @Test
@@ -65,10 +65,10 @@ public class EMapSupportTest extends AbstractBackendTest {
         resource.getContents().add(EFACTORY.createSampleModel());
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
-        assertThat(model.getKvMap()).isInstanceOf(EMap.class); // "KvMap field is not an instance of EMap"
+        assertThat(model.getKvMap()).isInstanceOf(EMap.class);
 
         EMap<K, V> map = model.getKvMap();
-        assertThat(map).isEmpty(); // "KvMap is not empty"
+        assertThat(map).isEmpty();
     }
 
     @Test
@@ -99,10 +99,10 @@ public class EMapSupportTest extends AbstractBackendTest {
         map.put(k1, v1);
         map.put(k2, v2);
 
-        assertThat(map.containsKey(k1)).isTrue(); // "Map does not contain KEY1"
-        assertThat(map.containsKey(k2)).isTrue(); // "Map does not contain KEY2"
+        assertThat(map.containsKey(k1)).isTrue();
+        assertThat(map.containsKey(k2)).isTrue();
 
-        assertThat(map.get(k1)).isEqualTo(v1); // "Wrong value for KEY1"
-        assertThat(map.get(k2)).isEqualTo(v2); // "Wrong value for KEY2"
+        assertThat(map.get(k1)).isEqualTo(v1);
+        assertThat(map.get(k2)).isEqualTo(v2);
     }
 }

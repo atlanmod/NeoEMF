@@ -43,7 +43,7 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
         Namespace.Registry.getInstance().clean();
     }
 
-    protected void assertValidElement(final ElementMock mock, final String name, final int size, final String id) {
+    protected void assertValidElement(ElementMock mock, String name, int size, String id) {
         assertThat(mock.name()).isEqualTo(name);
         assertThat(mock.elements()).hasSize(size);
 
@@ -55,18 +55,18 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
         }
     }
 
-    protected void assertValidMetaClass(final RawMetaclass metaClass, final String name, final Namespace ns) {
+    protected void assertValidMetaClass(RawMetaclass metaClass, String name, Namespace ns) {
         assertThat(metaClass.name()).isEqualTo(name);
         assertThat(metaClass.ns()).isEqualTo(ns);
     }
 
-    protected void assertValidReference(final RawReference reference, final String name, final int index, final String idReference) {
+    protected void assertValidReference(RawReference reference, String name, int index, String idReference) {
         assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
     }
 
-    protected void assertValidAttribute(final RawAttribute attribute, final String name, final Object value) {
+    protected void assertValidAttribute(RawAttribute attribute, String name, Object value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
     }

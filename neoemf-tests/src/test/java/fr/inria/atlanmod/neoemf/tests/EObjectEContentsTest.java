@@ -34,37 +34,57 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 public class EObjectEContentsTest extends AbstractBackendTest {
 
+    /**
+     * The expected number of {@link Pack} contained in {@link #pack}.
+     */
     private static final int SUB_PACK_COUNT = 5;
+
+    /**
+     * The expected number of
+     */
     private static final int PACK_CONTENT_COUNT = 3;
+
+    /**
+     * The expected number of
+     */
     private static final int ECONTENTS_COUNT = SUB_PACK_COUNT + PACK_CONTENT_COUNT;
 
+    /**
+     * The root {@link Pack}.
+     */
     private Pack pack;
-    private List<EObject> subPacks;
-    private List<EObject> packContents;
+
+    /**
+     * The {@link Pack}s contained in {@link #pack}.
+     */
+    private List<Pack> subPacks;
+
+    /**
+     * The owned content of {@link #pack}.
+     */
+    private List<AbstractPackContent> packContents;
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testEObjectEContents() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
         EList<EObject> eContents = pack.eContents();
         assertThat(eContents).hasSize(ECONTENTS_COUNT);
 
-        IntStream.range(0, SUB_PACK_COUNT).forEach(index -> {
-            assertThat(eContents.get(index)).isEqualTo(subPacks.get(index)); // "p.eContents().get(i) != subPacks.get(i)"
-        });
+        IntStream.range(0, SUB_PACK_COUNT)
+                .forEach(i -> assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)));
 
-        IntStream.range(0, PACK_CONTENT_COUNT).forEach(index -> {
-            assertThat(eContents.get(index + SUB_PACK_COUNT)).isEqualTo(packContents.get(index)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
-        });
+        IntStream.range(0, PACK_CONTENT_COUNT)
+                .forEach(i -> assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)));
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testEObjectEmptyEContentsSize() {
         PersistentResource resource = createPersistentStore();
-        createEmptyPackResourceContent(resource);
+        fillResourceWithEmpty(resource);
 
         EList<EObject> eContents = pack.eContents();
         assertThat(eContents).isEmpty();
@@ -74,13 +94,18 @@ public class EObjectEContentsTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     public void testEObjectEmptyEContentsGet() {
         PersistentResource resource = createPersistentStore();
-        createEmptyPackResourceContent(resource);
+        fillResourceWithEmpty(resource);
 
         Throwable thrown = catchThrowable(() -> pack.eContents().get(0));
         assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    private void createResourceContent(final PersistentResource resource) {
+    /**
+     * Fills the {@code resource}.
+     *
+     * @param resource the resource to fill
+     */
+    private void fillResource(PersistentResource resource) {
         subPacks = new ArrayList<>();
         packContents = new ArrayList<>();
 
@@ -92,23 +117,28 @@ public class EObjectEContentsTest extends AbstractBackendTest {
         pack.setParentPack(parentPack);
 
         IntStream.range(0, SUB_PACK_COUNT).forEach(i -> {
-            Pack subPack = EFACTORY.createPack();
-            subPack.setName("SubPack" + i);
-            pack.getPacks().add(subPack);
-            subPacks.add(subPack);
+            Pack childPack = EFACTORY.createPack();
+            childPack.setName("SubPack" + i);
+            pack.getPacks().add(childPack);
+            subPacks.add(childPack);
         });
 
         IntStream.range(0, PACK_CONTENT_COUNT).forEach(i -> {
-            AbstractPackContent pContent = EFACTORY.createPackContent();
-            pContent.setName("PackContent" + i);
-            pack.getOwnedContents().add(pContent);
-            packContents.add(pContent);
+            AbstractPackContent content = EFACTORY.createPackContent();
+            content.setName("PackContent" + i);
+            pack.getOwnedContents().add(content);
+            packContents.add(content);
         });
 
         resource.getContents().add(pack);
     }
 
-    private void createEmptyPackResourceContent(final PersistentResource resource) {
+    /**
+     * Fills the {@code resource} with an empty {@link Pack}.
+     *
+     * @param resource the resource to fill
+     */
+    private void fillResourceWithEmpty(PersistentResource resource) {
         pack = EFACTORY.createPack();
         pack.setName("Empty Pack");
         resource.getContents().add(pack);

@@ -19,8 +19,10 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -143,6 +145,29 @@ public class MetaclassDescriptor implements Serializable {
             }
         }
         return eClass;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, uri);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MetaclassDescriptor that = (MetaclassDescriptor) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(uri, that.uri);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s {%s @ %s}", getClass().getSimpleName(), name, uri);
     }
 }
 

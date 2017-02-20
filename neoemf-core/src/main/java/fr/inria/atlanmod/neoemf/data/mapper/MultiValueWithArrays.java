@@ -94,7 +94,14 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
         Optional<V> previousValue = Optional.of(values[key.position()]);
 
-        valueFor(key.withoutPosition(), ArrayUtils.remove(values, key.position()));
+        values = ArrayUtils.remove(values, key.position());
+
+        if (values.length == 0) {
+            removeAllValues(key.withoutPosition());
+        }
+        else {
+            valueFor(key.withoutPosition(), values);
+        }
 
         return previousValue;
     }

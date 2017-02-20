@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test class for the contains method, related to performance issue descibed in #30
- * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
+ * Test class for the contains method, related to performance issue described in the issue <a
+ * href="https://github.com/atlanmod/NeoEMF/issues/30">#30</a>.
  */
 public class ContainsTest extends AbstractBackendTest {
 
@@ -35,7 +35,7 @@ public class ContainsTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     public void testContainsPersistent3Elements() {
         PersistentResource resource = createPersistentStore();
-        List<SampleModelContentObject> content = createResourceContent(resource, 3);
+        List<SampleModelContentObject> content = fillResource(resource, 3);
 
         assertContainsExactly(resource, content);
     }
@@ -44,7 +44,7 @@ public class ContainsTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     public void testContainsPersistent4Elements() {
         PersistentResource resource = createPersistentStore();
-        List<SampleModelContentObject> content = createResourceContent(resource, 4);
+        List<SampleModelContentObject> content = fillResource(resource, 4);
 
         assertContainsExactly(resource, content);
     }
@@ -53,7 +53,7 @@ public class ContainsTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     public void testContainsPersistent5Elements() {
         PersistentResource resource = createPersistentStore();
-        List<SampleModelContentObject> content = createResourceContent(resource, 5);
+        List<SampleModelContentObject> content = fillResource(resource, 5);
 
         assertContainsExactly(resource, content);
     }
@@ -62,7 +62,7 @@ public class ContainsTest extends AbstractBackendTest {
     @Category(Tags.TransientTests.class)
     public void testContainsTransient3Elements() {
         PersistentResource resource = createTransientStore();
-        List<SampleModelContentObject> content = createResourceContent(resource, 3);
+        List<SampleModelContentObject> content = fillResource(resource, 3);
 
         assertContainsExactly(resource, content);
     }
@@ -71,7 +71,7 @@ public class ContainsTest extends AbstractBackendTest {
     @Category(Tags.TransientTests.class)
     public void testContainsTransient4Elements() {
         PersistentResource resource = createTransientStore();
-        List<SampleModelContentObject> content = createResourceContent(resource, 4);
+        List<SampleModelContentObject> content = fillResource(resource, 4);
 
         assertContainsExactly(resource, content);
     }
@@ -80,12 +80,20 @@ public class ContainsTest extends AbstractBackendTest {
     @Category(Tags.TransientTests.class)
     public void testContainsTransient5Elements() {
         PersistentResource resource = createTransientStore();
-        List<SampleModelContentObject> content = createResourceContent(resource, 5);
+        List<SampleModelContentObject> content = fillResource(resource, 5);
 
         assertContainsExactly(resource, content);
     }
 
-    private List<SampleModelContentObject> createResourceContent(final PersistentResource resource, final int count) {
+    /**
+     * Fills the {@code resource}.
+     *
+     * @param resource the resource to fill
+     * @param count    the number of {@link SampleModelContentObject} to add
+     *
+     * @return a list of all created {@link SampleModelContentObject}s
+     */
+    private List<SampleModelContentObject> fillResource(PersistentResource resource, int count) {
         List<SampleModelContentObject> addedContent = new ArrayList<>();
 
         SampleModel model = EFACTORY.createSampleModel();
@@ -103,7 +111,7 @@ public class ContainsTest extends AbstractBackendTest {
         return addedContent;
     }
 
-    private void assertContainsExactly(final PersistentResource resource, final List<SampleModelContentObject> addedContent) {
+    private void assertContainsExactly(PersistentResource resource, List<SampleModelContentObject> addedContent) {
         SampleModel m = (SampleModel) resource.getContents().get(0);
         assertThat(m.getContentObjects()).hasSize(addedContent.size());
         assertThat(m.getContentObjects()).containsExactlyElementsOf(addedContent);

@@ -34,103 +34,108 @@ public class SavedResourceTest extends AbstractBackendTest {
     @Category(Tags.PersistentTests.class)
     public void testEContainer() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
-        assertThat(model.eContainer()).isNull(); // "Top Level EObject has a not null container"
-        assertThat(modelContentObject.eContainer()).isSameAs(model); // "Wrong eContainer value"
+        assertThat(model.eContainer()).isNull();
+        assertThat(modelContentObject.eContainer()).isSameAs(model);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsContainer() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();
 
         EObject sampleModel = it.next();
-        assertThat(sampleModel.eContainer()).isNull(); // "Top Level EObject has a not null container"
+        assertThat(sampleModel.eContainer()).isNull();
 
         EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eContainer()).isSameAs(sampleModel); // "Wrong eContainer value"
+        assertThat(sampleContentObject.eContainer()).isSameAs(sampleModel);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testEInternalContainer() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
-        assertThat(model.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
-        assertThat(modelContentObject.eInternalContainer()).isSameAs(model); // "Wrong eInternalContainer value"
+        assertThat(model.eInternalContainer()).isNull();
+        assertThat(modelContentObject.eInternalContainer()).isSameAs(model);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEInternalContainer() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat(sampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null container"
+        assertThat(sampleModel.eInternalContainer()).isNull();
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat(sampleContentObject.eInternalContainer()).isSameAs(sampleModel); // "Wrong eInternalContainer value"
+        assertThat(sampleContentObject.eInternalContainer()).isSameAs(sampleModel);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testEResource() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
-        assertThat(model.eResource()).isSameAs(resource); // "Wrong eResource value"
-        assertThat(modelContentObject.eResource()).isSameAs(resource); // "Wrong eResource value"
+        assertThat(model.eResource()).isSameAs(resource);
+        assertThat(modelContentObject.eResource()).isSameAs(resource);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEResource() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();
 
         EObject sampleModel = it.next();
-        assertThat(sampleModel.eResource()).isSameAs(resource); // "Wrong eResource value"
+        assertThat(sampleModel.eResource()).isSameAs(resource);
 
         EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eResource()).isSameAs(resource); // "Wrong eResource value"
+        assertThat(sampleContentObject.eResource()).isSameAs(resource);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testEDirectResource() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
-        assertThat(model.eDirectResource()).isSameAs(resource); // "Wrong eDirectResource value"
-        assertThat(modelContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
+        assertThat(model.eDirectResource()).isSameAs(resource);
+        assertThat(modelContentObject.eDirectResource()).isNull();
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() {
         PersistentResource resource = createPersistentStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat(sampleModel.eDirectResource()).isSameAs(resource); // "Wrong eDirectResource value"
+        assertThat(sampleModel.eDirectResource()).isSameAs(resource);
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat(sampleContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
+        assertThat(sampleContentObject.eDirectResource()).isNull();
     }
 
-    private void createResourceContent(final PersistentResource resource) {
+    /**
+     * Fills the {@code resource}.
+     *
+     * @param resource the resource to fill
+     */
+    private void fillResource(PersistentResource resource) {
         model = EFACTORY.createSampleModel();
         modelContentObject = EFACTORY.createSampleModelContentObject();
         model.getContentObjects().add(modelContentObject);

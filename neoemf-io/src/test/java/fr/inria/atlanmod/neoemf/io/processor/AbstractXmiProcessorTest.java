@@ -42,7 +42,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         Namespace.Registry.getInstance().clean();
     }
 
-    protected void assertValidElement(final ElementMock mock, final String name, final int size, final String id, final String className, final boolean root) {
+    protected void assertValidElement(ElementMock mock, String name, int size, String id, String className, boolean root) {
         assertThat(mock.name()).isEqualTo(name);
         assertThat(mock.elements()).hasSize(size);
         assertThat(mock.className()).isEqualTo(className);
@@ -56,12 +56,12 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         }
     }
 
-    protected void assertValidMetaClass(final RawMetaclass metaClass, final String name, final Namespace ns) {
+    protected void assertValidMetaClass(RawMetaclass metaClass, String name, Namespace ns) {
         assertThat(metaClass.name()).isEqualTo(name);
         assertThat(metaClass.ns()).isSameAs(ns);
     }
 
-    protected void assertValidReference(final RawReference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
+    protected void assertValidReference(RawReference reference, String name, int index, String idReference, boolean many, boolean containment) {
         assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
@@ -69,7 +69,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         assertThat(reference.isMany()).isEqualTo(many);
     }
 
-    protected void assertValidAttribute(final RawAttribute attribute, final String name, final int index, final Object value) {
+    protected void assertValidAttribute(RawAttribute attribute, String name, int index, Object value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
         assertThat(attribute.index()).isEqualTo(index);

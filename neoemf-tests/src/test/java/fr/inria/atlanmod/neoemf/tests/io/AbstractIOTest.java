@@ -146,7 +146,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        assertThat(ePackage).isNotNull(); // "EPackage does not exist"
+        assertThat(ePackage).isNotNull();
 
         EPackage.Registry.INSTANCE.put(uri, ePackage);
     }

@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.TransientBackend;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -101,7 +102,7 @@ public class CoreContext implements Context {
 
     @Override
     public PersistenceBackend createBackend(File file) throws IOException {
-        throw new UnsupportedOperationException();
+        return new TransientBackend();
     }
 
     @Override

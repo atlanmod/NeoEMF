@@ -16,8 +16,8 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A {@link PersistenceBackend} that stores all elements in an in-memory key/value store.
@@ -61,6 +63,11 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     private Id lastId;
 
     /**
+     * Whether this back-end is closed.
+     */
+    private boolean isClosed = false;
+
+    /**
      * Casts the {@code value} as expected.
      *
      * @param value the value to cast
@@ -80,12 +87,19 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Override
     public void close() {
-        // Do nothing
+        isClosed = true;
+
+        new Thread(() -> {
+            containerMap.clear();
+            instanceOfMap.clear();
+            features.clear();
+            multiFeatures.clear();
+        }).run();
     }
 
     @Override
     public boolean isClosed() {
-        return true;
+        return isClosed;
     }
 
     @Override
@@ -116,6 +130,8 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(container);
+
         containerMap.put(id, container);
     }
 
@@ -127,6 +143,8 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(metaclass);
+
         instanceOfMap.put(id, metaclass);
     }
 
@@ -139,14 +157,14 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        checkNotNull(value);
+
         return Optional.ofNullable(cast(features.put(key, value)));
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
         features.remove(key);
-
-        // TODO Asynchronous deletion of multi-values ​​to free space
     }
 
     @Override
@@ -163,6 +181,8 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        checkNotNull(value);
+
         return Optional.ofNullable(cast(multiFeatures.put(key, value)));
     }
 }

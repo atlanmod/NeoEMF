@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
@@ -44,15 +45,19 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Override
     default <V> void addValue(MultiFeatureKey key, V value) {
+        checkNotNull(value);
+
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
-        // TODO Replace by Stream
-        for (int i = size - 1; i >= key.position(); i--) {
-            Optional<V> movingValue = valueOf(key.withPosition(i));
-            if (movingValue.isPresent()) {
-                valueFor(key.withPosition(i + 1), movingValue.get());
+        if (key.position() >= size || valueOf(key).isPresent()) {
+            for (int i = size; i > key.position(); i--) {
+                Optional<V> movingValue = valueOf(key.withPosition(i - 1));
+                if (movingValue.isPresent()) {
+                    valueFor(key.withPosition(i), movingValue.get());
+                }
             }
         }
+
         sizeFor(key.withoutPosition(), size + 1);
 
         valueFor(key, value);
@@ -61,34 +66,48 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(MultiFeatureKey key) {
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        if (size == 0) {
+            return Optional.empty();
+        }
+
         Optional<V> previousValue = valueOf(key);
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
-
         // Update indexes (element to remove is overwritten)
-        // TODO Replace by Stream
-        for (int i = key.position() + 1; i < size; i++) {
-            Optional<V> movingValue = valueOf(key.withPosition(i));
+        for (int i = size - 1; i > key.position(); i--) {
+            Optional<V> movingValue = valueOf(key.withPosition(i - 1));
             if (movingValue.isPresent()) {
                 valueFor(key.withPosition(i - 1), movingValue.get());
             }
         }
+
+        // TODO Remove the last element
+
         sizeFor(key.withoutPosition(), size - 1);
 
         return previousValue;
     }
 
     @Override
+    default <V> void removeAllValues(FeatureKey key) {
+        IntStream.range(0, sizeOfValue(key).orElse(0)).forEach(i -> removeValue(key.withPosition(i)));
+    }
+
+    @Override
     default <V> boolean containsValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .anyMatch(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false));
+                .anyMatch(i -> valueOf(key.withPosition(i))
+                        .map(v -> Objects.equals(v, value))
+                        .orElse(false));
     }
 
     @Nonnull
     @Override
     default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
+                .filter(i -> valueOf(key.withPosition(i))
+                        .map(v -> Objects.equals(v, value))
+                        .orElse(false))
                 .min();
     }
 
@@ -96,7 +115,9 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     @Override
     default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i)).map(v -> Objects.equals(v, value)).orElse(false))
+                .filter(i -> valueOf(key.withPosition(i))
+                        .map(v -> Objects.equals(v, value))
+                        .orElse(false))
                 .max();
     }
 
@@ -117,6 +138,11 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     default void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);
 
-        valueFor(key, size);
+        if (size > 0) {
+            valueFor(key, size);
+        }
+        else {
+            unsetValue(key);
+        }
     }
 }

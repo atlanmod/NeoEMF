@@ -68,12 +68,12 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
         resource.save(Collections.emptyMap());
 
         File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists(); // "Config file does not exist"
+        assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)).isTrue();
         assertThat(configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertThat(getKeyCount(configuration)).isEqualTo(3); // "Too much content in the .properties file"
+        assertThat(getKeyCount(configuration)).isEqualTo(3);
     }
 
     @Test
@@ -81,11 +81,11 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
         resource.save(BlueprintsOptionsBuilder.noOption());
 
         File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists(); // "Config file does not exist"
+        assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)).isTrue();
         assertThat(configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertThat(getKeyCount(configuration)).isEqualTo(3); // "Too much content in the .properties file"
+        assertThat(getKeyCount(configuration)).isEqualTo(3);
     }
 }

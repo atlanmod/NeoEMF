@@ -672,7 +672,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     private void assertConfigurationHasSize(PropertiesConfiguration configuration, int expectedSize) {
-        assertThat(getKeyCount(configuration)).isEqualTo(DEFAULT_PROPERTY_COUNT + expectedSize); // "The number of properties in the configuration file is not consistent with the given options"
+        assertThat(getKeyCount(configuration)).isEqualTo(DEFAULT_PROPERTY_COUNT + expectedSize);
     }
 
     private void assertConfigurationHasEntry(PropertiesConfiguration configuration, String key, String value) {

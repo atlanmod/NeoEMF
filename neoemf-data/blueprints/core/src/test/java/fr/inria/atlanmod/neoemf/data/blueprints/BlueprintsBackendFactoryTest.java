@@ -12,16 +12,12 @@
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 import org.junit.Test;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,103 +26,35 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(backend).isInstanceOf(BlueprintsBackend.class); // "Invalid back-end created"
+        assertThat(backend).isInstanceOf(BlueprintsBackend.class);
 
         // TODO Need to test further the nature of the Blueprints engine
     }
 
     @Test
-    public void testCreateTransientEStore() throws NoSuchFieldException, IllegalAccessException {
+    public void testCreateTransientStore() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
 
         PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
-        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
-    public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
+    public void testCreatePersistentBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
-        assertThat(backend).isInstanceOf(BlueprintsBackend.class); // "Invalid back-end created"
+        assertThat(backend).isInstanceOf(BlueprintsBackend.class);
 
         // TODO Need to test further the nature of the Blueprints engine
     }
 
     @Test
-    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentStore() {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptionsBuilder.noOption());
-        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
-
-        assertThat(getInnerBackend(store)).isSameAs(backend);
-    }
-
-    @Test
-    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
-        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .asMap();
-
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
-
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
-
-        assertThat(getInnerBackend(store)).isSameAs(backend);
-    }
-
-    @Test
-    public void testCreatePersistentEStoreManyCacheOption() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
-        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .asMap();
-
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
-
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(DirectWriteStore.class); // "Invalid EStore created"
-
-        assertThat(getInnerBackend(store)).isSameAs(backend);
-    }
-
-    @Test
-    public void testCreatePersistentEStoreAutocommitOptionNoBase() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
-        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .autocommit()
-                .asMap();
-
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
-
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
-
-        assertThat(getInnerBackend(store)).isSameAs(backend);
-    }
-
-    @Test
-    public void testCreatePersistentEStoreAutocommitOptionDirectWriteBase() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
-        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .autocommit()
-                .asMap();
-
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
-
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
-
-        assertThat(getInnerBackend(store)).isSameAs(backend);
-    }
-
-    @Test
-    public void testCreatePersistentEStoreAutocommitOptionCachedManyBase() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
-        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
-                .autocommit()
-                .asMap();
-
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
-
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
-        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
+        assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }

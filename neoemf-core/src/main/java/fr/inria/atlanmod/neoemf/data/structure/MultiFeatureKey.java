@@ -159,11 +159,26 @@ public class MultiFeatureKey extends FeatureKey implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id(), name(), position);
+        return Objects.hash(super.hashCode(), position);
     }
 
     @Override
     public boolean equals(@Nullable Object o) {
-        return super.equals(o) && position == ((MultiFeatureKey) o).position;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        MultiFeatureKey that = (MultiFeatureKey) o;
+        return position == that.position;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s {%s # %s [%d]}", getClass().getSimpleName(), id, name, position);
     }
 }

@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultiFeatureKey;
 
@@ -38,6 +39,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
@@ -54,7 +57,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @see BlueprintsBackendFactory
  */
 @ParametersAreNonnullByDefault
-class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
+class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements MultiValueWithIndices {
 
     /**
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
@@ -80,6 +83,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        checkNotNull(value);
+
         Optional<V> previousValue = valueOf(key);
         vertex(key.id()).setProperty(key.name(), value);
         return previousValue;
@@ -109,6 +114,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        checkNotNull(reference);
+
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
@@ -180,6 +187,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(MultiFeatureKey key, Id reference) {
+        checkNotNull(reference);
+
         Vertex vertex = vertex(key.id());
 
         Iterable<Edge> edges = vertex.query()
@@ -223,8 +232,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Override
     public void addReference(MultiFeatureKey key, Id reference) {
+        checkNotNull(reference);
+
         int size = sizeOfValue(key).orElse(0);
-        int newSize = size + 1;
 
         Vertex vertex = vertex(key.id());
 
@@ -232,7 +242,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             Iterable<Edge> edges = vertex.query()
                     .labels(key.name())
                     .direction(Direction.OUT)
-                    .interval(KEY_POSITION, key.position(), newSize)
+                    .interval(KEY_POSITION, key.position(), size + 1)
                     .edges();
 
             edges.forEach(e -> e.setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
@@ -241,14 +251,16 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         Edge edge = vertex.addEdge(key.name(), vertex(reference));
         edge.setProperty(KEY_POSITION, key.position());
 
-        sizeFor(key, newSize);
+        sizeFor(key, size + 1);
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(MultiFeatureKey key) {
         int size = sizeOfValue(key).orElse(0);
-        int newSize = size - 1;
+        if (size == 0) {
+            return Optional.empty();
+        }
 
         Vertex vertex = vertex(key.id());
 
@@ -274,7 +286,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             }
         }
 
-        sizeFor(key, newSize);
+        sizeFor(key, size - 1);
 
         return previousId;
     }
@@ -345,6 +357,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     public <V> Optional<V> valueFor(MultiFeatureKey key, V value) {
+        checkNotNull(value);
+
         Optional<V> previousValue = valueOf(key);
         vertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
         return previousValue;
@@ -353,53 +367,56 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Override
     public void unsetAllValues(FeatureKey key) {
         Vertex vertex = vertex(key.id());
-        String property = formatProperty(key.name(), KEY_SIZE);
 
-        IntStream.range(0, vertex.getProperty(property))
+        IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
 
-        vertex.removeProperty(property);
+        sizeFor(key, 0);
     }
 
     public boolean hasAnyValue(FeatureKey key) {
         return Optional.ofNullable(vertex(key.id()))
-                .map(v -> Optional.ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE))).isPresent())
+                .map(v -> sizeOfValue(key).isPresent())
                 .orElse(false);
     }
 
     @Override
     public <V> void addValue(MultiFeatureKey key, V value) {
-        int size = sizeOfValue(key).orElse(0);
-        int newSize = size + 1;
+        checkNotNull(value);
+
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
         Vertex vertex = vertex(key.id());
 
-        // TODO Replace by Stream
-        for (int i = size; i > key.position(); i--) {
-            vertex.setProperty(formatProperty(key.name(), i), vertex.getProperty(formatProperty(key.name(), (i - 1))));
+        if (key.position() >= size || nonNull(vertex.getProperty(formatProperty(key.name(), key.position())))) {
+            for (int i = size; i > key.position(); i--) {
+                vertex.setProperty(formatProperty(key.name(), i), vertex.getProperty(formatProperty(key.name(), i - 1)));
+            }
         }
 
-        vertex.setProperty(formatProperty(key.name(), key.position()), value);
+        sizeFor(key, size + 1);
 
-        sizeFor(key, newSize);
+        vertex.setProperty(formatProperty(key.name(), key.position()), value);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(MultiFeatureKey key) {
         int size = sizeOfValue(key).orElse(0);
-        int newSize = size - 1;
+        if (size == 0) {
+            return Optional.empty();
+        }
 
         Vertex vertex = vertex(key.id());
-
         Optional<V> previousValue = Optional.ofNullable(vertex.getProperty(formatProperty(key.name(), key.position())));
 
-        // TODO Replace by Stream
-        for (int i = newSize; i > key.position(); i--) {
+        for (int i = size - 1; i > key.position(); i--) {
             vertex.setProperty(formatProperty(key.name(), i - 1), vertex.getProperty(formatProperty(key.name(), i)));
         }
 
-        sizeFor(key, newSize);
+        // TODO Remove the last element
+
+        sizeFor(key, size - 1);
 
         return previousValue;
     }
@@ -452,15 +469,17 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .orElse(OptionalInt.empty());
     }
 
-    /**
-     * Defines the {@code size} of the property identified by the given {@code key}.
-     *
-     * @param key  the feature key identifying the property
-     * @param size the new size
-     */
-    protected void sizeFor(FeatureKey key, @Nonnegative int size) {
+    @Override
+    public void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);
 
-        vertex(key.id()).setProperty(formatProperty(key.name(), KEY_SIZE), size);
+        Vertex vertex = vertex(key.id());
+
+        if (size > 0) {
+            vertex.setProperty(formatProperty(key.name(), KEY_SIZE), size);
+        }
+        else {
+            vertex.removeProperty(formatProperty(key.name(), KEY_SIZE));
+        }
     }
 }

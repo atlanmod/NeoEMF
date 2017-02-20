@@ -17,8 +17,10 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.ecore.EReference;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -104,5 +106,28 @@ public class ContainerDescriptor implements Serializable {
     @Nonnull
     public String name() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ContainerDescriptor that = (ContainerDescriptor) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
     }
 }

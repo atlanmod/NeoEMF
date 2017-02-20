@@ -174,16 +174,16 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FeatureKey)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         FeatureKey that = (FeatureKey) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public String toString() {
-        return "FK:{" + id + ", " + name + "}";
+        return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
     }
 }

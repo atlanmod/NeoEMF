@@ -22,38 +22,66 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test case about the copy from a {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} to another.
+ */
 public class CopyBackendContentTest extends AbstractBackendTest {
 
-    private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
+    /**
+     * The name of the {@link SampleModel}.
+     */
+    private static final String MODEL_NAME = "Model";
 
+    /**
+     * The name of the first {@link SampleModelContentObject}.
+     */
+    private static final String CONTENT1_NAME = "Content1";
+
+    /**
+     * The name of the second {@link SampleModelContentObject}.
+     */
+    private static final String CONTENT2_NAME = "Content2";
+
+    /**
+     * Checks the copy from a transient {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} to a persistent {@link
+     * fr.inria.atlanmod.neoemf.data.PersistenceBackend} when calling {@link PersistentResource#save(Map)}.
+     *
+     * @throws IOException if an I/O error occurs during {@link PersistentResource#save(Map)}
+     */
     @Test
     @Category(Tags.TransientTests.class)
     public void testCopyBackend() throws IOException {
         PersistentResource resource = createTransientStore();
-        createResourceContent(resource);
+        fillResource(resource);
 
         resource.save(CommonOptionsBuilder.noOption());
-        assertThat(resource.getContents()).isNotEmpty(); // "Map resource content is empty"
-        assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
+        assertThat(resource.getContents()).isNotEmpty();
+        assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class);
 
         SampleModel sampleModel = (SampleModel) resource.getContents().get(0);
-        assertThat(sampleModel.getName()).isEqualTo(MODEL_NAME); // "SampleModel has an invalid name attribute"
+        assertThat(sampleModel.getName()).isEqualTo(MODEL_NAME);
 
         EList<SampleModelContentObject> contentObjects = sampleModel.getContentObjects();
-        assertThat(contentObjects).isNotEmpty(); // "SampleModel contentObjects collection is empty"
-        assertThat(contentObjects).hasSize(2); // "SampleModel contentObjects collection has an invalid size"
+        assertThat(contentObjects).isNotEmpty();
+        assertThat(contentObjects).hasSize(2);
 
-        assertThat(contentObjects.get(0).getName()).isEqualTo(CONTENT1_NAME); // "First element in contentObjects collection has an invalid name"
-        assertThat(contentObjects.get(1).getName()).isEqualTo(CONTENT2_NAME); // "Second element in contentObjects collection has an invalid name"
+        assertThat(contentObjects.get(0).getName()).isEqualTo(CONTENT1_NAME);
+        assertThat(contentObjects.get(1).getName()).isEqualTo(CONTENT2_NAME);
 
-        assertThat(contentObjects.get(0).eContainer()).isSameAs(sampleModel); // "First element in contentObjects collection has an invalid container"
-        assertThat(contentObjects.get(1).eContainer()).isSameAs(sampleModel); // "Second element in contentObjects collection has an invalid container"
+        assertThat(contentObjects.get(0).eContainer()).isSameAs(sampleModel);
+        assertThat(contentObjects.get(1).eContainer()).isSameAs(sampleModel);
     }
 
-    private void createResourceContent(final PersistentResource resource) {
+    /**
+     * Fills the {@code resource}.
+     *
+     * @param resource the resource to fill
+     */
+    private void fillResource(PersistentResource resource) {
         SampleModel model = EFACTORY.createSampleModel();
         model.setName(MODEL_NAME);
 

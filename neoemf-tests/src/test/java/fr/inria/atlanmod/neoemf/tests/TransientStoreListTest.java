@@ -51,12 +51,12 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testListNotNull() {
-        assertThat(model.getContentObjects()).isNotNull(); // "Accessed list is null"
+        assertThat(model.getContentObjects()).isNotNull();
     }
 
     @Test
     public void testAdd() {
-        assertThat(model.getContentObjects().add(EFACTORY.createSampleModelContentObject())).isTrue(); // "Adding valid item to the list returns false"
+        assertThat(model.getContentObjects().add(EFACTORY.createSampleModelContentObject())).isTrue();
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TransientStoreListTest extends AbstractTest {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(EFACTORY.createSampleModelContentObject());
         list.add(EFACTORY.createSampleModelContentObject());
-        assertThat(model.getContentObjects().addAll(list)).isTrue(); // "Adding valid item list returns false"
+        assertThat(model.getContentObjects().addAll(list)).isTrue();
     }
 
     @Test
@@ -72,18 +72,18 @@ public class TransientStoreListTest extends AbstractTest {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(EFACTORY.createSampleModelContentObject());
         list.add(EFACTORY.createSampleModelContentObject());
-        assertThat(model.getContentObjects().addAll(0, list)).isTrue(); // "Adding valid item list at a given index returns false"
+        assertThat(model.getContentObjects().addAll(0, list)).isTrue();
     }
 
     @Test
     public void testClear() {
         model.getContentObjects().clear();
-        assertThat(model.getContentObjects()).isEmpty(); // "List isn't empty after clean"
+        assertThat(model.getContentObjects()).isEmpty();
     }
 
     @Test
     public void testContains() {
-        assertThat(model.getContentObjects().contains(EFACTORY.createSampleModelContentObject())).isFalse(); // "Accessed list contains the created element"
+        assertThat(model.getContentObjects().contains(EFACTORY.createSampleModelContentObject())).isFalse();
     }
 
     @Test
@@ -91,7 +91,7 @@ public class TransientStoreListTest extends AbstractTest {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(EFACTORY.createSampleModelContentObject());
         list.add(EFACTORY.createSampleModelContentObject());
-        assertThat(model.getContentObjects().containsAll(list)).isFalse(); // "Accessed list contains the given collection"
+        assertThat(model.getContentObjects().containsAll(list)).isFalse();
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TransientStoreListTest extends AbstractTest {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(EFACTORY.createSampleModelContentObject());
         list.add(EFACTORY.createSampleModelContentObject());
-        assertThat(Objects.equals(model.getContentObjects(), list)).isFalse(); // "Accessed list is equal to the given collection"
+        assertThat(Objects.equals(model.getContentObjects(), list)).isFalse();
     }
 
     @Test
@@ -116,12 +116,12 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testIndexOf() {
-        assertThat(model.getContentObjects().indexOf(EFACTORY.createSampleModelContentObject())).isEqualTo(-1); // "IndexOf returns a wrong value"
+        assertThat(model.getContentObjects().indexOf(EFACTORY.createSampleModelContentObject())).isEqualTo(-1);
     }
 
     @Test
     public void testIsEmpty() {
-        assertThat(model.getContentObjects().isEmpty()).isTrue(); // "Accessed list is not empty"
+        assertThat(model.getContentObjects().isEmpty()).isTrue();
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testLastIndexOf() {
-        assertThat(model.getContentObjects().lastIndexOf(EFACTORY.createSampleModelContentObject())).isEqualTo(-1); // "LastIndexOf returns a wrong value"
+        assertThat(model.getContentObjects().lastIndexOf(EFACTORY.createSampleModelContentObject())).isEqualTo(-1);
     }
 
     @Test
