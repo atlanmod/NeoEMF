@@ -27,6 +27,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -407,10 +408,24 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
-        return StreamSupport.stream(edges.spliterator(), false)
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .min();
+        if (edges instanceof List) {
+            List<Edge> edgesList = (List<Edge>) edges;
+
+            int size = edgesList.size();
+            for (int i = 0; i < size; i++) {
+                if (Objects.equals(edgesList.get(i).getVertex(Direction.OUT), vertex.get())) {
+                    return OptionalInt.of(i);
+                }
+            }
+
+            return OptionalInt.empty();
+        }
+        else {
+            return StreamSupport.stream(edges.spliterator(), false)
+                    .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
+                    .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
+                    .min();
+        }
     }
 
     @Nonnull
@@ -431,10 +446,24 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
-        return StreamSupport.stream(edges.spliterator(), false)
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .max();
+        if (edges instanceof List) {
+            List<Edge> edgesList = (List<Edge>) edges;
+
+            int size = edgesList.size();
+            for (int i = size - 1; i > 0; i--) {
+                if (Objects.equals(edgesList.get(i).getVertex(Direction.OUT), vertex.get())) {
+                    return OptionalInt.of(i);
+                }
+            }
+
+            return OptionalInt.empty();
+        }
+        else {
+            return StreamSupport.stream(edges.spliterator(), false)
+                    .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
+                    .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
+                    .max();
+        }
     }
 
     @Nonnull
@@ -539,8 +568,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Optional<V> previousValue = Optional.ofNullable(vertex.get().getProperty(formatProperty(key.name(), key.position())));
 
-        for (int i = size - 1; i > key.position(); i--) {
-            vertex.get().setProperty(formatProperty(key.name(), i - 1), vertex.get().getProperty(formatProperty(key.name(), i)));
+        for (int i = key.position(); i < size - 1; i++) {
+            vertex.get().setProperty(formatProperty(key.name(), i), vertex.get().getProperty(formatProperty(key.name(), i + 1)));
         }
 
         vertex.get().removeProperty(formatProperty(key.name(), size - 1));
@@ -594,9 +623,14 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return OptionalInt.empty();
         }
 
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> Objects.equals(vertex.get().getProperty(formatProperty(key.name(), i)), value))
-                .min();
+        int size = sizeOfValue(key).orElse(0);
+        for (int i = 0; i < size; i++) {
+            if (Objects.equals(vertex.get().getProperty(formatProperty(key.name(), i)), value)) {
+                return OptionalInt.of(i);
+            }
+        }
+
+        return OptionalInt.empty();
     }
 
     @Nonnull
@@ -614,9 +648,14 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return OptionalInt.empty();
         }
 
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> Objects.equals(vertex.get().getProperty(formatProperty(key.name(), i)), value))
-                .max();
+        int size = sizeOfValue(key).orElse(0);
+        for (int i = size - 1; i > 0; i--) {
+            if (Objects.equals(vertex.get().getProperty(formatProperty(key.name(), i)), value)) {
+                return OptionalInt.of(i);
+            }
+        }
+
+        return OptionalInt.empty();
     }
 
     @Nonnull

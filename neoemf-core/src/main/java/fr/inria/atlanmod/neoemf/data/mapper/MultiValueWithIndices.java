@@ -63,6 +63,14 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     @Override
+    default <V> void unsetAllValues(FeatureKey key) throws NullPointerException {
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> safeValueFor(key.withPosition(i), null));
+
+        unsetValue(key);
+    }
+
+    @Override
     default <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(key);
         checkNotNull(value);
@@ -95,10 +103,10 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
         Optional<V> previousValue = valueOf(key);
 
-        for (int i = size - 1; i > key.position(); i--) {
-            Optional<V> movingValue = valueOf(key.withPosition(i));
+        for (int i = key.position(); i < size - 1; i++) {
+            Optional<V> movingValue = valueOf(key.withPosition(i + 1));
             if (movingValue.isPresent()) {
-                valueFor(key.withPosition(i - 1), movingValue.get());
+                valueFor(key.withPosition(i), movingValue.get());
             }
         }
 
@@ -133,11 +141,14 @@ public interface MultiValueWithIndices extends MultiValueMapper {
             return OptionalInt.empty();
         }
 
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i))
-                        .map(v -> Objects.equals(v, value))
-                        .orElse(false))
-                .min();
+        int size = sizeOfValue(key).orElse(0);
+        for (int i = 0; i < size; i++) {
+            if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
+                return OptionalInt.of(i);
+            }
+        }
+
+        return OptionalInt.empty();
     }
 
     @Nonnull
@@ -147,11 +158,14 @@ public interface MultiValueWithIndices extends MultiValueMapper {
             return OptionalInt.empty();
         }
 
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> valueOf(key.withPosition(i))
-                        .map(v -> Objects.equals(v, value))
-                        .orElse(false))
-                .max();
+        int size = sizeOfValue(key).orElse(0);
+        for (int i = size - 1; i > 0; i--) {
+            if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
+                return OptionalInt.of(i);
+            }
+        }
+
+        return OptionalInt.empty();
     }
 
     @Nonnull

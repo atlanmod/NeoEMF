@@ -15,7 +15,6 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Element;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
@@ -318,7 +317,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         Vertex containmentVertex = getOrCreate(id);
         Vertex containerVertex = getOrCreate(container.id());
 
-        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
+        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
 
         Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
         edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
@@ -359,10 +358,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
 
         Vertex vertex = getOrCreate(id);
+
+        // Remove the previous metaclass if present
+        vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF).forEach(Edge::remove);
+
         vertex.addEdge(KEY_INSTANCE_OF, metaclassVertex);
 
         // Remove old link
-        vertex.getEdges(Direction.OUT, "kyanosInstanceOf").forEach(Element::remove);
+        vertex.getEdges(Direction.OUT, "kyanosInstanceOf").forEach(Edge::remove);
     }
 
     /**
