@@ -204,7 +204,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     public void unsetValue(FeatureKey key) {
         checkNotNull(key);
 
-        features.remove(key);
+        delete(features, key);
     }
 
     @Override
@@ -249,5 +249,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
         return Optional.ofNullable((V) database.put(key, value));
     }
 
-
+    /**
+     * Removes a value from the {@code database} according to its {@code key}.
+     *
+     * @param database the database where to remove the value
+     * @param key      the key of the element to remove
+     * @param <K>      the type of the key
+     */
+    protected <K> void delete(HTreeMap<K, ?> database, K key) {
+        database.remove(key);
+    }
 }

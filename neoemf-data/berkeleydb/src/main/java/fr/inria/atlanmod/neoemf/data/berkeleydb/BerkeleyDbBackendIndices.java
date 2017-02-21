@@ -27,10 +27,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * ???
@@ -88,10 +90,14 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureKey key, V value) {
+    public <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
         checkNotNull(key);
-        checkNotNull(value);
 
-        put(multivaluedFeatures, key, value);
+        if (nonNull(value)) {
+            put(multivaluedFeatures, key, value);
+        }
+        else {
+            delete(multivaluedFeatures, key);
+        }
     }
 }

@@ -102,7 +102,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
             }
         }
 
-        // TODO Remove the last element
+        safeValueFor(key.withPosition(size - 1), null);
 
         sizeFor(key.withoutPosition(), size - 1);
 
@@ -190,14 +190,16 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      * <p>
      * This method acts as {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued feature
      * already exists, in order to replace it.
+     * <p>
+     * If {@code value == null}, the key must be removed.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to set
      * @param <V>   the type of value
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void safeValueFor(ManyFeatureKey key, V value) throws NullPointerException {
+    default <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) throws NullPointerException {
         throw new IllegalStateException("This method should be overwritten if you use the default valueFor(ManyFeatureKey, V) and/or add(ManyFeatureKey, V) methods");
     }
 }

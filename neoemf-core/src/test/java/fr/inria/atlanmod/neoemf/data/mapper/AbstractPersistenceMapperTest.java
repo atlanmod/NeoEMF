@@ -673,7 +673,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             assertThat(mapper.hasAnyValue(key.withoutPosition())).isTrue();
             assertThat(mapper.sizeOfValue(key.withoutPosition())).isPresent().hasValue(size);
 
-            // TODO Test removed value
             mapper.removeValue(key);
 
             size = --size;
@@ -687,6 +686,42 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
                 assertThat(mapper.sizeOfValue(key.withoutPosition())).isPresent().hasValue(size);
             }
         });
+    }
+
+    /**
+     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)}.
+     */
+    @Test
+    public void testRemovedValueBefore() {
+        FeatureKey originKey = FeatureKey.of(randomId(), randomString());
+
+        String removedValue = "I must disappear";
+        String notRemovedValue = "I'm supposed not to be removed";
+
+        mapper.addValue(originKey.withPosition(0), removedValue);
+        mapper.addValue(originKey.withPosition(1), notRemovedValue);
+
+        assertThat(mapper.removeValue(originKey.withPosition(0))).isPresent().hasValue(removedValue);
+        assertThat(mapper.valueOf(originKey.withPosition(0))).isPresent().hasValue(notRemovedValue);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)}.
+     */
+    @Test
+    public void testRemovedValueAfter() {
+        FeatureKey originKey = FeatureKey.of(randomId(), randomString());
+
+        String removedValue = "I must disappear";
+        String notRemovedValue = "I'm supposed not to be removed";
+
+        mapper.addValue(originKey.withPosition(0), notRemovedValue);
+        mapper.addValue(originKey.withPosition(1), removedValue);
+
+        assertThat(mapper.removeValue(originKey.withPosition(1))).isPresent().hasValue(removedValue);
+
+        assertThat(mapper.valueOf(originKey.withPosition(1))).isNotPresent();
+        assertThat(mapper.valueOf(originKey.withPosition(0))).isPresent().hasValue(notRemovedValue);
     }
 
     /**

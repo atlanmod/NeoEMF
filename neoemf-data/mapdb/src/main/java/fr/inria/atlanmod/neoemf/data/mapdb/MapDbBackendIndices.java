@@ -28,9 +28,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -93,10 +95,14 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureKey key, V value) {
+    public <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
         checkNotNull(key);
-        checkNotNull(value);
 
-        put(multivaluedFeatures, key, value);
+        if (nonNull(value)) {
+            put(multivaluedFeatures, key, value);
+        }
+        else {
+            delete(multivaluedFeatures, key);
+        }
     }
 }

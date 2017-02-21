@@ -543,7 +543,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             vertex.get().setProperty(formatProperty(key.name(), i - 1), vertex.get().getProperty(formatProperty(key.name(), i)));
         }
 
-        // TODO Remove the last element
+        vertex.get().removeProperty(formatProperty(key.name(), size - 1));
 
         sizeFor(key, size - 1);
 

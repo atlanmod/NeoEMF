@@ -24,9 +24,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistenceBackend} that stores all elements in an in-memory key/value store.
@@ -183,10 +185,14 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureKey key, V value) {
+    public <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
         checkNotNull(key);
-        checkNotNull(value);
 
-        multiFeatures.put(key, value);
+        if (nonNull(value)) {
+            multiFeatures.put(key, value);
+        }
+        else {
+            multiFeatures.remove(key);
+        }
     }
 }
