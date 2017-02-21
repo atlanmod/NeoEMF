@@ -86,7 +86,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
             }
         }
 
-        sizeFor(key.withoutPosition(), size + 1);
+        sizeForValue(key.withoutPosition(), size + 1);
 
         safeValueFor(key, value);
     }
@@ -112,7 +112,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
         safeValueFor(key.withPosition(size - 1), null);
 
-        sizeFor(key.withoutPosition(), size - 1);
+        sizeForValue(key.withoutPosition(), size - 1);
 
         return previousValue;
     }
@@ -170,7 +170,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default OptionalInt sizeOfValue(FeatureKey key) {
+    default <V> OptionalInt sizeOfValue(FeatureKey key) {
         checkNotNull(key);
 
         return valueOf(key)
@@ -187,7 +187,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      * @throws NullPointerException     if the {@code key} is {@code null}
      * @throws IllegalArgumentException if {@code size < 0}
      */
-    default void sizeFor(FeatureKey key, @Nonnegative int size) {
+    default <V> void sizeForValue(FeatureKey key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
 
