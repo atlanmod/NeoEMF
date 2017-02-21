@@ -65,6 +65,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         }
     }
 
+    //region Persistence
+
     /**
      * Checks the behavior of {@link PersistenceMapper#exists(Id)}.
      */
@@ -84,6 +86,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.exists(id)).isTrue();
     }
 
+    //endregion
+
+    //region Containers
+
     /**
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} and {@link ContainerMapper#containerFor(Id,
      * ContainerDescriptor)}.
@@ -98,10 +104,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the containers
         mapper.containerFor(id0, container);
-        assertThat(mapper.containerOf(id0)).isPresent().hasValue(container);
+        assertThat(mapper.containerOf(id0)).isPresent().contains(container);
 
         mapper.containerFor(id1, container);
-        assertThat(mapper.containerOf(id1)).isPresent().hasValue(container);
+        assertThat(mapper.containerOf(id1)).isPresent().contains(container);
     }
 
     /**
@@ -119,14 +125,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the containers
         mapper.containerFor(id0, container0);
-        assertThat(mapper.containerOf(id0)).isPresent().hasValue(container0);
+        assertThat(mapper.containerOf(id0)).isPresent().contains(container0);
 
         mapper.containerFor(id1, container1);
-        assertThat(mapper.containerOf(id1)).isPresent().hasValue(container1);
+        assertThat(mapper.containerOf(id1)).isPresent().contains(container1);
 
         // Replace the existing container
         mapper.containerFor(id1, container0);
-        assertThat(mapper.containerOf(id1)).isPresent().hasValue(container0);
+        assertThat(mapper.containerOf(id1)).isPresent().contains(container0);
     }
 
     /**
@@ -150,6 +156,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ).isInstanceOf(NullPointerException.class);
     }
 
+    //endregion
+
+    //region Metaclasses
+
     /**
      * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} and {@link MetaclassMapper#metaclassFor(Id,
      * MetaclassDescriptor)}.
@@ -162,10 +172,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the metaclasses
         mapper.metaclassFor(id0, metaclass);
-        assertThat(mapper.metaclassOf(id0)).isPresent().hasValue(metaclass);
+        assertThat(mapper.metaclassOf(id0)).isPresent().contains(metaclass);
 
         mapper.metaclassFor(id1, metaclass);
-        assertThat(mapper.metaclassOf(id1)).isPresent().hasValue(metaclass);
+        assertThat(mapper.metaclassOf(id1)).isPresent().contains(metaclass);
     }
 
     /**
@@ -181,14 +191,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the metaclasses
         mapper.metaclassFor(id0, metaclass0);
-        assertThat(mapper.metaclassOf(id0)).isPresent().hasValue(metaclass0);
+        assertThat(mapper.metaclassOf(id0)).isPresent().contains(metaclass0);
 
         mapper.metaclassFor(id1, metaclass1);
-        assertThat(mapper.metaclassOf(id1)).isPresent().hasValue(metaclass1);
+        assertThat(mapper.metaclassOf(id1)).isPresent().contains(metaclass1);
 
         // Replace the existing metaclass
         mapper.metaclassFor(id1, metaclass0);
-        assertThat(mapper.metaclassOf(id1)).isPresent().hasValue(metaclass0);
+        assertThat(mapper.metaclassOf(id1)).isPresent().contains(metaclass0);
     }
 
     /**
@@ -199,6 +209,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
                 assertThat(mapper.metaclassOf(StringId.of("Id0"))).isNotPresent())
         ).isNull();
     }
+
+    //endregion
+
+    //region Single-value attributes
 
     /**
      * Checks the behavior of {@link MetaclassMapper#metaclassFor(Id, MetaclassDescriptor)} with a {@code null} value.
@@ -223,11 +237,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define values
         mapper.valueFor(key, value0);
-        assertThat(mapper.valueOf(key)).isPresent().hasValue(value0);
+        assertThat(mapper.valueOf(key)).isPresent().contains(value0);
 
         // Replace the existing value
-        assertThat(mapper.valueFor(key, value1)).isPresent().hasValue(value0);
-        assertThat(mapper.valueOf(key)).isPresent().hasValue(value1);
+        assertThat(mapper.valueFor(key, value1)).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key)).isPresent().contains(value1);
     }
 
     /**
@@ -299,6 +313,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ).isNull();
     }
 
+    //endregion
+
+    //region Multi-valued attributes
+
     /**
      * Checks the behavior of {@link MultiValueMapper#valueOf(ManyFeatureKey)} and {@link
      * MultiValueMapper#valueFor(ManyFeatureKey, Object)}.
@@ -309,16 +327,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         String value0 = "Value0", value1 = "Value1", value2 = "Value2", value3 = "Value3";
 
-        // Initialize the multi-valued features
+        // Initialize values
         mapper.addValue(key.withPosition(0), value0);
         mapper.addValue(key.withPosition(1), value1);
 
         // Replace the existing values
-        assertThat(mapper.valueFor(key.withPosition(0), value2)).isPresent().hasValue(value0);
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value2);
+        assertThat(mapper.valueFor(key.withPosition(0), value2)).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value2);
 
-        assertThat(mapper.valueFor(key.withPosition(1), value3)).isPresent().hasValue(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value3);
+        assertThat(mapper.valueFor(key.withPosition(1), value3)).isPresent().contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value3);
     }
 
     /**
@@ -497,9 +515,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(2), value2);
 
         // Check all values
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().hasValue(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
     }
 
     /**
@@ -521,9 +539,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
 
         // Check all values
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().hasValue(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
     }
 
     /**
@@ -550,10 +568,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Append values
         mapper.appendValue(key, value0);
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value0);
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
 
         mapper.appendValue(key, value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value1);
     }
 
     /**
@@ -605,10 +623,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(2), value2);
 
         // Remove value, and check the removed value
-        assertThat(mapper.removeValue(key.withPosition(0))).isPresent().hasValue(value0);
+        assertThat(mapper.removeValue(key.withPosition(0))).isPresent().contains(value0);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value2);
         assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
     }
 
@@ -627,10 +645,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(2), value2);
 
         // Remove value, and check the removed value
-        assertThat(mapper.removeValue(key.withPosition(1))).isPresent().hasValue(value1);
+        assertThat(mapper.removeValue(key.withPosition(1))).isPresent().contains(value1);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value2);
         assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
     }
 
@@ -757,7 +775,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.indexOfValue(key, value0)).isPresent().hasValue(0);
 
         // Remove the first value
-        assertThat(mapper.removeValue(key.withPosition(0))).isPresent().hasValue(value0);
+        assertThat(mapper.removeValue(key.withPosition(0))).isPresent().contains(value0);
 
         // Check first index
         assertThat(mapper.indexOfValue(key, value0)).isPresent().hasValue(3 - 1);
@@ -807,7 +825,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.lastIndexOfValue(key, value0)).isPresent().hasValue(4);
 
         // Remove the last value
-        assertThat(mapper.removeValue(key.withPosition(4))).isPresent().hasValue(value0);
+        assertThat(mapper.removeValue(key.withPosition(4))).isPresent().contains(value0);
 
         // Check last index
         assertThat(mapper.lastIndexOfValue(key, value0)).isPresent().hasValue(1);
@@ -872,4 +890,690 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
                 assertThat(mapper.sizeOfValue(key)).isNotPresent())
         ).isNull();
     }
+
+    //endregion
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //region Single-valued references
+
+    /**
+     * Checks the behavior of {@link ReferenceMapper#referenceOf(FeatureKey)} and {@link
+     * ReferenceMapper#referenceFor(FeatureKey, Id)}.
+     */
+    @Test
+    public void testGetSetReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1");
+
+        // Define references
+        mapper.referenceFor(key, ref0);
+        assertThat(mapper.referenceOf(key)).isPresent().contains(ref0);
+
+        // Replace the existing reference
+        assertThat(mapper.referenceFor(key, ref1)).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key)).isPresent().contains(ref1);
+    }
+
+    /**
+     * Checks the behavior of {@link ReferenceMapper#referenceOf(FeatureKey)}.
+     */
+    @Test
+    public void testGetInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.referenceOf(key)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link ReferenceMapper#referenceFor(FeatureKey, Id)} with a {@code null} reference.
+     */
+    @Test
+    public void testSetNullReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.referenceFor(key, null)).isNotPresent())
+        ).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ReferenceMapper#hasReference(FeatureKey)} and {@link
+     * ReferenceMapper#unsetReference(FeatureKey)}.
+     */
+    @Test
+    public void testIsSetUnsetReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+
+        mapper.referenceFor(key, ref0);
+
+        assertThat(mapper.referenceOf(key)).isPresent();
+        assertThat(mapper.hasReference(key)).isTrue();
+
+        mapper.unsetReference(key);
+
+        assertThat(mapper.referenceOf(key)).isNotPresent();
+        assertThat(mapper.hasReference(key)).isFalse();
+    }
+
+    /**
+     * Checks the behavior of {@link ReferenceMapper#hasReference(FeatureKey)} when the reference doesn't exist.
+     */
+    @Test
+    public void testIsSetInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.hasReference(key)).isFalse())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link ReferenceMapper#unsetReference(FeatureKey)} when the reference doesn't exist.
+     */
+    @Test
+    public void testUnsetInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                mapper.unsetReference(key))
+        ).isNull();
+    }
+
+    //endregion
+
+    //region Multi-valued references
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#referenceOf(ManyFeatureKey)} and {@link
+     * MultiReferenceMapper#referenceFor(ManyFeatureKey, Id)}.
+     */
+    @Test
+    public void testGetSetManyReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2"), ref3 = StringId.of("Ref3");
+
+        // Initialize the references
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+
+        // Replace the existing references
+        assertThat(mapper.referenceFor(key.withPosition(0), ref2)).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref2);
+
+        assertThat(mapper.referenceFor(key.withPosition(1), ref3)).isPresent().contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref3);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#referenceOf(ManyFeatureKey)} when the reference doesn't exist.
+     */
+    @Test
+    public void testGetInexistingManyReference() {
+        ManyFeatureKey key = ManyFeatureKey.of(StringId.of("Id0"), "Feature0", 0);
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.referenceOf(key)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#referenceFor(ManyFeatureKey, Id)} with a {@code null}
+     * reference.
+     */
+    @Test
+    public void testSetInexistingManyReference() {
+        ManyFeatureKey key = ManyFeatureKey.of(StringId.of("Id0"), "Feature0", 0);
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.referenceFor(key, StringId.of("Ref0"))).isNotPresent())
+        ).isInstanceOf(NoSuchElementException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#referenceFor(ManyFeatureKey, Id)} with a {@code null}
+     * reference.
+     */
+    @Test
+    public void testSetNullManyReference() {
+        ManyFeatureKey key = ManyFeatureKey.of(StringId.of("Id0"), "Feature0", 0);
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.referenceFor(key, null)).isNotPresent())
+        ).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#allReferencesOf(FeatureKey)}.
+     */
+    @Test
+    public void testAllReferencesOf() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Add references in natural order
+        mapper.appendReference(key, ref0);
+        mapper.appendReference(key, ref1);
+        mapper.appendReference(key, ref2);
+
+        // Post-process the returned Iterable
+        List<Id> actualReferences = StreamSupport
+                .stream(mapper.<String>allReferencesOf(key).spliterator(), false)
+                .collect(Collectors.toList());
+
+        assertThat(actualReferences).hasSize(3);
+
+        // Check the order of references
+        assertThat(actualReferences.get(0)).isEqualTo(ref0);
+        assertThat(actualReferences.get(1)).isEqualTo(ref1);
+        assertThat(actualReferences.get(2)).isEqualTo(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#allReferencesOf(FeatureKey)}.
+     */
+    @Test
+    public void testAllReferencesOfUnorderedAdd() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Add references in any order
+        mapper.addReference(key.withPosition(2), ref2);
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+
+        // Post-process the returned Iterable
+        List<Id> actualReferences = StreamSupport
+                .stream(mapper.<String>allReferencesOf(key).spliterator(), false)
+                .collect(Collectors.toList());
+
+        assertThat(actualReferences).hasSize(3);
+
+        // Check the order of references
+        assertThat(actualReferences.get(0)).isEqualTo(ref0);
+        assertThat(actualReferences.get(1)).isEqualTo(ref1);
+        assertThat(actualReferences.get(2)).isEqualTo(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#allReferencesOf(FeatureKey)} when the feature doesn't contain
+     * any element.
+     */
+    @Test
+    public void testAllReferencesEmpty() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.allReferencesOf(key)).isNotNull().isEmpty())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#hasAnyReference(FeatureKey)} and {@link
+     * MultiReferenceMapper#unsetAllReferences(FeatureKey)}.
+     */
+    @Test
+    public void testIsSetUnsetManyReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Initialize references
+        mapper.appendReference(key, ref0);
+        mapper.appendReference(key, ref1);
+        mapper.appendReference(key, ref2);
+
+        // Check the references
+        assertThat(mapper.hasAnyReference(key)).isTrue();
+        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(3);
+
+        // Unset all references
+        mapper.unsetAllReferences(key);
+
+        // Check that all element doesn't exist
+        assertThat(mapper.referenceOf(key.withPosition(0))).isNotPresent();
+        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
+        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+
+        // Check the references
+        assertThat(mapper.hasAnyReference(key)).isFalse();
+        assertThat(mapper.sizeOfReference(key)).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#hasAnyReference(FeatureKey)} when the reference doesn't exist.
+     */
+    @Test
+    public void testIsSetInexistingManyReference() {
+        ManyFeatureKey key = ManyFeatureKey.of(StringId.of("Id0"), "Feature0", 0);
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.hasAnyReference(key)).isFalse())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#unsetAllReferences(FeatureKey)} when the reference doesn't
+     * exist.
+     */
+    @Test
+    public void testUnsetInexistingManyReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                mapper.unsetAllReferences(key))
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#addReference(ManyFeatureKey, Id)}.
+     */
+    @Test
+    public void testAddReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Add references in natural order
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+        mapper.addReference(key.withPosition(2), ref2);
+
+        // Check all references
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#addReference(ManyFeatureKey, Id)}.
+     */
+    @Test
+    public void testAnyOrderAddReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Add references in any order
+        mapper.addReference(key.withPosition(2), ref2);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
+
+        mapper.addReference(key.withPosition(0), ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
+
+        mapper.addReference(key.withPosition(1), ref1);
+
+        // Check all references
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#addReference(ManyFeatureKey, Id)} with a {@code null}
+     * reference.
+     */
+    @Test
+    public void testAddNullReference() {
+        ManyFeatureKey key = ManyFeatureKey.of(StringId.of("Id0"), "Feature0", 0);
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                mapper.addReference(key, null))
+        ).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#appendReference(FeatureKey, Id)}.
+     */
+    @Test
+    public void testAppendReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1");
+
+        // Append references
+        mapper.appendReference(key, ref0);
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
+
+        mapper.appendReference(key, ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref1);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#appendReference(FeatureKey, Id)} with a {@code null}
+     * reference.
+     */
+    @Test
+    public void testAppendNullReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() -> mapper.appendReference(key, null))).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)}.
+     */
+    @Test
+    public void testRemoveReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), StringId.of("aaa"));
+        mapper.addReference(key.withPosition(1), StringId.of("bbb"));
+        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(2);
+        assertThat(mapper.hasAnyReference(key)).isTrue();
+
+        // Remove references
+        mapper.removeReference(key.withPosition(0));
+        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(1);
+        assertThat(mapper.hasAnyReference(key)).isTrue();
+
+        mapper.removeReference(key.withPosition(0));
+        assertThat(mapper.sizeOfReference(key)).isNotPresent();
+        assertThat(mapper.hasAnyReference(key)).isFalse();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)}.
+     */
+    @Test
+    public void testRemovedReferenceBefore() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+        mapper.addReference(key.withPosition(2), ref2);
+
+        // Remove reference, and check the removed reference
+        assertThat(mapper.removeReference(key.withPosition(0))).isPresent().contains(ref0);
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)}.
+     */
+    @Test
+    public void testRemovedReferenceAfter() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+        mapper.addReference(key.withPosition(2), ref2);
+
+        // Remove reference, and check the removed reference
+        assertThat(mapper.removeReference(key.withPosition(1))).isPresent().contains(ref1);
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)} when the reference doesn't
+     * exist.
+     */
+    @Test
+    public void testRemoveInexistingReference() {
+        ManyFeatureKey key = ManyFeatureKey.of(StringId.of("Id0"), "Feature0", 0);
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.removeReference(key)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#removeAllReferences(FeatureKey)}.
+     */
+    @Test
+    public void testRemoveAllReferences() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+
+        // Initialize references
+        mapper.appendReference(key, ref0);
+        mapper.appendReference(key, ref1);
+        mapper.appendReference(key, ref2);
+
+        // Check the references
+        assertThat(mapper.hasAnyReference(key)).isTrue();
+        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(3);
+
+        // Remove all references
+        mapper.removeAllReferences(key);
+
+        // Check that all element doesn't exist
+        assertThat(mapper.referenceOf(key.withPosition(0))).isNotPresent();
+        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
+        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+
+        // Check the references
+        assertThat(mapper.hasAnyReference(key)).isFalse();
+        assertThat(mapper.sizeOfReference(key)).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#removeAllReferences(FeatureKey)} when the reference doesn't
+     * exist.
+     */
+    @Test
+    public void testRemoveAllInexistingReferences() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                mapper.removeAllReferences(key))
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#containsReference(FeatureKey, Id)}.
+     */
+    @Test
+    public void testContainsReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+
+        // Initialize references
+        mapper.appendReference(key, StringId.of("aaa"));
+        mapper.appendReference(key, ref0);
+        mapper.appendReference(key, StringId.of("zzz"));
+
+        // Check that contains
+        assertThat(mapper.containsReference(key, ref0)).isTrue();
+
+        // Remove all references
+        mapper.removeAllReferences(key);
+
+        // Check that doesn't contain
+        assertThat(mapper.containsReference(key, ref0)).isFalse();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#containsReference(FeatureKey, Id)} when the reference doesn't
+     * exist.
+     */
+    @Test
+    public void testContainsInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.containsReference(key, StringId.of("aaa"))).isFalse())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#containsReference(FeatureKey, Id)} when the reference is
+     * {@code null}.
+     */
+    @Test
+    public void testContainsNullReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.containsReference(key, null)).isFalse())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#indexOfReference(FeatureKey, Id)}.
+     */
+    @Test
+    public void testIndexOfReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), StringId.of("aaa"));
+        mapper.addReference(key.withPosition(2), StringId.of("bbb"));
+        mapper.addReference(key.withPosition(3), ref0);
+        mapper.addReference(key.withPosition(4), StringId.of("ccc"));
+
+        // Check first index
+        assertThat(mapper.indexOfReference(key, ref0)).isPresent().hasValue(0);
+
+        // Remove the first reference
+        assertThat(mapper.removeReference(key.withPosition(0))).isPresent().contains(ref0);
+
+        // Check first index
+        assertThat(mapper.indexOfReference(key, ref0)).isPresent().hasValue(3 - 1);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#indexOfReference(FeatureKey, Id)} when the reference doesn't
+     * exist.
+     */
+    @Test
+    public void testIndexOfInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.indexOfReference(key, StringId.of("aaa"))).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#indexOfReference(FeatureKey, Id)} when the reference is {@code
+     * null}.
+     */
+    @Test
+    public void testIndexOfNullReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.indexOfReference(key, null)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#lastIndexOfReference(FeatureKey, Id)}.
+     */
+    @Test
+    public void testLastIndexOfReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), StringId.of("aaa"));
+        mapper.addReference(key.withPosition(1), ref0);
+        mapper.addReference(key.withPosition(2), StringId.of("bbb"));
+        mapper.addReference(key.withPosition(3), StringId.of("ccc"));
+        mapper.addReference(key.withPosition(4), ref0);
+
+        // Check last index
+        assertThat(mapper.lastIndexOfReference(key, ref0)).isPresent().hasValue(4);
+
+        // Remove the last reference
+        assertThat(mapper.removeReference(key.withPosition(4))).isPresent().contains(ref0);
+
+        // Check last index
+        assertThat(mapper.lastIndexOfReference(key, ref0)).isPresent().hasValue(1);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#lastIndexOfReference(FeatureKey, Id)} when the reference
+     * doesn't exist.
+     */
+    @Test
+    public void testLastIndexOfInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.lastIndexOfReference(key, StringId.of("aaa"))).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#lastIndexOfReference(FeatureKey, Id)} when the reference is
+     * {@code null}.
+     */
+    @Test
+    public void testLastIndexOfNullReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.lastIndexOfReference(key, null)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#sizeOfReference(FeatureKey)}.
+     */
+    @Test
+    public void testSizeOfReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        // Initialize references
+        mapper.appendReference(key, StringId.of("aaa"));
+        mapper.appendReference(key, StringId.of("bbb"));
+        mapper.appendReference(key, StringId.of("ccc"));
+
+        // Check the size
+        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(3);
+
+        // Remove a reference
+        mapper.removeReference(key.withPosition(1));
+
+        // Check the size
+        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(2);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiReferenceMapper#sizeOfReference(FeatureKey)} when the reference doesn't exist.
+     */
+    @Test
+    public void testSizeOfInexistingReference() {
+        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.sizeOfReference(key)).isNotPresent())
+        ).isNull();
+    }
+
+    //endregion
 }

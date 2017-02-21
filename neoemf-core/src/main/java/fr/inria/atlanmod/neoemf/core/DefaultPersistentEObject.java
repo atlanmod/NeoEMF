@@ -535,16 +535,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             super(DefaultPersistentEObject.this, feature);
         }
 
-        @Override
-        public boolean contains(Object object) {
-            return delegateContains(object);
-        }
-
         /**
          * {@inheritDoc}
          * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
-         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature)} implementation.
+         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject,
+         * EStructuralFeature, int)} by delegating the call to the {@link EStore#toArray(InternalEObject,
+         * EStructuralFeature)} implementation.
          */
         @Override
         public Object[] toArray() {
@@ -554,12 +550,18 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         /**
          * {@inheritDoc}
          * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
-         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
+         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject,
+         * EStructuralFeature, int)} by delegating the call to the {@link EStore#toArray(InternalEObject,
+         * EStructuralFeature, Object[])} implementation.
          */
         @Override
         public <T> T[] toArray(T[] array) {
             return eStore().toArray(owner, getEStructuralFeature(), array);
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return delegateContains(object);
         }
 
         /**

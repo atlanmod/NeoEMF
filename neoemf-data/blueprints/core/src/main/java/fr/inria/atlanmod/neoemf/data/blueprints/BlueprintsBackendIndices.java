@@ -293,14 +293,26 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Vertex vertex = getOrCreate(key.id());
 
-        if (key.position() != size) {
-            Iterable<Edge> edges = vertex.query()
-                    .labels(key.name())
-                    .direction(Direction.OUT)
-                    .interval(KEY_POSITION, key.position(), size + 1)
-                    .edges();
+        // If the corresponding Edge already exists and has a value
+        boolean alreadyExists = StreamSupport.stream(
+                vertex.query()
+                        .labels(key.name())
+                        .direction(Direction.OUT)
+                        .has(KEY_POSITION, key.position())
+                        .edges().spliterator(), false)
+                .findAny()
+                .isPresent();
 
-            edges.forEach(e -> e.setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
+        if (key.position() >= size || alreadyExists) {
+            if (key.position() != size) {
+                Iterable<Edge> edges = vertex.query()
+                        .labels(key.name())
+                        .direction(Direction.OUT)
+                        .interval(KEY_POSITION, key.position(), size + 1)
+                        .edges();
+
+                edges.forEach(e -> e.setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
+            }
         }
 
         Edge edge = vertex.addEdge(key.name(), getOrCreate(reference));
