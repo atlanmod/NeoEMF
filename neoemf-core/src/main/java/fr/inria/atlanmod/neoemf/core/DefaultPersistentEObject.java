@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.store.OwnedTransientStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
@@ -231,7 +232,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         return sb.toString();
     }
-
+    
     @Override
     protected void eBasicSetContainer(InternalEObject eContainer) {
         this.eContainer = eContainer;
@@ -345,8 +346,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Override
     public InternalEObject eInternalContainer() {
-        // Do not load the container from the store here: it creates an important overhead and performance loss
-        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
+        /*
+         * Don't load the container from the store here: it creates an important
+         * overhead and performance loss. 
+         * [Update 21-02-2017] don't call super.eInternalContainer() either: it 
+         * will delegate to the store.
+         */
+        return eContainer;
+//        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
     }
 
     @Override

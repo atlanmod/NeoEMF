@@ -8,6 +8,7 @@ Current SNAPSHOT.
 - __[FIX]__ Issue #54: AbstractDirectWrite.toArray is not efficient
 - __[FIX]__ Issue #55: DefaultPersistentEObject.eContainer is not efficient
 - __[FIX]__ Issue #56: Unnecessary backend lookups in Store.eObject(Id)
+- __[FIX]__ Issue #68: Creating contained objects with Epsilon does not work
 
 ### Back-ends
 - __[NEW]__ Merge common code from MapDB & BerkeleyDB in Map module
