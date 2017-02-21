@@ -7,8 +7,7 @@ Current SNAPSHOT.
 - __[FIX]__ Issue #54: `AbstractDirectWrite#toArray()` is not efficient
 - __[FIX]__ Issue #55: `DefaultPersistentEObject#eContainer()` is not efficient
 - __[FIX]__ Issue #56: Unnecessary backend lookups in `PersistentStore#eObject(Id)`
-
-### Back-ends
+- __[FIX]__ Issue #68: Creating contained objects with Epsilon does not work
 
 ## 1.0.1 _(2017-01-16)_
 

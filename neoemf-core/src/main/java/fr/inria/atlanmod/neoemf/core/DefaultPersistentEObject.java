@@ -40,6 +40,7 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -354,8 +355,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Override
     public InternalEObject eInternalContainer() {
-        // Do not load the container from the store here: it creates an important overhead and performance loss
-        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
+        /*
+         * Don't load the container from the store here: it creates an important
+         * overhead and performance loss.
+         * [Update 21-02-2017] don't call super.eInternalContainer() either: it
+         * will delegate to the store.
+         */
+        return eContainer;
+//        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
     }
 
     @Override
@@ -536,6 +543,28 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         @Override
         public boolean contains(Object object) {
             return delegateContains(object);
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
+         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature)} implementation.
+         */
+        @Override
+        public Object[] toArray() {
+            return eStore().toArray(owner, getEStructuralFeature());
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
+         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
+         */
+        @Override
+        public <T> T[] toArray(T[] array) {
+            return eStore().toArray(owner, getEStructuralFeature(), array);
         }
 
         /**
