@@ -289,6 +289,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
+        checkNotNull(id);
+
         Optional<Vertex> containmentVertex = get(id);
 
         if (!containmentVertex.isPresent()) {
@@ -310,6 +312,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(id);
         checkNotNull(container);
 
         Vertex containmentVertex = getOrCreate(id);
@@ -324,6 +327,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        checkNotNull(id);
+
         Optional<Vertex> vertex = get(id);
 
         if (!vertex.isPresent()) {
@@ -338,6 +343,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(id);
         checkNotNull(metaclass);
 
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());

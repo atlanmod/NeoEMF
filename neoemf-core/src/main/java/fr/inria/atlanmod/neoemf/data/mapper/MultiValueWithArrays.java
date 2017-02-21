@@ -22,8 +22,10 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -37,6 +39,8 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(ManyFeatureKey key) {
+        checkNotNull(key);
+
         return this.<V[]>valueOf(key.withoutPosition())
                 .map(values -> values[key.position()]);
     }
@@ -54,6 +58,8 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -69,6 +75,8 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     @SuppressWarnings("unchecked")
     default <V> void addValue(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse((V[]) new Object[0]);
 
@@ -89,6 +97,8 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
+        checkNotNull(key);
+
         Optional<V[]> optionalValues = valueOf(key.withoutPosition());
 
         if (!optionalValues.isPresent()) {
@@ -112,7 +122,11 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     }
 
     @Override
-    default <V> boolean containsValue(FeatureKey key, V value) {
+    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return false;
+        }
+
         return this.<V[]>valueOf(key)
                 .map(values -> ArrayUtils.contains(values, value))
                 .orElse(false);
@@ -120,7 +134,11 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return OptionalInt.empty();
+        }
+
         return this.<V[]>valueOf(key)
                 .map(values -> {
                     int index = ArrayUtils.indexOf(values, value);
@@ -131,7 +149,11 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return OptionalInt.empty();
+        }
+
         return this.<V[]>valueOf(key)
                 .map(values -> {
                     int index = ArrayUtils.lastIndexOf(values, value);

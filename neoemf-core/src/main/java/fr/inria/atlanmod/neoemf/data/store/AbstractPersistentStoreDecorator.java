@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -186,21 +187,21 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         return next.containsValue(key, value);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         return next.indexOfValue(key, value);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         return next.lastIndexOfValue(key, value);
     }
 
@@ -297,21 +298,21 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public boolean containsReference(FeatureKey key, Id reference) {
+    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         return next.containsReference(key, reference);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         return next.indexOfReference(key, reference);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return next.lastIndexOfReference(key, reference);
     }
 

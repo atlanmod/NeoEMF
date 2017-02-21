@@ -184,19 +184,19 @@ public class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         return backend.containsValue(key, value);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         return backend.indexOfValue(key, value);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         return backend.lastIndexOfValue(key, value);
     }
 
@@ -278,19 +278,19 @@ public class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id reference) {
+    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         return backend.containsReference(key, reference);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         return backend.indexOfReference(key, reference);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return backend.lastIndexOfReference(key, reference);
     }
 

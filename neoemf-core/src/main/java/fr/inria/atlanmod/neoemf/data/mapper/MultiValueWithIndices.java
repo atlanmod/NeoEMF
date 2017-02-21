@@ -23,10 +23,12 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
@@ -38,7 +40,16 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
+    default <V> Iterable<V> allValuesOf(FeatureKey key) {
+        return IntStream.range(0, sizeOfValue(key).orElse(0))
+                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
+                .collect(Collectors.toList());
+    }
+
+    @Nonnull
+    @Override
     default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+        checkNotNull(key);
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
@@ -51,16 +62,9 @@ public interface MultiValueWithIndices extends MultiValueMapper {
         return previousValue;
     }
 
-    @Nonnull
-    @Override
-    default <V> Iterable<V> allValuesOf(FeatureKey key) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
-    }
-
     @Override
     default <V> void addValue(ManyFeatureKey key, V value) {
+        checkNotNull(key);
         checkNotNull(value);
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
@@ -82,6 +86,8 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
+        checkNotNull(key);
+
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
         if (size == 0) {
             return Optional.empty();
@@ -109,7 +115,11 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     @Override
-    default <V> boolean containsValue(FeatureKey key, V value) {
+    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return false;
+        }
+
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .anyMatch(i -> valueOf(key.withPosition(i))
                         .map(v -> Objects.equals(v, value))
@@ -118,7 +128,11 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return OptionalInt.empty();
+        }
+
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i))
                         .map(v -> Objects.equals(v, value))
@@ -128,7 +142,11 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return OptionalInt.empty();
+        }
+
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .filter(i -> valueOf(key.withPosition(i))
                         .map(v -> Objects.equals(v, value))
@@ -139,6 +157,8 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     @Nonnull
     @Override
     default OptionalInt sizeOfValue(FeatureKey key) {
+        checkNotNull(key);
+
         return valueOf(key)
                 .map(v -> OptionalInt.of((int) v))
                 .orElse(OptionalInt.empty());
@@ -149,8 +169,12 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      *
      * @param key  the key identifying the multi-valued attribute
      * @param size the number of values
+     *
+     * @throws NullPointerException     if the {@code key} is {@code null}
+     * @throws IllegalArgumentException if {@code size < 0}
      */
     default void sizeFor(FeatureKey key, @Nonnegative int size) {
+        checkNotNull(key);
         checkArgument(size >= 0);
 
         if (size > 0) {
@@ -170,8 +194,10 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to set
      * @param <V>   the type of value
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    default <V> void safeValueFor(ManyFeatureKey key, V value) {
+    default <V> void safeValueFor(ManyFeatureKey key, V value) throws NullPointerException {
         throw new IllegalStateException("This method should be overwritten if you use the default valueFor(ManyFeatureKey, V) and/or add(ManyFeatureKey, V) methods");
     }
 }

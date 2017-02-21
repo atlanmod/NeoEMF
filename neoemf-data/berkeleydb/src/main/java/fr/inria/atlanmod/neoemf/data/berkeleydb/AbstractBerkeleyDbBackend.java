@@ -159,48 +159,65 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
+        checkNotNull(id);
+
         return get(containers, id);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(id);
+        checkNotNull(container);
+
         put(containers, id, container);
     }
 
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        checkNotNull(id);
+
         return get(instances, id);
     }
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(id);
+        checkNotNull(metaclass);
+
         put(instances, id, metaclass);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
+        checkNotNull(key);
+
         return get(features, key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         Optional<V> previousValue = valueOf(key);
-
         put(features, key, value);
-
         return previousValue;
     }
 
     @Override
     public void unsetValue(FeatureKey key) {
+        checkNotNull(key);
+
         delete(features, key);
     }
 
     @Override
     public boolean hasValue(FeatureKey key) {
+        checkNotNull(key);
+
         return get(features, key).isPresent();
     }
 

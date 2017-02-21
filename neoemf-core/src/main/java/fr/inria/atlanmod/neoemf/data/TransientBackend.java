@@ -114,11 +114,14 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
+        checkNotNull(id);
+
         return Optional.ofNullable(containerMap.get(id));
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(id);
         checkNotNull(container);
 
         containerMap.put(id, container);
@@ -127,11 +130,14 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        checkNotNull(id);
+
         return Optional.ofNullable(instanceOfMap.get(id));
     }
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(id);
         checkNotNull(metaclass);
 
         instanceOfMap.put(id, metaclass);
@@ -140,12 +146,15 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
+        checkNotNull(key);
+
         return Optional.ofNullable(cast(features.get(key)));
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        checkNotNull(key);
         checkNotNull(value);
 
         return Optional.ofNullable(cast(features.put(key, value)));
@@ -153,22 +162,31 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
+        checkNotNull(key);
+
         features.remove(key);
     }
 
     @Override
     public <V> boolean hasValue(FeatureKey key) {
+        checkNotNull(key);
+
         return features.containsKey(key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
+        checkNotNull(key);
+
         return Optional.ofNullable(cast(multiFeatures.get(key)));
     }
 
     @Override
     public <V> void safeValueFor(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         multiFeatures.put(key, value);
     }
 }

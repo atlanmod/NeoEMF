@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * ???
@@ -81,11 +82,16 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
+        checkNotNull(key);
+
         return get(multivaluedFeatures, key);
     }
 
     @Override
     public <V> void safeValueFor(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         put(multivaluedFeatures, key, value);
     }
 }

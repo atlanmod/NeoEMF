@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -160,21 +161,21 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         loadedObjects.add(key.id());
         return super.containsValue(key, value);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         loadedObjects.add(key.id());
         return super.indexOfValue(key, value);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         loadedObjects.add(key.id());
         return super.lastIndexOfValue(key, value);
     }
@@ -271,21 +272,21 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id reference) {
+    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         loadedObjects.add(key.id());
         return super.containsReference(key, reference);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         loadedObjects.add(key.id());
         return super.indexOfReference(key, reference);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         loadedObjects.add(key.id());
         return super.lastIndexOfReference(key, reference);
     }

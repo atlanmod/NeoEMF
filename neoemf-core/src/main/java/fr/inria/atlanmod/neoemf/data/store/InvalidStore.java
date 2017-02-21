@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -161,19 +162,19 @@ public final class InvalidStore extends AbstractPersistentStore {
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -255,19 +256,19 @@ public final class InvalidStore extends AbstractPersistentStore {
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id reference) {
+    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         throw new UnsupportedOperationException(MSG);
     }
 

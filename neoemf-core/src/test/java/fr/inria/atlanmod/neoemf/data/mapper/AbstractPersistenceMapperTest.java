@@ -31,8 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
@@ -46,22 +46,12 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
-     * The minimum size of a multi-valued feature.
-     */
-    private static final int MIN_SIZE = 10;
-
-    /**
-     * The maximum size of a multi-valued feature.
-     */
-    private static final int MAX_SIZE = 20;
-
-    /**
-     * The minimum number of inserted {@link Id} in a {@link PersistenceMapper}.
+     * The minimum integer for {@link #randomInt(int, int)}.
      */
     private static final int MIN_BOUND = 10;
 
     /**
-     * The maximum number of inserted {@link Id} in a {@link PersistenceMapper}.
+     * The maximum integer for {@link #randomInt(int, int)}.
      */
     private static final int MAX_BOUND = 20;
 
@@ -71,53 +61,42 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     private PersistenceMapper mapper;
 
     /**
-     * Creates a new random {@link Id}.
+     * Returns a random {@link Id}.
      *
-     * @return a new {@link Id}
+     * @return a random {@link Id}
      */
     private static Id randomId() {
         return StringId.generate();
     }
 
     /**
-     * Creates a new random {@link String}.
+     * Returns a random {@link String}.
      *
-     * @return a new {@link String}
+     * @return a random {@link String}
      */
     private static String randomString() {
         return UUID.randomUUID().toString();
     }
 
     /**
-     * Creates a new random {@code int} between {@link #MIN_SIZE} and {@link #MAX_SIZE}.
+     * Returns a pseudo-random {@code int} value between {@link #MIN_BOUND} and {@link #MAX_BOUND} (exclusive).
      *
-     * @return a new integer
+     * @return a pseudo-random {@code int}
      */
-    private static int randomSize() {
-        return generate(MIN_SIZE, MAX_SIZE);
+    private static int randomInt() {
+        return randomInt(MIN_BOUND, MAX_BOUND);
     }
 
     /**
-     * Creates a new random {@code int} between {@link #MIN_BOUND} and {@link #MAX_BOUND}.
+     * Returns a pseudo-random {@code int} value between {@code origin} and {@code bound} (exclusive).
      *
-     * @return a new integer
+     * @param origin the least value returned
+     * @param bound  the upper bound (exclusive)
+     *
+     * @return a pseudo-random {@code int}
      */
-    private static int randomBound() {
-        return generate(MIN_BOUND, MAX_BOUND);
-    }
-
-    /**
-     * Creates a new random {@code int} between {@link #MIN_BOUND} and {@code max}.
-     *
-     * @param min the minimum bound
-     * @param max the maximum bound
-     *
-     * @return a new integer
-     */
-    private static int generate(int min, int max) {
-        int value = new Random().nextInt(max);
-        value += value < min ? min : 0;
-        return value;
+    private static int randomInt(int origin, int bound) {
+        return ThreadLocalRandom.current().nextInt(origin, bound);
     }
 
     /**
@@ -176,6 +155,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testExists() {
         Id id = randomId();
         mapper.metaclassFor(id, MetaclassDescriptor.of(randomString(), randomString()));
+
         assertThat(mapper.exists(id)).isTrue();
     }
 
@@ -189,7 +169,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         ContainerDescriptor container = ContainerDescriptor.of(randomId(), randomString());
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             all.add(randomId());
         }
 
@@ -208,7 +188,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetDifferentContainer() {
         Map<Id, ContainerDescriptor> allContainers = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             allContainers.put(randomId(), ContainerDescriptor.of(randomId(), randomString()));
         }
 
@@ -249,7 +229,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         List<Id> all = new ArrayList<>();
 
         MetaclassDescriptor metaclass = MetaclassDescriptor.of(randomString(), randomString());
-        for (int nb = 0; nb < randomBound(); nb++) {
+
+        for (int nb = 0; nb < randomInt(); nb++) {
             all.add(randomId());
         }
 
@@ -268,7 +249,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetDifferentMetaclass() {
         Map<Id, MetaclassDescriptor> allMetaclasses = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             allMetaclasses.put(randomId(), MetaclassDescriptor.of(randomString(), randomString()));
         }
 
@@ -307,7 +288,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetValue() {
         Map<FeatureKey, String> allValues = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             allValues.put(FeatureKey.of(randomId(), randomString()), randomString());
         }
 
@@ -349,7 +330,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testIsSetUnsetValue() {
         Map<FeatureKey, String> allValues = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             allValues.put(FeatureKey.of(randomId(), randomString()), randomString());
         }
 
@@ -396,10 +377,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetManyValue() {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
 
-            for (int position = 0; position < randomSize(); position++) {
+            for (int position = 0; position < randomInt(); position++) {
                 allValues.put(key.withPosition(position), randomString());
             }
         }
@@ -421,7 +402,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Test
     public void testGetInexistingManyValue() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(ManyFeatureKey.of(randomId(), randomString(), 15))).isNotPresent())
+                assertThat(mapper.valueOf(ManyFeatureKey.of(randomId(), randomString(), randomInt()))).isNotPresent())
         ).isNull();
     }
 
@@ -432,7 +413,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testSetInexistingManyValue() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(ManyFeatureKey.of(randomId(), randomString(), 15), randomString())).isNotPresent())
+                assertThat(mapper.valueFor(ManyFeatureKey.of(randomId(), randomString(), randomInt()), randomString())).isNotPresent())
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -443,7 +424,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testSetNullManyValue() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(ManyFeatureKey.of(randomId(), randomString(), 15), null)).isNotPresent())
+                assertThat(mapper.valueFor(ManyFeatureKey.of(randomId(), randomString(), randomInt()), null)).isNotPresent())
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -454,10 +435,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAllValuesOf() {
         Map<FeatureKey, List<String>> allValues = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
 
-            for (int position = 0; position < randomSize(); position++) {
+            for (int position = 0; position < randomInt(); position++) {
                 String value = randomString();
 
                 mapper.addValue(key.withPosition(position), value);
@@ -475,7 +456,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
             assertThat(actualValues).hasSameSizeAs(expectedValues);
 
-            IntStream.range(0, expectedValues.size()).forEach(i -> assertThat(actualValues.get(i)).isEqualTo(expectedValues.get(i)));
+            IntStream.range(0, expectedValues.size())
+                    .forEach(i -> assertThat(actualValues.get(i)).isEqualTo(expectedValues.get(i)));
         });
     }
 
@@ -498,9 +480,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testIsSetUnsetManyValue() {
         Map<FeatureKey, Integer> allFeatures = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
             allFeatures.put(key, size);
 
             for (int position = 0; position < size; position++) {
@@ -528,7 +510,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Test
     public void testIsSetInexistingManyValue() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyValue(ManyFeatureKey.of(randomId(), randomString(), 15))).isFalse())
+                assertThat(mapper.hasAnyValue(ManyFeatureKey.of(randomId(), randomString(), randomInt()))).isFalse())
         ).isNull();
     }
 
@@ -550,9 +532,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
 
             allSizes.put(key, size);
 
@@ -581,9 +563,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
 
             allSizes.put(key, size);
 
@@ -612,7 +594,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddNullValue() {
-        ManyFeatureKey key = ManyFeatureKey.of(randomId(), randomString(), 17);
+        ManyFeatureKey key = ManyFeatureKey.of(randomId(), randomString(), randomInt());
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
@@ -628,9 +610,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
 
             allSizes.put(key, size);
 
@@ -670,9 +652,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
 
             allSizes.put(key, size);
 
@@ -713,7 +695,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Test
     public void testRemoveInexistingValue() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeValue(ManyFeatureKey.of(randomId(), randomString(), 15))).isNotPresent())
+                assertThat(mapper.removeValue(ManyFeatureKey.of(randomId(), randomString(), randomInt()))).isNotPresent())
         ).isNull();
     }
 
@@ -725,9 +707,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
 
             allSizes.put(key, size);
 
@@ -774,10 +756,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testContainsValue() {
         Map<ManyFeatureKey, String> allValues = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
 
-            for (int position = 0; position < randomSize(); position++) {
+            for (int position = 0; position < randomInt(); position++) {
                 allValues.put(key.withPosition(position), randomString());
             }
         }
@@ -807,11 +789,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the behavior of {@link MultiValueMapper#containsValue(FeatureKey, Object)} when the value is {@code null}.
+     */
+    @Test
+    public void testContainsNullValue() {
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.containsValue(FeatureKey.of(randomId(), randomString()), null)).isFalse())
+        ).isNull();
+    }
+
+    /**
      * Checks the behavior of {@link MultiValueMapper#indexOfValue(FeatureKey, Object)}.
      */
     @Test
     public void testIndexOfValue() {
-        int size = randomSize();
+        int size = randomInt();
 
         int nbValues = size / 4;
 
@@ -821,11 +813,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         Map<FeatureKey, Map<String, Integer>> allIndexOf = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
 
             for (int position = 0; position < size; position++) {
-                String value = values.get(generate(0, nbValues));
+                String value = values.get(randomInt(0, nbValues));
 
                 mapper.addValue(key.withPosition(position), value);
 
@@ -854,11 +846,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the behavior of {@link MultiValueMapper#indexOfValue(FeatureKey, Object)} when the value is {@code null}.
+     */
+    @Test
+    public void testIndexOfNullValue() {
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.indexOfValue(FeatureKey.of(randomId(), randomString()), null)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
      * Checks the behavior of {@link MultiValueMapper#lastIndexOfValue(FeatureKey, Object)}.
      */
     @Test
     public void testLastIndexOfValue() {
-        int size = randomSize();
+        int size = randomInt();
 
         int nbValues = size / 4;
 
@@ -868,11 +870,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         Map<FeatureKey, Map<String, Integer>> allIndexOf = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
 
             for (int position = 0; position < size; position++) {
-                String value = values.get(generate(0, nbValues));
+                String value = values.get(randomInt(0, nbValues));
 
                 mapper.addValue(key.withPosition(position), value);
 
@@ -902,15 +904,26 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the behavior of {@link MultiValueMapper#lastIndexOfValue(FeatureKey, Object)} when the value is {@code
+     * null}.
+     */
+    @Test
+    public void testLastIndexOfNullValue() {
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.lastIndexOfValue(FeatureKey.of(randomId(), randomString()), null)).isNotPresent())
+        ).isNull();
+    }
+
+    /**
      * Checks the behavior of {@link MultiValueMapper#sizeOfValue(FeatureKey)}.
      */
     @Test
     public void testSizeOfValue() {
         Map<FeatureKey, Integer> allSizes = new LinkedHashMap<>();
 
-        for (int nb = 0; nb < randomBound(); nb++) {
+        for (int nb = 0; nb < randomInt(); nb++) {
             FeatureKey key = FeatureKey.of(randomId(), randomString());
-            int size = randomSize();
+            int size = randomInt();
 
             allSizes.put(key, size);
 

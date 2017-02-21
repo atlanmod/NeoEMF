@@ -30,6 +30,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
  * <p>
@@ -85,11 +87,16 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
+        checkNotNull(key);
+
         return get(multivaluedFeatures, key);
     }
 
     @Override
     public <V> void safeValueFor(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         put(multivaluedFeatures, key, value);
     }
 }

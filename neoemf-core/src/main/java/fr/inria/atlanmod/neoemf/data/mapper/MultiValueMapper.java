@@ -14,11 +14,15 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
@@ -33,9 +37,11 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the key hasn't any value or
      * doesn't exist
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueOf(ManyFeatureKey key);
+    <V> Optional<V> valueOf(ManyFeatureKey key) throws NullPointerException;
 
     /**
      * Retrieves all values of the specified {@code key}.
@@ -43,9 +49,11 @@ public interface MultiValueMapper extends ValueMapper {
      * @param key the key identifying the multi-valued attribute
      *
      * @return an {@link Iterable} containing all values
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Iterable<V> allValuesOf(FeatureKey key);
+    <V> Iterable<V> allValuesOf(FeatureKey key) throws NullPointerException;
 
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
@@ -57,20 +65,24 @@ public interface MultiValueMapper extends ValueMapper {
      * @return an {@link Optional} containing the previous value of the {@code key}, or {@link Optional#empty()} if the
      * key has no value before
      *
-     * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
+     * @throws NoSuchElementException if the {@code key} doesn't exist
+     * @throws NullPointerException   if any parameter is {@code null}
+     * @throws NoSuchElementException if the {@code key} doesn't exist
      * @see #addValue(ManyFeatureKey, Object)
      * @see #appendValue(FeatureKey, Object)
      */
     @Nonnull
-    <V> Optional<V> valueFor(ManyFeatureKey key, V value);
+    <V> Optional<V> valueFor(ManyFeatureKey key, V value) throws NullPointerException, NoSuchElementException;
 
     /**
      * Unsets all values of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued attribute
      * @param <V> the type of value
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void unsetAllValues(FeatureKey key) {
+    default <V> void unsetAllValues(FeatureKey key) throws NullPointerException {
         unsetValue(key);
     }
 
@@ -81,8 +93,10 @@ public interface MultiValueMapper extends ValueMapper {
      * @param <V> the type of value
      *
      * @return {@code true} if the {@code key} has a value, {@code false} otherwise
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> boolean hasAnyValue(FeatureKey key) {
+    default <V> boolean hasAnyValue(FeatureKey key) throws NullPointerException {
         return hasValue(key);
     }
 
@@ -93,8 +107,10 @@ public interface MultiValueMapper extends ValueMapper {
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to add
      * @param <V>   the type of value
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> void addValue(ManyFeatureKey key, V value);
+    <V> void addValue(ManyFeatureKey key, V value) throws NullPointerException;
 
     /**
      * Adds the {@code value} to the specified {@code key} at the last position.
@@ -102,8 +118,12 @@ public interface MultiValueMapper extends ValueMapper {
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to add
      * @param <V>   the type of value
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    default <V> void appendValue(FeatureKey key, V value) {
+    default <V> void appendValue(FeatureKey key, V value) throws NullPointerException {
+        checkNotNull(key);
+
         addValue(key.withPosition(sizeOfValue(key).orElse(0)), value);
     }
 
@@ -116,18 +136,20 @@ public interface MultiValueMapper extends ValueMapper {
      * @return an {@link Optional} containing the removed value, or {@link Optional#empty()} if the key has no value
      * before
      *
-     * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Optional<V> removeValue(ManyFeatureKey key);
+    <V> Optional<V> removeValue(ManyFeatureKey key) throws NullPointerException;
 
     /**
      * Removes all values of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued attribute
      * @param <V> the type of value
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void removeAllValues(FeatureKey key) {
+    default <V> void removeAllValues(FeatureKey key) throws NullPointerException {
         unsetValue(key);
     }
 
@@ -139,8 +161,10 @@ public interface MultiValueMapper extends ValueMapper {
      * @param <V>   the type of value
      *
      * @return {@code true} if the {@code key} has the {@code value}, {@code false} otherwise
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> boolean containsValue(FeatureKey key, V value);
+    <V> boolean containsValue(FeatureKey key, @Nullable V value) throws NullPointerException;
 
     /**
      * Retrieves the first position of the {@code value} of the specified {@code key}.
@@ -151,9 +175,11 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @return an {@link OptionalInt} containing the first position of the {@code value}, or {@link OptionalInt#empty()}
      * if the {@code key} hasn't the {@code value}
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> OptionalInt indexOfValue(FeatureKey key, V value);
+    <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) throws NullPointerException;
 
     /**
      * Retrieves the last position of the {@code value} of the specified {@code key}.
@@ -164,9 +190,11 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @return an {@link OptionalInt} containing the last position of the {@code value}, or {@link OptionalInt#empty()}
      * if the {@code key} hasn't the {@code value}
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> OptionalInt lastIndexOfValue(FeatureKey key, V value);
+    <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) throws NullPointerException;
 
     /**
      * Returns the number of value of the specified {@code key}.
@@ -176,7 +204,9 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @return an {@link OptionalInt} containing the number of value of the {@code key}, or {@link OptionalInt#empty()}
      * if the {@code key} hasn't any value, or if {@code size == 0}.
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> OptionalInt sizeOfValue(FeatureKey key);
+    <V> OptionalInt sizeOfValue(FeatureKey key) throws NullPointerException;
 }

@@ -34,15 +34,19 @@ public interface ContainerMapper {
      *
      * @return an {@link Optional} containing the {@link ContainerDescriptor}, or {@link Optional#empty()} if the {@code
      * id} has no defined container.
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<ContainerDescriptor> containerOf(Id id);
+    Optional<ContainerDescriptor> containerOf(Id id) throws NullPointerException;
 
     /**
      * Stores the {@link ContainerDescriptor} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the contained element
      * @param container the {@link ContainerDescriptor} containing element's container information to store
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    void containerFor(Id id, ContainerDescriptor container);
+    void containerFor(Id id, ContainerDescriptor container) throws NullPointerException;
 }

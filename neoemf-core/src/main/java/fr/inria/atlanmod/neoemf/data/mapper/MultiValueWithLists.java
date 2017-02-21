@@ -22,8 +22,10 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -37,6 +39,8 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(ManyFeatureKey key) {
+        checkNotNull(key);
+
         return this.<List<V>>valueOf(key.withoutPosition())
                 .map(values -> values.get(key.position()));
     }
@@ -51,6 +55,8 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -63,6 +69,8 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
     @Override
     default <V> void addValue(ManyFeatureKey key, V value) {
+        checkNotNull(key);
+
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(newList());
 
@@ -83,6 +91,8 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
+        checkNotNull(key);
+
         Optional<List<V>> optionalValues = valueOf(key.withoutPosition());
 
         if (!optionalValues.isPresent()) {
@@ -104,7 +114,11 @@ public interface MultiValueWithLists extends MultiValueMapper {
     }
 
     @Override
-    default <V> boolean containsValue(FeatureKey key, V value) {
+    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return false;
+        }
+
         return this.<List<V>>valueOf(key)
                 .map(values -> values.contains(value))
                 .orElse(false);
@@ -112,7 +126,11 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return OptionalInt.empty();
+        }
+
         return this.<List<V>>valueOf(key)
                 .map(values -> {
                     int index = values.indexOf(value);
@@ -123,7 +141,11 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
     @Nonnull
     @Override
-    default <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return OptionalInt.empty();
+        }
+
         return this.<List<V>>valueOf(key)
                 .map(values -> {
                     int index = values.lastIndexOf(value);

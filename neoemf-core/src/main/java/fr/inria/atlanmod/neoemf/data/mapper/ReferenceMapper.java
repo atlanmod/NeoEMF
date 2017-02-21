@@ -34,9 +34,11 @@ public interface ReferenceMapper extends ValueMapper {
      *
      * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the key hasn't any reference
      * or doesn't exist
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceOf(FeatureKey key) {
+    default Optional<Id> referenceOf(FeatureKey key) throws NullPointerException {
         return valueOf(key);
     }
 
@@ -48,9 +50,11 @@ public interface ReferenceMapper extends ValueMapper {
      *
      * @return an {@link Optional} containing the previous reference of the {@code key}, or {@link Optional#empty()} if
      * the key has no reference before
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    default Optional<Id> referenceFor(FeatureKey key, Id reference) throws NullPointerException {
         return valueFor(key, reference);
     }
 
@@ -58,8 +62,10 @@ public interface ReferenceMapper extends ValueMapper {
      * Unsets the reference of the specified {@code key}.
      *
      * @param key the key identifying the reference
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    default void unsetReference(FeatureKey key) {
+    default void unsetReference(FeatureKey key) throws NullPointerException {
         unsetValue(key);
     }
 
@@ -69,8 +75,10 @@ public interface ReferenceMapper extends ValueMapper {
      * @param key the key identifying the reference
      *
      * @return {@code true} if the {@code key} has a reference, {@code false} otherwise
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    default boolean hasReference(FeatureKey key) {
+    default boolean hasReference(FeatureKey key) throws NullPointerException {
         return hasValue(key);
     }
 }

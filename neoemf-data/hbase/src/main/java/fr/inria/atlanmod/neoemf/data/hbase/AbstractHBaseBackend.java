@@ -142,6 +142,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
+        checkNotNull(id);
+
         return get(id)
                 .map(result -> {
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
@@ -156,6 +158,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(id);
+        checkNotNull(container);
+
         try {
             Put put = new Put(ObjectSerializer.serialize(id));
             put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, ObjectSerializer.serialize(container.id()));
@@ -169,6 +174,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        checkNotNull(id);
+
         return get(id)
                 .map(result -> {
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
@@ -183,6 +190,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(id);
+        checkNotNull(metaclass);
+
         try {
             Put put = new Put(ObjectSerializer.serialize(id));
             put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, ObjectSerializer.serialize(metaclass.name()));
@@ -196,26 +206,33 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
+        checkNotNull(key);
+
         return get(key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         Optional<V> previousValue = valueOf(key);
-
         put(key, value);
-
         return previousValue;
     }
 
     @Override
     public void unsetValue(FeatureKey key) {
+        checkNotNull(key);
+
         delete(key);
     }
 
     @Override
     public boolean hasValue(FeatureKey key) {
+        checkNotNull(key);
+
         return get(key).isPresent();
     }
 

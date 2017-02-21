@@ -15,11 +15,15 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An object capable of mapping multi-valued references represented as a set of key/value pair.
@@ -36,9 +40,11 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the key hasn't any reference
      * or doesn't exist
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceOf(ManyFeatureKey key) {
+    default Optional<Id> referenceOf(ManyFeatureKey key) throws NullPointerException {
         return valueOf(key);
     }
 
@@ -48,9 +54,11 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @param key the key identifying the multi-valued reference
      *
      * @return an {@link Iterable} containing all references
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default Iterable<Id> allReferencesOf(FeatureKey key) {
+    default Iterable<Id> allReferencesOf(FeatureKey key) throws NullPointerException {
         return allValuesOf(key);
     }
 
@@ -64,11 +72,13 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * the key has no reference before
      *
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
+     * @throws NullPointerException             if any parameter is {@code null}
+     * @throws NoSuchElementException           if the {@code key} doesn't exist
      * @see #addReference(ManyFeatureKey, Id)
      * @see #appendReference(FeatureKey, Id)
      */
     @Nonnull
-    default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
+    default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) throws NullPointerException, NoSuchElementException {
         return valueFor(key, reference);
     }
 
@@ -76,8 +86,10 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * Unsets all references of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued reference
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default void unsetAllReferences(FeatureKey key) {
+    default void unsetAllReferences(FeatureKey key) throws NullPointerException {
         unsetAllValues(key);
     }
 
@@ -87,8 +99,10 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @param key the key identifying the multi-valued reference
      *
      * @return {@code true} if the {@code key} has a reference, {@code false} otherwise
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default boolean hasAnyReference(FeatureKey key) {
+    default boolean hasAnyReference(FeatureKey key) throws NullPointerException {
         return hasAnyValue(key);
     }
 
@@ -98,8 +112,10 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    default void addReference(ManyFeatureKey key, Id reference) {
+    default void addReference(ManyFeatureKey key, Id reference) throws NullPointerException {
         addValue(key, reference);
     }
 
@@ -108,8 +124,12 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    default void appendReference(FeatureKey key, Id reference) {
+    default void appendReference(FeatureKey key, Id reference) throws NullPointerException {
+        checkNotNull(key);
+
         addReference(key.withPosition(sizeOfReference(key).orElse(0)), reference);
     }
 
@@ -120,9 +140,11 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @return an {@link Optional} containing the removed reference, or {@link Optional#empty()} if the key has no
      * reference before
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default Optional<Id> removeReference(ManyFeatureKey key) {
+    default Optional<Id> removeReference(ManyFeatureKey key) throws NullPointerException {
         return removeValue(key);
     }
 
@@ -130,8 +152,10 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * Removes all references of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued reference
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default void removeAllReferences(FeatureKey key) {
+    default void removeAllReferences(FeatureKey key) throws NullPointerException {
         removeAllValues(key);
     }
 
@@ -142,8 +166,10 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * @param reference the reference to look for
      *
      * @return {@code true} if the {@code key} has the {@code reference}, {@code false} otherwise
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default boolean containsReference(FeatureKey key, Id reference) {
+    default boolean containsReference(FeatureKey key, @Nullable Id reference) throws NullPointerException {
         return containsValue(key, reference);
     }
 
@@ -155,9 +181,11 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @return an {@link OptionalInt} containing the first position of the {@code reference}, or {@link
      * OptionalInt#empty()} if the {@code key} hasn't the {@code reference}
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    default OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) throws NullPointerException {
         return indexOfValue(key, reference);
     }
 
@@ -169,9 +197,11 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @return an {@link OptionalInt} containing the last position of the {@code reference}, or {@link
      * OptionalInt#empty()} if the {@code key} hasn't the {@code reference}
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    default OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) throws NullPointerException {
         return lastIndexOfValue(key, reference);
     }
 
@@ -182,9 +212,11 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @return an {@link OptionalInt} containing the number of reference of the {@code key}, or {@link
      * OptionalInt#empty()} if the {@code key} hasn't any reference
+     *
+     * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default OptionalInt sizeOfReference(FeatureKey key) {
+    default OptionalInt sizeOfReference(FeatureKey key) throws NullPointerException {
         return sizeOfValue(key);
     }
 }

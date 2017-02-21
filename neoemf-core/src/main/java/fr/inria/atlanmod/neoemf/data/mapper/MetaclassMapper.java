@@ -34,15 +34,19 @@ public interface MetaclassMapper {
      *
      * @return an {@link Optional} containing the {@link MetaclassDescriptor}, or {@link Optional#empty()} if the {@code
      * id} has no defined metaclass.
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<MetaclassDescriptor> metaclassOf(Id id);
+    Optional<MetaclassDescriptor> metaclassOf(Id id) throws NullPointerException;
 
     /**
      * Stores the {@link MetaclassDescriptor} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the element
      * @param metaclass the {@link MetaclassDescriptor} containing element's metaclass information to store
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
-    void metaclassFor(Id id, MetaclassDescriptor metaclass);
+    void metaclassFor(Id id, MetaclassDescriptor metaclass) throws NullPointerException;
 }

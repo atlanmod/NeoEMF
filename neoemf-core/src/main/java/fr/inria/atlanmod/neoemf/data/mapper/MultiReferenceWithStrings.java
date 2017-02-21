@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -62,6 +63,8 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     @Nonnull
     @Override
     default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
+        checkNotNull(key);
+
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElseThrow(NoSuchElementException::new);
@@ -77,6 +80,8 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Override
     default void addReference(ManyFeatureKey key, Id reference) {
+        checkNotNull(key);
+
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElse(new Id[0]);
@@ -98,6 +103,8 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     @Nonnull
     @Override
     default Optional<Id> removeReference(ManyFeatureKey key) {
+        checkNotNull(key);
+
         Optional<String> optional = valueOf(key.withoutPosition());
 
         if (!optional.isPresent()) {
@@ -121,7 +128,11 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     }
 
     @Override
-    default boolean containsReference(FeatureKey key, Id reference) {
+    default boolean containsReference(FeatureKey key, @Nullable Id reference) {
+        if (isNull(reference)) {
+            return false;
+        }
+
         return this.<String>valueOf(key)
                 .map(s -> ArrayUtils.contains(arrayFromString(s), reference))
                 .orElse(false);
@@ -129,7 +140,11 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    default OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+        if (isNull(reference)) {
+            return OptionalInt.empty();
+        }
+
         return this.<String>valueOf(key)
                 .map(s -> {
                     int index = ArrayUtils.indexOf(arrayFromString(s), reference);
@@ -140,7 +155,11 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
     @Nonnull
     @Override
-    default OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    default OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+        if (isNull(reference)) {
+            return OptionalInt.empty();
+        }
+
         return this.<String>valueOf(key)
                 .map(s -> {
                     int index = ArrayUtils.lastIndexOf(arrayFromString(s), reference);

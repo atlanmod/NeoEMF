@@ -148,21 +148,21 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, V value) {
+    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         called("contains", key, value);
         return super.containsValue(key, value);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         called("indexOf", key, value);
         return super.indexOfValue(key, value);
     }
 
     @Nonnull
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
+    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         called("lastIndexOf", key, value);
         return super.lastIndexOfValue(key, value);
     }
@@ -259,21 +259,21 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, Id reference) {
+    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         called("contains", key, reference);
         return super.containsReference(key, reference);
     }
 
     @Nonnull
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         called("indexOf", key, reference);
         return super.indexOfReference(key, reference);
     }
 
     @Nonnull
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
+    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         called("lastIndexOf", key, reference);
         return super.lastIndexOfReference(key, reference);
     }

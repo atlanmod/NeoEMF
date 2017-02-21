@@ -154,44 +154,63 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
+        checkNotNull(id);
+
         return get(containersMap, id);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
+        checkNotNull(id);
+        checkNotNull(container);
+
         put(containersMap, id, container);
     }
 
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        checkNotNull(id);
+
         return get(instanceOfMap, id);
     }
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        checkNotNull(id);
+        checkNotNull(metaclass);
+
         put(instanceOfMap, id, metaclass);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
+        checkNotNull(key);
+
         return get(features, key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
         return put(features, key, value);
     }
 
     @Override
     public void unsetValue(FeatureKey key) {
+        checkNotNull(key);
+
         features.remove(key);
     }
 
     @Override
     public boolean hasValue(FeatureKey key) {
+        checkNotNull(key);
+
         return features.containsKey(key);
     }
 
