@@ -60,7 +60,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
         sizeFor(key.withoutPosition(), size + 1);
 
-        valueFor(key, value);
+        safeValueFor(key, value);
     }
 
     @Nonnull
@@ -144,5 +144,19 @@ public interface MultiValueWithIndices extends MultiValueMapper {
         else {
             unsetValue(key);
         }
+    }
+
+    /**
+     * Defines the {@code value} of the specified {@code key} at a defined position.
+     * <p>
+     * This method acts as {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued feature
+     * already exists, in order to replace it.
+     *
+     * @param key   the key identifying the multi-valued attribute
+     * @param value the value to set
+     * @param <V>   the type of value
+     */
+    default <V> void safeValueFor(ManyFeatureKey key, V value) {
+        throw new IllegalStateException("This method must be re-implemented if you don't override the add(ManyFeatureKey, V) method");
     }
 }

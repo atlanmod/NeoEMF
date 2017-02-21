@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -89,12 +88,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     private boolean isClosed;
 
     /**
-     * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
-     * BerkeleyDB doesn't support {@link Id} creation.
-     */
-    private Id lastId;
-
-    /**
      * Constructs a new {@code AbstractHBaseBackend} on th given {@code table}
      *
      * @param table the HBase table
@@ -142,13 +135,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     }
 
     @Override
-    public void create(Id id) {
-        lastId = id;
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return (Objects.equals(id, lastId)) || metaclassOf(id).isPresent();
+    public boolean exists(Id id) {
+        return metaclassOf(id).isPresent();
     }
 
     @Nonnull

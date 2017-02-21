@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import java.util.Map;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,11 +56,6 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
      * identified by the associated {@link ManyFeatureKey}.
      */
     private final Map<ManyFeatureKey, Object> multiFeatures = new ConcurrentHashMap<>();
-
-    /**
-     * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
-     */
-    private Id lastId;
 
     /**
      * Whether this back-end is closed.
@@ -113,13 +108,8 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     }
 
     @Override
-    public void create(Id id) {
-        lastId = id;
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return (Objects.equals(id, lastId)) || metaclassOf(id).isPresent();
+    public boolean exists(Id id) {
+        return metaclassOf(id).isPresent();
     }
 
     @Nonnull
@@ -183,6 +173,20 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         checkNotNull(value);
 
-        return Optional.ofNullable(cast(multiFeatures.put(key, value)));
+        Optional<V> previousValue = valueOf(key);
+        if (!previousValue.isPresent()) {
+            throw new NoSuchElementException();
+        }
+
+        multiFeatures.put(key, value);
+
+        return previousValue;
+    }
+
+    @Override
+    public <V> void safeValueFor(ManyFeatureKey key, V value) {
+        checkNotNull(value);
+
+        multiFeatures.put(key, value);
     }
 }

@@ -63,12 +63,7 @@ public final class InvalidStore extends AbstractPersistentStore {
     }
 
     @Override
-    public void create(Id id) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public boolean has(Id id) {
+    public boolean exists(Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 

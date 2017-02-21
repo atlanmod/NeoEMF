@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import com.google.common.collect.HashMultimap;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
@@ -31,33 +32,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link Handler} for {@link PersistenceBackend}s.
- *
- * @note This handler has a key conflicts resolution feature, but it consumes much more memory than a handler without
- * conflicts resolution. Make sure you have enough memory to avoid heap space.
+ * <p>
+ * <b>Important Note:</b> This handler has a key conflicts resolution feature, but it consumes much more memory than the
+ * {@link DefaultPersistenceWriter}. Make sure you have enough memory to avoid heap space.
  */
+@Experimental
 @ParametersAreNonnullByDefault
-public class PersistenceAwareWriter extends AbstractPersistenceWriter {
+public class PersistenceResolverWriter extends DefaultPersistenceWriter {
 
     /**
      * Map holding the unlinked elements, waiting until their reference is created.
-     *
-     * @note In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedRawReference> unlinkedElements;
 
     /**
      * In-memory cache that holds conflicted {@link Id}s, identified by their literal representation.
-     *
-     * @note In case of conflict detection only.
      */
     private final Map<String, Id> conflictIdsCache = new HashMap<>();
 
     /**
-     * Constructs a new {@code PersistenceAwareWriter} on the given {@code backend}.
+     * Constructs a new {@code PersistenceResolverWriter} on the given {@code backend}.
      *
      * @param backend the back-end where to store data
      */
-    protected PersistenceAwareWriter(PersistenceBackend backend) {
+    protected PersistenceResolverWriter(PersistenceBackend backend) {
         super(backend);
 
         this.unlinkedElements = HashMultimap.create();
@@ -127,17 +125,16 @@ public class PersistenceAwareWriter extends AbstractPersistenceWriter {
     }
 
     @Override
-    protected void persist(Id id) {
-        if (backend.has(id)) {
-            throw new AlreadyExistingIdException("Already existing Id: " + id);
+    protected void checkExists(Id id) {
+        if (!backend.exists(id)) {
+            throw new NoSuchElementException("Unable to find an element with Id: " + id);
         }
-        backend.create(id);
     }
 
     @Override
-    protected void checkExists(Id id) {
-        if (!backend.has(id)) {
-            throw new NoSuchElementException("Unable to find an element with Id: " + id);
+    protected void checkDoesNotExist(Id id) {
+        if (backend.exists(id)) {
+            throw new AlreadyExistingIdException("Already existing Id: " + id);
         }
     }
 

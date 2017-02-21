@@ -31,13 +31,13 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend implements MultiV
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
      * {@code envConfig}.
+     * <p>
+     * <b>Note:</b> This constructor is protected. To create a new {@code BerkeleyDbBackendLists} use {@link
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param file      ???
      * @param envConfig ???
      * @param dbConfig  ???
-     *
-     * @note This constructor is protected. To create a new {@code BerkeleyDbBackendLists} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      */
     protected BerkeleyDbBackendLists(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);

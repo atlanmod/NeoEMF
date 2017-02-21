@@ -27,8 +27,8 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
 
     /**
      * Constructs a new {@code MapDbOptionsBuilder}.
-     *
-     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * <p>
+     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
      * #newBuilder()}
      */
     protected MapDbOptionsBuilder() {

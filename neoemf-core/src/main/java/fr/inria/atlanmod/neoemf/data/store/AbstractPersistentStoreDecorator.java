@@ -70,14 +70,8 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void create(Id id) {
-        next.create(id);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean has(Id id) {
-        return next.has(id);
+    public boolean exists(Id id) {
+        return next.exists(id);
     }
 
     @Nonnull

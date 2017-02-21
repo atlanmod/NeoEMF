@@ -29,21 +29,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
 
     /**
-     * Creates the specified {@code id}.
+     * Checks whether the specified {@code id} already exists in this {@code PersistenceMapper}.
      *
-     * @param id the id to create
+     * @param id the identifier to check
      *
-     * @throws IllegalArgumentException if the {@code id} already exists. Use {@link #has(Id)} to check the presence
-     *                                  first
+     * @return {@code true} if the {@code id} exists, {@code false} otherwise.
      */
-    void create(Id id);
-
-    /**
-     * Checks whether the specified {@code id} is already present.
-     *
-     * @param id the id to check to presence
-     *
-     * @return {@code true} if the {@code id} is present, {@code false} otherwise.
-     */
-    boolean has(Id id);
+    boolean exists(Id id);
 }

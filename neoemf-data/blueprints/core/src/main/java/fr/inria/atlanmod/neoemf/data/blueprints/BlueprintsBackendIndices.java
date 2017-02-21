@@ -25,8 +25,10 @@ import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -49,11 +51,13 @@ import static java.util.Objects.nonNull;
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access,
  * and manage a set of lightweight caches to improve access time of {@link Vertex} from  their corresponding {@link
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
+ * <p>
+ * <b>Note:</b> This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} to access and
+ * manipulate the database.
+ * <p>
+ * <b>Note2:</b> Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory} that provides an
+ * usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  *
- * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} to access and manipulate the
- * database.
- * @note Instances of {@link BlueprintsBackend} are created by {@link BlueprintsBackendFactory} that provides an usable
- * {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsBackendFactory
  */
 @ParametersAreNonnullByDefault
@@ -63,11 +67,12 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
+     * <p>
+     * <b>Note:</b> This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see BlueprintsBackendFactory
      */
     protected BlueprintsBackendIndices(KeyIndexableGraph baseGraph) {
@@ -77,7 +82,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()).getProperty(key.name()));
+        return get(key.id())
+                .map(v -> v.getProperty(key.name()));
     }
 
     @Nonnull
@@ -86,18 +92,19 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
-        vertex(key.id()).setProperty(key.name(), value);
+        getOrCreate(key.id()).setProperty(key.name(), value);
         return previousValue;
     }
 
     @Override
     public void unsetValue(FeatureKey key) {
-        vertex(key.id()).removeProperty(key.name());
+        get(key.id())
+                .ifPresent(v -> v.removeProperty(key.name()));
     }
 
     @Override
     public boolean hasValue(FeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()))
+        return get(key.id())
                 .map(v -> Optional.ofNullable(v.getProperty(key.name())).isPresent())
                 .orElse(false);
     }
@@ -105,7 +112,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        Iterable<Vertex> referencedVertices = vertex(key.id()).getVertices(Direction.OUT, key.name());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return Optional.empty();
+        }
+
+        Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
         Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
 
         return referencedVertex.map(v -> StringId.from(v.getId()));
@@ -116,28 +129,32 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
         checkNotNull(reference);
 
-        Vertex vertex = vertex(key.id());
+        Vertex vertex = getOrCreate(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
         Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
 
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
-            Vertex previouslyReferencedVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(StringId.from(previouslyReferencedVertex.getId()));
+            Vertex previousVertex = referenceEdge.get().getVertex(Direction.IN);
+            previousId = Optional.of(StringId.from(previousVertex.getId()));
             referenceEdge.get().remove();
         }
 
-        vertex(key.id()).addEdge(key.name(), vertex(reference));
+        vertex.addEdge(key.name(), getOrCreate(reference));
 
         return previousId;
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
 
-        Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
+        if (!vertex.isPresent()) {
+            return;
+        }
+
+        Iterable<Edge> referenceEdges = vertex.get().getEdges(Direction.OUT, key.name());
         Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
 
         referenceEdge.ifPresent(Element::remove);
@@ -145,7 +162,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Override
     public boolean hasReference(FeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()))
+        return get(key.id())
                 .map(v -> StreamSupport.stream(v.getVertices(Direction.OUT, key.name()).spliterator(), false)
                         .findAny()
                         .isPresent())
@@ -155,9 +172,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
 
-        Iterable<Vertex> referencedVertices = vertex.query()
+        if (!vertex.isPresent()) {
+            return Optional.empty();
+        }
+
+        Iterable<Vertex> referencedVertices = vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .has(KEY_POSITION, key.position())
@@ -171,7 +192,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public Iterable<Id> allReferencesOf(FeatureKey key) {
-        Iterable<Edge> edges = vertex(key.id()).query()
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return Collections.emptyList();
+        }
+
+        Iterable<Edge> edges = vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .edges();
@@ -189,9 +216,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         checkNotNull(reference);
 
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
 
-        Iterable<Edge> edges = vertex.query()
+        if (!vertex.isPresent()) {
+            throw new NoSuchElementException();
+        }
+
+        Iterable<Edge> edges = vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .has(KEY_POSITION, key.position())
@@ -206,7 +237,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             previousEdge.get().remove();
         }
 
-        Edge edge = vertex(key.id()).addEdge(key.name(), vertex(reference));
+        Edge edge = vertex.get().addEdge(key.name(), getOrCreate(reference));
         edge.setProperty(KEY_POSITION, key.position());
 
         return previousId;
@@ -214,15 +245,19 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Override
     public void unsetAllReferences(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
 
-        Iterable<Edge> edges = vertex.query()
+        if (!vertex.isPresent()) {
+            return;
+        }
+
+        Iterable<Edge> edges = vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .edges();
 
         StreamSupport.stream(edges.spliterator(), false).forEach(Element::remove);
-        vertex.removeProperty(formatProperty(key.name(), KEY_SIZE));
+        vertex.get().removeProperty(formatProperty(key.name(), KEY_SIZE));
     }
 
     @Override
@@ -236,7 +271,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         int size = sizeOfValue(key).orElse(0);
 
-        Vertex vertex = vertex(key.id());
+        Vertex vertex = getOrCreate(key.id());
 
         if (key.position() != size) {
             Iterable<Edge> edges = vertex.query()
@@ -248,7 +283,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             edges.forEach(e -> e.setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
         }
 
-        Edge edge = vertex.addEdge(key.name(), vertex(reference));
+        Edge edge = vertex.addEdge(key.name(), getOrCreate(reference));
         edge.setProperty(KEY_POSITION, key.position());
 
         sizeFor(key, size + 1);
@@ -257,14 +292,17 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
+        Optional<Vertex> vertex = get(key.id());
+        if (!vertex.isPresent()) {
+            return Optional.empty();
+        }
+
         int size = sizeOfValue(key).orElse(0);
         if (size == 0) {
             return Optional.empty();
         }
 
-        Vertex vertex = vertex(key.id());
-
-        Iterable<Edge> edges = vertex.query()
+        Iterable<Edge> edges = vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .interval(KEY_POSITION, key.position(), size)
@@ -293,21 +331,30 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
 
-        Iterable<Edge> edges = vertex.query()
+        if (!vertex.isPresent()) {
+            return;
+        }
+
+        vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
-                .edges();
-
-        edges.forEach(Element::remove);
+                .edges()
+                .forEach(Element::remove);
 
         sizeFor(key, 0);
     }
 
     @Override
     public boolean containsReference(FeatureKey key, Id reference) {
-        Iterable<Vertex> referencedVertices = vertex(key.id()).getVertices(Direction.OUT, key.name());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return false;
+        }
+
+        Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
 
         return StreamSupport.stream(referencedVertices.spliterator(), false)
                 .anyMatch(v -> Objects.equals(v.getId().toString(), reference.toString()));
@@ -316,12 +363,17 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, Id reference) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+        Optional<Vertex> referencedVertex = get(reference);
 
-        Iterable<Edge> edges = vertex(reference).getEdges(Direction.IN, key.name());
+        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
+            return OptionalInt.empty();
+        }
+
+        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
         return StreamSupport.stream(edges.spliterator(), false)
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex))
+                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
                 .min();
     }
@@ -329,12 +381,17 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, Id reference) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+        Optional<Vertex> referencedVertex = get(reference);
 
-        Iterable<Edge> edges = vertex(reference).getEdges(Direction.IN, key.name());
+        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
+            return OptionalInt.empty();
+        }
+
+        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
         return StreamSupport.stream(edges.spliterator(), false)
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex))
+                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
                 .max();
     }
@@ -342,16 +399,21 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()).getProperty(formatProperty(key.name(), key.position())));
+        return get(key.id())
+                .map(v -> v.getProperty(formatProperty(key.name(), key.position())));
     }
 
     @Nonnull
     @Override
     public <V> Iterable<V> allValuesOf(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return Collections.emptyList();
+        }
 
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> vertex.<V>getProperty(formatProperty(key.name(), i)))
+                .mapToObj(i -> vertex.get().<V>getProperty(formatProperty(key.name(), i)))
                 .collect(Collectors.toList());
     }
 
@@ -359,23 +421,33 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         checkNotNull(value);
 
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            throw new NoSuchElementException();
+        }
+
         Optional<V> previousValue = valueOf(key);
-        vertex(key.id()).setProperty(formatProperty(key.name(), key.position()), value);
+        vertex.get().setProperty(formatProperty(key.name(), key.position()), value);
         return previousValue;
     }
 
     @Override
     public void unsetAllValues(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return;
+        }
 
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+                .forEach(i -> vertex.get().removeProperty(formatProperty(key.name(), i)));
 
         sizeFor(key, 0);
     }
 
     public boolean hasAnyValue(FeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()))
+        return get(key.id())
                 .map(v -> sizeOfValue(key).isPresent())
                 .orElse(false);
     }
@@ -386,7 +458,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
-        Vertex vertex = vertex(key.id());
+        Vertex vertex = getOrCreate(key.id());
 
         if (key.position() >= size || nonNull(vertex.getProperty(formatProperty(key.name(), key.position())))) {
             for (int i = size; i > key.position(); i--) {
@@ -402,16 +474,20 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
+        Optional<Vertex> vertex = get(key.id());
+        if (!vertex.isPresent()) {
+            return Optional.empty();
+        }
+
         int size = sizeOfValue(key).orElse(0);
         if (size == 0) {
             return Optional.empty();
         }
 
-        Vertex vertex = vertex(key.id());
-        Optional<V> previousValue = Optional.ofNullable(vertex.getProperty(formatProperty(key.name(), key.position())));
+        Optional<V> previousValue = Optional.ofNullable(vertex.get().getProperty(formatProperty(key.name(), key.position())));
 
         for (int i = size - 1; i > key.position(); i--) {
-            vertex.setProperty(formatProperty(key.name(), i - 1), vertex.getProperty(formatProperty(key.name(), i)));
+            vertex.get().setProperty(formatProperty(key.name(), i - 1), vertex.get().getProperty(formatProperty(key.name(), i)));
         }
 
         // TODO Remove the last element
@@ -423,46 +499,57 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
     @Override
     public void removeAllValues(FeatureKey key) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return;
+        }
 
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> vertex.removeProperty(formatProperty(key.name(), i)));
+                .forEach(i -> vertex.get().removeProperty(formatProperty(key.name(), i)));
 
         sizeFor(key, 0);
     }
 
     @Override
     public <V> boolean containsValue(FeatureKey key, V value) {
-        Vertex vertex = vertex(key.id());
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .anyMatch(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value));
+        return get(key.id()).map(v -> IntStream.range(0, sizeOfValue(key).orElse(0))
+                .anyMatch(i -> Objects.equals(v.getProperty(formatProperty(key.name(), i)), value)))
+                .orElse(false);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, V value) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return OptionalInt.empty();
+        }
 
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
+                .filter(i -> Objects.equals(vertex.get().getProperty(formatProperty(key.name(), i)), value))
                 .min();
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, V value) {
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return OptionalInt.empty();
+        }
 
         return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .filter(i -> Objects.equals(vertex.getProperty(formatProperty(key.name(), i)), value))
+                .filter(i -> Objects.equals(vertex.get().getProperty(formatProperty(key.name(), i)), value))
                 .max();
     }
 
     @Nonnull
     @Override
     public OptionalInt sizeOfValue(FeatureKey key) {
-        return Optional.ofNullable(vertex(key.id()))
+        return get(key.id())
                 .map(v -> Optional.<Integer>ofNullable(v.getProperty(formatProperty(key.name(), KEY_SIZE)))
                         .map(OptionalInt::of)
                         .orElse(OptionalInt.empty()))
@@ -473,13 +560,17 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     public void sizeFor(FeatureKey key, @Nonnegative int size) {
         checkArgument(size >= 0);
 
-        Vertex vertex = vertex(key.id());
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return;
+        }
 
         if (size > 0) {
-            vertex.setProperty(formatProperty(key.name(), KEY_SIZE), size);
+            vertex.get().setProperty(formatProperty(key.name(), KEY_SIZE), size);
         }
         else {
-            vertex.removeProperty(formatProperty(key.name(), KEY_SIZE));
+            vertex.get().removeProperty(formatProperty(key.name(), KEY_SIZE));
         }
     }
 }

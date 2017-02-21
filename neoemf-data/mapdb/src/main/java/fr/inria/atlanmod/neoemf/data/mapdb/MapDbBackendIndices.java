@@ -25,10 +25,13 @@ import org.mapdb.Serializer;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -39,11 +42,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
  * optional Map used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that stores {@link Collection}
  * indices instead of a serialized version of the collection itself</li> </ul>
+ * <p>
+ * <b>Note:</b> This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and its subclasses to
+ * access and manipulate the database.
+ * <p>
+ * <b>Note2:</b> Instances of {@link MapDbBackendIndices} are created by {@link MapDbBackendFactory} that provides an
+ * usable {@link DB} that can be manipulated by this wrapper.
  *
- * @note This class is used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} and its subclasses to access
- * and manipulate the database.
- * @note Instances of {@link MapDbBackendIndices} are created by {@link MapDbBackendFactory} that provides an usable
- * {@link DB} that can be manipulated by this wrapper.
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
@@ -62,11 +67,12 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
      * <p>
      * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
      * {@link Serializer}s.
+     * <p>
+     * <b>Note:</b> This constructor is protected. To create a new {@code MapDbBackendIndices} use {@link
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
-     * @note This constructor is protected. To create a new {@code MapDbBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")
@@ -88,10 +94,21 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+        checkNotNull(value);
+
         Optional<V> previousValue = valueOf(key);
+
+        if (!previousValue.isPresent()) {
+            throw new NoSuchElementException();
+        }
 
         put(multivaluedFeatures, key, value);
 
         return previousValue;
+    }
+
+    @Override
+    public <V> void safeValueFor(ManyFeatureKey key, V value) {
+        put(multivaluedFeatures, key, value);
     }
 }

@@ -35,8 +35,8 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     /**
      * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
      * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
-     *
-     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * <p>
+     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
      * #newBuilder()}
      */
     protected BlueprintsNeo4jOptionsBuilder() {
@@ -129,11 +129,12 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     /**
      * Adds the {@code strong cache} feature in the created options. This tells Neo4j to use a cache containing string
      * references.
+     * <p>
+     * <b>Note:</b> Using this option the created cache cannot be garbage collected, and {@link OutOfMemoryError} can
+     * occur if there is not enough memory to handle the model.
      *
      * @return this builder (for chaining)
      *
-     * @note Using this option the created cache cannot be garbage collected, and {@link OutOfMemoryError} can occur if
-     * there is not enough memory to handle the model
      * @see BlueprintsNeo4jResourceOptions.CacheType#STRONG
      */
     @Nonnull

@@ -29,15 +29,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend implements MultiValueWithArrays {
 
     /**
-     * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
-     * {@code envConfig}.
+     * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given {@code envConfig}.
+     * <p>
+     * <b>Note:</b> The detail message associated with cause is not automatically incorporated into this exception's
+     * detail message. This constructor is protected. To create a new {@code BerkeleyDbBackendArrays} use {@link
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param file      ???
      * @param envConfig ???
      * @param dbConfig  ???
-     *
-     * @note This constructor is protected. To create a new {@code BerkeleyDbBackendArrays} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      */
     protected BerkeleyDbBackendArrays(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);

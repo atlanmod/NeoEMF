@@ -141,11 +141,12 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
+     * <p>
+     * <b>Note:</b> This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see BlueprintsBackendFactory
      */
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
@@ -244,7 +245,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
                     !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
                     "Index is not consistent");
 
-            to.metaclassIndex.put(KEY_NAME, metaclass.name(), vertex(buildId(metaclass)));
+            to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).orElseThrow(IllegalStateException::new));
         }
     }
 
@@ -281,22 +282,20 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     }
 
     @Override
-    public void create(Id id) {
-        Vertex vertex = graph.addVertex(id.toString());
-        verticesCache.put(id, vertex);
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return Optional.ofNullable(vertex(id)).isPresent();
+    public boolean exists(Id id) {
+        return get(id).isPresent();
     }
 
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        Vertex containmentVertex = vertex(id);
+        Optional<Vertex> containmentVertex = get(id);
 
-        Iterable<Edge> containerEdges = containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER);
+        if (!containmentVertex.isPresent()) {
+            return Optional.empty();
+        }
+
+        Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
         Optional<Edge> containerEdge = StreamSupport.stream(containerEdges.spliterator(), false).findAny();
 
         Optional<ContainerDescriptor> container = Optional.empty();
@@ -313,8 +312,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     public void containerFor(Id id, ContainerDescriptor container) {
         checkNotNull(container);
 
-        Vertex containmentVertex = vertex(id);
-        Vertex containerVertex = vertex(container.id());
+        Vertex containmentVertex = getOrCreate(id);
+        Vertex containerVertex = getOrCreate(container.id());
 
         containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
 
@@ -325,9 +324,13 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     @Nonnull
     @Override
     public Optional<MetaclassDescriptor> metaclassOf(Id id) {
-        Vertex vertex = vertex(id);
+        Optional<Vertex> vertex = get(id);
 
-        Iterable<Vertex> metaclassVertices = vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
+        if (!vertex.isPresent()) {
+            return Optional.empty();
+        }
+
+        Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
         Optional<Vertex> metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny();
 
         return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
@@ -349,24 +352,38 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             indexedMetaclasses.add(metaclass);
         }
 
-        Vertex vertex = vertex(id);
+        Vertex vertex = getOrCreate(id);
         vertex.addEdge(KEY_INSTANCE_OF, metaclassVertex);
 
         // Remove old link
-        vertex.getEdges(Direction.OUT, "kyanosInstanceOf")
-                .forEach(Element::remove);
+        vertex.getEdges(Direction.OUT, "kyanosInstanceOf").forEach(Element::remove);
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@code id}. If no vertex corresponds to that {@code id}, then
-     * return {@code null}.
+     * Retrieves the {@link Vertex} corresponding to the provided {@code id}.
      *
      * @param id the {@link Id} of the element to find
      *
-     * @return the vertex referenced by the provided {@link Id} or {@code null} when no such vertex exists
+     * @return an {@link Optional} containing the {@link Vertex}, or {@link Optional#empty()} if it doesn't exist
      */
-    protected Vertex vertex(Id id) {
-        return verticesCache.get(id, key -> graph.getVertex(key.toString()));
+    @Nonnull
+    protected Optional<Vertex> get(Id id) {
+        return Optional.ofNullable(verticesCache.get(id, key -> graph.getVertex(key.toString())));
+    }
+
+    /**
+     * Retrieves the {@link Vertex} corresponding to the provided {@code id}. If it doesn't already exist, it will be
+     * created.
+     *
+     * @param id the {@link Id} of the element to find, or create
+     *
+     * @return the {@link Vertex}
+     */
+    @Nonnull
+    protected Vertex getOrCreate(Id id) {
+        return verticesCache.get(id, k ->
+                Optional.ofNullable(graph.getVertex(k.toString()))
+                        .orElseGet(() -> graph.addVertex(k.toString())));
     }
 
     /**

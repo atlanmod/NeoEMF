@@ -83,8 +83,13 @@ public interface MultiValueWithLists extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        Optional<List<V>> optionalValues = valueOf(key.withoutPosition());
+
+        if (!optionalValues.isPresent()) {
+            return Optional.empty();
+        }
+
+        List<V> values = optionalValues.get();
 
         Optional<V> previousValue = Optional.of(values.remove(key.position()));
 

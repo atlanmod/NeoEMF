@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -50,11 +51,12 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     @Nonnull
     @Override
     default Iterable<Id> allReferencesOf(FeatureKey key) {
-        Id[] values = this.<String>valueOf(key)
-                .map(this::arrayFromString)
-                .orElseThrow(NoSuchElementException::new);
+        Optional<Id[]> values = this.<String>valueOf(key)
+                .map(this::arrayFromString);
 
-        return Arrays.asList(values);
+        return values
+                .map(Arrays::asList)
+                .orElse(Collections.emptyList());
     }
 
     @Nonnull
@@ -96,9 +98,13 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     @Nonnull
     @Override
     default Optional<Id> removeReference(ManyFeatureKey key) {
-        Id[] values = this.<String>valueOf(key.withoutPosition())
-                .map(this::arrayFromString)
-                .orElseThrow(NoSuchElementException::new);
+        Optional<String> optional = valueOf(key.withoutPosition());
+
+        if (!optional.isPresent()) {
+            return Optional.empty();
+        }
+
+        Id[] values = arrayFromString(optional.get());
 
         Optional<Id> previousValue = Optional.of(values[key.position()]);
 

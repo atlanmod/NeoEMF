@@ -28,7 +28,6 @@ import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -70,21 +69,16 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     private final DB db;
 
     /**
-     * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
-     * MapDB doesn't support {@link Id} creation.
-     */
-    private Id lastId;
-
-    /**
      * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code db}.
      * <p>
      * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
      * {@link Serializer}s.
+     * <p>
+     * <b>Note:</b> This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
+     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
-     * @note This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")
@@ -153,13 +147,8 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     }
 
     @Override
-    public void create(Id id) {
-        lastId = id;
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return (Objects.equals(id, lastId)) || metaclassOf(id).isPresent();
+    public boolean exists(Id id) {
+        return metaclassOf(id).isPresent();
     }
 
     @Nonnull

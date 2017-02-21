@@ -89,8 +89,13 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        Optional<V[]> optionalValues = valueOf(key.withoutPosition());
+
+        if (!optionalValues.isPresent()) {
+            return Optional.empty();
+        }
+
+        V[] values = optionalValues.get();
 
         Optional<V> previousValue = Optional.of(values[key.position()]);
 

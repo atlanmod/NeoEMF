@@ -26,8 +26,8 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
 
     /**
      * Constructs a new {@code HBaseOptionsBuilder}.
-     *
-     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * <p>
+     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
      * #newBuilder()}
      */
     protected HBaseOptionsBuilder() {

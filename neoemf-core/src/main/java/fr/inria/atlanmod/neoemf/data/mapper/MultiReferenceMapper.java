@@ -64,6 +64,8 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      * the key has no reference before
      *
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
+     * @see #addReference(ManyFeatureKey, Id)
+     * @see #appendReference(FeatureKey, Id)
      */
     @Nonnull
     default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
@@ -118,8 +120,6 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
      *
      * @return an {@link Optional} containing the removed reference, or {@link Optional#empty()} if the key has no
      * reference before
-     *
-     * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
      */
     @Nonnull
     default Optional<Id> removeReference(ManyFeatureKey key) {

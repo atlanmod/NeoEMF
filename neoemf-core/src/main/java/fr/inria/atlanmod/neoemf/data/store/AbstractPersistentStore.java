@@ -284,7 +284,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
-        if (!has(key.id())) {
+        if (!exists(key.id())) {
             return false;
         }
 
@@ -426,7 +426,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
 
         PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!has(object.id())) {
+        if (!exists(object.id())) {
             return;
         }
 
@@ -524,10 +524,9 @@ public abstract class AbstractPersistentStore implements PersistentStore {
      * @see #updateInstanceOf(PersistentEObject)
      */
     private void persist(PersistentEObject object) {
-        if (!has(object.id())) {
-            create(object.id());
-            persistentObjectsCache.put(object.id(), object);
+        if (!exists(object.id())) {
             updateInstanceOf(object);
+            persistentObjectsCache.put(object.id(), object);
         }
     }
 
@@ -588,10 +587,10 @@ public abstract class AbstractPersistentStore implements PersistentStore {
 
     /**
      * Computes the type of the {@code object} in a {@link MetaclassDescriptor} object and persists it in the database.
+     * <p>
+     * <b>Note:</b> The type is not updated if {@code object} was previously mapped to another type.
      *
      * @param object the {@link PersistentEObject} to store the instance-of information from
-     *
-     * @note The type is not updated if {@code object} was previously mapped to another type.
      */
     private void updateInstanceOf(PersistentEObject object) {
         checkNotNull(object);

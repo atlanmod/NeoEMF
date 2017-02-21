@@ -22,8 +22,8 @@ import org.osgi.framework.BundleContext;
 /**
  * A {@link BundleActivator} that automatically registers a {@link PersistenceBackendFactory} with its associated
  * {@link URI URI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
- *
- * @note This class should not be used in standard use.
+ * <p>
+ * <b>Note:</b> This class should not be used in standard use.
  */
 public abstract class AbstractActivator implements BundleActivator {
 

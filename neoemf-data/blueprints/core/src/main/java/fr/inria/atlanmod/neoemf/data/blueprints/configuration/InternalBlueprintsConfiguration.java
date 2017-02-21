@@ -21,9 +21,10 @@ import java.io.File;
 /**
  * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
  * Configuration}.
+ * <p>
+ * <b>Note:</b> Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during
+ * database creation.
  *
- * @note Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during database
- * creation.
  * @see BlueprintsBackendFactory
  * @see InternalBlueprintsTgConfiguration
  */

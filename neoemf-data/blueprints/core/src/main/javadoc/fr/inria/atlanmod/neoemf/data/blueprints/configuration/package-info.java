@@ -11,9 +11,9 @@
 
 /**
  * Provides utility configuration classes that are dynamically called to setup Blueprints databases.
- *
- * @note The classes in this package have to be overriden for each back-end implementation that has to perform some
- * startup configuration.
+ * <p>
+ * <b>Note:</b> The classes in this package have to be overriden for each back-end implementation that has to perform
+ * some startup configuration.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.configuration;

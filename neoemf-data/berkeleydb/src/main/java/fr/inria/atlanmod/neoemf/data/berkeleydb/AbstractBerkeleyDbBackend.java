@@ -35,7 +35,6 @@ import org.eclipse.emf.ecore.EClass;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -80,12 +79,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * Whether the databases are closed.
      */
     private boolean isClosed;
-
-    /**
-     * {@link Id} representing the {@link Id} concerned by the last call of {{@link #create(Id)}}.
-     * BerkeleyDB doesn't support {@link Id} creation.
-     */
-    private Id lastId;
 
     /**
      * Creates a new {@code AbstractBerkeleyDbBackend} with the configuration of the databases.
@@ -159,13 +152,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     }
 
     @Override
-    public void create(Id id) {
-        lastId = id;
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return (Objects.equals(id, lastId)) || metaclassOf(id).isPresent();
+    public boolean exists(Id id) {
+        return metaclassOf(id).isPresent();
     }
 
     @Nonnull

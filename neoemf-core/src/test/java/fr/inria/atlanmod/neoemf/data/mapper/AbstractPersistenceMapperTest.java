@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -161,25 +162,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link PersistenceMapper#has(Id)} and {@link PersistenceMapper#create(Id)}.
+     * Checks the behavior of {@link PersistenceMapper#exists(Id)}.
      */
     @Test
-    public void testHasAfterCreate() {
-        Id id = randomId();
-        mapper.create(id);
-        assertThat(mapper.has(id)).isTrue();
+    public void testNotExists() {
+        assertThat(mapper.exists(randomId())).isFalse();
     }
 
     /**
-     * Checks the behavior of {@link PersistenceMapper#has(Id)} and {@link PersistenceMapper#create(Id)} after defining
-     * the {@link MetaclassDescriptor}.
+     * Checks the behavior of {@link PersistenceMapper#exists(Id)} after defining a {@link MetaclassDescriptor}.
      */
     @Test
-    public void testHasAfterMetaclassFor() {
+    public void testExists() {
         Id id = randomId();
-        mapper.create(id);
         mapper.metaclassFor(id, MetaclassDescriptor.of(randomString(), randomString()));
-        assertThat(mapper.has(id)).isTrue();
+        assertThat(mapper.exists(id)).isTrue();
     }
 
     /**
@@ -190,23 +187,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetSameContainer() {
         List<Id> all = new ArrayList<>();
 
-        Id root = randomId();
-        if (!mapper.has(root)) {
-            mapper.create(root);
-        }
-
-        ContainerDescriptor container = ContainerDescriptor.of(root, randomString());
+        ContainerDescriptor container = ContainerDescriptor.of(randomId(), randomString());
 
         for (int nb = 0; nb < randomBound(); nb++) {
             all.add(randomId());
         }
 
-        all.forEach(id -> {
-            if (!mapper.has(id)) {
-                mapper.create(id);
-            }
-            mapper.containerFor(id, container);
-        });
+        all.forEach(id -> mapper.containerFor(id, container));
 
         Collections.shuffle(all);
 
@@ -222,19 +209,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Map<Id, ContainerDescriptor> allContainers = new LinkedHashMap<>();
 
         for (int nb = 0; nb < randomBound(); nb++) {
-            Id root = randomId();
-            if (!mapper.has(root)) {
-                mapper.create(root);
-            }
-            allContainers.put(randomId(), ContainerDescriptor.of(root, randomString()));
+            allContainers.put(randomId(), ContainerDescriptor.of(randomId(), randomString()));
         }
 
-        allContainers.forEach((id, container) -> {
-            if (!mapper.has(id)) {
-                mapper.create(id);
-            }
-            mapper.containerFor(id, container);
-        });
+        allContainers.forEach((id, container) -> mapper.containerFor(id, container));
 
         allContainers = shuffle(allContainers);
 
@@ -246,11 +224,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetInexistingContainer() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containerOf(id)).isNotPresent())
+                assertThat(mapper.containerOf(randomId())).isNotPresent())
         ).isNull();
     }
 
@@ -259,12 +234,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSetNullContainer() {
-        Id id = randomId();
-        mapper.create(id);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.containerFor(id, null))
+                mapper.containerFor(randomId(), null))
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -281,12 +253,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             all.add(randomId());
         }
 
-        all.forEach(id -> {
-            if (!mapper.has(id)) {
-                mapper.create(id);
-            }
-            mapper.metaclassFor(id, metaclass);
-        });
+        all.forEach(id -> mapper.metaclassFor(id, metaclass));
 
         Collections.shuffle(all);
 
@@ -305,12 +272,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             allMetaclasses.put(randomId(), MetaclassDescriptor.of(randomString(), randomString()));
         }
 
-        allMetaclasses.forEach((id, metaclass) -> {
-            if (!mapper.has(id)) {
-                mapper.create(id);
-            }
-            mapper.metaclassFor(id, metaclass);
-        });
+        allMetaclasses.forEach((id, metaclass) -> mapper.metaclassFor(id, metaclass));
 
         allMetaclasses = shuffle(allMetaclasses);
 
@@ -321,11 +283,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} when the element doesn't exist..
      */
     public void testGetInexistingMetaclass() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.metaclassOf(id)).isNotPresent())
+                assertThat(mapper.metaclassOf(randomId())).isNotPresent())
         ).isNull();
     }
 
@@ -334,12 +293,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSetNullMetaclass() {
-        Id id = randomId();
-        mapper.create(id);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.metaclassFor(id, null))
+                mapper.metaclassFor(randomId(), null))
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -355,12 +311,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             allValues.put(FeatureKey.of(randomId(), randomString()), randomString());
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.valueFor(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.valueFor(key, value));
 
         allValues = shuffle(allValues);
 
@@ -375,11 +326,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(FeatureKey.of(id, randomString()))).isNotPresent())
+                assertThat(mapper.valueOf(FeatureKey.of(randomId(), randomString()))).isNotPresent())
         ).isNull();
     }
 
@@ -388,12 +336,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSetNullValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(FeatureKey.of(id, randomString()), null)).isNotPresent())
+                assertThat(mapper.valueFor(FeatureKey.of(randomId(), randomString()), null)).isNotPresent())
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -408,12 +353,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             allValues.put(FeatureKey.of(randomId(), randomString()), randomString());
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.valueFor(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.valueFor(key, value));
 
         allValues = shuffle(allValues);
 
@@ -433,11 +373,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIsSetInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasValue(FeatureKey.of(id, randomString()))).isFalse())
+                assertThat(mapper.hasValue(FeatureKey.of(randomId(), randomString()))).isFalse())
         ).isNull();
     }
 
@@ -446,11 +383,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testUnsetInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                mapper.unsetValue(FeatureKey.of(id, randomString())))
+                mapper.unsetValue(FeatureKey.of(randomId(), randomString())))
         ).isNull();
     }
 
@@ -470,12 +404,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.valueFor(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.addValue(key, randomString()));
+        allValues.forEach((key, value) -> mapper.valueFor(key, value));
 
         allValues = shuffle(allValues);
 
@@ -490,11 +420,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetInexistingManyValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(ManyFeatureKey.of(id, randomString(), 15))).isNotPresent())
+                assertThat(mapper.valueOf(ManyFeatureKey.of(randomId(), randomString(), 15))).isNotPresent())
         ).isNull();
     }
 
@@ -502,13 +429,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link MultiValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
      */
     @Test
-    public void testSetNullManyValue() {
-        Id id = randomId();
-        mapper.create(id);
-
+    public void testSetInexistingManyValue() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(ManyFeatureKey.of(id, randomString(), 15), null)).isNotPresent())
+                assertThat(mapper.valueFor(ManyFeatureKey.of(randomId(), randomString(), 15), randomString())).isNotPresent())
+        ).isInstanceOf(NoSuchElementException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link MultiValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
+     */
+    @Test
+    public void testSetNullManyValue() {
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.valueFor(ManyFeatureKey.of(randomId(), randomString(), 15), null)).isNotPresent())
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -525,9 +460,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             for (int position = 0; position < randomSize(); position++) {
                 String value = randomString();
 
-                if (!mapper.has(key.id())) {
-                    mapper.create(key.id());
-                }
                 mapper.addValue(key.withPosition(position), value);
 
                 List<String> values = allValues.getOrDefault(key, new ArrayList<>());
@@ -553,11 +485,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAllValuesEmpty() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.allValuesOf(FeatureKey.of(id, randomString()))).isNotNull().isEmpty())
+                assertThat(mapper.allValuesOf(FeatureKey.of(randomId(), randomString()))).isNotNull().isEmpty())
         ).isNull();
     }
 
@@ -575,9 +504,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             allFeatures.put(key, size);
 
             for (int position = 0; position < size; position++) {
-                if (!mapper.has(key.id())) {
-                    mapper.create(key.id());
-                }
                 mapper.addValue(key.withPosition(position), randomString());
             }
         }
@@ -601,11 +527,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIsSetInexistingManyValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyValue(ManyFeatureKey.of(id, randomString(), 15))).isFalse())
+                assertThat(mapper.hasAnyValue(ManyFeatureKey.of(randomId(), randomString(), 15))).isFalse())
         ).isNull();
     }
 
@@ -614,11 +537,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testUnsetInexistingManyValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                mapper.unsetAllValues(FeatureKey.of(id, randomString())))
+                mapper.unsetAllValues(FeatureKey.of(randomId(), randomString())))
         ).isNull();
     }
 
@@ -641,12 +561,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.addValue(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.addValue(key, value));
 
         allValues = shuffle(allValues);
 
@@ -680,12 +595,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.addValue(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.addValue(key, value));
 
         allValues = shuffle(allValues);
 
@@ -702,10 +612,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddNullValue() {
-        Id id = randomId();
-        mapper.create(id);
-
-        ManyFeatureKey key = ManyFeatureKey.of(id, randomString(), 17);
+        ManyFeatureKey key = ManyFeatureKey.of(randomId(), randomString(), 17);
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
@@ -732,12 +639,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.appendValue(key.withoutPosition(), value);
-        });
+        allValues.forEach((key, value) -> mapper.appendValue(key.withoutPosition(), value));
 
         allValues = shuffle(allValues);
 
@@ -754,10 +656,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendNullValue() {
-        Id id = randomId();
-        mapper.create(id);
-
-        FeatureKey key = FeatureKey.of(id, randomString());
+        FeatureKey key = FeatureKey.of(randomId(), randomString());
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() -> mapper.appendValue(key, null))).isInstanceOf(NullPointerException.class);
@@ -782,12 +681,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.addValue(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.addValue(key, value));
 
         allValues = shuffle(allValues);
 
@@ -818,11 +712,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeValue(ManyFeatureKey.of(id, randomString(), 15))).isNotPresent())
+                assertThat(mapper.removeValue(ManyFeatureKey.of(randomId(), randomString(), 15))).isNotPresent())
         ).isNull();
     }
 
@@ -845,12 +736,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.addValue(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.addValue(key, value));
 
         allValues = shuffle(allValues);
 
@@ -876,10 +762,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveAllInexistingValues() {
-        Id id = randomId();
-        mapper.create(id);
-
-        assertThat(catchThrowable(() -> mapper.removeAllValues(FeatureKey.of(id, randomString())))).isNull();
+        assertThat(catchThrowable(() ->
+                mapper.removeAllValues(FeatureKey.of(randomId(), randomString())))
+        ).isNull();
     }
 
     /**
@@ -897,12 +782,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             }
         }
 
-        allValues.forEach((key, value) -> {
-            if (!mapper.has(key.id())) {
-                mapper.create(key.id());
-            }
-            mapper.addValue(key, value);
-        });
+        allValues.forEach((key, value) -> mapper.addValue(key, value));
 
         allValues = shuffle(allValues);
 
@@ -921,11 +801,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContainsInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsValue(FeatureKey.of(id, randomString()), randomString())).isFalse())
+                assertThat(mapper.containsValue(FeatureKey.of(randomId(), randomString()), randomString())).isFalse())
         ).isNull();
     }
 
@@ -950,9 +827,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             for (int position = 0; position < size; position++) {
                 String value = values.get(generate(0, nbValues));
 
-                if (!mapper.has(key.id())) {
-                    mapper.create(key.id());
-                }
                 mapper.addValue(key.withPosition(position), value);
 
                 Map<String, Integer> indices = allIndexOf.getOrDefault(key, new LinkedHashMap<>());
@@ -974,10 +848,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOfInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
-        assertThat(catchThrowable(() -> assertThat(mapper.indexOfValue(FeatureKey.of(id, randomString()), randomString())).isNotPresent())).isNull();
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.indexOfValue(FeatureKey.of(randomId(), randomString()), randomString())).isNotPresent())
+        ).isNull();
     }
 
     /**
@@ -1001,9 +874,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             for (int position = 0; position < size; position++) {
                 String value = values.get(generate(0, nbValues));
 
-                if (!mapper.has(key.id())) {
-                    mapper.create(key.id());
-                }
                 mapper.addValue(key.withPosition(position), value);
 
                 Map<String, Integer> indices = allIndexOf.getOrDefault(key, new LinkedHashMap<>());
@@ -1026,11 +896,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOfInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfValue(FeatureKey.of(id, randomString()), randomString())).isNotPresent())
+                assertThat(mapper.lastIndexOfValue(FeatureKey.of(randomId(), randomString()), randomString())).isNotPresent())
         ).isNull();
     }
 
@@ -1048,9 +915,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
             allSizes.put(key, size);
 
             for (int position = 0; position < size; position++) {
-                if (!mapper.has(key.id())) {
-                    mapper.create(key.id());
-                }
                 mapper.addValue(key.withPosition(position), randomString());
             }
         }
@@ -1066,11 +930,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSizeOfInexistingValue() {
-        Id id = randomId();
-        mapper.create(id);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfValue(FeatureKey.of(id, randomString()))).isNotPresent())
+                assertThat(mapper.sizeOfValue(FeatureKey.of(randomId(), randomString()))).isNotPresent())
         ).isNull();
     }
 }

@@ -36,25 +36,25 @@ public class WriterFactory {
     }
 
     /**
+     * Creates a {@link PersistenceWriter} on the given {@code backend}.
+     *
+     * @param backend the back-end where data must persist
+     *
+     * @return a new persistence writer
+     */
+    public static PersistenceWriter toBackend(PersistenceBackend backend) {
+        return new DefaultPersistenceWriter(backend);
+    }
+
+    /**
      * Creates a {@link PersistenceWriter} on the given {@code backend} with conflict resolution feature.
      *
      * @param backend the back-end where data must persist
      *
      * @return a new persistence writer
      */
-    public static PersistenceWriter toAwareBackend(PersistenceBackend backend) {
-        return new PersistenceAwareWriter(backend);
-    }
-
-    /**
-     * Creates a {@link PersistenceWriter} on the given {@code backend} <b>without</b> conflict resolution feature.
-     *
-     * @param backend the back-end where data must persist
-     *
-     * @return a new persistence writer
-     */
-    public static PersistenceWriter toNaiveBackend(PersistenceBackend backend) {
-        return new PersistenceNaiveWriter(backend);
+    public static PersistenceWriter toBackendWithResolve(PersistenceBackend backend) {
+        return new PersistenceResolverWriter(backend);
     }
 
     /**

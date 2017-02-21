@@ -44,10 +44,10 @@ public class ExportTest extends AbstractIOTest {
         File targetBackend = Paths.get(file() + "-copy").toFile();
 
         try (PersistenceBackend backend = context().createBackend(sourceBackend)) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toNaiveBackend(backend));
+            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toBackend(backend));
 
             try (PersistenceBackend target = context().createBackend(targetBackend)) {
-                ReaderFactory.fromBackend(backend, WriterFactory.toNaiveBackend(target));
+                ReaderFactory.fromBackend(backend, WriterFactory.toBackend(target));
             }
         }
 
@@ -100,7 +100,7 @@ public class ExportTest extends AbstractIOTest {
         NeoLogger.info("Writing to {0}", targetFile);
 
         try (PersistenceBackend backend = context().createBackend(file())) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toNaiveBackend(backend));
+            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toBackend(backend));
             ReaderFactory.fromBackend(backend, WriterFactory.toXmi(targetFile));
         }
 

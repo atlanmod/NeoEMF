@@ -33,7 +33,6 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,19 +45,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A {@link PersistenceWriter} that persists data in a {@link PersistenceBackend}, based on received events.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractPersistenceWriter implements PersistenceWriter {
+public class DefaultPersistenceWriter implements PersistenceWriter {
 
     /**
      * The default cache size.
-     *
-     * @note It is calculated according to the maximum memory dedicated to the JVM.
+     * <p>
+     * <b>Note:</b> It is calculated according to the maximum memory dedicated to the JVM.
      */
     private static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2_000L);
 
     /**
      * The default operation between commits.
-     *
-     * @note It is calculated according to the maximum memory dedicated to the JVM.
+     * <p>
+     * <b>Note:</b> It is calculated according to the maximum memory dedicated to the JVM.
      */
     private static final long DEFAULT_AUTOCOMMIT_CHUNK = adaptFromMemory(50_000L);
 
@@ -94,11 +93,11 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
     private long autocommitCount;
 
     /**
-     * Constructs a new {@code AbstractPersistenceWriter} on top of the {@code backend}.
+     * Constructs a new {@code DefaultPersistenceWriter} on top of the {@code backend}.
      *
      * @param backend the persistence back-end where to store data
      */
-    protected AbstractPersistenceWriter(PersistenceBackend backend) {
+    protected DefaultPersistenceWriter(PersistenceBackend backend) {
         this.backend = checkNotNull(backend);
 
         this.autocommitCount = 0;
@@ -108,12 +107,13 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
 
     /**
      * Adapts the given {@code value} according to the maximum memory dedicated to the JVM.
+     * <p>
+     * <b>Note:</b> The formulas can be improved, for sure.
      *
      * @param value the value to adapt
      *
      * @return the adapted value
      *
-     * @note The formulas can be improved, for sure.
      * @see #DEFAULT_CACHE_SIZE
      * @see #DEFAULT_AUTOCOMMIT_CHUNK
      */
@@ -198,7 +198,7 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
         checkNotNull(element);
         checkNotNull(id);
 
-        persist(id);
+        checkDoesNotExist(id);
         updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
         Optional.ofNullable(element.className()).ifPresent(c -> {
@@ -397,20 +397,24 @@ public abstract class AbstractPersistenceWriter implements PersistenceWriter {
     }
 
     /**
-     * Creates a new element identified by the specified {@code id}.
+     * Checks that the specified {@code id} exists in the {@link PersistenceBackend}.
      *
-     * @param id the identifier of the element
+     * @param id the identifier to check
+     *
+     * @throws java.util.NoSuchElementException if no element is found with the {@code id}
+     */
+    protected void checkExists(Id id) {
+        // Do nothing
+    }
+
+    /**
+     * Checks that the specified {@code id} doesn't already exists in the {@link PersistenceBackend}.
+     *
+     * @param id the identifier to check
      *
      * @throws AlreadyExistingIdException if the {@code id} is already used as primary key for another element
      */
-    protected abstract void persist(Id id);
-
-    /**
-     * Checks whether the {@code id} is already existing in the back-end.
-     *
-     * @param id the identifier of the element
-     *
-     * @throws NoSuchElementException if no element is found with the {@code id}
-     */
-    protected abstract void checkExists(Id id);
+    protected void checkDoesNotExist(Id id) {
+        // Do nothing
+    }
 }

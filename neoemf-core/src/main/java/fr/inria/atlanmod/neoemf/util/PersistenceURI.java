@@ -58,11 +58,11 @@ public class PersistenceURI extends URI {
 
     /**
      * Constructs a new {@code PersistenceURI} from the given {@code internalURI}.
+     * <p>
+     * <b>Note:</b> This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link
+     * #createURI(URI)}, {@link #createFileURI(File, String)}, or {@link #createFileURI(URI, String)} instead.
      *
      * @param internalUri the base {@link URI}
-     *
-     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
-     * {@link #createFileURI(File, String)}, or {@link #createFileURI(URI, String)} instead.
      */
     protected PersistenceURI(@Nonnull URI internalUri) {
         super(internalUri.hashCode());

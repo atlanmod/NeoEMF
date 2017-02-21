@@ -349,7 +349,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
         try (PersistenceBackend backend = context().createBackend(file())) {
-            ReaderFactory.fromXmi(file, WriterFactory.toNaiveBackend(backend));
+            ReaderFactory.fromXmi(file, WriterFactory.toBackend(backend));
         }
 
         PersistentResource resource = context().loadResource(null, file());

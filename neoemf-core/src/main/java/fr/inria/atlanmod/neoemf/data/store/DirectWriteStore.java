@@ -85,6 +85,33 @@ public class DirectWriteStore extends AbstractPersistentStore {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean exists(Id id) {
+        return backend.exists(id);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        return backend.containerOf(id);
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        backend.containerFor(id, container);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+        return backend.metaclassOf(id);
+    }
+
+    @Override
+    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        backend.metaclassFor(id, metaclass);
+    }
+
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
@@ -271,37 +298,5 @@ public class DirectWriteStore extends AbstractPersistentStore {
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         return backend.sizeOfReference(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
-        return backend.metaclassOf(id);
-    }
-
-    @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
-        backend.metaclassFor(id, metaclass);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        return backend.containerOf(id);
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        backend.containerFor(id, container);
-    }
-
-    @Override
-    public void create(Id id) {
-        backend.create(id);
-    }
-
-    @Override
-    public boolean has(Id id) {
-        return backend.has(id);
     }
 }

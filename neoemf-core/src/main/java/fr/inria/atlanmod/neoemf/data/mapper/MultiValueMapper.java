@@ -58,6 +58,8 @@ public interface MultiValueMapper extends ValueMapper {
      * key has no value before
      *
      * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
+     * @see #addValue(ManyFeatureKey, Object)
+     * @see #appendValue(FeatureKey, Object)
      */
     @Nonnull
     <V> Optional<V> valueFor(ManyFeatureKey key, V value);
