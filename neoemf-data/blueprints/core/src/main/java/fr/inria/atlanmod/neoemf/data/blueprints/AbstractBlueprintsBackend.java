@@ -244,7 +244,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
                     !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
                     "Index is not consistent");
 
-            to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).orElseThrow(IllegalStateException::new));
+            to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
     }
 

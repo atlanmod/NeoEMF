@@ -62,7 +62,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
             .maximumSize(10_000)
             .build(id -> resolveInstanceOf(id)
                     .map(c -> PersistenceFactory.getInstance().create(c, id).setMapped(true))
-                    .orElseThrow(() -> new RuntimeException("Element " + id + " does not have an associated EClass")));
+                    .<RuntimeException>orElseThrow(() -> new RuntimeException("Element " + id + " does not have an associated EClass")));
 
     /**
      * Constructs a new {@code AbstractPersistentStore}.

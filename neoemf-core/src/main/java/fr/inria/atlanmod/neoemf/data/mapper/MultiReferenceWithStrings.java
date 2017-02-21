@@ -67,7 +67,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
 
         Id[] values = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
-                .orElseThrow(NoSuchElementException::new);
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousValue = Optional.of(values[key.position()]);
 

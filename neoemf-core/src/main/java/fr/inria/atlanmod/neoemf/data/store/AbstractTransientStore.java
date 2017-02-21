@@ -58,7 +58,7 @@ public abstract class AbstractTransientStore implements TransientStore {
         else {
             return Optional.ofNullable(manyMap.get(key))
                     .map(values -> values.get(index))
-                    .orElseThrow(IndexOutOfBoundsException::new);
+                    .<IndexOutOfBoundsException>orElseThrow(IndexOutOfBoundsException::new);
         }
     }
 
@@ -148,7 +148,7 @@ public abstract class AbstractTransientStore implements TransientStore {
 
         return Optional.ofNullable(manyMap.get(key))
                 .map(v -> v.remove(index))
-                .orElseThrow(IndexOutOfBoundsException::new);
+                .<IndexOutOfBoundsException>orElseThrow(IndexOutOfBoundsException::new);
     }
 
     @Override

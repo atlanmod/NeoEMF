@@ -83,7 +83,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      */
     protected void readElement(Id id, boolean isRoot) {
         // Retrieve the metaclass and namespace
-        MetaclassDescriptor metaclass = backend.metaclassOf(id).orElseThrow(IllegalArgumentException::new);
+        MetaclassDescriptor metaclass = backend.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
         EClass realMetaclass = metaclass.eClass();
 
         Namespace ns = Namespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
