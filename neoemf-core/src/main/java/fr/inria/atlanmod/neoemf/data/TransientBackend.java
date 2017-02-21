@@ -83,6 +83,10 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Override
     public void close() {
+        if (isClosed) {
+            return;
+        }
+
         isClosed = true;
 
         new Thread(() -> {

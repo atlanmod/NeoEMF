@@ -13,7 +13,10 @@ package fr.inria.atlanmod.neoemf.data.hbase.option;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+
+import java.util.Map;
 
 /**
  * A {@link PersistenceOptions} that holds HBase specific options.
@@ -22,12 +25,24 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  * <p>
  * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
  * near future.
+ *
+ * @see HBaseOptionsBuilder
  */
 @Experimental
 public class HBaseOptions extends AbstractPersistenceOptions {
 
     @SuppressWarnings("JavaDoc")
     private HBaseOptions() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        super();
+    }
+
+    @Override
+    public Map<String, Object> toMap() throws InvalidOptionException {
+        return super.toMap();
+    }
+
+    @Override
+    public void fromMap(Map<?, ?> options) {
+        super.fromMap(options);
     }
 }

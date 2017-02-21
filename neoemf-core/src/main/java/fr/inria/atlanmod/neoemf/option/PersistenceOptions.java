@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.option;
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 
+import java.util.Map;
+
 /**
  * Represents options managed by {@link PersistenceBackendFactory}.
  * <p>
@@ -21,7 +23,25 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
  * <p>
  * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
  * near future.
+ *
+ * @see PersistenceOptionsBuilder
  */
 @Experimental
 public interface PersistenceOptions {
+
+    /**
+     * Converts this {@code PersistenceOptions} as a {@link Map} that contains all defined options.
+     *
+     * @return an immutable {@link Map}
+     *
+     * @throws InvalidOptionException if a conflict is detected
+     */
+    Map<String, Object> toMap() throws InvalidOptionException;
+
+    /**
+     * Fills this {@code PersistenceOptions} with all options contained in the given {@link Map}.
+     *
+     * @param options the options to parse
+     */
+    void fromMap(Map<?, ?> options);
 }

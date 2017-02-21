@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
+import java.util.Map;
+
 /**
  * The abstract implementation of {@link PersistenceOptions}.
  * <p>
@@ -20,12 +22,24 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
  * <p>
  * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
  * near future.
+ *
+ * @see AbstractPersistenceOptionsBuilder
  */
 @Experimental
 public abstract class AbstractPersistenceOptions implements PersistenceOptions {
 
     @SuppressWarnings("JavaDoc")
     protected AbstractPersistenceOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Map<String, Object> toMap() throws InvalidOptionException {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void fromMap(Map<?, ?> options) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
+import java.util.Map;
+
 /**
  * A {@link PersistenceOptions} that holds common options.
  * <p>
@@ -20,12 +22,24 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
  * <p>
  * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
  * near future.
+ *
+ * @see CommonOptionsBuilder
  */
 @Experimental
 public class CommonOptions extends AbstractPersistenceOptions {
 
     @SuppressWarnings("JavaDoc")
     private CommonOptions() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        super();
+    }
+
+    @Override
+    public Map<String, Object> toMap() throws InvalidOptionException {
+        return super.toMap();
+    }
+
+    @Override
+    public void fromMap(Map<?, ?> options) {
+        super.fromMap(options);
     }
 }

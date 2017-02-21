@@ -13,7 +13,10 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptions;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+
+import java.util.Map;
 
 /**
  * A {@link PersistenceOptions} that holds Blueprints Neo4j specific options.
@@ -22,12 +25,24 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  * <p>
  * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
  * near future.
+ *
+ * @see BlueprintsNeo4jOptionsBuilder
  */
 @Experimental
 public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
 
     @SuppressWarnings("JavaDoc")
     private BlueprintsNeo4jOptions() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        super();
+    }
+
+    @Override
+    public Map<String, Object> toMap() throws InvalidOptionException {
+        return super.toMap();
+    }
+
+    @Override
+    public void fromMap(Map<?, ?> options) {
+        super.fromMap(options);
     }
 }
