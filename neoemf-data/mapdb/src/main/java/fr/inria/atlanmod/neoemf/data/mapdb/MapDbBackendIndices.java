@@ -25,13 +25,10 @@ import org.mapdb.Serializer;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
@@ -89,22 +86,6 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return get(multivaluedFeatures, key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        checkNotNull(value);
-
-        Optional<V> previousValue = valueOf(key);
-
-        if (!previousValue.isPresent()) {
-            throw new NoSuchElementException();
-        }
-
-        put(multivaluedFeatures, key, value);
-
-        return previousValue;
     }
 
     @Override

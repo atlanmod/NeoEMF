@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -168,25 +167,8 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
         return Optional.ofNullable(cast(multiFeatures.get(key)));
     }
 
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        checkNotNull(value);
-
-        Optional<V> previousValue = valueOf(key);
-        if (!previousValue.isPresent()) {
-            throw new NoSuchElementException();
-        }
-
-        multiFeatures.put(key, value);
-
-        return previousValue;
-    }
-
     @Override
     public <V> void safeValueFor(ManyFeatureKey key, V value) {
-        checkNotNull(value);
-
         multiFeatures.put(key, value);
     }
 }

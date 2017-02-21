@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -34,6 +35,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 public interface MultiValueWithIndices extends MultiValueMapper {
+
+    @Nonnull
+    @Override
+    default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+        checkNotNull(value);
+
+        Optional<V> previousValue = valueOf(key);
+        if (!previousValue.isPresent()) {
+            throw new NoSuchElementException();
+        }
+
+        safeValueFor(key, value);
+
+        return previousValue;
+    }
 
     @Nonnull
     @Override
@@ -73,9 +89,8 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
         Optional<V> previousValue = valueOf(key);
 
-        // Update indexes (element to remove is overwritten)
         for (int i = size - 1; i > key.position(); i--) {
-            Optional<V> movingValue = valueOf(key.withPosition(i - 1));
+            Optional<V> movingValue = valueOf(key.withPosition(i));
             if (movingValue.isPresent()) {
                 valueFor(key.withPosition(i - 1), movingValue.get());
             }
@@ -157,6 +172,6 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      * @param <V>   the type of value
      */
     default <V> void safeValueFor(ManyFeatureKey key, V value) {
-        throw new IllegalStateException("This method must be re-implemented if you don't override the add(ManyFeatureKey, V) method");
+        throw new IllegalStateException("This method should be overwritten if you use the default valueFor(ManyFeatureKey, V) and/or add(ManyFeatureKey, V) methods");
     }
 }

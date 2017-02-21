@@ -24,14 +24,12 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * ???
@@ -84,22 +82,6 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         return get(multivaluedFeatures, key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        checkNotNull(value);
-
-        Optional<V> previousValue = valueOf(key);
-
-        if (!previousValue.isPresent()) {
-            throw new NoSuchElementException();
-        }
-
-        put(multivaluedFeatures, key, value);
-
-        return previousValue;
     }
 
     @Override
