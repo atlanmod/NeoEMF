@@ -566,7 +566,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return Optional.empty();
         }
 
-        Optional<V> previousValue = Optional.ofNullable(vertex.get().getProperty(formatProperty(key.name(), key.position())));
+        Optional<V> previousValue = Optional.<V>ofNullable(vertex.get().getProperty(formatProperty(key.name(), key.position())));
 
         for (int i = key.position(); i < size - 1; i++) {
             vertex.get().setProperty(formatProperty(key.name(), i), vertex.get().getProperty(formatProperty(key.name(), i + 1)));
