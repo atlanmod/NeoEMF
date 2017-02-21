@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
+import com.google.common.base.Splitter;
+
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -18,6 +20,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link org.junit.Rule} that logs each test-case call.
@@ -37,6 +40,13 @@ public class Watcher extends org.junit.rules.TestWatcher {
     @Override
     protected void failed(Throwable e, Description description) {
         if (isNull(e)) {
+            LOG.warn("[WARN] --- Failed");
+        }
+        else if (AssertionError.class.isInstance(e) && nonNull(e.getMessage())) {
+            Splitter.on('\n').omitEmptyStrings().splitToList(e.getMessage())
+                    .forEach(m -> LOG.warn("[WARN] {0}", m));
+
+            LOG.warn("[WARN]");
             LOG.warn("[WARN] --- Failed");
         }
         else {
