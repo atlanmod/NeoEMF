@@ -528,7 +528,6 @@
                                     <dependencySourceInclude>org.osgi:*</dependencySourceInclude>
                                 </dependencySourceIncludes>
                                 <excludePackageNames>
-                                    fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
                                     fr.inria.atlanmod.neoemf.tests*;
                                     org.eclipse.emf*;
                                     org.osgi*;
