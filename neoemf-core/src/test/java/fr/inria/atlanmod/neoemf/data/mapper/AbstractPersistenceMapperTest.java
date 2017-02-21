@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -605,14 +604,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
         mapper.addValue(key.withPosition(2), value2);
 
-        NeoLogger.info("Before...");
-        mapper.allValuesOf(key).forEach(e -> NeoLogger.info("E = {0}", e));
-
         // Remove value, and check the removed value
         assertThat(mapper.removeValue(key.withPosition(0))).isPresent().hasValue(value0);
-
-        NeoLogger.info("After...");
-        mapper.allValuesOf(key).forEach(e -> NeoLogger.info("E = {0}", e));
 
         assertThat(mapper.valueOf(key.withPosition(0))).isPresent().hasValue(value1);
         assertThat(mapper.valueOf(key.withPosition(1))).isPresent().hasValue(value2);
