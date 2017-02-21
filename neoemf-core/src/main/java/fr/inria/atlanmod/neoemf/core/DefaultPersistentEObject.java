@@ -40,7 +40,6 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -355,12 +354,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Override
     public InternalEObject eInternalContainer() {
-        /*
-         * Don't load the container from the store here: it creates an important
-         * overhead and performance loss.
-         * [Update 21-02-2017] don't call super.eInternalContainer() either: it
-         * will delegate to the store.
-         */
+        // Don't load the container from the store here: it creates an important overhead and performance loss.
+        // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
         return eContainer;
 //        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
     }
