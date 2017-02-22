@@ -616,9 +616,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
-        return Iterables.firstIndexOf(edges,
-                v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()),
-                v -> v.<Integer>getProperty(KEY_POSITION));
+        return Iterables.firstIndexOf(edges, v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()));
     }
 
     @Nonnull
@@ -639,9 +637,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
-        return Iterables.lastIndexOf(edges,
-                v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()),
-                v -> v.<Integer>getProperty(KEY_POSITION));
+        return Iterables.lastIndexOf(edges, v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()));
     }
 
     //endregion

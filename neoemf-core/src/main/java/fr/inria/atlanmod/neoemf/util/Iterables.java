@@ -12,10 +12,14 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
+
+import javax.annotation.Nonnull;
+
+import static java.util.Objects.isNull;
 
 /**
  * Static utility methods related to {@link Iterable} instances.
@@ -61,28 +65,18 @@ public final class Iterables {
      *
      * @param iterable  the iterable
      * @param predicate the predicate to check the elements
-     * @param mapper    the mapper to map items to their index
      * @param <T>       the type of elements of the {@code iterable}
      *
      * @return an {@link OptionalInt} containing the first index, or {@link OptionalInt#empty()} if the {@code iterable}
      * has no such elements
      */
-    public static <T> OptionalInt firstIndexOf(Iterable<T> iterable, Predicate<? super T> predicate, ToIntFunction<? super T> mapper) {
-        if (iterable instanceof List) {
-            List<T> edgesList = (List<T>) iterable;
-
-            int size = edgesList.size();
-            for (int i = 0; i < size; i++) {
-                if (predicate.test(edgesList.get(i))) {
-                    return OptionalInt.of(i);
-                }
+    @Nonnull
+    public static <T> OptionalInt firstIndexOf(Iterable<T> iterable, Predicate<? super T> predicate) {
+        Iterator<T> iter = iterable.iterator();
+        for (int i = 0; iter.hasNext(); i++) {
+            if (predicate.test(iter.next())) {
+                return OptionalInt.of(i);
             }
-        }
-        else {
-            return Streams.stream(iterable)
-                    .filter(predicate)
-                    .mapToInt(mapper)
-                    .min();
         }
         return OptionalInt.empty();
     }
@@ -92,30 +86,31 @@ public final class Iterables {
      *
      * @param iterable  the iterable
      * @param predicate the predicate to check the elements
-     * @param mapper    the mapper to map items to their index
      * @param <T>       the type of elements of the {@code iterable}
      *
      * @return an {@link OptionalInt} containing the last index, or {@link OptionalInt#empty()} if the {@code iterable}
      * has no such elements
      */
-    public static <T> OptionalInt lastIndexOf(Iterable<T> iterable, Predicate<? super T> predicate, ToIntFunction<? super T> mapper) {
+    @Nonnull
+    public static <T> OptionalInt lastIndexOf(Iterable<T> iterable, Predicate<? super T> predicate) {
         if (iterable instanceof List) {
             List<T> list = (List<T>) iterable;
-
-            int size = list.size();
-            for (int i = size - 1; i > 0; i--) {
+            for (int i = list.size() - 1; i > 0; i--) {
                 if (predicate.test(list.get(i))) {
                     return OptionalInt.of(i);
                 }
             }
-
             return OptionalInt.empty();
         }
         else {
-            return Streams.stream(iterable)
-                    .filter(predicate)
-                    .mapToInt(mapper)
-                    .max();
+            Iterator<T> iter = iterable.iterator();
+            OptionalInt last = null;
+            for (int i = 0; iter.hasNext(); i++) {
+                if (predicate.test(iter.next())) {
+                    last = OptionalInt.of(i);
+                }
+            }
+            return isNull(last) ? OptionalInt.empty() : last;
         }
     }
 }
