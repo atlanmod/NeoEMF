@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -50,15 +50,14 @@ public class MapDBImporter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
         rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
         try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
-            Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
-                    .directWriteCacheMany()
+            Map<String, Object> options = MapDbOptions.newBuilder()
                     .autocommit()
                     .cacheIsSet()
                     .cacheSizes()
@@ -99,7 +98,6 @@ public class MapDBImporter {
 //            else {
 //                NeoLogger.info("Created model contains all the elements from the input XMI");
 //            }
-            
         }
     }
 }

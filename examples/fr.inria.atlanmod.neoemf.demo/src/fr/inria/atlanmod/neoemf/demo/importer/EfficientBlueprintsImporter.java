@@ -13,19 +13,17 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
-import fr.inria.atlanmod.neoemf.io.Importer;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
+import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
@@ -35,15 +33,13 @@ public class EfficientBlueprintsImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
+        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder().asMap();
 
-        PersistenceBackendFactory factory = BlueprintsPersistenceBackendFactory.getInstance();
-        try (PersistenceBackend backend = factory.createPersistentBackend(new File("models/sample2.graphdb"), options)) {
-            PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler((BlueprintsPersistenceBackend) backend, false);
-
+        PersistenceBackendFactory factory = BlueprintsBackendFactory.getInstance();
+        try (PersistenceBackend backend = factory.createPersistentBackend(BlueprintsURI.createFileURI(new File("models/sample2.graphdb")), options)) {
             Instant start = Instant.now();
 
-            Importer.fromXmi(new FileInputStream(new File("models/sample.xmi")), handler);
+            ReaderFactory.fromXmi(new File("models/sample.xmi"), WriterFactory.toBackend(backend));
 
             Instant end = Instant.now();
             NeoLogger.info("Import done in {0} seconds", Duration.between(start, end).getSeconds());
