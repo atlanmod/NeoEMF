@@ -18,6 +18,8 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link PersistenceOptions} that holds Blueprints Neo4j specific options.
  * <p>
@@ -31,9 +33,31 @@ import java.util.Map;
 @Experimental
 public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
 
-    @SuppressWarnings("JavaDoc")
-    private BlueprintsNeo4jOptions() {
+    /**
+     * Constructs a new {@ode BlueprintsNeo4jOptions}.
+     */
+    protected BlueprintsNeo4jOptions() {
         super();
+    }
+
+    /**
+     * Creates a new {@link Map} containing all default settings of {@code BlueprintsNeo4jOptions}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return new BlueprintsNeo4jOptionsBuilder().asMap();
+    }
+
+    /**
+     * Constructs a new {@link BlueprintsNeo4jOptionsBuilder} instance with default settings.
+     *
+     * @return a new builder
+     */
+    @Nonnull
+    public static BlueprintsNeo4jOptionsBuilder newBuilder() {
+        return new BlueprintsNeo4jOptionsBuilder();
     }
 
     @Override

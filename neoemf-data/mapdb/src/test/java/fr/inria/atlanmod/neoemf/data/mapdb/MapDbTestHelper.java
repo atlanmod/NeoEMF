@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.AbstractTestHelper;
 import fr.inria.atlanmod.neoemf.TestHelper;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 
@@ -46,7 +47,7 @@ public class MapDbTestHelper extends AbstractTestHelper<MapDbTestHelper> {
 
     @Override
     protected MapDbOptionsBuilder optionsBuilder() {
-        return MapDbOptionsBuilder.newBuilder();
+        return MapDbOptions.newBuilder();
     }
 
     @Override

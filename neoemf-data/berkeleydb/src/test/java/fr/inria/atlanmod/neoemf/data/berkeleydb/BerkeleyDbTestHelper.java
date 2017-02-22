@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import fr.inria.atlanmod.neoemf.AbstractTestHelper;
 import fr.inria.atlanmod.neoemf.TestHelper;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 
@@ -46,7 +47,7 @@ public class BerkeleyDbTestHelper extends AbstractTestHelper<BerkeleyDbTestHelpe
 
     @Override
     protected BerkeleyDbOptionsBuilder optionsBuilder() {
-        return BerkeleyDbOptionsBuilder.newBuilder();
+        return BerkeleyDbOptions.newBuilder();
     }
 
     @Override

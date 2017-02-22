@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jResourceOptions.CacheType;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptionsBuilder;
 
-import java.util.Map;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -35,32 +33,9 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     /**
      * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
      * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
-     * <p>
-     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
-     * #newBuilder()}
      */
     protected BlueprintsNeo4jOptionsBuilder() {
         graph(BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
-    }
-
-    /**
-     * Returns an immutable empty {@link Map}.
-     *
-     * @return an immutable {@link Map}
-     */
-    @Nonnull
-    public static Map<String, Object> noOption() {
-        return BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
-    }
-
-    /**
-     * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} instance.
-     *
-     * @return a new builder
-     */
-    @Nonnull
-    public static BlueprintsNeo4jOptionsBuilder newBuilder() {
-        return new BlueprintsNeo4jOptionsBuilder();
     }
 
     /**

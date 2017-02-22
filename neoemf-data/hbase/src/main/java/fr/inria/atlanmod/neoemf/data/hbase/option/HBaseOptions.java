@@ -18,6 +18,8 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link PersistenceOptions} that holds HBase specific options.
  * <p>
@@ -31,9 +33,31 @@ import java.util.Map;
 @Experimental
 public class HBaseOptions extends AbstractPersistenceOptions {
 
-    @SuppressWarnings("JavaDoc")
-    private HBaseOptions() {
+    /**
+     * Constructs a new {@code HBaseOptions}.
+     */
+    protected HBaseOptions() {
         super();
+    }
+
+    /**
+     * Creates a new {@link Map} containing all default settings of {@code HBaseOptions}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return new HBaseOptionsBuilder().asMap();
+    }
+
+    /**
+     * CConstructs a new {@code HBaseOptionsBuilder} instance.
+     *
+     * @return a new builder
+     */
+    @Nonnull
+    public static HBaseOptionsBuilder newBuilder() {
+        return new HBaseOptionsBuilder();
     }
 
     @Override

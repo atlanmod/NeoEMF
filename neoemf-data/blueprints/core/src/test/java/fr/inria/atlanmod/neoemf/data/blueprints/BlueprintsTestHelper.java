@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.TestHelper;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -35,6 +36,6 @@ public class BlueprintsTestHelper extends AbstractBlueprintsTestHelper<Blueprint
 
     @Override
     protected BlueprintsOptionsBuilder optionsBuilder() {
-        return BlueprintsOptionsBuilder.newBuilder();
+        return BlueprintsOptions.newBuilder();
     }
 }

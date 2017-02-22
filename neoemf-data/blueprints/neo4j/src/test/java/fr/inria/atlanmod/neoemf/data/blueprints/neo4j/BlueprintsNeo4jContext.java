@@ -53,22 +53,22 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4JTestHelper(ePackage).persistent().file(file).createResource();
+        return new BlueprintsNeo4jTestHelper(ePackage).persistent().file(file).createResource();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4JTestHelper(ePackage).file(file).createResource();
+        return new BlueprintsNeo4jTestHelper(ePackage).file(file).createResource();
     }
 
     @Override
     public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4JTestHelper(ePackage).file(file).loadResource();
+        return new BlueprintsNeo4jTestHelper(ePackage).file(file).loadResource();
     }
 
     @Override
     public PersistenceBackend createBackend(File file) throws IOException {
-        return new BlueprintsNeo4JTestHelper(null).file(file).createBackend();
+        return new BlueprintsNeo4jTestHelper(null).file(file).createBackend();
     }
 
     /**

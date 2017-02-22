@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -47,7 +47,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
 
     @Test
     public void testCreatePersistentBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
 
         // TODO Need to test further the nature of the BerkeleyDB engine
@@ -55,9 +55,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
 
     @Test
     public void testCreatePersistentStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
 
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BerkeleyDbOptionsBuilder.noOption());
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BerkeleyDbOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -72,7 +72,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptionsBuilder.noOption());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);

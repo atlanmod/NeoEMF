@@ -15,6 +15,8 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link PersistenceOptions} that holds common options.
  * <p>
@@ -28,9 +30,31 @@ import java.util.Map;
 @Experimental
 public class CommonOptions extends AbstractPersistenceOptions {
 
-    @SuppressWarnings("JavaDoc")
-    private CommonOptions() {
+    /**
+     * Constructs a new {@code CommonOptions}.
+     */
+    protected CommonOptions() {
         super();
+    }
+
+    /**
+     * Creates a new {@link Map} containing all default settings of {@code CommonOptions}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return new CommonOptionsBuilder().asMap();
+    }
+
+    /**
+     * Constructs a new {@code CommonOptionsBuilder} instance.
+     *
+     * @return a new builder
+     */
+    @Nonnull
+    public static CommonOptionsBuilder newBuilder() {
+        return new CommonOptionsBuilder();
     }
 
     @Override

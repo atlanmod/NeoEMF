@@ -13,10 +13,6 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 /**
  * A common {@link PersistenceOptionsBuilder} that creates common options that are available for all back-end
  * implementations.
@@ -28,30 +24,7 @@ public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<Comm
 
     /**
      * Constructs a new {@code CommonOptionsBuilder}.
-     * <p>
-     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
-     * #newBuilder()}
      */
     protected CommonOptionsBuilder() {
-    }
-
-    /**
-     * Returns an immutable empty {@link Map}.
-     *
-     * @return an immutable {@link Map}
-     */
-    @Nonnull
-    public static Map<String, Object> noOption() {
-        return CommonOptionsBuilder.newBuilder().asMap();
-    }
-
-    /**
-     * Constructs a new {@code CommonOptionsBuilder} instance.
-     *
-     * @return a new builder
-     */
-    @Nonnull
-    public static CommonOptionsBuilder newBuilder() {
-        return new CommonOptionsBuilder();
     }
 }

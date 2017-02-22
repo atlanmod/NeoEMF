@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
 import fr.inria.atlanmod.neoemf.TestHelper;
 import fr.inria.atlanmod.neoemf.data.blueprints.AbstractBlueprintsTestHelper;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -21,21 +22,21 @@ import org.eclipse.emf.ecore.resource.Resource;
 /**
  * A specific {@link TestHelper} for the Blueprints Neo4j implementation.
  */
-public class BlueprintsNeo4JTestHelper extends AbstractBlueprintsTestHelper<BlueprintsNeo4JTestHelper> {
+public class BlueprintsNeo4jTestHelper extends AbstractBlueprintsTestHelper<BlueprintsNeo4jTestHelper> {
 
     /**
-     * Constructs a new {@code BlueprintsNeo4JTestHelper} with the given {@code ePackage}.
+     * Constructs a new {@code BlueprintsNeo4jTestHelper} with the given {@code ePackage}.
      *
      * @param ePackage the {@link EPackage} associated to the built {@link Resource}
      *
      * @see EPackage.Registry
      */
-    public BlueprintsNeo4JTestHelper(EPackage ePackage) {
+    public BlueprintsNeo4jTestHelper(EPackage ePackage) {
         super(ePackage);
     }
 
     @Override
     protected BlueprintsNeo4jOptionsBuilder optionsBuilder() {
-        return BlueprintsNeo4jOptionsBuilder.newBuilder();
+        return BlueprintsNeo4jOptions.newBuilder();
     }
 }

@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.neoemf.AbstractTestHelper;
 import fr.inria.atlanmod.neoemf.TestHelper;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -77,7 +78,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
 
     @Override
     protected HBaseOptionsBuilder optionsBuilder() {
-        return HBaseOptionsBuilder.newBuilder();
+        return HBaseOptions.newBuilder();
     }
 
     @Override

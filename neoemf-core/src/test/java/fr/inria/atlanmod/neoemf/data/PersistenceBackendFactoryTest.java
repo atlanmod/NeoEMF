@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testNoOption() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.noOption();
+        Map<String, Object> options = CommonOptions.noOption();
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -61,7 +61,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testIsSetCachingOption() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .asMap();
 
@@ -81,7 +81,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testLoggingOption() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .log()
                 .asMap();
 
@@ -101,7 +101,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testSizeCachingOption() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheSizes()
                 .asMap();
 
@@ -121,7 +121,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testFeatureCachingOption() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheFeatures()
                 .asMap();
 
@@ -141,7 +141,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testLoadedObjectCounterLoggingOption() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .countLoadedObjects()
                 .asMap();
 
@@ -163,7 +163,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     public void testAutocommitOption() throws InvalidDataStoreException {
         final long expectedChuck = 100_000;
 
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .autocommit()
                 .asMap();
 
@@ -188,7 +188,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     public void testAutocommitWithChuckOption() throws InvalidDataStoreException {
         final long expectedChuck = 12_345;
 
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .autocommit(expectedChuck)
                 .asMap();
 
@@ -215,7 +215,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .log()
                 .asMap();
@@ -243,7 +243,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
                 .asMap();
@@ -271,7 +271,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      */
     @Test
     public void testSizeCachingFeatureCachingOptions() throws InvalidDataStoreException {
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheSizes()
                 .cacheFeatures()
                 .asMap();
@@ -304,7 +304,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     public void testAllOptions() throws InvalidDataStoreException {
         long expectedChuck = 12_345;
 
-        Map<String, Object> options = CommonOptionsBuilder.newBuilder()
+        Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()

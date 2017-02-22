@@ -13,10 +13,6 @@ package fr.inria.atlanmod.neoemf.data.hbase.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 /**
  * A {@link AbstractPersistenceOptionsBuilder} subclass that creates HBase specific options.
  * <p>
@@ -26,30 +22,7 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
 
     /**
      * Constructs a new {@code HBaseOptionsBuilder}.
-     * <p>
-     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
-     * #newBuilder()}
      */
     protected HBaseOptionsBuilder() {
-    }
-
-    /**
-     * Returns an immutable empty {@link Map}.
-     *
-     * @return an immutable {@link Map}
-     */
-    @Nonnull
-    public static Map<String, Object> noOption() {
-        return HBaseOptionsBuilder.newBuilder().asMap();
-    }
-
-    /**
-     * Constructs a new {@code HBaseOptionsBuilder} instance.
-     *
-     * @return a new builder
-     */
-    @Nonnull
-    public static HBaseOptionsBuilder newBuilder() {
-        return new HBaseOptionsBuilder();
     }
 }

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
@@ -43,7 +43,7 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
 
     @Test
     public void testCreatePersistentBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackend.class);
 
         // TODO Need to test further the nature of the MapDB engine
@@ -51,9 +51,9 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
 
     @Test
     public void testCreatePersistentStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
 
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, MapDbOptionsBuilder.noOption());
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, MapDbOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -68,7 +68,7 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptionsBuilder.noOption());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);

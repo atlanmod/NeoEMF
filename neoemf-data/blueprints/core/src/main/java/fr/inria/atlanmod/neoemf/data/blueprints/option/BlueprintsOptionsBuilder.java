@@ -15,10 +15,6 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 /**
  * A {@link PersistenceOptionsBuilder} that creates Blueprints TinkerGraph specific options.
  * <p>
@@ -31,30 +27,7 @@ public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<B
 
     /**
      * Constructs a new {@code BlueprintsOptionsBuilder}.
-     * <p>
-     * <b>Note:</b> This constructor is protected for API consistency purpose, to create a new builder use {@link
-     * #newBuilder()}.
      */
     protected BlueprintsOptionsBuilder() {
-    }
-
-    /**
-     * Returns an immutable empty {@link Map}.
-     *
-     * @return an immutable {@link Map}
-     */
-    @Nonnull
-    public static Map<String, Object> noOption() {
-        return BlueprintsOptionsBuilder.newBuilder().asMap();
-    }
-
-    /**
-     * Constructs a new {@code BlueprintsOptionsBuilder} instance.
-     *
-     * @return a new builder
-     */
-    @Nonnull
-    public static BlueprintsOptionsBuilder newBuilder() {
-        return new BlueprintsOptionsBuilder();
     }
 }

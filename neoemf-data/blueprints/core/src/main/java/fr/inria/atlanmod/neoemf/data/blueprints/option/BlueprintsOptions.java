@@ -17,6 +17,8 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link PersistenceOptions} that holds Blueprints TinkerGraph specific options.
  * <p>
@@ -30,9 +32,31 @@ import java.util.Map;
 @Experimental
 public class BlueprintsOptions extends AbstractBlueprintsOptions {
 
-    @SuppressWarnings("JavaDoc")
-    private BlueprintsOptions() {
+    /**
+     * Constructs a new {@code BlueprintsOptions}.
+     */
+    protected BlueprintsOptions() {
         super();
+    }
+
+    /**
+     * Creates a new {@link Map} containing all default settings of {@code BlueprintsOptions}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return new BlueprintsOptionsBuilder().asMap();
+    }
+
+    /**
+     * Constructs a new {@link BlueprintsOptionsBuilder} instance with default settings.
+     *
+     * @return a new builder
+     */
+    @Nonnull
+    public static BlueprintsOptionsBuilder newBuilder() {
+        return new BlueprintsOptionsBuilder();
     }
 
     @Override

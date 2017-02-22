@@ -18,6 +18,8 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link PersistenceOptions} that holds BerkeleyDB specific options.
  * <p>
@@ -31,9 +33,31 @@ import java.util.Map;
 @Experimental
 public class BerkeleyDbOptions extends AbstractPersistenceOptions {
 
-    @SuppressWarnings("JavaDoc")
-    private BerkeleyDbOptions() {
+    /**
+     * Constructs a new {@code BerkeleyDbOptions}.
+     */
+    protected BerkeleyDbOptions() {
         super();
+    }
+
+    /**
+     * Creates a new {@link Map} containing all default settings of {@code BerkeleyDbOptions}.
+     *
+     * @return an immutable {@link Map}
+     */
+    @Nonnull
+    public static Map<String, Object> noOption() {
+        return new BerkeleyDbOptionsBuilder().asMap();
+    }
+
+    /**
+     * Constructs a new {@link BerkeleyDbOptionsBuilder} instance with default settings.
+     *
+     * @return a new builder
+     */
+    @Nonnull
+    public static BerkeleyDbOptionsBuilder newBuilder() {
+        return new BerkeleyDbOptionsBuilder();
     }
 
     @Override

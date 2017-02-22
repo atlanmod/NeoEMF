@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
@@ -43,7 +43,7 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
 
     @Test
     public void testCreatePersistentBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
 
         // TODO Need to test further the nature of the Blueprints engine
@@ -51,9 +51,9 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
 
     @Test
     public void testCreatePersistentStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptionsBuilder.noOption());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
 
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptionsBuilder.noOption());
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
