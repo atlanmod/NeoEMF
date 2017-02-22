@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
+import com.google.common.collect.Iterables;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Element;
@@ -179,9 +180,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> StreamSupport.stream(v.getVertices(Direction.OUT, key.name()).spliterator(), false)
-                        .findAny()
-                        .isPresent())
+                .map(v -> !Iterables.isEmpty(v.getVertices(Direction.OUT, key.name())))
                 .orElse(false);
     }
 
@@ -228,22 +227,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         Optional<V> previousValue = valueOf(key);
         vertex.get().<V>setProperty(formatProperty(key.name(), key.position()), value);
         return previousValue;
-    }
-
-    @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-
-        if (!vertex.isPresent()) {
-            return;
-        }
-
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> vertex.get().<V>removeProperty(formatProperty(key.name(), i)));
-
-        sizeForValue(key, 0);
     }
 
     public <V> boolean hasAnyValue(FeatureKey key) {
@@ -303,8 +286,19 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
-        unsetAllValues(key);
+    public <V> void removeAllValues(FeatureKey key) throws NullPointerException {
+        checkNotNull(key);
+
+        Optional<Vertex> vertex = get(key.id());
+
+        if (!vertex.isPresent()) {
+            return;
+        }
+
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> vertex.get().<V>removeProperty(formatProperty(key.name(), i)));
+
+        sizeForValue(key, 0);
     }
 
     @Override
@@ -485,25 +479,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     }
 
     @Override
-    public void unsetAllReferences(FeatureKey key) {
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-
-        if (!vertex.isPresent()) {
-            return;
-        }
-
-        Iterable<Edge> edges = vertex.get().query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .edges();
-
-        StreamSupport.stream(edges.spliterator(), false).forEach(Element::remove);
-        vertex.get().<Integer>removeProperty(formatProperty(key.name(), KEY_SIZE));
-    }
-
-    @Override
     public boolean hasAnyReference(FeatureKey key) {
         checkNotNull(key);
 
@@ -519,15 +494,11 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Vertex vertex = getOrCreate(key.id());
 
-        // If the corresponding Edge already exists and has a value
-        boolean alreadyExists = StreamSupport.stream(
-                vertex.query()
-                        .labels(key.name())
-                        .direction(Direction.OUT)
-                        .has(KEY_POSITION, key.position())
-                        .edges().spliterator(), false)
-                .findAny()
-                .isPresent();
+        boolean alreadyExists = !Iterables.isEmpty(vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .has(KEY_POSITION, key.position())
+                .edges());
 
         if (key.position() >= size || alreadyExists) {
             if (key.position() != size) {

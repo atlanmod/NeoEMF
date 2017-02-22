@@ -68,12 +68,6 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        sizesCache.put(key, EMPTY);
-        super.unsetAllValues(key);
-    }
-
-    @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
         Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
@@ -115,12 +109,6 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     public void unsetReference(FeatureKey key) {
         sizesCache.put(key, EMPTY);
         super.unsetReference(key);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        sizesCache.put(key, EMPTY);
-        super.unsetAllReferences(key);
     }
 
     @Override

@@ -124,12 +124,6 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        loadedObjects.add(key.id());
-        super.unsetAllValues(key);
-    }
-
-    @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.hasAnyValue(key);
@@ -232,12 +226,6 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         loadedObjects.add(key.id());
         return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        loadedObjects.add(key.id());
-        super.unsetAllReferences(key);
     }
 
     @Override

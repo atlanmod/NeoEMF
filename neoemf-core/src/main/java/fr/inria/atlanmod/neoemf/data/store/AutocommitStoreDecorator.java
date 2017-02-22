@@ -81,11 +81,6 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        thenIncrementAndCommit(() -> super.unsetAllValues(key));
-    }
-
-    @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
         thenIncrementAndCommit(() -> super.addValue(key, value));
     }
@@ -121,11 +116,6 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return thenIncrementAndCommit(() -> super.referenceFor(key, reference));
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        thenIncrementAndCommit(() -> super.unsetAllReferences(key));
     }
 
     @Override

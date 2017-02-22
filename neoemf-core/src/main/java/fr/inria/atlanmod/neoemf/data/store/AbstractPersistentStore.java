@@ -229,7 +229,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
                 unsetValue(key);
             }
             else {
-                unsetAllValues(key);
+                removeAllValues(key);
             }
         }
         else {
@@ -237,7 +237,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
                 unsetReference(key);
             }
             else {
-                unsetAllReferences(key);
+                removeAllReferences(key);
             }
         }
     }

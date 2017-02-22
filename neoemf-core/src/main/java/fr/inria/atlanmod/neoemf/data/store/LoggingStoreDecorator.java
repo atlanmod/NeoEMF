@@ -111,12 +111,6 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        called("unSet", key);
-        super.unsetAllValues(key);
-    }
-
-    @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
         called("isSet", key);
         return super.hasAnyValue(key);
@@ -219,12 +213,6 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         called("set", key, reference);
         return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        called("unSet", key);
-        super.unsetAllReferences(key);
     }
 
     @Override

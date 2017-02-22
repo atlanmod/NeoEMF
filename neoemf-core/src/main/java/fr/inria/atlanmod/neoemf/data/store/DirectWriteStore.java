@@ -153,11 +153,6 @@ public class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        backend.unsetAllValues(key);
-    }
-
-    @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
         return backend.hasAnyValue(key);
     }
@@ -244,11 +239,6 @@ public class DirectWriteStore extends AbstractPersistentStore {
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return backend.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        backend.unsetAllReferences(key);
     }
 
     @Override

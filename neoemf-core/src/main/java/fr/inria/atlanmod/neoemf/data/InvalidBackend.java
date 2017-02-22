@@ -152,11 +152,6 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
@@ -220,11 +215,6 @@ public final class InvalidBackend implements PersistenceBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 

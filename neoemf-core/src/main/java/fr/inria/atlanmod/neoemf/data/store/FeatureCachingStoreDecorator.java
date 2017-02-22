@@ -95,14 +95,6 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
-
-        super.unsetAllValues(key);
-    }
-
-    @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
         valuesCache.put(key, value);
 
@@ -171,14 +163,6 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
         valuesCache.put(key, reference);
 
         return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        IntStream.range(0, sizeOfReference(key).orElse(0))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
-
-        super.unsetAllReferences(key);
     }
 
     @Override

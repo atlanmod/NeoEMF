@@ -150,12 +150,6 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void unsetAllValues(FeatureKey key) {
-        next.unsetAllValues(key);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> boolean hasAnyValue(FeatureKey key) {
         return next.hasAnyValue(key);
     }
@@ -257,12 +251,6 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @OverridingMethodsMustInvokeSuper
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return next.referenceFor(key, reference);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void unsetAllReferences(FeatureKey key) {
-        next.unsetAllReferences(key);
     }
 
     @Override

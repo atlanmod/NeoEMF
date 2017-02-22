@@ -83,14 +83,6 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
@@ -143,14 +135,6 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 

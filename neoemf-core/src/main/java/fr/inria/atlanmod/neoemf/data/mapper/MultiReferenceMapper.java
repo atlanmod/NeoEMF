@@ -83,17 +83,6 @@ public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper 
     }
 
     /**
-     * Unsets all references of the specified {@code key}.
-     *
-     * @param key the key identifying the multi-valued reference
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    default void unsetAllReferences(FeatureKey key) throws NullPointerException {
-        unsetAllValues(key);
-    }
-
-    /**
      * Checks whether the specified {@code key} has at least one defined reference.
      *
      * @param key the key identifying the multi-valued reference

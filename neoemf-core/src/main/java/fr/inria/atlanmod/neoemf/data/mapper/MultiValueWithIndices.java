@@ -63,14 +63,6 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     @Override
-    default <V> void unsetAllValues(FeatureKey key) throws NullPointerException {
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> safeValueFor(key.withPosition(i), null));
-
-        unsetValue(key);
-    }
-
-    @Override
     default <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(key);
         checkNotNull(value);
@@ -118,8 +110,11 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     @Override
-    default <V> void removeAllValues(FeatureKey key) {
-        IntStream.range(0, sizeOfValue(key).orElse(0)).forEach(i -> removeValue(key.withPosition(i)));
+    default <V> void removeAllValues(FeatureKey key) throws NullPointerException {
+        IntStream.range(0, sizeOfValue(key).orElse(0))
+                .forEach(i -> safeValueFor(key.withPosition(i), null));
+
+        unsetValue(key);
     }
 
     @Override

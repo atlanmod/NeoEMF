@@ -98,12 +98,6 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     }
 
     @Override
-    public <V> void unsetAllValues(FeatureKey key) {
-        isSetCache.put(key, false);
-        super.unsetAllValues(key);
-    }
-
-    @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> boolean hasAnyValue(FeatureKey key) {
         return isSetCache.get(key, super::hasAnyValue);
@@ -182,12 +176,6 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         isSetCache.put(key.withoutPosition(), true);
         return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetAllReferences(FeatureKey key) {
-        isSetCache.put(key, false);
-        super.unsetAllReferences(key);
     }
 
     @Override

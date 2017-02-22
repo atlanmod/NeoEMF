@@ -75,18 +75,6 @@ public interface MultiValueMapper extends ValueMapper {
     <V> Optional<V> valueFor(ManyFeatureKey key, V value) throws NullPointerException, NoSuchElementException;
 
     /**
-     * Unsets all values of the specified {@code key}.
-     *
-     * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of value
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    default <V> void unsetAllValues(FeatureKey key) throws NullPointerException {
-        unsetValue(key);
-    }
-
-    /**
      * Checks whether the specified {@code key} has at least one defined value.
      *
      * @param key the key identifying the multi-valued attribute

@@ -445,38 +445,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#hasAnyValue(FeatureKey)} and {@link
-     * MultiValueMapper#unsetAllValues(FeatureKey)}.
-     */
-    @Test
-    public void testIsSetUnsetManyValue() {
-        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
-
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
-
-        // Initialize values
-        mapper.appendValue(key, value0);
-        mapper.appendValue(key, value1);
-        mapper.appendValue(key, value2);
-
-        // Check the values
-        assertThat(mapper.hasAnyValue(key)).isTrue();
-        assertThat(mapper.sizeOfValue(key)).isPresent().hasValue(3);
-
-        // Unset all values
-        mapper.unsetAllValues(key);
-
-        // Check that all element doesn't exist
-        assertThat(mapper.valueOf(key.withPosition(0))).isNotPresent();
-        assertThat(mapper.valueOf(key.withPosition(1))).isNotPresent();
-        assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
-
-        // Check the values
-        assertThat(mapper.hasAnyValue(key)).isFalse();
-        assertThat(mapper.sizeOfValue(key)).isNotPresent();
-    }
-
-    /**
      * Checks the behavior of {@link MultiValueMapper#hasAnyValue(FeatureKey)} when the value doesn't exist.
      */
     @Test
@@ -485,18 +453,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         assertThat(catchThrowable(() ->
                 assertThat(mapper.hasAnyValue(key)).isFalse())
-        ).isNull();
-    }
-
-    /**
-     * Checks the behavior of {@link MultiValueMapper#unsetAllValues(FeatureKey)} when the value doesn't exist.
-     */
-    @Test
-    public void testUnsetInexistingManyValue() {
-        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
-
-        assertThat(catchThrowable(() ->
-                mapper.unsetAllValues(key))
         ).isNull();
     }
 
@@ -665,7 +621,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeAllValues(FeatureKey)}.
+     * Checks the behavior of {@link MultiValueMapper#removeAllValues(FeatureKey)} and
+     * {@link MultiValueMapper#hasAnyValue(FeatureKey)}.
      */
     @Test
     public void testRemoveAllValues() {
@@ -1120,38 +1077,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#hasAnyReference(FeatureKey)} and {@link
-     * MultiReferenceMapper#unsetAllReferences(FeatureKey)}.
-     */
-    @Test
-    public void testIsSetUnsetManyReference() {
-        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
-
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
-
-        // Initialize references
-        mapper.appendReference(key, ref0);
-        mapper.appendReference(key, ref1);
-        mapper.appendReference(key, ref2);
-
-        // Check the references
-        assertThat(mapper.hasAnyReference(key)).isTrue();
-        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(3);
-
-        // Unset all references
-        mapper.unsetAllReferences(key);
-
-        // Check that all element doesn't exist
-        assertThat(mapper.referenceOf(key.withPosition(0))).isNotPresent();
-        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
-        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
-
-        // Check the references
-        assertThat(mapper.hasAnyReference(key)).isFalse();
-        assertThat(mapper.sizeOfReference(key)).isNotPresent();
-    }
-
-    /**
      * Checks the behavior of {@link MultiReferenceMapper#hasAnyReference(FeatureKey)} when the reference doesn't exist.
      */
     @Test
@@ -1160,19 +1085,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         assertThat(catchThrowable(() ->
                 assertThat(mapper.hasAnyReference(key)).isFalse())
-        ).isNull();
-    }
-
-    /**
-     * Checks the behavior of {@link MultiReferenceMapper#unsetAllReferences(FeatureKey)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testUnsetInexistingManyReference() {
-        FeatureKey key = FeatureKey.of(StringId.of("Id0"), "Feature0");
-
-        assertThat(catchThrowable(() ->
-                mapper.unsetAllReferences(key))
         ).isNull();
     }
 
@@ -1344,7 +1256,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeAllReferences(FeatureKey)}.
+     * Checks the behavior of {@link MultiReferenceMapper#removeAllReferences(FeatureKey)} and
+     * {@link MultiReferenceMapper#hasAnyReference(FeatureKey)}.
      */
     @Test
     public void testRemoveAllReferences() {
