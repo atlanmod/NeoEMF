@@ -614,9 +614,10 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return OptionalInt.empty();
         }
 
-        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
-
-        return Iterables.firstIndexOf(edges, v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()));
+        return Streams.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
+                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
+                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
+                .min();
     }
 
     @Nonnull
@@ -635,9 +636,10 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return OptionalInt.empty();
         }
 
-        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
-
-        return Iterables.lastIndexOf(edges, v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()));
+        return Streams.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
+                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
+                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
+                .max();
     }
 
     //endregion
