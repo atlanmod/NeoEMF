@@ -130,13 +130,13 @@
         <argLine /> <!-- Keep it empty -->
         <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
 
-        <caffeine.version>2.3.5</caffeine.version>
+        <caffeine.version>2.4.0</caffeine.version>
 
         <commons-collections.version>4.1</commons-collections.version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>20.0</guava.version>
+        <guava.version>20.0</guava.version> <!-- 'guava:21.0+' is incompatible with 'hadoop-common:2.7.3' -->
         <osgi.version>6.0.0</osgi.version>
 
         <emf.version>2.12.0</emf.version>
@@ -147,7 +147,7 @@
 
         <assertj.version>3.6.2</assertj.version>
         <junit.version>4.12</junit.version>
-        <mockito.version>2.7.4</mockito.version>
+        <mockito.version>2.7.11</mockito.version>
     </properties>
 
     <dependencies>

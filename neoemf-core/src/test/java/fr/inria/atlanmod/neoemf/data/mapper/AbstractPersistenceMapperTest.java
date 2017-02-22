@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.util.Streams;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -392,9 +392,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendValue(key, value2);
 
         // Post-process the returned Iterable
-        List<String> actualValues = StreamSupport
-                .stream(mapper.<String>allValuesOf(key).spliterator(), false)
-                .collect(Collectors.toList());
+        List<String> actualValues = Streams.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
 
         assertThat(actualValues).hasSize(3);
 
@@ -419,9 +417,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
 
         // Post-process the returned Iterable
-        List<String> actualValues = StreamSupport
-                .stream(mapper.<String>allValuesOf(key).spliterator(), false)
-                .collect(Collectors.toList());
+        List<String> actualValues = Streams.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
 
         assertThat(actualValues).hasSize(3);
 
@@ -1024,9 +1020,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendReference(key, ref2);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = StreamSupport
-                .stream(mapper.<String>allReferencesOf(key).spliterator(), false)
-                .collect(Collectors.toList());
+        List<Id> actualReferences = Streams.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 
@@ -1051,9 +1045,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(1), ref1);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = StreamSupport
-                .stream(mapper.<String>allReferencesOf(key).spliterator(), false)
-                .collect(Collectors.toList());
+        List<Id> actualReferences = Streams.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 

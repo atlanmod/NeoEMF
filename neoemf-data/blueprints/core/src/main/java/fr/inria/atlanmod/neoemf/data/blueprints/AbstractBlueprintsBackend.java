@@ -29,6 +29,8 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.util.Iterables;
+import fr.inria.atlanmod.neoemf.util.Streams;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
@@ -43,7 +45,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -240,10 +241,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         for (MetaclassDescriptor metaclass : indexedMetaclasses) {
             Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, metaclass.name());
-            checkArgument(
-                    !StreamSupport.stream(metaclasses.spliterator(), false).findAny().isPresent(),
-                    "Index is not consistent");
-
+            checkArgument(Iterables.isEmpty(metaclasses), "Index is not consistent");
             to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
     }
@@ -273,8 +271,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
             // Get all the vertices that are indexed with one of the EClass
             return eClassToFind.stream()
-                    .flatMap(ec -> StreamSupport.stream(metaclassIndex.get(KEY_NAME, ec.getName()).spliterator(), false)
-                            .flatMap(mcv -> StreamSupport.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf").spliterator(), false)
+                    .flatMap(ec -> Streams.stream(metaclassIndex.get(KEY_NAME, ec.getName()))
+                            .flatMap(mcv -> Streams.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
                                     .map(v -> StringId.from(v.getId()))))
                     .collect(Collectors.toList());
         }
@@ -297,7 +295,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
 
         Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
-        Optional<Edge> containerEdge = StreamSupport.stream(containerEdges.spliterator(), false).findAny();
+        Optional<Edge> containerEdge = Streams.stream(containerEdges).findAny();
 
         Optional<ContainerDescriptor> container = Optional.empty();
         if (containerEdge.isPresent()) {
@@ -335,7 +333,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
 
         Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
-        Optional<Vertex> metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny();
+        Optional<Vertex> metaclassVertex = Streams.stream(metaclassVertices).findAny();
 
         return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
     }
@@ -346,7 +344,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         checkNotNull(metaclass);
 
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
-        Vertex metaclassVertex = StreamSupport.stream(metaclassVertices.spliterator(), false).findAny().orElse(null);
+        Vertex metaclassVertex = Streams.stream(metaclassVertices).findAny().orElse(null);
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = graph.addVertex(buildId(metaclass).toString());
@@ -473,7 +471,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
                 super.remove();
 
                 Iterable<Edge> edges = referencedVertex.getEdges(Direction.IN);
-                if (!StreamSupport.stream(edges.spliterator(), false).findAny().isPresent()) {
+                if (Iterables.isEmpty(edges)) {
                     // If the Vertex has no more incoming edges remove it from the DB
                     referencedVertex.remove();
                 }

@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import com.google.common.collect.Iterables;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Element;
@@ -25,10 +24,11 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.util.Iterables;
+import fr.inria.atlanmod.neoemf.util.Streams;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -36,7 +36,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -131,7 +130,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         }
 
         Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
-        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
+        Optional<Vertex> referencedVertex = Streams.stream(referencedVertices).findAny();
 
         return referencedVertex.map(v -> StringId.from(v.getId()));
     }
@@ -145,7 +144,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         Vertex vertex = getOrCreate(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
-        Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
+        Optional<Edge> referenceEdge = Streams.stream(referenceEdges).findAny();
 
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
@@ -170,7 +169,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         }
 
         Iterable<Edge> referenceEdges = vertex.get().getEdges(Direction.OUT, key.name());
-        Optional<Edge> referenceEdge = StreamSupport.stream(referenceEdges.spliterator(), false).findAny();
+        Optional<Edge> referenceEdge = Streams.stream(referenceEdges).findAny();
 
         referenceEdge.ifPresent(Element::remove);
     }
@@ -180,7 +179,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> !Iterables.isEmpty(v.getVertices(Direction.OUT, key.name())))
+                .map(v -> Iterables.isNotEmpty(v.getVertices(Direction.OUT, key.name())))
                 .orElse(false);
     }
 
@@ -416,9 +415,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
                 .has(KEY_POSITION, key.position())
                 .vertices();
 
-        Optional<Vertex> referencedVertex = StreamSupport.stream(referencedVertices.spliterator(), false).findAny();
-
-        return referencedVertex.map(v -> StringId.from(v.getId()));
+        return Streams.stream(referencedVertices)
+                .findAny()
+                .map(v -> StringId.from(v.getId()));
     }
 
     @Nonnull
@@ -432,14 +431,14 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return Collections.emptyList();
         }
 
+        Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.<Integer>getProperty(KEY_POSITION));
+
         Iterable<Edge> edges = vertex.get().query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .edges();
 
-        Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.<Integer>getProperty(KEY_POSITION));
-
-        return StreamSupport.stream(edges.spliterator(), false)
+        return Streams.stream(edges)
                 .sorted(byPosition)
                 .map(e -> StringId.from(e.getVertex(Direction.IN).getId()))
                 .collect(Collectors.toList());
@@ -463,7 +462,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
                 .has(KEY_POSITION, key.position())
                 .edges();
 
-        Optional<Edge> previousEdge = StreamSupport.stream(edges.spliterator(), false).findAny();
+        Optional<Edge> previousEdge = Streams.stream(edges).findAny();
 
         Optional<Id> previousId = Optional.empty();
         if (previousEdge.isPresent()) {
@@ -494,7 +493,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Vertex vertex = getOrCreate(key.id());
 
-        boolean alreadyExists = !Iterables.isEmpty(vertex.query()
+        boolean alreadyExists = Iterables.isNotEmpty(vertex.query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .has(KEY_POSITION, key.position())
@@ -595,7 +594,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
 
-        return StreamSupport.stream(referencedVertices.spliterator(), false)
+        return Streams.stream(referencedVertices)
                 .anyMatch(v -> Objects.equals(v.getId().toString(), reference.toString()));
     }
 
@@ -617,24 +616,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
-        if (edges instanceof List) {
-            List<Edge> edgesList = (List<Edge>) edges;
-
-            int size = edgesList.size();
-            for (int i = 0; i < size; i++) {
-                if (Objects.equals(edgesList.get(i).getVertex(Direction.OUT), vertex.get())) {
-                    return OptionalInt.of(i);
-                }
-            }
-
-            return OptionalInt.empty();
-        }
-        else {
-            return StreamSupport.stream(edges.spliterator(), false)
-                    .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                    .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                    .min();
-        }
+        return Iterables.firstIndexOf(edges,
+                v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()),
+                v -> v.<Integer>getProperty(KEY_POSITION));
     }
 
     @Nonnull
@@ -655,24 +639,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
-        if (edges instanceof List) {
-            List<Edge> edgesList = (List<Edge>) edges;
-
-            int size = edgesList.size();
-            for (int i = size - 1; i > 0; i--) {
-                if (Objects.equals(edgesList.get(i).getVertex(Direction.OUT), vertex.get())) {
-                    return OptionalInt.of(i);
-                }
-            }
-
-            return OptionalInt.empty();
-        }
-        else {
-            return StreamSupport.stream(edges.spliterator(), false)
-                    .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                    .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                    .max();
-        }
+        return Iterables.lastIndexOf(edges,
+                v -> Objects.equals(v.getVertex(Direction.OUT), vertex.get()),
+                v -> v.<Integer>getProperty(KEY_POSITION));
     }
 
     //endregion
