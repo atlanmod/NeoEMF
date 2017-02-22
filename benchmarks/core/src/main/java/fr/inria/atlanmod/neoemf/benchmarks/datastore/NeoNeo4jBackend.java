@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class NeoNeo4jBackend extends NeoTinkerBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsNeo4jOptionsBuilder.newBuilder()
+        return BlueprintsNeo4jOptions.newBuilder()
                 .autocommit()
                 .asMap();
     }

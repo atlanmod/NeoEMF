@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -46,7 +46,7 @@ public class NeoBerkeleydbBackend extends AbstractNeoBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return BerkeleyDbOptionsBuilder.newBuilder()
+        return BerkeleyDbOptions.newBuilder()
                 .autocommit()
                 .asMap();
     }

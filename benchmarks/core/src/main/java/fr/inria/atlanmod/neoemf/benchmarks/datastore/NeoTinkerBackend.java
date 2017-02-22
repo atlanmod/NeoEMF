@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -50,7 +50,7 @@ public class NeoTinkerBackend extends AbstractNeoBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsOptionsBuilder.newBuilder()
+        return BlueprintsOptions.newBuilder()
                 .asMap();
     }
 }

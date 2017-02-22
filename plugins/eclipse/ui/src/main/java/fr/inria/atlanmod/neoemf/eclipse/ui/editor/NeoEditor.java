@@ -11,12 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -37,7 +38,6 @@ import org.eclipse.swt.widgets.Tree;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -62,22 +62,22 @@ public class NeoEditor extends EcoreEditor {
         Map<String, Object> options;
         String scheme = resource.getURI().scheme();
         if (Objects.equals(scheme, BlueprintsURI.SCHEME)) {
-            options = BlueprintsOptionsBuilder.newBuilder()
+            options = BlueprintsOptions.newBuilder()
 //                  .log()
                     .asMap();
         }
         else if (Objects.equals(scheme, MapDbURI.SCHEME)) {
-            options = MapDbOptionsBuilder.newBuilder()
+            options = MapDbOptions.newBuilder()
 //                  .log()
                     .asMap();
         }
         else if (Objects.equals(scheme, BerkeleyDbURI.SCHEME)) {
-            options = BerkeleyDbOptionsBuilder.newBuilder()
+            options = BerkeleyDbOptions.newBuilder()
 //                  .log()
                     .asMap();
         }
         else {
-            options = Collections.emptyMap();
+            options = CommonOptions.noOption();
         }
 
         try {
@@ -88,8 +88,7 @@ public class NeoEditor extends EcoreEditor {
             for (Resource r : editingDomain.getResourceSet().getResources()) {
                 NeoLogger.info(resource.getURI().toString());
                 if (r instanceof PersistentResource) {
-                    PersistentResource persistentResource = (PersistentResource) r;
-                    persistentResource.close();
+                    ((PersistentResource) r).close();
                 }
                 else {
                     r.unload();

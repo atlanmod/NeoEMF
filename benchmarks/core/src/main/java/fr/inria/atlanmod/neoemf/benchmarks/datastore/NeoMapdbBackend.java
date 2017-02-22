@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -46,7 +46,7 @@ public class NeoMapdbBackend extends AbstractNeoBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return MapDbOptionsBuilder.newBuilder()
+        return MapDbOptions.newBuilder()
                 .autocommit()
                 .asMap();
     }

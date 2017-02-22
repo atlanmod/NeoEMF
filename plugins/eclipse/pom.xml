@@ -30,7 +30,7 @@
     </modules>
 
     <properties>
-        <tycho-plugin.version>0.26.0</tycho-plugin.version>
+        <tycho-plugin.version>1.0.0</tycho-plugin.version>
     </properties>
 
     <repositories>
