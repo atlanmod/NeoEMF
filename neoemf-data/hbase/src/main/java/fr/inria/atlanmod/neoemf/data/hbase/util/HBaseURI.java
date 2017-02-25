@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @see HBaseBackendFactory
  * @see PersistentResourceFactory
  */
+@ParametersAreNonnullByDefault
 public class HBaseURI extends PersistenceURI {
 
     /**
@@ -54,16 +56,12 @@ public class HBaseURI extends PersistenceURI {
     public static final String SCHEME = "neo-hbase";
 
     /**
-     * Constructs a new {@code HBaseURI} from the given {@code internalURI}.
-     * <p>
-     * <b>Note:</b> This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link
-     * #createURI(URI)}, {@link #createFileURI(File)}, {@link #createFileURI(URI)} or {@link
-     * #createHierarchicalURI(String, String, URI)} instead.
+     * This class should not be instantiated.
      *
-     * @param internalURI the base {@link URI}
+     * @throws IllegalStateException every time
      */
-    protected HBaseURI(@Nonnull URI internalURI) {
-        super(internalURI);
+    protected HBaseURI() {
+        super();
     }
 
     /**
@@ -80,17 +78,19 @@ public class HBaseURI extends PersistenceURI {
      *                                  #FILE_SCHEME}
      * @see #createFileURI(File)
      * @see #createFileURI(URI)
-     * @see #createHierarchicalURI(String, String, URI)
+     * @see #createHierarchicalURI(String, int, URI)
      */
     @Nonnull
-    public static URI createURI(@Nonnull URI uri) {
+    public static URI createURI(URI uri) {
         checkNotNull(uri);
+
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
             return createFileURI(uri);
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
+
         throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", HBaseURI.class.getSimpleName(), uri.scheme()));
     }
 
@@ -104,9 +104,8 @@ public class HBaseURI extends PersistenceURI {
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
-    public static URI createFileURI(@Nonnull File file) {
-        checkNotNull(file);
-        return PersistenceURI.createFileURI(file, SCHEME);
+    public static URI createFileURI(File file) {
+        return createFileURI(checkNotNull(file), SCHEME);
     }
 
     /**
@@ -120,8 +119,9 @@ public class HBaseURI extends PersistenceURI {
      * @throws NullPointerException if the {@code uri} is {@code null}
      */
     @Nonnull
-    public static URI createFileURI(@Nonnull URI uri) {
+    public static URI createFileURI(URI uri) {
         checkNotNull(uri);
+
         return createFileURI(FileUtils.getFile(uri.toFileString()));
     }
 
@@ -138,11 +138,11 @@ public class HBaseURI extends PersistenceURI {
      * @throws NullPointerException if any of the parameters is {@code null}
      */
     @Nonnull
-    public static URI createHierarchicalURI(@Nonnull String host, @Nonnull String port, @Nonnull URI modelURI) {
+    public static URI createHierarchicalURI(String host, int port, URI modelURI) {
         checkNotNull(host);
         checkNotNull(port);
         checkNotNull(modelURI);
-        return URI.createHierarchicalURI(SCHEME, host + ":" + port, null, modelURI.segments(), null, null);
+        return URI.createHierarchicalURI(SCHEME, host + ':' + port, null, modelURI.segments(), null, null);
     }
 
     /**
@@ -153,7 +153,7 @@ public class HBaseURI extends PersistenceURI {
      * @return the formatted {@link URI}
      */
     @Nonnull
-    public static String format(@Nonnull URI uri) {
+    public static String format(URI uri) {
         checkNotNull(uri);
         StringBuilder strBld = new StringBuilder();
         for (int i = 0; i < uri.segmentCount(); i++) {

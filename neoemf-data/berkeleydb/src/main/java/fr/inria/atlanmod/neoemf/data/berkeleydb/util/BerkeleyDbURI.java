@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @see BerkeleyDbBackendFactory
  * @see PersistentResourceFactory
  */
+@ParametersAreNonnullByDefault
 public class BerkeleyDbURI extends PersistenceURI {
 
     /**
@@ -54,15 +56,12 @@ public class BerkeleyDbURI extends PersistenceURI {
     public static final String SCHEME = "neo-berkeleydb";
 
     /**
-     * Constructs a new {@code BerkeleyDbURI} from the given {@code internalURI}.
-     * <p>
-     * <b>Note:</b> This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)}
-     * or {@link #createFileURI(File)} instead.
+     * This class should not be instantiated.
      *
-     * @param internalURI the base {@link URI}
+     * @throws IllegalStateException every time
      */
-    protected BerkeleyDbURI(@Nonnull URI internalURI) {
-        super(internalURI);
+    protected BerkeleyDbURI() {
+        super();
     }
 
     /**
@@ -80,17 +79,17 @@ public class BerkeleyDbURI extends PersistenceURI {
      * @see #createFileURI(File)
      */
     @Nonnull
-    public static URI createURI(@Nonnull URI uri) {
+    public static URI createURI(URI uri) {
         checkNotNull(uri);
+
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
             return createFileURI(FileUtils.getFile(uri.toFileString()));
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
-        else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create BerkeleyDbURI from the URI scheme {0}", uri.scheme()));
-        }
+
+        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", BerkeleyDbURI.class.getSimpleName(), uri.scheme()));
     }
 
     /**
@@ -103,8 +102,7 @@ public class BerkeleyDbURI extends PersistenceURI {
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
-    public static URI createFileURI(@Nonnull File file) {
-        checkNotNull(file);
-        return PersistenceURI.createFileURI(file, SCHEME);
+    public static URI createFileURI(File file) {
+        return createFileURI(checkNotNull(file), SCHEME);
     }
 }

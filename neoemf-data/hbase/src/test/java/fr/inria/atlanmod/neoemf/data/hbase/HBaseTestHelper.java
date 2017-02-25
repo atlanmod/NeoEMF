@@ -47,7 +47,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
     /**
      * The Zookeeper port.
      */
-    private static String port;
+    private static int port;
 
     /**
      * Constructs a new {@code HBaseTestHelper} with the given {@code ePackage}.
@@ -110,7 +110,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
 
             Configuration conf = hbase.getConnection().getConfiguration();
             host = conf.get(HBaseBackendFactory.HOST_PROPERTY);
-            port = conf.get(HBaseBackendFactory.PORT_PROPERTY);
+            port = Integer.parseInt(conf.get(HBaseBackendFactory.PORT_PROPERTY));
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {

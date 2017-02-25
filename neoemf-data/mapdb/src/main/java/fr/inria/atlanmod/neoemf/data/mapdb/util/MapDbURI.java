@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @see MapDbBackendFactory
  * @see PersistentResourceFactory
  */
+@ParametersAreNonnullByDefault
 public class MapDbURI extends PersistenceURI {
 
     /**
@@ -54,15 +56,12 @@ public class MapDbURI extends PersistenceURI {
     public static final String SCHEME = "neo-mapdb";
 
     /**
-     * Constructs a new {@code MapDbURI} from the given {@code internalURI}.
-     * <p>
-     * <b>Note:</b> This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link
-     * #createURI(URI)}, {@link #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
+     * This class should not be instantiated.
      *
-     * @param internalURI the base {@link URI}
+     * @throws IllegalStateException every time
      */
-    protected MapDbURI(@Nonnull URI internalURI) {
-        super(internalURI);
+    protected MapDbURI() {
+        super();
     }
 
     /**
@@ -80,14 +79,16 @@ public class MapDbURI extends PersistenceURI {
      * @see #createFileURI(URI)
      */
     @Nonnull
-    public static URI createURI(@Nonnull URI uri) {
+    public static URI createURI(URI uri) {
         checkNotNull(uri);
+
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
             return createFileURI(uri);
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
+
         throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", MapDbURI.class.getSimpleName(), uri.scheme()));
     }
 
@@ -101,9 +102,8 @@ public class MapDbURI extends PersistenceURI {
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
-    public static URI createFileURI(@Nonnull File file) {
-        checkNotNull(file);
-        return PersistenceURI.createFileURI(file, SCHEME);
+    public static URI createFileURI(File file) {
+        return createFileURI(checkNotNull(file), SCHEME);
     }
 
     /**
@@ -118,8 +118,9 @@ public class MapDbURI extends PersistenceURI {
      *                              cannot be found
      */
     @Nonnull
-    public static URI createFileURI(@Nonnull URI uri) {
+    public static URI createFileURI(URI uri) {
         checkNotNull(uri);
+
         return createFileURI(FileUtils.getFile(uri.toFileString()));
     }
 }
