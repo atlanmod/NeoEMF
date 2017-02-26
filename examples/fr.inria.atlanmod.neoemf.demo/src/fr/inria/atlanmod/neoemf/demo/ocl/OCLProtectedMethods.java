@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -63,7 +63,7 @@ public class OCLProtectedMethods {
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
-            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            Log.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
 
         try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
@@ -71,15 +71,15 @@ public class OCLProtectedMethods {
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
-            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
-            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            Log.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
     }
 
@@ -92,7 +92,7 @@ public class OCLProtectedMethods {
             return (List<MethodDeclaration>) ocl.createQuery(constraints.get(0)).evaluate(resource.getContents().get(0));
         }
         catch (Exception e) {
-            NeoLogger.error(e);
+            Log.error(e);
             return Collections.emptyList();
         }
     }

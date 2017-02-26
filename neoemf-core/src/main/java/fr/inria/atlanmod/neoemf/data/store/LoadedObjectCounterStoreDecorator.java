@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -47,7 +47,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
         super(store);
         loadedObjects = new TreeSet<>();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size())));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Log.info("{0} objects loaded during the execution", loadedObjects.size())));
     }
 
     @Nonnull

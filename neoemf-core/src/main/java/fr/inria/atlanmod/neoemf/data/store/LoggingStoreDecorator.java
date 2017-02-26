@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.Level;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistentStore} wrapper that logs every call to its methods in the {@link NeoLogger}.
+ * A {@link PersistentStore} wrapper that logs every call to its methods in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
 public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
@@ -36,7 +36,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger log = NeoLogger.customLogger(LoggingStoreDecorator.class.getName());
+    private static final Logger log = Log.customLogger(LoggingStoreDecorator.class.getName());
 
     /**
      * The default {@link Level} for the {@link #log}.

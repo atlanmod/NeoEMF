@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -54,7 +54,7 @@ public class HBaseImporter {
         rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
+        try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
             Map<String, Object> options = HBaseOptions.noOption();
             persistentResource.save(options);
 
@@ -67,7 +67,7 @@ public class HBaseImporter {
             persistentResource.save(options);
 
             Instant end = Instant.now();
-            NeoLogger.info("HBase Model created in {0} seconds", Duration.between(start, end).getSeconds());
+            Log.info("HBase Model created in {0} seconds", Duration.between(start, end).getSeconds());
             
             /*
              * Checks that NeoEMF model contains the same elements as the input XMI.
@@ -84,13 +84,13 @@ public class HBaseImporter {
 //            
 //            List<Diff> diffs = comparison.getDifferences();
 //            if(diffs.size() > 0) {
-//                NeoLogger.error("Created model has {0} diffs compared to the input XMI", diffs.size());
+//                Log.error("Created model has {0} diffs compared to the input XMI", diffs.size());
 //                for(Diff diff : diffs) {
-//                    NeoLogger.error("\t {0}", diff.toString());
+//                    Log.error("\t {0}", diff.toString());
 //                }
 //            }
 //            else {
-//                NeoLogger.info("Created model contains all the elements from the input XMI");
+//                Log.info("Created model contains all the elements from the input XMI");
 //            }
         }
     }

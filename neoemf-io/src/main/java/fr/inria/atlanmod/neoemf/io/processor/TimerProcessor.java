@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import com.google.common.base.Stopwatch;
 
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,7 +39,7 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onInitialize() {
-        NeoLogger.info("Document analysis in progress...");
+        Log.info("Document analysis in progress...");
         stopWatch = Stopwatch.createStarted();
 
         notifyInitialize();
@@ -47,7 +47,7 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onComplete() {
-        NeoLogger.info("Document analysis done in {0}", stopWatch.stop());
+        Log.info("Document analysis done in {0}", stopWatch.stop());
 
         notifyComplete();
     }

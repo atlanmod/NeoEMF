@@ -26,7 +26,7 @@ import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.Level;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -78,7 +78,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
                 storeOptions = Collections.unmodifiableList(storeOptions);
             }
             catch (ClassCastException e) {
-                NeoLogger.warn("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>. Consider that there is no option.");
+                Log.warn("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>. Consider that there is no option.");
                 throw new NullPointerException();
             }
         }
@@ -86,7 +86,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
             storeOptions = Collections.emptyList();
         }
 
-        NeoLogger.debug("StoreOptions: " + storeOptions);
+        Log.debug("StoreOptions: " + storeOptions);
 
         return storeOptions;
     }
@@ -177,14 +177,14 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
 
         try {
             configuration.save();
-            NeoLogger.debug("Configuration stored at " + path);
+            Log.debug("Configuration stored at " + path);
         }
         catch (ConfigurationException e) {
             /*
              * Unable to save configuration.
              * Supposedly it's a minor error, so we log it without rising an exception.
              */
-            NeoLogger.warn(e);
+            Log.warn(e);
         }
     }
 }

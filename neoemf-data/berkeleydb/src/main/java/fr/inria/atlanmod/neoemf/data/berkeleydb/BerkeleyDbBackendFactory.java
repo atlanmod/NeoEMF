@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -84,7 +84,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
             backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
         }
         catch (IOException e) {
-            NeoLogger.error(e);
+            Log.error(e);
             throw new InvalidDataStoreException(e);
         }
 
@@ -118,7 +118,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
             processGlobalConfiguration(file);
         }
         catch (IOException e) {
-            NeoLogger.error(e);
+            Log.error(e);
             throw new InvalidDataStoreException(e);
         }
 

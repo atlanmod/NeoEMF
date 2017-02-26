@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.util.emf.compare;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.compare.match.DefaultComparisonFactory;
 import org.eclipse.emf.compare.match.DefaultMatchEngine;
@@ -63,7 +63,7 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
     public LazyMatchEngineFactory(UseIdentifiers useIDs, WeightProvider.Descriptor.Registry registry) {
         final IComparisonFactory comparisonFactory = new DefaultComparisonFactory(new LazyEqualityHelperFactory());
         final IEObjectMatcher matcher = DefaultMatchEngine.createDefaultEObjectMatcher(useIDs, registry);
-        NeoLogger.info("LazyMatchEngine with LazyEqualityHelper created");
+        Log.info("LazyMatchEngine with LazyEqualityHelper created");
         matchEngine = new LazyMatchEngine(matcher, comparisonFactory);
     }
 
@@ -75,7 +75,7 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
      * @param comparisonFactory factory that will be use to instantiate Comparison as return by match() methods.
      */
     public LazyMatchEngineFactory(IEObjectMatcher matcher, IComparisonFactory comparisonFactory) {
-        NeoLogger.info("LazyMatchEngine with LazyEqualityHelper created");
+        Log.info("LazyMatchEngine with LazyEqualityHelper created");
         matchEngine = new LazyMatchEngine(matcher, comparisonFactory);
     }
 }

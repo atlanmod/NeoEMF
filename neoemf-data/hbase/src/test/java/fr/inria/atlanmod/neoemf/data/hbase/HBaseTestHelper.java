@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
@@ -71,7 +71,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
             initMiniCluster();
         }
 
-        NeoLogger.info("Hadoop mini-cluster running at {0}:{1}", host, port);
+        Log.info("Hadoop mini-cluster running at {0}:{1}", host, port);
 
         return HBaseBackendFactory.getInstance();
     }
@@ -103,7 +103,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
      */
     private void initMiniCluster() {
         try {
-            NeoLogger.info("Initializing the Hadoop mini-cluster... (This may take several minutes)");
+            Log.info("Initializing the Hadoop mini-cluster... (This may take several minutes)");
 
             hbase = new HBaseTestingUtility();
             hbase.startMiniCluster(1);
@@ -114,7 +114,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    NeoLogger.info("Shutting down the Hadoop minicluster...");
+                    Log.info("Shutting down the Hadoop minicluster...");
                     hbase.shutdownMiniCluster();
                 }
                 catch (Exception ignore) {
@@ -122,7 +122,7 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
             }));
         }
         catch (Exception e) {
-            NeoLogger.error(e, "Unable to create the Hadoop mini-cluster. If you're testing on Windows, you need to install Cygwin");
+            Log.error(e, "Unable to create the Hadoop mini-cluster. If you're testing on Windows, you need to install Cygwin");
             throw new RuntimeException(e);
         }
     }

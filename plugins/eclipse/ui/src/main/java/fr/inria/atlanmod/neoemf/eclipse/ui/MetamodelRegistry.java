@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -110,7 +110,7 @@ public class MetamodelRegistry {
                 rootDelta.accept(visitor);
             }
             catch (CoreException e) {
-                NeoLogger.error(e);
+                Log.error(e);
             }
 
             if (changed.isEmpty()) {
@@ -128,7 +128,7 @@ public class MetamodelRegistry {
                                 addMetamodel(delta.getMovedToPath().toOSString());
                             }
                             catch (Exception e) {
-                                NeoLogger.error(e);
+                                Log.error(e);
                             }
                         }
                     }
@@ -137,7 +137,7 @@ public class MetamodelRegistry {
                             registerMetamodel(metamodel);
                         }
                         catch (Exception e) {
-                            NeoLogger.error(e);
+                            Log.error(e);
                         }
                     }
                 }
@@ -200,7 +200,7 @@ public class MetamodelRegistry {
                 registerMetamodel(metamodel);
             }
             catch (Exception e) {
-                NeoLogger.error(e);
+                Log.error(e);
             }
         }
     }

@@ -25,7 +25,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -126,7 +126,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                     backend = new BlueprintsBackendIndices((KeyIndexableGraph) baseGraph);
                 }
                 else {
-                    NeoLogger.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
+                    Log.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
                     throw new InvalidDataStoreException("Graph type " + file.getAbsolutePath() + " does not support Key Indices");
                 }
             }
@@ -144,7 +144,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                       * Unable to save configuration.
 					 * Supposedly it's a minor error, so we log it without rising an exception.
 					 */
-                    NeoLogger.warn(e);
+                    Log.warn(e);
                 }
             }
         }
@@ -186,7 +186,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
             String savedGraphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
-                NeoLogger.error("Unable to create graph as type {0}, expected graph type was {1})", issuedGraphType, savedGraphType);
+                Log.error("Unable to create graph as type {0}, expected graph type was {1})", issuedGraphType, savedGraphType);
                 throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
             }
         }
@@ -218,17 +218,17 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                 blueprintsConfig.putDefaultConfiguration(configuration, directory);
             }
             catch (ClassNotFoundException e) {
-                NeoLogger.warn(e, "Unable to find the configuration class {0}", configClassQualifiedName);
+                Log.warn(e, "Unable to find the configuration class {0}", configClassQualifiedName);
             }
             catch (NoSuchMethodException e) {
-                NeoLogger.warn(e, "Unable to find configuration methods in class {0}", configClassName);
+                Log.warn(e, "Unable to find configuration methods in class {0}", configClassName);
             }
             catch (InvocationTargetException | IllegalAccessException e) {
-                NeoLogger.warn(e, "An error occurs during the execution of a configuration method");
+                Log.warn(e, "An error occurs during the execution of a configuration method");
             }
         }
         else {
-            NeoLogger.warn("Unable to compute graph type name from {0}", graphType);
+            Log.warn("Unable to compute graph type name from {0}", graphType);
         }
 
         return configuration;

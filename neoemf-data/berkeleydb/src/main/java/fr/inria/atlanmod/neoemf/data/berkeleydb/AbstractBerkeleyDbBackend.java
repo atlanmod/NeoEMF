@@ -28,7 +28,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.ObjectSerializer
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -119,7 +119,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
             environment.close();
         }
         catch (Exception e) {
-            NeoLogger.warn(e);
+            Log.warn(e);
         }
         finally {
             isClosed = true;

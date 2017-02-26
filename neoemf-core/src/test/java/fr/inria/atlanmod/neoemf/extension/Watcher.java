@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.extension;
 
 import com.google.common.base.Splitter;
 
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
@@ -30,7 +30,7 @@ public class Watcher extends org.junit.rules.TestWatcher {
     /**
      * The special logger where messages will be sent.
      */
-    private static final Logger LOG = NeoLogger.customLogger("test");
+    private static final Logger LOG = Log.customLogger("test");
 
     @Override
     protected void succeeded(Description description) {

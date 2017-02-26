@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.structure;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -141,7 +141,7 @@ public class MetaclassDescriptor implements Serializable {
                 eClass = (EClass) ePackage.getEClassifier(name);
             }
             else {
-                NeoLogger.warn("Unable to find EPackage for URI: {0}", uri);
+                Log.warn("Unable to find EPackage for URI: {0}", uri);
             }
         }
         return eClass;

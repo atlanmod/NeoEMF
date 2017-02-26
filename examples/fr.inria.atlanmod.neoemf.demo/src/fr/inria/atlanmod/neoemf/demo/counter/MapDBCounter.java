@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -43,10 +43,10 @@ public class MapDBCounter {
         try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
             resource.load(Collections.emptyMap());
             int size = ReaderUtil.countElements(resource);
-            NeoLogger.info("Resource {0} contains {1} elements", resource.toString(), size);
+            Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 
         Instant end = Instant.now();
-        NeoLogger.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
+        Log.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
     }
 }

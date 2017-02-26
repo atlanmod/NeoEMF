@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -40,21 +40,21 @@ public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProv
         if (parent instanceof ResourceSet) {
             ResourceSet rSet = (ResourceSet) parent;
             Resource childResource = rSet.getResources().get(index);
-            NeoLogger.debug("Updating children of {0}", parent.toString());
+            Log.debug("Updating children of {0}", parent.toString());
             tViewer.replace(parent, index, childResource);
             tViewer.setChildCount(childResource, childResource.getContents().size());
         }
         if (parent instanceof Resource) {
             Resource r = (Resource) parent;
             EObject child = r.getContents().get(index);
-            NeoLogger.debug("Updating children of {0}", parent.toString());
+            Log.debug("Updating children of {0}", parent.toString());
             tViewer.replace(parent, index, child);
             tViewer.setChildCount(child, getChildCount(child));
         }
         if (parent instanceof PersistentEObject) {
             PersistentEObject e = (PersistentEObject) parent;
             EObject child = e.eContents().get(index);
-            NeoLogger.debug("Updating children of {0}", parent.toString());
+            Log.debug("Updating children of {0}", parent.toString());
             tViewer.replace(parent, index, child);
             tViewer.setChildCount(child, getChildCount(child));
         }
@@ -67,19 +67,19 @@ public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProv
         if (element instanceof ResourceSet) {
             ResourceSet rSet = (ResourceSet) element;
             childCount = rSet.getResources().size();
-            NeoLogger.debug("ResourceSet childCount : {0}", childCount);
+            Log.debug("ResourceSet childCount : {0}", childCount);
             tViewer.setChildCount(element, childCount);
         }
         if (element instanceof Resource) {
             Resource r = (Resource) element;
             childCount = r.getContents().size();
-            NeoLogger.debug("Resource childCount : {0}", childCount);
+            Log.debug("Resource childCount : {0}", childCount);
             tViewer.setChildCount(element, childCount);
         }
         if (element instanceof PersistentEObject) {
             PersistentEObject e = (PersistentEObject) element;
             childCount = getChildCount(e);
-            NeoLogger.debug("EObject ({0}) childCount : {1}", e.eClass().getName(), childCount);
+            Log.debug("EObject ({0}) childCount : {1}", e.eClass().getName(), childCount);
             tViewer.setChildCount(element, childCount);
         }
     }

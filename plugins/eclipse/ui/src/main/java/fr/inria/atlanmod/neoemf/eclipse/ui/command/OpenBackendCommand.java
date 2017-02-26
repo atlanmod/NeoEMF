@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -88,21 +88,21 @@ public class OpenBackendCommand extends AbstractHandler {
         public IStatus runInUIThread(IProgressMonitor monitor) {
             Path root = Paths.get(folder.getRawLocation().toOSString());
             Path path = root.resolve(PersistenceBackendFactory.CONFIG_FILE);
-            NeoLogger.info("Running at: {0}", path.toString());
+            Log.info("Running at: {0}", path.toString());
 
             PropertiesConfiguration configuration;
             try {
                 configuration = new PropertiesConfiguration(path.toFile());
             }
             catch (ConfigurationException e) {
-                NeoLogger.error("Unable to find {0} file", PersistenceBackendFactory.CONFIG_FILE);
+                Log.error("Unable to find {0} file", PersistenceBackendFactory.CONFIG_FILE);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", e);
             }
 
             URI uri = null;
             String backendType = configuration.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
             if (isNull(backendType)) {
-                NeoLogger.error("{0} does not contain {1} property", PersistenceBackendFactory.CONFIG_FILE, PersistenceBackendFactory.BACKEND_PROPERTY);
+                Log.error("{0} does not contain {1} property", PersistenceBackendFactory.CONFIG_FILE, PersistenceBackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
             else if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {

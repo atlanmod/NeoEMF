@@ -29,7 +29,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
 import fr.inria.atlanmod.neoemf.io.util.hash.Hasher;
 import fr.inria.atlanmod.neoemf.io.util.hash.HasherFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -102,7 +102,7 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
 
         this.autocommitCount = 0;
 
-        NeoLogger.info("{0} created", getClass().getSimpleName());
+        Log.info("{0} created", getClass().getSimpleName());
     }
 
     /**

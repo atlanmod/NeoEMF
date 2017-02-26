@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -76,7 +76,7 @@ public class ExportTest extends AbstractIOTest {
 
         File targetFile = new File(file() + ".xmi");
 
-        NeoLogger.info("Writing to {0}", targetFile);
+        Log.info("Writing to {0}", targetFile);
 
         ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toXmi(targetFile));
 
@@ -97,7 +97,7 @@ public class ExportTest extends AbstractIOTest {
 
         File targetFile = new File(file() + ".xmi");
 
-        NeoLogger.info("Writing to {0}", targetFile);
+        Log.info("Writing to {0}", targetFile);
 
         try (PersistenceBackend backend = context().createBackend(file())) {
             ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toBackend(backend));

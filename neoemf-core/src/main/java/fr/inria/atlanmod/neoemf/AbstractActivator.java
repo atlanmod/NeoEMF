@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleActivator;
@@ -37,16 +37,16 @@ public abstract class AbstractActivator implements BundleActivator {
      */
     @Override
     public final void start(BundleContext bundleContext) throws Exception {
-        NeoLogger.info("NeoEMF-{0} plugin started", name());
+        Log.info("NeoEMF-{0} plugin started", name());
         if (!PersistenceBackendFactoryRegistry.isRegistered(scheme())) {
             PersistenceBackendFactoryRegistry.register(scheme(), factory());
-            NeoLogger.info("{0} backend registered", name());
+            Log.info("{0} backend registered", name());
         }
     }
 
     @Override
     public final void stop(BundleContext bundleContext) throws Exception {
-        NeoLogger.info("NeoEMF-{0} plugin stopped", name());
+        Log.info("NeoEMF-{0} plugin stopped", name());
     }
 
     /**

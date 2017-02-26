@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
 
         this.handlers = Arrays.asList(handlers);
 
-        NeoLogger.info("{0} created, and linked to {1}", getClass().getSimpleName(), Stream.of(handlers).map(h -> h.getClass().getSimpleName()).collect(Collectors.joining(",")));
+        Log.info("{0} created, and linked to {1}", getClass().getSimpleName(), Stream.of(handlers).map(h -> h.getClass().getSimpleName()).collect(Collectors.joining(",")));
     }
 
     @Nonnull

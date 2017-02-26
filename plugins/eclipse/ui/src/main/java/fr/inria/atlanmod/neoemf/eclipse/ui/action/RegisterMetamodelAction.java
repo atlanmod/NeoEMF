@@ -13,7 +13,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.action;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
@@ -47,10 +47,10 @@ public class RegisterMetamodelAction implements IObjectActionDelegate {
 
                 try {
                     MetamodelRegistry.getInstance().addMetamodel(fileName);
-                    NeoLogger.info("Metamodel {0} successfully registered", fileName);
+                    Log.info("Metamodel {0} successfully registered", fileName);
                 }
                 catch (Exception e) {
-                    NeoLogger.error(e, "Metamodel {0} could not be registered", fileName);
+                    Log.error(e, "Metamodel {0} could not be registered", fileName);
                 }
             }
         }

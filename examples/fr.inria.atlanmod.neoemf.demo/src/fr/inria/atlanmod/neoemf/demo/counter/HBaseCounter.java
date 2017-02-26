@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -40,13 +40,13 @@ public class HBaseCounter {
 
         Instant start = Instant.now();
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
             int size = ReaderUtil.countElements(resource);
-            NeoLogger.info("Resource {0} contains {1} elements", resource.toString(), size);
+            Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 
         Instant end = Instant.now();
-        NeoLogger.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
+        Log.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
     }
 }

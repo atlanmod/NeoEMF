@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.Objects;
 
@@ -31,7 +31,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     /**
      * The special logger.
      */
-    private static final Logger log = NeoLogger.rootLogger();
+    private static final Logger log = Log.rootLogger();
 
     /**
      * The current identifier, used to replace a full reference by "this".

@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -73,7 +73,7 @@ public class MapDBImporter {
             persistentResource.save(options);
 
             Instant end = Instant.now();
-            NeoLogger.info("MapDB Model created in {0} seconds", Duration.between(start, end).getSeconds());
+            Log.info("MapDB Model created in {0} seconds", Duration.between(start, end).getSeconds());
             
             /*
              * Checks that NeoEMF model contains the same elements as the input XMI.
@@ -90,13 +90,13 @@ public class MapDBImporter {
 //            
 //            List<Diff> diffs = comparison.getDifferences();
 //            if(diffs.size() > 0) {
-//                NeoLogger.error("Created model has {0} diffs compared to the input XMI", diffs.size());
+//                Log.error("Created model has {0} diffs compared to the input XMI", diffs.size());
 //                for(Diff diff : diffs) {
-//                    NeoLogger.error("\t {0}", diff.toString());
+//                    Log.error("\t {0}", diff.toString());
 //                }
 //            }
 //            else {
-//                NeoLogger.info("Created model contains all the elements from the input XMI");
+//                Log.info("Created model contains all the elements from the input XMI");
 //            }
         }
     }

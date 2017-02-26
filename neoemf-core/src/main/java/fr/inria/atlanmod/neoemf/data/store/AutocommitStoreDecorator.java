@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
@@ -51,7 +51,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
         super(store);
         this.autocommitCount = 0;
         this.autocommitChuck = autocommitChuck;
-        NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), autocommitChuck);
+        Log.info("{0} chunk = {1}", getClass().getSimpleName(), autocommitChuck);
     }
 
     /**
@@ -193,7 +193,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
             this.save();
         }
         catch (Exception e) {
-            NeoLogger.error(e);
+            Log.error(e);
         }
         finally {
             super.finalize();

@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
@@ -113,7 +113,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         this.isPersistent = false;
 
         PersistenceBackendShutdownHook.closeOnExit(backend, getURI());
-        NeoLogger.info("{0} created", PersistentResource.class.getSimpleName());
+        Log.info("{0} created", PersistentResource.class.getSimpleName());
     }
 
     @Override
@@ -166,7 +166,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         store.save();
 
-        NeoLogger.info("{0} saved: {1}", PersistentResource.class.getSimpleName(), uri);
+        Log.info("{0} saved: {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
     @Override
@@ -194,7 +194,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
         finally {
             isLoading = false;
-            NeoLogger.info("{0} loaded: {1}", PersistentResource.class.getSimpleName(), uri);
+            Log.info("{0} loaded: {1}", PersistentResource.class.getSimpleName(), uri);
         }
     }
 
@@ -219,7 +219,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         this.isPersistent = false;
         this.isLoaded = false;
 
-        NeoLogger.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), getURI());
+        Log.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), getURI());
     }
 
     @Override
@@ -244,7 +244,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             allInstances = store.allInstances(eClass, strict);
         }
         catch (UnsupportedOperationException e) {
-            NeoLogger.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
+            Log.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
             List<EObject> instanceList = new ArrayList<>();
             Iterable<EObject> allContents = this::getAllContents;
             for (EObject eObject : allContents) {
@@ -363,7 +363,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         @Override
         public void run() {
             backend.close();
-            NeoLogger.debug("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
+            Log.debug("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
         }
     }
 

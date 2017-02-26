@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,16 +74,16 @@ public class PersistenceResolverWriter extends DefaultPersistenceWriter {
 
         long unlinkedNumber = unlinkedElements.size();
         if (unlinkedNumber > 0) {
-            NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
+            Log.warn("Some elements have not been linked ({0})", unlinkedNumber);
             for (String e : unlinkedElements.asMap().keySet()) {
-                NeoLogger.warn(" > " + e);
+                Log.warn(" > " + e);
             }
             unlinkedElements.clear();
         }
 
         long conflictedId = conflictIdsCache.size();
         if (conflictedId > 0) {
-            NeoLogger.info("{0} key conflicts", conflictedId);
+            Log.info("{0} key conflicts", conflictedId);
             conflictIdsCache.clear();
         }
     }

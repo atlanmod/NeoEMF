@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -237,12 +237,12 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) {
-                NeoLogger.debug("XMI version : " + value);
+                Log.debug("XMI version : " + value);
                 isSpecialFeature = true;
             }
         }
         else if (Objects.equals(XmiConstants.HREF, name)) {
-            NeoLogger.warn(
+            Log.warn(
                     "{0} is an external reference to {1}. This feature is not supported yet.",
                     currentElement.name(), value);
             ignoreElement = true;

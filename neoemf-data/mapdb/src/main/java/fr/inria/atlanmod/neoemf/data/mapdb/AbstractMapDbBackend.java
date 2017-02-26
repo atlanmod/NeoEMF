@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -112,7 +112,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
             db.close();
         }
         catch (Exception e) {
-            NeoLogger.warn(e);
+            Log.warn(e);
         }
     }
 

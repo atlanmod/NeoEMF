@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -112,7 +112,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
             table.close();
         }
         catch (IOException e) {
-            NeoLogger.warn(e);
+            Log.warn(e);
         }
         finally {
             isClosed = true;
@@ -131,7 +131,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void copyTo(PersistenceBackend target) {
-        NeoLogger.warn("NeoEMF/HBase doesn't support copy backend feature");
+        Log.warn("NeoEMF/HBase doesn't support copy backend feature");
     }
 
     @Override

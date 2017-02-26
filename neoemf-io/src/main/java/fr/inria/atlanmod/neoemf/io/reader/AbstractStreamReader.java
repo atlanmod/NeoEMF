@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -116,7 +116,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      * @param percent the percentage of data read on the total size of the data
      */
     protected void progress(double percent) {
-        NeoLogger.info("Reading: {0}", String.format("%5s", String.format("%,.0f %%", percent)));
+        Log.info("Reading: {0}", String.format("%5s", String.format("%,.0f %%", percent)));
 
         if (percent >= 100) {
             progressTimer.cancel();

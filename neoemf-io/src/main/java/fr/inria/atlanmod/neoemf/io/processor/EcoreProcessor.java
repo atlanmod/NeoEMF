@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -147,7 +147,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             notifyEndElement();
         }
         else {
-            NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
+            Log.warn("An attribute still waiting for a value : it will be ignored");
             waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
             previousWasAttribute = false;
         }
@@ -224,7 +224,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processElementAsAttribute(RawElement element, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
-            NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
+            Log.warn("An attribute still waiting for a value : it will be ignored");
         }
 
         // Waiting a plain text value

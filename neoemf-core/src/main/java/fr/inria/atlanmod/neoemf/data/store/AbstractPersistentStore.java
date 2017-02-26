@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Streams;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -68,7 +68,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
      * Constructs a new {@code AbstractPersistentStore}.
      */
     public AbstractPersistentStore() {
-        NeoLogger.info("{0} created", getClass().getSimpleName());
+        Log.info("{0} created", getClass().getSimpleName());
     }
 
     /**

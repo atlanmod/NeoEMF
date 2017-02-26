@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -170,8 +170,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param expected the EMF object
      */
     protected void assertEqualEObject(EObject actual, EObject expected) {
-        NeoLogger.debug("Actual object     : {0}", actual);
-        NeoLogger.debug("Expected object   : {0}", expected);
+        Log.debug("Actual object     : {0}", actual);
+        Log.debug("Expected object   : {0}", expected);
 
         if (!testedObjects.contains(expected)) {
             testedObjects.add(expected);
@@ -213,8 +213,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             Object expectedValue = expected.eGet(feature);
             Object actualValue = actual.eGet(actual.eClass().getEStructuralFeature(featureId));
 
-            NeoLogger.debug("Actual feature    : {0}", actualValue);
-            NeoLogger.debug("Expected feature  : {0}", expectedValue);
+            Log.debug("Actual feature    : {0}", actualValue);
+            Log.debug("Expected feature  : {0}", expectedValue);
 
             if (expectedValue instanceof EObject) {
                 assertEqualEObject((EObject) actualValue, (EObject) expectedValue);

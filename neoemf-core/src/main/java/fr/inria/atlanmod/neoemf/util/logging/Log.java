@@ -19,10 +19,10 @@ import java.text.MessageFormat;
 /**
  * The factory that creates instances of {@link Logger}s.
  * <p>
- * It also provides static methods for logging without declaring a specific instance. In this case, the root logger is
- * used by default.
+ * It also provides static methods for logging without declaring a specific instance. In this case, the
+ * {@link #rootLogger()} is used by default.
  */
-public final class NeoLogger {
+public final class Log {
 
     /**
      * In-memory cache that holds loaded {@link Logger}s, identified by their name.
@@ -34,7 +34,7 @@ public final class NeoLogger {
      *
      * @throws IllegalStateException every time
      */
-    private NeoLogger() {
+    private Log() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 

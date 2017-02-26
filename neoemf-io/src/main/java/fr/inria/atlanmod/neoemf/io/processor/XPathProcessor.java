@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.XPathConstants;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -132,7 +132,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
         if (!hasIds) {
             long size = paths.size();
             if (size > 1) {
-                NeoLogger.warn("Some elements have not been cleaned ({0})", size);
+                Log.warn("Some elements have not been cleaned ({0})", size);
             }
         }
 

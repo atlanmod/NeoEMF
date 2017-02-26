@@ -31,7 +31,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.Streams;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -195,7 +195,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
                 graph.shutdown();
             }
             catch (Exception e) {
-                NeoLogger.warn(e);
+                Log.warn(e);
             }
         }
     }
@@ -210,7 +210,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             graph.shutdown();
         }
         catch (Exception e) {
-            NeoLogger.warn(e);
+            Log.warn(e);
         }
         finally {
             isClosed = true;

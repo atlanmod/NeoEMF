@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,6 +27,6 @@ public abstract class AbstractStreamWriter implements StreamWriter {
      * Constructs a new {@code AbstractStreamWriter}.
      */
     protected AbstractStreamWriter() {
-        NeoLogger.info("{0} created", getClass().getSimpleName());
+        Log.info("{0} created", getClass().getSimpleName());
     }
 }

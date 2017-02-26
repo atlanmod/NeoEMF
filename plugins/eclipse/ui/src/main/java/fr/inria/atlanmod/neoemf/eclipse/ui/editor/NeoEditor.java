@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
@@ -84,9 +84,9 @@ public class NeoEditor extends EcoreEditor {
             resource.load(options);
         }
         catch (IOException e) {
-            NeoLogger.error(e, "Unable to create model for the editor");
+            Log.error(e, "Unable to create model for the editor");
             for (Resource r : editingDomain.getResourceSet().getResources()) {
-                NeoLogger.info(resource.getURI().toString());
+                Log.info(resource.getURI().toString());
                 if (r instanceof PersistentResource) {
                     ((PersistentResource) r).close();
                 }
@@ -147,7 +147,7 @@ public class NeoEditor extends EcoreEditor {
 
         Instant end = Instant.now();
 
-        NeoLogger.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
+        Log.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
     }
 
     @Override
@@ -156,14 +156,14 @@ public class NeoEditor extends EcoreEditor {
             super.setSelection(selection);
         }
         catch (NoSuchMethodError e) {
-            NeoLogger.warn("Captured a NoSuchMethod error when changing the selection." +
+            Log.warn("Captured a NoSuchMethod error when changing the selection." +
                     "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
         }
     }
 
     @Override
     public void dispose() {
-        NeoLogger.info("Disposing NeoEditor");
+        Log.info("Disposing NeoEditor");
 
         for (Resource resource : editingDomain.getResourceSet().getResources()) {
             if (resource instanceof PersistentResource) {
