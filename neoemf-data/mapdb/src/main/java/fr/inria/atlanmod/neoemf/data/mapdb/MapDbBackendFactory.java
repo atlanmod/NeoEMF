@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -88,9 +87,9 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         MapDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/MapDB only supports file URIs");
-        File file = FileUtils.getFile(uri.toFileString());
+        File file = new File(uri.toFileString());
 
-        File dbFile = FileUtils.getFile(MapDbURI.createURI(uri.appendSegment("neoemf.mapdb")).toFileString());
+        File dbFile = new File(MapDbURI.createURI(uri.appendSegment("neoemf.mapdb")).toFileString());
         if (!dbFile.getParentFile().exists()) {
             try {
                 Files.createDirectories(dbFile.getParentFile().toPath());

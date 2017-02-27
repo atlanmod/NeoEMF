@@ -12,12 +12,11 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
+import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -28,64 +27,82 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AbstractUnitTest implements BlueprintsTest {
 
-    protected final String configFileName = "/config.properties";
-
+    /**
+     * The {@link Resource} used for this test-case.
+     */
     protected Resource resource;
 
-    private ResourceSet resourceSet;
-
+    /**
+     * Initializes the {@link #resource}.
+     */
     @Before
     public final void initResource() {
-        resourceSet = new ResourceSetImpl();
+        ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         resource = resourceSet.createResource(BlueprintsURI.createFileURI(file()));
     }
 
+    /**
+     * Cleanly closes the {@link #resource}.
+     */
     @After
     public final void closeResource() {
         resource.unload();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
-    }
-
-    protected int getKeyCount(PropertiesConfiguration configuration) {
-        Iterator<String> keyIterator = configuration.getKeys();
-        int keyCount = 0;
-        while (keyIterator.hasNext()) {
-            keyCount++;
-            keyIterator.next();
-        }
-        return keyCount;
     }
 
     @Test
-    public void testSaveGraphResourceNoOption() throws IOException, ConfigurationException {
+    public void testSaveGraphResourceNoOption() throws IOException {
         resource.save(Collections.emptyMap());
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assertThat(configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)).isTrue();
-        assertThat(configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertThat(getKeyCount(configuration)).isEqualTo(3);
+        PersistenceConfiguration configuration = getConfiguration();
+        assertThat(configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     @Test
-    public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
+    public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsOptions.noOption());
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
+        PersistenceConfiguration configuration = getConfiguration();
+        assertThat(configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        assertConfigurationHasSize(configuration, 3);
+    }
 
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assertThat(configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)).isTrue();
-        assertThat(configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertThat(getKeyCount(configuration)).isEqualTo(3);
+    /**
+     * Retrieves the {@link PersistenceConfiguration} according to the current {@link #file()}.
+     *
+     * @return the current configuration
+     */
+    protected PersistenceConfiguration getConfiguration() {
+        File configurationFile = file().toPath().resolve("config.properties").toFile();
+        assertThat(configurationFile).exists();
+        return PersistenceConfiguration.load(configurationFile);
+    }
+
+    /**
+     * Checks that the {@code configuration} has the expected {@code size}.
+     *
+     * @param configuration the configuration to check
+     * @param expectedSize  the expected size
+     */
+    protected void assertConfigurationHasSize(PersistenceConfiguration configuration, int expectedSize) {
+        assertThat(configuration.asMap().size()).isEqualTo(expectedSize);
+    }
+
+    /**
+     * Checks that the {@code configuration} has the expected {@code value} for the given {@code key}.
+     *
+     * @param configuration the configuration to check
+     * @param key           the key to look for
+     * @param value         the expected value
+     */
+    protected void assertConfigurationHasEntry(PersistenceConfiguration configuration, String key, String value) {
+        assertThat(configuration.containsKey(key)).isTrue();
+        assertThat(configuration.getProperty(key)).isEqualTo(value);
     }
 }

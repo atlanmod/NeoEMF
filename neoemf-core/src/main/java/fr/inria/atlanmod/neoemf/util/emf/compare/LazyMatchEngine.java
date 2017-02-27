@@ -46,7 +46,7 @@ import java.util.List;
  * @see LazyMatchEngineFactory
  * @see LazyEqualityHelper
  */
-public class LazyMatchEngine extends DefaultMatchEngine {
+class LazyMatchEngine extends DefaultMatchEngine {
 
     /**
      * Creates a new LazyMatchEngine.

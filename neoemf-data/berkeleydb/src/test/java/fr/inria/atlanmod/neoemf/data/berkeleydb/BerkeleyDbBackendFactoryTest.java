@@ -31,8 +31,6 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
-
-        // TODO Need to test further the nature of the BerkeleyDB engine
     }
 
     @Test
@@ -49,8 +47,6 @@ public class BerkeleyDbBackendFactoryTest extends AbstractPersistenceBackendFact
     public void testCreatePersistentBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
-
-        // TODO Need to test further the nature of the BerkeleyDB engine
     }
 
     @Test

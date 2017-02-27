@@ -27,8 +27,6 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
-
-        // TODO Need to test further the nature of the Blueprints engine
     }
 
     @Test
@@ -45,8 +43,6 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
     public void testCreatePersistentBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
-
-        // TODO Need to test further the nature of the Blueprints engine
     }
 
     @Test

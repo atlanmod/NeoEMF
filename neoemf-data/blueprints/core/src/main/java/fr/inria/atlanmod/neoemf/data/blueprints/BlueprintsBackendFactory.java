@@ -20,16 +20,13 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
+import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
@@ -37,16 +34,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A factory that creates instances of {@link BlueprintsBackend}.
@@ -58,7 +51,7 @@ import static java.util.Objects.nonNull;
  * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (see {@link BlueprintsResourceOptions}. Default back-end
  * configuration (store directory and graph type) is called dynamically according to the provided Blueprints
- * implementation {@link InternalBlueprintsTgConfiguration}.
+ * implementation {@link BlueprintsTgConfiguration}.
  *
  * @see PersistentResource
  * @see BlueprintsBackend
@@ -111,42 +104,27 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
     @Override
     public BlueprintsBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
         BlueprintsBackend backend;
-        PropertiesConfiguration configuration = null;
 
         checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
-        File file = FileUtils.getFile(uri.toFileString());
+        File file = new File(uri.toFileString());
+
+        PersistenceConfiguration configuration = getOrCreateBlueprintsConfiguration(file, options);
 
         try {
-            configuration = getOrCreateBlueprintsConfiguration(file, options);
+            Graph graph = GraphFactory.open(configuration.asMap());
 
-            try {
-                Graph baseGraph = GraphFactory.open(configuration);
-
-                if (baseGraph instanceof KeyIndexableGraph) {
-                    backend = new BlueprintsBackendIndices((KeyIndexableGraph) baseGraph);
-                }
-                else {
-                    Log.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
-                    throw new InvalidDataStoreException("Graph type " + file.getAbsolutePath() + " does not support Key Indices");
-                }
+            if (graph.getFeatures().supportsKeyIndices) {
+                backend = new BlueprintsBackendIndices((KeyIndexableGraph) graph);
             }
-            catch (RuntimeException e) {
-                throw new InvalidDataStoreException(e);
+            else {
+                throw new InvalidDataStoreException("Graph type " + file.getAbsolutePath() + " does not support key indices");
             }
         }
+        catch (RuntimeException e) {
+            throw new InvalidDataStoreException(e);
+        }
         finally {
-            if (nonNull(configuration)) {
-                try {
-                    configuration.save();
-                }
-                catch (ConfigurationException e) {
-                    /*
-                      * Unable to save configuration.
-					 * Supposedly it's a minor error, so we log it without rising an exception.
-					 */
-                    Log.warn(e);
-                }
-            }
+            configuration.save();
         }
 
         processGlobalConfiguration(file);
@@ -165,17 +143,9 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
      *                                   {@code options} are missing or invalid.
      */
-    private PropertiesConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {
-        PropertiesConfiguration configuration;
-
-        // Try to load previous configurations
+    private PersistenceConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(BLUEPRINTS_CONFIG_FILE);
-        try {
-            configuration = new PropertiesConfiguration(path.toFile());
-        }
-        catch (ConfigurationException e) {
-            throw new InvalidDataStoreException(e);
-        }
+        PersistenceConfiguration configuration = PersistenceConfiguration.load(path.toFile());
 
         // Initialize value if the configuration file has just been created
         if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
@@ -183,38 +153,39 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
         }
         else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
             // The file already exists, verify that the problem options are not conflicting.
-            String savedGraphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
+            String savedGraphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
-                Log.error("Unable to create graph as type {0}, expected graph type was {1})", issuedGraphType, savedGraphType);
-                throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
+                throw new InvalidDataStoreException(String.format("Unable to create graph as type %s , expected graph type was %s)", issuedGraphType, savedGraphType));
             }
         }
 
-        // Copy the options to the configuration
-        for (Entry<?, ?> e : options.entrySet()) {
-            configuration.setProperty(e.getKey().toString(), e.getValue().toString());
+        // Copy the Blueprints options to the configuration
+        for (Map.Entry<?, ?> e : options.entrySet()) {
+            if (e.getKey().toString().startsWith("blueprints.")) {
+                configuration.setProperty(e.getKey().toString(), e.getValue().toString());
+            }
         }
 
         // Check we have a valid graph type, it is needed to get the graph name
-        String graphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
-        if (isNull(graphType)) {
-            throw new InvalidDataStoreException("Graph type is undefined for " + directory.getAbsolutePath());
+        if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
+            throw new InvalidDataStoreException(String.format("Graph type is undefined for %s", directory.getAbsolutePath()));
         }
+        String graphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE).toString();
 
         // Define the configuration
         String[] segments = graphType.split("\\.");
         if (segments.length >= 2) {
             String graphName = segments[segments.length - 2];
             String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
-            String configClassName = MessageFormat.format("InternalBlueprints{0}Configuration", upperCaseGraphName);
-            String configClassQualifiedName = MessageFormat.format("{0}.{1}.configuration.{2}", BlueprintsBackendFactory.class.getPackage().getName(), graphName, configClassName);
+            String configClassName = String.format("Blueprints%sConfiguration", upperCaseGraphName);
+            String configClassQualifiedName = String.format("%s.%s.%s", BlueprintsBackendFactory.class.getPackage().getName(), graphName, configClassName);
 
             try {
                 ClassLoader classLoader = BlueprintsBackendFactory.class.getClassLoader();
                 Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
                 Method configClassInstanceMethod = configClass.getMethod("getInstance");
-                InternalBlueprintsConfiguration blueprintsConfig = (InternalBlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
+                BlueprintsConfiguration blueprintsConfig = (BlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
                 blueprintsConfig.putDefaultConfiguration(configuration, directory);
             }
             catch (ClassNotFoundException e) {

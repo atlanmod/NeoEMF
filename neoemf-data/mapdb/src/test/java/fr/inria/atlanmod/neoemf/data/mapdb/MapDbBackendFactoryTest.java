@@ -27,8 +27,6 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(backend).isInstanceOf(MapDbBackend.class);
-
-        // TODO Need to test further the nature of the MapDB engine
     }
 
     @Test
@@ -45,8 +43,6 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
     public void testCreatePersistentBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackend.class);
-
-        // TODO Need to test further the nature of the MapDB engine
     }
 
     @Test

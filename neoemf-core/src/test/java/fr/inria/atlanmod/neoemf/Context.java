@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A utility class representing a test-case context.
@@ -37,11 +38,18 @@ public interface Context {
     String name();
 
     /**
+     * Returns the default options of this {@code Context}.
+     *
+     * @return an immutable {@link Map}
+     *
+     * @see fr.inria.atlanmod.neoemf.option.PersistenceOptions
+     */
+    Map<String, Object> defaultOptions();
+
+    /**
      * Returns the {@link URI} scheme used by this {@code Context}.
      *
      * @return the {@link URI} scheme
-     *
-     * @see PersistenceURI#scheme()
      */
     String uriScheme();
 

@@ -12,13 +12,11 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceSaveTest;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -27,52 +25,28 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 
-    /**
-     * Used to verify a property added by Blueprints during the graph creation
-     */
-    private static final String OPTIONS_GRAPH_NEO4J_STORE_DIR = "blueprints.neo4j.conf.store_dir";
-
-    /**
-     * Number of properties for an empty Neo4j instance (with no option provided)
-     */
-    private static final int DEFAULT_PROPERTY_COUNT = 3;
-
     @Test
-    public void testSaveGraphNeo4jResourceNeo4jTypeOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNeo4jTypeOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.noOption();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
-        /*
-         * Check the configuration file contains the store_dir property (computed by blueprints at graph creation)
-         */
-        assertConfigurationHasEntry(configuration,
-                OPTIONS_GRAPH_NEO4J_STORE_DIR,
-                file().getAbsolutePath());
-
-        assertConfigurationHasSize(configuration, 0);
+        assertConfigurationHasSize(configuration, 2);
     }
 
     @Test
-    public void testSaveGraphNeo4jResourceNoneCacheTypeOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNoneCacheTypeOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .noCache()
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.NONE.toString());
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -85,20 +59,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceWeakCacheTypeOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceWeakCacheTypeOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .weakCache()
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.WEAK.toString());
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -111,20 +81,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceSoftCacheTypeOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceSoftCacheTypeOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .softCache()
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.SOFT.toString());
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -137,20 +103,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link  #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceStrongCacheTypeOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceStrongCacheTypeOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .strongCache()
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.STRONG.toString());
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -163,20 +125,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceTrueBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceTrueBooleanUseMemoryMappedBuffersOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .memoryMappedBuffers()
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.TRUE.toString());
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -189,20 +147,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceFalseBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceFalseBooleanUseMemoryMappedBuffersOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .memoryMappedBuffers(false)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.FALSE.toString());
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -216,20 +170,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourcePositiveStringsMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourcePositiveStringsMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .stringsMappedBuffer(64)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "64M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -263,20 +213,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceNullStringsMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNullStringsMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .stringsMappedBuffer(0)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "0M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -288,20 +234,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourcePositiveArraysMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourcePositiveArraysMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .arraysMappedBuffer(64)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "64M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -335,20 +277,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceNullArraysMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNullArraysMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .arraysMappedBuffer(0)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "0M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -362,20 +300,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourcePositiveNodesMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourcePositiveNodesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .nodesMappedBuffer(64)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "64M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -409,20 +343,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceNullNodesMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNullNodesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .nodesMappedBuffer(0)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "0M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -436,20 +366,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourcePositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourcePositivePropertiesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .propertiesMappedBuffer(64)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -483,20 +409,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceNullPropertiesMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNullPropertiesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .propertiesMappedBuffer(0)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "0M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -510,20 +432,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourcePositiveRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourcePositiveRelationshipsMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .relationshipsMappedBuffer(64)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -557,20 +475,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceNullRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceNullRelationshipsMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .relationshipsMappedBuffer(0)
                 .asMap();
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "0M");
-
-        assertConfigurationHasSize(configuration, 1);
+        assertConfigurationHasSize(configuration, 3);
     }
 
     /**
@@ -584,7 +498,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryPositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryPositivePropertiesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .relationshipsMappedBuffer(64)
                 .propertiesMappedBuffer(64)
@@ -592,14 +506,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
-
-        assertConfigurationHasSize(configuration, 2);
+        assertConfigurationHasSize(configuration, 4);
     }
 
     /**
@@ -644,7 +554,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
-    public void testSaveGraphNeo4jResourceAllOptionsValid() throws IOException, ConfigurationException {
+    public void testSaveGraphNeo4jResourceAllOptionsValid() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
                 .softCache()
                 .memoryMappedBuffers()
@@ -657,10 +567,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(file() + configFileName);
-        assertThat(configFile).exists();
-
-        PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
+        PersistenceConfiguration configuration = getConfiguration();
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.SOFT.toString());
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.TRUE.toString());
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "64M");
@@ -668,15 +575,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "64M");
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
         assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 7);
-    }
-
-    private void assertConfigurationHasSize(PropertiesConfiguration configuration, int expectedSize) {
-        assertThat(getKeyCount(configuration)).isEqualTo(DEFAULT_PROPERTY_COUNT + expectedSize);
-    }
-
-    private void assertConfigurationHasEntry(PropertiesConfiguration configuration, String key, String value) {
-        assertThat(configuration.containsKey(key)).isTrue();
-        assertThat(configuration.getString(key)).isEqualTo(value);
+        assertConfigurationHasSize(configuration, 9);
     }
 }

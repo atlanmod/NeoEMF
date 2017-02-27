@@ -46,7 +46,7 @@ class LazyEqualityHelper extends EqualityHelper {
      *
      * @param uriCache the cache to be used for {@link EcoreUtil#getURI(EObject)} calls
      */
-    LazyEqualityHelper(LoadingCache<EObject, URI> uriCache) {
+    public LazyEqualityHelper(LoadingCache<EObject, URI> uriCache) {
         super(uriCache);
     }
 

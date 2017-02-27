@@ -29,5 +29,5 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     /**
      * The default option value to define {@link TinkerGraph} as the graph implementation to use.
      */
-    String GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
+    String GRAPH_TYPE_DEFAULT = com.tinkerpop.blueprints.impls.tg.TinkerGraph.class.getName();
 }

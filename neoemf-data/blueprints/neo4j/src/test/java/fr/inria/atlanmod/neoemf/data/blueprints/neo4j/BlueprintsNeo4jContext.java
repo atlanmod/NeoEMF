@@ -14,12 +14,14 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A specific {@link Context} for the Blueprints Neo4j implementation.
@@ -49,6 +51,11 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
     @Override
     public String name() {
         return NAME;
+    }
+
+    @Override
+    public Map<String, Object> defaultOptions() {
+        return BlueprintsNeo4jOptions.noOption();
     }
 
     @Override

@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -40,6 +39,7 @@ import org.eclipse.emf.ecore.impl.EStoreEObjectImpl.EStoreEList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -175,7 +175,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             isLoading = true;
 
             if (!isLoaded) {
-                if ((uri.isFile() && FileUtils.getFile(uri.toFileString()).exists()) || uri.hasAuthority()) {
+                if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
                     PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
 
                     backend = factory.createPersistentBackend(uri, options);

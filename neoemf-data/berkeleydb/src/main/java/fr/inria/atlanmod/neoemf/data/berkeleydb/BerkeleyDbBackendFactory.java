@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
@@ -97,7 +96,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
         BerkeleyDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/BerkeleyDB only supports file URIs");
-        File file = FileUtils.getFile(uri.toFileString());
+        File file = new File(uri.toFileString());
 
         try {
             File dir = new File(uri.toFileString());

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -83,7 +82,7 @@ public class BerkeleyDbURI extends PersistenceURI {
         checkNotNull(uri);
 
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
-            return createFileURI(FileUtils.getFile(uri.toFileString()));
+            return createFileURI(new File(uri.toFileString()));
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);

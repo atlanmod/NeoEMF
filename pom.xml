@@ -132,10 +132,6 @@
 
         <caffeine.version>2.4.0</caffeine.version>
 
-        <commons-collections.version>4.1</commons-collections.version>
-        <commons-configuration.version>1.10</commons-configuration.version>
-        <commons-io.version>2.5</commons-io.version>
-        <commons-lang.version>3.5</commons-lang.version>
         <guava.version>20.0</guava.version> <!-- 'guava:21.0+' is incompatible with 'hadoop-common:2.7.3' -->
         <osgi.version>6.0.0</osgi.version>
 
@@ -147,7 +143,7 @@
 
         <assertj.version>3.6.2</assertj.version>
         <junit.version>4.12</junit.version>
-        <mockito.version>2.7.11</mockito.version>
+        <mockito.version>2.7.12</mockito.version>
     </properties>
 
     <dependencies>
@@ -171,30 +167,6 @@
             </dependency>
 
             <!-- Common -->
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>${commons-collections.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-                <version>${commons-configuration.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>

@@ -9,32 +9,30 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.configuration;
+package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
-
-import org.apache.commons.configuration.Configuration;
+import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 
 import java.io.File;
 
 /**
  * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
- * Configuration}.
+ * PersistenceConfiguration}.
  * <p>
  * <b>Note:</b> Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during
  * database creation.
  *
  * @see BlueprintsBackendFactory
- * @see InternalBlueprintsTgConfiguration
+ * @see BlueprintsTgConfiguration
  */
-public interface InternalBlueprintsConfiguration {
+public interface BlueprintsConfiguration {
 
     /**
      * Adds specific properties about the Blueprints database in the given {@code configuration}.
      *
-     * @param configuration the {@link Configuration} that holds the resource properties
+     * @param configuration the {@link PersistenceConfiguration} that holds the resource properties
      * @param directory     the {@link File} that contains the Blueprints database
      */
-    void putDefaultConfiguration(Configuration configuration, File directory);
+    void putDefaultConfiguration(PersistenceConfiguration configuration, File directory);
 }

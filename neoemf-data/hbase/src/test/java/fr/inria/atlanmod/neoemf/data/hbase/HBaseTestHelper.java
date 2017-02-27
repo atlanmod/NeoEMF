@@ -71,8 +71,6 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
             initMiniCluster();
         }
 
-        Log.info("Hadoop mini-cluster running at {0}:{1}", host, port);
-
         return HBaseBackendFactory.getInstance();
     }
 

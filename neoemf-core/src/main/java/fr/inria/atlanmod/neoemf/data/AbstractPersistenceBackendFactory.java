@@ -28,9 +28,6 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.logging.Level;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -161,30 +158,13 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}
      */
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
-        PropertiesConfiguration configuration;
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
-
-        try {
-            configuration = new PropertiesConfiguration(path.toFile());
-        }
-        catch (ConfigurationException e) {
-            throw new InvalidDataStoreException(e);
-        }
+        PersistenceConfiguration configuration = PersistenceConfiguration.load(path.toFile());
 
         if (!configuration.containsKey(BACKEND_PROPERTY)) {
             configuration.setProperty(BACKEND_PROPERTY, getName());
         }
 
-        try {
-            configuration.save();
-            Log.debug("Configuration stored at " + path);
-        }
-        catch (ConfigurationException e) {
-            /*
-             * Unable to save configuration.
-             * Supposedly it's a minor error, so we log it without rising an exception.
-             */
-            Log.warn(e);
-        }
+        configuration.save();
     }
 }

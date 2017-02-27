@@ -9,24 +9,21 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.configuration;
+package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
 import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
-
-import org.apache.commons.configuration.Configuration;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 
 import java.io.File;
 
 import javax.annotation.Nonnull;
 
-import static java.util.Objects.isNull;
-
 /**
- * An internal class that sets Blueprints Neo4j default configuration properties in the current NeoEMF {@link
- * Configuration}.
+ * An internal class that sets Blueprints {@link Neo4jGraph} default configuration properties in the current NeoEMF
+ * {@link PersistenceConfiguration}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used to
  * store the underlying database.
@@ -34,7 +31,7 @@ import static java.util.Objects.isNull;
  * @see BlueprintsBackendFactory
  */
 @SuppressWarnings("unused") // Called dynamically
-public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
+public final class BlueprintsNeo4jConfiguration implements BlueprintsConfiguration {
 
     /**
      * The property to define the directory of the {@link Neo4jGraph} instance.
@@ -42,9 +39,9 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     private static final String DIRECTORY = "blueprints.neo4j.directory";
 
     /**
-     * Constructs a new {@code InternalBlueprintsNeo4jConfiguration}.
+     * Constructs a new {@code BlueprintsNeo4jConfiguration}.
      */
-    private InternalBlueprintsNeo4jConfiguration() {
+    private BlueprintsNeo4jConfiguration() {
     }
 
     /**
@@ -53,14 +50,14 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
      * @return the instance of this class
      */
     @Nonnull
-    public static InternalBlueprintsConfiguration getInstance() {
+    public static BlueprintsConfiguration getInstance() {
         return Holder.INSTANCE;
     }
 
     @Override
-    public void putDefaultConfiguration(Configuration configuration, File directory) {
-        if (isNull(configuration.getString(DIRECTORY))) {
-            configuration.addProperty(DIRECTORY, directory.getAbsolutePath());
+    public void putDefaultConfiguration(PersistenceConfiguration configuration, File directory) {
+        if (!configuration.containsKey(DIRECTORY)) {
+            configuration.setProperty(DIRECTORY, directory.getAbsolutePath());
         }
     }
 
@@ -72,6 +69,6 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
         /**
          * The instance of the outer class.
          */
-        private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsNeo4jConfiguration();
+        private static final BlueprintsConfiguration INSTANCE = new BlueprintsNeo4jConfiguration();
     }
 }

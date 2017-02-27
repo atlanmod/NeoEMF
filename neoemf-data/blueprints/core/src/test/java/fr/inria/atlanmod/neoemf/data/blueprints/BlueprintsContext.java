@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -22,6 +23,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A specific {@link Context} for the Blueprints implementation.
@@ -51,6 +53,11 @@ public class BlueprintsContext implements Context {
     @Override
     public String name() {
         return NAME;
+    }
+
+    @Override
+    public Map<String, Object> defaultOptions() {
+        return BlueprintsOptions.noOption();
     }
 
     @Override

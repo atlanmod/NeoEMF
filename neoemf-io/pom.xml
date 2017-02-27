@@ -16,11 +16,17 @@
     <description />
 
     <properties>
+        <stax.verions>1.0-2</stax.verions>
         <stax2.version>4.0.0</stax2.version>
         <woodstox.version>4.4.1</woodstox.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>javax.xml.stream</groupId>
+            <artifactId>stax-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
@@ -96,6 +102,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>javax.xml.stream</groupId>
+                <artifactId>stax-api</artifactId>
+                <version>1.0-2</version>
+                <scope>provided</scope> <!-- included in JDK 1.6 -->
+            </dependency>
+
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>

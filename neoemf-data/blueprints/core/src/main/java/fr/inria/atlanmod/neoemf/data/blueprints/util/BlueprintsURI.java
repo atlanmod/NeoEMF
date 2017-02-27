@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -121,6 +120,6 @@ public class BlueprintsURI extends PersistenceURI {
     public static URI createFileURI(URI uri) {
         checkNotNull(uri);
 
-        return createFileURI(FileUtils.getFile(uri.toFileString()));
+        return createFileURI(new File(uri.toFileString()));
     }
 }

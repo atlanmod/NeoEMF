@@ -58,6 +58,7 @@ public class CopyBackendContentTest extends AbstractBackendTest {
         PersistentResource resource = createTransientStore();
         fillResource(resource);
 
+        // FIXME Use `context().defaultOptions()` cause some problems with Neo4j
         resource.save(CommonOptions.noOption());
         assertThat(resource.getContents()).isNotEmpty();
         assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class);

@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
@@ -154,7 +153,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
         mapSampleModel.getContentObjects().add(mapSampleContentObject);
         resource.getContents().add(mapSampleModel);
 
-        resource.save(CommonOptions.noOption());
+        resource.save(context().defaultOptions());
         resource.close();
 
         PersistentResource newResource = context().loadResource(EPACKAGE, file());
