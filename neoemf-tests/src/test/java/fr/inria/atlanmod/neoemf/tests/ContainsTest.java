@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Test class for the contains method, related to performance issue described in the issue <a
  * href="https://github.com/atlanmod/NeoEMF/issues/30">#30</a>.
