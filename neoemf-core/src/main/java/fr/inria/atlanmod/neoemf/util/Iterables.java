@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import java.util.Collection;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Static utility methods related to {@link Iterable} instances.
@@ -25,6 +27,20 @@ public final class Iterables {
      */
     private Iterables() {
         throw new IllegalStateException("This class should not be instantiated");
+    }
+
+    /**
+     * Returns a sequential {@link Stream} of the contents of {@code iterable}, delegating to
+     * {@link Collection#stream} if possible.
+     *
+     * @param iterable the iterable
+     *
+     * @return a sequential {@link Stream} of the contents of {@code iterable}
+     */
+    public static <T> Stream<T> stream(Iterable<T> iterable) {
+        return (iterable instanceof Collection)
+                ? ((Collection<T>) iterable).stream()
+                : StreamSupport.stream(iterable.spliterator(), false);
     }
 
     /**

@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.Streams;
+import fr.inria.atlanmod.neoemf.util.Iterables;
 
 import org.junit.After;
 import org.junit.Before;
@@ -392,7 +392,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendValue(key, value2);
 
         // Post-process the returned Iterable
-        List<String> actualValues = Streams.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
+        List<String> actualValues = Iterables.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
 
         assertThat(actualValues).hasSize(3);
 
@@ -417,7 +417,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
 
         // Post-process the returned Iterable
-        List<String> actualValues = Streams.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
+        List<String> actualValues = Iterables.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
 
         assertThat(actualValues).hasSize(3);
 
@@ -1020,7 +1020,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendReference(key, ref2);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = Streams.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
+        List<Id> actualReferences = Iterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 
@@ -1045,7 +1045,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(1), ref1);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = Streams.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
+        List<Id> actualReferences = Iterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 

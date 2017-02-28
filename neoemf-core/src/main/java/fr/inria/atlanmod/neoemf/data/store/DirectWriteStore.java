@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.Streams;
+import fr.inria.atlanmod.neoemf.util.Iterables;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -80,7 +80,7 @@ public class DirectWriteStore extends AbstractPersistentStore {
      */
     @Override
     public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
-        return Streams.stream(backend.allInstances(metaclass, strict))
+        return Iterables.stream(backend.allInstances(metaclass, strict))
                 .map(this::object)
                 .collect(Collectors.toList());
     }

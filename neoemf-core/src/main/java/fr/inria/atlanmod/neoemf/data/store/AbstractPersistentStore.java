@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.Streams;
+import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -467,7 +467,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
                 references = referenceOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
             }
 
-            stream = Streams.stream(references).map(this::object);
+            stream = Iterables.stream(references).map(this::object);
         }
         else {
             Iterable<String> values;
@@ -479,7 +479,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
                 values = this.<String>valueOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
             }
 
-            stream = Streams.stream(values).map(v -> deserialize((EAttribute) feature, v));
+            stream = Iterables.stream(values).map(v -> deserialize((EAttribute) feature, v));
         }
 
         if (isNull(array)) {

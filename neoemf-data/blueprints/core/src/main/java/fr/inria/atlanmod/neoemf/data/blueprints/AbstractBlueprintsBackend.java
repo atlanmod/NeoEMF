@@ -30,7 +30,6 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
-import fr.inria.atlanmod.neoemf.util.Streams;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EClass;
@@ -271,8 +270,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
             // Get all the vertices that are indexed with one of the EClass
             return eClassToFind.stream()
-                    .flatMap(ec -> Streams.stream(metaclassIndex.get(KEY_NAME, ec.getName()))
-                            .flatMap(mcv -> Streams.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
+                    .flatMap(ec -> Iterables.stream(metaclassIndex.get(KEY_NAME, ec.getName()))
+                            .flatMap(mcv -> Iterables.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
                                     .map(v -> StringId.from(v.getId()))))
                     .collect(Collectors.toList());
         }
@@ -295,7 +294,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
 
         Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
-        Optional<Edge> containerEdge = Streams.stream(containerEdges).findAny();
+        Optional<Edge> containerEdge = Iterables.stream(containerEdges).findAny();
 
         Optional<ContainerDescriptor> container = Optional.empty();
         if (containerEdge.isPresent()) {
@@ -333,7 +332,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
 
         Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
-        Optional<Vertex> metaclassVertex = Streams.stream(metaclassVertices).findAny();
+        Optional<Vertex> metaclassVertex = Iterables.stream(metaclassVertices).findAny();
 
         return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
     }
@@ -344,7 +343,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         checkNotNull(metaclass);
 
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
-        Vertex metaclassVertex = Streams.stream(metaclassVertices).findAny().orElse(null);
+        Vertex metaclassVertex = Iterables.stream(metaclassVertices).findAny().orElse(null);
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = graph.addVertex(buildId(metaclass).toString());

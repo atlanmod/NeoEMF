@@ -25,7 +25,6 @@ import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.Iterables;
-import fr.inria.atlanmod.neoemf.util.Streams;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -130,7 +129,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         }
 
         Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
-        Optional<Vertex> referencedVertex = Streams.stream(referencedVertices).findAny();
+        Optional<Vertex> referencedVertex = Iterables.stream(referencedVertices).findAny();
 
         return referencedVertex.map(v -> StringId.from(v.getId()));
     }
@@ -144,7 +143,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         Vertex vertex = getOrCreate(key.id());
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
-        Optional<Edge> referenceEdge = Streams.stream(referenceEdges).findAny();
+        Optional<Edge> referenceEdge = Iterables.stream(referenceEdges).findAny();
 
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
@@ -169,7 +168,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
         }
 
         Iterable<Edge> referenceEdges = vertex.get().getEdges(Direction.OUT, key.name());
-        Optional<Edge> referenceEdge = Streams.stream(referenceEdges).findAny();
+        Optional<Edge> referenceEdge = Iterables.stream(referenceEdges).findAny();
 
         referenceEdge.ifPresent(Element::remove);
     }
@@ -415,7 +414,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
                 .has(KEY_POSITION, key.position())
                 .vertices();
 
-        return Streams.stream(referencedVertices)
+        return Iterables.stream(referencedVertices)
                 .findAny()
                 .map(v -> StringId.from(v.getId()));
     }
@@ -438,7 +437,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
                 .direction(Direction.OUT)
                 .edges();
 
-        return Streams.stream(edges)
+        return Iterables.stream(edges)
                 .sorted(byPosition)
                 .map(e -> StringId.from(e.getVertex(Direction.IN).getId()))
                 .collect(Collectors.toList());
@@ -462,7 +461,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
                 .has(KEY_POSITION, key.position())
                 .edges();
 
-        Optional<Edge> previousEdge = Streams.stream(edges).findAny();
+        Optional<Edge> previousEdge = Iterables.stream(edges).findAny();
 
         Optional<Id> previousId = Optional.empty();
         if (previousEdge.isPresent()) {
@@ -594,7 +593,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
 
         Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
 
-        return Streams.stream(referencedVertices)
+        return Iterables.stream(referencedVertices)
                 .anyMatch(v -> Objects.equals(v.getId().toString(), reference.toString()));
     }
 
@@ -614,7 +613,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return OptionalInt.empty();
         }
 
-        return Streams.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
+        return Iterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
                 .min();
@@ -636,7 +635,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
             return OptionalInt.empty();
         }
 
-        return Streams.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
+        return Iterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
                 .max();
