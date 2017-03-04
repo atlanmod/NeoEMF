@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.store.Store;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -21,6 +19,7 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.IOException;
@@ -205,7 +204,7 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
-    public Store store() {
+    public InternalEObject.EStore store() {
         return resource.store();
     }
 

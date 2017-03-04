@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -49,22 +48,23 @@ public final class InvalidStore extends AbstractPersistentStore {
     }
 
     @Override
-    public void save() {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
     public PersistentResource resource() {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
+    public void save() {
         throw new UnsupportedOperationException(MSG);
     }
 
     @Override
     public boolean exists(Id id) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstances(EClass metaclass, boolean strict) {
         throw new UnsupportedOperationException(MSG);
     }
 

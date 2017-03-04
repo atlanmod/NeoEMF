@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.TransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.OwnedStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
@@ -82,7 +81,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The internal cached value of the eContainer.
      * <p>
-     * This information should be also maintained in the underlying {@link Store}.
+     * This information should be also maintained in the underlying {@link EStore}.
      */
     private InternalEObject eContainer;
 
@@ -94,7 +93,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * ???
      */
-    private Store store;
+    private EStore store;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
@@ -174,8 +173,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
             if (source.isSet(this, feature)) {
                 if (!feature.isMany()) {
-                    Optional.ofNullable(adaptValue(source, feature, Store.NO_INDEX))
-                            .ifPresent(v -> target.set(this, feature, Store.NO_INDEX, v));
+                    Optional.ofNullable(adaptValue(source, feature, EStore.NO_INDEX))
+                            .ifPresent(v -> target.set(this, feature, EStore.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, feature);
@@ -316,7 +315,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            value = eStore().get(this, feature, Store.NO_INDEX);
+            value = eStore().get(this, feature, EStore.NO_INDEX);
         }
 
         return value;
@@ -335,7 +334,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
         }
         else {
-            eStore().set(this, feature, Store.NO_INDEX, value);
+            eStore().set(this, feature, EStore.NO_INDEX, value);
         }
     }
 
@@ -572,7 +571,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link Store#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
+         * providing a custom {@link EStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
          * to append the result to the existing list.
          * <p>
          * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
@@ -588,7 +587,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     addUnique(object);
                 }
                 else {
-                    int index = size() == 0 ? 0 : Store.NO_INDEX;
+                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
                     addUnique(index, object);
                 }
                 return true;

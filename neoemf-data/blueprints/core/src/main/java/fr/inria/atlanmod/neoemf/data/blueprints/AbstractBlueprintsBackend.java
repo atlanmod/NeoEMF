@@ -245,6 +245,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
     }
 
+    @Override
+    public boolean exists(Id id) {
+        return get(id).isPresent();
+    }
+
     @Nonnull
     @Override
     public Iterable<Id> allInstances(EClass eClass, boolean strict) {
@@ -275,11 +280,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
                                     .map(v -> StringId.from(v.getId()))))
                     .collect(Collectors.toList());
         }
-    }
-
-    @Override
-    public boolean exists(Id id) {
-        return get(id).isPresent();
     }
 
     @Nonnull

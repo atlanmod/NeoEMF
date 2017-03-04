@@ -18,8 +18,8 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
+import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
@@ -223,7 +224,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
-    public Store store() {
+    public EStore store() {
         return store;
     }
 
@@ -241,7 +242,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
-            allInstances = store.allInstances(eClass, strict);
+            allInstances = Iterables.stream(store.allInstances(eClass, strict)).map(id -> store.object(id)).collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
             Log.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");

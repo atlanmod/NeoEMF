@@ -11,16 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -35,9 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public interface PersistenceBackend extends PersistenceMapper, Closeable {
 
-    /**
-     * Saves the modifications of the owned {@link EObject}s in the underlying database.
-     */
+    @Override
     void save();
 
     /**
@@ -73,21 +65,5 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
     void copyTo(PersistenceBackend target);
-
-    /**
-     * Back-end specific computation of {@link Resource#getAllContents()}.
-     *
-     * @param eClass the class to compute the instances of
-     * @param strict {@code true} if the lookup searches for strict instances
-     *
-     * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
-     * EClass}
-     *
-     * @throws UnsupportedOperationException if the back-end doesn't support the lookup of all instances
-     */
-    @Nonnull
-    default Iterable<Id> allInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
-    }
 }
 

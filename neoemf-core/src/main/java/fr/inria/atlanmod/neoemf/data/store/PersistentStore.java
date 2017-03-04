@@ -16,24 +16,20 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Store} to establish a mapping between {@link Resource}s and {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
+ * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link
+ * fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
  */
 @ParametersAreNonnullByDefault
-public interface PersistentStore extends Store, PersistenceMapper {
-
-    /**
-     * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
-     */
-    void save();
+public interface PersistentStore extends InternalEObject.EStore, PersistenceMapper {
 
     /**
      * Returns the {@link Resource} to persist and access.
@@ -52,15 +48,8 @@ public interface PersistentStore extends Store, PersistenceMapper {
      */
     PersistentEObject object(Id id);
 
-    /**
-     * Back-end specific computation of {@link Resource#getAllContents()}.
-     *
-     * @param metaclass the {@link EClass} to compute the instances of
-     * @param strict    {@code true} if the lookup searches for strict instances
-     *
-     * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
-     *
-     * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
-     */
-    Iterable<EObject> allInstances(EClass metaclass, boolean strict);
+    @Override
+    default EObject create(EClass eClass) {
+        throw new IllegalStateException("This method should not be called");
+    }
 }

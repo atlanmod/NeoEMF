@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -53,26 +52,27 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void save() {
-        next.save();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
     public PersistentResource resource() {
         return next.resource();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
-        return next.allInstances(metaclass, strict);
+    public void save() {
+        next.save();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     public boolean exists(Id id) {
         return next.exists(id);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<Id> allInstances(EClass metaclass, boolean strict) {
+        return next.allInstances(metaclass, strict);
     }
 
     @Nonnull

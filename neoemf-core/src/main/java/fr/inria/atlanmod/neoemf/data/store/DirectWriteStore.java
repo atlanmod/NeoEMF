@@ -18,14 +18,11 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.Iterables;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link PersistentStore} that translates model-level operations into datastore calls.
  */
 @ParametersAreNonnullByDefault
-public class DirectWriteStore extends AbstractPersistentStore {
+public final class DirectWriteStore extends AbstractPersistentStore {
 
     /**
      * The persistence back-end used to store the model.
@@ -50,7 +47,8 @@ public class DirectWriteStore extends AbstractPersistentStore {
     private final PersistentResource resource;
 
     /**
-     * Constructs a new {@code DirectWriteStore} on the given {@code backend}.
+     * Constructs a new {@code DirectWriteStore} on the given {@code backend}. This {@code DirectWriteStore} will be
+     * detached of a {@link PersistentResource}.
      *
      * @param backend the persistence back-end used to store the model
      */
@@ -70,33 +68,24 @@ public class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
+    public PersistentResource resource() {
+        return resource;
+    }
+
+    @Override
     public void save() {
         backend.save();
     }
 
     @Override
-    public PersistentResource resource() {
-        return resource;
-    }
-
-    /**
-     * Computes efficiently {@code allInstances} operation by using underlying graph facilities. This method uses
-     * database indices to avoid costly traversal of the entire model.
-     *
-     * @param metaclass the {@link EClass} to get the instances of
-     * @param strict    set to {@code true} if the method should look for instances of {@code eClass} only, set to
-     *                  {@code false} if the method should also return elements that are subclasses of {@code eClass}
-     */
-    @Override
-    public Iterable<EObject> allInstances(EClass metaclass, boolean strict) {
-        return Iterables.stream(backend.allInstances(metaclass, strict))
-                .map(this::object)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public boolean exists(Id id) {
         return backend.exists(id);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstances(EClass metaclass, boolean strict) {
+        return backend.allInstances(metaclass, strict);
     }
 
     @Nonnull
