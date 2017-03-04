@@ -98,13 +98,13 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     @Nonnull
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        return new DirectWriteStore(resource, backend);
+        return new DirectWriteStore(backend, resource);
     }
 
     @Nonnull
     @Override
     public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        PersistentStore store = new DirectWriteStore(resource, backend);
+        PersistentStore store = new DirectWriteStore(backend, resource);
 
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 

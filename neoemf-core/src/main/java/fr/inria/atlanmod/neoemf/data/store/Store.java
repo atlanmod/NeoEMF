@@ -16,10 +16,13 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link
  * InternalEObject.EStore}s.
  */
+@ParametersAreNonnullByDefault
 public interface Store extends InternalEObject.EStore {
 
     /**

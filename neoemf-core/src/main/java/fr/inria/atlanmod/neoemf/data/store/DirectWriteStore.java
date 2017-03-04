@@ -50,12 +50,21 @@ public class DirectWriteStore extends AbstractPersistentStore {
     private final PersistentResource resource;
 
     /**
+     * Constructs a new {@code DirectWriteStore} on the given {@code backend}.
+     *
+     * @param backend the persistence back-end used to store the model
+     */
+    public DirectWriteStore(PersistenceBackend backend) {
+        this(backend, null);
+    }
+
+    /**
      * Constructs a new {@code DirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
-     * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
+     * @param resource the resource to persist and access
      */
-    public DirectWriteStore(@Nullable PersistentResource resource, PersistenceBackend backend) {
+    public DirectWriteStore(PersistenceBackend backend, @Nullable PersistentResource resource) {
         this.resource = resource;
         this.backend = backend;
     }

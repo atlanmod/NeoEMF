@@ -12,7 +12,9 @@
 package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.OwnedTransientStore;
+import fr.inria.atlanmod.neoemf.data.TransientBackend;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.OwnedStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -151,7 +153,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             store = ((PersistentResource) resource).store();
         }
         else {
-            store = new OwnedTransientStore(this);
+            store = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
         }
 
         // Move contents from the previous store to the new
@@ -288,7 +290,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public EStore eStore() {
         if (isNull(store)) {
-            store = new OwnedTransientStore(this);
+            store = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
         }
         return store;
     }
@@ -542,6 +544,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * EStructuralFeature, int)} by delegating the call to the {@link EStore#toArray(InternalEObject,
          * EStructuralFeature)} implementation.
          */
+        @Nonnull
         @Override
         public Object[] toArray() {
             return eStore().toArray(owner, getEStructuralFeature());
@@ -554,6 +557,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * EStructuralFeature, int)} by delegating the call to the {@link EStore#toArray(InternalEObject,
          * EStructuralFeature, Object[])} implementation.
          */
+        @Nonnull
         @Override
         public <T> T[] toArray(T[] array) {
             return eStore().toArray(owner, getEStructuralFeature(), array);

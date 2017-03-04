@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -50,6 +52,7 @@ import static java.util.Objects.isNull;
 /**
  * The abstract implementation of a {@link PersistentStore}.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractPersistentStore implements PersistentStore {
 
     /**
@@ -450,7 +453,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+    public final <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, @Nullable T[] array) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 

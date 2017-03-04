@@ -21,9 +21,13 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Store} to establish a mapping between {@link Resource}s and {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
  */
+@ParametersAreNonnullByDefault
 public interface PersistentStore extends Store, PersistenceMapper {
 
     /**
@@ -36,6 +40,7 @@ public interface PersistentStore extends Store, PersistenceMapper {
      *
      * @return the resource to persist and access
      */
+    @Nullable
     PersistentResource resource();
 
     /**
