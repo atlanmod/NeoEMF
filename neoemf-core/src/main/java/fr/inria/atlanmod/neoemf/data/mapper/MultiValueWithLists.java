@@ -101,13 +101,19 @@ public interface MultiValueWithLists extends MultiValueMapper {
 
         List<V> values = optionalValues.get();
 
-        Optional<V> previousValue = Optional.of(values.remove(key.position()));
+        Optional<V> previousValue;
+        if (key.position() < values.size()) {
+            previousValue = Optional.of(values.remove(key.position()));
 
-        if (values.isEmpty()) {
-            removeAllValues(key.withoutPosition());
+            if (values.isEmpty()) {
+                removeAllValues(key.withoutPosition());
+            }
+            else {
+                valueFor(key.withoutPosition(), values);
+            }
         }
         else {
-            valueFor(key.withoutPosition(), values);
+            previousValue = Optional.empty();
         }
 
         return previousValue;

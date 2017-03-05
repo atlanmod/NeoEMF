@@ -36,6 +36,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * An abstract test case that checks the expected behavior of {@link PersistenceMapper}s and their sub-classes.
  */
+// TODO Add tests with `key.position() > size()` and an existing many value/reference
 public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**

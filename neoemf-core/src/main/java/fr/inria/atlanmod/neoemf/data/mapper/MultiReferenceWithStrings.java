@@ -46,16 +46,18 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     @Override
     default Optional<Id> referenceOf(ManyFeatureKey key) {
         return this.<String>valueOf(key.withoutPosition())
-                .map(s -> arrayFromString(s)[key.position()]);
+                .map(this::arrayFromString)
+                .filter(ids -> key.position() < ids.length)
+                .map(ids -> ids[key.position()]);
     }
 
     @Nonnull
     @Override
     default Iterable<Id> allReferencesOf(FeatureKey key) {
-        Optional<Id[]> values = this.<String>valueOf(key)
+        Optional<Id[]> ids = this.<String>valueOf(key)
                 .map(this::arrayFromString);
 
-        return values
+        return ids
                 .map(Arrays::asList)
                 .orElse(Collections.emptyList());
     }
@@ -64,40 +66,42 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     @Override
     default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         checkNotNull(key);
+        checkNotNull(reference);
 
-        Id[] values = this.<String>valueOf(key.withoutPosition())
+        Id[] ids = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        Optional<Id> previousValue = Optional.of(values[key.position()]);
+        Optional<Id> previousId = Optional.of(ids[key.position()]);
 
-        values[key.position()] = reference;
+        ids[key.position()] = reference;
 
-        valueFor(key.withoutPosition(), arrayToString(values));
+        valueFor(key.withoutPosition(), arrayToString(ids));
 
-        return previousValue;
+        return previousId;
     }
 
     @Override
     default void addReference(ManyFeatureKey key, Id reference) {
         checkNotNull(key);
+        checkNotNull(reference);
 
-        Id[] values = this.<String>valueOf(key.withoutPosition())
+        Id[] ids = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
                 .orElse(new Id[0]);
 
-        while (key.position() > values.length) {
-            values = ArrayUtils.add(values, values.length, null);
+        while (key.position() > ids.length) {
+            ids = ArrayUtils.add(ids, ids.length, null);
         }
 
-        if (key.position() < values.length && isNull(values[key.position()])) {
-            values[key.position()] = reference;
+        if (key.position() < ids.length && isNull(ids[key.position()])) {
+            ids[key.position()] = reference;
         }
         else {
-            values = ArrayUtils.add(values, key.position(), reference);
+            ids = ArrayUtils.add(ids, key.position(), reference);
         }
 
-        valueFor(key.withoutPosition(), arrayToString(values));
+        valueFor(key.withoutPosition(), arrayToString(ids));
     }
 
     @Nonnull
@@ -105,26 +109,32 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
     default Optional<Id> removeReference(ManyFeatureKey key) {
         checkNotNull(key);
 
-        Optional<String> optional = valueOf(key.withoutPosition());
+        Optional<String> optionalIds = valueOf(key.withoutPosition());
 
-        if (!optional.isPresent()) {
+        if (!optionalIds.isPresent()) {
             return Optional.empty();
         }
 
-        Id[] values = arrayFromString(optional.get());
+        Id[] ids = arrayFromString(optionalIds.get());
 
-        Optional<Id> previousValue = Optional.of(values[key.position()]);
+        Optional<Id> previousId;
+        if (key.position() < ids.length) {
+            previousId = Optional.of(ids[key.position()]);
 
-        values = ArrayUtils.remove(values, key.position());
+            ids = ArrayUtils.remove(ids, key.position());
 
-        if (values.length == 0) {
-            removeAllReferences(key.withoutPosition());
+            if (ids.length == 0) {
+                removeAllReferences(key.withoutPosition());
+            }
+            else {
+                valueFor(key.withoutPosition(), arrayToString(ids));
+            }
         }
         else {
-            valueFor(key.withoutPosition(), arrayToString(values));
+            previousId = Optional.empty();
         }
 
-        return previousValue;
+        return previousId;
     }
 
     @Override
@@ -185,7 +195,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
      */
     default String arrayToString(Id[] references) {
         return Stream.of(checkNotNull(references))
-                .map(Id::toString)
+                .map(id -> isNull(id) ? "" : id.toString())
                 .collect(Collectors.joining(","));
     }
 
@@ -198,7 +208,7 @@ public interface MultiReferenceWithStrings extends MultiReferenceMapper {
      */
     default Id[] arrayFromString(String references) {
         return Stream.of(checkNotNull(references).split(","))
-                .map(StringId::of)
+                .map(r -> r.isEmpty() ? null : StringId.of(r))
                 .toArray(Id[]::new);
     }
 }

@@ -42,6 +42,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
         checkNotNull(key);
 
         return this.<V[]>valueOf(key.withoutPosition())
+                .filter(values -> key.position() < values.length)
                 .map(values -> values[key.position()]);
     }
 
@@ -59,6 +60,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @Override
     default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         checkNotNull(key);
+        checkNotNull(value);
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
@@ -76,6 +78,7 @@ public interface MultiValueWithArrays extends MultiValueMapper {
     @SuppressWarnings("unchecked")
     default <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(key);
+        checkNotNull(value);
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse((V[]) new Object[0]);
@@ -107,15 +110,21 @@ public interface MultiValueWithArrays extends MultiValueMapper {
 
         V[] values = optionalValues.get();
 
-        Optional<V> previousValue = Optional.of(values[key.position()]);
+        Optional<V> previousValue;
+        if (key.position() < values.length) {
+            previousValue = Optional.of(values[key.position()]);
 
-        values = ArrayUtils.remove(values, key.position());
+            values = ArrayUtils.remove(values, key.position());
 
-        if (values.length == 0) {
-            removeAllValues(key.withoutPosition());
+            if (values.length == 0) {
+                removeAllValues(key.withoutPosition());
+            }
+            else {
+                valueFor(key.withoutPosition(), values);
+            }
         }
         else {
-            valueFor(key.withoutPosition(), values);
+            previousValue = Optional.empty();
         }
 
         return previousValue;
