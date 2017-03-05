@@ -203,15 +203,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         Object value = store.get(this, feature, index);
 
         // FIXME Same code as in `DirectWriteStore#object()`
-        if (nonNull(value)) {
-            if (feature instanceof EReference) {
-                EReference eRef = (EReference) feature;
-                if (eRef.isContainment()) {
-                    PersistentEObject internalElement = PersistentEObject.from(value);
-                    if (internalElement.resource() != resource()) {
-                        internalElement.resource(resource());
-                    }
-                }
+        if (nonNull(value) && feature instanceof EReference && ((EReference) feature).isContainment()) {
+            PersistentEObject object = PersistentEObject.from(value);
+            if (object.resource() != resource()) {
+                object.resource(resource());
             }
         }
         return value;
