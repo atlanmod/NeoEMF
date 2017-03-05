@@ -192,8 +192,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
         try {
             this.save();
         }
-        catch (Exception e) {
-            Log.error(e);
+        catch (Exception ignored) {
         }
         finally {
             super.finalize();
