@@ -143,7 +143,7 @@
 
         <assertj.version>3.6.2</assertj.version>
         <junit.version>4.12</junit.version>
-        <mockito.version>2.7.12</mockito.version>
+        <mockito.version>2.7.13</mockito.version>
     </properties>
 
     <dependencies>
