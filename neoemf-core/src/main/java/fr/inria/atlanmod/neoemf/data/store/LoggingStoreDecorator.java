@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.logging.Level;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
-import fr.inria.atlanmod.neoemf.util.logging.Logger;
+import fr.inria.atlanmod.neoemf.util.log.Level;
+import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.neoemf.util.log.Logger;
 
 import java.util.Optional;
 import java.util.OptionalInt;

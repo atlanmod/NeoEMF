@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import com.google.common.base.Stopwatch;
 
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -29,7 +26,9 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
 import fr.inria.atlanmod.neoemf.io.util.hash.Hasher;
 import fr.inria.atlanmod.neoemf.io.util.hash.HasherFactory;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -81,7 +80,7 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
     /**
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
-    private final Cache<String, Id> idsCache = Caffeine.newBuilder()
+    private final Cache<String, Id> idsCache = CacheBuilder.newBuilder()
             .initialCapacity((int) DEFAULT_CACHE_SIZE / 10)
             .maximumSize(DEFAULT_CACHE_SIZE)
             .build();

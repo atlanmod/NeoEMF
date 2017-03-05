@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.util.logging.Level;
+import fr.inria.atlanmod.neoemf.util.log.Level;
 
 import java.util.ArrayList;
 import java.util.Collections;

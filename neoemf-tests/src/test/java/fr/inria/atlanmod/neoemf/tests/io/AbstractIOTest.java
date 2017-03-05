@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;

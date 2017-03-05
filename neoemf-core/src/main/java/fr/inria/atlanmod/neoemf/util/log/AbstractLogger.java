@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.util.logging;
+package fr.inria.atlanmod.neoemf.util.log;
 
 import org.apache.logging.log4j.LogManager;
 

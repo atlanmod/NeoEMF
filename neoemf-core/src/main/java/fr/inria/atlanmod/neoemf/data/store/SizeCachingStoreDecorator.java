@@ -11,12 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -39,7 +38,9 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     /**
      * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, OptionalInt> sizesCache;
+    private final Cache<FeatureKey, OptionalInt> sizesCache = CacheBuilder.newBuilder()
+            .maximumSize(10_000)
+            .build();
 
     /**
      * Constructs a new {@code SizeCachingStoreDecorator} with the default cache size.
@@ -47,18 +48,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
      * @param store the underlying store
      */
     public SizeCachingStoreDecorator(PersistentStore store) {
-        this(store, 10_000);
-    }
-
-    /**
-     * Constructs a new {@code SizeCachingStoreDecorator} with the given {@code cacheSize}.
-     *
-     * @param store     the underlying store
-     * @param cacheSize the size of the cache
-     */
-    public SizeCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
-        this.sizesCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Override
@@ -69,7 +59,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
+        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
 
         super.addValue(key, value);
@@ -77,7 +67,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        Optional.ofNullable(sizesCache.getIfPresent(key))
+        Optional.ofNullable(sizesCache.get(key))
                 .ifPresent(s -> sizesCache.put(key, OptionalInt.of(s.orElse(0) + 1)));
 
         super.appendValue(key, value);
@@ -86,7 +76,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
+        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
 
         return super.removeValue(key);
@@ -113,7 +103,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
+        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
 
         super.addReference(key, reference);
@@ -121,7 +111,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        Optional.ofNullable(sizesCache.getIfPresent(key))
+        Optional.ofNullable(sizesCache.get(key))
                 .ifPresent(s -> sizesCache.put(key, OptionalInt.of(s.orElse(0) + 1)));
 
         super.appendReference(key, reference);
@@ -130,7 +120,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        Optional.ofNullable(sizesCache.getIfPresent(key.withoutPosition()))
+        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
                 .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
 
         return super.removeReference(key);

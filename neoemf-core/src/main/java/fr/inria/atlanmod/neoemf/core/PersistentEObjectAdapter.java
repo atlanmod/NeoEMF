@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -47,7 +46,7 @@ class PersistentEObjectAdapter {
      * has been garbage collected.
      */
     @Nonnull
-    private static final Cache<InternalEObject, PersistentEObject> CACHE = Caffeine.newBuilder().weakKeys().build();
+    private static final Cache<InternalEObject, PersistentEObject> CACHE = CacheBuilder.newBuilder().weakKeys().build();
 
     /**
      * This class should not be instantiated.
@@ -81,7 +80,7 @@ class PersistentEObjectAdapter {
             adapter = adaptableObject;
         }
         else if (adaptableObject instanceof InternalEObject) {
-            adapter = CACHE.getIfPresent(adaptableObject);
+            adapter = CACHE.get((InternalEObject) adaptableObject);
             if (isNull(adapter) || !adapterType.isAssignableFrom(adapter.getClass())) {
                 adapter = createAdapter(adaptableObject, adapterType);
                 CACHE.put((InternalEObject) adaptableObject, (PersistentEObject) adapter);

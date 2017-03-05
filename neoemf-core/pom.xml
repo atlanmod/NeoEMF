@@ -20,6 +20,8 @@
     </description>
 
     <properties>
+        <caffeine.version>2.4.0</caffeine.version>
+
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
@@ -135,6 +137,14 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Cache -->
+
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
 
             <!-- Proxy -->
 

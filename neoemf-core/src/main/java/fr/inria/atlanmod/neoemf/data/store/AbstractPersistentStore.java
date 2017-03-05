@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -22,7 +19,9 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -59,7 +58,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     @Nonnull
-    private final LoadingCache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
+    private final Cache<Id, PersistentEObject> persistentObjectsCache = CacheBuilder.newBuilder()
             .softValues()
             .initialCapacity(1_000)
             .maximumSize(10_000)

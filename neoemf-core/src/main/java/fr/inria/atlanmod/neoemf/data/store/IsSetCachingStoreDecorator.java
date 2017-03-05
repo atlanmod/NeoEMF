@@ -11,12 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -33,7 +32,9 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     /**
      * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, Boolean> isSetCache;
+    private final Cache<FeatureKey, Boolean> isSetCache = CacheBuilder.newBuilder()
+            .maximumSize(10_000)
+            .build();
 
     /**
      * Constructs a new {@code IsSetCachingStoreDecorator} with the default cache size.
@@ -41,18 +42,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
      * @param store the underlying store
      */
     public IsSetCachingStoreDecorator(PersistentStore store) {
-        this(store, 10_000);
-    }
-
-    /**
-     * Constructs a new {@code IsSetCachingStoreDecorator} with the given {@code cacheSize}.
-     *
-     * @param store     the underlying store
-     * @param cacheSize the size of the cache
-     */
-    public IsSetCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
-        this.isSetCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Nonnull

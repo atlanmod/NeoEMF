@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
@@ -30,7 +28,9 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -108,7 +108,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
      */
     @Nonnull
-    private final Cache<Id, Vertex> verticesCache = Caffeine.newBuilder()
+    private final Cache<Id, Vertex> verticesCache = CacheBuilder.newBuilder()
             .initialCapacity(1_000)
             .maximumSize(10_000)
             .build();

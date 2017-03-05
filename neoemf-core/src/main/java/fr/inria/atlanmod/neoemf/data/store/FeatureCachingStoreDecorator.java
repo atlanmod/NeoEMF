@@ -11,12 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.util.cache.Cache;
+import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -35,26 +34,17 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     /**
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, Object> valuesCache;
+    private final Cache<FeatureKey, Object> valuesCache = CacheBuilder.newBuilder()
+            .maximumSize(10_000)
+            .build();
 
     /**
-     * Constructs a new {@code FeatureCachingStoreDecorator} with the default cache size.
+     * Constructs a new {@code FeatureCachingStoreDecorator}.
      *
      * @param store the underlying store
      */
     public FeatureCachingStoreDecorator(PersistentStore store) {
-        this(store, 10_000);
-    }
-
-    /**
-     * Constructs a new {@code FeatureCachingStoreDecorator} with the given {@code cacheSize}.
-     *
-     * @param store     the underlying store
-     * @param cacheSize the size of the cache
-     */
-    public FeatureCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
-        this.valuesCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Nonnull

@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.extension;
 
 import com.google.common.base.Splitter;
 
-import fr.inria.atlanmod.neoemf.util.logging.Log;
-import fr.inria.atlanmod.neoemf.util.logging.Logger;
+import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.neoemf.util.log.Logger;
 
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;

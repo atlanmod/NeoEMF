@@ -13,4 +13,4 @@
  * Provides classes for logging information and events.
  */
 
-package fr.inria.atlanmod.neoemf.util.logging;
+package fr.inria.atlanmod.neoemf.util.log;

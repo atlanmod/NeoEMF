@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;

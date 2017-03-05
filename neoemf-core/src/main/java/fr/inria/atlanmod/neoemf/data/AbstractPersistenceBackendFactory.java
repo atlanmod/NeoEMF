@@ -25,8 +25,8 @@ import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.logging.Level;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Level;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.io.File;
 import java.nio.file.Path;

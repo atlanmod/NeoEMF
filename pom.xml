@@ -130,8 +130,6 @@
         <argLine /> <!-- Keep it empty -->
         <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
 
-        <caffeine.version>2.4.0</caffeine.version>
-
         <guava.version>20.0</guava.version> <!-- 'guava:21.0+' is incompatible with 'hadoop-common:2.7.3' -->
         <osgi.version>6.0.0</osgi.version>
 
@@ -157,14 +155,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- Cache -->
-
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
-            </dependency>
 
             <!-- Common -->
 

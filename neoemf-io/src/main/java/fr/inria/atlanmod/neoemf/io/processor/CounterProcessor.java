@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;

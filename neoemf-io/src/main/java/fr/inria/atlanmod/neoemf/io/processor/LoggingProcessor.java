@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
-import fr.inria.atlanmod.neoemf.util.logging.Logger;
+import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.neoemf.util.log.Logger;
 
 import java.util.Objects;
 
