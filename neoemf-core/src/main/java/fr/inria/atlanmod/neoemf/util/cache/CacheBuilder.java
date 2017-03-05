@@ -15,20 +15,20 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.function.Function;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A builder of {@link Cache} instances.
  *
- * @param <K> the base key type for all caches created by this builder
- * @param <V> the base value type for all caches created by this builder
+ * @param <K> the base key type for {@link Cache}s created by this builder
+ * @param <V> the base value type for {@link Cache} created by this builder
  */
 @ParametersAreNonnullByDefault
 public final class CacheBuilder<K, V> {
@@ -70,6 +70,8 @@ public final class CacheBuilder<K, V> {
      */
     @Nonnull
     public CacheBuilder<K, V> initialCapacity(@Nonnegative int initialCapacity) {
+        checkArgument(initialCapacity >= 0);
+
         builder.initialCapacity(initialCapacity);
         return this;
     }
@@ -92,6 +94,8 @@ public final class CacheBuilder<K, V> {
      */
     @Nonnull
     public CacheBuilder<K, V> maximumSize(@Nonnegative long maximumSize) {
+        checkArgument(maximumSize >= 0);
+
         builder.maximumSize(maximumSize);
         return this;
     }
@@ -143,7 +147,7 @@ public final class CacheBuilder<K, V> {
      */
     @Nonnull
     public <K1 extends K, V1 extends V> Cache<K1, V1> build() {
-        return new DefaultCache<>(builder.build());
+        return new ManualCache<>(builder.build());
     }
 
     /**
@@ -164,72 +168,6 @@ public final class CacheBuilder<K, V> {
     public <K1 extends K, V1 extends V> Cache<K1, V1> build(Function<? super K1, ? extends V1> mappingFunction) {
         checkNotNull(mappingFunction);
 
-        return new DefaultCache<>(builder.build(mappingFunction::apply));
-    }
-
-    /**
-     * The default {@link Cache} implementation.
-     */
-    private static class DefaultCache<K, V> implements Cache<K, V> {
-
-        /**
-         * The internal cache implementation.
-         */
-        private final com.github.benmanes.caffeine.cache.Cache<K, V> cache;
-
-        /**
-         * Constructs a new {@code DefaultCache}.
-         *
-         * @param cache the internal cache implementation
-         */
-        private DefaultCache(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
-            this.cache = cache;
-        }
-
-        @Override
-        public V get(K key) {
-            return cache.getIfPresent(key);
-        }
-
-        @Override
-        public V get(K key, Function<? super K, ? extends V> mappingFunction) {
-            return cache.get(key, mappingFunction);
-        }
-
-        @Nonnull
-        @Override
-        public Map<K, V> getAllPresent(Iterable<? extends K> keys) {
-            return cache.getAllPresent(keys);
-        }
-
-        @Override
-        public void put(K key, V value) {
-            cache.put(key, value);
-        }
-
-        @Override
-        public void putAll(Map<? extends K, ? extends V> map) {
-            cache.putAll(map);
-        }
-
-        @Override
-        public void invalidate(K key) {
-            cache.invalidate(key);
-        }
-
-        @Override
-        public void invalidateAll(Iterable<? extends K> keys) {
-            cache.invalidateAll(keys);
-        }
-
-        @Override
-        public void invalidateAll() {
-            cache.invalidateAll();
-        }
-
-        @Override
-        public long estimatedSize() {
-            return cache.estimatedSize();
-        }
+        return new LoadingCache<>(builder.build(mappingFunction::apply));
     }
 }

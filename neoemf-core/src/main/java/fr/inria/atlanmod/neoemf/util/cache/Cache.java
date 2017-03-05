@@ -79,7 +79,7 @@ public interface Cache<K, V> {
      * @throws NullPointerException if the specified collection is null or contains a null element
      */
     @Nonnull
-    Map<K, V> getAllPresent(Iterable<? extends K> keys);
+    Map<K, V> getAll(Iterable<? extends K> keys);
 
     /**
      * Associates the {@code value} with the {@code key} in this cache. If the cache previously contained a value
