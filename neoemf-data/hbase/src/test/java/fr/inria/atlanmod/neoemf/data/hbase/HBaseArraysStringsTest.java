@@ -18,6 +18,6 @@ import org.junit.Ignore;
 /**
  *
  */
-@Ignore
+@Ignore // FIXME `AbstractHBaseBackend#unsetValue` does not correctly clean many values/references
 public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest implements HBaseTest {
 }
