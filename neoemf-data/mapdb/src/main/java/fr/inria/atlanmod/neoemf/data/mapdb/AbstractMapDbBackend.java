@@ -303,15 +303,13 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
             IdSerializer that = (IdSerializer) o;
 
             return Objects.equals(serializer, that.serializer);
-        }        @Nonnull
+        }
+
+        @Nonnull
         @Override
         public Id deserialize(DataInput2 in, int i) throws IOException {
             return StringId.of(serializer.deserialize(in, i));
         }
-
-
-
-
     }
 
     /**
