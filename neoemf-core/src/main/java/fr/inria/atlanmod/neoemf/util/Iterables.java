@@ -15,9 +15,12 @@ import java.util.Collection;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Static utility methods related to {@link Iterable} instances.
  */
+@ParametersAreNonnullByDefault
 public final class Iterables {
 
     /**

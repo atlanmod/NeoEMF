@@ -11,8 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Represents options related to database access features.
  */
+@ParametersAreNonnullByDefault
 public interface PersistentStoreOptions {
 }

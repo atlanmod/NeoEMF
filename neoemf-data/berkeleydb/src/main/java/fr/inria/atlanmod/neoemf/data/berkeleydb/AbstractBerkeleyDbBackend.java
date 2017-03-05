@@ -24,7 +24,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
@@ -32,7 +31,14 @@ import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.eclipse.emf.ecore.EClass;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -248,12 +254,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      */
     @Nonnull
     protected <K, V> Optional<V> get(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry();
 
         Optional<V> value;
         if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(ObjectSerializer.deserialize(dbValue.getData()));
+            value = Optional.of(Serializer.deserialize(dbValue.getData()));
         }
         else {
             value = Optional.empty();
@@ -271,8 +277,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * @param <V>      the type of the value
      */
     protected <K, V> void put(Database database, K key, V value) {
-        DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(ObjectSerializer.serialize(value));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry(Serializer.serialize(value));
 
         database.put(null, dbKey, dbValue);
     }
@@ -285,7 +291,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * @param <K>      the type of the key
      */
     protected <K> void delete(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(ObjectSerializer.serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializer.serialize(key));
 
         database.delete(null, dbKey);
     }
@@ -305,5 +311,62 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
             }
         }
         to.sync();
+    }
+
+    /**
+     * Simple class to serialize/deserialize objects from/to byte arrays.
+     */
+    @ParametersAreNonnullByDefault
+    protected static final class Serializer {
+
+        /**
+         * This class should not be instantiated.
+         *
+         * @throws IllegalStateException every time
+         */
+        private Serializer() {
+            throw new IllegalStateException("This class should not be instantiated");
+        }
+
+        /**
+         * Serializes an {@code Object} to a byte array for storage/serialization.
+         *
+         * @param value the object to serialize to bytes
+         *
+         * @return the serialized object as a byte array
+         */
+        @Nonnull
+        public static <T> byte[] serialize(T value) {
+            checkNotNull(value);
+
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(baos)) {
+                out.writeObject(value);
+                out.flush();
+                return baos.toByteArray();
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        /**
+         * Deserializes a single {@code Object} from an array of bytes.
+         *
+         * @param data the serialized object as a byte array
+         *
+         * @return the deserialized object
+         */
+        @SuppressWarnings("unchecked")
+        @Nonnull
+        public static <T> T deserialize(byte[] data) {
+            checkNotNull(data);
+
+            try (ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(data))) {
+                return (T) in.readObject();
+            }
+            catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

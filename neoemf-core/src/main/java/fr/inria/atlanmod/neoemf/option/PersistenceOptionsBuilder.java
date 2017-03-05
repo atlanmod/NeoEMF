@@ -13,11 +13,14 @@ package fr.inria.atlanmod.neoemf.option;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A builder of {@link PersistenceOptions}.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@ParametersAreNonnullByDefault
 public interface PersistenceOptionsBuilder {
 
     /**

@@ -13,9 +13,13 @@ package fr.inria.atlanmod.neoemf.util.logging;
 
 import java.text.MessageFormat;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNullableByDefault;
+
 /**
  * An object that provides logging operations, filtered by {@link Level}s.
  */
+@ParametersAreNullableByDefault
 public interface Logger {
 
     /**
@@ -329,7 +333,7 @@ public interface Logger {
      * @param level   the logging level
      * @param message the message to log
      */
-    default void log(Level level, CharSequence message) {
+    default void log(@Nonnull Level level, CharSequence message) {
         log(level, null, message, new Object[0]);
     }
 
@@ -340,7 +344,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
-    default void log(Level level, CharSequence message, Object... params) {
+    default void log(@Nonnull Level level, CharSequence message, Object... params) {
         log(level, null, message, params);
     }
 
@@ -350,7 +354,7 @@ public interface Logger {
      * @param level the logging level
      * @param e     the exception to log, including its stack trace
      */
-    default void log(Level level, Throwable e) {
+    default void log(@Nonnull Level level, Throwable e) {
         log(level, e, null, new Object[0]);
     }
 
@@ -361,7 +365,7 @@ public interface Logger {
      * @param e       the exception to log, including its stack trace
      * @param message the message to log
      */
-    default void log(Level level, Throwable e, CharSequence message) {
+    default void log(@Nonnull Level level, Throwable e, CharSequence message) {
         log(level, e, message, new Object[0]);
     }
 
@@ -374,5 +378,5 @@ public interface Logger {
      * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
-    void log(Level level, Throwable e, CharSequence message, Object... params);
+    void log(@Nonnull Level level, Throwable e, CharSequence message, Object... params);
 }

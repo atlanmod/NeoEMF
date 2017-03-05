@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <B> the "self"-type of this {@link PersistenceOptionsBuilder}
  * @param <O> the type of {@link PersistenceOptions} built by this builder
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B, O>, O extends AbstractPersistenceOptions> implements PersistenceOptionsBuilder {
 
     /**

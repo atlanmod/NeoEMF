@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -58,6 +59,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @see BlueprintsOptionsBuilder
  * @see BlueprintsResourceOptions
  */
+@ParametersAreNonnullByDefault
 public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**

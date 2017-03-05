@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistenceOptions} that holds MapDB specific options.
@@ -31,6 +32,7 @@ import javax.annotation.Nonnull;
  * @see MapDbOptionsBuilder
  */
 @Experimental
+@ParametersAreNonnullByDefault
 public class MapDbOptions extends AbstractPersistenceOptions {
 
     /**

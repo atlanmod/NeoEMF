@@ -16,17 +16,22 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import java.text.MessageFormat;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNullableByDefault;
+
 /**
  * The factory that creates instances of {@link Logger}s.
  * <p>
  * It also provides static methods for logging without declaring a specific instance. In this case, the
  * {@link #rootLogger()} is used by default.
  */
+@ParametersAreNullableByDefault
 public final class Log {
 
     /**
      * In-memory cache that holds loaded {@link Logger}s, identified by their name.
      */
+    @Nonnull
     private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
 
     /**
@@ -56,7 +61,7 @@ public final class Log {
      *
      * @return the {@link Logger}
      */
-    public static Logger customLogger(String name) {
+    public static Logger customLogger(@Nonnull String name) {
         return LOGGERS.get(name, AsyncLogger::new);
     }
 
@@ -469,7 +474,7 @@ public final class Log {
      * @see #rootLogger()
      * @see Logger#log(Level, CharSequence)
      */
-    public static void log(Level level, CharSequence message) {
+    public static void log(@Nonnull Level level, CharSequence message) {
         rootLogger().log(level, message);
     }
 
@@ -483,7 +488,7 @@ public final class Log {
      * @see #rootLogger()
      * @see Logger#log(Level, CharSequence, Object...)
      */
-    public static void log(Level level, CharSequence message, Object... params) {
+    public static void log(@Nonnull Level level, CharSequence message, Object... params) {
         rootLogger().log(level, message, params);
     }
 
@@ -496,7 +501,7 @@ public final class Log {
      * @see #rootLogger()
      * @see Logger#log(Level, Throwable)
      */
-    public static void log(Level level, Throwable e) {
+    public static void log(@Nonnull Level level, Throwable e) {
         rootLogger().log(level, e);
     }
 
@@ -511,7 +516,7 @@ public final class Log {
      * @see #rootLogger()
      * @see Logger#log(Level, Throwable, CharSequence)
      */
-    public static void log(Level level, Throwable e, CharSequence message) {
+    public static void log(@Nonnull Level level, Throwable e, CharSequence message) {
         rootLogger().log(level, e, message);
     }
 
@@ -527,7 +532,7 @@ public final class Log {
      * @see #rootLogger()
      * @see Logger#log(Level, Throwable, CharSequence, Object...)
      */
-    public static void log(Level level, Throwable e, CharSequence message, Object... params) {
+    public static void log(@Nonnull Level level, Throwable e, CharSequence message, Object... params) {
         rootLogger().log(level, e, message, params);
     }
 }

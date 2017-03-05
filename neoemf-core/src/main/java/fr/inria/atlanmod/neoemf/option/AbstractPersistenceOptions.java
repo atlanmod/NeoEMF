@@ -15,6 +15,8 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The abstract implementation of {@link PersistenceOptions}.
  * <p>
@@ -26,6 +28,7 @@ import java.util.Map;
  * @see AbstractPersistenceOptionsBuilder
  */
 @Experimental
+@ParametersAreNonnullByDefault
 public abstract class AbstractPersistenceOptions implements PersistenceOptions {
 
     @SuppressWarnings("JavaDoc")

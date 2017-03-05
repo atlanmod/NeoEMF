@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util.logging;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An object used for identifying the severity of an event.
  * <p>
@@ -27,6 +29,7 @@ package fr.inria.atlanmod.neoemf.util.logging;
  * Typically, configuring a level in a filter or on a {@link Logger} will cause logging events of that level and those
  * that are more specific to pass through the filter.
  */
+@ParametersAreNonnullByDefault
 public enum Level {
 
     /**

@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.util.serializer;
+package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -26,7 +26,7 @@ public class FeatureKeySerializerTest {
     @Test
     public void testSerialize() {
         FeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature");
-        FeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
+        FeatureKey fkOut = AbstractBerkeleyDbBackend.Serializer.deserialize(AbstractBerkeleyDbBackend.Serializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
@@ -34,7 +34,7 @@ public class FeatureKeySerializerTest {
     @Test
     public void testSerializeMFK() {
         ManyFeatureKey fkIn = FeatureKey.of(StringId.of("obj1"), "feature").withPosition(0);
-        ManyFeatureKey fkOut = ObjectSerializer.deserialize(ObjectSerializer.serialize(fkIn));
+        ManyFeatureKey fkOut = AbstractBerkeleyDbBackend.Serializer.deserialize(AbstractBerkeleyDbBackend.Serializer.serialize(fkIn));
 
         assertThat(fkIn).isEqualTo(fkOut);
     }
@@ -45,9 +45,9 @@ public class FeatureKeySerializerTest {
         ManyFeatureKey fk1 = fk.withPosition(0);
         ManyFeatureKey fk2 = fk.withPosition(1);
 
-        byte[] ser1 = ObjectSerializer.serialize(fk1);
-        byte[] ser2 = ObjectSerializer.serialize(fk2);
-        byte[] ser3 = ObjectSerializer.serialize(fk);
+        byte[] ser1 = AbstractBerkeleyDbBackend.Serializer.serialize(fk1);
+        byte[] ser2 = AbstractBerkeleyDbBackend.Serializer.serialize(fk2);
+        byte[] ser3 = AbstractBerkeleyDbBackend.Serializer.serialize(fk);
 
 
         assertThat(Arrays.equals(ser1, ser2)).isFalse();

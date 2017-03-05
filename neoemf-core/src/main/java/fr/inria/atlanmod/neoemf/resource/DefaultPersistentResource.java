@@ -52,6 +52,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
@@ -61,6 +63,7 @@ import static java.util.Objects.nonNull;
  * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations
  * to its internal {@link PersistentStore} which is responsible of database access.
  */
+@ParametersAreNonnullByDefault
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
     /**

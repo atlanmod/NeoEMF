@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Represents options managed by {@link PersistenceBackendFactory}.
  * <p>
@@ -27,6 +29,7 @@ import java.util.Map;
  * @see PersistenceOptionsBuilder
  */
 @Experimental
+@ParametersAreNonnullByDefault
 public interface PersistenceOptions {
 
     /**

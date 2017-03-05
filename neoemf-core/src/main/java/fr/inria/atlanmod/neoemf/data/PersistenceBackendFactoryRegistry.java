@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
@@ -38,11 +39,13 @@ import static java.util.Objects.nonNull;
  * @see PersistentResource#load(Map)
  * @see PersistentResource#save(Map)
  */
-public class PersistenceBackendFactoryRegistry {
+@ParametersAreNonnullByDefault
+public final class PersistenceBackendFactoryRegistry {
 
     /**
      * A map containing all registered {@link PersistenceBackendFactory} identified by a {@link URI} scheme.
      */
+    @Nonnull
     private static final Map<String, PersistenceBackendFactory> FACTORIES = new ConcurrentHashMap<>();
 
     /**
@@ -101,7 +104,7 @@ public class PersistenceBackendFactoryRegistry {
      * @param scheme  the {@link URI} scheme identifying the back-end factory
      * @param factory the back-end factory
      */
-    public static void register(@Nonnull String scheme, @Nonnull PersistenceBackendFactory factory) {
+    public static void register(String scheme, PersistenceBackendFactory factory) {
         checkNotNull(scheme);
         checkNotNull(factory);
 

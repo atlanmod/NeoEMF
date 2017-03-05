@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A common {@link PersistenceOptionsBuilder} that creates common options that are available for all back-end
  * implementations.
@@ -20,6 +22,7 @@ import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
  * All features are all optional: options can be created using all or none of them.
  */
 @VisibleForTesting
+@ParametersAreNonnullByDefault
 public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<CommonOptionsBuilder, CommonOptions> {
 
     /**

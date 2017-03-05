@@ -27,16 +27,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link PersistentResource} wrapper that delegates all method calls to the decorated resource.
  * <p>
  * This class can be extended by external tools to add behavior to an existing {@link PersistentResource}.
  */
+@ParametersAreNonnullByDefault
 public class PersistentResourceDecorator implements PersistentResource {
 
     /**
      * The underlying resource.
      */
+    @Nonnull
     protected final PersistentResource resource;
 
     /**
@@ -49,181 +55,217 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public ResourceSet getResourceSet() {
         return resource.getResourceSet();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public URI getURI() {
         return resource.getURI();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setURI(URI uri) {
         resource.setURI(uri);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public long getTimeStamp() {
         return resource.getTimeStamp();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setTimeStamp(long timeStamp) {
         resource.setTimeStamp(timeStamp);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<EObject> getContents() {
         return resource.getContents();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public TreeIterator<EObject> getAllContents() {
         return resource.getAllContents();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public String getURIFragment(EObject eObject) {
         return resource.getURIFragment(eObject);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EObject getEObject(String uriFragment) {
         return resource.getEObject(uriFragment);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void save(Map<?, ?> options) throws IOException {
         resource.save(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void load(Map<?, ?> options) throws IOException {
         resource.load(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void save(OutputStream outputStream, Map<?, ?> options) throws IOException {
         resource.save(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void load(InputStream inputStream, Map<?, ?> options) throws IOException {
         resource.load(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isTrackingModification() {
         return resource.isTrackingModification();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setTrackingModification(boolean isTrackingModification) {
         resource.setTrackingModification(isTrackingModification);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isModified() {
         return resource.isModified();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setModified(boolean isModified) {
         resource.setModified(isModified);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isLoaded() {
         return resource.isLoaded();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void unload() {
         resource.unload();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void delete(Map<?, ?> options) throws IOException {
         resource.delete(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<Diagnostic> getErrors() {
         return resource.getErrors();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<Diagnostic> getWarnings() {
         return resource.getWarnings();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<Adapter> eAdapters() {
         return resource.eAdapters();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean eDeliver() {
         return resource.eDeliver();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void eSetDeliver(boolean deliver) {
         resource.eSetDeliver(deliver);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void eNotify(Notification notification) {
         resource.eNotify(notification);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void attached(EObject eObject) {
         resource.attached(eObject);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void detached(EObject eObject) {
         resource.detached(eObject);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public NotificationChain basicSetResourceSet(ResourceSet resourceSet, NotificationChain notifications) {
         return resource.basicSetResourceSet(resourceSet, notifications);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isLoading() {
         return resource.isLoading();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public final void close() {
         resource.close();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public InternalEObject.EStore store() {
         return resource.store();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isPersistent() {
         return resource.isPersistent();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isDistributed() {
         return resource.isDistributed();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstances(EClass eClass) {
         return resource.allInstances(eClass);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
         return resource.allInstances(eClass, strict);
     }

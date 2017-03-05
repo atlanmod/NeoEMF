@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.util.serializer;
+package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
@@ -29,7 +29,7 @@ public class FeatureKeySerializerTest extends AbstractTest {
     public void testSerialize() throws IOException {
         DataOutput2 out = new DataOutput2();
 
-        FeatureKeySerializer serializer = new FeatureKeySerializer();
+        AbstractMapDbBackend.FeatureKeySerializer serializer = new AbstractMapDbBackend.FeatureKeySerializer();
         FeatureKey key1 = FeatureKey.of(StringId.of("anObject"), "anAttribute");
 
         serializer.serialize(out, key1);

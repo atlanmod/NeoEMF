@@ -18,6 +18,8 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An abstract {@link PersistenceOptions} that holds generic options for all Blueprints based implementations.
  * <p>
@@ -29,6 +31,7 @@ import java.util.Map;
  * @see AbstractBlueprintsOptionsBuilder
  */
 @Experimental
+@ParametersAreNonnullByDefault
 public abstract class AbstractBlueprintsOptions extends AbstractPersistenceOptions {
 
     @SuppressWarnings("JavaDoc")

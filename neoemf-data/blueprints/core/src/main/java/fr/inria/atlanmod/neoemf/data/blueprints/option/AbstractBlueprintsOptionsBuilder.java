@@ -15,6 +15,8 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An abstract {@link PersistenceOptionsBuilder} that provides utility methods to create generic Blueprints options.
  * <p>
@@ -27,6 +29,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
  *
  * @see BlueprintsResourceOptions
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBlueprintsOptionsBuilder<B, O>, O extends AbstractBlueprintsOptions> extends AbstractPersistenceOptionsBuilder<B, O> {
 
     /**

@@ -15,10 +15,13 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * {@link PersistentResourceOptions} that hold Blueprints related resource-level features, such as the Blueprints
  * implementation used.
  */
+@ParametersAreNonnullByDefault
 public interface BlueprintsResourceOptions extends PersistentResourceOptions {
 
     /**

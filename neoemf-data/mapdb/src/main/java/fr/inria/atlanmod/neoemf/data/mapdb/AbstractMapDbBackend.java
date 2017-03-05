@@ -13,28 +13,33 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.FeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.logging.Log;
 
 import org.mapdb.DB;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a
@@ -258,5 +263,88 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      */
     protected <K> void delete(HTreeMap<K, ?> database, K key) {
         database.remove(key);
+    }
+
+    /**
+     * A {@link Serializer} implementation for {@link Id}s.
+     * <p>
+     * <b>Note:</b> For now, this serializer only works with {@link StringId}.
+     *
+     * @see Id
+     * @see StringId
+     */
+    @ParametersAreNonnullByDefault
+    protected static class IdSerializer implements Serializer<Id> {
+
+        /**
+         * An embedded {@link String} {@link Serializer} used to handle {@link StringId}s.
+         */
+        private final Serializer<String> serializer = STRING;
+
+        @Override
+        public void serialize(DataOutput2 out, Id id) throws IOException {
+            serializer.serialize(out, id.toString());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(serializer);
+        }
+
+        @Override
+        public boolean equals(@Nullable Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (isNull(o) || !(o instanceof IdSerializer)) {
+                return false;
+            }
+
+            IdSerializer that = (IdSerializer) o;
+
+            return Objects.equals(serializer, that.serializer);
+        }        @Nonnull
+        @Override
+        public Id deserialize(DataInput2 in, int i) throws IOException {
+            return StringId.of(serializer.deserialize(in, i));
+        }
+
+
+
+
+    }
+
+    /**
+     * A {@link Serializer} implementation for {@link FeatureKey}.
+     *
+     * @see FeatureKey
+     */
+    @ParametersAreNonnullByDefault
+    protected static class FeatureKeySerializer implements Serializer<FeatureKey> {
+
+        /**
+         * The {@link Serializer} that manages {@link String}s.
+         */
+        private final Serializer<String> stringSerializer = STRING;
+
+        /**
+         * The {@link Serializer} the manages {@link Id}s.
+         */
+        private final Serializer<Id> idSerializer = new IdSerializer();
+
+        @Override
+        public void serialize(DataOutput2 out, FeatureKey key) throws IOException {
+            idSerializer.serialize(out, key.id());
+            stringSerializer.serialize(out, key.name());
+        }
+
+        @Nonnull
+        @Override
+        public FeatureKey deserialize(DataInput2 in, int i) throws IOException {
+            return FeatureKey.of(
+                    idSerializer.deserialize(in, -1),
+                    stringSerializer.deserialize(in, -1)
+            );
+        }
     }
 }

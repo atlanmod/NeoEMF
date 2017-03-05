@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An internal class that sets Blueprints {@link Neo4jGraph} default configuration properties in the current NeoEMF
@@ -30,6 +31,7 @@ import javax.annotation.Nonnull;
  *
  * @see BlueprintsBackendFactory
  */
+@ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
 public final class BlueprintsNeo4jConfiguration implements BlueprintsConfiguration {
 

@@ -20,10 +20,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The factory that creates {@link PersistentEObject}s from {@link EClass}es.
  */
+@ParametersAreNonnullByDefault
 public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
     /**

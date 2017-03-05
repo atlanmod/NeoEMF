@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 
 import java.io.File;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
  * PersistenceConfiguration}.
@@ -26,6 +28,7 @@ import java.io.File;
  * @see BlueprintsBackendFactory
  * @see BlueprintsTgConfiguration
  */
+@ParametersAreNonnullByDefault
 public interface BlueprintsConfiguration {
 
     /**

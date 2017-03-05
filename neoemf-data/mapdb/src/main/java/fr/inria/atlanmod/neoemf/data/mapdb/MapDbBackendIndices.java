@@ -14,15 +14,18 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.serializer.MultiFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -103,6 +106,38 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements MultiValueWith
         }
         else {
             delete(multivaluedFeatures, key);
+        }
+    }
+
+    /**
+     * A {@link Serializer} that is able to serialize {@link ManyFeatureKey}.
+     *
+     * @see ManyFeatureKey
+     */
+    @ParametersAreNonnullByDefault
+    protected static class MultiFeatureKeySerializer implements Serializer<ManyFeatureKey> {
+
+        /**
+         * An embedded {@link Integer} {@link Serializer} used to handle collection indices.
+         */
+        private final Serializer<Integer> intSerializer = INTEGER;
+
+        /**
+         * An embedded {@link FeatureKey} {@link Serializer} used to handle single-valued feature key.
+         */
+        private final Serializer<FeatureKey> featureKeySerializer = new FeatureKeySerializer();
+
+        @Override
+        public void serialize(DataOutput2 out, ManyFeatureKey key) throws IOException {
+            featureKeySerializer.serialize(out, key);
+            intSerializer.serialize(out, key.position());
+        }
+
+        @Nonnull
+        @Override
+        public ManyFeatureKey deserialize(DataInput2 in, int i) throws IOException {
+            FeatureKey key = featureKeySerializer.deserialize(in, i);
+            return key.withPosition(intSerializer.deserialize(in, -1));
         }
     }
 }

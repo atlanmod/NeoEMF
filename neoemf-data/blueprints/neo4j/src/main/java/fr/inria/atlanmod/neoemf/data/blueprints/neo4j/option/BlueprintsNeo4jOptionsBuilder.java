@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptions
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints Neo4j specific options.
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
  *
  * @see BlueprintsNeo4jResourceOptions
  */
+@ParametersAreNonnullByDefault
 public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsNeo4jOptionsBuilder, BlueprintsNeo4jOptions> {
 
     /**

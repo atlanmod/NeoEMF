@@ -41,6 +41,7 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -55,6 +56,7 @@ import static java.util.Objects.nonNull;
  * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all
  * existing database implementations.
  */
+@ParametersAreNonnullByDefault
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
@@ -142,7 +144,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public void resource(Resource.Internal resource) {
+    public void resource(@Nullable Resource.Internal resource) {
         this.resource = resource;
 
         EStore previousStore = store;
@@ -502,6 +504,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
              * Constructs a new {@code EmptyDelegatedContentsList}.
              */
             public EmptyDelegatedContentsList() {
+                //noinspection ConstantConditions
                 super(null, null);
             }
 

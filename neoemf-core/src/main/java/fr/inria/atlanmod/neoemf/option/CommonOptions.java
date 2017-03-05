@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistenceOptions} that holds common options.
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
  * @see CommonOptionsBuilder
  */
 @Experimental
+@ParametersAreNonnullByDefault
 public class CommonOptions extends AbstractPersistenceOptions {
 
     /**

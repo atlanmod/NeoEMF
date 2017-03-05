@@ -21,9 +21,13 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link Logger} that asynchronously invokes logging operations, respecting the order of invocation.
  */
+@ParametersAreNonnullByDefault
 class AsyncLogger extends AbstractLogger {
 
     /**
@@ -54,7 +58,7 @@ class AsyncLogger extends AbstractLogger {
     }
 
     @Override
-    public void log(Level level, Throwable e, CharSequence message, Object... params) {
+    public void log(Level level, @Nullable Throwable e, @Nullable CharSequence message, @Nullable Object... params) {
         execute(() -> {
             try {
                 logger().log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse("").toString(), params), e);

@@ -13,11 +13,14 @@ package fr.inria.atlanmod.neoemf.data.hbase.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link AbstractPersistenceOptionsBuilder} subclass that creates HBase specific options.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@ParametersAreNonnullByDefault
 public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBaseOptionsBuilder, HBaseOptions> {
 
     /**

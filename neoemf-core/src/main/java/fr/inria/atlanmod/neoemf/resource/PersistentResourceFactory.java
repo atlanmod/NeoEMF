@@ -18,12 +18,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The factory that creates {@link PersistentResource}s.
  */
+@ParametersAreNonnullByDefault
 public class PersistentResourceFactory implements Resource.Factory {
 
     /**
@@ -49,7 +51,7 @@ public class PersistentResourceFactory implements Resource.Factory {
      */
     @Nullable
     @Override
-    public Resource createResource(@Nonnull URI uri) {
+    public Resource createResource(URI uri) {
         checkNotNull(uri);
 
         return PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()) ? new DefaultPersistentResource(uri) : null;

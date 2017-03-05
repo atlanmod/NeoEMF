@@ -11,9 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Represents common options related to resource-level features.
  */
+@ParametersAreNonnullByDefault
 public interface CommonResourceOptions extends PersistentResourceOptions {
 
     /**

@@ -15,9 +15,12 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Represents common options related to database access, managed by {@link PersistenceBackendFactory}.
  */
+@ParametersAreNonnullByDefault
 public enum CommonStoreOptions implements PersistentStoreOptions {
 
     /**

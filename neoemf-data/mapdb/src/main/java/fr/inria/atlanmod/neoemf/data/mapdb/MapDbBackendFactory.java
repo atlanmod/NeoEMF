@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -46,6 +47,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @see MapDbBackendIndices
  * @see MapDbOptionsBuilder
  */
+@ParametersAreNonnullByDefault
 public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**

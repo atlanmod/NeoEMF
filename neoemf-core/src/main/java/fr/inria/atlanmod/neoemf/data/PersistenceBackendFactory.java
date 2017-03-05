@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.URI;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A factory of {@link PersistenceBackend} and {@link PersistentStore}.
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
  *
  * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
  */
+@ParametersAreNonnullByDefault
 public interface PersistenceBackendFactory {
 
     /**

@@ -37,12 +37,14 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link PersistenceBackendFactory} that processes common store options and manages the configuration.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
     /**

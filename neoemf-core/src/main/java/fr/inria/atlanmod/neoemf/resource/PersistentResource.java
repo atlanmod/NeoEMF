@@ -18,12 +18,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Extends the {@link Resource} interface by providing efficient model-level operations that
  * are not accessible using the standard EMF API. For example, {@code allInstances} is a
  * utility method that computes efficiently all the instances of a given type by delegating the
  * operation to the underlying database, that can benefits of its internal optimizations and indices.
  */
+@ParametersAreNonnullByDefault
 public interface PersistentResource extends Resource, Resource.Internal, Closeable {
 
     @Override

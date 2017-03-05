@@ -29,12 +29,14 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * ???
  */
+@ParametersAreNonnullByDefault
 public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**

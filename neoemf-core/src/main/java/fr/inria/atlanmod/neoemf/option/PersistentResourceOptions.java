@@ -15,9 +15,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Represents options related to resource-level features.
  */
+@ParametersAreNonnullByDefault
 public interface PersistentResourceOptions {
 
     /**

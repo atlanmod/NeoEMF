@@ -14,10 +14,13 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * {@link PersistentResourceOptions} that hold Blueprints Neo4j related resource-level features, such as cache type,
  * usage of memory mapped files, or internal buffer sizes.
  */
+@ParametersAreNonnullByDefault
 public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOptions {
 
     /**
