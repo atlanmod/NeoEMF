@@ -66,6 +66,8 @@
             <artifactId>assertj-core</artifactId>
         </dependency>
 
+        <!-- Test: Hadoop mini-cluster -->
+
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-testing-util</artifactId>

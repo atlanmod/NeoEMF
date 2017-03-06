@@ -71,7 +71,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- HBase testing in mini-cluster -->
+        <!-- Test: Hadoop mini-cluster -->
 
         <dependency>
             <groupId>org.apache.hbase</groupId>
