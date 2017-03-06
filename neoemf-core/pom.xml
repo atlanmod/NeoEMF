@@ -112,11 +112,6 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.emf.compare</groupId>
-            <artifactId>org.eclipse.emf.compare</artifactId>
-        </dependency>
-
         <!-- Test -->
 
         <dependency>
@@ -132,6 +127,15 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+        </dependency>
+
+        <!-- Internal -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-core.p2</artifactId>
+            <version>${project.version}</version>
+            <classifier>repackaged</classifier>
         </dependency>
     </dependencies>
 
@@ -222,17 +226,6 @@
                 <artifactId>log4j-1.2-api</artifactId>
                 <version>${log4j.version}</version>
                 <scope>runtime</scope>
-            </dependency>
-
-            <!-- EMF Compare -->
-
-            <dependency> <!-- FIXME Temporary fix: unable to resolve EMFCompare maven dependency -->
-                <groupId>org.eclipse.emf.compare</groupId>
-                <artifactId>org.eclipse.emf.compare</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
-                <optional>true</optional>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/lib/org.eclipse.emf.compare-3.2.0-20170106.jar</systemPath>
             </dependency>
         </dependencies>
     </dependencyManagement>

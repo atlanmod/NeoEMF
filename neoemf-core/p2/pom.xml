@@ -1,33 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
         <version>1.0.2-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-    <artifactId>neoemf-eclipse</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <artifactId>neoemf-core.p2</artifactId>
 
-    <packaging>pom</packaging>
+    <packaging>eclipse-plugin</packaging>
 
-    <name>NeoEMF Eclipse</name>
-    <description>
-        Parent project for the Eclipse plugin generation.
-        Is responsible of ui and feature plugin generation and update site creation.
-    </description>
-
-    <modules>
-        <module>ui</module>
-        <module>features</module>
-        <module>update</module>
-    </modules>
+    <name>NeoEMF Core P2</name>
 
     <properties>
         <tycho-plugin.version>1.0.0</tycho-plugin.version>
@@ -73,16 +59,62 @@
                 <artifactId>tycho-maven-plugin</artifactId>
                 <extensions>true</extensions>
             </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>plugin-source</id>
+                        <goals>
+                            <goal>plugin-source</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/repackaged.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-compiler-plugin</artifactId>
-                    <version>${tycho-plugin.version}</version>
-                </plugin>
-
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-maven-plugin</artifactId>
@@ -91,28 +123,7 @@
 
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-packaging-plugin</artifactId>
-                    <version>${tycho-plugin.version}</version>
-                    <configuration>
-                        <strictBinIncludes>false</strictBinIncludes>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-p2-plugin</artifactId>
-                    <version>${tycho-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-p2-publisher-plugin</artifactId>
-                    <version>${tycho-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-p2-repository-plugin</artifactId>
+                    <artifactId>tycho-source-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
                 </plugin>
 
@@ -130,5 +141,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>

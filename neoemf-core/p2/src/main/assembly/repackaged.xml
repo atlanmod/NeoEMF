@@ -1,0 +1,33 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>repackaged</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/dependency/</directory>
+            <outputDirectory>/</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+            <excludes>
+                <exclude>**.profile</exclude>
+                <exclude>about_files/**</exclude>
+                <exclude>.options</exclude>
+                <exclude>plugin.xml</exclude>
+                <exclude>systembundle.properties</exclude>
+                <exclude>profile.list</exclude>
+                <exclude>.api_description</exclude>
+
+                <exclude>**/apache/**</exclude>
+                <exclude>**/eclipse/core/**</exclude>
+                <exclude>**/eclipse/equinox/**</exclude>
+                <exclude>**/eclipse/emf/common/**</exclude>
+                <exclude>**/eclipse/emf/ecore/**</exclude>
+                <exclude>**/google/**</exclude>
+                <exclude>**/osgi/**</exclude>
+
+                <exclude>**/javax/**</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

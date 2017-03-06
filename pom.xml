@@ -60,6 +60,7 @@
 
     <modules>
         <module>neoemf-core</module>
+        <module>neoemf-core/p2</module>
         <module>neoemf-data</module>
         <module>neoemf-io</module>
         <module>neoemf-tests</module>
