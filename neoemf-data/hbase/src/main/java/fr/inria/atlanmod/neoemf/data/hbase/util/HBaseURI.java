@@ -26,7 +26,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
  * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File}

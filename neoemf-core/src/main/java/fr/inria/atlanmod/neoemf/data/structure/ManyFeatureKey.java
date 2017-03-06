@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
  * A simple representation of a multi-valued {@link EStructuralFeature} of a {@link PersistentEObject}. The

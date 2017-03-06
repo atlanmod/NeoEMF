@@ -16,7 +16,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
  * A Caffeine {@link Cache} implementation which either returns an already-loaded value for a given key or atomically

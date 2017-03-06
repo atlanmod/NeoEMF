@@ -23,7 +23,7 @@ import java.util.TimerTask;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link StreamReader} that notifies {@link Handler} and provides overall behavior for the management of

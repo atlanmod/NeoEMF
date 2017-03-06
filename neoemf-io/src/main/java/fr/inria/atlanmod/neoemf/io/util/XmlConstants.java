@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.util;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**

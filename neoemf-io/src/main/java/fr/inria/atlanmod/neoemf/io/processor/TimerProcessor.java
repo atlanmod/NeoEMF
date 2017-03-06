@@ -11,9 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import com.google.common.base.Stopwatch;
-
 import fr.inria.atlanmod.neoemf.util.log.Log;
+
+import java.time.Duration;
+import java.time.Instant;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,9 +25,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class TimerProcessor extends AbstractProcessor<Processor> {
 
     /**
-     * The stopwatch.
+     * The start instant.
      */
-    private Stopwatch stopWatch;
+    private final Stopwatch stopwatch;
 
     /**
      * Constructs a new {@code TimerProcessor} with the given {@code processors}.
@@ -35,20 +36,49 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
      */
     public TimerProcessor(Processor... processors) {
         super(processors);
+        stopwatch = new Stopwatch();
     }
 
     @Override
     public void onInitialize() {
         Log.info("Document analysis in progress...");
-        stopWatch = Stopwatch.createStarted();
+        stopwatch.start();
 
         notifyInitialize();
     }
 
     @Override
     public void onComplete() {
-        Log.info("Document analysis done in {0}", stopWatch.stop());
+        Log.info("Document analysis done in {0}", stopwatch.stop());
 
         notifyComplete();
+    }
+
+    /**
+     * An object that measures elapsed time.
+     */
+    private static class Stopwatch {
+
+        /**
+         * The start instant.
+         */
+        private Instant start;
+
+        /**
+         * Starts the stopwatch.
+         */
+        public void start() {
+            start = Instant.now();
+        }
+
+        /**
+         * Stops the stopwatch.
+         *
+         * @return the elapsed time between the call of {@link #start()} and {@link Instant#now()}
+         */
+        public Duration stop() {
+            Instant end = Instant.now();
+            return Duration.between(start, end);
+        }
     }
 }

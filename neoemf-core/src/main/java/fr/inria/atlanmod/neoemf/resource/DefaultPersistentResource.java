@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
 /**

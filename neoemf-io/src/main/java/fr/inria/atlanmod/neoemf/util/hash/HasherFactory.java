@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.util.hash;
+package fr.inria.atlanmod.neoemf.util.hash;
 
 /**
  * The factory that creates instances of {@link Hasher}.

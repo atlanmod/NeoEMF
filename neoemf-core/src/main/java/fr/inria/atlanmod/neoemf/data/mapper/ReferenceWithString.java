@@ -20,7 +20,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
  * An object capable of mapping single-valued references represented as a set of key/value pair.

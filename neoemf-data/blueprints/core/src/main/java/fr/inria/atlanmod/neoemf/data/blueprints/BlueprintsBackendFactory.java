@@ -40,7 +40,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
  * A factory that creates instances of {@link BlueprintsBackend}.

@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
  * A {@link PersistentStore} wrapper that belongs to a single {@link EObject} owner. The ownership is checked at each

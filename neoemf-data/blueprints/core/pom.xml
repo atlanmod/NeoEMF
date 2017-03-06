@@ -24,13 +24,6 @@
             <artifactId>blueprints-core</artifactId>
         </dependency>
 
-        <!-- Common -->
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
         <!-- EMF -->
 
         <dependency>

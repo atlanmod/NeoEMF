@@ -9,8 +9,19 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-/**
- * Provides hash functions and related structures.
- */
+package fr.inria.atlanmod.neoemf.util.hash;
 
-package fr.inria.atlanmod.neoemf.io.util.hash;
+/**
+ * An object that calculates a {@link HashCode} from a value.
+ */
+public interface Hasher {
+
+    /**
+     * Calculates the {@link HashCode} of the given {@code value}.
+     *
+     * @param value the value to hash
+     *
+     * @return an hashcode
+     */
+    HashCode hash(String value);
+}

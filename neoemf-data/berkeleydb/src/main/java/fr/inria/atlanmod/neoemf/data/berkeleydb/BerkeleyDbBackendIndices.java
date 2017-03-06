@@ -30,8 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkInstanceOf;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -66,7 +66,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
 
     @Override
     public void copyTo(PersistenceBackend target) {
-        checkArgument(target instanceof BerkeleyDbBackendIndices);
+        checkInstanceOf(target, BerkeleyDbBackendIndices.class);
         BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
 
         super.copyTo(target);

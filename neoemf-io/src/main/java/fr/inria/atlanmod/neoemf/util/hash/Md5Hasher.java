@@ -9,11 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.util.hash;
+package fr.inria.atlanmod.neoemf.util.hash;
 
-import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+
+import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
 
@@ -45,7 +46,7 @@ public class Md5Hasher implements Hasher {
 
     @Override
     public HashCode hash(String value) {
-        String hash = hashFunction.newHasher().putString(value, Charsets.UTF_8).hash().toString();
+        String hash = hashFunction.newHasher().putString(value, Charset.forName("UTF-8")).hash().toString();
 
         return new StringHashCode(hash);
     }

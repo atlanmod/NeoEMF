@@ -39,7 +39,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
