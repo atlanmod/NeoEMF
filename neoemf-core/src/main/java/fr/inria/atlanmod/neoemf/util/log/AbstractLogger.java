@@ -15,10 +15,12 @@ import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * An abstract {@link Logger} that holds the real logger. In our case, Log4j is used.
  */
+@ThreadSafe
 @Immutable
 @ParametersAreNonnullByDefault
 abstract class AbstractLogger implements Logger {

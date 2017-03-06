@@ -18,6 +18,7 @@ import java.text.MessageFormat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNullableByDefault;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * The factory that creates instances of {@link Logger}s.
@@ -25,6 +26,7 @@ import javax.annotation.ParametersAreNullableByDefault;
  * It also provides static methods for logging without declaring a specific instance. In this case, the
  * {@link #rootLogger()} is used by default.
  */
+@ThreadSafe
 @ParametersAreNullableByDefault
 public final class Log {
 

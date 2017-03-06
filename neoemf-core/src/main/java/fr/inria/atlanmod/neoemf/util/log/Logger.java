@@ -16,10 +16,15 @@ import java.text.MessageFormat;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNullableByDefault;
 import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * An object that provides logging operations, filtered by {@link Level}s.
+ * <p>
+ * Implementations of this interface are expected to be thread-safe, and can be safely accessed by multiple concurrent
+ * threads.
  */
+@ThreadSafe
 @Immutable
 @ParametersAreNullableByDefault
 public interface Logger {

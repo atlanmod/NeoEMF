@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.util.hash;
 
 /**
- * A hashcode with a {@link String} representation.
+ * A {@link HashCode} with a {@link String} representation.
  */
 class StringHashCode implements HashCode {
 

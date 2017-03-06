@@ -10,8 +10,7 @@
  */
 
 /**
- * Provides EMF Compare specific implementation classes that allow model comparison involving PersistentEObjects.
- * (<b>Experimental</b>)
+ * Provides EMF Compare specific implementation classes that allow model comparison involving {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
  */
 
 package fr.inria.atlanmod.neoemf.util.emf.compare;
