@@ -110,7 +110,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
     }
 
     @Override
-    default <V> void removeAllValues(FeatureKey key) throws NullPointerException {
+    default <V> void removeAllValues(FeatureKey key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> safeValueFor(key.withPosition(i), null));
 
@@ -208,7 +208,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) throws NullPointerException {
+    default <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
         throw new IllegalStateException("This method should be overwritten if you use the default valueFor(ManyFeatureKey, V) and/or add(ManyFeatureKey, V) methods");
     }
 }

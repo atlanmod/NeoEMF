@@ -39,7 +39,7 @@ public interface PersistenceOptions {
      *
      * @throws InvalidOptionException if a conflict is detected
      */
-    Map<String, Object> toMap() throws InvalidOptionException;
+    Map<String, Object> toMap();
 
     /**
      * Fills this {@code PersistenceOptions} with all options contained in the given {@link Map}.

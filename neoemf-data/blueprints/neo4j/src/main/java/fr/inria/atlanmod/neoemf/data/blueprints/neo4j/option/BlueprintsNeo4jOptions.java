@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptions;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
@@ -63,7 +62,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
     }
 
     @Override
-    public Map<String, Object> toMap() throws InvalidOptionException {
+    public Map<String, Object> toMap() {
         return super.toMap();
     }
 

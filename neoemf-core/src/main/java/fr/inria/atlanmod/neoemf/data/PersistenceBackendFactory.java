@@ -51,7 +51,7 @@ public interface PersistenceBackendFactory {
      *                                   missing
      */
     @Nonnull
-    PersistenceBackend createTransientBackend() throws InvalidDataStoreException;
+    PersistenceBackend createTransientBackend();
 
     /**
      * Creates a {@link PersistenceBackend} in the given {@code directory}.
@@ -65,7 +65,7 @@ public interface PersistenceBackendFactory {
      *                                   missing
      */
     @Nonnull
-    PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException;
+    PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options);
 
     /**
      * Creates a {@link PersistentStore} between the given {@code resource} and the given in-memory {@code backend}.
@@ -96,5 +96,5 @@ public interface PersistenceBackendFactory {
      *                                   PersistenceBackend} for this factory
      */
     @Nonnull
-    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, IllegalArgumentException;
+    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options);
 }

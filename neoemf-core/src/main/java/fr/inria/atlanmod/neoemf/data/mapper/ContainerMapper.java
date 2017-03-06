@@ -38,7 +38,7 @@ public interface ContainerMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<ContainerDescriptor> containerOf(Id id) throws NullPointerException;
+    Optional<ContainerDescriptor> containerOf(Id id);
 
     /**
      * Stores the {@link ContainerDescriptor} for the specified {@code id}.
@@ -48,5 +48,5 @@ public interface ContainerMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void containerFor(Id id, ContainerDescriptor container) throws NullPointerException;
+    void containerFor(Id id, ContainerDescriptor container);
 }

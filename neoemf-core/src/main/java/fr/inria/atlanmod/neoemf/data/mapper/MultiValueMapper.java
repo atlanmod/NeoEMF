@@ -41,7 +41,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueOf(ManyFeatureKey key) throws NullPointerException;
+    <V> Optional<V> valueOf(ManyFeatureKey key);
 
     /**
      * Retrieves all values of the specified {@code key}.
@@ -53,7 +53,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Iterable<V> allValuesOf(FeatureKey key) throws NullPointerException;
+    <V> Iterable<V> allValuesOf(FeatureKey key);
 
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
@@ -72,7 +72,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @see #appendValue(FeatureKey, Object)
      */
     @Nonnull
-    <V> Optional<V> valueFor(ManyFeatureKey key, V value) throws NullPointerException, NoSuchElementException;
+    <V> Optional<V> valueFor(ManyFeatureKey key, V value);
 
     /**
      * Checks whether the specified {@code key} has at least one defined value.
@@ -84,7 +84,7 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> boolean hasAnyValue(FeatureKey key) throws NullPointerException {
+    default <V> boolean hasAnyValue(FeatureKey key) {
         return hasValue(key);
     }
 
@@ -98,7 +98,7 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> void addValue(ManyFeatureKey key, V value) throws NullPointerException;
+    <V> void addValue(ManyFeatureKey key, V value);
 
     /**
      * Adds the {@code value} to the specified {@code key} at the last position.
@@ -109,7 +109,7 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    default <V> void appendValue(FeatureKey key, V value) throws NullPointerException {
+    default <V> void appendValue(FeatureKey key, V value) {
         checkNotNull(key);
 
         addValue(key.withPosition(sizeOfValue(key).orElse(0)), value);
@@ -127,7 +127,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Optional<V> removeValue(ManyFeatureKey key) throws NullPointerException;
+    <V> Optional<V> removeValue(ManyFeatureKey key);
 
     /**
      * Removes all values of the specified {@code key}.
@@ -137,7 +137,7 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void removeAllValues(FeatureKey key) throws NullPointerException {
+    default <V> void removeAllValues(FeatureKey key) {
         unsetValue(key);
     }
 
@@ -152,7 +152,7 @@ public interface MultiValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> boolean containsValue(FeatureKey key, @Nullable V value) throws NullPointerException;
+    <V> boolean containsValue(FeatureKey key, @Nullable V value);
 
     /**
      * Retrieves the first position of the {@code value} of the specified {@code key}.
@@ -167,7 +167,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) throws NullPointerException;
+    <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value);
 
     /**
      * Retrieves the last position of the {@code value} of the specified {@code key}.
@@ -182,7 +182,7 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) throws NullPointerException;
+    <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value);
 
     /**
      * Returns the number of value of the specified {@code key}.
@@ -196,5 +196,5 @@ public interface MultiValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> OptionalInt sizeOfValue(FeatureKey key) throws NullPointerException;
+    <V> OptionalInt sizeOfValue(FeatureKey key);
 }

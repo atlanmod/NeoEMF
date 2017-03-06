@@ -60,7 +60,7 @@ public class CommonOptions extends AbstractPersistenceOptions {
     }
 
     @Override
-    public Map<String, Object> toMap() throws InvalidOptionException {
+    public Map<String, Object> toMap() {
         return super.toMap();
     }
 

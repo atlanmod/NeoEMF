@@ -37,7 +37,7 @@ public abstract class AbstractPersistenceOptions implements PersistenceOptions {
     }
 
     @Override
-    public Map<String, Object> toMap() throws InvalidOptionException {
+    public Map<String, Object> toMap() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

@@ -47,7 +47,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testNoOption() throws InvalidDataStoreException {
+    public void testNoOption() {
         Map<String, Object> options = CommonOptions.noOption();
 
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
@@ -60,7 +60,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testIsSetCachingOption() throws InvalidDataStoreException {
+    public void testIsSetCachingOption() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .asMap();
@@ -80,7 +80,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testLoggingOption() throws InvalidDataStoreException {
+    public void testLoggingOption() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .log()
                 .asMap();
@@ -100,7 +100,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testSizeCachingOption() throws InvalidDataStoreException {
+    public void testSizeCachingOption() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheSizes()
                 .asMap();
@@ -120,7 +120,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testFeatureCachingOption() throws InvalidDataStoreException {
+    public void testFeatureCachingOption() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheFeatures()
                 .asMap();
@@ -140,7 +140,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testLoadedObjectCounterLoggingOption() throws InvalidDataStoreException {
+    public void testLoadedObjectCounterLoggingOption() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .countLoadedObjects()
                 .asMap();
@@ -160,7 +160,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testAutocommitOption() throws InvalidDataStoreException {
+    public void testAutocommitOption() {
         final long expectedChuck = 100_000;
 
         Map<String, Object> options = CommonOptions.newBuilder()
@@ -185,7 +185,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testAutocommitWithChuckOption() throws InvalidDataStoreException {
+    public void testAutocommitWithChuckOption() {
         final long expectedChuck = 12_345;
 
         Map<String, Object> options = CommonOptions.newBuilder()
@@ -214,7 +214,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testIsSetCachingLoggingOptions() throws InvalidDataStoreException {
+    public void testIsSetCachingLoggingOptions() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .log()
@@ -242,7 +242,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testIsSetCachingSizeCachingOptions() throws InvalidDataStoreException {
+    public void testIsSetCachingSizeCachingOptions() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
@@ -270,7 +270,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testSizeCachingFeatureCachingOptions() throws InvalidDataStoreException {
+    public void testSizeCachingFeatureCachingOptions() {
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheSizes()
                 .cacheFeatures()
@@ -301,7 +301,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testAllOptions() throws InvalidDataStoreException {
+    public void testAllOptions() {
         long expectedChuck = 12_345;
 
         Map<String, Object> options = CommonOptions.newBuilder()

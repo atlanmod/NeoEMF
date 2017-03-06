@@ -36,7 +36,7 @@ public abstract class AbstractActivator implements BundleActivator {
      * @param bundleContext the execution context of the bundle being started
      */
     @Override
-    public final void start(BundleContext bundleContext) throws Exception {
+    public final void start(BundleContext bundleContext) {
         Log.info("NeoEMF-{0} plugin started", name());
         if (!PersistenceBackendFactoryRegistry.isRegistered(scheme())) {
             PersistenceBackendFactoryRegistry.register(scheme(), factory());
@@ -45,7 +45,7 @@ public abstract class AbstractActivator implements BundleActivator {
     }
 
     @Override
-    public final void stop(BundleContext bundleContext) throws Exception {
+    public final void stop(BundleContext bundleContext) {
         Log.info("NeoEMF-{0} plugin stopped", name());
     }
 

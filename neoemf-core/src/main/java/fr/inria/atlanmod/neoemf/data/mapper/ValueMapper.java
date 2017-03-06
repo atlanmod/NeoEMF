@@ -36,7 +36,7 @@ public interface ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueOf(FeatureKey key) throws NullPointerException;
+    <V> Optional<V> valueOf(FeatureKey key);
 
     /**
      * Defines the {@code value} of the specified {@code key}.
@@ -51,7 +51,7 @@ public interface ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueFor(FeatureKey key, V value) throws NullPointerException;
+    <V> Optional<V> valueFor(FeatureKey key, V value);
 
     /**
      * Unsets the value of the specified {@code key}.
@@ -61,7 +61,7 @@ public interface ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> void unsetValue(FeatureKey key) throws NullPointerException;
+    <V> void unsetValue(FeatureKey key);
 
     /**
      * Checks whether the specified {@code key} has a defined value.
@@ -73,5 +73,5 @@ public interface ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> boolean hasValue(FeatureKey key) throws NullPointerException;
+    <V> boolean hasValue(FeatureKey key);
 }

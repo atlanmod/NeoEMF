@@ -105,7 +105,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
 
     @Nonnull
     @Override
-    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) {
         PersistentStore store = new DirectWriteStore(backend, resource);
 
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
@@ -159,7 +159,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      *
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}
      */
-    protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
+    protected void processGlobalConfiguration(File directory) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
         PersistenceConfiguration configuration = PersistenceConfiguration.load(path.toFile());
 

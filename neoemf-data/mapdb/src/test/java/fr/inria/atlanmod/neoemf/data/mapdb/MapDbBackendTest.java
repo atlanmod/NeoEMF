@@ -23,6 +23,8 @@ import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapDbBackendTest extends AbstractTest {
@@ -58,7 +60,7 @@ public class MapDbBackendTest extends AbstractTest {
 
     @Test
     @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
-    public void testSerialize() throws Exception {
+    public void testSerialize() throws IOException {
         DataOutput2 out = new DataOutput2();
         FeatureKey key1 = FeatureKey.of(StringId.of("object1"), "name");
 

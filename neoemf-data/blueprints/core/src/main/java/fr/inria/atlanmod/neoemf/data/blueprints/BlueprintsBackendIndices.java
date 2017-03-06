@@ -284,7 +284,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Mult
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) throws NullPointerException {
+    public <V> void removeAllValues(FeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());

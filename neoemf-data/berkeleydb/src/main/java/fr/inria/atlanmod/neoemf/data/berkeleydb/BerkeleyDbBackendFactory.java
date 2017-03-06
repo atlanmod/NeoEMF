@@ -67,7 +67,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public PersistenceBackend createTransientBackend() throws InvalidDataStoreException {
+    public PersistenceBackend createTransientBackend() {
         BerkeleyDbBackend backend;
 
         try {
@@ -94,7 +94,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
         BerkeleyDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/BerkeleyDB only supports file URIs");

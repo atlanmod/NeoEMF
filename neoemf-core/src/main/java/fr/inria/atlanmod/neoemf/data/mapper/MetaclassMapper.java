@@ -38,7 +38,7 @@ public interface MetaclassMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<MetaclassDescriptor> metaclassOf(Id id) throws NullPointerException;
+    Optional<MetaclassDescriptor> metaclassOf(Id id);
 
     /**
      * Stores the {@link MetaclassDescriptor} for the specified {@code id}.
@@ -48,5 +48,5 @@ public interface MetaclassMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void metaclassFor(Id id, MetaclassDescriptor metaclass) throws NullPointerException;
+    void metaclassFor(Id id, MetaclassDescriptor metaclass);
 }

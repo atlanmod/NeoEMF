@@ -104,7 +104,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public BlueprintsBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
+    public BlueprintsBackend createPersistentBackend(URI uri, Map<?, ?> options) {
         BlueprintsBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
@@ -145,7 +145,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
      *                                   {@code options} are missing or invalid.
      */
-    private PersistenceConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {
+    private PersistenceConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(BLUEPRINTS_CONFIG_FILE);
         PersistenceConfiguration configuration = PersistenceConfiguration.load(path.toFile());
 

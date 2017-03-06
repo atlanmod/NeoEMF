@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
@@ -85,7 +84,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
         MapDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/MapDB only supports file URIs");

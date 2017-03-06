@@ -38,7 +38,7 @@ public interface ReferenceMapper extends ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceOf(FeatureKey key) throws NullPointerException {
+    default Optional<Id> referenceOf(FeatureKey key) {
         return valueOf(key);
     }
 
@@ -54,7 +54,7 @@ public interface ReferenceMapper extends ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceFor(FeatureKey key, Id reference) throws NullPointerException {
+    default Optional<Id> referenceFor(FeatureKey key, Id reference) {
         return valueFor(key, reference);
     }
 
@@ -65,7 +65,7 @@ public interface ReferenceMapper extends ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    default void unsetReference(FeatureKey key) throws NullPointerException {
+    default void unsetReference(FeatureKey key) {
         unsetValue(key);
     }
 
@@ -78,7 +78,7 @@ public interface ReferenceMapper extends ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    default boolean hasReference(FeatureKey key) throws NullPointerException {
+    default boolean hasReference(FeatureKey key) {
         return hasValue(key);
     }
 }

@@ -60,7 +60,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
 
     @Nonnull
     @Override
-    public final Map<String, Object> asMap() throws InvalidOptionException {
+    public final Map<String, Object> asMap() {
         validate();
 
         if (!storeOptions.isEmpty()) {
@@ -74,7 +74,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      *
      * @throws InvalidOptionException if a conflict is detected
      */
-    protected void validate() throws InvalidOptionException {
+    protected void validate() {
         // Do nothing, for now
     }
 

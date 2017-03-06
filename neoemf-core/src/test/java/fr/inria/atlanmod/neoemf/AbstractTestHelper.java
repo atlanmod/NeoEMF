@@ -184,7 +184,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     }
 
     @Override
-    public final PersistenceBackend createBackend() throws IOException {
+    public final PersistenceBackend createBackend() {
         return factory().createPersistentBackend(uri, defaultOptions());
     }
 }

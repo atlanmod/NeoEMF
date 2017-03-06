@@ -30,5 +30,5 @@ public interface PersistenceOptionsBuilder {
      *
      * @throws InvalidOptionException if a conflict is detected during building
      */
-    Map<String, Object> asMap() throws InvalidOptionException;
+    Map<String, Object> asMap();
 }
