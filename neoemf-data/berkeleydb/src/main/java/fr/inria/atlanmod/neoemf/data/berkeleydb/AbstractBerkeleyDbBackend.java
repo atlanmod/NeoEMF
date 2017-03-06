@@ -46,7 +46,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkInstanceOf;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
@@ -149,7 +149,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      */
     @Override
     public void copyTo(PersistenceBackend target) {
-        checkInstanceOf(target, AbstractBerkeleyDbBackend.class);
+        checkArgument(target instanceof AbstractBerkeleyDbBackend);
         AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
 
         copy(instances, to.instances);

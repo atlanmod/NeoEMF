@@ -50,7 +50,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkInstanceOf;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
@@ -234,7 +233,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      */
     @Override
     public void copyTo(PersistenceBackend target) {
-        checkInstanceOf(target, AbstractBlueprintsBackend.class);
+        checkArgument(target instanceof AbstractBlueprintsBackend);
         AbstractBlueprintsBackend to = (AbstractBlueprintsBackend) target;
 
         GraphHelper.copyGraph(graph, to.graph);

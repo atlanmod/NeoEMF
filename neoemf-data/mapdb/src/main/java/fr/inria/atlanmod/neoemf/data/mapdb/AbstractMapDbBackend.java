@@ -37,7 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkInstanceOf;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
@@ -134,7 +134,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void copyTo(PersistenceBackend target) {
-        checkInstanceOf(target, AbstractMapDbBackend.class);
+        checkArgument(target instanceof AbstractMapDbBackend);
         AbstractMapDbBackend to = (AbstractMapDbBackend) target;
 
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {

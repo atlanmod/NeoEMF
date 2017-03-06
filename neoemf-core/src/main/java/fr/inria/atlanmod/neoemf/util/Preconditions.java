@@ -233,18 +233,4 @@ public final class Preconditions {
         }
         return index;
     }
-
-    /**
-     * Ensures that {@code object} is an instance of {@code instance}.
-     *
-     * @param object   the object to check
-     * @param instance the expected instance of the object
-     *
-     * @throws ClassCastException if {@code expression} is false
-     */
-    public static void checkInstanceOf(Object object, Class<?> instance) {
-        if (!instance.isInstance(object)) {
-            throw new ClassCastException();
-        }
-    }
 }
