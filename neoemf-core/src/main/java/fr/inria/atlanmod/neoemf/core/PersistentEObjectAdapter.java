@@ -46,7 +46,9 @@ class PersistentEObjectAdapter {
      * has been garbage collected.
      */
     @Nonnull
-    private static final Cache<InternalEObject, PersistentEObject> CACHE = CacheBuilder.newBuilder().weakKeys().build();
+    private static final Cache<InternalEObject, PersistentEObject> CACHE = CacheBuilder.newBuilder()
+            .weakKeys()
+            .build();
 
     /**
      * This class should not be instantiated.

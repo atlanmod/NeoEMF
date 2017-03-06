@@ -14,10 +14,12 @@ package fr.inria.atlanmod.neoemf.util.log;
 import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * An abstract {@link Logger} that holds the real logger. In our case, Log4j is used.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 abstract class AbstractLogger implements Logger {
 

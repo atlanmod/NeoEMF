@@ -15,6 +15,7 @@ import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * An identifier used to identify {@link PersistentEObject}s in datastores.
@@ -22,6 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * This is the primary key in datastores, so, each {@code Id} must be unique at back-end level to ensure data
  * consistency. The unicity is not guaranteed before adding a new {@link PersistentEObject} to a database.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public interface Id extends Comparable<Id>, Serializable {
 

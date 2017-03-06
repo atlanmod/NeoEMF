@@ -11,26 +11,29 @@
 
 package fr.inria.atlanmod.neoemf.util.cache;
 
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link Cache} implementation which either returns an already-loaded value for a given key or atomically
+ * A Caffeine {@link Cache} implementation which either returns an already-loaded value for a given key or atomically
  * computes or retrieves it.
  *
  * @param <K> the type of keys maintained by this cache
  * @param <V> the type of mapped values
  */
 @ParametersAreNonnullByDefault
-class LoadingCache<K, V> extends ManualCache<K, V> {
+class CaffeineLoadingCache<K, V> extends CaffeineManualCache<K, V> {
 
     /**
-     * Constructs a new {@code LoadingCache}.
+     * Constructs a new {@code CaffeineLoadingCache}.
      *
      * @param cache the internal cache implementation
      */
-    protected LoadingCache(com.github.benmanes.caffeine.cache.LoadingCache<K, V> cache) {
+    protected CaffeineLoadingCache(com.github.benmanes.caffeine.cache.LoadingCache<K, V> cache) {
         super(cache);
     }
 
@@ -39,5 +42,20 @@ class LoadingCache<K, V> extends ManualCache<K, V> {
         checkNotNull(key);
 
         return ((com.github.benmanes.caffeine.cache.LoadingCache<K, V>) cache).get(key);
+    }
+
+    @Nonnull
+    @Override
+    public Map<K, V> getAll(Iterable<? extends K> keys) {
+        checkNotNull(keys);
+
+        return ((com.github.benmanes.caffeine.cache.LoadingCache<K, V>) cache).getAll(keys);
+    }
+
+    @Override
+    public void refresh(K key) {
+        checkNotNull(key);
+
+        ((com.github.benmanes.caffeine.cache.LoadingCache<K, V>) cache).refresh(key);
     }
 }

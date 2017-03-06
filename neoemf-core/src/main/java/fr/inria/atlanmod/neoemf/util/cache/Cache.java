@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.util.cache;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 import javax.annotation.Nonnegative;
@@ -41,8 +42,6 @@ public interface Cache<K, V> {
      *
      * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key
-     *
-     * @throws NullPointerException if the specified key is null
      */
     V get(K key);
 
@@ -60,11 +59,9 @@ public interface Cache<K, V> {
      * @return the current (existing or computed) value associated with the specified key, or null if the computed value
      * is null
      *
-     * @throws NullPointerException  if the specified key or mappingFunction is null
      * @throws IllegalStateException if the computation detectably attempts a recursive update to this cache that would
      *                               otherwise never complete
-     * @throws RuntimeException      or Error if the mappingFunction does so, in which case the mapping is left
-     *                               unestablished
+     * @throws RuntimeException      if the mappingFunction does so, in which case the mapping is left unestablished
      */
     V get(K key, Function<? super K, ? extends V> mappingFunction);
 
@@ -75,8 +72,6 @@ public interface Cache<K, V> {
      * @param keys the keys whose associated values are to be returned
      *
      * @return the unmodifiable mapping of keys to values for the specified keys found in this cache
-     *
-     * @throws NullPointerException if the specified collection is null or contains a null element
      */
     @Nonnull
     Map<K, V> getAll(Iterable<? extends K> keys);
@@ -87,8 +82,6 @@ public interface Cache<K, V> {
      *
      * @param key   the key with which the specified value is to be associated
      * @param value value to be associated with the specified key
-     *
-     * @throws NullPointerException if the specified key or value is null
      */
     void put(K key, V value);
 
@@ -99,8 +92,6 @@ public interface Cache<K, V> {
      * operation is in progress.
      *
      * @param map the mappings to be stored in this cache
-     *
-     * @throws NullPointerException if the specified map is null or the specified map contains null keys or values
      */
     void putAll(Map<? extends K, ? extends V> map);
 
@@ -108,8 +99,6 @@ public interface Cache<K, V> {
      * Discards any cached value for the {@code key}.
      *
      * @param key the key whose mapping is to be removed from the cache
-     *
-     * @throws NullPointerException if the specified key is null
      */
     void invalidate(K key);
 
@@ -117,8 +106,6 @@ public interface Cache<K, V> {
      * Discards any cached values for the {@code keys}.
      *
      * @param keys the keys whose associated values are to be removed
-     *
-     * @throws NullPointerException if the specified collection is null or contains a null element
      */
     void invalidateAll(Iterable<? extends K> keys);
 
@@ -133,5 +120,48 @@ public interface Cache<K, V> {
      * @return the estimated number of mappings
      */
     @Nonnegative
-    long estimatedSize();
+    long size();
+
+    /**
+     * Loads a new value for the {@code key}, asynchronously. While the new value is loading the previous value (if any)
+     * will continue to be returned by {@code get(key)} unless it is evicted. If the new value is loaded successfully it
+     * will replace the previous value in the cache; if an exception is thrown while refreshing the previous value will
+     * remain.
+     *
+     * @param key key with which a value may be associated
+     */
+    void refresh(K key);
+
+    /**
+     * Performs any pending maintenance operations needed by the cache.
+     */
+    void cleanUp();
+
+    /**
+     * Returns a view of the entries stored in this cache as a thread-safe map. Modifications made to the map directly
+     * affect the cache.
+     * <p>
+     * Iterators from the returned map are at least <i>weakly consistent</i>: they are safe for concurrent use, but if
+     * the cache is modified (including by eviction) after the iterator is created, it is undefined which of the changes
+     * (if any) will be reflected in that iterator.
+     *
+     * @return a thread-safe view of this cache supporting all of the optional {@link Map} operations
+     */
+    @Nonnull
+    ConcurrentMap<K, V> asMap();
+
+    /**
+     * Returns a current snapshot of this cache's cumulative statistics. All statistics are initialized to zero, and are
+     * monotonically increasing over the lifetime of the cache.
+     * <p>
+     * Due to the performance penalty of maintaining statistics, some implementations may not record the usage history
+     * immediately or at all.
+     * <p>
+     * <b>Warning:</b> this cache may not be recording statistical data. For example, a cache created using CacheBuilder
+     * only does so if the {@link CaffeineCacheBuilder#recordStats()} method was called. If statistics are not being
+     * recorded, a {@link CacheStats} instance with zero for all values is returned.
+     *
+     * @return the current snapshot of the statistics of this cache
+     */
+    CacheStats stats();
 }

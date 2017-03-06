@@ -23,10 +23,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A {@link Logger} that asynchronously invokes logging operations, respecting the order of invocation.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 class AsyncLogger extends AbstractLogger {
 

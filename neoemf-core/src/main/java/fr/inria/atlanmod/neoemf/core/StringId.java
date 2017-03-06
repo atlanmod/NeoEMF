@@ -18,12 +18,14 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An {@link Id} with a {@link String} representation.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public class StringId implements Id {
 

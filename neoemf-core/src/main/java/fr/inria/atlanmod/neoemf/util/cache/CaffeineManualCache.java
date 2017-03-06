@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.util.cache;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -20,13 +21,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The {@link Cache} implementation which does not automatically load values when keys are requested.
+ * A Caffeine {@link Cache} implementation which does not automatically load values when keys are requested.
  *
  * @param <K> the type of keys maintained by this cache
  * @param <V> the type of mapped values
  */
 @ParametersAreNonnullByDefault
-class ManualCache<K, V> implements Cache<K, V> {
+class CaffeineManualCache<K, V> implements Cache<K, V> {
 
     /**
      * The internal cache implementation.
@@ -34,11 +35,11 @@ class ManualCache<K, V> implements Cache<K, V> {
     protected final com.github.benmanes.caffeine.cache.Cache<K, V> cache;
 
     /**
-     * Constructs a new {@code ManualCache}.
+     * Constructs a new {@code CaffeineManualCache}.
      *
      * @param cache the internal cache implementation
      */
-    protected ManualCache(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
+    protected CaffeineManualCache(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
         this.cache = cache;
     }
 
@@ -100,7 +101,36 @@ class ManualCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public long estimatedSize() {
+    public long size() {
         return cache.estimatedSize();
+    }
+
+    @Override
+    public void refresh(K key) {
+        // Do nothing
+    }
+
+    @Override
+    public void cleanUp() {
+        cache.cleanUp();
+    }
+
+    @Nonnull
+    @Override
+    public ConcurrentMap<K, V> asMap() {
+        return cache.asMap();
+    }
+
+    @Override
+    public CacheStats stats() {
+        com.github.benmanes.caffeine.cache.stats.CacheStats stats = cache.stats();
+
+        return new CacheStats(
+                stats.hitCount(),
+                stats.missCount(),
+                stats.loadSuccessCount(),
+                stats.loadFailureCount(),
+                stats.totalLoadTime(),
+                stats.evictionCount());
     }
 }

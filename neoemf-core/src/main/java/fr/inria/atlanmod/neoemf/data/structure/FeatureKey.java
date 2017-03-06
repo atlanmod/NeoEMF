@@ -24,12 +24,14 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a {@link EStructuralFeature} of a {@link PersistentEObject}.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 

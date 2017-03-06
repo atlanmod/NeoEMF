@@ -11,18 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.util.cache;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A builder of {@link Cache} instances.
@@ -30,20 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <K> the base key type for {@link Cache}s created by this builder
  * @param <V> the base value type for {@link Cache} created by this builder
  */
-@ParametersAreNonnullByDefault
-public final class CacheBuilder<K, V> {
-
-    /**
-     * The internal cache builder implementation.
-     */
-    private final Caffeine<Object, Object> builder;
-
-    /**
-     * Constructs a new {@code CacheBuilder}.
-     */
-    private CacheBuilder() {
-        builder = Caffeine.newBuilder();
-    }
+public interface CacheBuilder<K, V> {
 
     /**
      * Creates a new {@code CacheBuilder} with default settings, including strong keys, strong values, and no automatic
@@ -51,10 +32,19 @@ public final class CacheBuilder<K, V> {
      *
      * @return a new builder
      */
-    @Nonnull
-    public static CacheBuilder<Object, Object> newBuilder() {
-        return new CacheBuilder<>();
+    static CacheBuilder<Object, Object> newBuilder() {
+        return new CaffeineCacheBuilder<>();
     }
+
+    /**
+     * Enables the accumulation of {@link CacheStats} during the operation of the cache. Without this {@link
+     * Cache#stats} will return zero for all statistics. Note that recording statistics requires bookkeeping to be
+     * performed with each operation, and thus imposes a performance penalty on cache operation.
+     *
+     * @return this builder (for chaining)
+     */
+    @Nonnull
+    CacheBuilder<K, V> recordStats();
 
     /**
      * Sets the minimum total size for the internal data structures. Providing a large enough estimate at construction
@@ -69,12 +59,7 @@ public final class CacheBuilder<K, V> {
      * @throws IllegalStateException    if an initial capacity was already set
      */
     @Nonnull
-    public CacheBuilder<K, V> initialCapacity(@Nonnegative int initialCapacity) {
-        checkArgument(initialCapacity >= 0);
-
-        builder.initialCapacity(initialCapacity);
-        return this;
-    }
+    CacheBuilder<K, V> initialCapacity(@Nonnegative int initialCapacity);
 
     /**
      * Specifies the maximum number of entries the cache may contain. Note that the cache <b>may evict an entry before
@@ -93,12 +78,7 @@ public final class CacheBuilder<K, V> {
      * @throws IllegalStateException    if a maximum size or weight was already set
      */
     @Nonnull
-    public CacheBuilder<K, V> maximumSize(@Nonnegative long maximumSize) {
-        checkArgument(maximumSize >= 0);
-
-        builder.maximumSize(maximumSize);
-        return this;
-    }
+    CacheBuilder<K, V> maximumSize(@Nonnegative long maximumSize);
 
     /**
      * Specifies that each key (not value) stored in the cache should be wrapped in a {@link WeakReference} (by default,
@@ -112,10 +92,7 @@ public final class CacheBuilder<K, V> {
      * @throws IllegalStateException if the key strength was already set or the writer was set
      */
     @Nonnull
-    public CacheBuilder<K, V> weakKeys() {
-        builder.weakKeys();
-        return this;
-    }
+    CacheBuilder<K, V> weakKeys();
 
     /**
      * Specifies that each value (not key) stored in the cache should be wrapped in a {@link SoftReference} (by default,
@@ -130,10 +107,7 @@ public final class CacheBuilder<K, V> {
      * @throws IllegalStateException if the value strength was already set
      */
     @Nonnull
-    public CacheBuilder<K, V> softValues() {
-        builder.softValues();
-        return this;
-    }
+    CacheBuilder<K, V> softValues();
 
     /**
      * Builds a {@link Cache} which does not automatically load values when keys are requested.
@@ -146,9 +120,7 @@ public final class CacheBuilder<K, V> {
      * @return a new cache
      */
     @Nonnull
-    public <K1 extends K, V1 extends V> Cache<K1, V1> build() {
-        return new ManualCache<>(builder.build());
-    }
+    <K1 extends K, V1 extends V> Cache<K1, V1> build();
 
     /**
      * Builds a {@link Cache}, which either returns an already-loaded value for a given key or atomically computes or
@@ -161,13 +133,7 @@ public final class CacheBuilder<K, V> {
      * @param <V1>            the value type of the loader
      *
      * @return a new cache
-     *
-     * @throws NullPointerException if the specified cache loader is null
      */
     @Nonnull
-    public <K1 extends K, V1 extends V> Cache<K1, V1> build(Function<? super K1, ? extends V1> mappingFunction) {
-        checkNotNull(mappingFunction);
-
-        return new LoadingCache<>(builder.build(mappingFunction::apply));
-    }
+    <K1 extends K, V1 extends V> Cache<K1, V1> build(Function<? super K1, ? extends V1> mappingFunction);
 }

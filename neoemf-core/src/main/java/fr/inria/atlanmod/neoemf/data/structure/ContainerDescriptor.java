@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -29,6 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A simple representation of a containment between a {@link PersistentEObject} and another. The referenced
  * {@link PersistentEObject} is identified by the name the reference used to retrieve it.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public class ContainerDescriptor implements Serializable {
 

@@ -15,10 +15,12 @@ import java.text.MessageFormat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNullableByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * An object that provides logging operations, filtered by {@link Level}s.
  */
+@Immutable
 @ParametersAreNullableByDefault
 public interface Logger {
 
