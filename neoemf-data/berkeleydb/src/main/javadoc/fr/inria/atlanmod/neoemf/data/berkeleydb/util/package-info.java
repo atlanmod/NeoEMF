@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility classes to create BerkeleyDB specific URIs.
  */
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;

@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides utility classes to ease URI management or containment list computation.
+ * Provides miscellaneous utility classes, such as logging and caching features, or URIs management.
  */
 
 package fr.inria.atlanmod.neoemf.util;

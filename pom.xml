@@ -512,7 +512,7 @@
                                     <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>            <!-- BerkeleyDB -->
                                     <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>                 <!-- MapDB -->
                                     <link>https://hbase.apache.org/1.2/apidocs/</link>                      <!-- HBase -->
-                                    <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>                 <!-- Hadoop -->
+                                    <link>https://hadoop.apache.org/docs/stable/api/</link>                 <!-- Hadoop -->
                                 </links>
                             </configuration>
                         </plugin>

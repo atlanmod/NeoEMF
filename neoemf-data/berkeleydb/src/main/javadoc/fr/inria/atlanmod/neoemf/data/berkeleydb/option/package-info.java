@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility classes to define specific behaviors of BerkeleyDB data persistence.
  */
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
