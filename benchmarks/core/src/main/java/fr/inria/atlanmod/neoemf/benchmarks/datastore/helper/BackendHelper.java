@@ -113,14 +113,53 @@ public final class BackendHelper {
         return outputFile;
     }
 
+    /**
+     * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
+     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in a temporary
+     * directory.
+     *
+     * @param sourceFile    the resource file
+     * @param targetBackend the backend where to store the resource
+     *
+     * @return the created file
+     *
+     * @throws Exception if a error occurs during the creation of the store
+     *
+     * @see Workspace#newTempDirectory()
+     */
     public static File createTempStore(File sourceFile, InternalBackend targetBackend) throws Exception {
         return createStore(sourceFile, targetBackend, Workspace.newTempDirectory());
     }
 
+    /**
+     * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
+     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in the workspace.
+     *
+     * @param sourceFile    the resource file
+     * @param targetBackend the backend where to store the resource
+     *
+     * @return the created file
+     *
+     * @throws Exception if a error occurs during the creation of the store
+     *
+     * @see Workspace#getStoreDirectory()
+     */
     public static File createStore(File sourceFile, InternalBackend targetBackend) throws Exception {
         return createStore(sourceFile, targetBackend, Workspace.getStoreDirectory());
     }
 
+    /**
+     * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
+     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in {@code targetDir}.
+     *
+     * @param sourceFile    the resource file
+     * @param targetBackend the backend where to store the resource
+     * @param targetDir     the location of the backend
+     *
+     * @return the created file
+     *
+     * @throws Exception if a error occurs during the creation of the store
+     */
     private static File createStore(File sourceFile, InternalBackend targetBackend, Path targetDir) throws Exception {
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
@@ -138,7 +177,6 @@ public final class BackendHelper {
         URI sourceUri = URI.createFileURI(sourceFile.getAbsolutePath());
 
         Resource sourceResource = resourceSet.createResource(sourceUri);
-        Resource targetResource = targetBackend.createResource(targetFile, resourceSet);
 
         targetBackend.initAndGetEPackage();
 
@@ -150,6 +188,8 @@ public final class BackendHelper {
         sourceResource.load(loadOpts);
 
         Log.debug("Migrating");
+
+        Resource targetResource = targetBackend.createResource(targetFile, resourceSet);
         targetBackend.save(targetResource);
 
         targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
@@ -164,6 +204,17 @@ public final class BackendHelper {
         return targetFile;
     }
 
+    /**
+     * Creates a new {@link Resource} from the given {@code sourceFilename}, and adapts it for the given
+     * {@code targetBackend}. The resource file can be placed in the resource ZIP, or in the file system.
+     *
+     * @param sourceFilename the name of the resource file
+     * @param targetBackend  the backend where to store the resource
+     *
+     * @return the created file
+     *
+     * @throws Exception if a error occurs during the creation of the resource
+     */
     public static File createResource(String sourceFilename, InternalBackend targetBackend) throws Exception {
         if (getRegisteredResources().containsKey(sourceFilename.toLowerCase())) {
             sourceFilename = getRegisteredResources().get(sourceFilename.toLowerCase());
@@ -178,11 +229,22 @@ public final class BackendHelper {
             // Get the file from the file system
             sourceFile = new File(sourceFilename);
         }
+
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
         return createResource(sourceFile, targetBackend);
     }
 
+    /**
+     * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code targetBackend}.
+     *
+     * @param sourceFile    the resource file
+     * @param targetBackend the backend where to store the resource
+     *
+     * @return the created file
+     *
+     * @throws Exception if a error occurs during the creation of the resource
+     */
     private static File createResource(File sourceFile, InternalBackend targetBackend) throws Exception {
         String targetFileName = getNameWithoutExtension(sourceFile.getName()) + "." + targetBackend.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
@@ -199,17 +261,20 @@ public final class BackendHelper {
         Log.debug("Loading '{0}'", sourceURI);
         Resource sourceResource = resourceSet.getResource(sourceURI, true);
 
+        Log.debug("Migrating");
+
+        Map<String, Object> saveOpts = new HashMap<>();
+        saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
+
         URI targetURI = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetURI);
 
-        Log.debug("Migrating");
         targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
 
         sourceResource.unload();
 
         Log.debug("Saving to '{0}'", targetResource.getURI());
-        Map<String, Object> saveOpts = new HashMap<>();
-        saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
+
         targetResource.save(saveOpts);
 
         targetResource.unload();
@@ -221,6 +286,11 @@ public final class BackendHelper {
      * EMF migration
      */
 
+    /**
+     * Creates a new pre-configured {@link ResourceSet} able to handle registered extensions.
+     *
+     * @return a new {@link ResourceSet}
+     */
     private static ResourceSet loadResourceSet() {
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
@@ -230,56 +300,84 @@ public final class BackendHelper {
         return resourceSet;
     }
 
-    private static EObject migrate(EObject eObject, EPackage targetEPackage) {
-        Map<EObject, EObject> correspondencesMap = new HashMap<>();
-        EObject returnEObject = getCorrespondingEObject(correspondencesMap, eObject, targetEPackage);
-        copy(correspondencesMap, eObject, returnEObject);
+    /**
+     * Adapts the given {@code object} in a particular implementation, specified by the {@code targetPackage}.
+     *
+     * @param object        the root {@link EObject} to adapt
+     * @param targetPackage the {@link EPackage}
+     *
+     * @return the adapted {@code object}
+     */
+    private static EObject migrate(EObject object, EPackage targetPackage) {
+        Map<EObject, EObject> correspondences = new HashMap<>();
+        EObject adaptedObject = getCorrespondingEObject(correspondences, object, targetPackage);
+        copy(correspondences, object, adaptedObject);
 
-        Iterable<EObject> allContents = () -> EcoreUtil.getAllContents(eObject, true);
+        Iterable<EObject> allContents = () -> EcoreUtil.getAllContents(object, true);
 
         for (EObject sourceEObject : allContents) {
-            EObject targetEObject = getCorrespondingEObject(correspondencesMap, sourceEObject, targetEPackage);
-            copy(correspondencesMap, sourceEObject, targetEObject);
+            EObject targetEObject = getCorrespondingEObject(correspondences, sourceEObject, targetPackage);
+            copy(correspondences, sourceEObject, targetEObject);
         }
 
-        return returnEObject;
+        return adaptedObject;
     }
 
-    private static void copy(Map<EObject, EObject> correspondencesMap, EObject sourceEObject, EObject targetEObject) {
-        for (EStructuralFeature sourceFeature : sourceEObject.eClass().getEAllStructuralFeatures()) {
-            if (sourceEObject.eIsSet(sourceFeature)) {
-                EStructuralFeature targetFeature = targetEObject.eClass().getEStructuralFeature(sourceFeature.getName());
+    /**
+     * Copies the {@code sourceObject} to the {@code targetObject}, by using the {@code correspondences} {@link Map}.
+     *
+     * @param correspondences the {@link Map} holding the link between the original {@link EObject} and its adaptation
+     * @param sourceObject    the source {@link EObject}
+     * @param targetObject    the corresponding {@link EObject}
+     *
+     * @see #getCorrespondingEObject(Map, EObject, EPackage)
+     */
+    private static void copy(Map<EObject, EObject> correspondences, EObject sourceObject, EObject targetObject) {
+        for (EStructuralFeature sourceFeature : sourceObject.eClass().getEAllStructuralFeatures()) {
+            if (sourceObject.eIsSet(sourceFeature)) {
+                EStructuralFeature targetFeature = targetObject.eClass().getEStructuralFeature(sourceFeature.getName());
                 if (sourceFeature instanceof EAttribute) {
-                    targetEObject.eSet(targetFeature, sourceEObject.eGet(sourceFeature));
+                    targetObject.eSet(targetFeature, sourceObject.eGet(sourceFeature));
                 }
                 else { // EReference
                     if (!sourceFeature.isMany()) {
-                        targetEObject.eSet(targetFeature, getCorrespondingEObject(correspondencesMap, (EObject) sourceEObject.eGet(targetFeature), targetEObject.eClass().getEPackage()));
+                        targetObject.eSet(targetFeature, getCorrespondingEObject(correspondences, (EObject) sourceObject.eGet(targetFeature), targetObject.eClass().getEPackage()));
                     }
                     else {
                         List<EObject> targetList = new BasicEList<>();
 
                         @SuppressWarnings({"unchecked"})
-                        Iterable<EObject> sourceList = (Iterable<EObject>) sourceEObject.eGet(sourceFeature);
+                        Iterable<EObject> sourceList = (Iterable<EObject>) sourceObject.eGet(sourceFeature);
                         for (EObject aSourceList : sourceList) {
-                            targetList.add(getCorrespondingEObject(correspondencesMap, aSourceList, targetEObject.eClass().getEPackage()));
+                            targetList.add(getCorrespondingEObject(correspondences, aSourceList, targetObject.eClass().getEPackage()));
                         }
-                        targetEObject.eSet(targetFeature, targetList);
+                        targetObject.eSet(targetFeature, targetList);
                     }
                 }
             }
         }
     }
 
-    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondencesMap, EObject eObject, EPackage ePackage) {
-        EObject targetEObject = correspondencesMap.get(eObject);
-        if (isNull(targetEObject)) {
-            EClass eClass = eObject.eClass();
+    /**
+     * Adapts the given {@code object} in a particular implementation, specified by the {@code ePackage}, and stores the
+     * correspondence in the given {@code correspondences} {@link Map}.
+     *
+     * @param correspondences the {@link Map} where to store the link between the original {@link EObject} and its
+     *                        adaptation
+     * @param object          the {@link EObject} to adapt
+     * @param ePackage        the {@link EPackage} used to retrieve the corresponding {@link EObject}
+     *
+     * @return the corresponding {@link EObject}
+     */
+    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondences, EObject object, EPackage ePackage) {
+        EObject correspondingObject = correspondences.get(object);
+        if (isNull(correspondingObject)) {
+            EClass eClass = object.eClass();
             EClass targetClass = (EClass) ePackage.getEClassifier(eClass.getName());
-            targetEObject = EcoreUtil.create(targetClass);
-            correspondencesMap.put(eObject, targetEObject);
+            correspondingObject = EcoreUtil.create(targetClass);
+            correspondences.put(object, correspondingObject);
         }
-        return targetEObject;
+        return correspondingObject;
     }
 
     /*
