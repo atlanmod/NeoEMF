@@ -71,7 +71,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
      * Constructs a new {@code AbstractPersistentStore}.
      */
     public AbstractPersistentStore() {
-        Log.info("{0} created", getClass().getSimpleName());
+        Log.debug("{0} created", getClass().getSimpleName());
     }
 
     /**

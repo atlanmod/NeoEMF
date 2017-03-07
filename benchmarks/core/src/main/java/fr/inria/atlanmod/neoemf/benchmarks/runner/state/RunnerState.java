@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.BerkeleyDbBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.MapDbBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Neo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.TinkerBackend;
@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+
 /**
  * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Backend} and the preloaded
  * resource file. The datastore is not loaded.
@@ -41,9 +43,19 @@ public class RunnerState {
 
     private static final Map<String, Class<? extends Backend>> registeredBackends = init();
 
+    /**
+     * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
+     * <p>
+     * By default, all registered resources are used.
+     */
     @Param({"set1", "set2", "set3", "set4", "set5"})
     protected String r;
 
+    /**
+     * The name of the current {@link Backend}.
+     * <p>
+     * By default, all registered {@link Backend}s are used.
+     */
     @Param({
             XmiBackend.NAME,
             CdoBackend.NAME,
@@ -54,8 +66,14 @@ public class RunnerState {
     })
     protected String b;
 
+    /**
+     * The current {@link Backend}.
+     */
     private Backend backend;
 
+    /**
+     * The current {@link org.eclipse.emf.ecore.resource.Resource} file.
+     */
     private File resourceFile;
 
     /**
@@ -63,6 +81,7 @@ public class RunnerState {
      */
     public Backend getBackend() throws Exception {
         if (Objects.isNull(backend)) {
+            checkArgument(registeredBackends.containsKey(b), "No backend named '%s' is registered");
             backend = registeredBackends.get(b).newInstance();
         }
         return backend;
@@ -82,7 +101,7 @@ public class RunnerState {
      */
     @Setup(Level.Trial)
     public void initResource() throws Exception {
-        Log.debug("Initializing the resource");
+        Log.info("Initializing the resource");
         resourceFile = getBackend().getOrCreateResource(r);
     }
 

@@ -29,8 +29,14 @@ import java.util.Objects;
  */
 public class ReadOnlyRunnerState extends RunnerState {
 
+    /**
+     * The current {@link Resource}.
+     */
     protected Resource resource;
 
+    /**
+     * The location of the current {@link Backend}.
+     */
     protected File storeFile;
 
     /**
@@ -43,6 +49,11 @@ public class ReadOnlyRunnerState extends RunnerState {
         return resource;
     }
 
+    /**
+     * Returns the location of the current {@link Backend}.
+     *
+     * @return the location of the current {@link Backend}.
+     */
     protected File getStoreLocation() {
         return storeFile;
     }
@@ -54,10 +65,10 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @Setup(Level.Iteration)
     public void loadResource() throws Exception {
-        Log.debug("Initializing the datastore");
+        Log.info("Initializing the datastore");
         storeFile = getBackend().getOrCreateStore(getResourceFile());
 
-        Log.debug("Loading the resource");
+        Log.info("Loading the resource");
         resource = getBackend().load(getStoreLocation());
     }
 
@@ -68,7 +79,7 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @TearDown(Level.Iteration)
     public void unloadResource() throws Exception {
-        Log.debug("Unloading the resource");
+        Log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {
             getBackend().unload(resource);
             resource = null;

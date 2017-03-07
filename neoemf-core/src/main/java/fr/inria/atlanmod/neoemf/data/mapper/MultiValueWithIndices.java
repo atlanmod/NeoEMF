@@ -29,6 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
@@ -73,7 +74,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
             for (int i = size; i > key.position(); i--) {
                 Optional<V> movingValue = valueOf(key.withPosition(i - 1));
                 if (movingValue.isPresent()) {
-                    valueFor(key.withPosition(i), movingValue.get());
+                    safeValueFor(key.withPosition(i), movingValue.get());
                 }
             }
         }
@@ -98,7 +99,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
         for (int i = key.position(); i < size - 1; i++) {
             Optional<V> movingValue = valueOf(key.withPosition(i + 1));
             if (movingValue.isPresent()) {
-                valueFor(key.withPosition(i), movingValue.get());
+                safeValueFor(key.withPosition(i), movingValue.get());
             }
         }
 
@@ -119,11 +120,7 @@ public interface MultiValueWithIndices extends MultiValueMapper {
 
     @Override
     default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return false;
-        }
-
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
+        return nonNull(value) && IntStream.range(0, sizeOfValue(key).orElse(0))
                 .anyMatch(i -> valueOf(key.withPosition(i))
                         .map(v -> Objects.equals(v, value))
                         .orElse(false));
@@ -198,9 +195,11 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      * Defines the {@code value} of the specified {@code key} at a defined position.
      * <p>
      * This method acts as {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued feature
-     * already exists, in order to replace it.
+     * already exists, in order to replace it. If {@code value == null}, the key is removed.
      * <p>
-     * If {@code value == null}, the key must be removed.
+     * <b>Note:</b> This method is used by the default {@link #valueFor(FeatureKey, Object)},
+     * {@link #addValue(ManyFeatureKey, Object)} and {@link #removeValue(ManyFeatureKey)} methods. If you intend to use
+     * them, you have to override it.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to set
@@ -209,6 +208,6 @@ public interface MultiValueWithIndices extends MultiValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
-        throw new IllegalStateException("This method should be overwritten if you use the default valueFor(ManyFeatureKey, V) and/or add(ManyFeatureKey, V) methods");
+        throw new IllegalStateException("This method should be overwritten.");
     }
 }

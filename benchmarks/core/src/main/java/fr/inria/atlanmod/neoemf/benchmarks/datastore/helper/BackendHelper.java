@@ -101,7 +101,7 @@ public final class BackendHelper {
     public static File copyStore(File sourceFile) throws IOException {
         File outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName()).toFile();
 
-        Log.debug("Copy {0} to {1}", sourceFile, outputFile);
+        Log.info("Copy {0} to {1}", sourceFile, outputFile);
 
         if (sourceFile.isDirectory()) {
             FileUtils.copyDirectory(sourceFile, outputFile, true);
@@ -168,7 +168,7 @@ public final class BackendHelper {
         File targetFile = targetDir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            Log.debug("Already existing store {0}", targetFile);
+            Log.info("Already existing store {0}", targetFile);
             return targetFile;
         }
 
@@ -180,14 +180,14 @@ public final class BackendHelper {
 
         targetBackend.initAndGetEPackage();
 
-        Log.debug("Loading '{0}'", sourceUri);
+        Log.info("Loading '{0}'", sourceUri);
         Map<String, Object> loadOpts = new HashMap<>();
         if (Objects.equals(ZXMI, sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
         sourceResource.load(loadOpts);
 
-        Log.debug("Migrating");
+        Log.info("Migrating");
 
         Resource targetResource = targetBackend.createResource(targetFile, resourceSet);
         targetBackend.save(targetResource);
@@ -196,7 +196,7 @@ public final class BackendHelper {
 
         sourceResource.unload();
 
-        Log.debug("Saving to '{0}'", targetResource.getURI());
+        Log.info("Saving to '{0}'", targetResource.getURI());
         targetBackend.save(targetResource);
 
         targetBackend.unload(targetResource);
@@ -250,7 +250,7 @@ public final class BackendHelper {
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            Log.debug("Already existing resource {0}", targetFile);
+            Log.info("Already existing resource {0}", targetFile);
             return targetFile;
         }
 
@@ -258,10 +258,10 @@ public final class BackendHelper {
 
         URI sourceURI = URI.createFileURI(sourceFile.getAbsolutePath());
 
-        Log.debug("Loading '{0}'", sourceURI);
+        Log.info("Loading '{0}'", sourceURI);
         Resource sourceResource = resourceSet.getResource(sourceURI, true);
 
-        Log.debug("Migrating");
+        Log.info("Migrating");
 
         Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
@@ -273,7 +273,7 @@ public final class BackendHelper {
 
         sourceResource.unload();
 
-        Log.debug("Saving to '{0}'", targetResource.getURI());
+        Log.info("Saving to '{0}'", targetResource.getURI());
 
         targetResource.save(saveOpts);
 
@@ -468,7 +468,7 @@ public final class BackendHelper {
     private static File extractEntryFromZip(ZipInputStream input, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (outputFile.exists()) {
-            Log.debug("Already extracted resource {0}", outputFile);
+            Log.info("Already extracted resource {0}", outputFile);
             return outputFile;
         }
 

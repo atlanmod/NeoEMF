@@ -56,7 +56,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
     @Override
     public EPackage initAndGetEPackage() throws Exception {
         EPackage ePackage = (EPackage) packageClass.getMethod("init").invoke(null);
-        Log.debug("Loading package with uri {0}", ePackage.getNsURI());
+        Log.info("Loading package with uri {0}", ePackage.getNsURI());
         return ePackage;
     }
 

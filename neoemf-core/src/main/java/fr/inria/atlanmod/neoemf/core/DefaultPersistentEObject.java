@@ -175,14 +175,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
             if (source.isSet(this, feature)) {
                 if (!feature.isMany()) {
-                    Optional.ofNullable(adaptValue(source, feature, EStore.NO_INDEX))
+                    getValueFrom(source, feature, EStore.NO_INDEX)
                             .ifPresent(v -> target.set(this, feature, EStore.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, feature);
 
                     IntStream.range(0, source.size(this, feature)).forEach(i ->
-                            Optional.ofNullable(adaptValue(source, feature, i))
+                            getValueFrom(source, feature, i)
                                     .ifPresent(v -> target.add(this, feature, i, v)));
                 }
             }
@@ -190,7 +190,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Retrieves the value from the {@code store}.
+     * Retrieves the value from the {@code store}, and attach the value to {@link #resource()} if necessary.
      *
      * @param store   the store to look for the value
      * @param feature the feature
@@ -200,13 +200,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @see EStore#get(InternalEObject, EStructuralFeature, int)
      */
-    @Nullable
-    private Object adaptValue(EStore store, EStructuralFeature feature, int index) {
-        Object value = store.get(this, feature, index);
+    @Nonnull
+    private Optional<Object> getValueFrom(EStore store, EStructuralFeature feature, int index) {
+        Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
 
-        // FIXME Same code as in `DirectWriteStore#object()`
-        if (nonNull(value) && feature instanceof EReference && ((EReference) feature).isContainment()) {
-            PersistentEObject object = PersistentEObject.from(value);
+        if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
+            PersistentEObject object = PersistentEObject.from(value.get());
             if (object.resource() != resource()) {
                 object.resource(resource());
             }

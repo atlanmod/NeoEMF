@@ -33,14 +33,14 @@ public interface Query<V> extends Callable<V> {
     default V callWithResult() throws Exception {
         V result;
 
-        Log.debug("Start query");
+        Log.info("Start query");
 
         result = call();
 
-        Log.debug("End query");
+        Log.info("End query");
 
         if (nonNull(result) && !Void.class.isInstance(result)) {
-            Log.debug("Query returns: {0}", result);
+            Log.info("Query returns: {0}", result);
         }
 
         return result;
@@ -55,7 +55,7 @@ public interface Query<V> extends Callable<V> {
 
         Instant end = Instant.now();
 
-        Log.debug("Time spent: {0}", Duration.between(begin, end));
+        Log.info("Time spent: {0}", Duration.between(begin, end));
 
         return result;
     }
@@ -67,14 +67,14 @@ public interface Query<V> extends Callable<V> {
 
         runtime.gc();
         long initialUsedMemory = runtime.totalMemory() - runtime.freeMemory();
-        Log.debug("Used memory before call: {0}", FileUtils.byteCountToDisplaySize(initialUsedMemory));
+        Log.info("Used memory before call: {0}", FileUtils.byteCountToDisplaySize(initialUsedMemory));
 
         result = callWithTime();
 
         runtime.gc();
         long finalUsedMemory = runtime.totalMemory() - runtime.freeMemory();
-        Log.debug("Used memory after call: {0}", FileUtils.byteCountToDisplaySize(finalUsedMemory));
-        Log.debug("Memory use increase: {0}", FileUtils.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+        Log.info("Used memory after call: {0}", FileUtils.byteCountToDisplaySize(finalUsedMemory));
+        Log.info("Memory use increase: {0}", FileUtils.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
 
         return result;
     }
