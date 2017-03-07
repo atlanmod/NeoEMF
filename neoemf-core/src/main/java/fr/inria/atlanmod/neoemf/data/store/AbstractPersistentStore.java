@@ -47,6 +47,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkElementIndex;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * The abstract implementation of a {@link PersistentStore}.
@@ -606,7 +607,7 @@ public abstract class AbstractPersistentStore implements PersistentStore {
         checkNotNull(id);
 
         PersistentEObject object = persistentObjectsCache.get(id);
-        if (object.resource() != resource()) {
+        if (nonNull(resource()) && object.resource() != resource()) {
             object.resource(resource());
         }
         return object;
