@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.tg;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
+import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 
@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An internal class that defines Blueprints {@link TinkerGraph} default configuration properties in the current NeoEMF
- * {@link PersistenceConfiguration}.
+ * {@link Configuration}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link BlueprintsBackendFactory} if {@code TinkerGraph}
  * implementation is used to store the underlying database.
@@ -62,7 +62,7 @@ public final class BlueprintsTgConfiguration implements BlueprintsConfiguration 
     }
 
     @Override
-    public void putDefaultConfiguration(PersistenceConfiguration configuration, File directory) {
+    public void putDefaultConfiguration(Configuration configuration, File directory) {
         if (!configuration.containsKey(DIRECTORY)) {
             configuration.setProperty(DIRECTORY, directory.getAbsolutePath());
         }

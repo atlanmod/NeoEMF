@@ -161,7 +161,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      */
     protected void processGlobalConfiguration(File directory) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
-        PersistenceConfiguration configuration = PersistenceConfiguration.load(path.toFile());
+        Configuration configuration = Configuration.load(path.toFile());
 
         if (!configuration.containsKey(BACKEND_PROPERTY)) {
             configuration.setProperty(BACKEND_PROPERTY, getName());

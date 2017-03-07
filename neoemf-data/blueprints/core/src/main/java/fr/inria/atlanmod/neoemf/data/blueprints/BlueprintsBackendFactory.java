@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
+import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
@@ -110,7 +110,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
         checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
         File file = new File(uri.toFileString());
 
-        PersistenceConfiguration configuration = getOrCreateBlueprintsConfiguration(file, options);
+        Configuration configuration = getOrCreateBlueprintsConfiguration(file, options);
 
         try {
             Graph graph = GraphFactory.open(configuration.asMap());
@@ -145,9 +145,9 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
      *                                   {@code options} are missing or invalid.
      */
-    private PersistenceConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) {
+    private Configuration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(BLUEPRINTS_CONFIG_FILE);
-        PersistenceConfiguration configuration = PersistenceConfiguration.load(path.toFile());
+        Configuration configuration = Configuration.load(path.toFile());
 
         // Initialize value if the configuration file has just been created
         if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {

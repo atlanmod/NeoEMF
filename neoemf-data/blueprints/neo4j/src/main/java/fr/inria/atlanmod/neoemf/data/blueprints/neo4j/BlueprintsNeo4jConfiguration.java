@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
 import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
+import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 
@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An internal class that sets Blueprints {@link Neo4jGraph} default configuration properties in the current NeoEMF
- * {@link PersistenceConfiguration}.
+ * {@link Configuration}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used to
  * store the underlying database.
@@ -57,7 +57,7 @@ public final class BlueprintsNeo4jConfiguration implements BlueprintsConfigurati
     }
 
     @Override
-    public void putDefaultConfiguration(PersistenceConfiguration configuration, File directory) {
+    public void putDefaultConfiguration(Configuration configuration, File directory) {
         if (!configuration.containsKey(DIRECTORY)) {
             configuration.setProperty(DIRECTORY, directory.getAbsolutePath());
         }

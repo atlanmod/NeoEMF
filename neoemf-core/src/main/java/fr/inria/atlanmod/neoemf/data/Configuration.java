@@ -27,10 +27,10 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- *
+ * A simple file-based configuration.
  */
 @ParametersAreNonnullByDefault
-public final class PersistenceConfiguration {
+public final class Configuration {
 
     /**
      * The inner properties.
@@ -39,27 +39,27 @@ public final class PersistenceConfiguration {
     private final PropertiesConfiguration properties;
 
     /**
-     * Constructs a new {@code PersistenceConfiguration} on the given {@code configuration}.
+     * Constructs a new {@code Configuration} on the given {@code configuration}.
      *
      * @param properties the inner properties
      */
-    private PersistenceConfiguration(PropertiesConfiguration properties) {
+    private Configuration(PropertiesConfiguration properties) {
         this.properties = checkNotNull(properties);
     }
 
     /**
-     * Creates a new {@code PersistenceConfiguration} and loads it from the specified {@code file}.
+     * Creates a new {@code Configuration} and loads it from the specified {@code file}.
      *
      * @param file the properties file to load
      *
      * @return a new configuration
      */
     @Nonnull
-    public static PersistenceConfiguration load(File file) {
+    public static Configuration load(File file) {
         checkNotNull(file);
 
         try {
-            return new PersistenceConfiguration(new PropertiesConfiguration(file));
+            return new Configuration(new PropertiesConfiguration(file));
         }
         catch (ConfigurationException e) {
             throw new InvalidDataStoreException(e);
@@ -67,7 +67,7 @@ public final class PersistenceConfiguration {
     }
 
     /**
-     * Save this {@code PersistenceConfiguration}.
+     * Save this {@code Configuration}.
      */
     public void save() {
         try {
@@ -80,7 +80,7 @@ public final class PersistenceConfiguration {
     }
 
     /**
-     * Check if this {@code PersistenceConfiguration} contains the specified {@code key}.
+     * Check if this {@code Configuration} contains the specified {@code key}.
      *
      * @param key the key whose presence in this configuration is to be tested
      *
@@ -132,8 +132,8 @@ public final class PersistenceConfiguration {
      * @return the map representation of this configuration
      */
     @Nonnull
-    public Map<String, Object> asMap() {
-        Map<String, Object> configurationMap = new HashMap<>();
+    public Map<Object, Object> asMap() {
+        Map<Object, Object> configurationMap = new HashMap<>();
         properties.getKeys().forEachRemaining(key -> configurationMap.put(key, properties.getProperty(key)));
         return configurationMap;
     }

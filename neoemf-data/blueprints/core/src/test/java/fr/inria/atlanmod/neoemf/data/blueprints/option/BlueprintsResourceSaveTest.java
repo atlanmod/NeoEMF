@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.PersistenceConfiguration;
+import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -59,7 +59,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
     public void testSaveGraphResourceNoOption() throws IOException {
         resource.save(Collections.emptyMap());
 
-        PersistenceConfiguration configuration = getConfiguration();
+        Configuration configuration = getConfiguration();
         assertThat(configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         assertConfigurationHasSize(configuration, 3);
     }
@@ -68,20 +68,20 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsOptions.noOption());
 
-        PersistenceConfiguration configuration = getConfiguration();
+        Configuration configuration = getConfiguration();
         assertThat(configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         assertConfigurationHasSize(configuration, 3);
     }
 
     /**
-     * Retrieves the {@link PersistenceConfiguration} according to the current {@link #file()}.
+     * Retrieves the {@link Configuration} according to the current {@link #file()}.
      *
      * @return the current configuration
      */
-    protected PersistenceConfiguration getConfiguration() {
+    protected Configuration getConfiguration() {
         File configurationFile = file().toPath().resolve("config.properties").toFile();
         assertThat(configurationFile).exists();
-        return PersistenceConfiguration.load(configurationFile);
+        return Configuration.load(configurationFile);
     }
 
     /**
@@ -90,7 +90,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
      * @param configuration the configuration to check
      * @param expectedSize  the expected size
      */
-    protected void assertConfigurationHasSize(PersistenceConfiguration configuration, int expectedSize) {
+    protected void assertConfigurationHasSize(Configuration configuration, int expectedSize) {
         assertThat(configuration.asMap().size()).isEqualTo(expectedSize);
     }
 
@@ -101,7 +101,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
      * @param key           the key to look for
      * @param value         the expected value
      */
-    protected void assertConfigurationHasEntry(PersistenceConfiguration configuration, String key, String value) {
+    protected void assertConfigurationHasEntry(Configuration configuration, String key, String value) {
         assertThat(configuration.containsKey(key)).isTrue();
         assertThat(configuration.getProperty(key)).isEqualTo(value);
     }
