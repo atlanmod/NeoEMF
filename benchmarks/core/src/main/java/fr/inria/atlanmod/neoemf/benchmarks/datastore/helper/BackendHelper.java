@@ -50,7 +50,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A class that provides static methods for managing resources.
+ * A class that provides static methods for {@link Resource} management.
  */
 public final class BackendHelper {
 

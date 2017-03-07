@@ -23,55 +23,66 @@ import java.nio.file.Paths;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * A class that provides static methods for {@link Path} management.
+ */
 public class Workspace {
 
-    private static Path BASE_DIRECTORY;
-    private static Path RESOURCES_DIRECTORY;
-    private static Path STORES_DIRECTORY;
+    /**
+     * The base directory of benchmarks.
+     */
+    private static final Path BASE_DIRECTORY = Paths.get(System.getProperty("user.home")).resolve(".neoemf").resolve("benchmarks");
+
+    /**
+     * The directory where to store the original {@link org.eclipse.emf.ecore.resource.Resource}s.
+     */
+    private static final Path RESOURCES_DIRECTORY = getBaseDirectory().resolve("resources");
+
+    /**
+     * The directory where to store the adapted {@link org.eclipse.emf.ecore.resource.Resource}s.
+     */
+    private static final Path STORES_DIRECTORY = getBaseDirectory().resolve("stores");
+
+    /**
+     * The default temporary directory.
+     */
     private static Path TEMP_DIRECTORY;
 
     private Workspace() {
     }
 
-    public static Path getBaseDirectory() {
-        if (isNull(BASE_DIRECTORY)) {
-            try {
-                BASE_DIRECTORY = Files.createDirectories(
-                        Paths.get(System.getProperty("user.home"))
-                                .resolve(".neoemf")
-                                .resolve("benchmarks"));
-            }
-            catch (IOException e) {
-                Log.warn(e);
-            }
-        }
-        return BASE_DIRECTORY;
+    /**
+     * Returns the base directory of benchmarks.
+     *
+     * @return the directory
+     */
+    private static Path getBaseDirectory() {
+        return createIfNecessary(BASE_DIRECTORY);
     }
 
+    /**
+     * Returns the directory where to store the original {@link org.eclipse.emf.ecore.resource.Resource}s.
+     *
+     * @return the directory
+     */
     public static Path getResourcesDirectory() {
-        if (isNull(RESOURCES_DIRECTORY)) {
-            try {
-                RESOURCES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("resources"));
-            }
-            catch (IOException e) {
-                Log.warn(e);
-            }
-        }
-        return RESOURCES_DIRECTORY;
+        return createIfNecessary(RESOURCES_DIRECTORY);
     }
 
+    /**
+     * Returns the directory where to store the adapted {@link org.eclipse.emf.ecore.resource.Resource}s.
+     *
+     * @return the directory
+     */
     public static Path getStoreDirectory() {
-        if (isNull(STORES_DIRECTORY)) {
-            try {
-                STORES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("stores"));
-            }
-            catch (IOException e) {
-                Log.warn(e);
-            }
-        }
-        return STORES_DIRECTORY;
+        return createIfNecessary(STORES_DIRECTORY);
     }
 
+    /**
+     * Returns the default temporary directory.
+     *
+     * @return the temporary directory
+     */
     private static Path getTempDirectory() {
         if (isNull(TEMP_DIRECTORY)) {
             try {
@@ -84,17 +95,23 @@ public class Workspace {
         return TEMP_DIRECTORY;
     }
 
+    /**
+     * Creates a new temporary directory.
+     *
+     * @return the temporary directory.
+     */
     public static Path newTempDirectory() {
-        Path tempDirectory = null;
         try {
-            tempDirectory = Files.createTempDirectory(getTempDirectory(), "tmp");
+            return Files.createTempDirectory(getTempDirectory(), "tmp");
         }
         catch (IOException e) {
-            Log.error(e);
+            throw new RuntimeException(e);
         }
-        return tempDirectory;
     }
 
+    /**
+     * Cleans all temporary directories.
+     */
     public static void cleanTempDirectory() {
         if (nonNull(TEMP_DIRECTORY)) {
             try {
@@ -103,5 +120,24 @@ public class Workspace {
             catch (IOException ignore) {
             }
         }
+    }
+
+    /**
+     * Creates a directory if it does not already exist.
+     *
+     * @param path the directory to create
+     *
+     * @return the {@code path}
+     */
+    private static Path createIfNecessary(Path path) {
+        if (!path.toFile().exists()) {
+            try {
+                Files.createDirectories(path);
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return path;
     }
 }
