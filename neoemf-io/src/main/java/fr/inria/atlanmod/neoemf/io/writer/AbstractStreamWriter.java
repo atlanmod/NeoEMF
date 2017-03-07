@@ -27,6 +27,6 @@ public abstract class AbstractStreamWriter implements StreamWriter {
      * Constructs a new {@code AbstractStreamWriter}.
      */
     protected AbstractStreamWriter() {
-        Log.info("{0} created", getClass().getSimpleName());
+        Log.debug("{0} created", getClass().getSimpleName());
     }
 }

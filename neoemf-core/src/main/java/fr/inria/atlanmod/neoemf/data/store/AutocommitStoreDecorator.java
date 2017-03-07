@@ -51,7 +51,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
         super(store);
         this.autocommitCount = 0;
         this.autocommitChuck = autocommitChuck;
-        Log.info("{0} chunk = {1}", getClass().getSimpleName(), autocommitChuck);
+        Log.debug("{0} chunk = {1}", getClass().getSimpleName(), autocommitChuck);
     }
 
     /**

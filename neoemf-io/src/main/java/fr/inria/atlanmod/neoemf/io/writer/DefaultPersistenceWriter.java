@@ -101,7 +101,7 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
 
         this.autocommitCount = 0;
 
-        Log.info("{0} created", getClass().getSimpleName());
+        Log.debug("{0} created", getClass().getSimpleName());
     }
 
     /**

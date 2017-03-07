@@ -170,7 +170,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         store.save();
 
-        Log.info("{0} saved: {1}", PersistentResource.class.getSimpleName(), uri);
+        Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
         finally {
             isLoading = false;
-            Log.info("{0} loaded: {1}", PersistentResource.class.getSimpleName(), uri);
+            Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), uri);
         }
     }
 
@@ -223,7 +223,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         this.isPersistent = false;
         this.isLoaded = false;
 
-        Log.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), getURI());
+        Log.info("{0} closed:  {1}", PersistentResource.class.getSimpleName(), getURI());
     }
 
     @Override

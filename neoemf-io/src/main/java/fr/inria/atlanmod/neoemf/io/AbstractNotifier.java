@@ -45,7 +45,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
 
         this.handlers = Arrays.asList(handlers);
 
-        Log.info("{0} created, and linked to {1}", getClass().getSimpleName(), Stream.of(handlers).map(h -> h.getClass().getSimpleName()).collect(Collectors.joining(",")));
+        Log.debug("{0} created, and linked to {1}", getClass().getSimpleName(), Stream.of(handlers).map(h -> h.getClass().getSimpleName()).collect(Collectors.joining(",")));
     }
 
     @Nonnull
