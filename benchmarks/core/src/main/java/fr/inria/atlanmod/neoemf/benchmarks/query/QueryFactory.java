@@ -11,10 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
-import com.google.common.collect.Iterators;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -46,10 +42,8 @@ import static java.util.Objects.nonNull;
 
 public class QueryFactory {
 
-    protected static final Logger log = LogManager.getLogger();
-
-    public static Query<Integer> queryCountAllElements(Resource resource) {
-        return () -> Iterators.size(resource.getAllContents());
+    public static Query<Long> queryCountAllElements(Resource resource) {
+        return () -> ((Iterable<EObject>) resource::getAllContents).spliterator().estimateSize();
     }
 
     /**

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;
@@ -53,10 +54,10 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @Setup(Level.Iteration)
     public void loadResource() throws Exception {
-        log.info("Initializing the datastore");
+        Log.debug("Initializing the datastore");
         storeFile = getBackend().getOrCreateStore(getResourceFile());
 
-        log.info("Loading the resource");
+        Log.debug("Loading the resource");
         resource = getBackend().load(getStoreLocation());
     }
 
@@ -67,7 +68,7 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @TearDown(Level.Iteration)
     public void unloadResource() throws Exception {
-        log.info("Unloading the resource");
+        Log.debug("Unloading the resource");
         if (!Objects.isNull(resource)) {
             getBackend().unload(resource);
             resource = null;

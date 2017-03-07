@@ -15,13 +15,13 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 
 import java.util.Map;
 
-public class NeoNeo4jBackend extends NeoTinkerBackend {
+public class Neo4jBackend extends TinkerBackend {
 
     public static final String NAME = "neo-neo4j";
 
     private static final String STORE_EXTENSION = "neo4j.resource"; // -> neoemf.neo4j.resource
 
-    public NeoNeo4jBackend() {
+    public Neo4jBackend() {
         super(NAME, STORE_EXTENSION);
     }
 

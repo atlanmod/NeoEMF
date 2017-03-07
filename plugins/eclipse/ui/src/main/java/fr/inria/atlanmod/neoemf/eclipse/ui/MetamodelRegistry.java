@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;

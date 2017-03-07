@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;

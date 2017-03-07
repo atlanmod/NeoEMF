@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -24,33 +24,30 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
-public class NeoTinkerBackend extends AbstractNeoBackend {
+public class MapDbBackend extends AbstractNeoBackend {
 
-    public static final String NAME = "neo-tinker";
+    public static final String NAME = "neo-mapdb";
 
-    private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
+    private static final String STORE_EXTENSION = "mapdb.resource"; // -> neoemf.mapdb.resource
 
-    public NeoTinkerBackend() {
-        this(NAME, STORE_EXTENSION);
-    }
-
-    protected NeoTinkerBackend(String name, String storeExtension) {
-        super(name, storeExtension);
+    public MapDbBackend() {
+        super(NAME, STORE_EXTENSION);
     }
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = BlueprintsURI.createFileURI(file);
+        URI uri = MapDbURI.createFileURI(file);
 
         return resourceSet.createResource(uri);
     }
 
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsOptions.newBuilder()
+        return MapDbOptions.newBuilder()
+                .autocommit()
                 .asMap();
     }
 }

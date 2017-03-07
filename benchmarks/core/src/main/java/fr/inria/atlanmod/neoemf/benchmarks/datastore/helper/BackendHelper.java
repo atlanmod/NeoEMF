@@ -11,15 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.InternalBackend;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -37,6 +32,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,42 +40,68 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class BackendHelper {
-
-    private static final Logger log = LogManager.getLogger();
+/**
+ * A class that provides static methods for managing resources.
+ */
+public final class BackendHelper {
 
     private static final String XMI = "xmi";
     private static final String ZXMI = "zxmi";
 
+    /**
+     * The name of the default ZIP file.
+     */
     private static final String ZIP_FILENAME = "resources.zip";
 
+    /**
+     * A {@link Map} that holds all available resources in {@link #ZIP_FILENAME}.
+     */
     private static List<String> AVAILABLE_RESOURCES;
+
+    /**
+     * A {@link Map} that holds all registered resources.
+     */
     private static Map<String, String> REGISTERED_RESOURCES;
 
     private BackendHelper() {
     }
 
-    private static boolean checkValidResource(String filename) {
+    /**
+     * Checks that the resource, identified by its {@code filename}, is valid, i.e. if its extension is recognized.
+     *
+     * @param filename the name of the resource file
+     *
+     * @throws IllegalArgumentException if the resource is not valid
+     */
+    private static void checkValidResource(String filename) {
         checkNotNull(filename);
 
         checkArgument(filename.endsWith("." + XMI) || filename.endsWith("." + ZXMI),
                 "'%s' is an invalid resource file. Only *.%s and *.%s files are allowed.", filename, XMI, ZXMI);
-
-        return true;
     }
 
+    /**
+     * Copies the given {@code sourceFile} to the temporary directory.
+     *
+     * @param sourceFile the file to copy
+     *
+     * @return the created file
+     *
+     * @throws IOException if an I/O error occurs during the copy
+     */
     public static File copyStore(File sourceFile) throws IOException {
         File outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName()).toFile();
 
-        log.info("Copy {} to {}", sourceFile, outputFile);
+        Log.debug("Copy {0} to {1}", sourceFile, outputFile);
 
         if (sourceFile.isDirectory()) {
             FileUtils.copyDirectory(sourceFile, outputFile, true);
@@ -103,11 +125,11 @@ public class BackendHelper {
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
 
-        String targetFileName = Files.getNameWithoutExtension(sourceFile.getAbsolutePath()) + "." + targetBackend.getStoreExtension();
+        String targetFileName = getNameWithoutExtension(sourceFile.getAbsolutePath()) + "." + targetBackend.getStoreExtension();
         File targetFile = targetDir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            log.info("Already existing store {}", targetFile);
+            Log.debug("Already existing store {0}", targetFile);
             return targetFile;
         }
 
@@ -120,21 +142,21 @@ public class BackendHelper {
 
         targetBackend.initAndGetEPackage();
 
-        log.info("Loading '{}'", sourceUri);
+        Log.debug("Loading '{0}'", sourceUri);
         Map<String, Object> loadOpts = new HashMap<>();
         if (Objects.equals(ZXMI, sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
         sourceResource.load(loadOpts);
 
-        log.info("Migrating");
+        Log.debug("Migrating");
         targetBackend.save(targetResource);
 
         targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
 
         sourceResource.unload();
 
-        log.info("Saving to '{}'", targetResource.getURI());
+        Log.debug("Saving to '{0}'", targetResource.getURI());
         targetBackend.save(targetResource);
 
         targetBackend.unload(targetResource);
@@ -162,11 +184,11 @@ public class BackendHelper {
     }
 
     private static File createResource(File sourceFile, InternalBackend targetBackend) throws Exception {
-        String targetFileName = Files.getNameWithoutExtension(sourceFile.getName()) + "." + targetBackend.getResourceExtension() + "." + ZXMI;
+        String targetFileName = getNameWithoutExtension(sourceFile.getName()) + "." + targetBackend.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            log.info("Already existing resource {}", targetFile);
+            Log.debug("Already existing resource {0}", targetFile);
             return targetFile;
         }
 
@@ -174,18 +196,18 @@ public class BackendHelper {
 
         URI sourceURI = URI.createFileURI(sourceFile.getAbsolutePath());
 
-        log.info("Loading '{}'", sourceURI);
+        Log.debug("Loading '{0}'", sourceURI);
         Resource sourceResource = resourceSet.getResource(sourceURI, true);
 
         URI targetURI = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetURI);
 
-        log.info("Migrating");
+        Log.debug("Migrating");
         targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
 
         sourceResource.unload();
 
-        log.info("Saving to '{}'", targetResource.getURI());
+        Log.debug("Saving to '{0}'", targetResource.getURI());
         Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         targetResource.save(saveOpts);
@@ -264,6 +286,13 @@ public class BackendHelper {
      * ZIP extraction
      */
 
+    /**
+     * Returns all resources contained in the default ZIP file.
+     *
+     * @return a {@link List} of the file name of the resources
+     *
+     * @throws IOException if the ZIP file cannot be found
+     */
     private static List<String> getZipResources() throws IOException {
         if (isNull(AVAILABLE_RESOURCES)) {
             AVAILABLE_RESOURCES = new ArrayList<>();
@@ -271,7 +300,8 @@ public class BackendHelper {
             try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
                 ZipEntry entry = inputStream.getNextEntry();
                 while (nonNull(entry)) {
-                    if (!entry.isDirectory() && checkValidResource(entry.getName())) {
+                    if (!entry.isDirectory()) {
+                        checkValidResource(entry.getName());
                         AVAILABLE_RESOURCES.add(new File(entry.getName()).getName());
                     }
                     inputStream.closeEntry();
@@ -282,15 +312,33 @@ public class BackendHelper {
         return AVAILABLE_RESOURCES;
     }
 
+    /**
+     * Returns all registered resources.
+     *
+     * @return a {@link Map} containing all registered resources identified by their name
+     *
+     * @throws IOException if the properties file cannot be found
+     */
     private static Map<String, String> getRegisteredResources() throws IOException {
         if (isNull(REGISTERED_RESOURCES)) {
             Properties properties = new Properties();
             properties.load(BackendHelper.class.getResourceAsStream("/resources.properties"));
-            REGISTERED_RESOURCES = Maps.fromProperties(properties);
+            REGISTERED_RESOURCES = properties.entrySet().stream()
+                    .collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
         }
         return REGISTERED_RESOURCES;
     }
 
+    /**
+     * Extracts a {@link ZipEntry}, named {@code filename}, from the default ZIP file to the {@code outputDir}.
+     *
+     * @param filename  the file name of the {@link ZipEntry} to extract
+     * @param outputDir the directory where to extract the file
+     *
+     * @return the extracted file
+     *
+     * @throws IOException if an I/O error occurs during the extraction
+     */
     private static File extractFromZip(String filename, Path outputDir) throws IOException {
         File outputFile = null;
         boolean fileFound = false;
@@ -308,13 +356,47 @@ public class BackendHelper {
         return outputFile;
     }
 
-    private static File extractEntryFromZip(ZipInputStream inputStream, ZipEntry entry, Path outputDir) throws IOException {
+    /**
+     * Extracts a {@link ZipEntry} from the given {@code input} to the {@code outputDir}.
+     *
+     * @param input the input stream of the ZIP file
+     * @param entry the entry in the ZIP file
+     * @param outputDir the directory where to extract the file
+     *
+     * @return the extracted file
+     *
+     * @throws IOException if an I/O error occurs during the extraction
+     */
+    private static File extractEntryFromZip(ZipInputStream input, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (outputFile.exists()) {
-            log.info("Already extracted resource {}", outputFile);
+            Log.debug("Already extracted resource {0}", outputFile);
             return outputFile;
         }
-        IOUtils.copy(inputStream, new FileOutputStream(outputFile));
+
+        try (OutputStream output = new FileOutputStream(outputFile)) {
+            final byte[] buffer = new byte[4096];
+            int count;
+            while (-1 != (count = input.read(buffer))) {
+                output.write(buffer, 0, count);
+            }
+        }
+
         return outputFile;
+    }
+
+    /**
+     * Retrieves the file name without its extension of {@code file}.
+     *
+     * @param file the file name
+     *
+     * @return the filename without its extension
+     */
+    public static String getNameWithoutExtension(String file) {
+        checkNotNull(file);
+
+        String fileName = new File(file).getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
     }
 }

@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;

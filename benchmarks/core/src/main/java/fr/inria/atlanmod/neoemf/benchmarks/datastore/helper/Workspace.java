@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
+import fr.inria.atlanmod.neoemf.util.log.Log;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,8 +24,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class Workspace {
-
-    private static final Logger log = LogManager.getLogger();
 
     private static Path BASE_DIRECTORY;
     private static Path RESOURCES_DIRECTORY;
@@ -44,7 +42,7 @@ public class Workspace {
                                 .resolve("benchmarks"));
             }
             catch (IOException e) {
-                log.warn(e);
+                Log.warn(e);
             }
         }
         return BASE_DIRECTORY;
@@ -56,7 +54,7 @@ public class Workspace {
                 RESOURCES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("resources"));
             }
             catch (IOException e) {
-                log.warn(e);
+                Log.warn(e);
             }
         }
         return RESOURCES_DIRECTORY;
@@ -68,7 +66,7 @@ public class Workspace {
                 STORES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("stores"));
             }
             catch (IOException e) {
-                log.warn(e);
+                Log.warn(e);
             }
         }
         return STORES_DIRECTORY;
@@ -80,7 +78,7 @@ public class Workspace {
                 TEMP_DIRECTORY = Files.createTempDirectory("neoemf-benchmark");
             }
             catch (IOException e) {
-                log.warn(e);
+                Log.warn(e);
             }
         }
         return TEMP_DIRECTORY;
@@ -92,7 +90,7 @@ public class Workspace {
             tempDirectory = Files.createTempDirectory(getTempDirectory(), "tmp");
         }
         catch (IOException e) {
-            log.error(e);
+            Log.error(e);
         }
         return tempDirectory;
     }

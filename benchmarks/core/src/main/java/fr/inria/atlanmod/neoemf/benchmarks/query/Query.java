@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import fr.inria.atlanmod.neoemf.util.log.Log;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,22 +27,20 @@ import static java.util.Objects.nonNull;
 @FunctionalInterface
 public interface Query<V> extends Callable<V> {
 
-    Logger log = LogManager.getLogger();
-
     @Override
     V call() throws Exception;
 
     default V callWithResult() throws Exception {
         V result;
 
-        log.info("Start query");
+        Log.debug("Start query");
 
         result = call();
 
-        log.info("End query");
+        Log.debug("End query");
 
         if (nonNull(result) && !Void.class.isInstance(result)) {
-            log.info("Query returns: {}", result);
+            Log.debug("Query returns: {0}", result);
         }
 
         return result;
@@ -57,7 +55,7 @@ public interface Query<V> extends Callable<V> {
 
         Instant end = Instant.now();
 
-        log.info("Time spent: {}", Duration.between(begin, end));
+        Log.debug("Time spent: {0}", Duration.between(begin, end));
 
         return result;
     }
@@ -69,14 +67,14 @@ public interface Query<V> extends Callable<V> {
 
         runtime.gc();
         long initialUsedMemory = runtime.totalMemory() - runtime.freeMemory();
-        log.info("Used memory before call: {}", FileUtils.byteCountToDisplaySize(initialUsedMemory));
+        Log.debug("Used memory before call: {0}", FileUtils.byteCountToDisplaySize(initialUsedMemory));
 
         result = callWithTime();
 
         runtime.gc();
         long finalUsedMemory = runtime.totalMemory() - runtime.freeMemory();
-        log.info("Used memory after call: {}", FileUtils.byteCountToDisplaySize(finalUsedMemory));
-        log.info("Memory use increase: {}", FileUtils.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+        Log.debug("Used memory after call: {0}", FileUtils.byteCountToDisplaySize(finalUsedMemory));
+        Log.debug("Memory use increase: {0}", FileUtils.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
 
         return result;
     }

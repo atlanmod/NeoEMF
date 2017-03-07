@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.query.ase2015;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -86,7 +87,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
                     }
                 }
                 catch (NullPointerException e) {
-                    log.error(e);
+                    Log.error(e);
                 }
             }
             return methodDeclarations.size();
@@ -117,7 +118,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
                 }
             }
             catch (NullPointerException e) {
-                log.error("Null pointer", e);
+                Log.error(e);
             }
 
             return result.size();
@@ -137,7 +138,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
                     }
                 }
                 catch (NullPointerException e) {
-                    log.error(e);
+                    Log.error(e);
                 }
             }
 

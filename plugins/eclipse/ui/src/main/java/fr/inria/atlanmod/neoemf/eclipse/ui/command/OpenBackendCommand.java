@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;

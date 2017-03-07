@@ -11,19 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import com.google.common.base.CaseFormat;
-
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoBerkeleydbBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapdbBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoNeo4jBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoTinkerBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.BerkeleyDbBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.MapDbBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.Neo4jBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.TinkerBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -31,6 +27,9 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -40,27 +39,18 @@ import java.util.Objects;
 @State(Scope.Thread)
 public class RunnerState {
 
-    protected static final Logger log = LogManager.getLogger();
+    private static final Map<String, Class<? extends Backend>> registeredBackends = init();
 
-    private static final String CLASS_PREFIX = Backend.class.getPackage().getName() + ".";
-    private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
-
-    @Param({
-            "fr.inria.atlanmod.kyanos.tests.xmi",
-            "fr.inria.atlanmod.neo4emf.neo4jresolver.xmi",
-            "org.eclipse.gmt.modisco.java.kyanos.xmi",
-            "org.eclipse.jdt.core.xmi",
-            "org.eclipse.jdt.source.all.xmi",
-    })
+    @Param({"set1", "set2", "set3", "set4", "set5"})
     protected String r;
 
     @Param({
             XmiBackend.NAME,
             CdoBackend.NAME,
-            NeoMapdbBackend.NAME,
-            NeoBerkeleydbBackend.NAME,
-            NeoTinkerBackend.NAME,
-            NeoNeo4jBackend.NAME,
+            MapDbBackend.NAME,
+            BerkeleyDbBackend.NAME,
+            TinkerBackend.NAME,
+            Neo4jBackend.NAME,
     })
     protected String b;
 
@@ -73,8 +63,7 @@ public class RunnerState {
      */
     public Backend getBackend() throws Exception {
         if (Objects.isNull(backend)) {
-            String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, b) + CLASS_SUFFIX;
-            backend = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
+            backend = registeredBackends.get(b).newInstance();
         }
         return backend;
     }
@@ -93,7 +82,25 @@ public class RunnerState {
      */
     @Setup(Level.Trial)
     public void initResource() throws Exception {
-        log.info("Initializing the resource");
+        Log.debug("Initializing the resource");
         resourceFile = getBackend().getOrCreateResource(r);
+    }
+
+    /**
+     * Returns all existing {@link Backend} instances.
+     *
+     * @return an immutable map
+     */
+    private static Map<String, Class<? extends Backend>> init() {
+        Map<String, Class<? extends Backend>> map = new HashMap<>();
+
+        map.put(XmiBackend.NAME, XmiBackend.class);
+        map.put(CdoBackend.NAME, CdoBackend.class);
+        map.put(MapDbBackend.NAME, MapDbBackend.class);
+        map.put(BerkeleyDbBackend.NAME, BerkeleyDbBackend.class);
+        map.put(TinkerBackend.NAME, TinkerBackend.class);
+        map.put(Neo4jBackend.NAME, Neo4jBackend.class);
+
+        return Collections.unmodifiableMap(map);
     }
 }

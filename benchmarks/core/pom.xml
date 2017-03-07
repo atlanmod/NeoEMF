@@ -17,11 +17,16 @@
     <properties>
         <uberjar.name>benchmarks</uberjar.name>
         <uberjar.directory>${project.build.directory}/exec</uberjar.directory>
-
-        <cglib.version>3.2.4</cglib.version>
     </properties>
 
     <dependencies>
+
+        <!-- Common -->
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
         <!-- EMF -->
 
@@ -79,45 +84,6 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-berkeleydb</artifactId>
-        </dependency>
-
-        <!-- Common -->
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>${cglib.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jcl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jul</artifactId>
         </dependency>
 
         <!-- Benchmark -->
@@ -178,9 +144,11 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -204,78 +172,18 @@
                                     <!-- Shading signed JARs will fail without this. -->
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>**/META-INF/*.SF</exclude>
+                                        <exclude>**/META-INF/*.DSA</exclude>
+                                        <exclude>**/META-INF/*.RSA</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.neo4j:neo4j-lucene-index</exclude>
+                                    <exclude>fr.inria.atlanmod.neoemf:neoemf-core.p2</exclude> <!-- FIXME Invalid signature -->
                                 </excludes>
                             </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <!-- Execute JMH : 'mvn exec:exec'-->
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-Dfile.encoding=utf-8</argument>
-                                <argument>-jar</argument>
-                                <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
-
-                                <!-- Output result format : JSON -->
-                                <argument>-rf</argument>
-                                <argument>json</argument>
-
-                                <!-- Output result file -->
-                                <argument>-rff</argument>
-                                <argument>${java.io.tmpdir}/neoemf-benchmarks-${maven.build.timestamp}.json</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <!-- Display JMH help : 'mvn exec:exec@help' -->
-                        <id>help</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-Dfile.encoding=utf-8</argument>
-                                <argument>-jar</argument>
-                                <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
-                                <argument>-help</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <!-- Initialize resources and stores : 'mvn exec:exec@init' -->
-                        <id>init</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-Dfile.encoding=utf-8</argument>
-                                <argument>-jar</argument>
-                                <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
-                                <argument>init</argument>
-                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

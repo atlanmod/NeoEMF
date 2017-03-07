@@ -12,20 +12,17 @@
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.BackendHelper;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 abstract class AbstractBackend implements Backend, InternalBackend {
-
-    private static final Logger log = LogManager.getLogger();
 
     protected final String name;
 
@@ -59,7 +56,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
     @Override
     public EPackage initAndGetEPackage() throws Exception {
         EPackage ePackage = (EPackage) packageClass.getMethod("init").invoke(null);
-        log.info("Loading package with uri '{}'", ePackage.getNsURI());
+        Log.debug("Loading package with uri {0}", ePackage.getNsURI());
         return ePackage;
     }
 

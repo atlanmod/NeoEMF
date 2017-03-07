@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import fr.inria.atlanmod.neoemf.util.log.Log;
+
 import org.eclipse.emf.cdo.eresource.CDOResource;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
 import org.eclipse.emf.cdo.net4j.CDONet4jUtil;
@@ -120,8 +120,6 @@ public class CdoBackend extends AbstractBackend {
      */
     public static class EmbeddedCdoServer implements Closeable {
 
-        private static final Logger log = LogManager.getLogger();
-
         private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
         private final Path path;
@@ -176,7 +174,7 @@ public class CdoBackend extends AbstractBackend {
                 Exception e = container.deactivate();
 
                 if (nonNull(e)) {
-                    log.error(e);
+                    Log.error(e);
                 }
             }
         }

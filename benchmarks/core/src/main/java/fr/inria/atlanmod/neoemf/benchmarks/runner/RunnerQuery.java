@@ -31,7 +31,7 @@ public class RunnerQuery extends Runner {
     //region Simple queries.
 
     @Benchmark
-    public Integer traverse(ReadOnlyRunnerState state) throws Exception {
+    public Long traverse(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
     }
 
