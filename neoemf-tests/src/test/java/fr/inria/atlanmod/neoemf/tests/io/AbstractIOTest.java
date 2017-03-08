@@ -330,10 +330,10 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      *
      * @throws IOException if an I/O error occur during the loading of models
      */
-    protected EObject loadWithEMF(File file) throws IOException {
+    protected Resource loadWithEMF(File file) throws IOException {
         Resource resource = new XMIResourceImpl();
         resource.load(new FileInputStream(file), Collections.emptyMap());
-        return resource.getContents().get(0);
+        return resource;
     }
 
     /**
@@ -345,14 +345,13 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      *
      * @throws IOException if an I/O error occur during the loading of models
      */
-    protected EObject loadWithNeoEMF(File file) throws IOException {
+    protected PersistentResource loadWithNeoEMF(File file) throws IOException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
 
         try (PersistenceBackend backend = context().createBackend(file())) {
             ReaderFactory.fromXmi(file, WriterFactory.toBackend(backend));
         }
 
-        PersistentResource resource = context().loadResource(null, file());
-        return resource.getContents().get(0);
+        return context().loadResource(null, file());
     }
 }

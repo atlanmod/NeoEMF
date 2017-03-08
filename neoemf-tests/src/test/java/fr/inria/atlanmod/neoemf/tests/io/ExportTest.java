@@ -60,7 +60,7 @@ public class ExportTest extends AbstractIOTest {
         assertEqualEObject(targetModel, sourceModel);
 
         // Comparing with EMF
-        sourceModel = loadWithEMF(getXmiStandard());
+        sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);
         assertEqualEObject(targetModel, sourceModel);
     }
 
@@ -80,8 +80,8 @@ public class ExportTest extends AbstractIOTest {
 
         ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toXmi(targetFile));
 
-        EObject sourceModel = loadWithEMF(getXmiStandard());
-        EObject targetModel = loadWithEMF(targetFile);
+        EObject sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);
+        EObject targetModel = loadWithEMF(targetFile).getContents().get(0);
         assertEqualEObject(targetModel, sourceModel);
     }
 
@@ -104,8 +104,8 @@ public class ExportTest extends AbstractIOTest {
             ReaderFactory.fromBackend(backend, WriterFactory.toXmi(targetFile));
         }
 
-        EObject sourceModel = loadWithEMF(getXmiStandard());
-        EObject targetModel = loadWithEMF(targetFile);
+        EObject sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);
+        EObject targetModel = loadWithEMF(targetFile).getContents().get(0);
         assertEqualEObject(targetModel, sourceModel);
     }
 }

@@ -40,7 +40,7 @@ public class ImportTest extends AbstractIOTest {
         EObject eObject;
         EObject eObjectChild;
 
-        EObject root = loadWithNeoEMF(getXmiStandard());
+        EObject root = loadWithNeoEMF(getXmiStandard()).getContents().get(0);
         assertValidElement(root, "Model", 19, "fr.inria.atlanmod.kyanos.tests");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
@@ -85,7 +85,7 @@ public class ImportTest extends AbstractIOTest {
     public void testAttributes() throws IOException {
         EObject eObject;
 
-        EObject root = loadWithNeoEMF(getXmiStandard());
+        EObject root = loadWithNeoEMF(getXmiStandard()).getContents().get(0);
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
             eObject = getChildFrom(root, 0, 0, 0, 0, 0, 0, 0);
@@ -115,7 +115,7 @@ public class ImportTest extends AbstractIOTest {
         EObject eObject;
         EObject eObjectChild;
 
-        EObject root = loadWithNeoEMF(getXmiStandard());
+        EObject root = loadWithNeoEMF(getXmiStandard()).getContents().get(0);
         assertValidReference(root, "ownedElements", 0, "Package", "fr", true, true);
         assertValidReference(root, "orphanTypes", 5, "PrimitiveTypeVoid", "void", true, true);
         {
@@ -164,8 +164,8 @@ public class ImportTest extends AbstractIOTest {
     public void testCompare() throws IOException {
         File file = getXmiStandard();
 
-        EObject emfObject = loadWithEMF(file);
-        EObject neoObject = loadWithNeoEMF(file);
+        EObject emfObject = loadWithEMF(file).getContents().get(0);
+        EObject neoObject = loadWithNeoEMF(file).getContents().get(0);
 
         assertEqualEObject(neoObject, emfObject);
     }
@@ -183,8 +183,8 @@ public class ImportTest extends AbstractIOTest {
     public void testCompareWithId() throws IOException {
         File file = getXmiWithId();
 
-        EObject emfObject = loadWithEMF(file);
-        EObject neoObject = loadWithNeoEMF(file);
+        EObject emfObject = loadWithEMF(file).getContents().get(0);
+        EObject neoObject = loadWithNeoEMF(file).getContents().get(0);
 
         assertEqualEObject(neoObject, emfObject);
     }
