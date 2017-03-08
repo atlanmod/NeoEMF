@@ -150,20 +150,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public void resource(@Nullable Resource.Internal resource) {
         this.resource = resource;
 
-        PersistentStore previousStore = store;
-
-        // Set the new store
+        PersistentStore newStore;
         if (resource instanceof PersistentResource) {
-            store = ((PersistentResource) resource).store();
+            newStore = ((PersistentResource) resource).store();
         }
         else {
-            store = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
+            newStore = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
         }
 
-        // Move contents from the previous store to the new
-        if (nonNull(previousStore) && store != previousStore) {
-            copyStore(previousStore, store);
+        // Move contents from the previous store to the new, and close it
+        if (nonNull(store) && newStore != store) {
+            copyStore(store, newStore);
+            store.close();
         }
+
+        store = newStore;
     }
 
     /**
@@ -362,7 +363,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         // Don't load the container from the store here: it creates an important overhead and performance loss.
         // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
         return container;
-//        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
     }
 
     @Override
@@ -374,8 +374,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 if (nonNull(oppositeFeature)) {
                     eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
                 }
-                else {
-                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - eInternalContainer().eClass().getFeatureID(containingFeature));
+                else if (nonNull(container)) {
+                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(containingFeature));
                 }
             }
         }

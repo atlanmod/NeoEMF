@@ -36,10 +36,10 @@ public interface PersistenceMapper extends Closeable, ContainerMapper, Metaclass
     void save();
 
     /**
-     * Cleanly closes this mapper and releases any system resources associated with it. If it is already closed then
-     * invoking this method has no effect.
+     * Cleanly closes this mapper, clear all data in-memory and releases any system resources associated with it. All
+     * modifications are saved before closing.
      * <p>
-     * All modifications are saved before closing.
+     * If the mapper is already closed, then invoking this method has no effect.
      */
     @Override
     void close();
