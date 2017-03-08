@@ -79,6 +79,21 @@ public interface PersistenceBackendFactory {
     PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend);
 
     /**
+     * Creates a {@link PersistentStore} between the given {@code resource} and the default in-memory {@code backend}.
+     *
+     * @param resource the resource
+     *
+     * @return the newly created persistent store.
+     *
+     * @see #createTransientStore(PersistentResource, PersistenceBackend)
+     * @see #createTransientBackend()
+     */
+    @Nonnull
+    default PersistentStore createTransientStore(PersistentResource resource) {
+        return createTransientStore(resource, createTransientBackend());
+    }
+
+    /**
      * Creates a {@link PersistentStore} between the given {@code resource} and the given {@code backend}
      * according to the given {@code options}.
      * <p>
@@ -97,4 +112,26 @@ public interface PersistenceBackendFactory {
      */
     @Nonnull
     PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options);
+
+    /**
+     * Creates a {@link PersistentStore} between the given {@code resource} and the default persistent {@code backend}
+     * according to the given {@code options}.
+     * <p>
+     * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
+     *
+     * @param resource the resource
+     * @param options  the options that defines the behaviour of the back-end
+     *
+     * @return the newly created persistent store.
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
+     *                                   missing
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
+     *                                   PersistenceBackend} for this factory
+     * @see #createPersistentStore(PersistentResource, PersistenceBackend, Map)
+     * @see #createPersistentBackend(URI, Map)
+     */
+    default PersistentStore createPersistentStore(PersistentResource resource, Map<?, ?> options) {
+        return createPersistentStore(resource, createPersistentBackend(resource.getURI(), options), options);
+    }
 }

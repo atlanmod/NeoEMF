@@ -17,10 +17,10 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;

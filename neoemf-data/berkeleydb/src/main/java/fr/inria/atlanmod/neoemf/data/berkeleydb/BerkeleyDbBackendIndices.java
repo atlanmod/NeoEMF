@@ -16,9 +16,9 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.io.File;
@@ -65,7 +65,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Mult
     }
 
     @Override
-    public void copyTo(PersistenceBackend target) {
+    public void copyTo(PersistenceMapper target) {
         checkArgument(target instanceof BerkeleyDbBackendIndices);
         BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
 

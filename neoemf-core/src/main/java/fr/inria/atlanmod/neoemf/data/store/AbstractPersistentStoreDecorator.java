@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
@@ -56,10 +58,26 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
         return next.resource();
     }
 
+    @Nonnull
+    @Override
+    public PersistenceBackend backend() {
+        return next.backend();
+    }
+
     @Override
     @OverridingMethodsMustInvokeSuper
     public void save() {
         next.save();
+    }
+
+    @Override
+    public void close() {
+        next.close();
+    }
+
+    @Override
+    public void copyTo(PersistenceMapper target) {
+        next.copyTo(target);
     }
 
     @Override

@@ -13,12 +13,15 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 
 import java.util.Optional;
@@ -27,6 +30,8 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistentStore} that translates model-level operations into datastore calls.
@@ -65,6 +70,26 @@ public final class DirectWriteStore extends AbstractPersistentStore {
     public DirectWriteStore(PersistenceBackend backend, @Nullable PersistentResource resource) {
         this.resource = resource;
         this.backend = backend;
+
+        closeOnExit(backend, nonNull(resource) ? resource.getURI() : null);
+    }
+
+    /**
+     * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
+     *
+     * @param backend the back-end to stop when the application will exit
+     * @param uri     the {@link URI} of the resource used by the {@code backend}
+     */
+    private static void closeOnExit(@Nullable PersistenceBackend backend, @Nullable URI uri) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (nonNull(backend)) { // The backend can be null in tests
+                backend.close();
+
+                if (nonNull(uri)) {
+                    Log.debug("{0} closed: {1} ", backend.getClass(), uri);
+                }
+            }
+        }));
     }
 
     @Override
@@ -72,9 +97,25 @@ public final class DirectWriteStore extends AbstractPersistentStore {
         return resource;
     }
 
+    @Nonnull
+    @Override
+    public PersistenceBackend backend() {
+        return backend;
+    }
+
     @Override
     public void save() {
         backend.save();
+    }
+
+    @Override
+    public void close() {
+        backend.close();
+    }
+
+    @Override
+    public void copyTo(PersistenceMapper target) {
+        backend.copyTo(target);
     }
 
     @Override

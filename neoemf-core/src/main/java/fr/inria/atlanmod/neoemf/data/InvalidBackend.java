@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
@@ -48,18 +49,13 @@ public final class InvalidBackend implements PersistenceBackend {
     }
 
     @Override
-    public boolean isClosed() {
-        return true;
+    public void copyTo(PersistenceMapper target) {
+        // Do nothing
     }
 
     @Override
     public boolean isDistributed() {
         return false;
-    }
-
-    @Override
-    public void copyTo(PersistenceBackend target) {
-        // Do nothing
     }
 
     @Override

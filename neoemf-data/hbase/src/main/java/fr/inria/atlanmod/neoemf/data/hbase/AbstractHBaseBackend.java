@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
@@ -109,15 +109,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Override
     public void close() {
-        if (isClosed()) {
+        if (isClosed) {
             return;
         }
 
         try {
             table.close();
         }
-        catch (IOException e) {
-            Log.warn(e);
+        catch (IOException ignore) {
         }
         finally {
             isClosed = true;
@@ -125,18 +124,13 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
+    public void copyTo(PersistenceMapper target) {
+        Log.warn("NeoEMF/HBase doesn't support copy backend feature");
     }
 
     @Override
     public boolean isDistributed() {
         return true;
-    }
-
-    @Override
-    public void copyTo(PersistenceBackend target) {
-        Log.warn("NeoEMF/HBase doesn't support copy backend feature");
     }
 
     @Override

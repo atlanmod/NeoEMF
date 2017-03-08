@@ -23,8 +23,8 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
@@ -201,29 +201,18 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void close() {
-        if (isClosed()) {
+        if (isClosed) {
             return;
         }
 
         try {
             graph.shutdown();
         }
-        catch (Exception e) {
-            Log.warn(e);
+        catch (Exception ignore) {
         }
         finally {
             isClosed = true;
         }
-    }
-
-    @Override
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return false;
     }
 
     /**
@@ -232,7 +221,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
     @Override
-    public void copyTo(PersistenceBackend target) {
+    public void copyTo(PersistenceMapper target) {
         checkArgument(target instanceof AbstractBlueprintsBackend);
         AbstractBlueprintsBackend to = (AbstractBlueprintsBackend) target;
 
@@ -243,6 +232,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             checkArgument(Iterables.isEmpty(metaclasses), "Index is not consistent");
             to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
+    }
+
+    @Override
+    public boolean isDistributed() {
+        return false;
     }
 
     @Override

@@ -15,12 +15,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
@@ -116,24 +115,13 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
         try {
             db.close();
         }
-        catch (Exception e) {
-            Log.warn(e);
+        catch (Exception ignore) {
         }
     }
 
     @Override
-    public boolean isClosed() {
-        return db.isClosed();
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void copyTo(PersistenceBackend target) {
+    public void copyTo(PersistenceMapper target) {
         checkArgument(target instanceof AbstractMapDbBackend);
         AbstractMapDbBackend to = (AbstractMapDbBackend) target;
 
@@ -149,6 +137,11 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
                 throw new UnsupportedOperationException("Cannot copy MapDB backend: store type " + collection.getClass().getSimpleName() + " is not supported");
             }
         }
+    }
+
+    @Override
+    public boolean isDistributed() {
+        return false;
     }
 
     @Override

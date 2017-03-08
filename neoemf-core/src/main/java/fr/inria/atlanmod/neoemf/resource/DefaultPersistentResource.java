@@ -31,7 +31,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EClassifierImpl;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
@@ -52,6 +51,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
@@ -72,30 +73,29 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private static final String URI_UNKNOWN = "/-1";
 
     /**
-     * The {@link org.eclipse.emf.ecore.EReference} representing the link between the {@link #dummyRootEObject} and its
+     * The {@link org.eclipse.emf.ecore.EReference} representing the link between the {@link #rootObject} and its
      * content.
      */
-    private static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
+    @Nonnull
+    private static final RootContentsReference ROOT_CONTENTS_REFERENCE = new RootContentsReference();
 
     /**
      * The {@link PersistentEObject} representing the root and the entry-point of this {@link PersistentResource}.
      */
-    private final DummyRootEObject dummyRootEObject;
+    @Nonnull
+    private final RootObject rootObject;
 
     /**
      * The {@link PersistentStore} responsible of the database serialization.
      */
+    @Nonnull
     protected PersistentStore store;
-
-    /**
-     * The underlying {@link PersistenceBackend} that stores the data.
-     */
-    protected PersistenceBackend backend;
 
     /**
      * The last options used during {@link #load(Map)}.
      */
-    private Map<?, ?> options;
+    @Nullable
+    private Map<?, ?> previousOptions;
 
     /**
      * Whether this {@link PersistentResource} is stored in a {@link PersistenceBackend}, non-transient.
@@ -109,33 +109,33 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     public DefaultPersistentResource(URI uri) {
         super(uri);
-        this.dummyRootEObject = new DummyRootEObject(this);
+        rootObject = new RootObject(this);
 
-        this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
-        this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
+        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+        store = factory.createTransientStore(this);
 
-        this.isPersistent = false;
+        isPersistent = false;
 
-        PersistenceBackendShutdownHook.closeOnExit(backend, getURI());
         Log.info("{0} created", PersistentResource.class.getSimpleName());
     }
 
+    @Nonnull
     @Override
     public EList<EObject> getContents() {
-        return new ResourceContentsEStoreEList<>(dummyRootEObject, ROOT_CONTENTS_ESTRUCTURALFEATURE, store());
+        return new ResourceContentsEStoreEList<>(rootObject, ROOT_CONTENTS_REFERENCE, store());
     }
 
+    @Nonnull
     @Override
     public String getURIFragment(EObject eObject) {
-        String fragment = URI_UNKNOWN;
-        if (eObject.eResource() == this) {
+        if (this == eObject.eResource()) {
             // Try to adapt as a PersistentEObject and return the ID
             PersistentEObject object = PersistentEObject.from(eObject);
             if (nonNull(object)) {
-                fragment = object.id().toString();
+                return object.id().toString();
             }
         }
-        return fragment;
+        return URI_UNKNOWN;
     }
 
     @Override
@@ -146,31 +146,25 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void save(Map<?, ?> options) throws IOException {
-        // Check that the save options do not collide with previous load options
-        if (nonNull(this.options)) {
-            for (Entry<?, ?> entry : options.entrySet()) {
-                if (this.options.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), this.options.get(entry.getKey()))) {
-                    throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString()));
-                }
-            }
-        }
+        checkOptions(options);
 
         if (!isLoaded() || !isPersistent) {
-            PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+            PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+            PersistentStore newStore = factory.createPersistentStore(this, options);
 
-            PersistenceBackend newBackend = factory.createPersistentBackend(uri, options);
-            backend.copyTo(newBackend);
+            store.copyTo(newStore.backend());
 
-            this.backend = newBackend;
-            this.store = factory.createPersistentStore(this, backend, options);
+            // Close the previous store, and assign the new
+            store.close();
+            store = newStore;
 
-            this.isLoaded = true;
-            this.isPersistent = true;
+            isLoaded = true;
+            isPersistent = true;
         }
 
         store.save();
 
-        Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), uri);
+        Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), getURI());
     }
 
     @Override
@@ -179,26 +173,27 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             isLoading = true;
 
             if (!isLoaded) {
-                if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
-                    PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+                if ((getURI().isFile() && new File(getURI().toFileString()).exists()) || getURI().hasAuthority()) {
+                    // Closes the previous store
+                    store.close();
 
-                    backend = factory.createPersistentBackend(uri, options);
-                    store = factory.createPersistentStore(this, backend, options);
+                    PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+                    store = factory.createPersistentStore(this, options);
 
                     isPersistent = true;
-                    dummyRootEObject.setMapped(true);
+                    rootObject.setMapped(true);
                 }
                 else {
-                    throw new FileNotFoundException(uri.toFileString());
+                    throw new FileNotFoundException(getURI().toFileString());
                 }
 
-                this.options = options;
+                previousOptions = options;
                 isLoaded = true;
             }
         }
         finally {
             isLoading = false;
-            Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), uri);
+            Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), getURI());
         }
     }
 
@@ -213,21 +208,37 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         close();
     }
 
+    /**
+     * Check that the {@code options} do not collide with {@link #previousOptions}.
+     *
+     * @param options the options to check
+     */
+    private void checkOptions(Map<?, ?> options) {
+        if (nonNull(previousOptions)) {
+            for (Entry<?, ?> entry : options.entrySet()) {
+                if (previousOptions.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), previousOptions.get(entry.getKey()))) {
+                    throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString()));
+                }
+            }
+        }
+    }
+
     @Override
     public void close() {
-        this.backend.close();
+        store.close();
 
-        this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
-        this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
+        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+        store = factory.createTransientStore(this);
 
-        this.isPersistent = false;
-        this.isLoaded = false;
+        isPersistent = false;
+        isLoaded = false;
 
         Log.info("{0} closed:  {1}", PersistentResource.class.getSimpleName(), getURI());
     }
 
+    @Nonnull
     @Override
-    public EStore store() {
+    public PersistentStore store() {
         return store;
     }
 
@@ -237,35 +248,30 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
+    @Deprecated
     public boolean isDistributed() {
-        return backend.isDistributed();
+        return store.backend().isDistributed();
     }
 
+    @Nonnull
     @Override
     public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
-            allInstances = Iterables.stream(store.allInstances(eClass, strict)).map(id -> store.object(id)).collect(Collectors.toList());
+            return Iterables.stream(store.allInstances(eClass, strict))
+                    .map(id -> store.object(id))
+                    .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
-            Log.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
-            List<EObject> instanceList = new ArrayList<>();
-            Iterable<EObject> allContents = this::getAllContents;
-            for (EObject eObject : allContents) {
-                if (eClass.isInstance(eObject)) {
-                    if (strict) {
-                        if (Objects.equals(eObject.eClass(), eClass)) {
-                            instanceList.add(eObject);
-                        }
-                    }
-                    else {
-                        instanceList.add(eObject);
-                    }
-                }
-            }
-            allInstances = instanceList;
+            Log.warn("The PersistenceBackend does not support advanced allInstances() computation. " +
+                    "Using standard EMF API instead");
+
+            return Iterables.stream(this::getAllContents)
+                    .filter(eClass::isInstance)
+                    .map(o -> !strict || Objects.equals(o.eClass(), eClass) ? o : null)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         }
-        return allInstances;
     }
 
     @Override
@@ -281,7 +287,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * Fake {@link EStructuralFeature} that represents the {@link Resource#getContents()} feature.
      */
-    private static class ResourceContentsEStructuralFeature extends EReferenceImpl {
+    private static class RootContentsReference extends EReferenceImpl {
 
         /**
          * The name of this reference.
@@ -289,9 +295,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         private static final String CONTENTS = "eContents";
 
         /**
-         * Constructs a new {@code ResourceContentsEStructuralFeature}.
+         * Constructs a new {@code RootContentsReference}.
          */
-        public ResourceContentsEStructuralFeature() {
+        public RootContentsReference() {
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
             setLowerBound(0);
             setName(CONTENTS);
@@ -303,7 +309,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * Dummy {@link PersistentEObject} that represents the root entry point for this {@link PersistentResource}.
      */
-    private static final class DummyRootEObject extends DefaultPersistentEObject {
+    private static final class RootObject extends DefaultPersistentEObject {
 
         /**
          * The literal representation of the identifier of the root element in a database.
@@ -311,63 +317,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         private static final String ROOT_EOBJECT_ID = "ROOT";
 
         /**
-         * Constructs a new {@code DummyRootEObject} with the given {@code resource}.
+         * Constructs a new {@code RootObject} with the given {@code resource}.
          *
          * @param resource the resource containing this object.
          */
-        public DummyRootEObject(Resource.Internal resource) {
+        public RootObject(Resource.Internal resource) {
             super(StringId.of(ROOT_EOBJECT_ID));
             eSetDirectResource(resource);
-        }
-    }
-
-    /**
-     * A shutdown-hook that stops a persistent back-end when the application exits.
-     */
-    private static class PersistenceBackendShutdownHook extends Thread {
-
-        /**
-         * The back-end to stop when the application will exit.
-         */
-        private final PersistenceBackend backend;
-
-        /**
-         * The {@link URI} of the resource used by the {@code backend}.
-         */
-        private final URI uri;
-
-        /**
-         * Creates a new {@code PersistenceBackendShutdownHook} with the given {@code backend}.
-         *
-         * @param backend the back-end to stop when the application will exit
-         * @param uri     the {@link URI} of the resource used by the {@code backend}
-         */
-        private PersistenceBackendShutdownHook(PersistenceBackend backend, URI uri) {
-            this.backend = backend;
-            this.uri = uri;
-        }
-
-        /**
-         * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
-         *
-         * @param backend the back-end to stop when the application will exit
-         * @param uri     the {@link URI} of the resource used by the {@code backend}
-         */
-        public static void closeOnExit(PersistenceBackend backend, URI uri) {
-            Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));
-        }
-
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Cleanly stops the underlying database.
-         *
-         * @see PersistenceBackend#close()
-         */
-        @Override
-        public void run() {
-            backend.close();
-            Log.debug("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
         }
     }
 
@@ -386,7 +342,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param feature ???
          * @param store   ???
          */
-        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, EStore store) {
+        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, PersistentStore store) {
             super(owner, feature, store);
         }
 

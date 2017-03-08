@@ -51,7 +51,7 @@ import static java.util.Objects.nonNull;
  * The default implementation of a {@link PersistentEObject}.
  * <p>
  * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses
- * to an underlying {@link EStore} that interacts with the database used to store the model.
+ * to an underlying {@link PersistentStore} that interacts with the database used to store the model.
  * <p>
  * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all
  * existing database implementations.
@@ -60,9 +60,10 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
-     * ???
+     * The identifier of the {@link EReference} used to link this object to its container, when this object has not
+     * container.
      */
-    private static final int UNSETTED_FEATURE_ID = -1;
+    private static final int UNSETTED_REFERENCE_ID = -1;
 
     /**
      * The identifier of this object.
@@ -73,6 +74,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The resource containing this object.
      */
+    @Nullable
     private Resource.Internal resource;
 
     /**
@@ -81,24 +83,25 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private boolean isMapped;
 
     /**
-     * The internal cached value of the eContainer.
+     * The internal cached value of the container.
      * <p>
-     * This information should be also maintained in the underlying {@link EStore}.
+     * This information should be also maintained in the {@link #store}.
      */
-    private InternalEObject eContainer;
+    @Nullable
+    private InternalEObject container;
 
     /**
-     * ???
+     * The identifier of the {@link EReference} used to link this object to its container.
      */
-    private int eContainerFeatureId;
+    private int containerReferenceId;
 
     /**
-     * ???
+     * The {@link PersistentStore} where this object is stored.
      */
-    private EStore store;
+    private PersistentStore store;
 
     /**
-     * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
+     * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id}, using {@link StringId#generate()}.
      */
     protected DefaultPersistentEObject() {
         this(StringId.generate());
@@ -109,9 +112,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param id the identifier of this object
      */
-    protected DefaultPersistentEObject(@Nonnull Id id) {
+    protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
-        this.eContainerFeatureId = UNSETTED_FEATURE_ID;
+        this.containerReferenceId = UNSETTED_REFERENCE_ID;
         this.isMapped = false;
     }
 
@@ -122,7 +125,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public void id(@Nonnull Id id) {
+    public void id(Id id) {
         this.id = checkNotNull(id);
     }
 
@@ -147,7 +150,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public void resource(@Nullable Resource.Internal resource) {
         this.resource = resource;
 
-        EStore previousStore = store;
+        PersistentStore previousStore = store;
 
         // Set the new store
         if (resource instanceof PersistentResource) {
@@ -158,25 +161,24 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         // Move contents from the previous store to the new
-        if (nonNull(previousStore) && nonNull(store) && store != previousStore) {
+        if (nonNull(previousStore) && store != previousStore) {
             copyStore(previousStore, store);
         }
     }
 
     /**
-     * Move the content from the {@code source} {@link org.eclipse.emf.ecore.InternalEObject.EStore} to the
-     * {@code target}.
+     * Move the content from the {@code source} {@link PersistentStore} to the {@code target}.
      *
-     * @param source the {@link org.eclipse.emf.ecore.InternalEObject.EStore} to copy
-     * @param target the {@link org.eclipse.emf.ecore.InternalEObject.EStore} where to store data
+     * @param source the store to copy
+     * @param target the store where to store data
      */
-    private void copyStore(EStore source, EStore target) {
+    private void copyStore(PersistentStore source, PersistentStore target) {
         // If the new store is different, initialize the new store with the data stored in the old store
         for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
             if (source.isSet(this, feature)) {
                 if (!feature.isMany()) {
-                    getValueFrom(source, feature, EStore.NO_INDEX)
-                            .ifPresent(v -> target.set(this, feature, EStore.NO_INDEX, v));
+                    getValueFrom(source, feature, PersistentStore.NO_INDEX)
+                            .ifPresent(v -> target.set(this, feature, PersistentStore.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, feature);
@@ -198,10 +200,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @return the adapted value, or {@code null} if the value doesn't exist in the {@code store}
      *
-     * @see EStore#get(InternalEObject, EStructuralFeature, int)
+     * @see PersistentStore#get(InternalEObject, EStructuralFeature, int)
      */
     @Nonnull
-    private Optional<Object> getValueFrom(EStore store, EStructuralFeature feature, int index) {
+    private Optional<Object> getValueFrom(PersistentStore store, EStructuralFeature feature, int index) {
         Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
 
         if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
@@ -213,6 +215,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         return value;
     }
 
+    @Nullable
     @Override
     public EObject eContainer() {
         EObject container;
@@ -222,8 +225,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
              * get it from the backend. This is not true in a distributed context when another client can the database
              * without notifying others.
              */
-            if (!((PersistentResource) resource).isDistributed() && nonNull(eContainer)) {
-                container = eContainer;
+            if (!((PersistentResource) resource).store().backend().isDistributed() && nonNull(this.container)) {
+                container = this.container;
             }
             else {
                 InternalEObject internalContainer = eStore().getContainer(this);
@@ -238,6 +241,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         return container;
     }
 
+    @Nullable
     @Override
     public Resource eResource() {
         return Optional.<Resource>ofNullable(resource)
@@ -265,25 +269,27 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    protected void eBasicSetContainer(InternalEObject eContainer) {
-        this.eContainer = eContainer;
-        if (nonNull(eContainer) && eContainer.eResource() != resource) {
-            resource((Resource.Internal) this.eContainer.eResource());
+    protected void eBasicSetContainer(InternalEObject container) {
+        this.container = container;
+        if (nonNull(container) && container.eResource() != resource) {
+            resource((Resource.Internal) this.container.eResource());
         }
     }
 
     @Override
-    protected void eBasicSetContainerFeatureID(int eContainerFeatureId) {
-        this.eContainerFeatureId = eContainerFeatureId;
+    protected void eBasicSetContainerFeatureID(int containerReferenceId) {
+        this.containerReferenceId = containerReferenceId;
     }
 
+    @Nonnull
     @Override
     public EList<EObject> eContents() {
         return DelegatedContentsList.newList(this);
     }
 
+    @Nonnull
     @Override
-    public EStore eStore() {
+    public PersistentStore eStore() {
         if (isNull(store)) {
             store = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
         }
@@ -295,6 +301,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         return false;
     }
 
+    @Nullable
     @Override
     public Object dynamicGet(int dynamicFeatureId) {
         Object value;
@@ -311,7 +318,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            value = eStore().get(this, feature, EStore.NO_INDEX);
+            value = eStore().get(this, feature, PersistentStore.NO_INDEX);
         }
 
         return value;
@@ -330,7 +337,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
         }
         else {
-            eStore().set(this, feature, EStore.NO_INDEX, value);
+            eStore().set(this, feature, PersistentStore.NO_INDEX, value);
         }
     }
 
@@ -349,17 +356,18 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @return the container of this object.
      */
+    @Nullable
     @Override
     public InternalEObject eInternalContainer() {
         // Don't load the container from the store here: it creates an important overhead and performance loss.
         // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
-        return eContainer;
+        return container;
 //        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
     }
 
     @Override
     public int eContainerFeatureID() {
-        if (eContainerFeatureId == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
+        if (containerReferenceId == UNSETTED_REFERENCE_ID && resource instanceof PersistentResource) {
             EReference containingFeature = (EReference) eStore().getContainingFeature(this);
             if (nonNull(containingFeature)) {
                 EReference oppositeFeature = containingFeature.getEOpposite();
@@ -371,7 +379,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 }
             }
         }
-        return eContainerFeatureId;
+        return containerReferenceId;
     }
 
     @Override
@@ -536,9 +544,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         /**
          * {@inheritDoc}
          * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject,
-         * EStructuralFeature, int)} by delegating the call to the {@link EStore#toArray(InternalEObject,
-         * EStructuralFeature)} implementation.
+         * Overrides the default implementation which relies on {@link #size()} and {@link
+         * PersistentStore#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
+         * PersistentStore#toArray(InternalEObject, EStructuralFeature)} implementation.
          */
         @Nonnull
         @Override
@@ -549,9 +557,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         /**
          * {@inheritDoc}
          * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject,
-         * EStructuralFeature, int)} by delegating the call to the {@link EStore#toArray(InternalEObject,
-         * EStructuralFeature, Object[])} implementation.
+         * Overrides the default implementation which relies on {@link #size()} and {@link
+         * PersistentStore#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
+         * PersistentStore#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
          */
         @Nonnull
         @Override
@@ -568,7 +576,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link EStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
+         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
          * to append the result to the existing list.
          * <p>
          * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
@@ -584,7 +592,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     addUnique(object);
                 }
                 else {
-                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
+                    int index = size() == 0 ? 0 : PersistentStore.NO_INDEX;
                     addUnique(index, object);
                 }
                 return true;

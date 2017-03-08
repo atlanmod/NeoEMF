@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.io.Closeable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,12 +32,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see MultiReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceMapper extends ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
+public interface PersistenceMapper extends Closeable, ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
 
     /**
-     * Saves all modifications.
+     * Saves all changes made on this mapper since the last call.
      */
     void save();
+
+    /**
+     * Cleanly closes this mapper and releases any system resources associated with it. If it is already closed then
+     * invoking this method has no effect.
+     * <p>
+     * All modifications are saved before closing.
+     */
+    @Override
+    void close();
+
+    /**
+     * Copies all the contents from this mapper to the {@code target}.
+     *
+     * @param target the mapper to copy the database contents to
+     */
+    void copyTo(PersistenceMapper target);
 
     /**
      * Checks whether the specified {@code id} already exists in this {@code PersistenceMapper}.

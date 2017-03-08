@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -21,12 +22,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link
- * fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
+ * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link PersistenceBackend}s.
  */
 @ParametersAreNonnullByDefault
 public interface PersistentStore extends InternalEObject.EStore, PersistenceMapper {
@@ -40,12 +41,21 @@ public interface PersistentStore extends InternalEObject.EStore, PersistenceMapp
     PersistentResource resource();
 
     /**
+     * Returns the {@link PersistenceBackend} where data are persisted.
+     *
+     * @return the backend where data are persisted
+     */
+    @Nonnull
+    PersistenceBackend backend();
+
+    /**
      * Returns the resolved {@link PersistentEObject} identified by the given {@code id} or {@code null}.
      *
      * @param id the identifier of the {@link PersistentEObject} to resolve
      *
      * @return the resolved {@link PersistentEObject}, or {@code null} if no {@link PersistentEObject} can be resolved
      */
+    @Nullable
     PersistentEObject object(Id id);
 
     @Override

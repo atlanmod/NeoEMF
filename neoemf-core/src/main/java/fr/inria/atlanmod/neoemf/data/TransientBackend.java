@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
@@ -98,18 +99,14 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
+    public void copyTo(PersistenceMapper target) {
+        // TODO Implement this method
+        // Do nothing
     }
 
     @Override
     public boolean isDistributed() {
         return false;
-    }
-
-    @Override
-    public void copyTo(PersistenceBackend target) {
-        // Do nothing
     }
 
     @Override

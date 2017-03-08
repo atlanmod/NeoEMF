@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -18,6 +20,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -37,7 +40,8 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      *
      * @return the {@link InternalEObject.EStore}
      */
-    InternalEObject.EStore store();
+    @Nonnull
+    PersistentStore store();
 
     /**
      * Checks whether this {@code PersistentResource} is mapped to a non-transient
@@ -52,7 +56,10 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
      *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
+     *
+     * @deprecated Use {@code store().backend().isDistributed()} instead
      */
+    @Deprecated
     boolean isDistributed();
 
     /**
@@ -64,6 +71,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      *
      * @return all the instances of the given {@link EClass} from the resource
      */
+    @Nonnull
     default Iterable<EObject> allInstances(EClass eClass) {
         return allInstances(eClass, false);
     }
@@ -77,5 +85,6 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return if {@code true} then the method returns only the strict instances of the given {@link EClass}, otherwise
      * it also returns the instances of the sub-types of {@code eClass}.
      */
+    @Nonnull
     Iterable<EObject> allInstances(EClass eClass, boolean strict);
 }

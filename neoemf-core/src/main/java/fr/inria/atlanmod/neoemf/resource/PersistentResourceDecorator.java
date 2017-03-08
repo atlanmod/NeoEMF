@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -19,7 +21,6 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.IOException;
@@ -240,9 +241,10 @@ public class PersistentResourceDecorator implements PersistentResource {
         resource.close();
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public InternalEObject.EStore store() {
+    public PersistentStore store() {
         return resource.store();
     }
 
@@ -254,16 +256,19 @@ public class PersistentResourceDecorator implements PersistentResource {
 
     @Override
     @OverridingMethodsMustInvokeSuper
+    @Deprecated
     public boolean isDistributed() {
         return resource.isDistributed();
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstances(EClass eClass) {
         return resource.allInstances(eClass);
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstances(EClass eClass, boolean strict) {

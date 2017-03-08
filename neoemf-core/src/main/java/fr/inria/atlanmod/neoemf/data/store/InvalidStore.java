@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
@@ -52,9 +54,25 @@ public final class InvalidStore extends AbstractPersistentStore {
         throw new UnsupportedOperationException(MSG);
     }
 
+    @Nonnull
+    @Override
+    public PersistenceBackend backend() {
+        throw new UnsupportedOperationException(MSG);
+    }
+
     @Override
     public void save() {
         throw new UnsupportedOperationException(MSG);
+    }
+
+    @Override
+    public void close() {
+        // Do nothing
+    }
+
+    @Override
+    public void copyTo(PersistenceMapper target) {
+        // Do nothing
     }
 
     @Override

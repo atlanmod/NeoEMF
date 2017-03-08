@@ -23,11 +23,10 @@ import com.sleepycat.je.OperationStatus;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -116,7 +115,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     @Override
     public void close() {
-        if (isClosed()) {
+        if (isClosed) {
             return;
         }
 
@@ -124,22 +123,11 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
             allDatabases().forEach(Database::close);
             environment.close();
         }
-        catch (Exception e) {
-            Log.warn(e);
+        catch (Exception ignore) {
         }
         finally {
             isClosed = true;
         }
-    }
-
-    @Override
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return false;
     }
 
     /**
@@ -148,13 +136,18 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
      * @param target the {@code PersistenceBackend} to copy the database contents to
      */
     @Override
-    public void copyTo(PersistenceBackend target) {
+    public void copyTo(PersistenceMapper target) {
         checkArgument(target instanceof AbstractBerkeleyDbBackend);
         AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
 
         copy(instances, to.instances);
         copy(features, to.features);
         copy(containers, to.containers);
+    }
+
+    @Override
+    public boolean isDistributed() {
+        return false;
     }
 
     @Override
