@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.io.writer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
@@ -373,9 +373,9 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         checkNotNull(name);
         checkNotNull(uri);
 
-        Optional<MetaclassDescriptor> metaclass = backend.metaclassOf(id);
+        Optional<ClassDescriptor> metaclass = backend.metaclassOf(id);
         if (!metaclass.isPresent()) {
-            backend.metaclassFor(id, MetaclassDescriptor.of(name, uri));
+            backend.metaclassFor(id, ClassDescriptor.of(name, uri));
         }
         else {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");

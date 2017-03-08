@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.Optional;
@@ -78,13 +78,13 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         loadedObjects.add(id);
         return super.metaclassOf(id);
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         loadedObjects.add(id);
         super.metaclassFor(id, metaclass);
     }

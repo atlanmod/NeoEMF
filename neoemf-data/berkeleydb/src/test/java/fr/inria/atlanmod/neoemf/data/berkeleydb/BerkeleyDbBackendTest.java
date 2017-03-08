@@ -18,10 +18,10 @@ import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -148,9 +148,9 @@ public class BerkeleyDbBackendTest extends AbstractTest {
         PersistentEObject po = mock(PersistentEObject.class);
         when(po.eClass()).thenReturn(eClass);
 
-        backend.metaclassFor(id2, MetaclassDescriptor.from(po));
+        backend.metaclassFor(id2, ClassDescriptor.from(po));
 
-        MetaclassDescriptor metaclass = backend.metaclassOf(id2).orElse(null);
+        ClassDescriptor metaclass = backend.metaclassOf(id2).orElse(null);
         assertThat(metaclass).isNotNull();
         assertThat(metaclass.name()).isEqualTo("eClassTest");
         assertThat(metaclass.uri()).isEqualTo("URI://my.uri/");

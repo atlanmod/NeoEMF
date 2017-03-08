@@ -17,9 +17,9 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
@@ -57,7 +57,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final HTreeMap<Id, MetaclassDescriptor> instanceOfMap;
+    private final HTreeMap<Id, ClassDescriptor> instanceOfMap;
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
@@ -167,14 +167,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
         return get(instanceOfMap, id);
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 

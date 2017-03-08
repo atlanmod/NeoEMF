@@ -25,8 +25,8 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
@@ -104,10 +104,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             .build();
 
     /**
-     * List that holds indexed {@link MetaclassDescriptor}.
+     * List that holds indexed {@link ClassDescriptor}.
      */
     @Nonnull
-    private final List<MetaclassDescriptor> indexedMetaclasses;
+    private final List<ClassDescriptor> indexedMetaclasses;
 
     /**
      * Index containing metaclasses.
@@ -151,14 +151,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     }
 
     /**
-     * Builds the {@link Id} used to identify a {@link MetaclassDescriptor} {@link Vertex}.
+     * Builds the {@link Id} used to identify a {@link ClassDescriptor} {@link Vertex}.
      *
-     * @param metaclass the {@link MetaclassDescriptor} to build an {@link Id} from
+     * @param metaclass the {@link ClassDescriptor} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
     @Nonnull
-    private static Id buildId(MetaclassDescriptor metaclass) {
+    private static Id buildId(ClassDescriptor metaclass) {
         return StringId.of(metaclass.name() + '@' + metaclass.uri());
     }
 
@@ -216,7 +216,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         GraphHelper.copyGraph(graph, to.graph);
 
-        for (MetaclassDescriptor metaclass : indexedMetaclasses) {
+        for (ClassDescriptor metaclass : indexedMetaclasses) {
             Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, metaclass.name());
             checkArgument(Iterables.isEmpty(metaclasses), "Index is not consistent");
             to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).<IllegalStateException>orElseThrow(IllegalStateException::new));
@@ -273,7 +273,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
         Optional<Vertex> vertex = get(id);
@@ -285,11 +285,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
         Optional<Vertex> metaclassVertex = Iterables.stream(metaclassVertices).findAny();
 
-        return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
+        return metaclassVertex.map(v -> ClassDescriptor.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 
@@ -318,7 +318,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
+    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
         List<Id> indexHits;
 
         // There is no strict instance of an abstract class
@@ -326,17 +326,12 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             return Collections.emptyList();
         }
         else {
-            Set<MetaclassDescriptor> classesToFind = new HashSet<>();
-            classesToFind.add(metaclass);
+            Set<ClassDescriptor> allInstances = strict ? new HashSet<>() : metaclass.inheritedBy();
+            allInstances.add(metaclass);
 
-            // Find all the concrete subclasses of the given EClass (the metaclass index only stores concretes EClass)
-            if (!strict) {
-                classesToFind.addAll(metaclass.allConcreteSubclasses());
-            }
-
-            // Get all the vertices that are indexed with one of the EClass
-            return classesToFind.stream()
-                    .flatMap(ec -> Iterables.stream(metaclassIndex.get(KEY_NAME, ec.name()))
+            // Get all vertices that are indexed with one of the metaclass
+            return allInstances.stream()
+                    .flatMap(mc -> Iterables.stream(metaclassIndex.get(KEY_NAME, mc.name()))
                             .flatMap(mcv -> Iterables.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
                                     .map(v -> StringId.from(v.getId()))))
                     .collect(Collectors.toList());

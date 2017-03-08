@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 
 import org.junit.After;
@@ -77,12 +77,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link PersistenceMapper#exists(Id)} after defining a {@link MetaclassDescriptor}.
+     * Checks the behavior of {@link PersistenceMapper#exists(Id)} after defining a {@link ClassDescriptor}.
      */
     @Test
     public void testExists() {
         Id id = StringId.of("Id0");
-        mapper.metaclassFor(id, MetaclassDescriptor.of("Metaclass0", "Uri0"));
+        mapper.metaclassFor(id, ClassDescriptor.of("Metaclass0", "Uri0"));
 
         assertThat(mapper.exists(id)).isTrue();
     }
@@ -163,11 +163,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} and {@link MetaclassMapper#metaclassFor(Id,
-     * MetaclassDescriptor)}.
+     * ClassDescriptor)}.
      */
     @Test
     public void testGetSetSameMetaclass() {
-        MetaclassDescriptor metaclass = MetaclassDescriptor.of("Metaclass0", "Uri0");
+        ClassDescriptor metaclass = ClassDescriptor.of("Metaclass0", "Uri0");
 
         Id id0 = StringId.of("Id0"), id1 = StringId.of("Id1");
 
@@ -181,12 +181,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} and {@link MetaclassMapper#metaclassFor(Id,
-     * MetaclassDescriptor)}.
+     * ClassDescriptor)}.
      */
     @Test
     public void testGetSetDifferentMetaclass() {
-        MetaclassDescriptor metaclass0 = MetaclassDescriptor.of("Metaclass0", "Uri0"),
-                metaclass1 = MetaclassDescriptor.of("Metaclass1", "Uri1");
+        ClassDescriptor metaclass0 = ClassDescriptor.of("Metaclass0", "Uri0"),
+                metaclass1 = ClassDescriptor.of("Metaclass1", "Uri1");
 
         Id id0 = StringId.of("Id0"), id1 = StringId.of("Id1");
 
@@ -216,7 +216,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Single-value attributes
 
     /**
-     * Checks the behavior of {@link MetaclassMapper#metaclassFor(Id, MetaclassDescriptor)} with a {@code null} value.
+     * Checks the behavior of {@link MetaclassMapper#metaclassFor(Id, ClassDescriptor)} with a {@code null} value.
      */
     @Test
     public void testSetNullMetaclass() {

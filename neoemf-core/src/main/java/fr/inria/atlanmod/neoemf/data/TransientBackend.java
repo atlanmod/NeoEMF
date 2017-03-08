@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import java.util.Map;
 import java.util.Optional;
@@ -45,7 +45,7 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
     /**
      * An in-memory map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
-    private final Map<Id, MetaclassDescriptor> instanceOfMap = new ConcurrentHashMap<>();
+    private final Map<Id, ClassDescriptor> instanceOfMap = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores Structural feature values for {@link PersistentEObject}s, identified by the
@@ -132,14 +132,14 @@ public class TransientBackend implements PersistenceBackend, MultiValueWithIndic
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
         return Optional.ofNullable(instanceOfMap.get(id));
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 

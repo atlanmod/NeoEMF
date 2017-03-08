@@ -24,9 +24,9 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -170,14 +170,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
         return get(instances, id);
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 

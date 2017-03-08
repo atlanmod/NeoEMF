@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,11 +34,11 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A simple representation of a (meta){@link EClass}.
+ * A simple representation of a {@link EClass}.
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class MetaclassDescriptor implements Serializable {
+public class ClassDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
@@ -60,29 +61,29 @@ public class MetaclassDescriptor implements Serializable {
     private transient EClass eClass;
 
     /**
-     * Constructs a new {@code MetaclassDescriptor} with the given {@code name} and {@code uri}, which are used as a
+     * Constructs a new {@code ClassDescriptor} with the given {@code name} and {@code uri}, which are used as a
      * simple representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
-    protected MetaclassDescriptor(String name, String uri) {
+    protected ClassDescriptor(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
 
     /**
-     * Constructs a new {@code MetaclassDescriptor} for the represented {@code eClass}.
+     * Constructs a new {@code ClassDescriptor} for the represented {@code eClass}.
      *
      * @param eClass the represented {@link EClass}
      */
-    private MetaclassDescriptor(EClass eClass) {
+    private ClassDescriptor(EClass eClass) {
         this(eClass.getName(), eClass.getEPackage().getNsURI());
         this.eClass = eClass;
     }
 
     /**
-     * Creates a new {@code MetaclassDescriptor} from the given {@code object}. The {@link EClass} will be found by
+     * Creates a new {@code ClassDescriptor} from the given {@code object}. The {@link EClass} will be found by
      * calling the {@link PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
@@ -90,50 +91,50 @@ public class MetaclassDescriptor implements Serializable {
      * @param object the object from which the {@link EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method
      *
-     * @return a new {@code MetaclassDescriptor}
+     * @return a new {@code ClassDescriptor}
      *
      * @see #from(EClass)
      * @see #of(String, String)
      */
     @Nonnull
-    public static MetaclassDescriptor from(PersistentEObject object) {
+    public static ClassDescriptor from(PersistentEObject object) {
         return from(object.eClass());
     }
 
     /**
-     * Creates a new {@code MetaclassDescriptor} from the given {@code eClass}.
+     * Creates a new {@code ClassDescriptor} from the given {@code eClass}.
      * <p>
      * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
      *
      * @param eClass the {@link EClass}
      *
-     * @return a new {@code MetaclassDescriptor}
+     * @return a new {@code ClassDescriptor}
      *
      * @see #of(String, String)
      */
     @Nonnull
-    public static MetaclassDescriptor from(EClass eClass) {
-        return new MetaclassDescriptor(eClass);
+    public static ClassDescriptor from(EClass eClass) {
+        return new ClassDescriptor(eClass);
     }
 
     /**
-     * Creates a new {@code MetaclassDescriptor} with the given {@code name} and {@code uri}, which are used as a simple
+     * Creates a new {@code ClassDescriptor} with the given {@code name} and {@code uri}, which are used as a simple
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      *
-     * @return a new {@code MetaclassDescriptor}
+     * @return a new {@code ClassDescriptor}
      */
     @Nonnull
-    public static MetaclassDescriptor of(String name, String uri) {
-        return new MetaclassDescriptor(name, uri);
+    public static ClassDescriptor of(String name, String uri) {
+        return new ClassDescriptor(name, uri);
     }
 
     /**
-     * Returns the name of the {@link EClass}.
+     * Returns the name of this {@code ClassDescriptor}.
      *
-     * @return the name of the class
+     * @return the name
      */
     @Nonnull
     public String name() {
@@ -141,9 +142,9 @@ public class MetaclassDescriptor implements Serializable {
     }
 
     /**
-     * Returns the literal representation of the {@link URI} of the {@link EClass}.
+     * Returns the literal representation of the {@link URI} of this {@code ClassDescriptor}.
      *
-     * @return the literal representation of the {@link URI}
+     * @return the URI
      */
     @Nonnull
     public String uri() {
@@ -151,32 +152,59 @@ public class MetaclassDescriptor implements Serializable {
     }
 
     /**
-     * Returns whether this metaclass is abstract.
+     * Returns whether this {@code ClassDescriptor} represents an abstract class.
      *
-     * @return {@code true} if this metaclass is abstract, {@code false} otherwise
+     * @return {@code true} if this {@code ClassDescriptor} represents an abstract class, {@code false} otherwise
      */
     public boolean isAbstract() {
         return eClass().isAbstract();
     }
 
     /**
-     * Retrieves all concrete subclasses of this metaclass.
+     * Returns whether this {@code ClassDescriptor} represents an interface.
      *
-     * @return a {@link Set} containing all subclasses
+     * @return {@code true} if this {@code ClassDescriptor} represents an interface, {@code false} otherwise
+     */
+    public boolean isInterface() {
+        return eClass().isInterface();
+    }
+
+    /**
+     * Retrieves the superclass of this {@code ClassDescriptor}.
+     *
+     * @return an {@link Optional} containing the representation of the direct superclass, or {@link Optional#empty()}
+     * if the class has no superclass
      */
     @Nonnull
-    public Set<MetaclassDescriptor> allConcreteSubclasses() {
+    public Optional<ClassDescriptor> inheritFrom() {
+        return eClass().getESuperTypes()
+                .stream()
+                .filter(c -> !c.isInterface())
+                .map(ClassDescriptor::from)
+                .findAny();
+    }
+
+    /**
+     * Retrieves all subclasses of this {@code ClassDescriptor}.
+     *
+     * @return a {@link Set} containing the representation of all non-abstract subclasses that inherit, directly and
+     * indirectly, from this {@code ClassDescriptor}
+     */
+    @Nonnull
+    public Set<ClassDescriptor> inheritedBy() {
         return eClass().getEPackage().getEClassifiers()
                 .stream()
                 .filter(EClass.class::isInstance)
                 .map(EClass.class::cast)
-                .filter(c -> eClass().isSuperTypeOf(c) && !c.isAbstract())
-                .map(MetaclassDescriptor::from)
+                .filter(c -> eClass().isSuperTypeOf(c))
+                .filter(c -> !c.isAbstract())
+                .filter(c -> !c.isInterface())
+                .map(ClassDescriptor::from)
                 .collect(Collectors.toSet());
     }
 
     /**
-     * Retrieves the {@link EClass} corresponding to this {@code MetaclassDescriptor}.
+     * Retrieves the {@link EClass} corresponding to this {@code ClassDescriptor}.
      *
      * @return a class, or {@code null} if it can not be found
      */
@@ -206,7 +234,7 @@ public class MetaclassDescriptor implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MetaclassDescriptor that = (MetaclassDescriptor) o;
+        ClassDescriptor that = (ClassDescriptor) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(uri, that.uri);
     }

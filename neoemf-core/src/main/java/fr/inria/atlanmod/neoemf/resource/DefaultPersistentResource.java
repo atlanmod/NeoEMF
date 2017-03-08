@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -273,7 +273,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
-            return Iterables.stream(store.allInstancesOf(MetaclassDescriptor.from(eClass), strict))
+            return Iterables.stream(store.allInstancesOf(ClassDescriptor.from(eClass), strict))
                     .map(id -> store.resolve(id))
                     .collect(Collectors.toList());
         }

@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -135,18 +135,18 @@ public final class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         return backend.metaclassOf(id);
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         backend.metaclassFor(id, metaclass);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
+    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
         return backend.allInstancesOf(metaclass, strict);
     }
 

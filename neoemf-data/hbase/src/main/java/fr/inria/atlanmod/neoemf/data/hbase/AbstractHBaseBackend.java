@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.apache.hadoop.hbase.client.Delete;
@@ -172,7 +172,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
 
     @Nonnull
     @Override
-    public Optional<MetaclassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
         return get(id)
@@ -180,15 +180,15 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
                     if (nonNull(byteName) && nonNull(byteUri)) {
-                        return Optional.of(MetaclassDescriptor.of(Serializer.deserialize(byteName), Serializer.deserialize(byteUri)));
+                        return Optional.of(ClassDescriptor.of(Serializer.deserialize(byteName), Serializer.deserialize(byteUri)));
                     }
-                    return Optional.<MetaclassDescriptor>empty();
+                    return Optional.<ClassDescriptor>empty();
                 })
                 .orElse(Optional.empty());
     }
 
     @Override
-    public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 

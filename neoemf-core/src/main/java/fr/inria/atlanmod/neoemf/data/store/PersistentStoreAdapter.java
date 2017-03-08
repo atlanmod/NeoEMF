@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
@@ -578,11 +578,11 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
         checkNotNull(id);
 
         return metaclassOf(id)
-                .map(MetaclassDescriptor::eClass);
+                .map(ClassDescriptor::eClass);
     }
 
     /**
-     * Computes the type of the {@code object} in a {@link MetaclassDescriptor} object and persists it in the database.
+     * Computes the type of the {@code object} in a {@link ClassDescriptor} object and persists it in the database.
      * <p>
      * <b>Note:</b> The type is not updated if {@code object} was previously mapped to another type.
      *
@@ -591,9 +591,9 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
     private void updateInstanceOf(PersistentEObject object) {
         checkNotNull(object);
 
-        Optional<MetaclassDescriptor> metaclass = metaclassOf(object.id());
+        Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
         if (!metaclass.isPresent()) {
-            metaclassFor(object.id(), MetaclassDescriptor.from(object));
+            metaclassFor(object.id(), ClassDescriptor.from(object));
         }
     }
 

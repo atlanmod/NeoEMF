@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
@@ -83,7 +83,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      */
     protected void readElement(Id id, boolean isRoot) {
         // Retrieve the metaclass and namespace
-        MetaclassDescriptor metaclass = backend.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
+        ClassDescriptor metaclass = backend.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
         EClass realMetaclass = metaclass.eClass();
 
         Namespace ns = Namespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
