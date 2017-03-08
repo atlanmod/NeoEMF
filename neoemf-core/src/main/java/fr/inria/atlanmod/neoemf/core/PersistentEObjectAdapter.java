@@ -36,7 +36,7 @@ import static java.util.Objects.isNull;
  * The factory that adapts {@link Object}s in a specific {@link Class}.
  */
 @ParametersAreNonnullByDefault
-class PersistentEObjectAdapter {
+final class PersistentEObjectAdapter {
 
     /**
      * In-memory cache that stores the {@link InternalEObject} that have been already adapted to avoid duplication of
@@ -46,7 +46,7 @@ class PersistentEObjectAdapter {
      * has been garbage collected.
      */
     @Nonnull
-    private static final Cache<InternalEObject, PersistentEObject> CACHE = CacheBuilder.newBuilder()
+    private static final Cache<Object, PersistentEObject> CACHE = CacheBuilder.newBuilder()
             .weakKeys()
             .build();
 
@@ -60,72 +60,73 @@ class PersistentEObjectAdapter {
     }
 
     /**
-     * Returns the given {@code object} adapted in a specific {@code type}.
+     * Adapts the provided object as a {@code type} instance.
      *
-     * @param <T>             the type of the adapted object
-     * @param adaptableObject the object to adapt
-     * @param adapterType     the class in which the object must be adapted
+     * @param <T>  the type of the adapted object
+     * @param o    the object to adapt
+     * @param type the class in which the object must be adapted
      *
      * @return an adapted object in the given {@code type}, or {@code null} if the {@code object} cannot be assigned as
      * a {@code type}
      *
      * @throws NullPointerException if the {@code type} is {@code null}
      */
-    public static <T extends PersistentEObject> T getAdapter(@Nullable Object adaptableObject, Class<T> adapterType) {
-        if (isNull(adaptableObject)) {
+    @Nullable
+    private static <T extends PersistentEObject> T getAdapter(@Nullable Object o, Class<T> type) {
+        if (isNull(o)) {
             return null;
         }
-        checkNotNull(adapterType);
+        checkNotNull(type);
 
         Object adapter = null;
-        if (adapterType.isInstance(adaptableObject)) {
-            adapter = adaptableObject;
+
+        if (type.isInstance(o)) {
+            adapter = o;
         }
-        else if (adaptableObject instanceof InternalEObject) {
-            adapter = CACHE.get((InternalEObject) adaptableObject);
-            if (isNull(adapter) || !adapterType.isAssignableFrom(adapter.getClass())) {
-                adapter = createAdapter(adaptableObject, adapterType);
-                CACHE.put((InternalEObject) adaptableObject, (PersistentEObject) adapter);
+        else if (o instanceof InternalEObject) {
+            adapter = CACHE.get(o);
+            if (isNull(adapter) || !type.isAssignableFrom(adapter.getClass())) {
+                adapter = createAdapter(o, type);
+                CACHE.put(o, (PersistentEObject) adapter);
             }
         }
 
         if (isNull(adapter)) {
-            Log.warn("Unable to create a {0} adapter for this object of type {1}", adapterType.getSimpleName(), adaptableObject.getClass().getSimpleName());
+            Log.warn("Unable to create a {0} adapter for this object of type {1}", type.getSimpleName(), o.getClass().getSimpleName());
+            return null;
         }
 
-        return adapterType.cast(adapter);
+        return type.cast(adapter);
     }
 
     /**
-     * Returns the given {@code object} as a {@link PersistentEObject}.
+     * Adapts the provided object as a {@link PersistentEObject} instance.
      *
-     * @param adaptableObject the object to adapt
+     * @param o the object to adapt
      *
      * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
      * assigned as a {@link PersistentEObject}
      *
      * @see #getAdapter(Object, Class)
      */
-    public static PersistentEObject getAdapter(@Nullable Object adaptableObject) {
-        return getAdapter(adaptableObject, PersistentEObject.class);
+    @Nullable
+    public static PersistentEObject getAdapter(@Nullable Object o) {
+        return getAdapter(o, PersistentEObject.class);
     }
 
     /**
      * Create an adapter for the given {@code object} in a specific {@code type}.
      *
-     * @param adaptableObject the object to adapt
-     * @param adapterType     the class in which the object must be adapted
+     * @param o    the object to adapt
+     * @param type the class in which the object must be adapted
      *
      * @return an adapted object in the given {@code type}
      */
     @Nonnull
-    private static Object createAdapter(Object adaptableObject, Class<?> adapterType) {
-        /*
-         * Compute the interfaces that the proxy has to implement
-		 * These are the current interfaces + PersistentEObject
-		 */
-        List<Class<?>> interfaces = ClassUtils.getAllInterfaces(adaptableObject.getClass());
-        interfaces.add(PersistentEObject.class);
+    private static <T> Object createAdapter(Object o, Class<T> type) {
+        // Compute the interfaces that the proxy has to implement
+        List<Class<?>> interfaces = ClassUtils.getAllInterfaces(o.getClass());
+        interfaces.add(type);
 
         // Create the proxy
         Enhancer proxy = new Enhancer();
@@ -134,10 +135,10 @@ class PersistentEObjectAdapter {
          * Use the ClassLoader of the type, otherwise it will cause OSGi troubles (like project trying to
 		 * create an PersistentEObject while it does not have a dependency to NeoEMF core)
 		 */
-        proxy.setClassLoader(adapterType.getClassLoader());
-        proxy.setSuperclass(adaptableObject.getClass());
+        proxy.setClassLoader(type.getClassLoader());
+        proxy.setSuperclass(o.getClass());
         proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
-        proxy.setCallback(new PersistentEObjectProxyHandler());
+        proxy.setCallback(new PersistentEObjectInterceptor());
 
         return proxy.create();
     }
@@ -145,7 +146,7 @@ class PersistentEObjectAdapter {
     /**
      * ???
      */
-    private static class PersistentEObjectProxyHandler implements MethodInterceptor {
+    private static class PersistentEObjectInterceptor implements MethodInterceptor {
 
         @Override
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {

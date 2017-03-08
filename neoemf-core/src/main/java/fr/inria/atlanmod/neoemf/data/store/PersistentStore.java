@@ -27,9 +27,11 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link InternalEObject.EStore} to establish a mapping between {@link Resource}s and {@link PersistenceBackend}s.
+ * A {@link PersistenceMapper} to establish a mapping between {@link PersistentResource}s and {@link
+ * PersistenceBackend}s.
  */
 @ParametersAreNonnullByDefault
+// TODO Remove inheritance from InternalEObject.EStore
 public interface PersistentStore extends InternalEObject.EStore, PersistenceMapper {
 
     /**
@@ -49,14 +51,16 @@ public interface PersistentStore extends InternalEObject.EStore, PersistenceMapp
     PersistenceBackend backend();
 
     /**
-     * Returns the resolved {@link PersistentEObject} identified by the given {@code id} or {@code null}.
+     * Returns the resolved {@link PersistentEObject} identified by the given {@code id}.
      *
      * @param id the identifier of the {@link PersistentEObject} to resolve
      *
-     * @return the resolved {@link PersistentEObject}, or {@code null} if no {@link PersistentEObject} can be resolved
+     * @return the resolved {@link PersistentEObject}
+     *
+     * @throws java.util.NoSuchElementException if no object can be resolved with the {@code id}
      */
-    @Nullable
-    PersistentEObject object(Id id);
+    @Nonnull
+    PersistentEObject resolve(Id id);
 
     @Override
     default EObject create(EClass eClass) {

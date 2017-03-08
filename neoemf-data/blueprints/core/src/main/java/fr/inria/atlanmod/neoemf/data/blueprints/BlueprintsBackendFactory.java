@@ -24,13 +24,12 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -104,7 +103,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public BlueprintsBackend createPersistentBackend(URI uri, Map<?, ?> options) {
+    public BlueprintsBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         BlueprintsBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
@@ -119,7 +118,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                 backend = new BlueprintsBackendIndices((KeyIndexableGraph) graph);
             }
             else {
-                throw new InvalidDataStoreException("Graph type " + file.getAbsolutePath() + " does not support key indices");
+                throw new InvalidDataStoreException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
             }
         }
         catch (RuntimeException e) {
@@ -145,7 +144,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
      *                                   {@code options} are missing or invalid.
      */
-    private Configuration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) {
+    private Configuration getOrCreateBlueprintsConfiguration(File directory, Map<String, Object> options) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(BLUEPRINTS_CONFIG_FILE);
         Configuration configuration = Configuration.load(path.toFile());
 
@@ -158,25 +157,38 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
             String savedGraphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
-                throw new InvalidDataStoreException(String.format("Unable to create graph as type %s , expected graph type was %s)", issuedGraphType, savedGraphType));
+                throw new InvalidDataStoreException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
             }
         }
 
         // Copy the Blueprints options to the configuration
-        for (Map.Entry<?, ?> e : options.entrySet()) {
-            if (e.getKey().toString().startsWith("blueprints.")) {
-                configuration.setProperty(e.getKey().toString(), e.getValue().toString());
-            }
+        options.entrySet().stream()
+                .filter(e -> e.getKey().startsWith("blueprints."))
+                .forEach(e -> configuration.setProperty(e.getKey(), e.getValue().toString()));
+
+        // Check we have a valid graph graphType, it is needed to get the graph name
+        if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
+            throw new InvalidDataStoreException(String.format("Graph is undefined for %s", directory.getAbsolutePath()));
         }
 
-        // Check we have a valid graph type, it is needed to get the graph name
-        if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            throw new InvalidDataStoreException(String.format("Graph type is undefined for %s", directory.getAbsolutePath()));
-        }
         String graphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE).toString();
 
+        configurationFor(graphType).putDefaultConfiguration(configuration, directory);
+
+        return configuration;
+    }
+
+    /**
+     * Retrieves the {@link BlueprintsConfiguration} instance from the {@code graphType}.
+     *
+     * @param graphType the type of the graph to use
+     *
+     * @return a {@link BlueprintsConfiguration} instance
+     */
+    private BlueprintsConfiguration configurationFor(String graphType) {
         // Define the configuration
         String[] segments = graphType.split("\\.");
+
         if (segments.length >= 2) {
             String graphName = segments[segments.length - 2];
             String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
@@ -187,24 +199,16 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
                 ClassLoader classLoader = BlueprintsBackendFactory.class.getClassLoader();
                 Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
                 Method configClassInstanceMethod = configClass.getMethod("getInstance");
-                BlueprintsConfiguration blueprintsConfig = (BlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
-                blueprintsConfig.putDefaultConfiguration(configuration, directory);
+
+                return (BlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
             }
-            catch (ClassNotFoundException e) {
-                Log.warn(e, "Unable to find the configuration class {0}", configClassQualifiedName);
-            }
-            catch (NoSuchMethodException e) {
-                Log.warn(e, "Unable to find configuration methods in class {0}", configClassName);
-            }
-            catch (InvocationTargetException | IllegalAccessException e) {
-                Log.warn(e, "An error occurs during the execution of a configuration method");
+            catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
         else {
-            Log.warn("Unable to compute graph type name from {0}", graphType);
+            throw new InvalidOptionException(String.format("Unable to retrieve the Graph name from '%s'", graphType));
         }
-
-        return configuration;
     }
 
     /**

@@ -38,7 +38,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     /**
      * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, OptionalInt> sizesCache = CacheBuilder.newBuilder()
+    private final Cache<FeatureKey, OptionalInt> cache = CacheBuilder.newBuilder()
             .maximumSize(10_000)
             .build();
 
@@ -53,22 +53,22 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        sizesCache.put(key, EMPTY);
+        cache.put(key, EMPTY);
         super.unsetValue(key);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
-                .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
+        Optional.ofNullable(cache.get(key.withoutPosition()))
+                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
 
         super.addValue(key, value);
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        Optional.ofNullable(sizesCache.get(key))
-                .ifPresent(s -> sizesCache.put(key, OptionalInt.of(s.orElse(0) + 1)));
+        Optional.ofNullable(cache.get(key))
+                .ifPresent(s -> cache.put(key, OptionalInt.of(s.orElse(0) + 1)));
 
         super.appendValue(key, value);
     }
@@ -76,15 +76,15 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
-                .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
+        Optional.ofNullable(cache.get(key.withoutPosition()))
+                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
 
         return super.removeValue(key);
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        sizesCache.put(key, EMPTY);
+        cache.put(key, EMPTY);
         super.removeAllValues(key);
     }
 
@@ -92,27 +92,27 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        return sizesCache.get(key, super::sizeOfValue);
+        return cache.get(key, super::sizeOfValue);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        sizesCache.put(key, EMPTY);
+        cache.put(key, EMPTY);
         super.unsetReference(key);
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
-                .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
+        Optional.ofNullable(cache.get(key.withoutPosition()))
+                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
 
         super.addReference(key, reference);
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        Optional.ofNullable(sizesCache.get(key))
-                .ifPresent(s -> sizesCache.put(key, OptionalInt.of(s.orElse(0) + 1)));
+        Optional.ofNullable(cache.get(key))
+                .ifPresent(s -> cache.put(key, OptionalInt.of(s.orElse(0) + 1)));
 
         super.appendReference(key, reference);
     }
@@ -120,15 +120,15 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        Optional.ofNullable(sizesCache.get(key.withoutPosition()))
-                .ifPresent(s -> sizesCache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
+        Optional.ofNullable(cache.get(key.withoutPosition()))
+                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
 
         return super.removeReference(key);
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        sizesCache.put(key, EMPTY);
+        cache.put(key, EMPTY);
         super.removeAllReferences(key);
     }
 
@@ -136,6 +136,6 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public OptionalInt sizeOfReference(FeatureKey key) {
-        return sizesCache.get(key, super::sizeOfReference);
+        return cache.get(key, super::sizeOfReference);
     }
 }

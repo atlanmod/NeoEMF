@@ -84,7 +84,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
+    public PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         MapDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/MapDB only supports file URIs");

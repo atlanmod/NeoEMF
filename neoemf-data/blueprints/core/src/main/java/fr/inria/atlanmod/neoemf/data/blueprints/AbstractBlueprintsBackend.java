@@ -30,11 +30,6 @@ import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
-import fr.inria.atlanmod.neoemf.util.log.Log;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,16 +75,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     protected static final String KEY_SIZE = "size";
 
     /**
-     * The property key used to set metaclass name in metaclass {@link Vertex}s.
-     */
-    private static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-
-    /**
-     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex}s.
-     */
-    private static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
-
-    /**
      * The label of type conformance {@link Edge}s.
      */
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
@@ -103,6 +88,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * The index key used to retrieve metaclass {@link Vertex}s.
      */
     private static final String KEY_NAME = "name";
+
+    /**
+     * The property key used to set the namespace URI of metaclass {@link Vertex}s.
+     */
+    private static final String KEY_NS_URI = "nsURI";
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -193,8 +183,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             try {
                 graph.shutdown();
             }
-            catch (Exception e) {
-                Log.warn(e);
+            catch (Exception ignore) {
             }
         }
     }
@@ -242,38 +231,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
     @Override
     public boolean exists(Id id) {
         return get(id).isPresent();
-    }
-
-    @Nonnull
-    @Override
-    public Iterable<Id> allInstances(EClass eClass, boolean strict) {
-        List<Id> indexHits;
-
-        // There is no strict instance of an abstract class
-        if (eClass.isAbstract() && strict) {
-            return Collections.emptyList();
-        }
-        else {
-            Set<EClass> eClassToFind = new HashSet<>();
-            eClassToFind.add(eClass);
-
-            // Find all the concrete subclasses of the given EClass (the metaclass index only stores concretes EClass)
-            if (!strict) {
-                eClassToFind.addAll(eClass.getEPackage().getEClassifiers()
-                        .stream()
-                        .filter(EClass.class::isInstance)
-                        .map(EClass.class::cast)
-                        .filter(c -> eClass.isSuperTypeOf(c) && !c.isAbstract())
-                        .collect(Collectors.toList()));
-            }
-
-            // Get all the vertices that are indexed with one of the EClass
-            return eClassToFind.stream()
-                    .flatMap(ec -> Iterables.stream(metaclassIndex.get(KEY_NAME, ec.getName()))
-                            .flatMap(mcv -> Iterables.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
-                                    .map(v -> StringId.from(v.getId()))))
-                    .collect(Collectors.toList());
-        }
     }
 
     @Nonnull
@@ -328,7 +285,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
         Optional<Vertex> metaclassVertex = Iterables.stream(metaclassVertices).findAny();
 
-        return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_ECLASS_NAME), v.getProperty(KEY_EPACKAGE_NSURI)));
+        return metaclassVertex.map(v -> MetaclassDescriptor.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
     }
 
     @Override
@@ -341,8 +298,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = graph.addVertex(buildId(metaclass).toString());
-            metaclassVertex.setProperty(KEY_ECLASS_NAME, metaclass.name());
-            metaclassVertex.setProperty(KEY_EPACKAGE_NSURI, metaclass.uri());
+            metaclassVertex.setProperty(KEY_NAME, metaclass.name());
+            metaclassVertex.setProperty(KEY_NS_URI, metaclass.uri());
 
             metaclassIndex.put(KEY_NAME, metaclass.name(), metaclassVertex);
             indexedMetaclasses.add(metaclass);
@@ -357,6 +314,33 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         // Remove old link
         vertex.getEdges(Direction.OUT, "kyanosInstanceOf").forEach(Edge::remove);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
+        List<Id> indexHits;
+
+        // There is no strict instance of an abstract class
+        if (metaclass.isAbstract() && strict) {
+            return Collections.emptyList();
+        }
+        else {
+            Set<MetaclassDescriptor> classesToFind = new HashSet<>();
+            classesToFind.add(metaclass);
+
+            // Find all the concrete subclasses of the given EClass (the metaclass index only stores concretes EClass)
+            if (!strict) {
+                classesToFind.addAll(metaclass.allConcreteSubclasses());
+            }
+
+            // Get all the vertices that are indexed with one of the EClass
+            return classesToFind.stream()
+                    .flatMap(ec -> Iterables.stream(metaclassIndex.get(KEY_NAME, ec.name()))
+                            .flatMap(mcv -> Iterables.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
+                                    .map(v -> StringId.from(v.getId()))))
+                    .collect(Collectors.toList());
+        }
     }
 
     /**

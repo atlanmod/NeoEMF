@@ -63,6 +63,8 @@ public class WriterFactory {
      * @param file the file where data must be written
      *
      * @return a new stream writer
+     *
+     * @throws IOException if an I/O error occurs
      */
     public static StreamWriter toXmi(File file) throws IOException {
         return toXmi(new FileOutputStream(file));
@@ -74,6 +76,8 @@ public class WriterFactory {
      * @param stream the stream where data must be written
      *
      * @return a new stream writer
+     *
+     * @throws IOException if an I/O error occurs
      */
     public static StreamWriter toXmi(OutputStream stream) throws IOException {
         return new XmiStAXCursorStreamWriter(stream);

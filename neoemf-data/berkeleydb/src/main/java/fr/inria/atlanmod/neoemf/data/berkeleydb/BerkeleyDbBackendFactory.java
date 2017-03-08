@@ -94,7 +94,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
+    public PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         BerkeleyDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/BerkeleyDB only supports file URIs");

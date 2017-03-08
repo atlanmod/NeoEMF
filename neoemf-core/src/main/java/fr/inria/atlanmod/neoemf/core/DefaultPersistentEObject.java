@@ -447,7 +447,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          *
          * @return an empty list
          */
-        @SuppressWarnings("unchecked") // Unchecked cast: 'DelegatedContentsList<?>' to 'DelegatedContentsList<...>'
+        @SuppressWarnings("unchecked") // Unchecked cast: 'DelegatedContentsList<?>' to 'DelegatedContentsList<E>'
         public static <E> DelegatedContentsList<E> empty() {
             return (DelegatedContentsList<E>) EMPTY;
         }

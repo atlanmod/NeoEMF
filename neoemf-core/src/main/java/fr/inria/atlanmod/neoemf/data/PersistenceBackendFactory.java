@@ -65,7 +65,7 @@ public interface PersistenceBackendFactory {
      *                                   missing
      */
     @Nonnull
-    PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options);
+    PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options);
 
     /**
      * Creates a {@link PersistentStore} between the given {@code resource} and the given in-memory {@code backend}.
@@ -111,7 +111,7 @@ public interface PersistenceBackendFactory {
      *                                   PersistenceBackend} for this factory
      */
     @Nonnull
-    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options);
+    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<String, Object> options);
 
     /**
      * Creates a {@link PersistentStore} between the given {@code resource} and the default persistent {@code backend}
@@ -131,7 +131,7 @@ public interface PersistenceBackendFactory {
      * @see #createPersistentStore(PersistentResource, PersistenceBackend, Map)
      * @see #createPersistentBackend(URI, Map)
      */
-    default PersistentStore createPersistentStore(PersistentResource resource, Map<?, ?> options) {
+    default PersistentStore createPersistentStore(PersistentResource resource, Map<String, Object> options) {
         return createPersistentStore(resource, createPersistentBackend(resource.getURI(), options), options);
     }
 }

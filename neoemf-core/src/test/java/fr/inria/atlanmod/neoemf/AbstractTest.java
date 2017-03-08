@@ -27,11 +27,11 @@ public abstract class AbstractTest {
      * The workspace that manages temporary files and folders.
      */
     @ClassRule
-    public static Workspace workspace = new Workspace();
+    public static final Workspace workspace = new Workspace();
 
     /**
      * The test-case logger.
      */
     @Rule
-    public TestRule watcher = new Watcher();
+    public final TestRule watcher = new Watcher();
 }

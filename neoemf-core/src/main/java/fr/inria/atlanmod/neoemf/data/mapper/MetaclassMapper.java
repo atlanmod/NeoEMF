@@ -49,4 +49,20 @@ public interface MetaclassMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     void metaclassFor(Id id, MetaclassDescriptor metaclass);
+
+    /**
+     * Back-end specific computation of {@link org.eclipse.emf.ecore.resource.Resource#getAllContents()}.
+     *
+     * @param metaclass the class to compute the instances of
+     * @param strict    {@code true} if the lookup searches for strict instances
+     *
+     * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
+     * MetaclassDescriptor}
+     *
+     * @throws UnsupportedOperationException if the back-end doesn't support the lookup of all instances
+     */
+    @Nonnull
+    default Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
+        throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
+    }
 }

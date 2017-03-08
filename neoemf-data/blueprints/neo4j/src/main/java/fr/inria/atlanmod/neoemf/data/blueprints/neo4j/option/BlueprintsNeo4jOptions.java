@@ -35,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
 
     /**
-     * Constructs a new {@ode BlueprintsNeo4jOptions}.
+     * Constructs a new {@code BlueprintsNeo4jOptions}.
      */
     protected BlueprintsNeo4jOptions() {
         super();
@@ -67,7 +67,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
     }
 
     @Override
-    public void fromMap(Map<?, ?> options) {
+    public void fromMap(Map<String, Object> options) {
         super.fromMap(options);
     }
 }

@@ -65,7 +65,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      */
     @SuppressWarnings("unchecked")
     @Nonnull
-    protected static List<PersistentStoreOptions> getStoreOptions(@Nullable Map<?, ?> options) {
+    protected static List<PersistentStoreOptions> getStoreOptions(@Nullable Map<String, Object> options) {
         List<PersistentStoreOptions> storeOptions;
 
         try {
@@ -105,7 +105,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
 
     @Nonnull
     @Override
-    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) {
+    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<String, Object> options) {
         PersistentStore store = new DirectWriteStore(backend, resource);
 
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);

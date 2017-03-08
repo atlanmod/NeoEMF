@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -125,12 +124,6 @@ public final class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstances(EClass metaclass, boolean strict) {
-        return backend.allInstances(metaclass, strict);
-    }
-
-    @Nonnull
-    @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
         return backend.containerOf(id);
     }
@@ -149,6 +142,12 @@ public final class DirectWriteStore extends AbstractPersistentStore {
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
         backend.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
+        return backend.allInstancesOf(metaclass, strict);
     }
 
     @Nonnull

@@ -48,9 +48,9 @@ import static java.util.Objects.isNull;
  * This class only creates persistent databases that can be configured using {@link PersistentResource#save(Map)} and
  * {@link PersistentResource#load(Map)} options maps.
  * <p>
- * Note that transient back-ends can be instantiated using this factory, but they will be handed as persistent ones.
- * This is a limitation that will be solved in next releases. To avoid any consistency issue we recommend every HBase
- * resource right after their creation, ensuring the resource is using a persistent back-end.
+ * <b>Important Note:</b> Transient back-ends can be instantiated using this factory, but they will be handed as
+ * persistent ones. This is a limitation that will be solved in next releases. To avoid any consistency issue we
+ * recommend every HBase resource right after their creation, ensuring the resource is using a persistent back-end.
  *
  * @see PersistentResource
  * @see HBaseBackend
@@ -109,7 +109,7 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<?, ?> options) {
+    public PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
         return new HBaseBackendArraysStrings(createTable(uri));

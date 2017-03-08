@@ -44,7 +44,7 @@ public abstract class AbstractBlueprintsOptions extends AbstractPersistenceOptio
     }
 
     @Override
-    public void fromMap(Map<?, ?> options) {
+    public void fromMap(Map<String, Object> options) {
         super.fromMap(options);
     }
 }

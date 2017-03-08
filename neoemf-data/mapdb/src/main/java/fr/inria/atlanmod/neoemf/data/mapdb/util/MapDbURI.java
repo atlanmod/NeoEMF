@@ -11,13 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -32,24 +28,27 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A specific {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File} descriptor or
  * an existing {@link URI}.
  * <p>
- * The class defines a MapDB specific {@link URI} scheme that is used to register {@link MapDbBackendFactory}
- * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link
- * ResourceSet} with a {@link PersistentResourceFactory}.
+ * The class defines a MapDB specific {@link URI} scheme that is used to register {@link
+ * fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory} in {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry}
+ * and configure the {@code protocol-to-factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet}
+ * with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
- * @see PersistenceBackendFactoryRegistry
- * @see MapDbBackendFactory
- * @see PersistentResourceFactory
+ * @see fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry
+ * @see fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory
+ * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
 public class MapDbURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the {@link URI}. This scheme is used to register {@link MapDbBackendFactory}
-     * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
+     * The scheme associated to the {@link URI}. This scheme is used to register {@link
+     * fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory} and provide a {@link
+     * fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory} to an existing {@link
+     * org.eclipse.emf.ecore.resource.ResourceSet}.
      *
-     * @see PersistenceBackendFactoryRegistry
-     * @see MapDbBackendFactory
-     * @see PersistentResourceFactory
+     * @see fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry
+     * @see fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory
+     * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
      */
     @Nonnull
     public static final String SCHEME = "neo-mapdb";

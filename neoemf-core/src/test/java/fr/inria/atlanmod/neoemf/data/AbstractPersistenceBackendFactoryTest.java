@@ -16,8 +16,6 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
-import org.eclipse.emf.ecore.InternalEObject;
-
 import java.lang.reflect.Field;
 
 /**
@@ -42,11 +40,12 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
      * @param fieldName the name of the field to retrieve the value
      * @param in        the type of the {@code object}
      * @param out       the type of the expected value
-     * @param <F>       the type of the expected value
+     * @param <I>       the type of the actual value
+     * @param <O>       the type of the expected value
      *
      * @return the value
      */
-    protected static <F> F getValue(Object object, String fieldName, Class<?> in, Class<F> out) {
+    protected static <I, O> O getValue(Object object, String fieldName, Class<I> in, Class<O> out) {
         if (!in.isInstance(object)) {
             throw new IllegalArgumentException();
         }
@@ -68,7 +67,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
      *
      * @return the inner store
      */
-    protected PersistentStore getInnerStore(InternalEObject.EStore store) {
+    protected PersistentStore getInnerStore(PersistentStore store) {
         return getValue(store, INNER_STORE_FIELDNAME, AbstractPersistentStoreDecorator.class, PersistentStore.class);
     }
 
@@ -79,16 +78,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
      *
      * @return the inner back-end
      */
-    protected PersistenceBackend getInnerBackend(InternalEObject.EStore store) {
-        PersistenceBackend innerBackend;
-
-        try {
-            innerBackend = getValue(store, INNER_BACKEND_FIELDNAME, DirectWriteStore.class, PersistenceBackend.class);
-        }
-        catch (IllegalArgumentException e) {
-            return getInnerBackend(getInnerStore(store));
-        }
-
-        return innerBackend;
+    protected PersistenceBackend getInnerBackend(PersistentStore store) {
+        return store.backend();
     }
 }

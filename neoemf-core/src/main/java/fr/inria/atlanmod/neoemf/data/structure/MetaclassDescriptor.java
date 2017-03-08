@@ -20,6 +20,8 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -90,11 +92,28 @@ public class MetaclassDescriptor implements Serializable {
      *
      * @return a new {@code MetaclassDescriptor}
      *
+     * @see #from(EClass)
      * @see #of(String, String)
      */
     @Nonnull
     public static MetaclassDescriptor from(PersistentEObject object) {
-        return new MetaclassDescriptor(object.eClass());
+        return from(object.eClass());
+    }
+
+    /**
+     * Creates a new {@code MetaclassDescriptor} from the given {@code eClass}.
+     * <p>
+     * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
+     *
+     * @param eClass the {@link EClass}
+     *
+     * @return a new {@code MetaclassDescriptor}
+     *
+     * @see #of(String, String)
+     */
+    @Nonnull
+    public static MetaclassDescriptor from(EClass eClass) {
+        return new MetaclassDescriptor(eClass);
     }
 
     /**
@@ -129,6 +148,31 @@ public class MetaclassDescriptor implements Serializable {
     @Nonnull
     public String uri() {
         return uri;
+    }
+
+    /**
+     * Returns whether this metaclass is abstract.
+     *
+     * @return {@code true} if this metaclass is abstract, {@code false} otherwise
+     */
+    public boolean isAbstract() {
+        return eClass().isAbstract();
+    }
+
+    /**
+     * Retrieves all concrete subclasses of this metaclass.
+     *
+     * @return a {@link Set} containing all subclasses
+     */
+    @Nonnull
+    public Set<MetaclassDescriptor> allConcreteSubclasses() {
+        return eClass().getEPackage().getEClassifiers()
+                .stream()
+                .filter(EClass.class::isInstance)
+                .map(EClass.class::cast)
+                .filter(c -> eClass().isSuperTypeOf(c) && !c.isAbstract())
+                .map(MetaclassDescriptor::from)
+                .collect(Collectors.toSet());
     }
 
     /**

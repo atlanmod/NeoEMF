@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -46,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,7 +95,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      * The last options used during {@link #load(Map)}.
      */
     @Nullable
-    private Map<?, ?> previousOptions;
+    private Map<String, Object> previousOptions;
 
     /**
      * Whether this {@link PersistentResource} is stored in a {@link PersistenceBackend}, non-transient.
@@ -140,12 +140,44 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return Optional.<EObject>ofNullable(store.object(StringId.of(uriFragment)))
+        return Optional.<EObject>of(store.resolve(StringId.of(uriFragment)))
                 .orElseGet(() -> super.getEObject(uriFragment));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) throws IOException {
+        safeSave((Map<String, Object>) options);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void load(Map<?, ?> options) throws IOException {
+        safeLoad((Map<String, Object>) options);
+    }
+
+    @Override
+    protected void doUnload() {
+        Iterable<EObject> allContents = () -> getAllProperContents(unloadingContents);
+        getErrors().clear();
+        getWarnings().clear();
+        for (EObject e : allContents) {
+            unloaded((InternalEObject) e);
+        }
+        close();
+    }
+
+    /**
+     * Saves this resource using the specified {@code options}.
+     * <p>
+     * Options are handled generically as feature-to-setting entries; the resource will ignore options it doesn't
+     * recognize.
+     *
+     * @param options the save options
+     *
+     * @throws IOException if an I/O error occurs during the save
+     */
+    protected void safeSave(Map<String, Object> options) throws IOException {
         checkOptions(options);
 
         if (!isLoaded() || !isPersistent) {
@@ -167,8 +199,17 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), getURI());
     }
 
-    @Override
-    public void load(Map<?, ?> options) throws IOException {
+    /**
+     * Loads this resource using the specified {@code options}.
+     * <p>
+     * Options are handled generically as feature-to-setting entries; the resource will ignore options it doesn't
+     * recognize.
+     *
+     * @param options the load options
+     *
+     * @throws IOException if an I/O error occurs during the load
+     */
+    protected void safeLoad(Map<String, Object> options) throws IOException {
         try {
             isLoading = true;
 
@@ -194,32 +235,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         finally {
             isLoading = false;
             Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), getURI());
-        }
-    }
-
-    @Override
-    protected void doUnload() {
-        Iterable<EObject> allContents = () -> getAllProperContents(unloadingContents);
-        getErrors().clear();
-        getWarnings().clear();
-        for (EObject e : allContents) {
-            unloaded((InternalEObject) e);
-        }
-        close();
-    }
-
-    /**
-     * Check that the {@code options} do not collide with {@link #previousOptions}.
-     *
-     * @param options the options to check
-     */
-    private void checkOptions(Map<?, ?> options) {
-        if (nonNull(previousOptions)) {
-            for (Entry<?, ?> entry : options.entrySet()) {
-                if (previousOptions.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), previousOptions.get(entry.getKey()))) {
-                    throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString()));
-                }
-            }
         }
     }
 
@@ -258,8 +273,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
-            return Iterables.stream(store.allInstances(eClass, strict))
-                    .map(id -> store.object(id))
+            return Iterables.stream(store.allInstancesOf(MetaclassDescriptor.from(eClass), strict))
+                    .map(id -> store.resolve(id))
                     .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
@@ -271,6 +286,21 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .map(o -> !strict || Objects.equals(o.eClass(), eClass) ? o : null)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Check that the {@code options} do not collide with {@link #previousOptions}.
+     *
+     * @param options the options to check
+     */
+    private void checkOptions(Map<String, Object> options) {
+        if (nonNull(previousOptions)) {
+            for (Map.Entry<String, Object> entry : options.entrySet()) {
+                if (previousOptions.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), previousOptions.get(entry.getKey()))) {
+                    throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey(), entry.getValue()));
+                }
+            }
         }
     }
 

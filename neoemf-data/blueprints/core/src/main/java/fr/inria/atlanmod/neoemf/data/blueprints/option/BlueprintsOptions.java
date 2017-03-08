@@ -66,7 +66,7 @@ public class BlueprintsOptions extends AbstractBlueprintsOptions {
     }
 
     @Override
-    public void fromMap(Map<?, ?> options) {
+    public void fromMap(Map<String, Object> options) {
         super.fromMap(options);
     }
 }

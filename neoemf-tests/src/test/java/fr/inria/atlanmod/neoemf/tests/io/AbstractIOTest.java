@@ -219,14 +219,14 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             if (expectedValue instanceof EObject) {
                 assertEqualEObject((EObject) actualValue, (EObject) expectedValue);
             }
-            else if (expectedValue instanceof List<?>) {
-                List<?> expectedList = (List<?>) expectedValue;
-                List<?> actualList = (List<?>) actualValue;
+            else if (expectedValue instanceof List) {
+                List<EObject> expectedList = (List<EObject>) expectedValue;
+                List<EObject> actualList = (List<EObject>) actualValue;
 
                 assertThat(actualList).hasSameSizeAs(expectedList);
 
                 for (int i = 0; i < expectedList.size(); i++) {
-                    assertEqualEObject((EObject) actualList.get(i), (EObject) expectedList.get(i));
+                    assertEqualEObject(actualList.get(i), expectedList.get(i));
                 }
             }
             else {

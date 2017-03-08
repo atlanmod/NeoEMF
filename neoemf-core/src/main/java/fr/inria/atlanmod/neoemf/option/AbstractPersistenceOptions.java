@@ -42,7 +42,7 @@ public abstract class AbstractPersistenceOptions implements PersistenceOptions {
     }
 
     @Override
-    public void fromMap(Map<?, ?> options) {
+    public void fromMap(Map<String, Object> options) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

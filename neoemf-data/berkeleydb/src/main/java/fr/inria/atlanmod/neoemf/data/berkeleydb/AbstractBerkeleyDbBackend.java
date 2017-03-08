@@ -28,8 +28,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 
-import org.eclipse.emf.ecore.EClass;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,8 +65,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
     private final Database containers;
 
     /**
-     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}, identified by the object {@link
-     * Id}.
+     * A persistent map that stores the metaclass for {@link PersistentEObject}, identified by the object {@link Id}.
      */
     @Nonnull
     private final Database instances;

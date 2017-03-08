@@ -77,6 +77,24 @@ public class RunnerState {
     private File resourceFile;
 
     /**
+     * Returns all existing {@link Backend} instances.
+     *
+     * @return an immutable map
+     */
+    private static Map<String, Class<? extends Backend>> init() {
+        Map<String, Class<? extends Backend>> map = new HashMap<>();
+
+        map.put(XmiBackend.NAME, XmiBackend.class);
+        map.put(CdoBackend.NAME, CdoBackend.class);
+        map.put(MapDbBackend.NAME, MapDbBackend.class);
+        map.put(BerkeleyDbBackend.NAME, BerkeleyDbBackend.class);
+        map.put(TinkerBackend.NAME, TinkerBackend.class);
+        map.put(Neo4jBackend.NAME, Neo4jBackend.class);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    /**
      * Returns the current backend.
      */
     public Backend getBackend() throws Exception {
@@ -103,23 +121,5 @@ public class RunnerState {
     public void initResource() throws Exception {
         Log.info("Initializing the resource");
         resourceFile = getBackend().getOrCreateResource(r);
-    }
-
-    /**
-     * Returns all existing {@link Backend} instances.
-     *
-     * @return an immutable map
-     */
-    private static Map<String, Class<? extends Backend>> init() {
-        Map<String, Class<? extends Backend>> map = new HashMap<>();
-
-        map.put(XmiBackend.NAME, XmiBackend.class);
-        map.put(CdoBackend.NAME, CdoBackend.class);
-        map.put(MapDbBackend.NAME, MapDbBackend.class);
-        map.put(BerkeleyDbBackend.NAME, BerkeleyDbBackend.class);
-        map.put(TinkerBackend.NAME, TinkerBackend.class);
-        map.put(Neo4jBackend.NAME, Neo4jBackend.class);
-
-        return Collections.unmodifiableMap(map);
     }
 }

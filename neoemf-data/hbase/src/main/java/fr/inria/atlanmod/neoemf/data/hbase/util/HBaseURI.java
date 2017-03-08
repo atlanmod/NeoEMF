@@ -11,13 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -32,24 +28,26 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File}
  * descriptor or an existing {@link URI}.
  * <p>
- * The class defines a HBase specific {@link URI} scheme that is used to register {@link HBaseBackendFactory}
- * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link
- * ResourceSet} with a {@link PersistentResourceFactory}.
+ * The class defines a HBase specific {@link URI} scheme that is used to register {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} in {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry}
+ * and configure the {@code protocol-to-factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet}
+ * with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
- * @see PersistenceBackendFactoryRegistry
- * @see HBaseBackendFactory
- * @see PersistentResourceFactory
+ * @see fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry
+ * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
+ * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
 public class HBaseURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the URI. This scheme is used to register {@link HBaseBackendFactory}
-     * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
+     * The scheme associated to the URI. This scheme is used to register {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory}
+     * and provide a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory} to an existing {@link
+     * org.eclipse.emf.ecore.resource.ResourceSet}.
      *
-     * @see PersistenceBackendFactoryRegistry
-     * @see HBaseBackendFactory
-     * @see PersistentResourceFactory
+     * @see fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry
+     * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
+     * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
      */
     @Nonnull
     public static final String SCHEME = "neo-hbase";

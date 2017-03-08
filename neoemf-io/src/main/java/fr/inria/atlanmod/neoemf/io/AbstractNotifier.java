@@ -32,7 +32,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
      * The handlers to notify.
      */
     @Nonnull
-    private Iterable<H> handlers;
+    private final Iterable<H> handlers;
 
     /**
      * Constructs a new {@code AbstractNotifier} with the given {@code handlers}.

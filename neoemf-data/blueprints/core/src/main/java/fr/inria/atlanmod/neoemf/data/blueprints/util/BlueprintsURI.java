@@ -11,13 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -33,23 +29,25 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * descriptor or an existing {@link URI}.
  * <p>
  * The class defines a Blueprints specific {@link URI} scheme that is used to register {@link
- * BlueprintsBackendFactory} in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol
- * to factory} map of an existing {@link ResourceSet} with a {@link PersistentResourceFactory}.
+ * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} in {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry}
+ * and configure the {@code protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet}
+ * with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
- * @see PersistenceBackendFactoryRegistry
- * @see BlueprintsBackendFactory
- * @see PersistentResourceFactory
+ * @see fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry
+ * @see fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory
+ * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
 public class BlueprintsURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the URI. This scheme is used to register {@link BlueprintsBackendFactory}
-     * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
+     * The scheme associated to the URI. This scheme is used to register {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory}
+     * and provide a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory} to an existing {@link
+     * org.eclipse.emf.ecore.resource.ResourceSet}.
      *
-     * @see PersistenceBackendFactoryRegistry
-     * @see BlueprintsBackendFactory
-     * @see PersistentResourceFactory
+     * @see fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry
+     * @see fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory
+     * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
      */
     @Nonnull
     public static final String SCHEME = "neo-blueprints";

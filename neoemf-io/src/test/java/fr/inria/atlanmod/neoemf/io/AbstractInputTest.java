@@ -34,22 +34,16 @@ public abstract class AbstractInputTest extends AbstractTest {
 
     protected static final int UNKNOWN_INDEX = -1;
 
-    private static final String XMI_STANDARD = "/io/xmi/sampleStandard.xmi";
-    private static final String XMI_WITH_ID = "/io/xmi/sampleWithId.xmi";
-
-    private static final String ECORE = "ecore";
-    private static final String ECORE_PATH = "/io/ecore/{name}." + ECORE;
-
     protected StructuralPersistanceWriter persistanceHandler;
 
     protected File sample;
 
     protected static File getXmiStandard() {
-        return getResourceFile(XMI_STANDARD);
+        return getResourceFile("/io/xmi/sampleStandard.xmi");
     }
 
     protected static File getXmiWithId() {
-        return getResourceFile(XMI_WITH_ID);
+        return getResourceFile("/io/xmi/sampleWithId.xmi");
     }
 
     protected static File getResourceFile(String path) {
@@ -62,11 +56,11 @@ public abstract class AbstractInputTest extends AbstractTest {
      * The targeted Ecore file must be present in {@code /resources/ecore}.
      */
     protected static void registerEPackageFromEcore(String prefix, String uri) {
-        File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", prefix));
+        File file = getResourceFile("/io/ecore/{name}.ecore".replaceAll("\\{name\\}", prefix));
 
         EPackage ePackage = null;
 
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(ECORE, new EcoreResourceFactoryImpl());
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
 
         ResourceSet rs = new ResourceSetImpl();
 

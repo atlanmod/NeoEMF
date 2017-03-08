@@ -98,7 +98,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/repackaged.xml</descriptor>
+                        <descriptor>repackaged.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

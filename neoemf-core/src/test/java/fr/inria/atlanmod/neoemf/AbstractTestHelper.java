@@ -161,7 +161,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
                 .autocommit()
                 .cacheIsSet()
                 .cacheSizes()
-//                .cacheFeatures()
+                .cacheFeatures()
                 .asMap();
     }
 

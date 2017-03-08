@@ -65,7 +65,7 @@ public class CommonOptions extends AbstractPersistenceOptions {
     }
 
     @Override
-    public void fromMap(Map<?, ?> options) {
+    public void fromMap(Map<String, Object> options) {
         super.fromMap(options);
     }
 }

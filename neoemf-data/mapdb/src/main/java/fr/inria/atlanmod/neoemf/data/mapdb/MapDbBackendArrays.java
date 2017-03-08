@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithArrays;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
 import org.mapdb.Serializer;
 
@@ -30,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * It wraps an existing {@link DB} and provides facilities to create and retrieve elements. This class manages a set of
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
  * between elements</li> <li><b>InstanceOf Map: </b> holds metaclass information for each element</li> <li><b>Features
- * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
+ * Map: </b> holds non-containment feature links between elements </li> <li><b>Multi-valued Map: </b>
  * optional Map used in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that stores {@link Collection}
  * indices instead of a serialized version of the collection itself</li> </ul>
  * <p>

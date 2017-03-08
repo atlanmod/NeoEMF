@@ -40,9 +40,9 @@ public final class Iterables {
      *
      * @return a sequential {@link Stream} of the contents of {@code iterable}
      */
-    public static <T> Stream<T> stream(Iterable<T> iterable) {
+    public static <E> Stream<E> stream(Iterable<E> iterable) {
         return (iterable instanceof Collection)
-                ? ((Collection<T>) iterable).stream()
+                ? ((Collection<E>) iterable).stream()
                 : StreamSupport.stream(iterable.spliterator(), false);
     }
 
@@ -53,9 +53,9 @@ public final class Iterables {
      *
      * @return {@code true} if the iterable contains no element
      */
-    public static boolean isEmpty(Iterable<?> iterable) {
+    public static <E> boolean isEmpty(Iterable<E> iterable) {
         if (iterable instanceof Collection) {
-            return ((Collection<?>) iterable).isEmpty();
+            return ((Collection<E>) iterable).isEmpty();
         }
         return !iterable.iterator().hasNext();
     }
@@ -67,7 +67,7 @@ public final class Iterables {
      *
      * @return {@code true} if the iterable contains at least one element
      */
-    public static boolean isNotEmpty(Iterable<?> iterable) {
+    public static <E> boolean isNotEmpty(Iterable<E> iterable) {
         return !isEmpty(iterable);
     }
 }

@@ -124,7 +124,6 @@ public final class BackendHelper {
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the store
-     *
      * @see Workspace#newTempDirectory()
      */
     public static File createTempStore(File sourceFile, InternalBackend targetBackend) throws Exception {
@@ -141,7 +140,6 @@ public final class BackendHelper {
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the store
-     *
      * @see Workspace#getStoreDirectory()
      */
     public static File createStore(File sourceFile, InternalBackend targetBackend) throws Exception {
@@ -150,7 +148,8 @@ public final class BackendHelper {
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in {@code targetDir}.
+     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in {@code
+     * targetDir}.
      *
      * @param sourceFile    the resource file
      * @param targetBackend the backend where to store the resource
@@ -457,8 +456,8 @@ public final class BackendHelper {
     /**
      * Extracts a {@link ZipEntry} from the given {@code input} to the {@code outputDir}.
      *
-     * @param input the input stream of the ZIP file
-     * @param entry the entry in the ZIP file
+     * @param input     the input stream of the ZIP file
+     * @param entry     the entry in the ZIP file
      * @param outputDir the directory where to extract the file
      *
      * @return the extracted file

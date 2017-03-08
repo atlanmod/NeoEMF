@@ -20,8 +20,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.ecore.EClass;
-
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -89,13 +87,6 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allInstances(EClass metaclass, boolean strict) {
-        return next.allInstances(metaclass, strict);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> valueOf(FeatureKey key) {
         return next.valueOf(key);
     }
@@ -130,6 +121,13 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @OverridingMethodsMustInvokeSuper
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
         next.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
+        return next.allInstancesOf(metaclass, strict);
     }
 
     @Nonnull

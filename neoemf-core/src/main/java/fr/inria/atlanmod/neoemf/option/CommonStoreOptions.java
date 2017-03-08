@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -38,7 +36,7 @@ public enum CommonStoreOptions implements PersistentStoreOptions {
     CACHE_SIZE,
 
     /**
-     * Caches {@link EStructuralFeature}.
+     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
      */

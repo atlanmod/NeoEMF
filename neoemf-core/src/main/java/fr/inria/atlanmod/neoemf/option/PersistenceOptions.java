@@ -46,5 +46,5 @@ public interface PersistenceOptions {
      *
      * @param options the options to parse
      */
-    void fromMap(Map<?, ?> options);
+    void fromMap(Map<String, Object> options);
 }

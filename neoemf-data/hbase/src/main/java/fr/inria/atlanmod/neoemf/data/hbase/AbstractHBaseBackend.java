@@ -63,7 +63,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     protected static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
 
     /**
-     * The column qualifier holding the URI of metamodels.
+     * The column qualifier holding the URI of meta-models.
      */
     private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
 

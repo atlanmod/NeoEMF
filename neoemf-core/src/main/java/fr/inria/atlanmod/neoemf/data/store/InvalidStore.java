@@ -20,8 +20,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MetaclassDescriptor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.ecore.EClass;
-
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -82,12 +80,6 @@ public final class InvalidStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstances(EClass metaclass, boolean strict) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Nonnull
-    @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
         throw new UnsupportedOperationException(MSG);
     }
@@ -105,6 +97,12 @@ public final class InvalidStore extends AbstractPersistentStore {
 
     @Override
     public void metaclassFor(Id id, MetaclassDescriptor metaclass) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(MetaclassDescriptor metaclass, boolean strict) {
         throw new UnsupportedOperationException(MSG);
     }
 

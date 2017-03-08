@@ -22,7 +22,7 @@ public class RawReference extends RawFeature {
     private RawId idReference;
 
     /**
-     * The metaclassifier of the referenced element.
+     * The metaclass of the referenced element.
      */
     private RawMetaclass metaclassReference;
 
@@ -79,10 +79,20 @@ public class RawReference extends RawFeature {
         return true;
     }
 
+    /**
+     * Returns the metaclass of the referenced element.
+     *
+     * @return the metaclass
+     */
     public RawMetaclass metaclassReference() {
         return metaclassReference;
     }
 
+    /**
+     * Defines the metaclass of the referenced element.
+     *
+     * @param metaclassReference the metaclass
+     */
     public void metaclassReference(RawMetaclass metaclassReference) {
         this.metaclassReference = metaclassReference;
     }

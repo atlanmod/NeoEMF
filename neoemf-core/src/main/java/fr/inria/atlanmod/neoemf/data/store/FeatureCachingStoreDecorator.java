@@ -34,7 +34,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     /**
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, Object> valuesCache = CacheBuilder.newBuilder()
+    private final Cache<FeatureKey, Object> cache = CacheBuilder.newBuilder()
             .maximumSize(10_000)
             .build();
 
@@ -51,20 +51,20 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return (Optional<V>) valuesCache.get(key, super::valueOf);
+        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(k).orElse(null)));
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        valuesCache.put(key, value);
+        cache.put(key, value);
 
         return super.valueFor(key, value);
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        valuesCache.invalidate(key);
+        cache.invalidate(key);
 
         super.unsetValue(key);
     }
@@ -73,30 +73,30 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        return (Optional<V>) valuesCache.get(key, k -> super.valueOf((ManyFeatureKey) k));
+        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf((ManyFeatureKey) k).orElse(null)));
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        valuesCache.put(key, value);
+        cache.put(key, value);
 
         return super.valueFor(key, value);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        valuesCache.put(key, value);
+        cache.put(key, value);
 
         IntStream.range(key.position() + 1, sizeOfValue(key).orElse(key.position() + 1))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addValue(key, value);
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        valuesCache.put(key, value);
+        cache.put(key, value);
 
         super.appendValue(key, value);
     }
@@ -105,7 +105,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
         IntStream.range(key.position(), sizeOfValue(key).orElse(key.position()))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeValue(key);
     }
@@ -113,7 +113,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     public <V> void removeAllValues(FeatureKey key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllValues(key);
     }
@@ -122,20 +122,20 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(FeatureKey key) {
-        return (Optional<Id>) valuesCache.get(key, super::referenceOf);
+        return Optional.ofNullable((Id) cache.get(key, k -> super.referenceOf(k).orElse(null)));
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        valuesCache.put(key, reference);
+        cache.put(key, reference);
 
         return super.referenceFor(key, reference);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        valuesCache.invalidate(key);
+        cache.invalidate(key);
 
         super.unsetReference(key);
     }
@@ -144,30 +144,30 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        return (Optional<Id>) valuesCache.get(key, k -> super.referenceOf((ManyFeatureKey) k));
+        return Optional.ofNullable((Id) cache.get(key, k -> super.referenceOf((ManyFeatureKey) k).orElse(null)));
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        valuesCache.put(key, reference);
+        cache.put(key, reference);
 
         return super.referenceFor(key, reference);
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        valuesCache.put(key, reference);
+        cache.put(key, reference);
 
         IntStream.range(key.position() + 1, sizeOfReference(key).orElse(key.position() + 1))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addReference(key, reference);
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        valuesCache.put(key, reference);
+        cache.put(key, reference);
 
         super.appendReference(key, reference);
     }
@@ -176,7 +176,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
         IntStream.range(key.position(), sizeOfReference(key).orElse(key.position()))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeReference(key);
     }
@@ -184,7 +184,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     @Override
     public void removeAllReferences(FeatureKey key) {
         IntStream.range(0, sizeOfReference(key).orElse(0))
-                .forEach(i -> valuesCache.invalidate(key.withPosition(i)));
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllReferences(key);
     }

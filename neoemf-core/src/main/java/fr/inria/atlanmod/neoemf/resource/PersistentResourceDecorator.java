@@ -32,6 +32,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
  * A {@link PersistentResource} wrapper that delegates all method calls to the decorated resource.
  * <p>
@@ -52,7 +54,7 @@ public class PersistentResourceDecorator implements PersistentResource {
      * @param resource the underlying resource
      */
     public PersistentResourceDecorator(PersistentResource resource) {
-        this.resource = resource;
+        this.resource = checkNotNull(resource);
     }
 
     @Override
@@ -189,6 +191,46 @@ public class PersistentResourceDecorator implements PersistentResource {
 
     @Override
     @OverridingMethodsMustInvokeSuper
+    public final void close() {
+        resource.close();
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public PersistentStore store() {
+        return resource.store();
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean isPersistent() {
+        return resource.isPersistent();
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    @Deprecated
+    public boolean isDistributed() {
+        return resource.isDistributed();
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<EObject> allInstances(EClass eClass) {
+        return resource.allInstances(eClass);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
+        return resource.allInstances(eClass, strict);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<Adapter> eAdapters() {
         return resource.eAdapters();
     }
@@ -233,45 +275,5 @@ public class PersistentResourceDecorator implements PersistentResource {
     @OverridingMethodsMustInvokeSuper
     public boolean isLoading() {
         return resource.isLoading();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public final void close() {
-        resource.close();
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public PersistentStore store() {
-        return resource.store();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean isPersistent() {
-        return resource.isPersistent();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    @Deprecated
-    public boolean isDistributed() {
-        return resource.isDistributed();
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Iterable<EObject> allInstances(EClass eClass) {
-        return resource.allInstances(eClass);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
-        return resource.allInstances(eClass, strict);
     }
 }

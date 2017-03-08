@@ -32,7 +32,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     /**
      * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
      */
-    private final Cache<FeatureKey, Boolean> isSetCache = CacheBuilder.newBuilder()
+    private final Cache<FeatureKey, Boolean> cache = CacheBuilder.newBuilder()
             .maximumSize(10_000)
             .build();
 
@@ -49,72 +49,72 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
         Optional<V> value = super.valueOf(key);
-        isSetCache.put(key, value.isPresent());
+        cache.put(key, value.isPresent());
         return value;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        isSetCache.put(key, true);
+        cache.put(key, true);
         return super.valueFor(key, value);
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        isSetCache.put(key, false);
+        cache.put(key, false);
         super.unsetValue(key);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> boolean hasValue(FeatureKey key) {
-        return isSetCache.get(key, super::hasValue);
+        return cache.get(key, super::hasValue);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         Optional<V> value = super.valueOf(key);
-        isSetCache.put(key.withoutPosition(), value.isPresent());
+        cache.put(key.withoutPosition(), value.isPresent());
         return value;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        isSetCache.put(key.withoutPosition(), true);
+        cache.put(key.withoutPosition(), true);
         return super.valueFor(key, value);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> boolean hasAnyValue(FeatureKey key) {
-        return isSetCache.get(key, super::hasAnyValue);
+        return cache.get(key, super::hasAnyValue);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        isSetCache.put(key.withoutPosition(), true);
+        cache.put(key.withoutPosition(), true);
         super.addValue(key, value);
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        isSetCache.put(key, true);
+        cache.put(key, true);
         super.appendValue(key, value);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        isSetCache.invalidate(key.withoutPosition());
+        cache.invalidate(key.withoutPosition());
         return super.removeValue(key);
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        isSetCache.invalidate(key);
+        cache.invalidate(key);
         super.removeAllValues(key);
     }
 
@@ -122,7 +122,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         OptionalInt size = super.sizeOfValue(key);
-        isSetCache.put(key, size.isPresent() && size.getAsInt() != 0);
+        cache.put(key, size.isPresent() && size.getAsInt() != 0);
         return size;
     }
 
@@ -130,72 +130,72 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
         Optional<Id> value = super.referenceOf(key);
-        isSetCache.put(key, value.isPresent());
+        cache.put(key, value.isPresent());
         return value;
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        isSetCache.put(key, true);
+        cache.put(key, true);
         return super.referenceFor(key, reference);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        isSetCache.put(key, false);
+        cache.put(key, false);
         super.unsetReference(key);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public boolean hasReference(FeatureKey key) {
-        return isSetCache.get(key, super::hasReference);
+        return cache.get(key, super::hasReference);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureKey key) {
         Optional<Id> value = super.referenceOf(key);
-        isSetCache.put(key.withoutPosition(), value.isPresent());
+        cache.put(key.withoutPosition(), value.isPresent());
         return value;
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        isSetCache.put(key.withoutPosition(), true);
+        cache.put(key.withoutPosition(), true);
         return super.referenceFor(key, reference);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public boolean hasAnyReference(FeatureKey key) {
-        return isSetCache.get(key, super::hasAnyReference);
+        return cache.get(key, super::hasAnyReference);
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        isSetCache.put(key.withoutPosition(), true);
+        cache.put(key.withoutPosition(), true);
         super.addReference(key, reference);
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        isSetCache.put(key, true);
+        cache.put(key, true);
         super.appendReference(key, reference);
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        isSetCache.invalidate(key.withoutPosition());
+        cache.invalidate(key.withoutPosition());
         return super.removeReference(key);
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        isSetCache.invalidate(key);
+        cache.invalidate(key);
         super.removeAllReferences(key);
     }
 
@@ -203,7 +203,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         OptionalInt size = super.sizeOfReference(key);
-        isSetCache.put(key, size.isPresent() && size.getAsInt() != 0);
+        cache.put(key, size.isPresent() && size.getAsInt() != 0);
         return size;
     }
 }
