@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -67,7 +66,6 @@ public class EObjectEContentsTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)
-    @Ignore // FIXME Call to a closed PersistentBackend
     public void testEObjectEContents() {
         PersistentResource resource = createPersistentStore();
         fillResource(resource);

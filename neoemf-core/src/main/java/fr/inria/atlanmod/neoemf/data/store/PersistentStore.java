@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.nonNull;
+
 /**
  * A {@link PersistenceMapper} to establish a mapping between {@link PersistentResource}s and {@link
  * PersistenceBackend}s.
@@ -41,6 +43,17 @@ public interface PersistentStore extends InternalEObject.EStore, PersistenceMapp
      */
     @Nullable
     PersistentResource resource();
+
+    /**
+     * Checks whether this {@code PersistentStore} is attached to a {@link Resource}.
+     * <p>
+     * A {@code PersistentStore} is only attached in a persistent context.
+     *
+     * @return {@code true} if this {@code PersistentStore} is attached to a {@link Resource}, {@code false} otherwise
+     */
+    default boolean isAttached() {
+        return nonNull(resource());
+    }
 
     /**
      * Returns the {@link PersistenceBackend} where data are persisted.

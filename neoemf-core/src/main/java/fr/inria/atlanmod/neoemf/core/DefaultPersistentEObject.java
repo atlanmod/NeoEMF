@@ -158,10 +158,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             newStore = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
         }
 
-        // Move contents from the previous store to the new, and close it
+        // Move contents from the previous store to the new
         if (nonNull(store) && newStore != store) {
             copyStore(store, newStore);
-            store.close();
+
+            // Close the previous store if it is not attached to a resource, otherwise the resource will close it
+            if (!store.isAttached()) {
+                store.close();
+            }
         }
 
         store = newStore;
