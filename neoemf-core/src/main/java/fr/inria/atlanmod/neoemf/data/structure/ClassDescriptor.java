@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class ClassDescriptor implements Serializable {
+public final class ClassDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
@@ -67,7 +67,7 @@ public class ClassDescriptor implements Serializable {
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
-    protected ClassDescriptor(String name, String uri) {
+    private ClassDescriptor(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
@@ -157,7 +157,7 @@ public class ClassDescriptor implements Serializable {
      * @return {@code true} if this {@code ClassDescriptor} represents an abstract class, {@code false} otherwise
      */
     public boolean isAbstract() {
-        return eClass().isAbstract();
+        return get().isAbstract();
     }
 
     /**
@@ -166,7 +166,7 @@ public class ClassDescriptor implements Serializable {
      * @return {@code true} if this {@code ClassDescriptor} represents an interface, {@code false} otherwise
      */
     public boolean isInterface() {
-        return eClass().isInterface();
+        return get().isInterface();
     }
 
     /**
@@ -177,7 +177,7 @@ public class ClassDescriptor implements Serializable {
      */
     @Nonnull
     public Optional<ClassDescriptor> inheritFrom() {
-        return eClass().getESuperTypes()
+        return get().getESuperTypes()
                 .stream()
                 .filter(c -> !c.isInterface())
                 .map(ClassDescriptor::from)
@@ -192,11 +192,11 @@ public class ClassDescriptor implements Serializable {
      */
     @Nonnull
     public Set<ClassDescriptor> inheritedBy() {
-        return eClass().getEPackage().getEClassifiers()
+        return get().getEPackage().getEClassifiers()
                 .stream()
                 .filter(EClass.class::isInstance)
                 .map(EClass.class::cast)
-                .filter(c -> eClass().isSuperTypeOf(c))
+                .filter(c -> get().isSuperTypeOf(c))
                 .filter(c -> !c.isAbstract())
                 .filter(c -> !c.isInterface())
                 .map(ClassDescriptor::from)
@@ -208,7 +208,7 @@ public class ClassDescriptor implements Serializable {
      *
      * @return a class, or {@code null} if it can not be found
      */
-    public EClass eClass() {
+    public EClass get() {
         if (isNull(eClass)) {
             EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
             if (nonNull(ePackage)) {

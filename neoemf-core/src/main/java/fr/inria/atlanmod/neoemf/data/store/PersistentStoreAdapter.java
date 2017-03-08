@@ -578,7 +578,7 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
         checkNotNull(id);
 
         return metaclassOf(id)
-                .map(ClassDescriptor::eClass);
+                .map(ClassDescriptor::get);
     }
 
     /**

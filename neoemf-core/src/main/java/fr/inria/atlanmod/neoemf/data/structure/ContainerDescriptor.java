@@ -32,7 +32,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class ContainerDescriptor implements Serializable {
+public final class ContainerDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -3357337595522803972L;
