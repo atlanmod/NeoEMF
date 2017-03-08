@@ -7,8 +7,10 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/dependency/</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory/>
+
             <useDefaultExcludes>true</useDefaultExcludes>
+
             <excludes>
                 <exclude>**.profile</exclude>
                 <exclude>about_files/**</exclude>
@@ -21,11 +23,16 @@
                 <exclude>**/apache/**</exclude>
                 <exclude>**/eclipse/core/**</exclude>
                 <exclude>**/eclipse/equinox/**</exclude>
-                <exclude>**/eclipse/emf/common/**</exclude>
-                <exclude>**/eclipse/emf/ecore/**</exclude>
-                <exclude>**/google/**</exclude>
                 <exclude>**/osgi/**</exclude>
 
+                <!-- Excludes EMF -->
+                <exclude>**/eclipse/emf/common/**</exclude>
+                <exclude>**/eclipse/emf/ecore/**</exclude>
+
+                <!-- Excludes Guava -->
+                <exclude>**/com/**</exclude>
+
+                <!-- Exludes JSR-305 -->
                 <exclude>**/javax/**</exclude>
             </excludes>
         </fileSet>

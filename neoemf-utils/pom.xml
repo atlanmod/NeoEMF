@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf</artifactId>
+        <version>1.0.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>neoemf-utils</artifactId>
+
+    <packaging>pom</packaging>
+
+    <name>NeoEMF Utils</name>
+    <description>
+    </description>
+
+    <dependencies>
+
+        <!-- Repackaged dependencies -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-utils.p2</artifactId>
+            <version>${project.version}</version>
+            <classifier>repackaged</classifier>
+        </dependency>
+
+        <!-- EMF -->
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+        </dependency>
+
+        <!-- Common -->
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

@@ -139,9 +139,10 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core.p2</artifactId>
+            <artifactId>neoemf-utils</artifactId>
             <version>${project.version}</version>
-            <classifier>repackaged</classifier>
+            <optional>true</optional>
+            <type>pom</type>
         </dependency>
     </dependencies>
 

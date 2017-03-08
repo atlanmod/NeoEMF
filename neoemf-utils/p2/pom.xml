@@ -3,17 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>neoemf</artifactId>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf</artifactId>
         <version>1.0.2-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>neoemf-core.p2</artifactId>
+    <artifactId>neoemf-utils.p2</artifactId>
 
     <packaging>eclipse-plugin</packaging>
 
-    <name>NeoEMF Core P2</name>
+    <name>NeoEMF Utils P2</name>
+    <description>
+    </description>
 
     <properties>
         <tycho-plugin.version>1.0.0</tycho-plugin.version>
