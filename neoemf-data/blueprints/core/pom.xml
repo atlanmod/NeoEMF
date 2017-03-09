@@ -87,14 +87,10 @@
                         </Bundle-SymbolicName>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.data.blueprints.*
+                            fr.inria.atlanmod.neoemf.data.blueprints.*,
+                            com.tinkerpop.blueprints.*,
                         </Export-Package>
-                        <_exportcontents>
-                            com.tinkerpop.blueprints,
-                            com.tinkerpop.blueprints.util,
-                            com.tinkerpop.blueprints.util.wrappers,
-                            com.tinkerpop.blueprints.util.wrappers.id
-                        </_exportcontents>
+                        <_exportcontents />
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>

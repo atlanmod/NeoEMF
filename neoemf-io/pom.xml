@@ -130,7 +130,7 @@
                             fr.inria.atlanmod.neoemf.io.*,
                             javax.xml.stream.*,
                             org.codehaus.stax2.*,
-                            com.ctc.wstx.*
+                            com.ctc.wstx.*,
                         </Export-Package>
                         <_exportcontents />
                         <Require-Bundle>

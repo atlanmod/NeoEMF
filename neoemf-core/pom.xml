@@ -248,10 +248,9 @@
                             ${project.groupId}.core
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.*
+                            fr.inria.atlanmod.neoemf.*,
                         </Export-Package>
                         <_exportcontents>
-                            org.apache.commons.configuration
                         </_exportcontents>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,
