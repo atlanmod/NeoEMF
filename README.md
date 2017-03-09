@@ -128,3 +128,6 @@ If you experience issues installing or using NeoEMF, you can [submit an issue on
 
 ## Develop your backend implementation
 If you have developped a specific backend implementation that is not covered by the actual release of NeoEMF, you can submit it as a pull request. _(More information to come about custom backend implementations)_
+
+## Credits
+Performance problems and memory leaks are diagnosed with [Java Profiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
