@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
-import fr.inria.atlanmod.neoemf.util.logging.Log;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gmt.modisco.java.JavaPackage;
