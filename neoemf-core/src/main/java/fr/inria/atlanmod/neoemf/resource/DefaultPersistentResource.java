@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -23,7 +24,6 @@ import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -43,12 +43,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -111,7 +109,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         super(uri);
         rootObject = new RootObject(this);
 
-        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
         store = factory.createTransientStore(this);
 
         isPersistent = false;
@@ -180,8 +178,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     protected void safeSave(Map<String, Object> options) throws IOException {
         checkOptions(options);
 
-        if (!isLoaded() || !isPersistent) {
-            PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+        if (!isLoaded || !isPersistent) {
+            PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
             PersistentStore newStore = factory.createPersistentStore(this, options);
 
             store.copyTo(newStore.backend());
@@ -196,7 +194,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         store.save();
 
-        Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), getURI());
+        Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
     /**
@@ -214,18 +212,18 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             isLoading = true;
 
             if (!isLoaded) {
-                if ((getURI().isFile() && new File(getURI().toFileString()).exists()) || getURI().hasAuthority()) {
+                if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
                     // Closes the previous store
                     store.close();
 
-                    PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+                    PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
                     store = factory.createPersistentStore(this, options);
 
                     isPersistent = true;
                     rootObject.setMapped(true);
                 }
                 else {
-                    throw new FileNotFoundException(getURI().toFileString());
+                    throw new FileNotFoundException(uri.toFileString());
                 }
 
                 previousOptions = options;
@@ -234,7 +232,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
         finally {
             isLoading = false;
-            Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), getURI());
+            Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), uri);
         }
     }
 
@@ -242,13 +240,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void close() {
         store.close();
 
-        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(getURI().scheme());
+        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
         store = factory.createTransientStore(this);
 
         isPersistent = false;
         isLoaded = false;
 
-        Log.info("{0} closed:  {1}", PersistentResource.class.getSimpleName(), getURI());
+        Log.info("{0} closed:  {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
     @Nonnull
@@ -278,8 +276,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
-            Log.warn("The PersistenceBackend does not support advanced allInstances() computation. " +
-                    "Using standard EMF API instead");
+            Log.info("The store does not support advanced allInstances() computation: using standard EMF API instead");
 
             return Iterables.stream(this::getAllContents)
                     .filter(eClass::isInstance)
@@ -315,36 +312,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     /**
-     * Fake {@link EStructuralFeature} that represents the {@link Resource#getContents()} feature.
-     */
-    private static class RootContentsReference extends EReferenceImpl {
-
-        /**
-         * The name of this reference.
-         */
-        private static final String CONTENTS = "eContents";
-
-        /**
-         * Constructs a new {@code RootContentsReference}.
-         */
-        public RootContentsReference() {
-            setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-            setLowerBound(0);
-            setName(CONTENTS);
-            setEType(new EClassifierImpl() {});
-            setFeatureID(RESOURCE__CONTENTS);
-        }
-    }
-
-    /**
-     * Dummy {@link PersistentEObject} that represents the root entry point for this {@link PersistentResource}.
+     * The {@link PersistentEObject} that represents the root entry point for this {@link PersistentResource}.
      */
     private static final class RootObject extends DefaultPersistentEObject {
 
         /**
          * The literal representation of the identifier of the root element in a database.
          */
-        private static final String ROOT_EOBJECT_ID = "ROOT";
+        private static final Id ID = StringId.of("ROOT");
 
         /**
          * Constructs a new {@code RootObject} with the given {@code resource}.
@@ -352,8 +327,30 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param resource the resource containing this object.
          */
         public RootObject(Resource.Internal resource) {
-            super(StringId.of(ROOT_EOBJECT_ID));
+            super(ID);
             eSetDirectResource(resource);
+        }
+    }
+
+    /**
+     * The {@link org.eclipse.emf.ecore.EReference} that represents the {@link Resource#getContents()} feature.
+     */
+    private static final class RootContentsReference extends EReferenceImpl {
+
+        /**
+         * The name of this reference.
+         */
+        private static final String NAME = "eContents";
+
+        /**
+         * Constructs a new {@code RootContentsReference}.
+         */
+        public RootContentsReference() {
+            setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
+            setLowerBound(0);
+            setName(NAME);
+            setEType(new EClassifierImpl() {});
+            setFeatureID(RESOURCE__CONTENTS);
         }
     }
 
@@ -366,9 +363,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         private static final long serialVersionUID = 4130828923851153715L;
 
         /**
-         * Constructs a new {@code ResourceContentsEStoreEList} with ???
+         * Constructs a new {@code ResourceContentsEStoreEList}.
          *
-         * @param owner   ???
+         * @param owner   the owner of this list
          * @param feature ???
          * @param store   ???
          */
@@ -436,46 +433,48 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 			 * If a garbage collection happens while traversing the children elements, some unsaved objects that are
 			 * referenced from a saved object may be garbage collected before they have been completely stored in the DB
 			 */
-            List<Object> hardLinksList = new ArrayList<>();
             PersistentEObject eObject = PersistentEObject.from(object);
+
             // Collect all contents
-            hardLinksList.add(object);
-            Iterator<EObject> it = eObject.eAllContents();
-            while (it.hasNext()) {
-                hardLinksList.add(it.next());
-            }
+            Set<EObject> allContents = Iterables.stream(eObject::eAllContents)
+                    .collect(Collectors.toSet());
+
+            allContents.add(eObject);
+
             /*
-             * Iterate using the hard links list instead the getAllContents.
-			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
+             * Iterate using the hard links set instead the getAllContents.
+			 * We ensure that using the hard links set it is not taken out by JIT compiler.
 			 */
-            for (Object element : hardLinksList) {
-                PersistentEObject internalElement = PersistentEObject.from(element);
-                internalElement.resource(DefaultPersistentResource.this);
-            }
+            allContents.stream()
+                    .map(PersistentEObject::from)
+                    .forEach(e -> e.resource(DefaultPersistentResource.this));
+
             super.delegateAdd(index, object);
         }
 
         @Override
         @SuppressWarnings("unchecked") // Unchecked cast: 'org.eclipse.emf.ecore.EObject' to 'E'
         protected E delegateRemove(int index) {
-            E object = super.delegateRemove(index);
-            List<E> hardLinksList = new ArrayList<>();
-            PersistentEObject eObject = PersistentEObject.from(object);
+            E previousValue = super.delegateRemove(index);
+
+            PersistentEObject eObject = PersistentEObject.from(previousValue);
+
             // Collect all contents
-            hardLinksList.add(object);
-            Iterator<EObject> it = eObject.eAllContents();
-            while (it.hasNext()) {
-                hardLinksList.add((E) it.next());
-            }
+            Set<E> allContents = Iterables.stream(eObject::eAllContents)
+                    .map(e -> (E) e)
+                    .collect(Collectors.toSet());
+
+            allContents.add(previousValue);
+
             /*
-             * Iterate using the hard links list instead the getAllContents.
-			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
+             * Iterate using the hard links set instead the getAllContents.
+			 * We ensure that using the hard links set it is not taken out by JIT compiler.
 			 */
-            for (E element : hardLinksList) {
-                PersistentEObject internalElement = PersistentEObject.from(element);
-                internalElement.resource(null);
-            }
-            return object;
+            allContents.stream()
+                    .map(PersistentEObject::from)
+                    .forEach(e -> e.resource(null));
+
+            return previousValue;
         }
 
         @Override
@@ -510,19 +509,17 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
 
         /**
-         * ???
+         * Notifies that this resource has been loaded.
          */
         private void loaded() {
             if (!isLoaded()) {
-                Notification notification = setLoaded(true);
-                if (nonNull(notification)) {
-                    eNotify(notification);
-                }
+                Optional.ofNullable(setLoaded(true))
+                        .ifPresent(DefaultPersistentResource.this::eNotify);
             }
         }
 
         /**
-         * ???
+         * Notifies that this resource has been modified.
          */
         private void modified() {
             if (isTrackingModification()) {
