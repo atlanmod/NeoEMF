@@ -99,7 +99,7 @@ public class RunnerState {
      */
     public Backend getBackend() throws Exception {
         if (Objects.isNull(backend)) {
-            checkArgument(registeredBackends.containsKey(b), "No backend named '%s' is registered");
+            checkArgument(registeredBackends.containsKey(b), "No backend named '%s' is registered", b);
             backend = registeredBackends.get(b).newInstance();
         }
         return backend;
