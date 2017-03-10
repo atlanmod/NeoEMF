@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.TransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.OwnedStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -155,7 +154,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             newStore = ((PersistentResource) resource).store();
         }
         else {
-            newStore = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
+            newStore = new DirectWriteStore(new BoundedTransientBackend(id));
         }
 
         // Move contents from the previous store to the new
@@ -296,7 +295,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public PersistentStore eStore() {
         if (isNull(store)) {
-            store = new OwnedStoreDecorator(new DirectWriteStore(new TransientBackend()), id);
+            store = new DirectWriteStore(new BoundedTransientBackend(id));
         }
         return store;
     }
