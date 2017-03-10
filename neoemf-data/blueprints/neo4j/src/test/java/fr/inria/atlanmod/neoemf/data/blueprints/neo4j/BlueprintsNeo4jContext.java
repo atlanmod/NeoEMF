@@ -81,7 +81,7 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
-    private static class Holder {
+    private static final class Holder {
 
         /**
          * The instance of the outer class.
