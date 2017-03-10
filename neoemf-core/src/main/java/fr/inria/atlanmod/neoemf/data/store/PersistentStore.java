@@ -11,8 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.IdResolver;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -34,7 +33,7 @@ import static java.util.Objects.nonNull;
  */
 @ParametersAreNonnullByDefault
 // TODO Remove inheritance from InternalEObject.EStore
-public interface PersistentStore extends InternalEObject.EStore, PersistenceMapper {
+public interface PersistentStore extends InternalEObject.EStore, PersistenceMapper, IdResolver {
 
     /**
      * Returns the {@link Resource} to persist and access.
@@ -62,18 +61,6 @@ public interface PersistentStore extends InternalEObject.EStore, PersistenceMapp
      */
     @Nonnull
     PersistenceBackend backend();
-
-    /**
-     * Returns the resolved {@link PersistentEObject} identified by the given {@code id}.
-     *
-     * @param id the identifier of the {@link PersistentEObject} to resolve
-     *
-     * @return the resolved {@link PersistentEObject}
-     *
-     * @throws java.util.NoSuchElementException if no object can be resolved with the {@code id}
-     */
-    @Nonnull
-    PersistentEObject resolve(Id id);
 
     @Override
     default EObject create(EClass eClass) {
