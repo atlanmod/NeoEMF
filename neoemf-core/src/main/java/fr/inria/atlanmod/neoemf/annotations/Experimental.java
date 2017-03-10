@@ -15,7 +15,7 @@ package fr.inria.atlanmod.neoemf.annotations;
  * Annotates a program element that exists but is still being experimented. These elements may be incomplete, and are
  * subject to incompatible changes, or even removal, in a future release.
  * <p>
- * It is advisable not to call these elements, at this time.
+ * <b>Note:</b> It is advisable not to call these elements, at this time.
  */
 public @interface Experimental {
 }

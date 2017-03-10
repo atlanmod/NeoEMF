@@ -20,6 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * implementations.
  * <p>
  * All features are all optional: options can be created using all or none of them.
+ * <p>
+ * <b>Note:</b> This class is visible only for testing. In a standard use, you should use the {@link PersistenceOptions}
+ * implementation corresponding to the {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} you want.
  */
 @VisibleForTesting
 @ParametersAreNonnullByDefault
