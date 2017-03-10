@@ -37,7 +37,7 @@ import static java.util.Objects.nonNull;
  * It provides a default behavior to represent the "multi-valued" directly with their position.
  */
 @ParametersAreNonnullByDefault
-public interface MultiValueWithIndices extends MultiValueMapper {
+public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override

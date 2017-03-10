@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 
 import org.apache.hadoop.hbase.client.Table;
 
@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 @ParametersAreNonnullByDefault
-class HBaseBackendArrays extends AbstractHBaseBackend implements MultiValueWithArrays {
+class HBaseBackendArrays extends AbstractHBaseBackend implements ManyValueWithArrays {
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}

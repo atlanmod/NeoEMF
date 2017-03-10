@@ -40,7 +40,7 @@ import static java.util.Objects.isNull;
  * behavior is specified by the {@link #arrayToString(Id[])} and {@link #arrayFromString(String)} methods.
  */
 @ParametersAreNonnullByDefault
-public interface MultiReferenceWithStrings extends MultiReferenceMapper {
+public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
     @Nonnull
     @Override

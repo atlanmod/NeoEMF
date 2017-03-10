@@ -162,7 +162,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Metaclasses
 
     /**
-     * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} and {@link MetaclassMapper#metaclassFor(Id,
+     * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} and {@link ClassMapper#metaclassFor(Id,
      * ClassDescriptor)}.
      */
     @Test
@@ -180,7 +180,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} and {@link MetaclassMapper#metaclassFor(Id,
+     * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} and {@link ClassMapper#metaclassFor(Id,
      * ClassDescriptor)}.
      */
     @Test
@@ -203,7 +203,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MetaclassMapper#metaclassOf(Id)} when the element doesn't exist..
+     * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} when the element doesn't exist..
      */
     public void testGetInexistingMetaclass() {
         assertThat(catchThrowable(() ->
@@ -216,7 +216,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Single-value attributes
 
     /**
-     * Checks the behavior of {@link MetaclassMapper#metaclassFor(Id, ClassDescriptor)} with a {@code null} value.
+     * Checks the behavior of {@link ClassMapper#metaclassFor(Id, ClassDescriptor)} with a {@code null} value.
      */
     @Test
     public void testSetNullMetaclass() {
@@ -319,8 +319,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Multi-valued attributes
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueOf(ManyFeatureKey)} and {@link
-     * MultiValueMapper#valueFor(ManyFeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureKey)} and {@link
+     * ManyValueMapper#valueFor(ManyFeatureKey, Object)}.
      */
     @Test
     public void testGetSetManyValue() {
@@ -341,7 +341,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueOf(ManyFeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testGetInexistingManyValue() {
@@ -353,7 +353,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
+     * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
      */
     @Test
     public void testSetInexistingManyValue() {
@@ -366,7 +366,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
+     * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureKey, Object)} with a {@code null} value.
      */
     @Test
     public void testSetNullManyValue() {
@@ -379,7 +379,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#allValuesOf(FeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#allValuesOf(FeatureKey)}.
      */
     @Test
     public void testAllValuesOf() {
@@ -404,7 +404,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#allValuesOf(FeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#allValuesOf(FeatureKey)}.
      */
     @Test
     public void testAllValuesOfUnorderedAdd() {
@@ -429,7 +429,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#allValuesOf(FeatureKey)} when the feature doesn't contain any
+     * Checks the behavior of {@link ManyValueMapper#allValuesOf(FeatureKey)} when the feature doesn't contain any
      * element.
      */
     @Test
@@ -442,7 +442,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#hasAnyValue(FeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#hasAnyValue(FeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testIsSetInexistingManyValue() {
@@ -454,7 +454,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#addValue(ManyFeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureKey, Object)}.
      */
     @Test
     public void testAddValue() {
@@ -474,7 +474,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#addValue(ManyFeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureKey, Object)}.
      */
     @Test
     public void testAnyOrderAddValue() {
@@ -498,7 +498,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#addValue(ManyFeatureKey, Object)} with a {@code null} value.
+     * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureKey, Object)} with a {@code null} value.
      */
     @Test
     public void testAddNullValue() {
@@ -511,7 +511,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#appendValue(FeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#appendValue(FeatureKey, Object)}.
      */
     @Test
     public void testAppendValue() {
@@ -528,7 +528,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#appendValue(FeatureKey, Object)} with a {@code null} value.
+     * Checks the behavior of {@link ManyValueMapper#appendValue(FeatureKey, Object)} with a {@code null} value.
      */
     @Test
     public void testAppendNullValue() {
@@ -539,7 +539,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
     public void testRemoveValue() {
@@ -562,7 +562,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
     public void testRemovedValueBefore() {
@@ -584,7 +584,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
     public void testRemovedValueAfter() {
@@ -606,7 +606,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeValue(ManyFeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testRemoveInexistingValue() {
@@ -618,8 +618,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeAllValues(FeatureKey)} and
-     * {@link MultiValueMapper#hasAnyValue(FeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#removeAllValues(FeatureKey)} and
+     * {@link ManyValueMapper#hasAnyValue(FeatureKey)}.
      */
     @Test
     public void testRemoveAllValues() {
@@ -650,7 +650,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#removeAllValues(FeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#removeAllValues(FeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testRemoveAllInexistingValues() {
@@ -662,7 +662,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#containsValue(FeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#containsValue(FeatureKey, Object)}.
      */
     @Test
     public void testContainsValue() {
@@ -686,7 +686,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#containsValue(FeatureKey, Object)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#containsValue(FeatureKey, Object)} when the value doesn't exist.
      */
     @Test
     public void testContainsInexistingValue() {
@@ -698,7 +698,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#containsValue(FeatureKey, Object)} when the value is {@code null}.
+     * Checks the behavior of {@link ManyValueMapper#containsValue(FeatureKey, Object)} when the value is {@code null}.
      */
     @Test
     public void testContainsNullValue() {
@@ -710,7 +710,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#indexOfValue(FeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#indexOfValue(FeatureKey, Object)}.
      */
     @Test
     public void testIndexOfValue() {
@@ -736,7 +736,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#indexOfValue(FeatureKey, Object)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#indexOfValue(FeatureKey, Object)} when the value doesn't exist.
      */
     @Test
     public void testIndexOfInexistingValue() {
@@ -748,7 +748,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#indexOfValue(FeatureKey, Object)} when the value is {@code null}.
+     * Checks the behavior of {@link ManyValueMapper#indexOfValue(FeatureKey, Object)} when the value is {@code null}.
      */
     @Test
     public void testIndexOfNullValue() {
@@ -760,7 +760,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#lastIndexOfValue(FeatureKey, Object)}.
+     * Checks the behavior of {@link ManyValueMapper#lastIndexOfValue(FeatureKey, Object)}.
      */
     @Test
     public void testLastIndexOfValue() {
@@ -786,7 +786,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#lastIndexOfValue(FeatureKey, Object)} when the value doesn't
+     * Checks the behavior of {@link ManyValueMapper#lastIndexOfValue(FeatureKey, Object)} when the value doesn't
      * exist.
      */
     @Test
@@ -799,7 +799,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#lastIndexOfValue(FeatureKey, Object)} when the value is {@code
+     * Checks the behavior of {@link ManyValueMapper#lastIndexOfValue(FeatureKey, Object)} when the value is {@code
      * null}.
      */
     @Test
@@ -812,7 +812,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#sizeOfValue(FeatureKey)}.
+     * Checks the behavior of {@link ManyValueMapper#sizeOfValue(FeatureKey)}.
      */
     @Test
     public void testSizeOfValue() {
@@ -834,7 +834,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiValueMapper#sizeOfValue(FeatureKey)} when the value doesn't exist.
+     * Checks the behavior of {@link ManyValueMapper#sizeOfValue(FeatureKey)} when the value doesn't exist.
      */
     @Test
     public void testSizeOfInexistingValue() {
@@ -945,8 +945,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Multi-valued references
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#referenceOf(ManyFeatureKey)} and {@link
-     * MultiReferenceMapper#referenceFor(ManyFeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#referenceOf(ManyFeatureKey)} and {@link
+     * ManyReferenceMapper#referenceFor(ManyFeatureKey, Id)}.
      */
     @Test
     public void testGetSetManyReference() {
@@ -967,7 +967,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#referenceOf(ManyFeatureKey)} when the reference doesn't exist.
+     * Checks the behavior of {@link ManyReferenceMapper#referenceOf(ManyFeatureKey)} when the reference doesn't exist.
      */
     @Test
     public void testGetInexistingManyReference() {
@@ -979,7 +979,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#referenceFor(ManyFeatureKey, Id)} with a {@code null}
+     * Checks the behavior of {@link ManyReferenceMapper#referenceFor(ManyFeatureKey, Id)} with a {@code null}
      * reference.
      */
     @Test
@@ -993,7 +993,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#referenceFor(ManyFeatureKey, Id)} with a {@code null}
+     * Checks the behavior of {@link ManyReferenceMapper#referenceFor(ManyFeatureKey, Id)} with a {@code null}
      * reference.
      */
     @Test
@@ -1007,7 +1007,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#allReferencesOf(FeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(FeatureKey)}.
      */
     @Test
     public void testAllReferencesOf() {
@@ -1032,7 +1032,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#allReferencesOf(FeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(FeatureKey)}.
      */
     @Test
     public void testAllReferencesOfUnorderedAdd() {
@@ -1057,7 +1057,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#allReferencesOf(FeatureKey)} when the feature doesn't contain
+     * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(FeatureKey)} when the feature doesn't contain
      * any element.
      */
     @Test
@@ -1070,7 +1070,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#hasAnyReference(FeatureKey)} when the reference doesn't exist.
+     * Checks the behavior of {@link ManyReferenceMapper#hasAnyReference(FeatureKey)} when the reference doesn't exist.
      */
     @Test
     public void testIsSetInexistingManyReference() {
@@ -1082,7 +1082,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#addReference(ManyFeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureKey, Id)}.
      */
     @Test
     public void testAddReference() {
@@ -1102,7 +1102,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#addReference(ManyFeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureKey, Id)}.
      */
     @Test
     public void testAnyOrderAddReference() {
@@ -1126,7 +1126,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#addReference(ManyFeatureKey, Id)} with a {@code null}
+     * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureKey, Id)} with a {@code null}
      * reference.
      */
     @Test
@@ -1140,7 +1140,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#appendReference(FeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#appendReference(FeatureKey, Id)}.
      */
     @Test
     public void testAppendReference() {
@@ -1157,7 +1157,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#appendReference(FeatureKey, Id)} with a {@code null}
+     * Checks the behavior of {@link ManyReferenceMapper#appendReference(FeatureKey, Id)} with a {@code null}
      * reference.
      */
     @Test
@@ -1169,7 +1169,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)}.
      */
     @Test
     public void testRemoveReference() {
@@ -1192,7 +1192,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)}.
      */
     @Test
     public void testRemovedReferenceBefore() {
@@ -1214,7 +1214,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)}.
      */
     @Test
     public void testRemovedReferenceAfter() {
@@ -1236,7 +1236,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeReference(ManyFeatureKey)} when the reference doesn't
+     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)} when the reference doesn't
      * exist.
      */
     @Test
@@ -1249,8 +1249,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeAllReferences(FeatureKey)} and
-     * {@link MultiReferenceMapper#hasAnyReference(FeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(FeatureKey)} and
+     * {@link ManyReferenceMapper#hasAnyReference(FeatureKey)}.
      */
     @Test
     public void testRemoveAllReferences() {
@@ -1281,7 +1281,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#removeAllReferences(FeatureKey)} when the reference doesn't
+     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(FeatureKey)} when the reference doesn't
      * exist.
      */
     @Test
@@ -1294,7 +1294,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#containsReference(FeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#containsReference(FeatureKey, Id)}.
      */
     @Test
     public void testContainsReference() {
@@ -1318,7 +1318,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#containsReference(FeatureKey, Id)} when the reference doesn't
+     * Checks the behavior of {@link ManyReferenceMapper#containsReference(FeatureKey, Id)} when the reference doesn't
      * exist.
      */
     @Test
@@ -1331,7 +1331,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#containsReference(FeatureKey, Id)} when the reference is
+     * Checks the behavior of {@link ManyReferenceMapper#containsReference(FeatureKey, Id)} when the reference is
      * {@code null}.
      */
     @Test
@@ -1344,7 +1344,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#indexOfReference(FeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#indexOfReference(FeatureKey, Id)}.
      */
     @Test
     public void testIndexOfReference() {
@@ -1370,7 +1370,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#indexOfReference(FeatureKey, Id)} when the reference doesn't
+     * Checks the behavior of {@link ManyReferenceMapper#indexOfReference(FeatureKey, Id)} when the reference doesn't
      * exist.
      */
     @Test
@@ -1383,7 +1383,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#indexOfReference(FeatureKey, Id)} when the reference is {@code
+     * Checks the behavior of {@link ManyReferenceMapper#indexOfReference(FeatureKey, Id)} when the reference is {@code
      * null}.
      */
     @Test
@@ -1396,7 +1396,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#lastIndexOfReference(FeatureKey, Id)}.
+     * Checks the behavior of {@link ManyReferenceMapper#lastIndexOfReference(FeatureKey, Id)}.
      */
     @Test
     public void testLastIndexOfReference() {
@@ -1422,7 +1422,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#lastIndexOfReference(FeatureKey, Id)} when the reference
+     * Checks the behavior of {@link ManyReferenceMapper#lastIndexOfReference(FeatureKey, Id)} when the reference
      * doesn't exist.
      */
     @Test
@@ -1435,7 +1435,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#lastIndexOfReference(FeatureKey, Id)} when the reference is
+     * Checks the behavior of {@link ManyReferenceMapper#lastIndexOfReference(FeatureKey, Id)} when the reference is
      * {@code null}.
      */
     @Test
@@ -1448,7 +1448,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#sizeOfReference(FeatureKey)}.
+     * Checks the behavior of {@link ManyReferenceMapper#sizeOfReference(FeatureKey)}.
      */
     @Test
     public void testSizeOfReference() {
@@ -1470,7 +1470,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link MultiReferenceMapper#sizeOfReference(FeatureKey)} when the reference doesn't exist.
+     * Checks the behavior of {@link ManyReferenceMapper#sizeOfReference(FeatureKey)} when the reference doesn't exist.
      */
     @Test
     public void testSizeOfInexistingReference() {

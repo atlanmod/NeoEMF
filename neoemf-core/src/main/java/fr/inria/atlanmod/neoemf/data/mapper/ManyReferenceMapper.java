@@ -28,10 +28,10 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 /**
  * An object capable of mapping multi-valued references represented as a set of key/value pair.
  * <p>
- * By default, the references are processed as values with {@link MultiValueMapper}.
+ * By default, the references are processed as values with {@link ManyValueMapper}.
  */
 @ParametersAreNonnullByDefault
-public interface MultiReferenceMapper extends ReferenceMapper, MultiValueMapper {
+public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
 
     /**
      * Retrieves the reference of the specified {@code key} at a defined position.

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -35,7 +35,7 @@ import static java.util.Objects.nonNull;
  * A {@link PersistenceBackend} that stores all elements in an in-memory key/value store.
  */
 @ParametersAreNonnullByDefault
-public class TransientBackend implements PersistenceBackend, MultiValueWithIndices {
+public class TransientBackend implements PersistenceBackend, ManyValueWithIndices {
 
     /**
      * An in-memory map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.

@@ -28,7 +28,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
  */
 @ParametersAreNonnullByDefault
-public interface MultiValueMapper extends ValueMapper {
+public interface ManyValueMapper extends ValueMapper {
 
     /**
      * Retrieves the value of the specified {@code key} at a defined position.

@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.Iterables;
@@ -63,7 +63,7 @@ import static java.util.Objects.nonNull;
  * @see BlueprintsBackendFactory
  */
 @ParametersAreNonnullByDefault
-class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements MultiValueWithIndices {
+class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements ManyValueWithIndices {
 
     /**
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.

@@ -21,14 +21,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An object capable of mapping features, containers and metaclasses represented as a set of key/value pair.
  *
  * @see ContainerMapper
- * @see MetaclassMapper
+ * @see ClassMapper
  * @see ValueMapper
  * @see ReferenceMapper
- * @see MultiValueMapper
- * @see MultiReferenceMapper
+ * @see ManyValueMapper
+ * @see ManyReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceMapper extends Closeable, ContainerMapper, MetaclassMapper, ValueMapper, MultiValueMapper, ReferenceMapper, MultiReferenceMapper {
+public interface PersistenceMapper extends Closeable, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
 
     /**
      * Saves all changes made on this mapper since the last call.

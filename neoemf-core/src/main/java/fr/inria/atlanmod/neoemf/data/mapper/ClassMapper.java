@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see ClassDescriptor
  */
 @ParametersAreNonnullByDefault
-public interface MetaclassMapper {
+public interface ClassMapper {
 
     /**
      * Retrieves the {@link ClassDescriptor} for the specified {@code id}.

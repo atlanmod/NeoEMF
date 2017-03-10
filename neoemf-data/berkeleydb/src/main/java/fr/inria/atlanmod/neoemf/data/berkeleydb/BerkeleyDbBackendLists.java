@@ -15,7 +15,7 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.MultiValueWithLists;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
 
 import java.io.File;
 import java.util.Map;
@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * ???
  */
 @ParametersAreNonnullByDefault
-class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend implements MultiValueWithLists {
+class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend implements ManyValueWithLists {
 
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
