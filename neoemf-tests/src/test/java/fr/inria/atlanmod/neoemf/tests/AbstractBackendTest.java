@@ -159,9 +159,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      */
     @After
     public final void cleanWorkspace() {
-        for (PersistentResource resource : loadedResources) {
-            resource.close();
-        }
+        loadedResources.forEach(PersistentResource::close);
         loadedResources.clear();
     }
 }

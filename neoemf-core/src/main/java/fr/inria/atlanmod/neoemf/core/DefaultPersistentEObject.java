@@ -179,21 +179,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     private void copyStore(PersistentStore source, PersistentStore target) {
         // If the new store is different, initialize the new store with the data stored in the old store
-        for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
-            if (source.isSet(this, feature)) {
-                if (!feature.isMany()) {
-                    getValueFrom(source, feature, PersistentStore.NO_INDEX)
-                            .ifPresent(v -> target.set(this, feature, PersistentStore.NO_INDEX, v));
+        eClass().getEAllStructuralFeatures().forEach(f -> {
+            if (source.isSet(this, f)) {
+                if (!f.isMany()) {
+                    getValueFrom(source, f, PersistentStore.NO_INDEX)
+                            .ifPresent(v -> target.set(this, f, PersistentStore.NO_INDEX, v));
                 }
                 else {
-                    target.clear(this, feature);
+                    target.clear(this, f);
 
-                    IntStream.range(0, source.size(this, feature)).forEach(i ->
-                            getValueFrom(source, feature, i)
-                                    .ifPresent(v -> target.add(this, feature, i, v)));
+                    IntStream.range(0, source.size(this, f)).forEach(i ->
+                            getValueFrom(source, f, i)
+                                    .ifPresent(v -> target.add(this, f, i, v)));
                 }
             }
-        }
+        });
     }
 
     /**

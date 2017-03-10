@@ -157,11 +157,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     protected void doUnload() {
         Iterable<EObject> allContents = () -> getAllProperContents(unloadingContents);
+
         getErrors().clear();
         getWarnings().clear();
-        for (EObject e : allContents) {
-            unloaded((InternalEObject) e);
-        }
+
+        Iterables.stream(allContents)
+                .map(InternalEObject.class::cast)
+                .forEach(this::unloaded);
+
         close();
     }
 

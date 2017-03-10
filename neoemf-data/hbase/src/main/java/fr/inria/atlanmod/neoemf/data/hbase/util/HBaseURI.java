@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.URI;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -151,14 +152,8 @@ public class HBaseURI extends PersistenceURI {
      */
     @Nonnull
     public static String format(URI uri) {
-        checkNotNull(uri);
-        StringBuilder strBld = new StringBuilder();
-        for (int i = 0; i < uri.segmentCount(); i++) {
-            strBld.append(uri.segment(i).replaceAll("-", "_"));
-            if (i != uri.segmentCount() - 1) {
-                strBld.append("_");
-            }
-        }
-        return strBld.toString();
+        return checkNotNull(uri).segmentsList().stream()
+                .map(s -> s.replaceAll("-", "_"))
+                .collect(Collectors.joining("_"));
     }
 }

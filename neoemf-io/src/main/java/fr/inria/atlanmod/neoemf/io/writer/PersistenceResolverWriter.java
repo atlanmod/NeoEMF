@@ -75,9 +75,7 @@ public class PersistenceResolverWriter extends DefaultPersistenceWriter {
         long unlinkedNumber = unlinkedElements.size();
         if (unlinkedNumber > 0) {
             Log.warn("Some elements have not been linked ({0})", unlinkedNumber);
-            for (String e : unlinkedElements.asMap().keySet()) {
-                Log.warn(" > " + e);
-            }
+            unlinkedElements.asMap().keySet().forEach(e -> Log.warn(" > " + e));
             unlinkedElements.clear();
         }
 
@@ -145,9 +143,7 @@ public class PersistenceResolverWriter extends DefaultPersistenceWriter {
      * @param id        the identifier of the targeted element
      */
     private void tryLink(String reference, Id id) {
-        for (UnlinkedRawReference e : unlinkedElements.removeAll(reference)) {
-            addReference(e.id, e, id);
-        }
+        unlinkedElements.removeAll(reference).forEach(e -> addReference(e.id, e, id));
     }
 
     /**

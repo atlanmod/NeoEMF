@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 
@@ -181,17 +182,14 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             assertThat(actual.eClass().getName()).isEqualTo(expected.eClass().getName());
             assertThat(actual.eContents()).hasSameSizeAs(expected.eContents());
 
-            for (EAttribute attribute : expected.eClass().getEAttributes()) {
-                assertEqualFeature(actual, expected, attribute.getFeatureID());
-            }
+            expected.eClass().getEAttributes()
+                    .forEach(a -> assertEqualFeature(actual, expected, a.getFeatureID()));
 
-            for (EReference reference : expected.eClass().getEReferences()) {
-                assertEqualFeature(actual, expected, reference.getFeatureID());
-            }
+            expected.eClass().getEReferences()
+                    .forEach(r -> assertEqualFeature(actual, expected, r.getFeatureID()));
 
-            for (int i = 0; i < expected.eContents().size(); i++) {
-                assertEqualEObject(actual.eContents().get(i), expected.eContents().get(i));
-            }
+            IntStream.range(0, expected.eContents().size())
+                    .forEach(i -> assertEqualEObject(actual.eContents().get(i), expected.eContents().get(i)));
         }
     }
 

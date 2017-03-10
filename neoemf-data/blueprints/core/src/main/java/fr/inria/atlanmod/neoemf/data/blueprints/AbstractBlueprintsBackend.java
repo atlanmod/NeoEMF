@@ -216,11 +216,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
 
         GraphHelper.copyGraph(graph, to.graph);
 
-        for (ClassDescriptor metaclass : indexedMetaclasses) {
-            Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, metaclass.name());
+        indexedMetaclasses.forEach(m -> {
+            Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, m.name());
             checkArgument(Iterables.isEmpty(metaclasses), "Index is not consistent");
-            to.metaclassIndex.put(KEY_NAME, metaclass.name(), get(buildId(metaclass)).<IllegalStateException>orElseThrow(IllegalStateException::new));
-        }
+            to.metaclassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+        });
     }
 
     @Override
