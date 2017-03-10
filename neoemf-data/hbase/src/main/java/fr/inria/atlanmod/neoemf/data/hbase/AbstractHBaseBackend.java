@@ -133,11 +133,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
         return true;
     }
 
-    @Override
-    public boolean exists(Id id) {
-        return metaclassOf(id).isPresent();
-    }
-
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {

@@ -58,5 +58,7 @@ public interface PersistenceMapper extends Closeable, ContainerMapper, ClassMapp
      *
      * @return {@code true} if the {@code id} exists, {@code false} otherwise.
      */
-    boolean exists(Id id);
+    default boolean exists(Id id) {
+        return metaclassOf(id).isPresent();
+    }
 }

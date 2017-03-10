@@ -144,11 +144,6 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
         return false;
     }
 
-    @Override
-    public boolean exists(Id id) {
-        return metaclassOf(id).isPresent();
-    }
-
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {

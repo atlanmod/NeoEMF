@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -38,23 +37,25 @@ import static java.util.Objects.nonNull;
 public class TransientBackend implements PersistenceBackend, ManyValueWithIndices {
 
     /**
-     * An in-memory map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
+     * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
      */
     private final Map<Id, ContainerDescriptor> containerMap = new ConcurrentHashMap<>();
 
     /**
-     * An in-memory map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
+     * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
      */
     private final Map<Id, ClassDescriptor> instanceOfMap = new ConcurrentHashMap<>();
 
     /**
-     * An in-memory map that stores Structural feature values for {@link PersistentEObject}s, identified by the
-     * associated {@link FeatureKey}.
+     * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the associated {@link FeatureKey}.
      */
     private final Map<FeatureKey, Object> features = new ConcurrentHashMap<>();
 
     /**
-     * An in-memory map that store the values of multi-valued features for {@link PersistentEObject}s,
+     * An in-memory map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link ManyFeatureKey}.
      */
     private final Map<ManyFeatureKey, Object> multiFeatures = new ConcurrentHashMap<>();
@@ -107,11 +108,6 @@ public class TransientBackend implements PersistenceBackend, ManyValueWithIndice
     @Override
     public boolean isDistributed() {
         return false;
-    }
-
-    @Override
-    public boolean exists(Id id) {
-        return metaclassOf(id).isPresent();
     }
 
     @Nonnull
