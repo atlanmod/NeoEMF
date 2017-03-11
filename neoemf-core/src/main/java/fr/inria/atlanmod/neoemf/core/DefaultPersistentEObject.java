@@ -146,27 +146,31 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
-        this.resource = resource;
+        PersistentStore newStore = null;
 
-        PersistentStore newStore;
         if (resource instanceof PersistentResource) {
+            // The resource store may have been changed (persistent <-> transient)
             newStore = ((PersistentResource) resource).store();
         }
-        else {
-            newStore = new DirectWriteStore(new BoundedTransientBackend(id));
+        else if (this.resource != resource) {
+            newStore = createBoundedStore();
         }
+
+        this.resource = resource;
 
         // Move contents from the previous store to the new
-        if (nonNull(store) && newStore != store) {
-            copyStore(store, newStore);
+        if (nonNull(newStore) && newStore != store) {
+            if (nonNull(store)) {
+                copyStore(store, newStore);
 
-            // Close the previous store if it is not attached to a resource, otherwise the resource will close it
-            if (!store.isAttached()) {
-                store.close();
+                // Close the previous store if it's not attached to a resource
+                // Otherwise the resource will close it
+                if (!store.isAttached()) {
+                    store.close();
+                }
             }
+            store = newStore;
         }
-
-        store = newStore;
     }
 
     /**
@@ -176,7 +180,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param target the store where to store data
      */
     private void copyStore(PersistentStore source, PersistentStore target) {
-        // If the new store is different, initialize the new store with the data stored in the old store
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {
                 if (!f.isMany()) {
@@ -199,7 +202,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param store   the store to look for the value
      * @param feature the feature
-     * @param index   the index. If {@code feature.isMany() == true}, then it's ignored.
+     * @param index   the index
      *
      * @return an {@link Optional} containing the adapted value, or {@link Optional#empty()} if the value doesn't exist
      * in the {@code store}
@@ -222,27 +225,24 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public EObject eContainer() {
-        EObject container;
         if (resource instanceof PersistentResource) {
             /*
              * If the resource is not distributed and if the value of the eContainer field is set, it is not needed to
              * get it from the backend. This is not true in a distributed context when another client can the database
              * without notifying others.
              */
-            if (!((PersistentResource) resource).store().backend().isDistributed() && nonNull(this.container)) {
-                container = this.container;
+            if (!((PersistentResource) resource).isDistributed() && nonNull(this.container)) {
+                return this.container;
             }
             else {
                 InternalEObject internalContainer = eStore().getContainer(this);
                 eBasicSetContainer(internalContainer);
                 eBasicSetContainerFeatureID(eContainerFeatureID());
-                container = internalContainer;
+                return internalContainer;
             }
         }
-        else {
-            container = super.eContainer();
-        }
-        return container;
+
+        return super.eContainer();
     }
 
     @Nullable
@@ -269,6 +269,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         else if (nonNull(eStaticClass())) {
             sb.append(" (eClass: ").append(eStaticClass()).append(')');
         }
+
         return sb.toString();
     }
 
@@ -276,7 +277,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     protected void eBasicSetContainer(InternalEObject container) {
         this.container = container;
         if (nonNull(container) && container.eResource() != resource) {
-            resource((Resource.Internal) this.container.eResource());
+            resource((Resource.Internal) container.eResource());
         }
     }
 
@@ -295,7 +296,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public PersistentStore eStore() {
         if (isNull(store)) {
-            store = new DirectWriteStore(new BoundedTransientBackend(id));
+            store = createBoundedStore();
         }
         return store;
     }
@@ -383,6 +384,15 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         return containerReferenceId;
+    }
+
+    /**
+     * Creates a new {@link PersistentStore} bounded to this object.
+     *
+     * @return a new {@link PersistentStore}
+     */
+    private PersistentStore createBoundedStore() {
+        return new DirectWriteStore(new BoundedTransientBackend(id));
     }
 
     @Override

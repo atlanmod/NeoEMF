@@ -54,12 +54,11 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Checks whether this {@code PersistentResource} is mapped to a distributed
      * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     * <p>
+     * This method acts the same as {@code #store().backend().isDistributed()}.
      *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
-     *
-     * @deprecated Use {@code store().backend().isDistributed()} instead
      */
-    @Deprecated
     default boolean isDistributed() {
         return store().backend().isDistributed();
     }
@@ -67,7 +66,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).
      * <p>
-     * This method is similar to {@link #allInstances(EClass, boolean)} with {@code strict = false}.
+     * This method acts the same as {@code #allInstances(EClass, false)}.
      *
      * @param eClass the {@link EClass} for which look for instances
      *

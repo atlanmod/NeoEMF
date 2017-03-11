@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -20,7 +22,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link EObject} identified by a unique {@link Id}, able to persist in datastores.
+ * An {@link EObject} identified by a unique {@link Id}, able to persist in {@link
+ * fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
  */
 @ParametersAreNonnullByDefault
 public interface PersistentEObject extends InternalEObject {
@@ -84,4 +87,7 @@ public interface PersistentEObject extends InternalEObject {
      * @param resource the containing resource
      */
     void resource(@Nullable Resource.Internal resource);
+
+    @Override
+    PersistentStore eStore();
 }
