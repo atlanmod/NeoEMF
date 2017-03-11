@@ -70,7 +70,9 @@ public final class DirectWriteStore extends AbstractPersistentStore {
         this.resource = resource;
         this.backend = backend;
 
-        closeOnExit(backend, nonNull(resource) ? resource.getURI() : null);
+        if (nonNull(resource)) { // isAttached ?
+            closeOnExit(backend, resource.getURI());
+        }
     }
 
     /**
