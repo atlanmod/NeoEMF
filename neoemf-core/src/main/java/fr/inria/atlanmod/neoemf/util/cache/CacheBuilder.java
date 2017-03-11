@@ -47,21 +47,6 @@ public interface CacheBuilder<K, V> {
     CacheBuilder<K, V> recordStats();
 
     /**
-     * Sets the minimum total size for the internal data structures. Providing a large enough estimate at construction
-     * time avoids the need for expensive resizing operations later, but setting this value unnecessarily high wastes
-     * memory.
-     *
-     * @param initialCapacity minimum total size for the internal data structures
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws IllegalArgumentException if {@code initialCapacity} is negative
-     * @throws IllegalStateException    if an initial capacity was already set
-     */
-    @Nonnull
-    CacheBuilder<K, V> initialCapacity(@Nonnegative int initialCapacity);
-
-    /**
      * Specifies the maximum number of entries the cache may contain. Note that the cache <b>may evict an entry before
      * this limit is exceeded or temporarily exceed the threshold while evicting</b>. As the cache size grows close to
      * the maximum, the cache evicts entries that are less likely to be used again. For example, the cache may evict an

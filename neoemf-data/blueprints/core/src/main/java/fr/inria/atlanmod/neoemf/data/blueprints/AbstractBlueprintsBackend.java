@@ -99,7 +99,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      */
     @Nonnull
     private final Cache<Id, Vertex> verticesCache = CacheBuilder.newBuilder()
-            .initialCapacity(1_000)
             .maximumSize(10_000)
             .build();
 

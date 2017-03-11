@@ -60,7 +60,9 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @deprecated Use {@code store().backend().isDistributed()} instead
      */
     @Deprecated
-    boolean isDistributed();
+    default boolean isDistributed() {
+        return store().backend().isDistributed();
+    }
 
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).

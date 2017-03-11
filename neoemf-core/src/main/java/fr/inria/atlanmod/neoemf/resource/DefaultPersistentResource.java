@@ -223,7 +223,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     store = factory.createPersistentStore(this, options);
 
                     isPersistent = true;
-                    rootObject.setMapped(true);
+                    rootObject.isPersistent(true);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
@@ -261,12 +261,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public boolean isPersistent() {
         return isPersistent;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isDistributed() {
-        return store.backend().isDistributed();
     }
 
     @Nonnull

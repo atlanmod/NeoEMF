@@ -81,7 +81,6 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
     private final Cache<String, Id> idsCache = CacheBuilder.newBuilder()
-            .initialCapacity((int) DEFAULT_CACHE_SIZE / 10)
             .maximumSize(DEFAULT_CACHE_SIZE)
             .build();
 

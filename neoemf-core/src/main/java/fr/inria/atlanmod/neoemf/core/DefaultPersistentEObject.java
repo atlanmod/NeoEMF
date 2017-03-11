@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -77,9 +76,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Resource.Internal resource;
 
     /**
-     * Whether this object is mapped to an entity in a database.
+     * Whether this object is mapped to an entity in a {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
      */
-    private boolean isMapped;
+    private boolean isPersistent;
 
     /**
      * The internal cached value of the container.
@@ -114,7 +113,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
         this.containerReferenceId = UNSETTED_REFERENCE_ID;
-        this.isMapped = false;
+        this.isPersistent = false;
     }
 
     @Nonnull
@@ -129,13 +128,13 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public boolean isMapped() {
-        return isMapped;
+    public boolean isPersistent() {
+        return isPersistent;
     }
 
     @Override
-    public PersistentEObject setMapped(boolean mapped) {
-        this.isMapped = mapped;
+    public PersistentEObject isPersistent(boolean isPersistent) {
+        this.isPersistent = isPersistent;
         return this;
     }
 
@@ -202,7 +201,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param feature the feature
      * @param index   the index. If {@code feature.isMany() == true}, then it's ignored.
      *
-     * @return the adapted value, or {@code null} if the value doesn't exist in the {@code store}
+     * @return an {@link Optional} containing the adapted value, or {@link Optional#empty()} if the value doesn't exist
+     * in the {@code store}
      *
      * @see PersistentStore#get(InternalEObject, EStructuralFeature, int)
      */
@@ -438,9 +438,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * @param owner    the owner of this list
          * @param features the containment features that are handled by this list
          */
-        protected DelegatedContentsList(EObject owner, EStructuralFeature[] features) {
+        protected DelegatedContentsList(PersistentEObject owner, EStructuralFeature[] features) {
             super(owner, features);
-            this.owner = PersistentEObject.from(owner);
+            this.owner = owner;
         }
 
         /**
@@ -579,11 +579,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
-         * to append the result to the existing list.
+         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link
+         * fr.inria.atlanmod.neoemf.data.PersistenceBackend} has to append the result to the existing list.
          * <p>
-         * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
-         * deserialize the underlying list to add the element at the specified index.
+         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} which
+         * would otherwise need to deserialize the underlying list to add the element at the specified index.
          */
         @Override
         public boolean add(E object) {

@@ -51,15 +51,6 @@ final class CaffeineCacheBuilder<K, V> implements CacheBuilder<K, V> {
 
     @Nonnull
     @Override
-    public CacheBuilder<K, V> initialCapacity(@Nonnegative int initialCapacity) {
-        checkArgument(initialCapacity >= 0);
-
-        builder.initialCapacity(initialCapacity);
-        return this;
-    }
-
-    @Nonnull
-    @Override
     public CacheBuilder<K, V> maximumSize(@Nonnegative long maximumSize) {
         checkArgument(maximumSize >= 0);
 

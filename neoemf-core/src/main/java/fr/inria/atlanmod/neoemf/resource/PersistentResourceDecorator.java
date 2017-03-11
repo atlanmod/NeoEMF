@@ -208,13 +208,6 @@ public class PersistentResourceDecorator implements PersistentResource {
         return resource.isPersistent();
     }
 
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    @Deprecated
-    public boolean isDistributed() {
-        return resource.isDistributed();
-    }
-
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
