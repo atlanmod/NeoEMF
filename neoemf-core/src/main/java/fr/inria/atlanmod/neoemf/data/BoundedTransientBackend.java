@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
 import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -34,7 +34,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  */
 // TODO Merge some methods with TransientBackend
 @ParametersAreNonnullByDefault
-public class BoundedTransientBackend implements PersistenceBackend, ManyValueWithArrays {
+public class BoundedTransientBackend implements PersistenceBackend, ManyValueWithLists {
 
     /**
      * The owner of this back-end.

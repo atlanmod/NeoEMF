@@ -42,6 +42,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(key);
 
         return this.<List<V>>valueOf(key.withoutPosition())
+                .filter(values -> key.position() < values.size())
                 .map(values -> values.get(key.position()));
     }
 
@@ -56,6 +57,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Override
     default <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         checkNotNull(key);
+        checkNotNull(value);
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
@@ -70,6 +72,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Override
     default <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(key);
+        checkNotNull(value);
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(newList());
