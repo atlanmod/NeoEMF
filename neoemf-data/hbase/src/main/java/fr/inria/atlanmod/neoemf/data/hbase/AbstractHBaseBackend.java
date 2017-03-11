@@ -113,13 +113,12 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
             return;
         }
 
+        isClosed = true;
+
         try {
             table.close();
         }
         catch (IOException ignore) {
-        }
-        finally {
-            isClosed = true;
         }
     }
 

@@ -193,13 +193,12 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
             return;
         }
 
+        isClosed = true;
+
         try {
             graph.shutdown();
         }
         catch (Exception ignore) {
-        }
-        finally {
-            isClosed = true;
         }
     }
 

@@ -99,11 +99,9 @@ public class BoundedTransientBackend implements PersistenceBackend, ManyValueWit
 
         isClosed = true;
 
-        new Thread(() -> {
-            containerMap.clear();
-            instanceOfMap.clear();
-            features.clear();
-        }).start();
+        containerMap.clear();
+        instanceOfMap.clear();
+        features.clear();
     }
 
     @Override

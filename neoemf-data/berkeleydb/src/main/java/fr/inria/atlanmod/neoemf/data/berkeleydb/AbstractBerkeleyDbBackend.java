@@ -116,14 +116,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
             return;
         }
 
+        isClosed = true;
+
         try {
             allDatabases().forEach(Database::close);
             environment.close();
         }
         catch (Exception ignore) {
-        }
-        finally {
-            isClosed = true;
         }
     }
 
