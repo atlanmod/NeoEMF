@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -49,7 +48,7 @@
 
     <licenses>
         <license>
-            <name>Eclipse Public License - v 1.0</name>
+            <name>Eclipse Public License v1.0</name>
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
@@ -225,9 +224,6 @@
                 <directory>${project.basedir}/src/main/resources</directory>
                 <excludes>
                     <exclude>**/.empty</exclude>
-					<!-- EMFCompare is not needed for now, it can only be used in an Eclipse 
-						context and thus it is set as an optional dependency in the generated MANIFEST -->
-                    <exclude>org.eclipse.emf.compare_3.4.0.201611041634.jar</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -242,7 +238,7 @@
         </testResources>
 
         <plugins>
-            <plugin>
+            <plugin> <!-- Generate 'test-jar's beside source 'jar's -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
@@ -254,7 +250,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+            <plugin> <!-- Add ${osgi.***Version} properties for `maven-bundle-plugin` -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
@@ -365,7 +361,7 @@
                 </plugin>
 
                 <plugin>
-                    <!-- "deploy-javadoc" profile comes in addition to this configuration -->
+                    <!-- `deploy-javadoc` profile comes in addition to this configuration -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>

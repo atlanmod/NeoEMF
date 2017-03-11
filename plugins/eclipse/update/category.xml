@@ -30,9 +30,9 @@
              version="1.0.2.qualifier">
         <category name="backend" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature_1.0.2.qualifier.jar"
+    <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature_1.9.6.jar"
              id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
-             version="1.0.2.qualifier">
+             version="1.9.6">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.2.qualifier.jar"
