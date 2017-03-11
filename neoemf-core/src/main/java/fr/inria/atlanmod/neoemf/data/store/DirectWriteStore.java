@@ -81,8 +81,9 @@ public final class DirectWriteStore extends AbstractPersistentStore {
      * @param backend the back-end to stop when the application will exit
      * @param uri     the {@link URI} of the resource used by the {@code backend}
      */
-    private static void closeOnExit(@Nullable PersistenceBackend backend, URI uri) {
-        if (nonNull(backend)) { // The backend can be null in tests
+    private static void closeOnExit(PersistenceBackend backend, URI uri) {
+        //noinspection ConstantConditions
+        if (nonNull(backend)) { // The backend can be null in tests by using mocks
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 backend.close();
                 Log.debug("{0} closed: {1} ", backend.getClass().getSimpleName(), uri);
