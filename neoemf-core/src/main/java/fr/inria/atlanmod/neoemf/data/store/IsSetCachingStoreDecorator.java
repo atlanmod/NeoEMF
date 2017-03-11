@@ -33,7 +33,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
      * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Boolean> cache = CacheBuilder.newBuilder()
-            .maximumSize(10_000)
+            .maximumSize()
             .build();
 
     /**

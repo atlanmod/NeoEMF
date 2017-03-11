@@ -27,6 +27,13 @@ import javax.annotation.Nonnull;
 public interface CacheBuilder<K, V> {
 
     /**
+     * The default maximum size of a size-based caches.
+     *
+     * @see #maximumSize(long)
+     */
+    long DEFAULT_MAX_SIZE = 10_000;
+
+    /**
      * Creates a new {@code CacheBuilder} with default settings, including strong keys, strong values, and no automatic
      * eviction of any kind.
      *
@@ -64,6 +71,25 @@ public interface CacheBuilder<K, V> {
      */
     @Nonnull
     CacheBuilder<K, V> maximumSize(@Nonnegative long maximumSize);
+
+    /**
+     * Specifies the maximum number of entries the cache may contain. Note that the cache <b>may evict an entry before
+     * this limit is exceeded or temporarily exceed the threshold while evicting</b>. As the cache size grows close to
+     * the maximum, the cache evicts entries that are less likely to be used again. For example, the cache may evict an
+     * entry because it hasn't been used recently or very often.
+     * <p>
+     * When {@code size} is zero, elements will be evicted immediately after being loaded into the cache. This can be
+     * useful in testing, or to disable caching temporarily without a code change.
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws IllegalArgumentException if {@code size} is negative
+     *
+     * @see #maximumSize(long)
+     */
+    default CacheBuilder<K, V> maximumSize() {
+        return maximumSize(DEFAULT_MAX_SIZE);
+    }
 
     /**
      * Specifies that each key (not value) stored in the cache should be wrapped in a {@link WeakReference} (by default,

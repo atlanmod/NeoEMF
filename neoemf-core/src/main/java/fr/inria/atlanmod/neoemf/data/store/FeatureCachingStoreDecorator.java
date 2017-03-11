@@ -35,7 +35,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Object> cache = CacheBuilder.newBuilder()
-            .maximumSize(10_000)
+            .maximumSize()
             .build();
 
     /**

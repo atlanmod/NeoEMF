@@ -39,7 +39,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
      * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, OptionalInt> cache = CacheBuilder.newBuilder()
-            .maximumSize(10_000)
+            .maximumSize()
             .build();
 
     /**

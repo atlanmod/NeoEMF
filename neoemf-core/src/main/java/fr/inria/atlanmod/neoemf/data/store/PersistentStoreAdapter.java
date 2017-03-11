@@ -63,7 +63,7 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
     @Nonnull
     private final Cache<Id, PersistentEObject> cache = CacheBuilder.newBuilder()
             .softValues()
-            .maximumSize(10_000)
+            .maximumSize()
             .build(id -> resolveInstanceOf(id)
                     .map(c -> PersistenceFactory.getInstance().create(c, id).isPersistent(true))
                     .<NoSuchElementException>orElseThrow(() -> new NoSuchElementException("Element " + id + " does not have an associated EClass")));
