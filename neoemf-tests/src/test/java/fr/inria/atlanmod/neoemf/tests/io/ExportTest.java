@@ -38,15 +38,15 @@ public class ExportTest extends AbstractIOTest {
      */
     @Test
     public void testCopyBackend() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
         File sourceBackend = file();
         File targetBackend = Paths.get(file() + "-copy").toFile();
 
-        try (Backend backend = context().createBackend(sourceBackend)) {
+        try (Backend backend = context().createPersistentBackend(sourceBackend)) {
             ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(backend));
 
-            try (Backend target = context().createBackend(targetBackend)) {
+            try (Backend target = context().createPersistentBackend(targetBackend)) {
                 ReaderFactory.fromMapper(backend, WriterFactory.toMapper(target));
             }
         }
@@ -72,7 +72,7 @@ public class ExportTest extends AbstractIOTest {
     @Test
     @Ignore // FIXME Some attributes cannot be written
     public void testCopyFile() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
         File targetFile = new File(file() + ".xmi");
 
@@ -93,13 +93,13 @@ public class ExportTest extends AbstractIOTest {
     @Test
     @Ignore // FIXME Some elements are missing
     public void testExportToXmi() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
         File targetFile = new File(file() + ".xmi");
 
         Log.info("Writing to {0}", targetFile);
 
-        try (Backend backend = context().createBackend(file())) {
+        try (Backend backend = context().createPersistentBackend(file())) {
             ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(backend));
             ReaderFactory.fromMapper(backend, WriterFactory.toXmi(targetFile));
         }

@@ -184,7 +184,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     }
 
     @Override
-    public final Backend createBackend() {
+    public final Backend createPersistentBackend() {
         return factory().createPersistentBackend(uri, defaultOptions());
     }
 }

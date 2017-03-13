@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * {@link Store} which can be used by back-end implementations that do not provide transient layer.
+ * A {@link Store} which can be used by back-end implementations that do not provide transient layer.
  * <p>
  * All methods throws an {@link UnsupportedOperationException}.
  */

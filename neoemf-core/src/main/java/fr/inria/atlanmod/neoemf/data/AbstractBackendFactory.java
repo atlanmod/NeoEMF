@@ -44,6 +44,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 /**
  * An abstract {@link BackendFactory} that processes common store options and manages the configuration.
  */
+// TODO Can be renamed as "AbstractMapperFactory"
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackendFactory implements BackendFactory {
 

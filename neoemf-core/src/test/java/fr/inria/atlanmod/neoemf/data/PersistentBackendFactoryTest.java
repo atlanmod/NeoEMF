@@ -49,7 +49,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     public void testNoOption() {
         Map<String, Object> options = CommonOptions.noOption();
 
-        Store store = context().backendFactory().createPersistentStore(null, null, options);
+        Store store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
@@ -66,7 +66,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -86,7 +86,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -106,7 +106,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -126,7 +126,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -146,7 +146,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -168,7 +168,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
 
         long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
@@ -193,7 +193,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
 
         long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
@@ -221,7 +221,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -249,7 +249,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -277,7 +277,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -313,7 +313,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Store store;
 
-        store = context().backendFactory().createPersistentStore(null, null, options);
+        store = context().factory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
 
         long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
@@ -361,9 +361,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         }
 
         @Override
-        public BackendFactory backendFactory() {
+        public BackendFactory factory() {
             try {
-                AbstractBackendFactory factory = (AbstractBackendFactory) super.backendFactory();
+                AbstractBackendFactory factory = (AbstractBackendFactory) super.factory();
 
                 when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistentBackend.class));
                 when(factory.createPersistentStore(any(), any(), notNull())).thenCallRealMethod();

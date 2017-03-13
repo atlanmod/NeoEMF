@@ -25,15 +25,15 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
     @Test
     public void testCreateTransientBackend() {
-        Backend backend = context().backendFactory().createTransientBackend();
+        Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(MapDbBackend.class);
     }
 
     @Test
     public void testCreateTransientStore() {
-        Backend backend = context().backendFactory().createTransientBackend();
+        Backend backend = context().factory().createTransientBackend();
 
-        Store store = context().backendFactory().createTransientStore(null, backend);
+        Store store = context().factory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -41,15 +41,15 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
     @Test
     public void testCreatePersistentBackend() {
-        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackend.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
 
-        Store store = context().backendFactory().createPersistentStore(null, backend, MapDbOptions.noOption());
+        Store store = context().factory().createPersistentStore(null, backend, MapDbOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -61,10 +61,10 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      */
     @Test
     public void testCopyBackend() {
-        Backend transientBackend = context().backendFactory().createTransientBackend();
+        Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
 
-        Backend persistentBackend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);

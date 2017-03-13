@@ -60,15 +60,14 @@ public interface ClassMapper {
     void metaclassFor(Id id, ClassDescriptor metaclass);
 
     /**
-     * Back-end specific computation of {@link org.eclipse.emf.ecore.resource.Resource#getAllContents()}.
+     * Retrieves all instances of the given {@code metaclass}.
      *
-     * @param metaclass the class to compute the instances of
+     * @param metaclass the metaclass to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
-     * ClassDescriptor}
+     * @return a {@link Iterable} containing the instances of the {@link ClassDescriptor}
      *
-     * @throws UnsupportedOperationException if the back-end doesn't support the lookup of all instances
+     * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
     default Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {

@@ -29,6 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
  */
+// TODO Can be renamed as "MapperFactory"
 @ParametersAreNonnullByDefault
 public interface BackendFactory {
 
@@ -45,7 +46,7 @@ public interface BackendFactory {
     /**
      * Creates an in-memory {@link Backend}.
      *
-     * @return a new transient back-end
+     * @return a new back-end
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
@@ -59,7 +60,7 @@ public interface BackendFactory {
      * @param uri     the directory
      * @param options the options that defines the behaviour of the back-end
      *
-     * @return a new persistent back-end
+     * @return a new back-end
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
@@ -70,10 +71,10 @@ public interface BackendFactory {
     /**
      * Creates a {@link Store} between the given {@code resource} and the given in-memory {@code backend}.
      *
-     * @param resource the resource
-     * @param backend  the back-end
+     * @param resource the resource to store and access
+     * @param backend  the back-end where to store data
      *
-     * @return a new transient store
+     * @return a new store
      */
     @Nonnull
     Store createTransientStore(PersistentResource resource, Backend backend);
@@ -81,9 +82,9 @@ public interface BackendFactory {
     /**
      * Creates a {@link Store} between the given {@code resource} and the default in-memory {@code backend}.
      *
-     * @param resource the resource
+     * @param resource the resource to store and access
      *
-     * @return a new transient store
+     * @return a new store
      *
      * @see #createTransientStore(PersistentResource, Backend)
      * @see #createTransientBackend()
@@ -99,11 +100,11 @@ public interface BackendFactory {
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *
-     * @param resource the resource
-     * @param backend  the back-end
+     * @param resource the resource to store and access
+     * @param backend  the back-end where to store data
      * @param options  the options that defines the behaviour of the back-end
      *
-     * @return a new persistent store
+     * @return a new store
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
@@ -119,10 +120,10 @@ public interface BackendFactory {
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *
-     * @param resource the resource
+     * @param resource the resource to store and access
      * @param options  the options that defines the behaviour of the back-end
      *
-     * @return a new persistent store
+     * @return a new store
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing

@@ -43,7 +43,7 @@ public class ReaderFactory {
     }
 
     /**
-     * Reads an XMI file into writers.
+     * Reads an XMI {@link File} into the given {@code writers}.
      *
      * @param file    the file to read
      * @param writers the writers where to store the read data
@@ -56,9 +56,9 @@ public class ReaderFactory {
     }
 
     /**
-     * Reads an XMI file into writers.
+     * Reads an {@link InputStream} into the given {@code writers}.
      *
-     * @param stream  the stream of XMI data
+     * @param stream  the stream to read
      * @param writers the writers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
@@ -78,9 +78,9 @@ public class ReaderFactory {
     }
 
     /**
-     * Reads a {@link DataMapper} file into writers.
+     * Reads a {@link DataMapper} into the given {@code writers}.
      *
-     * @param mapper  the mapper of XMI data
+     * @param mapper  the mapper to read
      * @param writers the writers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify

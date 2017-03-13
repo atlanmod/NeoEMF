@@ -74,8 +74,8 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
     }
 
     @Override
-    public Backend createBackend(File file) throws IOException {
-        return new BlueprintsNeo4jTestHelper(null).file(file).createBackend();
+    public Backend createPersistentBackend(File file) throws IOException {
+        return new BlueprintsNeo4jTestHelper(null).file(file).createPersistentBackend();
     }
 
     /**

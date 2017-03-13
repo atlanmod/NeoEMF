@@ -124,12 +124,12 @@ public interface Context {
      * @throws IOException if an I/O error occurs
      * @see TestHelper
      */
-    Backend createBackend(File file) throws IOException;
+    Backend createPersistentBackend(File file) throws IOException;
 
     /**
      * Returns the {@link BackendFactory} used by this {@code Context}
      *
      * @return the {@link BackendFactory}
      */
-    BackendFactory backendFactory();
+    BackendFactory factory();
 }

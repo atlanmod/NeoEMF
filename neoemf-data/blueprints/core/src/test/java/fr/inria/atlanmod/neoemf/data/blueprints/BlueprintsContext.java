@@ -91,12 +91,12 @@ public class BlueprintsContext implements Context {
     }
 
     @Override
-    public Backend createBackend(File file) throws IOException {
-        return new BlueprintsTestHelper(null).file(file).createBackend();
+    public Backend createPersistentBackend(File file) throws IOException {
+        return new BlueprintsTestHelper(null).file(file).createPersistentBackend();
     }
 
     @Override
-    public BackendFactory backendFactory() {
+    public BackendFactory factory() {
         return BlueprintsBackendFactory.getInstance();
     }
 

@@ -91,12 +91,12 @@ public class BerkeleyDbContext implements Context {
     }
 
     @Override
-    public Backend createBackend(File file) throws IOException {
-        return new BerkeleyDbTestHelper(null).file(file).createBackend();
+    public Backend createPersistentBackend(File file) throws IOException {
+        return new BerkeleyDbTestHelper(null).file(file).createPersistentBackend();
     }
 
     @Override
-    public BackendFactory backendFactory() {
+    public BackendFactory factory() {
         return BerkeleyDbBackendFactory.getInstance();
     }
 

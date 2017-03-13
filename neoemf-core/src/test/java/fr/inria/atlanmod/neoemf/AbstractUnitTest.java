@@ -48,7 +48,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
      */
     @Before
     public final void registerFactories() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
         file = workspace.newFile(context().name());
     }
 

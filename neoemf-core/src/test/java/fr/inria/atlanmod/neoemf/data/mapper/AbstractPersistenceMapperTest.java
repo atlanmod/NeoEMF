@@ -50,7 +50,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Before
     public void createMapper() throws IOException {
-        mapper = context().createBackend(file());
+        mapper = context().createPersistentBackend(file());
     }
 
     /**

@@ -46,5 +46,5 @@ public interface TestHelper {
      *
      * @throws IOException if an I/O error occurs
      */
-    Backend createBackend() throws IOException;
+    Backend createPersistentBackend() throws IOException;
 }

@@ -344,9 +344,9 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     protected PersistentResource loadWithNeoEMF(File file) throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
-        try (Backend backend = context().createBackend(file())) {
+        try (Backend backend = context().createPersistentBackend(file())) {
             ReaderFactory.fromXmi(file, WriterFactory.toMapper(backend));
         }
 

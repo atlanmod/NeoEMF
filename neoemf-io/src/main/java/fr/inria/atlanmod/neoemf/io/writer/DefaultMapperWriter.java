@@ -91,9 +91,9 @@ public class DefaultMapperWriter implements MapperWriter {
     private long autocommitCount;
 
     /**
-     * Constructs a new {@code DefaultMapperWriter} on top of the {@code backend}.
+     * Constructs a new {@code DefaultMapperWriter} on top of the {@code mapper}.
      *
-     * @param mapper the persistence back-end where to store data
+     * @param mapper the mapper where to write data
      */
     protected DefaultMapperWriter(DataMapper mapper) {
         this.mapper = checkNotNull(mapper);
@@ -384,7 +384,7 @@ public class DefaultMapperWriter implements MapperWriter {
     }
 
     /**
-     * Increments the operation counter, and commit the persistence back-end if the number of operation is equals to
+     * Increments the operation counter, and commit the mapper if the number of operation is equals to
      * {@code OPS_BETWEEN_COMMITS_DEFAULT}.
      */
     private void incrementAndCommit() {

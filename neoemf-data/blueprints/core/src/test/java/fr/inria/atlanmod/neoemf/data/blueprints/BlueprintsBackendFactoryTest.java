@@ -25,15 +25,15 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Test
     public void testCreateTransientBackend() {
-        Backend backend = context().backendFactory().createTransientBackend();
+        Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
     }
 
     @Test
     public void testCreateTransientStore() {
-        Backend backend = context().backendFactory().createTransientBackend();
+        Backend backend = context().factory().createTransientBackend();
 
-        Store store = context().backendFactory().createTransientStore(null, backend);
+        Store store = context().factory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -41,15 +41,15 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Test
     public void testCreatePersistentBackend() {
-        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
 
-        Store store = context().backendFactory().createPersistentStore(null, backend, BlueprintsOptions.noOption());
+        Store store = context().factory().createPersistentStore(null, backend, BlueprintsOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);

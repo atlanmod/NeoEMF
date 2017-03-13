@@ -36,50 +36,50 @@ public class WriterFactory {
     }
 
     /**
-     * Creates a {@link MapperWriter} on the given {@code backend}.
+     * Creates a {@link MapperWriter} on the given {@code mapper}.
      *
-     * @param backend the back-end where data must persist
+     * @param mapper the mapper where to write data
      *
-     * @return a new persistence writer
+     * @return a new writer
      */
-    public static MapperWriter toMapper(DataMapper backend) {
-        return new DefaultMapperWriter(backend);
+    public static Writer toMapper(DataMapper mapper) {
+        return new DefaultMapperWriter(mapper);
     }
 
     /**
-     * Creates a {@link MapperWriter} on the given {@code backend} with conflict resolution feature.
+     * Creates a {@link MapperWriter} on the given {@code mapper} with conflict resolution feature.
      *
-     * @param backend the back-end where data must persist
+     * @param mapper the mapper where to write data
      *
-     * @return a new persistence writer
+     * @return a new writer
      */
-    public static MapperWriter toMapperWithResolve(DataMapper backend) {
-        return new MapperResolverWriter(backend);
+    public static Writer toMapperWithResolve(DataMapper mapper) {
+        return new MapperResolverWriter(mapper);
     }
 
     /**
      * Creates a {@link StreamWriter} on the given {@code stream}.
      *
-     * @param file the file where data must be written
+     * @param file the file where to write data
      *
-     * @return a new stream writer
+     * @return a new writer
      *
      * @throws IOException if an I/O error occurs
      */
-    public static StreamWriter toXmi(File file) throws IOException {
+    public static Writer toXmi(File file) throws IOException {
         return toXmi(new FileOutputStream(file));
     }
 
     /**
      * Creates a {@link StreamWriter} on the given {@code stream}.
      *
-     * @param stream the stream where data must be written
+     * @param stream the stream where to write data
      *
-     * @return a new stream writer
+     * @return a new writer
      *
      * @throws IOException if an I/O error occurs
      */
-    public static StreamWriter toXmi(OutputStream stream) throws IOException {
+    public static Writer toXmi(OutputStream stream) throws IOException {
         return new XmiStAXCursorStreamWriter(stream);
     }
 }

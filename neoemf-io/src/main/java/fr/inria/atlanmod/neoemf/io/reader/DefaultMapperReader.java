@@ -39,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DefaultMapperReader extends AbstractReader<DataMapper> implements MapperReader {
 
     /**
-     * The backend to read.
+     * The mapper to read.
      */
     private DataMapper mapper;
 

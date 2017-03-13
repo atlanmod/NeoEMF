@@ -37,6 +37,7 @@ import static java.util.Objects.nonNull;
  * @see PersistentResource#load(Map)
  * @see PersistentResource#save(Map)
  */
+// TODO Can be renamed as "MapperFactoryRegistry"
 @ParametersAreNonnullByDefault
 public final class BackendFactoryRegistry {
 
@@ -68,11 +69,11 @@ public final class BackendFactoryRegistry {
     /**
      * Returns a specific {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
      *
-     * @param scheme the {@link URI} scheme identifying the back-end factory
+     * @param scheme the {@link URI} scheme identifying the factory
      *
-     * @return the back-end factory
+     * @return the factory
      *
-     * @throws NullPointerException if no back-end factory is registered for the given {@code scheme}
+     * @throws NullPointerException if no factory is registered for the given {@code scheme}
      */
     @Nonnull
     public static BackendFactory getFactoryProvider(String scheme) {
@@ -85,9 +86,9 @@ public final class BackendFactoryRegistry {
     /**
      * Defines if a {@link BackendFactory} is registered for the given {@link URI} {@code scheme}.
      *
-     * @param scheme the {@link URI} scheme identifying the back-end factory
+     * @param scheme the {@link URI} scheme identifying the factory
      *
-     * @return {@code true} if a back-end factory is registered for the given {@code scheme}
+     * @return {@code true} if a factory is registered for the given {@code scheme}
      */
     public static boolean isRegistered(@Nullable String scheme) {
         return nonNull(scheme) && FACTORIES.containsKey(scheme);
@@ -99,8 +100,8 @@ public final class BackendFactoryRegistry {
      * If the given {@link URI} {@code scheme} is already registered, its value will be overridden by the given {@code
      * factory}.
      *
-     * @param scheme  the {@link URI} scheme identifying the back-end factory
-     * @param factory the back-end factory
+     * @param scheme  the {@link URI} scheme identifying the factory
+     * @param factory the factory
      */
     public static void register(String scheme, BackendFactory factory) {
         checkNotNull(scheme);
@@ -112,7 +113,7 @@ public final class BackendFactoryRegistry {
     /**
      * Unregisters a {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
      *
-     * @param scheme the {@link URI} scheme identifying the back-end factory
+     * @param scheme the {@link URI} scheme identifying the factory
      */
     public static void unregister(@Nullable String scheme) {
         if (nonNull(scheme)) {
@@ -121,7 +122,7 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Unregisters all back-end factories.
+     * Unregisters all factories.
      */
     public static void unregisterAll() {
         FACTORIES.clear();

@@ -20,7 +20,7 @@ import javax.annotation.concurrent.Immutable;
 /**
  * An identifier used to identify {@link PersistentEObject}s in datastores.
  * <p>
- * This is the primary key in datastores, so, each {@code Id} must be unique at back-end level to ensure data
+ * This is the primary key in datastores, so, each {@code Id} must be unique at {@link fr.inria.atlanmod.neoemf.data.mapper.DataMapper} level to ensure data
  * consistency. The unicity is not guaranteed before adding a new {@link PersistentEObject} to a database.
  */
 @Immutable

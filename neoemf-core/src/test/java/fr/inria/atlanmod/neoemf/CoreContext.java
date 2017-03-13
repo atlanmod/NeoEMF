@@ -108,12 +108,12 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public Backend createBackend(File file) throws IOException {
+    public Backend createPersistentBackend(File file) throws IOException {
         return new DefaultTransientBackend();
     }
 
     @Override
-    public BackendFactory backendFactory() {
+    public BackendFactory factory() {
         return mock(AbstractBackendFactory.class);
     }
 

@@ -29,15 +29,15 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Test
     public void testCreateTransientBackend() {
-        Backend backend = context().backendFactory().createTransientBackend();
+        Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
     }
 
     @Test
     public void testCreateTransientStore() {
-        Backend backend = context().backendFactory().createTransientBackend();
+        Backend backend = context().factory().createTransientBackend();
 
-        Store store = context().backendFactory().createTransientStore(null, backend);
+        Store store = context().factory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -45,15 +45,15 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Test
     public void testCreatePersistentBackend() {
-        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
 
-        Store store = context().backendFactory().createPersistentStore(null, backend, BerkeleyDbOptions.noOption());
+        Store store = context().factory().createPersistentStore(null, backend, BerkeleyDbOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -65,10 +65,10 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testCopyBackend() {
-        Backend transientBackend = context().backendFactory().createTransientBackend();
+        Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        Backend persistentBackend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);
@@ -78,14 +78,14 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
     public void testTransientBackend() {
         final int TIMES = 1000;
 
-        try (Backend backend = context().backendFactory().createTransientBackend()) {
+        try (Backend backend = context().factory().createTransientBackend()) {
             IntStream.range(0, TIMES).forEach(i -> {
                 FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
                 assertThat(backend.valueFor(key, "value" + i)).isNotPresent();
             });
         }
 
-        try (Backend other = context().backendFactory().createTransientBackend()) {
+        try (Backend other = context().factory().createTransientBackend()) {
             IntStream.range(0, TIMES).forEach(i -> {
                 FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
                 assertThat(other.hasValue(key)).isFalse();

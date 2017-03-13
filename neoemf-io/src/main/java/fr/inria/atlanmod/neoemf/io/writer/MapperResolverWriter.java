@@ -53,7 +53,7 @@ public class MapperResolverWriter extends DefaultMapperWriter {
     /**
      * Constructs a new {@code MapperResolverWriter} on the given {@code mapper}.
      *
-     * @param mapper the back-end where to store data
+     * @param mapper the mapper where to write data
      */
     protected MapperResolverWriter(DataMapper mapper) {
         super(mapper);
@@ -94,7 +94,7 @@ public class MapperResolverWriter extends DefaultMapperWriter {
                 id = super.createElement(element, id);
             }
             catch (AlreadyExistingIdException e) {
-                // Id already exists in the back-end : try another
+                // Id already exists in the mapper : try another
                 id = createId(RawId.generated(id.toString()));
                 conflictIdsCache.put(element.id().value(), id);
                 conflict = true;
