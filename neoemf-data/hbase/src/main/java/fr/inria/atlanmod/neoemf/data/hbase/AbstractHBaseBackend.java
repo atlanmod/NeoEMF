@@ -12,8 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -45,7 +44,7 @@ import static java.util.Objects.nonNull;
  *
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implements HBaseBackend {
+abstract class AbstractHBaseBackend implements HBaseBackend {
 
     /**
      * The column family holding properties.
@@ -123,7 +122,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistenceBackend implement
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         Log.warn("NeoEMF/HBase doesn't support copy backend feature");
     }
 

@@ -11,29 +11,29 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements BlueprintsTest {
+public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest implements BlueprintsTest {
 
     @Test
     public void testCreateTransientBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
+        Backend backend = context().backendFactory().createTransientBackend();
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
     }
 
     @Test
     public void testCreateTransientStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
+        Backend backend = context().backendFactory().createTransientBackend();
 
-        PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
+        Store store = context().backendFactory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -41,15 +41,15 @@ public class BlueprintsBackendFactoryTest extends AbstractPersistenceBackendFact
 
     @Test
     public void testCreatePersistentBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
+        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
+        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
 
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptions.noOption());
+        Store store = context().backendFactory().createPersistentStore(null, backend, BlueprintsOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);

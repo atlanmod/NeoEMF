@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 
 import org.apache.hadoop.hbase.client.Table;
@@ -19,7 +19,7 @@ import org.apache.hadoop.hbase.client.Table;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
+ * A {@link PersistentBackend} implementation for HBase to fit core architecture.
  * <p>
  * This class does not access HBase database, but is here to fit the requirement of the core architecture. For
  * historical reasons the real access to the HBase Table is done in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}.

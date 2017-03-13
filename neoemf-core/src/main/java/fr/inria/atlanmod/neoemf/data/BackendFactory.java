@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A factory of {@link PersistenceBackend} and {@link PersistentStore}.
+ * A factory of {@link Backend} and {@link Store}.
  * <p>
  * The creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
  * option maps.
@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceBackendFactory {
+public interface BackendFactory {
 
     /**
      * The name of the configuration file of a back-end persistence.
@@ -43,95 +43,95 @@ public interface PersistenceBackendFactory {
     String BACKEND_PROPERTY = "backend";
 
     /**
-     * Creates an in-memory {@link PersistenceBackend}.
+     * Creates an in-memory {@link Backend}.
      *
-     * @return the persistence back-end
+     * @return a new transient back-end
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
      */
     @Nonnull
-    PersistenceBackend createTransientBackend();
+    Backend createTransientBackend();
 
     /**
-     * Creates a {@link PersistenceBackend} in the given {@code directory}.
+     * Creates a {@link Backend} in the given {@code directory}.
      *
      * @param uri     the directory
      * @param options the options that defines the behaviour of the back-end
      *
-     * @return the persistence back-end
+     * @return a new persistent back-end
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
      */
     @Nonnull
-    PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options);
+    Backend createPersistentBackend(URI uri, Map<String, Object> options);
 
     /**
-     * Creates a {@link PersistentStore} between the given {@code resource} and the given in-memory {@code backend}.
+     * Creates a {@link Store} between the given {@code resource} and the given in-memory {@code backend}.
      *
      * @param resource the resource
      * @param backend  the back-end
      *
-     * @return the newly created persistent store.
+     * @return a new transient store
      */
     @Nonnull
-    PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend);
+    Store createTransientStore(PersistentResource resource, Backend backend);
 
     /**
-     * Creates a {@link PersistentStore} between the given {@code resource} and the default in-memory {@code backend}.
+     * Creates a {@link Store} between the given {@code resource} and the default in-memory {@code backend}.
      *
      * @param resource the resource
      *
-     * @return the newly created persistent store.
+     * @return a new transient store
      *
-     * @see #createTransientStore(PersistentResource, PersistenceBackend)
+     * @see #createTransientStore(PersistentResource, Backend)
      * @see #createTransientBackend()
      */
     @Nonnull
-    default PersistentStore createTransientStore(PersistentResource resource) {
+    default Store createTransientStore(PersistentResource resource) {
         return createTransientStore(resource, createTransientBackend());
     }
 
     /**
-     * Creates a {@link PersistentStore} between the given {@code resource} and the given {@code backend}
+     * Creates a {@link Store} between the given {@code resource} and the given {@code backend}
      * according to the given {@code options}.
      * <p>
-     * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
+     * The returned {@link Store} may be a succession of several {@link Store}.
      *
      * @param resource the resource
      * @param backend  the back-end
      * @param options  the options that defines the behaviour of the back-end
      *
-     * @return the newly created persistent store.
+     * @return a new persistent store
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
-     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
-     *                                   PersistenceBackend} for this factory
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
+     *                                   for this factory
      */
     @Nonnull
-    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<String, Object> options);
+    Store createPersistentStore(PersistentResource resource, Backend backend, Map<String, Object> options);
 
     /**
-     * Creates a {@link PersistentStore} between the given {@code resource} and the default persistent {@code backend}
+     * Creates a {@link Store} between the given {@code resource} and the default persistent {@code backend}
      * according to the given {@code options}.
      * <p>
-     * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
+     * The returned {@link Store} may be a succession of several {@link Store}.
      *
      * @param resource the resource
      * @param options  the options that defines the behaviour of the back-end
      *
-     * @return the newly created persistent store.
+     * @return a new persistent store
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
-     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
-     *                                   PersistenceBackend} for this factory
-     * @see #createPersistentStore(PersistentResource, PersistenceBackend, Map)
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
+     *                                   for this factory
+     * @see #createPersistentStore(PersistentResource, Backend, Map)
      * @see #createPersistentBackend(URI, Map)
      */
-    default PersistentStore createPersistentStore(PersistentResource resource, Map<String, Object> options) {
+    default Store createPersistentStore(PersistentResource resource, Map<String, Object> options) {
         return createPersistentStore(resource, createPersistentBackend(resource.getURI(), options), options);
     }
 }

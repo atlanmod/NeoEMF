@@ -12,14 +12,13 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.IdResolver;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,39 +27,38 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistenceMapper} to establish a mapping between {@link PersistentResource}s and {@link
- * PersistenceBackend}s.
+ * A {@link DataMapper} to establish a mapping between {@link PersistentResource}s and {@link Backend}s.
  */
 @ParametersAreNonnullByDefault
 // TODO Remove inheritance from InternalEObject.EStore
-public interface PersistentStore extends InternalEObject.EStore, PersistenceMapper, IdResolver {
+public interface Store extends InternalEObject.EStore, DataMapper, IdResolver {
 
     /**
-     * Returns the {@link Resource} to persist and access.
+     * Returns the {@link PersistentResource} to store and access.
      *
-     * @return the resource to persist and access
+     * @return the resource to store and access
      */
     @Nullable
     PersistentResource resource();
 
     /**
-     * Checks whether this {@code PersistentStore} is attached to a {@link Resource}.
+     * Checks whether this {@code Store} is attached to a {@link PersistentResource}.
      * <p>
-     * A {@code PersistentStore} is only attached in a persistent context.
+     * A {@code Store} is only attached in a persistent context.
      *
-     * @return {@code true} if this {@code PersistentStore} is attached to a {@link Resource}, {@code false} otherwise
+     * @return {@code true} if this {@code Store} is attached to a resource, {@code false} otherwise
      */
     default boolean isAttached() {
         return nonNull(resource());
     }
 
     /**
-     * Returns the {@link PersistenceBackend} where data are persisted.
+     * Returns the {@link Backend} where data are stored.
      *
-     * @return the backend where data are persisted
+     * @return the backend where data are stored
      */
     @Nonnull
-    PersistenceBackend backend();
+    Backend backend();
 
     @Override
     default EObject create(EClass eClass) {

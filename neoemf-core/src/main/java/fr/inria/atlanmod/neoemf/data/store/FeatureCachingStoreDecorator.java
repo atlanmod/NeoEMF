@@ -26,10 +26,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentStore} wrapper that caches {@link EStructuralFeature}.
+ * A {@link Store} wrapper that caches {@link EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class FeatureCachingStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
@@ -41,9 +41,9 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     /**
      * Constructs a new {@code FeatureCachingStoreDecorator}.
      *
-     * @param store the underlying store
+     * @param store the inner store
      */
-    public FeatureCachingStoreDecorator(PersistentStore store) {
+    public FeatureCachingStoreDecorator(Store store) {
         super(store);
     }
 

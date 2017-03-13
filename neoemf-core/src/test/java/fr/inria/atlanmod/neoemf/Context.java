@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -115,21 +115,21 @@ public interface Context {
     PersistentResource loadResource(EPackage ePackage, File file) throws IOException;
 
     /**
-     * Creates a new {@link PersistenceBackend} on the given {@code uri}.
+     * Creates a new {@link Backend} on the given {@code uri}.
      *
      * @param file the URI of the backend
      *
-     * @return a new {@link PersistenceBackend}
+     * @return a new {@link Backend}
      *
      * @throws IOException if an I/O error occurs
      * @see TestHelper
      */
-    PersistenceBackend createBackend(File file) throws IOException;
+    Backend createBackend(File file) throws IOException;
 
     /**
-     * Returns the {@link PersistenceBackendFactory} used by this {@code Context}
+     * Returns the {@link BackendFactory} used by this {@code Context}
      *
-     * @return the {@link PersistenceBackendFactory}
+     * @return the {@link BackendFactory}
      */
-    PersistenceBackendFactory persistenceBackendFactory();
+    BackendFactory backendFactory();
 }

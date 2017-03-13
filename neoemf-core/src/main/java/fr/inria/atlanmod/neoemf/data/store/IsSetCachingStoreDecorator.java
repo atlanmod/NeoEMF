@@ -24,10 +24,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentStore} wrapper that caches the presence of a value.
+ * A {@link Store} wrapper that caches the presence of a value.
  */
 @ParametersAreNonnullByDefault
-public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class IsSetCachingStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
@@ -39,9 +39,9 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     /**
      * Constructs a new {@code IsSetCachingStoreDecorator} with the default cache size.
      *
-     * @param store the underlying store
+     * @param store the inner store
      */
-    public IsSetCachingStoreDecorator(PersistentStore store) {
+    public IsSetCachingStoreDecorator(Store store) {
         super(store);
     }
 

@@ -19,8 +19,8 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
@@ -47,7 +47,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
+ * A {@link PersistentBackend} that is responsible of low-level access to a Blueprints database.
  * <p>
  * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access,
@@ -71,7 +71,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
      * This constructor initialize the caches and create the metaclass index.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *

@@ -14,15 +14,15 @@ package fr.inria.atlanmod.neoemf.io.mock;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
+import fr.inria.atlanmod.neoemf.io.writer.MapperWriter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistenceWriter} that does nothing.
+ * A {@link MapperWriter} that does nothing.
  */
 @ParametersAreNonnullByDefault
-public class DummyPersistenceWriter implements PersistenceWriter {
+public class DummyMapperWriter implements MapperWriter {
 
     @Override
     public void onInitialize() {

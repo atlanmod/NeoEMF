@@ -11,15 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * An {@link PersistentBackend} that is responsible of low-level access to a MapDB database.
  */
 @ParametersAreNonnullByDefault
-public interface MapDbBackend extends PersistenceBackend {
+public interface MapDbBackend extends PersistentBackend {
 
     /**
      * The literal description of this back-end.

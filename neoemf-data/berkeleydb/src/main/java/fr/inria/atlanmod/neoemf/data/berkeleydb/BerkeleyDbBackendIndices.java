@@ -16,9 +16,9 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.io.File;
@@ -52,7 +52,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
      * {@code envConfig}.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code BerkeleyDbBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param file      ???
      * @param envConfig ???
@@ -65,7 +65,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         checkArgument(target instanceof BerkeleyDbBackendIndices);
         BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
 

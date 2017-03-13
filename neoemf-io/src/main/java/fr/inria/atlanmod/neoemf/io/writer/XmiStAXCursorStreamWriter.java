@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
+import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
@@ -94,7 +94,7 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
 
             Optional<String> name = Optional.ofNullable(element.className());
             if (name.isPresent()) {
-                writer.writeAttribute(PersistenceConstants.FEATURE_NAME, name.get());
+                writer.writeAttribute(MapperConstants.FEATURE_NAME, name.get());
             }
         }
         catch (XMLStreamException e) {

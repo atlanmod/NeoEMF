@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -29,24 +29,24 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract {@link PersistentStore} wrapper that delegates method calls to an internal {@link PersistentStore}.
+ * An abstract {@link Store} wrapper that delegates method calls to an internal {@link Store}.
  *
- * @param <S> the type of the underlying {@link PersistentStore}
+ * @param <S> the type of the underlying {@link Store}
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore> extends AbstractPersistentStore {
+public abstract class AbstractStoreDecorator<S extends Store> extends AbstractStore {
 
     /**
-     * The underlying store.
+     * The inner store.
      */
     private final S next;
 
     /**
-     * Constructs a new {@code AbstractPersistentStoreDecorator} on the given {@code store}.
+     * Constructs a new {@code AbstractStoreDecorator} on the given {@code store}.
      *
-     * @param next the underlying store
+     * @param next the inner store
      */
-    public AbstractPersistentStoreDecorator(S next) {
+    public AbstractStoreDecorator(S next) {
         this.next = next;
     }
 
@@ -58,7 +58,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
 
     @Nonnull
     @Override
-    public PersistenceBackend backend() {
+    public Backend backend() {
         return next.backend();
     }
 
@@ -74,7 +74,7 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         next.copyTo(target);
     }
 
@@ -108,39 +108,6 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @OverridingMethodsMustInvokeSuper
     public <V> boolean hasValue(FeatureKey key) {
         return next.hasValue(key);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        return next.metaclassOf(id);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        next.metaclassFor(id, metaclass);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
-        return next.allInstancesOf(metaclass, strict);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        return next.containerOf(id);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void containerFor(Id id, ContainerDescriptor container) {
-        next.containerFor(id, container);
     }
 
     @Nonnull
@@ -325,5 +292,50 @@ public abstract class AbstractPersistentStoreDecorator<S extends PersistentStore
     @OverridingMethodsMustInvokeSuper
     public OptionalInt sizeOfReference(FeatureKey key) {
         return next.sizeOfReference(key);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean supportsClassMapping() {
+        return next.supportsClassMapping();
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
+        return next.metaclassOf(id);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        next.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
+        return next.allInstancesOf(metaclass, strict);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean supportsContainerMapping() {
+        return next.supportsContainerMapping();
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        return next.containerOf(id);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void containerFor(Id id, ContainerDescriptor container) {
+        next.containerFor(id, container);
     }
 }

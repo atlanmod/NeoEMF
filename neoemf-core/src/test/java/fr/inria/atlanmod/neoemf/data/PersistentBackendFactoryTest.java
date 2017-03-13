@@ -20,8 +20,8 @@ import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -36,10 +36,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test cases about {@link PersistenceBackendFactory#createPersistentStore(PersistentResource, PersistenceBackend,
- * Map)}.
+ * Test cases about {@link BackendFactory#createPersistentStore(PersistentResource, Backend, Map)}.
  */
-public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements CoreTest {
+public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest implements CoreTest {
 
     /**
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
@@ -50,7 +49,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     public void testNoOption() {
         Map<String, Object> options = CommonOptions.noOption();
 
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        Store store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
@@ -65,9 +64,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .cacheIsSet()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -85,9 +84,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .log()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -105,9 +104,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .cacheSizes()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -125,9 +124,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .cacheFeatures()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -145,9 +144,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .countLoadedObjects()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -167,9 +166,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .autocommit()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
 
         long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
@@ -192,9 +191,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .autocommit(expectedChuck)
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
 
         long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
@@ -205,7 +204,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
      * <li>{@link IsSetCachingStoreDecorator}</li>
      * <li>{@link LoggingStoreDecorator}</li>
@@ -220,9 +219,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .log()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -233,7 +232,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
      * <li>{@link IsSetCachingStoreDecorator}</li>
      * <li>{@link SizeCachingStoreDecorator}</li>
@@ -248,9 +247,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .cacheSizes()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -261,7 +260,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
      * <li>{@link SizeCachingStoreDecorator}</li>
      * <li>{@link FeatureCachingStoreDecorator}</li>
@@ -276,9 +275,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .cacheFeatures()
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -289,7 +288,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}.
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
      * <li>{@link IsSetCachingStoreDecorator}</li>
      * <li>{@link SizeCachingStoreDecorator}</li>
@@ -312,9 +311,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 .autocommit(expectedChuck)
                 .asMap();
 
-        PersistentStore store;
+        Store store;
 
-        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().backendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
 
         long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
@@ -362,11 +361,11 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         }
 
         @Override
-        public PersistenceBackendFactory persistenceBackendFactory() {
+        public BackendFactory backendFactory() {
             try {
-                AbstractPersistenceBackendFactory factory = (AbstractPersistenceBackendFactory) super.persistenceBackendFactory();
+                AbstractBackendFactory factory = (AbstractBackendFactory) super.backendFactory();
 
-                when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistenceBackend.class));
+                when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistentBackend.class));
                 when(factory.createPersistentStore(any(), any(), notNull())).thenCallRealMethod();
 
                 return factory;

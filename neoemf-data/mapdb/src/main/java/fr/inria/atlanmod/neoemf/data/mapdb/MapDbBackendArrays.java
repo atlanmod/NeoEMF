@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 
 import org.mapdb.DB;
@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
+ * {@link PersistentBackend} that is responsible of low-level access to a MapDB database.
  * <p>
  * It wraps an existing {@link DB} and provides facilities to create and retrieve elements. This class manages a set of
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
@@ -52,7 +52,7 @@ class MapDbBackendArrays extends AbstractMapDbBackend implements ManyValueWithAr
      * {@link Serializer}s.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code MapDbBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *

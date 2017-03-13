@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -91,12 +91,12 @@ public class HBaseContext implements Context {
     }
 
     @Override
-    public PersistenceBackend createBackend(File file) throws IOException {
+    public Backend createBackend(File file) throws IOException {
         return new HBaseTestHelper(null).file(file).createBackend();
     }
 
     @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
+    public BackendFactory backendFactory() {
         return HBaseBackendFactory.getInstance();
     }
 

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.AbstractTestHelper;
 import fr.inria.atlanmod.neoemf.TestHelper;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 
 import org.eclipse.emf.common.util.URI;
@@ -41,7 +41,7 @@ public abstract class AbstractBlueprintsTestHelper<B extends AbstractBlueprintsT
     }
 
     @Override
-    protected PersistenceBackendFactory factory() {
+    protected BackendFactory factory() {
         return BlueprintsBackendFactory.getInstance();
     }
 

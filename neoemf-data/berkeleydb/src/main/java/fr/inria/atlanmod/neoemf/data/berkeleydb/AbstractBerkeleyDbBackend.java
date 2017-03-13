@@ -22,8 +22,7 @@ import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -50,7 +49,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * ???
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend implements BerkeleyDbBackend {
+abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
 
     /**
      * The databases environment.
@@ -126,13 +125,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistenceBackend impl
         }
     }
 
-    /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
-     *
-     * @param target the {@code PersistenceBackend} to copy the database contents to
-     */
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         checkArgument(target instanceof AbstractBerkeleyDbBackend);
         AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
 

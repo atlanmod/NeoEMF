@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -26,12 +25,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * {@link PersistenceBackend} that do not provide transient layer.
+ * An invalid {@link TransientBackend}.
  * <p>
  * All methods throws an {@link UnsupportedOperationException}.
  */
 @ParametersAreNonnullByDefault
-public final class InvalidBackend implements PersistenceBackend {
+public final class InvalidTransientBackend implements TransientBackend {
 
     /**
      * The message of the exceptions thrown when calling methods.
@@ -39,27 +38,23 @@ public final class InvalidBackend implements PersistenceBackend {
     private static final String MSG = "The back-end you are using doesn't provide a transient layer. You must save/load your resource before using it";
 
     @Override
-    public void save() {
-        // Do nothing
+    public boolean supportsClassMapping() {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
+        throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void close() {
-        // Do nothing
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        throw new UnsupportedOperationException(MSG);
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
-        // Do nothing
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
-    public boolean exists(Id id) {
+    public boolean supportsContainerMapping() {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -74,14 +69,13 @@ public final class InvalidBackend implements PersistenceBackend {
         throw new UnsupportedOperationException(MSG);
     }
 
-    @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        throw new UnsupportedOperationException(MSG);
+    public void close() {
+        // No need to close anything
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public boolean exists(Id id) {
         throw new UnsupportedOperationException(MSG);
     }
 

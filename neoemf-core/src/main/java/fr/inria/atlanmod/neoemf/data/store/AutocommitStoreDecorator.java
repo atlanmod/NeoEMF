@@ -25,11 +25,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentStore} wrapper that automatically saves modifications as calls are made.
+ * A {@link Store} wrapper that automatically saves modifications as calls are made.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("MethodDoesntCallSuperMethod")
-public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class AutocommitStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * Number of allowed modifications between commits on the underlying {@link EStore} for this store.
@@ -44,10 +44,10 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
     /**
      * Constructs a new {@code AutocommitStoreDecorator} with the given {@code opsBetweenCommits}.
      *
-     * @param store           the underlying store
+     * @param store           the inner store
      * @param autocommitChuck the number of modifications between commit
      */
-    public AutocommitStoreDecorator(PersistentStore store, long autocommitChuck) {
+    public AutocommitStoreDecorator(Store store, long autocommitChuck) {
         super(store);
         this.autocommitCount = 0;
         this.autocommitChuck = autocommitChuck;
@@ -59,7 +59,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator<P
      *
      * @param store the underlying store
      */
-    public AutocommitStoreDecorator(PersistentStore store) {
+    public AutocommitStoreDecorator(Store store) {
         this(store, 100_000);
     }
 

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.io.writer.PersistenceWriter;
+import fr.inria.atlanmod.neoemf.io.writer.MapperWriter;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -32,10 +32,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistenceWriter} that stores all elements in {@link java.util.Collection}s.
+ * A {@link MapperWriter} that stores all elements in {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault
-public class StructuralPersistanceWriter implements PersistenceWriter {
+public class StructuralPersistanceWriter implements MapperWriter {
 
     private final Map<String, ElementMock> elementMocks;
 

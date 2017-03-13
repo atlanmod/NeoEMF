@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -37,7 +37,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  * ???
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory {
+public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
     /**
      * The literal description of the factory.
@@ -56,7 +56,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
      * @return the instance of this class
      */
     @Nonnull
-    public static PersistenceBackendFactory getInstance() {
+    public static BackendFactory getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -67,7 +67,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public PersistenceBackend createTransientBackend() {
+    public Backend createTransientBackend() {
         BerkeleyDbBackend backend;
 
         try {
@@ -94,7 +94,7 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BerkeleyDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/BerkeleyDB only supports file URIs");
@@ -134,6 +134,6 @@ public class BerkeleyDbBackendFactory extends AbstractPersistenceBackendFactory 
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new BerkeleyDbBackendFactory();
+        private static final BackendFactory INSTANCE = new BerkeleyDbBackendFactory();
     }
 }

@@ -22,9 +22,8 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.util.Iterables;
@@ -52,7 +51,7 @@ import static java.util.Objects.isNull;
  *
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend implements BlueprintsBackend {
+abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
 
     /**
      * The property key used to define the index of an edge.
@@ -131,7 +130,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
      * This constructor initialize the caches and create the metaclass index.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
@@ -202,13 +201,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistenceBackend impl
         }
     }
 
-    /**
-     * Copies all the contents of this {@code PersistenceBackend} to the {@code target} one.
-     *
-     * @param target the {@code PersistenceBackend} to copy the database contents to
-     */
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         checkArgument(target instanceof AbstractBlueprintsBackend);
         AbstractBlueprintsBackend to = (AbstractBlueprintsBackend) target;
 

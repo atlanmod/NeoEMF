@@ -11,29 +11,29 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements MapDbTest {
+public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implements MapDbTest {
 
     @Test
     public void testCreateTransientBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
+        Backend backend = context().backendFactory().createTransientBackend();
         assertThat(backend).isInstanceOf(MapDbBackend.class);
     }
 
     @Test
     public void testCreateTransientStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
+        Backend backend = context().backendFactory().createTransientBackend();
 
-        PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
+        Store store = context().backendFactory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
@@ -41,30 +41,30 @@ public class MapDbBackendFactoryTest extends AbstractPersistenceBackendFactoryTe
 
     @Test
     public void testCreatePersistentBackend() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
+        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackend.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
+        Backend backend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
 
-        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, MapDbOptions.noOption());
+        Store store = context().backendFactory().createPersistentStore(null, backend, MapDbOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     /**
-     * Checks if {@link PersistenceBackend#copyTo} creates the persistent datastores from the transient ones.
+     * Checks if {@link Backend#copyTo} creates the persistent datastores from the transient ones.
      * Only empty back-ends are tested.
      */
     @Test
     public void testCopyBackend() {
-        PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
+        Backend transientBackend = context().backendFactory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
+        Backend persistentBackend = context().backendFactory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);

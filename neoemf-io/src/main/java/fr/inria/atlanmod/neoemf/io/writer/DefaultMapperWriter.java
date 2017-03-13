@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
+import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.util.hash.Hasher;
@@ -41,10 +41,10 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * A {@link PersistenceWriter} that persists data in a {@link PersistenceBackend}, based on received events.
+ * A {@link MapperWriter} that persists data in a {@link DataMapper}, based on received events.
  */
 @ParametersAreNonnullByDefault
-public class DefaultPersistenceWriter implements PersistenceWriter {
+public class DefaultMapperWriter implements MapperWriter {
 
     /**
      * The default cache size.
@@ -66,9 +66,9 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
     private static final Hasher DEFAULT_HASHER = HasherFactory.md5();
 
     /**
-     * The persistence back-end where to store data.
+     * The data mapper.
      */
-    protected final PersistenceBackend backend;
+    protected final DataMapper mapper;
 
     /**
      * Queue holding the current {@link Id} chain (current element and its parent).
@@ -91,12 +91,12 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
     private long autocommitCount;
 
     /**
-     * Constructs a new {@code DefaultPersistenceWriter} on top of the {@code backend}.
+     * Constructs a new {@code DefaultMapperWriter} on top of the {@code backend}.
      *
-     * @param backend the persistence back-end where to store data
+     * @param mapper the persistence back-end where to store data
      */
-    protected DefaultPersistenceWriter(PersistenceBackend backend) {
-        this.backend = checkNotNull(backend);
+    protected DefaultMapperWriter(DataMapper mapper) {
+        this.mapper = checkNotNull(mapper);
 
         this.autocommitCount = 0;
 
@@ -134,12 +134,12 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         RawMetaclass metaClass = RawMetaclass.getDefault();
 
         RawElement rootElement = new RawElement(metaClass.ns(), metaClass.name());
-        rootElement.id(RawId.generated(PersistenceConstants.ROOT_ID.toString()));
+        rootElement.id(RawId.generated(MapperConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.isRoot(false);
         rootElement.metaclass(metaClass);
 
-        createElement(rootElement, PersistenceConstants.ROOT_ID);
+        createElement(rootElement, MapperConstants.ROOT_ID);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
 
     @Override
     public void onComplete() {
-        backend.save();
+        mapper.save();
     }
 
     /**
@@ -200,17 +200,17 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
         Optional.ofNullable(element.className()).ifPresent(c -> {
-            RawAttribute attribute = new RawAttribute(PersistenceConstants.FEATURE_NAME);
+            RawAttribute attribute = new RawAttribute(MapperConstants.FEATURE_NAME);
             attribute.value(c);
             addAttribute(id, attribute);
         });
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {
-            RawReference reference = new RawReference(PersistenceConstants.ROOT_FEATURE_NAME);
+            RawReference reference = new RawReference(MapperConstants.ROOT_FEATURE_NAME);
             reference.isMany(true);
 
-            addReference(PersistenceConstants.ROOT_ID, reference, id);
+            addReference(MapperConstants.ROOT_ID, reference, id);
         }
 
         incrementAndCommit();
@@ -286,15 +286,15 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         FeatureKey key = FeatureKey.of(id, attribute.name());
 
         if (!attribute.isMany()) {
-            backend.valueFor(key, attribute.value());
+            mapper.valueFor(key, attribute.value());
         }
         else {
             int index = attribute.index();
             if (index == -1) {
-                backend.appendValue(key, attribute.value());
+                mapper.appendValue(key, attribute.value());
             }
             else {
-                backend.addValue(key.withPosition(index), attribute.value());
+                mapper.addValue(key.withPosition(index), attribute.value());
             }
         }
 
@@ -324,15 +324,15 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         FeatureKey key = FeatureKey.of(id, reference.name());
 
         if (!reference.isMany()) {
-            backend.referenceFor(key, idReference);
+            mapper.referenceFor(key, idReference);
         }
         else {
             int index = reference.index();
             if (index == -1) {
-                backend.appendReference(key, idReference);
+                mapper.appendReference(key, idReference);
             }
             else {
-                backend.addReference(key.withPosition(index), idReference);
+                mapper.addReference(key.withPosition(index), idReference);
             }
         }
 
@@ -352,9 +352,9 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         checkNotNull(name);
         checkNotNull(idContainment);
 
-        Optional<ContainerDescriptor> container = backend.containerOf(idContainment);
+        Optional<ContainerDescriptor> container = mapper.containerOf(idContainment);
         if (!container.isPresent() || !Objects.equals(container.get().id(), idContainer)) {
-            backend.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
+            mapper.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
         }
 
         incrementAndCommit();
@@ -372,9 +372,9 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
         checkNotNull(name);
         checkNotNull(uri);
 
-        Optional<ClassDescriptor> metaclass = backend.metaclassOf(id);
+        Optional<ClassDescriptor> metaclass = mapper.metaclassOf(id);
         if (!metaclass.isPresent()) {
-            backend.metaclassFor(id, ClassDescriptor.of(name, uri));
+            mapper.metaclassFor(id, ClassDescriptor.of(name, uri));
         }
         else {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");
@@ -390,12 +390,12 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
     private void incrementAndCommit() {
         autocommitCount = (autocommitCount + 1) % DEFAULT_AUTOCOMMIT_CHUNK;
         if (autocommitCount == 0) {
-            backend.save();
+            mapper.save();
         }
     }
 
     /**
-     * Checks that the specified {@code id} exists in the {@link PersistenceBackend}.
+     * Checks that the specified {@code id} exists in the {@link DataMapper}.
      *
      * @param id the identifier to check
      *
@@ -406,7 +406,7 @@ public class DefaultPersistenceWriter implements PersistenceWriter {
     }
 
     /**
-     * Checks that the specified {@code id} doesn't already exists in the {@link PersistenceBackend}.
+     * Checks that the specified {@code id} doesn't already exists in the {@link DataMapper}.
      *
      * @param id the identifier to check
      *

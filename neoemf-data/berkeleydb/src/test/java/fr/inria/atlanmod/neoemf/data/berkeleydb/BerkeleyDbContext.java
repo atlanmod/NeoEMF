@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -91,12 +91,12 @@ public class BerkeleyDbContext implements Context {
     }
 
     @Override
-    public PersistenceBackend createBackend(File file) throws IOException {
+    public Backend createBackend(File file) throws IOException {
         return new BerkeleyDbTestHelper(null).file(file).createBackend();
     }
 
     @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
+    public BackendFactory backendFactory() {
         return BerkeleyDbBackendFactory.getInstance();
     }
 

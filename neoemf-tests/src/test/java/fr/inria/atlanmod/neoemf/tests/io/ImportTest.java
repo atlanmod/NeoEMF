@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Ignore;
@@ -23,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * A test case about the import from XMI to {@link PersistenceBackend}s.
+ * A test case about the import from XMI to {@link fr.inria.atlanmod.neoemf.data.Backend}s.
  */
 public class ImportTest extends AbstractIOTest {
 

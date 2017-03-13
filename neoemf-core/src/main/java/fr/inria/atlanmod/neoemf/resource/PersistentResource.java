@@ -11,7 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -41,19 +42,21 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return the {@link InternalEObject.EStore}
      */
     @Nonnull
-    PersistentStore store();
+    Store store();
 
     /**
-     * Checks whether this {@code PersistentResource} is mapped to a non-transient
-     * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     * Checks whether this resource is mapped to a {@link PersistentBackend}.
+     * <p>
+     * This method acts the same as {@code #store().backend().isPersistent()}.
      *
      * @return {@code true} if the resource is persistent, {@code false} otherwise
      */
-    boolean isPersistent();
+    default boolean isPersistent() {
+        return store().backend().isPersistent();
+    }
 
     /**
-     * Checks whether this {@code PersistentResource} is mapped to a distributed
-     * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     * Checks whether this resource is mapped to a distributed {@link PersistentBackend}.
      * <p>
      * This method acts the same as {@code #store().backend().isDistributed()}.
      *

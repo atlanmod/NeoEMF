@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
@@ -78,21 +78,21 @@ public class ReaderFactory {
     }
 
     /**
-     * Reads a {@link PersistenceBackend} file into writers.
+     * Reads a {@link DataMapper} file into writers.
      *
-     * @param backend the backend of XMI data
+     * @param mapper  the mapper of XMI data
      * @param writers the writers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException              if an error occurred during the import
      */
-    public static void fromBackend(PersistenceBackend backend, Writer... writers) throws IOException {
+    public static void fromMapper(DataMapper mapper, Writer... writers) throws IOException {
         checkNotNull(writers);
 
         Processor processor = new DirectWriteProcessor(writers);
 
         // Custom options come here
 
-        new DefaultPersistenceReader(processor).read(backend);
+        new DefaultMapperReader(processor).read(mapper);
     }
 }

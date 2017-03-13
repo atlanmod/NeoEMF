@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -27,31 +27,31 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
- * A test case about the export from {@link PersistenceBackend}s.
+ * A test case about the export from {@link Backend}s.
  */
 public class ExportTest extends AbstractIOTest {
 
     /**
-     * Checks the copy from a {@link PersistenceBackend} to another.
+     * Checks the copy from a {@link Backend} to another.
      *
      * @throws IOException if an I/O error occurs
      */
     @Test
     public void testCopyBackend() throws IOException {
-        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
 
         File sourceBackend = file();
         File targetBackend = Paths.get(file() + "-copy").toFile();
 
-        try (PersistenceBackend backend = context().createBackend(sourceBackend)) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toBackend(backend));
+        try (Backend backend = context().createBackend(sourceBackend)) {
+            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(backend));
 
-            try (PersistenceBackend target = context().createBackend(targetBackend)) {
-                ReaderFactory.fromBackend(backend, WriterFactory.toBackend(target));
+            try (Backend target = context().createBackend(targetBackend)) {
+                ReaderFactory.fromMapper(backend, WriterFactory.toMapper(target));
             }
         }
 
-        // Comparing PersistenceBackend
+        // Comparing PersistentBackend
         Resource sourceResource = closeAtExit(context().loadResource(null, sourceBackend));
         Resource targetResource = closeAtExit(context().loadResource(null, targetBackend));
 
@@ -65,14 +65,14 @@ public class ExportTest extends AbstractIOTest {
     }
 
     /**
-     * Checks the copy from a {@link PersistenceBackend} to another.
+     * Checks the copy from a {@link Backend} to another.
      *
      * @throws IOException if an I/O error occurs
      */
     @Test
     @Ignore // FIXME Some attributes cannot be written
     public void testCopyFile() throws IOException {
-        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
 
         File targetFile = new File(file() + ".xmi");
 
@@ -86,22 +86,22 @@ public class ExportTest extends AbstractIOTest {
     }
 
     /**
-     * Checks the copy from a {@link PersistenceBackend} to another.
+     * Checks the copy from a {@link Backend} to another.
      *
      * @throws IOException if an I/O error occurs
      */
     @Test
     @Ignore // FIXME Some elements are missing
     public void testExportToXmi() throws IOException {
-        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
 
         File targetFile = new File(file() + ".xmi");
 
         Log.info("Writing to {0}", targetFile);
 
-        try (PersistenceBackend backend = context().createBackend(file())) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toBackend(backend));
-            ReaderFactory.fromBackend(backend, WriterFactory.toXmi(targetFile));
+        try (Backend backend = context().createBackend(file())) {
+            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(backend));
+            ReaderFactory.fromMapper(backend, WriterFactory.toXmi(targetFile));
         }
 
         EObject sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);

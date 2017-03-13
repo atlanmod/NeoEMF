@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents options managed by {@link PersistenceBackendFactory}.
+ * Represents options managed by {@link BackendFactory}.
  * <p>
  * <b>Note:</b> Not implemented yet.
  * <p>

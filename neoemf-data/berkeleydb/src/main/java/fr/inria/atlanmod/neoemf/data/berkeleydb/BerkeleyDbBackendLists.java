@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.EnvironmentConfig;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
 
 import java.io.File;
@@ -33,7 +33,7 @@ class BerkeleyDbBackendLists extends AbstractBerkeleyDbBackend implements ManyVa
      * {@code envConfig}.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code BerkeleyDbBackendLists} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param file      ???
      * @param envConfig ???

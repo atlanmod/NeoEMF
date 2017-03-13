@@ -17,9 +17,9 @@ import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.CommonResourceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
@@ -42,15 +42,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * An abstract {@link PersistenceBackendFactory} that processes common store options and manages the configuration.
+ * An abstract {@link BackendFactory} that processes common store options and manages the configuration.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
+public abstract class AbstractBackendFactory implements BackendFactory {
 
     /**
-     * Constructs a new {@code AbstractPersistenceBackendFactory}.
+     * Constructs a new {@code AbstractBackendFactory}.
      */
-    protected AbstractPersistenceBackendFactory() {
+    protected AbstractBackendFactory() {
     }
 
     /**
@@ -91,22 +91,22 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     }
 
     /**
-     * Returns the literal description of the created {@link PersistenceBackend}.
+     * Returns the literal description of the created {@link Backend}.
      *
-     * @return the literal description of the created {@link PersistenceBackend}
+     * @return the literal description of the created {@link Backend}
      */
     protected abstract String getName();
 
     @Nonnull
     @Override
-    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
+    public Store createTransientStore(PersistentResource resource, Backend backend) {
         return new DirectWriteStore(backend, resource);
     }
 
     @Nonnull
     @Override
-    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<String, Object> options) {
-        PersistentStore store = new DirectWriteStore(backend, resource);
+    public Store createPersistentStore(PersistentResource resource, Backend backend, Map<String, Object> options) {
+        Store store = new DirectWriteStore(backend, resource);
 
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
@@ -153,7 +153,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * Creates and saves the NeoEMF configuration.
      * <p>
      * The configuration is stored as a properties file beside a database in order to identify a {@link
-     * PersistenceBackend}.
+     * PersistentBackend}.
      *
      * @param directory the directory where the configuration must be stored
      *

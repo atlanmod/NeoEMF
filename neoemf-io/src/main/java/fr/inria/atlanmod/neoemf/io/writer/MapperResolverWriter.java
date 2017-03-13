@@ -15,7 +15,7 @@ import com.google.common.collect.HashMultimap;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
@@ -31,14 +31,14 @@ import java.util.Optional;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Handler} for {@link PersistenceBackend}s.
+ * A {@link Handler} for {@link DataMapper}s.
  * <p>
  * <b>Important Note:</b> This handler has a key conflicts resolution feature, but it consumes much more memory than the
- * {@link DefaultPersistenceWriter}. Make sure you have enough memory to avoid heap space.
+ * {@link DefaultMapperWriter}. Make sure you have enough memory to avoid heap space.
  */
 @Experimental
 @ParametersAreNonnullByDefault
-public class PersistenceResolverWriter extends DefaultPersistenceWriter {
+public class MapperResolverWriter extends DefaultMapperWriter {
 
     /**
      * Map holding the unlinked elements, waiting until their reference is created.
@@ -51,12 +51,12 @@ public class PersistenceResolverWriter extends DefaultPersistenceWriter {
     private final Map<String, Id> conflictIdsCache = new HashMap<>();
 
     /**
-     * Constructs a new {@code PersistenceResolverWriter} on the given {@code backend}.
+     * Constructs a new {@code MapperResolverWriter} on the given {@code mapper}.
      *
-     * @param backend the back-end where to store data
+     * @param mapper the back-end where to store data
      */
-    protected PersistenceResolverWriter(PersistenceBackend backend) {
-        super(backend);
+    protected MapperResolverWriter(DataMapper mapper) {
+        super(mapper);
 
         this.unlinkedElements = HashMultimap.create();
     }
@@ -124,14 +124,14 @@ public class PersistenceResolverWriter extends DefaultPersistenceWriter {
 
     @Override
     protected void checkExists(Id id) {
-        if (!backend.exists(id)) {
+        if (!mapper.exists(id)) {
             throw new NoSuchElementException("Unable to find an element with Id: " + id);
         }
     }
 
     @Override
     protected void checkDoesNotExist(Id id) {
-        if (backend.exists(id)) {
+        if (mapper.exists(id)) {
             throw new AlreadyExistingIdException("Already existing Id: " + id);
         }
     }

@@ -84,7 +84,6 @@ public interface CacheBuilder<K, V> {
      * @return this builder (for chaining)
      *
      * @throws IllegalArgumentException if {@code size} is negative
-     *
      * @see #maximumSize(long)
      */
     default CacheBuilder<K, V> maximumSize() {

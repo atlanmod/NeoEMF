@@ -9,23 +9,20 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.store;
-
-import fr.inria.atlanmod.neoemf.util.log.Log;
+package fr.inria.atlanmod.neoemf.data;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The abstract implementation of a {@link PersistentStore}.
+ * A {@link Backend} that stores all elements in a database and provides specific methods for communicating with the
+ * database that it uses. Each {@code PersistentBackend} manage one single instance of a database.
  */
 @ParametersAreNonnullByDefault
-// TODO Remove inheritance from PersistentStoreAdapter
-public abstract class AbstractPersistentStore extends PersistentStoreAdapter implements PersistentStore {
+public interface PersistentBackend extends Backend {
 
-    /**
-     * Constructs a new {@code AbstractPersistentStore}.
-     */
-    public AbstractPersistentStore() {
-        Log.debug("{0} created", getClass().getSimpleName());
+    @Override
+    default boolean isPersistent() {
+        return true;
     }
 }
+

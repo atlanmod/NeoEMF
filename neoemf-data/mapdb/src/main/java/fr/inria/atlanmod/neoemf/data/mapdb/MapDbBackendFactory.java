@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -36,7 +36,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 /**
  * A factory that creates instances of {@link MapDbBackendIndices}.
  * <p>
- * As other implementations of {@link PersistenceBackendFactory}, this class can create transient and persistent
+ * As other implementations of {@link BackendFactory}, this class can create transient and persistent
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
  * PersistentResource#load(Map)} option maps.
  * <p>
@@ -47,7 +47,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  * @see MapDbOptionsBuilder
  */
 @ParametersAreNonnullByDefault
-public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
+public class MapDbBackendFactory extends AbstractBackendFactory {
 
     /**
      * The literal description of the factory.
@@ -66,7 +66,7 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
      * @return the instance of this class
      */
     @Nonnull
-    public static PersistenceBackendFactory getInstance() {
+    public static BackendFactory getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -77,14 +77,14 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Nonnull
     @Override
-    public PersistenceBackend createTransientBackend() {
+    public Backend createTransientBackend() {
         DB db = DBMaker.memoryDB().make();
         return new MapDbBackendIndices(db);
     }
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         MapDbBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/MapDB only supports file URIs");
@@ -115,6 +115,6 @@ public class MapDbBackendFactory extends AbstractPersistenceBackendFactory {
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new MapDbBackendFactory();
+        private static final BackendFactory INSTANCE = new MapDbBackendFactory();
     }
 }

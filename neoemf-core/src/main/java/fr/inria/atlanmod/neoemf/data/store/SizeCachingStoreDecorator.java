@@ -24,10 +24,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentStore} wrapper that caches the size data.
+ * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class SizeCachingStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * The size of an empty element.
@@ -45,9 +45,9 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator<
     /**
      * Constructs a new {@code SizeCachingStoreDecorator} with the default cache size.
      *
-     * @param store the underlying store
+     * @param store the inner store
      */
-    public SizeCachingStoreDecorator(PersistentStore store) {
+    public SizeCachingStoreDecorator(Store store) {
         super(store);
     }
 

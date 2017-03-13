@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
-import fr.inria.atlanmod.neoemf.io.util.PersistenceConstants;
+import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -36,34 +36,34 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  */
 @ParametersAreNonnullByDefault
-public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend> implements PersistenceReader {
+public class DefaultMapperReader extends AbstractReader<DataMapper> implements MapperReader {
 
     /**
      * The backend to read.
      */
-    private PersistenceBackend backend;
+    private DataMapper mapper;
 
     /**
-     * Constructs a new {@code DefaultPersistenceReader} with the given {@code handlers}.
+     * Constructs a new {@code DefaultMapperReader} with the given {@code handlers}.
      *
      * @param handlers the handlers to notify
      */
-    public DefaultPersistenceReader(Handler... handlers) {
+    public DefaultMapperReader(Handler... handlers) {
         super(handlers);
     }
 
     @Override
-    public void read(PersistenceBackend source) {
-        backend = source;
+    public void read(DataMapper source) {
+        mapper = source;
 
         notifyInitialize();
 
-        FeatureKey rootKey = FeatureKey.of(PersistenceConstants.ROOT_ID, PersistenceConstants.ROOT_FEATURE_NAME);
+        FeatureKey rootKey = FeatureKey.of(MapperConstants.ROOT_ID, MapperConstants.ROOT_FEATURE_NAME);
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();
 
-        backend = null;
+        mapper = null;
     }
 
     /**
@@ -83,14 +83,14 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      */
     protected void readElement(Id id, boolean isRoot) {
         // Retrieve the metaclass and namespace
-        ClassDescriptor metaclass = backend.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
+        ClassDescriptor metaclass = mapper.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
         EClass realMetaclass = metaclass.get();
 
         Namespace ns = Namespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
 
         // Retrieve the name of the element
         // If root it's the name of the metaclass, otherwise the name of the containing feature
-        String elementName = isRoot ? metaclass.name() : backend.containerOf(id).map(ContainerDescriptor::name).orElse(null);
+        String elementName = isRoot ? metaclass.name() : mapper.containerOf(id).map(ContainerDescriptor::name).orElse(null);
 
         // Create the element
         RawElement element = new RawElement(ns, elementName);
@@ -99,14 +99,14 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
-        String name = backend.valueOf(FeatureKey.of(id, PersistenceConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
+        String name = mapper.valueOf(FeatureKey.of(id, MapperConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
         element.className(name);
 
         notifyStartElement(element);
 
         // Process all attributes
         realMetaclass.getEAllAttributes().stream()
-                .filter(attribute -> !Objects.equals(PersistenceConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
+                .filter(attribute -> !Objects.equals(MapperConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
                 .forEach(attribute -> {
                     FeatureKey key = FeatureKey.of(id, attribute.getName());
                     if (!attribute.isMany()) {
@@ -138,7 +138,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      * @param key the key identifying the attribute
      */
     protected void readValue(FeatureKey key) {
-        backend.valueOf(key).ifPresent(value -> {
+        mapper.valueOf(key).ifPresent(value -> {
             RawAttribute attribute = new RawAttribute(key.name());
             attribute.id(RawId.original(key.id().toString()));
             attribute.value(value);
@@ -153,10 +153,10 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      * @param key the key identifying the attributes
      */
     protected void readAllValues(FeatureKey key) {
-        int size = backend.sizeOfValue(key).orElse(0);
+        int size = mapper.sizeOfValue(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->
-                backend.valueOf(key.withPosition(0)).ifPresent(value -> {
+                mapper.valueOf(key.withPosition(0)).ifPresent(value -> {
                     RawAttribute attribute = new RawAttribute(key.name());
                     attribute.id(RawId.original(key.id().toString()));
                     attribute.value(value);
@@ -174,13 +174,13 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      * @param isContainment {@code true} if the reference is a containment
      */
     protected void readReference(FeatureKey key, boolean isContainment) {
-        backend.referenceOf(key).ifPresent(id -> {
+        mapper.referenceOf(key).ifPresent(id -> {
             RawReference reference = new RawReference(key.name());
             reference.id(RawId.original(key.id().toString()));
             reference.idReference(RawId.original(id.toString()));
             reference.isContainment(isContainment);
 
-            backend.metaclassOf(id).ifPresent(m -> {
+            mapper.metaclassOf(id).ifPresent(m -> {
                 Namespace ns = Namespace.Registry.getInstance().getFromUri(m.uri());
                 reference.metaclassReference(new RawMetaclass(ns, m.name()));
             });
@@ -198,10 +198,10 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      * @param isContainment {@code true} if the reference is a containment
      */
     protected void readAllReferences(FeatureKey key, boolean isContainment) {
-        int size = backend.sizeOfReference(key).orElse(0);
+        int size = mapper.sizeOfReference(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->
-                backend.referenceOf(key.withPosition(position)).ifPresent(id -> {
+                mapper.referenceOf(key.withPosition(position)).ifPresent(id -> {
                     RawReference reference = new RawReference(key.name());
                     reference.id(RawId.original(key.id().toString()));
                     reference.idReference(RawId.original(id.toString()));
@@ -209,7 +209,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
                     reference.isMany(true);
                     reference.index(position);
 
-                    backend.metaclassOf(id).ifPresent(m -> {
+                    mapper.metaclassOf(id).ifPresent(m -> {
                         Namespace ns = Namespace.Registry.getInstance().getFromUri(m.uri());
                         reference.metaclassReference(new RawMetaclass(ns, m.name()));
                     });
@@ -227,7 +227,7 @@ public class DefaultPersistenceReader extends AbstractReader<PersistenceBackend>
      * @param next   the next identifier
      */
     protected void next(Id parent, Id next) {
-        backend.containerOf(next).ifPresent(container -> {
+        mapper.containerOf(next).ifPresent(container -> {
             if (Objects.equals(container.id(), parent)) {
                 readElement(next);
             }

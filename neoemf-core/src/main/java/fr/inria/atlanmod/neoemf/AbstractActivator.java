@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
@@ -20,8 +20,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * A {@link BundleActivator} that automatically registers a {@link PersistenceBackendFactory} with its associated
- * {@link URI URI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
+ * A {@link BundleActivator} that automatically registers a {@link BackendFactory} with its associated
+ * {@link URI URI} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
  * <p>
  * <b>Note:</b> This class should not be used in standard use.
  */
@@ -30,16 +30,16 @@ public abstract class AbstractActivator implements BundleActivator {
     /**
      * {@inheritDoc}
      * <p>
-     * Registers the {@link PersistenceBackendFactory} from {@link #factory()}, with its {@link URI URI} scheme from
-     * {@link #scheme()}, in the {@link PersistenceBackendFactoryRegistry registry} if it's not already.
+     * Registers the {@link BackendFactory} from {@link #factory()}, with its {@link URI URI} scheme from
+     * {@link #scheme()}, in the {@link BackendFactoryRegistry registry} if it's not already.
      *
      * @param bundleContext the execution context of the bundle being started
      */
     @Override
     public final void start(BundleContext bundleContext) {
         Log.info("NeoEMF-{0} plugin started", name());
-        if (!PersistenceBackendFactoryRegistry.isRegistered(scheme())) {
-            PersistenceBackendFactoryRegistry.register(scheme(), factory());
+        if (!BackendFactoryRegistry.isRegistered(scheme())) {
+            BackendFactoryRegistry.register(scheme(), factory());
             Log.info("{0} backend registered", name());
         }
     }
@@ -64,9 +64,9 @@ public abstract class AbstractActivator implements BundleActivator {
     protected abstract String scheme();
 
     /**
-     * Returns the {@link PersistenceBackendFactory} associated with this bundle.
+     * Returns the {@link BackendFactory} associated with this bundle.
      *
      * @return the factory
      */
-    protected abstract PersistenceBackendFactory factory();
+    protected abstract BackendFactory factory();
 }

@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -91,12 +91,12 @@ public class MapDbContext implements Context {
     }
 
     @Override
-    public PersistenceBackend createBackend(File file) throws IOException {
+    public Backend createBackend(File file) throws IOException {
         return new MapDbTestHelper(null).file(file).createBackend();
     }
 
     @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
+    public BackendFactory backendFactory() {
         return MapDbBackendFactory.getInstance();
     }
 

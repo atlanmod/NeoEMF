@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.TransientBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
@@ -108,13 +108,13 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public PersistenceBackend createBackend(File file) throws IOException {
-        return new TransientBackend();
+    public Backend createBackend(File file) throws IOException {
+        return new DefaultTransientBackend();
     }
 
     @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
-        return mock(AbstractPersistenceBackendFactory.class);
+    public BackendFactory backendFactory() {
+        return mock(AbstractBackendFactory.class);
     }
 
     /**

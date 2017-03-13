@@ -27,7 +27,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test case about the copy from a {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} to another.
+ * Test case about the copy from a {@link fr.inria.atlanmod.neoemf.data.Backend} to another.
  */
 public class CopyBackendContentTest extends AbstractBackendTest {
 
@@ -47,8 +47,8 @@ public class CopyBackendContentTest extends AbstractBackendTest {
     private static final String CONTENT2_NAME = "Content2";
 
     /**
-     * Checks the copy from a transient {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} to a persistent {@link
-     * fr.inria.atlanmod.neoemf.data.PersistenceBackend} when calling {@link PersistentResource#save(Map)}.
+     * Checks the copy from a transient {@link fr.inria.atlanmod.neoemf.data.Backend} to a persistent {@link
+     * fr.inria.atlanmod.neoemf.data.Backend} when calling {@link PersistentResource#save(Map)}.
      *
      * @throws IOException if an I/O error occurs during {@link PersistentResource#save(Map)}
      */

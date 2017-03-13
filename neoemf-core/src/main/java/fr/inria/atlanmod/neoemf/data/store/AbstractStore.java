@@ -9,15 +9,23 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
+package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Writer} that persists data into a {@link PersistenceBackend}.
+ * The abstract implementation of a {@link Store}.
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceWriter extends Writer {
+// TODO Remove inheritance from StoreAdapter
+public abstract class AbstractStore extends StoreAdapter implements Store {
+
+    /**
+     * Constructs a new {@code AbstractStore}.
+     */
+    public AbstractStore() {
+        Log.debug("{0} created", getClass().getSimpleName());
+    }
 }

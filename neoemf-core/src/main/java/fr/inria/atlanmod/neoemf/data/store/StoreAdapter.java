@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -51,12 +52,12 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistentStore} used as bridge between a {@link org.eclipse.emf.ecore.InternalEObject.EStore} and a
- * {@link fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper}.
+ * A {@link Store} used as bridge between a {@link org.eclipse.emf.ecore.InternalEObject.EStore} and a
+ * {@link DataMapper}.
  */
 @ParametersAreNonnullByDefault
 // TODO Declare this class as final
-public abstract class PersistentStoreAdapter implements InternalEObject.EStore, PersistentStore {
+public abstract class StoreAdapter implements InternalEObject.EStore, Store {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
@@ -65,9 +66,7 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
     private final Cache<Id, PersistentEObject> cache = CacheBuilder.newBuilder()
             .softValues()
             .maximumSize()
-            .build(id -> resolveInstanceOf(id)
-                    .map(c -> PersistenceFactory.getInstance().create(c, id).isPersistent(true))
-                    .<NoSuchElementException>orElseThrow(() -> new NoSuchElementException("Element " + id + " does not have an associated EClass")));
+            .build();
 
     /**
      * Checks whether the {@code feature} is an {@link EAttribute}.
@@ -237,6 +236,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
         checkNotNull(feature);
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (!exists(key.id())) {
+            return;
+        }
 
         if (isAttribute(feature)) {
             if (!feature.isMany()) {
@@ -416,6 +419,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
 
         ManyFeatureKey key = ManyFeatureKey.from(internalObject, feature, index);
 
+        if (!exists(key.id())) {
+            return null;
+        }
+
         if (isAttribute(feature)) {
             return this.<String>removeValue(key)
                     .map(v -> deserialize((EAttribute) feature, v))
@@ -541,6 +548,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
     public final InternalEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
+        if (!supportsContainerMapping()) {
+            return null;
+        }
+
         return containerOf(PersistentEObject.from(internalObject).id())
                 .map(containerValue -> resolve(containerValue.id()))
                 .orElse(null);
@@ -550,6 +561,11 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
     public final EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
+        if (!supportsContainerMapping()) {
+            throw new IllegalStateException("This method should not be called");
+        }
+
+        //noinspection ConstantConditions
         return containerOf(PersistentEObject.from(internalObject).id())
                 .map(containerValue -> resolve(containerValue.id()).eClass().getEStructuralFeature(containerValue.name()))
                 .orElse(null);
@@ -583,6 +599,7 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
     private void persist(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         persist(object);
         persist(referencedObject);
+
         updateContainment(object, reference, referencedObject);
     }
 
@@ -598,12 +615,9 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
      * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
      */
     private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        checkNotNull(object);
-        checkNotNull(reference);
-        checkNotNull(referencedObject);
-
-        if (reference.isContainment()) {
+        if (supportsContainerMapping() && reference.isContainment()) {
             Optional<ContainerDescriptor> container = containerOf(referencedObject.id());
+
             if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
                 containerFor(referencedObject.id(), ContainerDescriptor.from(object, reference));
             }
@@ -617,11 +631,19 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
+    @Nonnull
     private Optional<EClass> resolveInstanceOf(Id id) {
-        checkNotNull(id);
+        Optional<EClass> instanceOf = Optional.empty();
 
-        return metaclassOf(id)
-                .map(ClassDescriptor::get);
+        if (supportsClassMapping()) {
+            instanceOf = metaclassOf(id).map(ClassDescriptor::get);
+
+            if (!instanceOf.isPresent()) {
+                throw new NoSuchElementException("Element " + id + " does not have an associated EClass");
+            }
+        }
+
+        return instanceOf;
     }
 
     /**
@@ -632,23 +654,28 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
      * @param object the {@link PersistentEObject} to store the instance-of information from
      */
     private void updateInstanceOf(PersistentEObject object) {
-        checkNotNull(object);
+        if (supportsClassMapping()) {
+            Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
 
-        Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
-        if (!metaclass.isPresent()) {
-            metaclassFor(object.id(), ClassDescriptor.from(object));
+            if (!metaclass.isPresent()) {
+                metaclassFor(object.id(), ClassDescriptor.from(object));
+            }
         }
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = cache.get(id);
-        if (nonNull(resource()) && object.resource() != resource()) {
+        PersistentEObject object = cache.get(id, key -> resolveInstanceOf(key)
+                .map(c -> PersistenceFactory.getInstance().create(c, key).isPersistent(true))
+                .orElse(null));
+
+        if (nonNull(object) && nonNull(resource()) && object.resource() != resource()) {
             object.resource(resource());
         }
+
         return object;
     }
 }

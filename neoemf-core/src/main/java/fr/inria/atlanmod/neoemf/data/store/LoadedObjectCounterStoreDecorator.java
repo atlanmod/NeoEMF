@@ -28,10 +28,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentStore} wrapper that count the number elements used.
+ * A {@link Store} wrapper that count the number elements used.
  */
 @ParametersAreNonnullByDefault
-public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * Set that holds loaded objects.
@@ -41,9 +41,9 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     /**
      * Constructs a new {@code LoadedObjectCounterStoreDecorator}.
      *
-     * @param store the underlying store
+     * @param store the inner store
      */
-    public LoadedObjectCounterStoreDecorator(PersistentStore store) {
+    public LoadedObjectCounterStoreDecorator(Store store) {
         super(store);
         loadedObjects = new TreeSet<>();
 
@@ -74,32 +74,6 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     public <V> boolean hasValue(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.hasValue(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        loadedObjects.add(id);
-        return super.metaclassOf(id);
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        loadedObjects.add(id);
-        super.metaclassFor(id, metaclass);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        loadedObjects.add(id);
-        return super.containerOf(id);
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        loadedObjects.add(id);
-        super.containerFor(id, container);
     }
 
     @Nonnull
@@ -284,5 +258,31 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     public OptionalInt sizeOfReference(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.sizeOfReference(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
+        loadedObjects.add(id);
+        return super.metaclassOf(id);
+    }
+
+    @Override
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        loadedObjects.add(id);
+        super.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        loadedObjects.add(id);
+        return super.containerOf(id);
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        loadedObjects.add(id);
+        super.containerFor(id, container);
     }
 }

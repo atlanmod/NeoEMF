@@ -9,19 +9,15 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.io.reader;
+
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The abstract implementation of {@link PersistenceBackend}.
+ * A {@link Reader} that reads data from a {@link DataMapper}.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractPersistenceBackend implements PersistenceBackend {
-
-    /**
-     * Constructs a new {@code AbstractPersistenceBackend}.
-     */
-    protected AbstractPersistenceBackend() {
-    }
+public interface MapperReader extends Reader<DataMapper> {
 }

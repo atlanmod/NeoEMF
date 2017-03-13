@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
@@ -49,7 +49,7 @@ import static java.util.Objects.nonNull;
  * The default implementation of a {@link PersistentEObject}.
  * <p>
  * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses
- * to an underlying {@link PersistentStore} that interacts with the database used to store the model.
+ * to an underlying {@link Store} that interacts with the database used to store the model.
  * <p>
  * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all
  * existing database implementations.
@@ -76,7 +76,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Resource.Internal resource;
 
     /**
-     * Whether this object is mapped to an entity in a {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     * Whether this object is mapped to an entity in a {@link fr.inria.atlanmod.neoemf.data.Backend}.
      */
     private boolean isPersistent;
 
@@ -94,9 +94,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private int containerReferenceId;
 
     /**
-     * The {@link PersistentStore} where this object is stored.
+     * The {@link Store} where this object is stored.
      */
-    private PersistentStore store;
+    private Store store;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id}, using {@link StringId#generate()}.
@@ -146,7 +146,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
-        PersistentStore newStore = null;
+        Store newStore = null;
 
         if (resource instanceof PersistentResource) {
             // The resource store may have been changed (persistent <-> transient)
@@ -174,17 +174,17 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Move the content from the {@code source} {@link PersistentStore} to the {@code target}.
+     * Move the content from the {@code source} {@link Store} to the {@code target}.
      *
      * @param source the store to copy
      * @param target the store where to store data
      */
-    private void copyStore(PersistentStore source, PersistentStore target) {
+    private void copyStore(Store source, Store target) {
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {
                 if (!f.isMany()) {
-                    getValueFrom(source, f, PersistentStore.NO_INDEX)
-                            .ifPresent(v -> target.set(this, f, PersistentStore.NO_INDEX, v));
+                    getValueFrom(source, f, Store.NO_INDEX)
+                            .ifPresent(v -> target.set(this, f, Store.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, f);
@@ -207,10 +207,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @return an {@link Optional} containing the adapted value, or {@link Optional#empty()} if the value doesn't exist
      * in the {@code store}
      *
-     * @see PersistentStore#get(InternalEObject, EStructuralFeature, int)
+     * @see Store#get(InternalEObject, EStructuralFeature, int)
      */
     @Nonnull
-    private Optional<Object> getValueFrom(PersistentStore store, EStructuralFeature feature, int index) {
+    private Optional<Object> getValueFrom(Store store, EStructuralFeature feature, int index) {
         Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
 
         if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
@@ -294,7 +294,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nonnull
     @Override
-    public PersistentStore eStore() {
+    public Store eStore() {
         if (isNull(store)) {
             store = createBoundedStore();
         }
@@ -323,7 +323,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            value = eStore().get(this, feature, PersistentStore.NO_INDEX);
+            value = eStore().get(this, feature, Store.NO_INDEX);
         }
 
         return value;
@@ -342,7 +342,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
         }
         else {
-            eStore().set(this, feature, PersistentStore.NO_INDEX, value);
+            eStore().set(this, feature, Store.NO_INDEX, value);
         }
     }
 
@@ -388,11 +388,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Creates a new {@link PersistentStore} bounded to this object.
+     * Creates a new {@link Store} bounded to this object.
      *
-     * @return a new {@link PersistentStore}
+     * @return a new {@link Store}
      */
-    private PersistentStore createBoundedStore() {
+    private Store createBoundedStore() {
         return new DirectWriteStore(new BoundedTransientBackend(id));
     }
 
@@ -414,7 +414,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * An {@link EContentsEList} implementation that delegates its operations to the associated {@link PersistentStore}.
+     * An {@link EContentsEList} implementation that delegates its operations to the associated {@link Store}.
      * <p>
      * Instances of this class are created by {@link PersistentResource#getContents()} and allows to access the content
      * of a {@link PersistentResource} by lazily loading the elements.
@@ -559,8 +559,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Overrides the default implementation which relies on {@link #size()} and {@link
-         * PersistentStore#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
-         * PersistentStore#toArray(InternalEObject, EStructuralFeature)} implementation.
+         * Store#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
+         * Store#toArray(InternalEObject, EStructuralFeature)} implementation.
          */
         @Nonnull
         @Override
@@ -572,8 +572,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Overrides the default implementation which relies on {@link #size()} and {@link
-         * PersistentStore#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
-         * PersistentStore#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
+         * Store#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
+         * Store#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
          */
         @Nonnull
         @Override
@@ -590,10 +590,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link
-         * fr.inria.atlanmod.neoemf.data.PersistenceBackend} has to append the result to the existing list.
+         * providing a custom {@link Store#NO_INDEX} features, meaning that the {@link
+         * fr.inria.atlanmod.neoemf.data.Backend} has to append the result to the existing list.
          * <p>
-         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} which
+         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.Backend} which
          * would otherwise need to deserialize the underlying list to add the element at the specified index.
          */
         @Override
@@ -606,7 +606,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     addUnique(object);
                 }
                 else {
-                    int index = size() == 0 ? 0 : PersistentStore.NO_INDEX;
+                    int index = size() == 0 ? 0 : Store.NO_INDEX;
                     addUnique(index, object);
                 }
                 return true;

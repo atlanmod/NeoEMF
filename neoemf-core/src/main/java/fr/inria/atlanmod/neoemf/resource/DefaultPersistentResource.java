@@ -15,10 +15,9 @@ import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.Iterables;
@@ -60,7 +59,7 @@ import static java.util.Objects.nonNull;
  * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
  * <p>
  * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations
- * to its internal {@link PersistentStore} which is responsible of database access.
+ * to its internal {@link Store} which is responsible of database access.
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
@@ -84,21 +83,16 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private final RootObject rootObject;
 
     /**
-     * The {@link PersistentStore} responsible of the database serialization.
+     * The {@link Store} responsible of the database serialization.
      */
     @Nonnull
-    protected PersistentStore store;
+    protected Store store;
 
     /**
      * The last options used during {@link #load(Map)}.
      */
     @Nullable
     private Map<String, Object> previousOptions;
-
-    /**
-     * Whether this {@link PersistentResource} is stored in a {@link PersistenceBackend}, non-transient.
-     */
-    private boolean isPersistent;
 
     /**
      * Constructs a new {@code DefaultPersistentResource} with the given {@code uri}.
@@ -109,10 +103,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         super(uri);
         rootObject = new RootObject(this);
 
-        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+        BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
         store = factory.createTransientStore(this);
-
-        isPersistent = false;
 
         Log.info("{0} created", PersistentResource.class.getSimpleName());
     }
@@ -138,7 +130,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return Optional.<EObject>of(store.resolve(StringId.of(uriFragment)))
+        return Optional.<EObject>ofNullable(store.resolve(StringId.of(uriFragment)))
                 .orElseGet(() -> super.getEObject(uriFragment));
     }
 
@@ -181,10 +173,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     protected void safeSave(Map<String, Object> options) throws IOException {
         checkOptions(options);
 
-        if (!isLoaded || !isPersistent) {
-            PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
-            PersistentStore newStore = factory.createPersistentStore(this, options);
+        if (!isLoaded || !isPersistent()) {
+            BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
+            Store newStore = factory.createPersistentStore(this, options);
 
+            // Direct copy to the backend
             store.copyTo(newStore.backend());
 
             // Close the previous store, and assign the new
@@ -192,7 +185,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             store = newStore;
 
             isLoaded = true;
-            isPersistent = true;
         }
 
         store.save();
@@ -219,10 +211,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     // Closes the previous store
                     store.close();
 
-                    PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+                    BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
                     store = factory.createPersistentStore(this, options);
 
-                    isPersistent = true;
                     rootObject.isPersistent(true);
                 }
                 else {
@@ -243,10 +234,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void close() {
         store.close();
 
-        PersistenceBackendFactory factory = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme());
+        BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
         store = factory.createTransientStore(this);
 
-        isPersistent = false;
         isLoaded = false;
 
         Log.info("{0} closed:  {1}", PersistentResource.class.getSimpleName(), uri);
@@ -254,13 +244,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
-    public PersistentStore store() {
+    public Store store() {
         return store;
-    }
-
-    @Override
-    public boolean isPersistent() {
-        return isPersistent;
     }
 
     @Nonnull
@@ -366,7 +351,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param feature ???
          * @param store   ???
          */
-        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, PersistentStore store) {
+        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, Store store) {
             super(owner, feature, store);
         }
 

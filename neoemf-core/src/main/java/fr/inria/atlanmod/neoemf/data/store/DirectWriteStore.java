@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -33,19 +33,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistentStore} that translates model-level operations into datastore calls.
+ * A {@link Store} that translates model-level operations into datastore calls.
  */
 @ParametersAreNonnullByDefault
-public final class DirectWriteStore extends AbstractPersistentStore {
+public final class DirectWriteStore extends AbstractStore {
 
     /**
      * The persistence back-end used to store the model.
      */
     @Nonnull
-    protected final PersistenceBackend backend;
+    protected final Backend backend;
 
     /**
-     * The resource to persist and access.
+     * The resource to store and access.
      */
     @Nullable
     private final PersistentResource resource;
@@ -54,9 +54,9 @@ public final class DirectWriteStore extends AbstractPersistentStore {
      * Constructs a new {@code DirectWriteStore} on the given {@code backend}. This {@code DirectWriteStore} will be
      * detached of a {@link PersistentResource}.
      *
-     * @param backend the persistence back-end used to store the model
+     * @param backend the back-end used to store the model
      */
-    public DirectWriteStore(PersistenceBackend backend) {
+    public DirectWriteStore(Backend backend) {
         this(backend, null);
     }
 
@@ -64,9 +64,9 @@ public final class DirectWriteStore extends AbstractPersistentStore {
      * Constructs a new {@code DirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
      * @param backend  the persistence back-end used to store the model
-     * @param resource the resource to persist and access
+     * @param resource the resource to store and access
      */
-    public DirectWriteStore(PersistenceBackend backend, @Nullable PersistentResource resource) {
+    public DirectWriteStore(Backend backend, @Nullable PersistentResource resource) {
         this.resource = resource;
         this.backend = backend;
 
@@ -81,7 +81,7 @@ public final class DirectWriteStore extends AbstractPersistentStore {
      * @param backend the back-end to stop when the application will exit
      * @param uri     the {@link URI} of the resource used by the {@code backend}
      */
-    private static void closeOnExit(PersistenceBackend backend, URI uri) {
+    private static void closeOnExit(Backend backend, URI uri) {
         //noinspection ConstantConditions
         if (nonNull(backend)) { // The backend can be null in tests by using mocks
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -98,7 +98,7 @@ public final class DirectWriteStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public PersistenceBackend backend() {
+    public Backend backend() {
         return backend;
     }
 
@@ -113,41 +113,13 @@ public final class DirectWriteStore extends AbstractPersistentStore {
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         backend.copyTo(target);
     }
 
     @Override
     public boolean exists(Id id) {
         return backend.exists(id);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        return backend.containerOf(id);
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        backend.containerFor(id, container);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        return backend.metaclassOf(id);
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        backend.metaclassFor(id, metaclass);
-    }
-
-    @Nonnull
-    @Override
-    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
-        return backend.allInstancesOf(metaclass, strict);
     }
 
     @Nonnull
@@ -326,5 +298,43 @@ public final class DirectWriteStore extends AbstractPersistentStore {
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         return backend.sizeOfReference(key);
+    }
+
+    @Override
+    public boolean supportsClassMapping() {
+        return backend.supportsClassMapping();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
+        return backend.metaclassOf(id);
+    }
+
+    @Override
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        backend.metaclassFor(id, metaclass);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
+        return backend.allInstancesOf(metaclass, strict);
+    }
+
+    @Override
+    public boolean supportsContainerMapping() {
+        return backend.supportsContainerMapping();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        return backend.containerOf(id);
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        backend.containerFor(id, container);
     }
 }

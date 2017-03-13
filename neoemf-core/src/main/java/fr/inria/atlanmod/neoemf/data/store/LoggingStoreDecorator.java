@@ -28,10 +28,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistentStore} wrapper that logs every call to its methods in the {@link Log}.
+ * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
-public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class LoggingStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * The {@link Logger} for this class.
@@ -46,9 +46,9 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
     /**
      * Constructs a new {@code LoggingStoreDecorator}.
      *
-     * @param store the underlying store
+     * @param store the inner store
      */
-    public LoggingStoreDecorator(PersistentStore store) {
+    public LoggingStoreDecorator(Store store) {
         this(store, Level.DEBUG);
     }
 
@@ -58,7 +58,7 @@ public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator<Pers
      * @param store the underlying store
      * @param level the logging level to use
      */
-    public LoggingStoreDecorator(PersistentStore store, Level level) {
+    public LoggingStoreDecorator(Store store, Level level) {
         super(store);
         this.level = level;
     }

@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -89,7 +89,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     protected final void initBuilder() {
         isPersistent = false;
 
-        PersistenceBackendFactoryRegistry.register(uriScheme(), factory());
+        BackendFactoryRegistry.register(uriScheme(), factory());
 
         resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(uriScheme(), PersistentResourceFactory.getInstance());
@@ -98,11 +98,11 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     }
 
     /**
-     * Returns the {@link PersistenceBackendFactory} of this helper.
+     * Returns the {@link BackendFactory} of this helper.
      *
      * @return a factory
      */
-    protected abstract PersistenceBackendFactory factory();
+    protected abstract BackendFactory factory();
 
     /**
      * Returns the {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} of this helper.
@@ -184,7 +184,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     }
 
     @Override
-    public final PersistenceBackend createBackend() {
+    public final Backend createBackend() {
         return factory().createPersistentBackend(uri, defaultOptions());
     }
 }

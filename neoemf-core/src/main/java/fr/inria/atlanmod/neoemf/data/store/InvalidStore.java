@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -28,12 +28,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * {@link PersistentStore} which can be used by back-end implementations that do not provide transient layer.
+ * {@link Store} which can be used by back-end implementations that do not provide transient layer.
  * <p>
  * All methods throws an {@link UnsupportedOperationException}.
  */
 @ParametersAreNonnullByDefault
-public final class InvalidStore extends AbstractPersistentStore {
+public final class InvalidStore extends AbstractStore {
 
     /**
      * The message of the exceptions thrown when calling methods.
@@ -54,7 +54,7 @@ public final class InvalidStore extends AbstractPersistentStore {
 
     @Nonnull
     @Override
-    public PersistenceBackend backend() {
+    public Backend backend() {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -69,7 +69,7 @@ public final class InvalidStore extends AbstractPersistentStore {
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         // Do nothing
     }
 

@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents common options related to database access, managed by {@link PersistenceBackendFactory}.
+ * Represents common options related to database access, managed by {@link BackendFactory}.
  */
 @ParametersAreNonnullByDefault
 public enum CommonStoreOptions implements PersistentStoreOptions {

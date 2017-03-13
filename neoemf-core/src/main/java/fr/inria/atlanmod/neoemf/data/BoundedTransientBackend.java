@@ -12,10 +12,9 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.mapper.ClassMapperUnsupported;
+import fr.inria.atlanmod.neoemf.data.mapper.ContainerMapperUnsupported;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import java.util.HashMap;
@@ -30,28 +29,16 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * A lightweight {@link PersistenceBackend} that stores elements associated to an {@link Id} in memory.
+ * A lightweight {@link TransientBackend} that stores in memory the features associated to a unique {@link Id}. This
+ * back-end does not support containers and metaclasses mapping.
  */
-// TODO Merge some methods with TransientBackend
 @ParametersAreNonnullByDefault
-public class BoundedTransientBackend implements PersistenceBackend, ManyValueWithLists {
+public class BoundedTransientBackend implements TransientBackend, ClassMapperUnsupported, ContainerMapperUnsupported, ManyValueWithLists {
 
     /**
      * The owner of this back-end.
      */
     private final Id ownerId;
-
-    /**
-     * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the object {@link Id}.
-     */
-    private final Map<Id, ContainerDescriptor> containerMap = new HashMap<>();
-
-    /**
-     * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the object {@link Id}.
-     */
-    private final Map<Id, ClassDescriptor> instanceOfMap = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -87,11 +74,6 @@ public class BoundedTransientBackend implements PersistenceBackend, ManyValueWit
     }
 
     @Override
-    public void save() {
-        // Do nothing
-    }
-
-    @Override
     public void close() {
         if (isClosed) {
             return;
@@ -99,51 +81,12 @@ public class BoundedTransientBackend implements PersistenceBackend, ManyValueWit
 
         isClosed = true;
 
-        containerMap.clear();
-        instanceOfMap.clear();
         features.clear();
     }
 
     @Override
-    public void copyTo(PersistenceMapper target) {
-        // Do nothing
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        checkNotNull(id);
-
-        return Optional.ofNullable(containerMap.get(id));
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        checkNotNull(id);
-        checkNotNull(container);
-
-        containerMap.put(id, container);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        checkNotNull(id);
-
-        return Optional.ofNullable(instanceOfMap.get(id));
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        checkNotNull(id);
-        checkNotNull(metaclass);
-
-        instanceOfMap.put(id, metaclass);
+    public boolean exists(Id id) {
+        return Objects.equals(ownerId, id) && !features.isEmpty();
     }
 
     @Nonnull

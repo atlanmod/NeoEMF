@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,25 +36,25 @@ public class WriterFactory {
     }
 
     /**
-     * Creates a {@link PersistenceWriter} on the given {@code backend}.
+     * Creates a {@link MapperWriter} on the given {@code backend}.
      *
      * @param backend the back-end where data must persist
      *
      * @return a new persistence writer
      */
-    public static PersistenceWriter toBackend(PersistenceBackend backend) {
-        return new DefaultPersistenceWriter(backend);
+    public static MapperWriter toMapper(DataMapper backend) {
+        return new DefaultMapperWriter(backend);
     }
 
     /**
-     * Creates a {@link PersistenceWriter} on the given {@code backend} with conflict resolution feature.
+     * Creates a {@link MapperWriter} on the given {@code backend} with conflict resolution feature.
      *
      * @param backend the back-end where data must persist
      *
      * @return a new persistence writer
      */
-    public static PersistenceWriter toBackendWithResolve(PersistenceBackend backend) {
-        return new PersistenceResolverWriter(backend);
+    public static MapperWriter toMapperWithResolve(DataMapper backend) {
+        return new MapperResolverWriter(backend);
     }
 
     /**

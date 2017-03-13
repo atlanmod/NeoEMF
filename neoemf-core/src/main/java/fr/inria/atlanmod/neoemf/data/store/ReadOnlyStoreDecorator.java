@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentStore} that only allows read operations on the underlying database.
+ * A {@link Store} that only allows read operations on the underlying database.
  * <p>
  * Read-only configuration allows to access model element faster, without checking value consistency between database
  * calls. This store re-implements all the mutators and throws an {@link UnsupportedOperationException} when they are
@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("MethodDoesntCallSuperMethod")
-public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<PersistentStore> {
+public class ReadOnlyStoreDecorator extends AbstractStoreDecorator<Store> {
 
     /**
      * The message of the exceptions thrown when calling methods.
@@ -39,9 +39,9 @@ public class ReadOnlyStoreDecorator extends AbstractPersistentStoreDecorator<Per
     /**
      * Constructs a new {@code ReadOnlyStoreDecorator} on the given {@code store}.
      *
-     * @param store the underlying store
+     * @param store the inner store
      */
-    public ReadOnlyStoreDecorator(PersistentStore store) {
+    public ReadOnlyStoreDecorator(Store store) {
         super(store);
     }
 

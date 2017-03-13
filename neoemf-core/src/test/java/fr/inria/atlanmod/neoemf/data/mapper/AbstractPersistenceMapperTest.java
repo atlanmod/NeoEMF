@@ -24,7 +24,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,18 +33,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * An abstract test case that checks the expected behavior of {@link PersistenceMapper}s and their sub-classes.
+ * An abstract test case that checks the expected behavior of {@link DataMapper}s and their sub-classes.
  */
 // TODO Add tests with `key.position() > size()` and an existing many value/reference
 public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
-     * The {@link PersistenceMapper} used for this test case.
+     * The {@link DataMapper} used for this test case.
      */
-    private PersistenceMapper mapper;
+    private DataMapper mapper;
 
     /**
-     * Creates the {@link PersistenceMapper} to test.
+     * Creates the {@link DataMapper} to test.
      *
      * @throws IOException if an I/O error occurs
      */
@@ -55,21 +54,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Closes the {@link PersistenceMapper}.
+     * Closes the {@link DataMapper}.
      *
      * @throws IOException if an I/O error occurs
      */
     @After
     public void closeMapper() throws IOException {
-        if (mapper instanceof Closeable) {
-            ((Closeable) mapper).close();
-        }
+        mapper.close();
     }
 
     //region Persistence
 
     /**
-     * Checks the behavior of {@link PersistenceMapper#exists(Id)}.
+     * Checks the behavior of {@link DataMapper#exists(Id)}.
      */
     @Test
     public void testNotExists() {
@@ -77,7 +74,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link PersistenceMapper#exists(Id)} after defining a {@link ClassDescriptor}.
+     * Checks the behavior of {@link DataMapper#exists(Id)} after defining a {@link ClassDescriptor}.
      */
     @Test
     public void testExists() {

@@ -12,24 +12,24 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.lang.reflect.Field;
 
 /**
- * Abstract test cases for {@link PersistenceBackendFactory}s that provides methods to retrieve private fields.
+ * Abstract test cases for {@link BackendFactory}s that provides methods to retrieve private fields.
  */
-public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnitTest {
+public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
 
     /**
-     * The field name describing the inner {@link PersistentStore} in a {@link AbstractPersistentStoreDecorator}.
+     * The field name describing the inner {@link Store} in a {@link AbstractStoreDecorator}.
      */
     private static final String INNER_STORE_FIELDNAME = "next";
 
     /**
-     * The field name describing the inner {@link PersistenceBackend} in a {@link DirectWriteStore}.
+     * The field name describing the inner {@link Backend} in a {@link DirectWriteStore}.
      */
     private static final String INNER_BACKEND_FIELDNAME = "backend";
 
@@ -61,24 +61,24 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
     }
 
     /**
-     * Retrieves the inner {@link PersistentStore} in the given {@code store}.
+     * Retrieves the inner {@link Store} in the given {@code store}.
      *
      * @param store the store where to look for the inner store
      *
      * @return the inner store
      */
-    protected PersistentStore getInnerStore(PersistentStore store) {
-        return getValue(store, INNER_STORE_FIELDNAME, AbstractPersistentStoreDecorator.class, PersistentStore.class);
+    protected Store getInnerStore(Store store) {
+        return getValue(store, INNER_STORE_FIELDNAME, AbstractStoreDecorator.class, Store.class);
     }
 
     /**
-     * Retrieves the inner {@link PersistenceBackend} in the given {@code store}.
+     * Retrieves the inner {@link Backend} in the given {@code store}.
      *
      * @param store the store where to look for the inner back-end
      *
      * @return the inner back-end
      */
-    protected PersistenceBackend getInnerBackend(PersistentStore store) {
+    protected Backend getInnerBackend(Store store) {
         return store.backend();
     }
 }

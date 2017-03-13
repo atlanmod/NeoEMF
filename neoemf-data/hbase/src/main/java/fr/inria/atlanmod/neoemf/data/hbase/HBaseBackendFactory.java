@@ -11,15 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.hadoop.conf.Configuration;
@@ -57,7 +57,7 @@ import static java.util.Objects.isNull;
  * @see HBaseOptionsBuilder
  */
 @ParametersAreNonnullByDefault
-public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
+public class HBaseBackendFactory extends AbstractBackendFactory {
 
     /**
      * The literal description of the factory.
@@ -86,7 +86,7 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
      * @return the instance of this class
      */
     @Nonnull
-    public static PersistenceBackendFactory getInstance() {
+    public static BackendFactory getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -97,19 +97,19 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
+    public Store createTransientStore(PersistentResource resource, Backend backend) {
         return new InvalidStore();
     }
 
     @Nonnull
     @Override
-    public PersistenceBackend createTransientBackend() {
-        return new InvalidBackend();
+    public Backend createTransientBackend() {
+        return new InvalidTransientBackend();
     }
 
     @Nonnull
     @Override
-    public PersistenceBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
         return new HBaseBackendArraysStrings(createTable(uri));
@@ -161,6 +161,6 @@ public class HBaseBackendFactory extends AbstractPersistenceBackendFactory {
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new HBaseBackendFactory();
+        private static final BackendFactory INSTANCE = new HBaseBackendFactory();
     }
 }

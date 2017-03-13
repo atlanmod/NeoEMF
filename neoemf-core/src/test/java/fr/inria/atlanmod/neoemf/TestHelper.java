@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.IOException;
@@ -40,11 +40,11 @@ public interface TestHelper {
     PersistentResource loadResource() throws IOException;
 
     /**
-     * Creates a new {@link PersistenceBackend} according to the specified options.
+     * Creates a new {@link Backend} according to the specified options.
      *
-     * @return a new {@link PersistenceBackend}
+     * @return a new {@link Backend}
      *
      * @throws IOException if an I/O error occurs
      */
-    PersistenceBackend createBackend() throws IOException;
+    Backend createBackend() throws IOException;
 }

@@ -16,11 +16,11 @@ import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
@@ -44,7 +44,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 /**
  * A factory that creates instances of {@link BlueprintsBackend}.
  * <p>
- * As other implementations of {@link PersistenceBackendFactory}, this class can create transient and persistent
+ * As other implementations of {@link BackendFactory}, this class can create transient and persistent
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
  * PersistentResource#load(Map)} option maps.
  * <p>
@@ -59,7 +59,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  * @see BlueprintsResourceOptions
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory {
+public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     /**
      * The literal description of the factory.
@@ -86,7 +86,7 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
      * @return the instance of this class
      */
     @Nonnull
-    public static PersistenceBackendFactory getInstance() {
+    public static BackendFactory getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -97,13 +97,13 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
 
     @Nonnull
     @Override
-    public PersistenceBackend createTransientBackend() {
+    public Backend createTransientBackend() {
         return new BlueprintsBackendIndices(new TinkerGraph());
     }
 
     @Nonnull
     @Override
-    public BlueprintsBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BlueprintsBackend backend;
 
         checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
@@ -219,6 +219,6 @@ public class BlueprintsBackendFactory extends AbstractPersistenceBackendFactory 
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceBackendFactory INSTANCE = new BlueprintsBackendFactory();
+        private static final BackendFactory INSTANCE = new BlueprintsBackendFactory();
     }
 }

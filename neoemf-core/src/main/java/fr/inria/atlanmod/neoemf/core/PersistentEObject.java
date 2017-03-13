@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An {@link EObject} identified by a unique {@link Id}, able to persist in {@link
- * fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+ * fr.inria.atlanmod.neoemf.data.Backend}.
  */
 @ParametersAreNonnullByDefault
 public interface PersistentEObject extends InternalEObject {
@@ -56,16 +56,16 @@ public interface PersistentEObject extends InternalEObject {
     void id(Id id);
 
     /**
-     * Returns whether this {@code PersistentEObject} is mapped to an entity stored in a {@link
-     * fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     * Returns whether this object is mapped to an entity stored in a {@link
+     * fr.inria.atlanmod.neoemf.data.Backend}.
      *
      * @return {@code true} if this {@code PersistentEObject} is mapped, otherwise {@code false}
      */
     boolean isPersistent();
 
     /**
-     * Defines whether this {@code PersistentEObject} is mapped to an entity stored in a {@link
-     * fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+     * Defines whether this object is mapped to an entity stored in a {@link
+     * fr.inria.atlanmod.neoemf.data.Backend}.
      *
      * @param isPersistent {@code true} if this {@code PersistentEObject} is mapped, otherwise {@code false}
      *
@@ -89,5 +89,5 @@ public interface PersistentEObject extends InternalEObject {
     void resource(@Nullable Resource.Internal resource);
 
     @Override
-    PersistentStore eStore();
+    Store eStore();
 }

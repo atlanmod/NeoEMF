@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -47,14 +47,14 @@ public class PersistentResourceFactory implements Resource.Factory {
     /**
      * {@inheritDoc}
      * <p>
-     * The {@code uri} must be registered in the {@link PersistenceBackendFactoryRegistry}.
+     * The {@code uri} must be registered in the {@link BackendFactoryRegistry}.
      */
     @Nullable
     @Override
     public Resource createResource(URI uri) {
         checkNotNull(uri);
 
-        return PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()) ? new DefaultPersistentResource(uri) : null;
+        return BackendFactoryRegistry.isRegistered(uri.scheme()) ? new DefaultPersistentResource(uri) : null;
     }
 
     /**

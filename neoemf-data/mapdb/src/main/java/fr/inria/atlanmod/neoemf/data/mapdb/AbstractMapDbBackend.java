@@ -14,9 +14,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -41,11 +40,10 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a
- * MapDB database.
+ * The abstract implementation of a {@link MapDbBackend}.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implements MapDbBackend {
+abstract class AbstractMapDbBackend implements MapDbBackend {
 
     /**
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
@@ -79,7 +77,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
      * {@link Serializer}s.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
-     * PersistenceBackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
@@ -121,7 +119,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistenceBackend implement
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void copyTo(PersistenceMapper target) {
+    public void copyTo(DataMapper target) {
         checkArgument(target instanceof AbstractMapDbBackend);
         AbstractMapDbBackend to = (AbstractMapDbBackend) target;
 

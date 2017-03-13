@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see ManyReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceMapper extends Closeable, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
+public interface DataMapper extends Closeable, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
 
     /**
      * Saves all changes made on this mapper since the last call.
@@ -49,10 +49,10 @@ public interface PersistenceMapper extends Closeable, ContainerMapper, ClassMapp
      *
      * @param target the mapper to copy the mapper contents to
      */
-    void copyTo(PersistenceMapper target);
+    void copyTo(DataMapper target);
 
     /**
-     * Checks whether the specified {@code id} already exists in this {@code PersistenceMapper}.
+     * Checks whether the specified {@code id} already exists in this {@code DataMapper}.
      *
      * @param id the identifier to check
      *

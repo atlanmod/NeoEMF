@@ -11,23 +11,20 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.data.mapper.PersistenceMapper;
-
-import java.io.Closeable;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An adapter on top of a database that provides specific methods for communicating with the database that it uses.
- * Each {@code PersistenceBackend} manage one single instance of a database.
+ * A {@link DataMapper} that stores data.
  * <p>
- * It does not provide model-level translation; these functions are handled by
- * {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}s.
+ * It does not provide model-level translation; these functions are handled by {@link
+ * fr.inria.atlanmod.neoemf.data.store.Store}s.
  *
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
+ * @see fr.inria.atlanmod.neoemf.data.store.Store
  */
 @ParametersAreNonnullByDefault
-public interface PersistenceBackend extends PersistenceMapper, Closeable {
+public interface Backend extends DataMapper {
 
     @Override
     void save();
@@ -36,13 +33,19 @@ public interface PersistenceBackend extends PersistenceMapper, Closeable {
     void close();
 
     @Override
-    void copyTo(PersistenceMapper target);
+    void copyTo(DataMapper target);
 
     /**
-     * Returns whether this {@code PersistenceBackend} is distributed.
+     * Returns whether this back-end is persistent, i.e., if it is stored in a database.
+     *
+     * @return {@code true} if the back-end is persistent, {@code false} otherwise.
+     */
+    boolean isPersistent();
+
+    /**
+     * Returns whether this back-end is distributed.
      *
      * @return {@code true} if the back-end is distributed, {@code false} otherwise.
      */
     boolean isDistributed();
 }
-

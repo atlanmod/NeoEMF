@@ -11,7 +11,8 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,8 +21,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * An abstract {@link ContextualTest} that initializes {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}
- * in the {@link PersistenceBackendFactoryRegistry} and holds the temporary file.
+ * An abstract {@link ContextualTest} that initializes {@link BackendFactory}
+ * in the {@link BackendFactoryRegistry} and holds the temporary file.
  */
 public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
 
@@ -40,23 +41,23 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
     }
 
     /**
-     * Registers the current {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} from the current {@link
-     * Context} in the {@link PersistenceBackendFactoryRegistry} and initialize the {@link #file}.
+     * Registers the current {@link BackendFactory} from the current {@link
+     * Context} in the {@link BackendFactoryRegistry} and initialize the {@link #file}.
      *
      * @throws IOException if an I/O error occurs
      */
     @Before
     public final void registerFactories() throws IOException {
-        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
+        BackendFactoryRegistry.register(context().uriScheme(), context().backendFactory());
         file = workspace.newFile(context().name());
     }
 
     /**
-     * Unregisters the current {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} from the
-     * {@link PersistenceBackendFactoryRegistry}.
+     * Unregisters the current {@link BackendFactory} from the
+     * {@link BackendFactoryRegistry}.
      */
     @After
     public final void unregisterFactories() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
+        BackendFactoryRegistry.unregisterAll();
     }
 }

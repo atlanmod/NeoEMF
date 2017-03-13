@@ -15,9 +15,9 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 
 /**
- * A utility class that contains all the constants used in a {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+ * A utility class that contains all the constants used in a {@link fr.inria.atlanmod.neoemf.data.mapper.DataMapper}.
  */
-public interface PersistenceConstants {
+public interface MapperConstants {
 
     /**
      * The identifier of the root element.

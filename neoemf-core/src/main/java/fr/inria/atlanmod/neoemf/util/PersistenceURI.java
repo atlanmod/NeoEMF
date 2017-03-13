@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -35,11 +35,11 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
  * {@link URI}. All methods are delegated to the internal {@link URI}.
  * <p>
- * The created {@link URI} are used to register {@link PersistenceBackendFactory} in
- * {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing
+ * The created {@link URI} are used to register {@link BackendFactory} in
+ * {@link BackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing
  * {@link ResourceSet} with a {@link PersistentResourceFactory}.
  *
- * @see PersistenceBackendFactoryRegistry
+ * @see BackendFactoryRegistry
  * @see ResourceSet#getResourceFactoryRegistry()
  * @see Registry#getProtocolToFactoryMap()
  */
@@ -65,7 +65,7 @@ public class PersistenceURI {
      * Creates a new {@code PersistenceURI} from the given {@code uri}.
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
-     * PersistenceURI}. Its scheme must be registered in the {@link PersistenceBackendFactoryRegistry}.
+     * PersistenceURI}. Its scheme must be registered in the {@link BackendFactoryRegistry}.
      *
      * @param uri the base {@link URI}
      *
@@ -73,7 +73,7 @@ public class PersistenceURI {
      *
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
-     *                                  PersistenceBackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
+     *                                  BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
      * @see #createFileURI(File, String)
      * @see #createFileURI(URI, String)
      */
@@ -84,7 +84,7 @@ public class PersistenceURI {
         checkArgument(!Objects.equals(uri.scheme(), FILE_SCHEME),
                 "Can not create PersistenceURI from file URI without a valid scheme");
 
-        checkArgument(PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()),
+        checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()),
                 "Unregistered URI scheme %s", uri);
 
         return new DelegatedURI(uri);
@@ -94,7 +94,7 @@ public class PersistenceURI {
      * Creates a new {@code PersistenceURI} from the given {@code file} descriptor.
      *
      * @param file   the {@link File} to build a {@link URI} from
-     * @param scheme the scheme to identify the {@link PersistenceBackendFactory} to use
+     * @param scheme the scheme to identify the {@link BackendFactory} to use
      *
      * @return the created {@link URI}
      *
@@ -116,7 +116,7 @@ public class PersistenceURI {
      * file system.
      *
      * @param uri    the base {@link URI}
-     * @param scheme the scheme to identify the {@link PersistenceBackendFactory} to use
+     * @param scheme the scheme to identify the {@link BackendFactory} to use
      *
      * @return the created {@link URI}
      *
