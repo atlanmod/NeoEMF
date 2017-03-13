@@ -21,6 +21,7 @@ public class Neo4jBackend extends TinkerBackend {
 
     private static final String STORE_EXTENSION = "neo4j.resource"; // -> neoemf.neo4j.resource
 
+    @SuppressWarnings("unused") // Called dynamically
     public Neo4jBackend() {
         super(NAME, STORE_EXTENSION);
     }

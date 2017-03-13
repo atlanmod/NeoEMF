@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
@@ -30,6 +30,7 @@ public class TinkerBackend extends AbstractNeoBackend {
 
     private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
 
+    @SuppressWarnings("unused") // Called dynamically
     public TinkerBackend() {
         this(NAME, STORE_EXTENSION);
     }
@@ -40,7 +41,7 @@ public class TinkerBackend extends AbstractNeoBackend {
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
         URI uri = BlueprintsURI.createFileURI(file);

@@ -66,6 +66,7 @@ public class CdoBackend extends AbstractBackend {
     private CDOSession session;
     private CDOTransaction transaction;
 
+    @SuppressWarnings("unused") // Called dynamically
     public CdoBackend() {
         super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }

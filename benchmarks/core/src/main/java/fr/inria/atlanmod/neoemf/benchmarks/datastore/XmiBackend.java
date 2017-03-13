@@ -30,6 +30,7 @@ public class XmiBackend extends AbstractBackend {
 
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
 
+    @SuppressWarnings("unused") // Called dynamically
     public XmiBackend() {
         super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
