@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -118,6 +119,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
+        if (!exists(key.id())) {
+            return null;
+        }
+
         if (isAttribute(feature)) {
             Optional<String> value;
             if (!feature.isMany()) {
@@ -127,7 +132,9 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
                 value = valueOf(key.withPosition(index));
             }
 
-            return value.map(v -> deserialize((EAttribute) feature, v)).orElse(null);
+            return value
+                    .map(v -> deserialize((EAttribute) feature, v))
+                    .orElse(null);
         }
         else {
             Optional<Id> value;
@@ -138,7 +145,9 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
                 value = referenceOf(key.withPosition(index));
             }
 
-            return value.map(this::resolve).orElse(null);
+            return value
+                    .map(this::resolve)
+                    .orElse(null);
         }
     }
 
@@ -171,7 +180,9 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
                 previousValue = valueFor(key.withPosition(index), serialize((EAttribute) feature, value));
             }
 
-            return previousValue.map(v -> deserialize((EAttribute) feature, v)).orElse(null);
+            return previousValue
+                    .map(v -> deserialize((EAttribute) feature, v))
+                    .orElse(null);
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
@@ -185,7 +196,9 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
                 previousId = referenceFor(key.withPosition(index), referencedObject.id());
             }
 
-            return previousId.map(this::resolve).orElse(null);
+            return previousId
+                    .map(this::resolve)
+                    .orElse(null);
         }
     }
 
@@ -195,6 +208,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
         checkNotNull(feature);
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (!exists(key.id())) {
+            return false;
+        }
 
         if (isAttribute(feature)) {
             if (!feature.isMany()) {
@@ -258,6 +275,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
+        if (!exists(key.id())) {
+            return 0;
+        }
+
         OptionalInt size;
         if (isAttribute(feature)) {
             size = sizeOfValue(key);
@@ -306,6 +327,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
+        if (!exists(key.id())) {
+            return NO_INDEX;
+        }
+
         OptionalInt index;
         if (isAttribute(feature)) {
             index = indexOfValue(key, serialize((EAttribute) feature, value));
@@ -328,6 +353,10 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
         }
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        if (!exists(key.id())) {
+            return NO_INDEX;
+        }
 
         OptionalInt index;
         if (isAttribute(feature)) {
@@ -388,10 +417,14 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
         ManyFeatureKey key = ManyFeatureKey.from(internalObject, feature, index);
 
         if (isAttribute(feature)) {
-            return this.<String>removeValue(key).map(v -> deserialize((EAttribute) feature, v)).orElse(null);
+            return this.<String>removeValue(key)
+                    .map(v -> deserialize((EAttribute) feature, v))
+                    .orElse(null);
         }
         else {
-            PersistentEObject removedElement = removeReference(key).map(this::resolve).orElse(null);
+            PersistentEObject removedElement = removeReference(key)
+                    .map(this::resolve)
+                    .orElse(null);
 
             if (((EReference) feature).isContainment()) {
                 removedElement.eBasicSetContainer(null, -1, null);
@@ -453,30 +486,41 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
-        Stream<Object> stream;
-        if (feature instanceof EReference) {
-            Iterable<Id> references;
-
-            if (feature.isMany()) {
-                references = allReferencesOf(key);
-            }
-            else {
-                references = referenceOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
-            }
-
-            stream = Iterables.stream(references).map(this::resolve);
+        if (!exists(key.id())) {
+            return nonNull(array) ? array : (T[]) new Object[0];
         }
-        else {
+
+        Stream<Object> stream;
+
+        if (isAttribute(feature)) {
             Iterable<String> values;
 
             if (feature.isMany()) {
                 values = allValuesOf(key);
             }
             else {
-                values = this.<String>valueOf(key).map(Collections::singleton).orElseGet(Collections::emptySet);
+                values = this.<String>valueOf(key)
+                        .map(Collections::singleton)
+                        .orElseGet(Collections::emptySet);
             }
 
-            stream = Iterables.stream(values).map(v -> deserialize((EAttribute) feature, v));
+            stream = Iterables.stream(values)
+                    .map(v -> deserialize((EAttribute) feature, v));
+        }
+        else {
+            Iterable<Id> references;
+
+            if (feature.isMany()) {
+                references = allReferencesOf(key);
+            }
+            else {
+                references = referenceOf(key)
+                        .map(Collections::singleton)
+                        .orElseGet(Collections::emptySet);
+            }
+
+            stream = Iterables.stream(references)
+                    .map(this::resolve);
         }
 
         if (isNull(array)) {
@@ -490,7 +534,7 @@ public abstract class PersistentStoreAdapter implements InternalEObject.EStore, 
 
     @Override
     public final int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        return 0;
+        return Arrays.hashCode(toArray(internalObject, feature));
     }
 
     @Override
