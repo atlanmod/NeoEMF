@@ -48,7 +48,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- *
+ * The abstract implementation of a {@link BlueprintsBackend}.
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractBlueprintsBackend implements BlueprintsBackend {

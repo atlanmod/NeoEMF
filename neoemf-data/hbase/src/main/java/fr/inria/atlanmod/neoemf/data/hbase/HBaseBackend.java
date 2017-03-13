@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * A {@link PersistentBackend} that is responsible of low-level access to a HBase database.
  */
 @ParametersAreNonnullByDefault
 public interface HBaseBackend extends PersistentBackend {
