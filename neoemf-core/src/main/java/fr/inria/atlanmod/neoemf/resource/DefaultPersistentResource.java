@@ -130,8 +130,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return Optional.<EObject>ofNullable(store.resolve(StringId.of(uriFragment)))
-                .orElseGet(() -> super.getEObject(uriFragment));
+        return store.resolve(StringId.of(uriFragment));
     }
 
     @Override

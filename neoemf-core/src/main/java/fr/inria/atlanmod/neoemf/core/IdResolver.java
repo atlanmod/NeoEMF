@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -25,9 +25,10 @@ public interface IdResolver {
      *
      * @param id the identifier to resolve
      *
-     * @return the {@link PersistentEObject} associated to the given {@code id}, or {@code null} if no object can be
-     * retrieved with the {@code id}
+     * @return the object associated to the given {@code id}
+     *
+     * @throws java.util.NoSuchElementException if no object can be retrieved with the {@code id}
      */
-    @Nullable
+    @Nonnull
     PersistentEObject resolve(Id id);
 }

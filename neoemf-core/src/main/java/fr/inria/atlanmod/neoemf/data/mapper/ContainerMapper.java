@@ -28,15 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface ContainerMapper {
 
     /**
-     * Returns whether this mapper supports the {@link ContainerDescriptor} mapping.
-     *
-     * @return {@code true} if this mapper supports the {@link ContainerDescriptor} mapping, {@code false} otherwise
-     */
-    default boolean supportsContainerMapping() {
-        return true;
-    }
-
-    /**
      * Retrieves the {@link ContainerDescriptor} for the specified {@code id}.
      *
      * @param id the {@link Id} of the contained element

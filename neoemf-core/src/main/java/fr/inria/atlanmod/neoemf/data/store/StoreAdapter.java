@@ -66,7 +66,10 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
     private final Cache<Id, PersistentEObject> cache = CacheBuilder.newBuilder()
             .softValues()
             .maximumSize()
-            .build();
+            .build(id -> resolveInstanceOf(id)
+                    .map(c -> PersistenceFactory.getInstance().create(c, id).isPersistent(true))
+                    .<NoSuchElementException>orElseThrow(() ->
+                            new NoSuchElementException(String.format("%s does not have an associated metaclass", id))));
 
     /**
      * Checks whether the {@code feature} is an {@link EAttribute}.
@@ -545,7 +548,7 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
     }
 
     @Override
-    public final InternalEObject getContainer(InternalEObject internalObject) {
+    public final PersistentEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
         return containerOf(PersistentEObject.from(internalObject).id())
@@ -557,7 +560,6 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
     public final EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
-        //noinspection ConstantConditions
         return containerOf(PersistentEObject.from(internalObject).id())
                 .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
                 .orElse(null);
@@ -649,16 +651,14 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
         }
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = cache.get(id, key -> resolveInstanceOf(key)
-                .map(c -> PersistenceFactory.getInstance().create(c, key).isPersistent(true))
-                .orElse(null));
+        PersistentEObject object = cache.get(id);
 
-        if (nonNull(object) && nonNull(resource()) && object.resource() != resource()) {
+        if (nonNull(resource()) && object.resource() != resource()) {
             object.resource(resource());
         }
 

@@ -37,11 +37,6 @@ public final class InvalidTransientBackend implements TransientBackend {
      */
     private static final String MSG = "The back-end you are using doesn't provide a transient layer. You must save/load your resource before using it";
 
-    @Override
-    public boolean supportsClassMapping() {
-        throw new UnsupportedOperationException(MSG);
-    }
-
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
@@ -50,11 +45,6 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
-    public boolean supportsContainerMapping() {
         throw new UnsupportedOperationException(MSG);
     }
 

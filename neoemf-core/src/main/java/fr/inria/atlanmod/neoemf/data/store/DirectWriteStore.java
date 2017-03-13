@@ -300,11 +300,6 @@ public final class DirectWriteStore extends AbstractStore {
         return backend.sizeOfReference(key);
     }
 
-    @Override
-    public boolean supportsClassMapping() {
-        return backend.supportsClassMapping();
-    }
-
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
@@ -320,11 +315,6 @@ public final class DirectWriteStore extends AbstractStore {
     @Override
     public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
         return backend.allInstancesOf(metaclass, strict);
-    }
-
-    @Override
-    public boolean supportsContainerMapping() {
-        return backend.supportsContainerMapping();
     }
 
     @Nonnull

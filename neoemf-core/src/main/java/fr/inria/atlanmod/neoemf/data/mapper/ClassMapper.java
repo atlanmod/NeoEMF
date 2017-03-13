@@ -28,15 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface ClassMapper {
 
     /**
-     * Returns whether this mapper supports the {@link ClassDescriptor} mapping.
-     *
-     * @return {@code true} if this mapper supports the {@link ClassDescriptor} mapping, {@code false} otherwise
-     */
-    default boolean supportsClassMapping() {
-        return true;
-    }
-
-    /**
      * Retrieves the {@link ClassDescriptor} for the specified {@code id}.
      *
      * @param id the {@link Id} of the element

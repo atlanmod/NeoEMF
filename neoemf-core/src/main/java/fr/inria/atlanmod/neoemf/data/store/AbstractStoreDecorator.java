@@ -294,12 +294,6 @@ public abstract class AbstractStoreDecorator<S extends Store> extends AbstractSt
         return next.sizeOfReference(key);
     }
 
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean supportsClassMapping() {
-        return next.supportsClassMapping();
-    }
-
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -318,12 +312,6 @@ public abstract class AbstractStoreDecorator<S extends Store> extends AbstractSt
     @OverridingMethodsMustInvokeSuper
     public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
         return next.allInstancesOf(metaclass, strict);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean supportsContainerMapping() {
-        return next.supportsContainerMapping();
     }
 
     @Nonnull
