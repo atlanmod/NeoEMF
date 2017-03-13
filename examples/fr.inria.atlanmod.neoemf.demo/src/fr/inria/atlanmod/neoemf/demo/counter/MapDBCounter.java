@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.counter;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -33,7 +33,7 @@ public class MapDBCounter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());

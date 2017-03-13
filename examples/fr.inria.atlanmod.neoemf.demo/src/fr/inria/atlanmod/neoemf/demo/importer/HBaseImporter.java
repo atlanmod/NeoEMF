@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
@@ -48,7 +48,7 @@ public class HBaseImporter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
+        BackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
         rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());

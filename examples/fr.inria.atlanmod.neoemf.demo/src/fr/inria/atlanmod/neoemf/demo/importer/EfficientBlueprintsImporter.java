@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
@@ -35,11 +35,11 @@ public class EfficientBlueprintsImporter {
 
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder().asMap();
 
-        PersistenceBackendFactory factory = BlueprintsBackendFactory.getInstance();
-        try (PersistenceBackend backend = factory.createPersistentBackend(BlueprintsURI.createFileURI(new File("models/sample2.graphdb")), options)) {
+        BackendFactory factory = BlueprintsBackendFactory.getInstance();
+        try (Backend backend = factory.createPersistentBackend(BlueprintsURI.createFileURI(new File("models/sample2.graphdb")), options)) {
             Instant start = Instant.now();
 
-            ReaderFactory.fromXmi(new File("models/sample.xmi"), WriterFactory.toBackend(backend));
+            ReaderFactory.fromXmi(new File("models/sample.xmi"), WriterFactory.toMapper(backend));
 
             Instant end = Instant.now();
             Log.info("Import done in {0} seconds", Duration.between(start, end).getSeconds());

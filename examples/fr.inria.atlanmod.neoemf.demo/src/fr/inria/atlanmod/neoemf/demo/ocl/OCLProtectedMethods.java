@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.ocl;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
@@ -44,9 +44,9 @@ import java.util.List;
 public class OCLProtectedMethods {
 
     public static void main(String[] args) throws IOException {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+        BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
 
