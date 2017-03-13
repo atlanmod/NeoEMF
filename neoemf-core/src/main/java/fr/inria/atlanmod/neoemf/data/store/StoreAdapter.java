@@ -548,12 +548,8 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
     public final InternalEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
-        if (!supportsContainerMapping()) {
-            return null;
-        }
-
         return containerOf(PersistentEObject.from(internalObject).id())
-                .map(containerValue -> resolve(containerValue.id()))
+                .map(c -> resolve(c.id()))
                 .orElse(null);
     }
 
@@ -561,13 +557,9 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
     public final EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
-        if (!supportsContainerMapping()) {
-            throw new IllegalStateException("This method should not be called");
-        }
-
         //noinspection ConstantConditions
         return containerOf(PersistentEObject.from(internalObject).id())
-                .map(containerValue -> resolve(containerValue.id()).eClass().getEStructuralFeature(containerValue.name()))
+                .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
                 .orElse(null);
     }
 
@@ -615,7 +607,7 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
      * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
      */
     private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        if (supportsContainerMapping() && reference.isContainment()) {
+        if (reference.isContainment()) {
             Optional<ContainerDescriptor> container = containerOf(referencedObject.id());
 
             if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
@@ -633,14 +625,10 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
      */
     @Nonnull
     private Optional<EClass> resolveInstanceOf(Id id) {
-        Optional<EClass> instanceOf = Optional.empty();
+        Optional<EClass> instanceOf = metaclassOf(id).map(ClassDescriptor::get);
 
-        if (supportsClassMapping()) {
-            instanceOf = metaclassOf(id).map(ClassDescriptor::get);
-
-            if (!instanceOf.isPresent()) {
-                throw new NoSuchElementException("Element " + id + " does not have an associated EClass");
-            }
+        if (!instanceOf.isPresent()) {
+            throw new NoSuchElementException("Element " + id + " does not have an associated EClass");
         }
 
         return instanceOf;
@@ -654,12 +642,10 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
      * @param object the {@link PersistentEObject} to store the instance-of information from
      */
     private void updateInstanceOf(PersistentEObject object) {
-        if (supportsClassMapping()) {
-            Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
+        Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
 
-            if (!metaclass.isPresent()) {
-                metaclassFor(object.id(), ClassDescriptor.from(object));
-            }
+        if (!metaclass.isPresent()) {
+            metaclassFor(object.id(), ClassDescriptor.from(object));
         }
     }
 

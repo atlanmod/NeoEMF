@@ -62,6 +62,6 @@ public interface Store extends InternalEObject.EStore, DataMapper, IdResolver {
 
     @Override
     default EObject create(EClass eClass) {
-        throw new IllegalStateException("This method should not be called");
+        throw new IllegalStateException("EStore#create() should not be called");
     }
 }

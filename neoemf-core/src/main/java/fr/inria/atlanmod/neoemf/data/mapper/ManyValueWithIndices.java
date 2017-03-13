@@ -208,6 +208,6 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
-        throw new IllegalStateException("This method should be overwritten.");
+        throw new IllegalStateException("ManyValueWithIndices#safeValueFor() should be overwritten");
     }
 }
