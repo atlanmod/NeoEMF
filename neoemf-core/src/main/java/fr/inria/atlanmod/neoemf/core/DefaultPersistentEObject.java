@@ -367,6 +367,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         // Don't load the container from the store here: it creates an important overhead and performance loss.
         // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
         return container;
+//        return isNull(container) ? super.eInternalContainer() : container;
     }
 
     @Override
