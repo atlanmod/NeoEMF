@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
@@ -87,7 +87,7 @@ public class OpenBackendCommand extends AbstractHandler {
         @Override
         public IStatus runInUIThread(IProgressMonitor monitor) {
             Path root = Paths.get(folder.getRawLocation().toOSString());
-            Path path = root.resolve(PersistenceBackendFactory.CONFIG_FILE);
+            Path path = root.resolve(BackendFactory.CONFIG_FILE);
             Log.info("Running at: {0}", path.toString());
 
             PropertiesConfiguration configuration;
@@ -95,14 +95,14 @@ public class OpenBackendCommand extends AbstractHandler {
                 configuration = new PropertiesConfiguration(path.toFile());
             }
             catch (ConfigurationException e) {
-                Log.error("Unable to find {0} file", PersistenceBackendFactory.CONFIG_FILE);
+                Log.error("Unable to find {0} file", BackendFactory.CONFIG_FILE);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", e);
             }
 
             URI uri = null;
-            String backendType = configuration.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
+            String backendType = configuration.getString(BackendFactory.BACKEND_PROPERTY);
             if (isNull(backendType)) {
-                Log.error("{0} does not contain {1} property", PersistenceBackendFactory.CONFIG_FILE, PersistenceBackendFactory.BACKEND_PROPERTY);
+                Log.error("{0} does not contain {1} property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
             else if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {

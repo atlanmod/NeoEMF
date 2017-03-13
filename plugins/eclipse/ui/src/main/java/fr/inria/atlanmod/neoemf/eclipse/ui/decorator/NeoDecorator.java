@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.decorator;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 
 import org.eclipse.core.resources.IFile;
@@ -28,7 +28,7 @@ public class NeoDecorator extends LabelProvider implements ILabelDecorator {
     public Image decorateImage(Image image, Object element) {
         if (element instanceof IFolder) {
             IFolder folder = (IFolder) element;
-            IFile configFile = folder.getFile(PersistenceBackendFactory.CONFIG_FILE);
+            IFile configFile = folder.getFile(BackendFactory.CONFIG_FILE);
             if (configFile.exists()) {
                 // In a NeoEMF Database Folder
                 return NeoUIPlugin.getImageDescriptor(ICON_PATH).createImage();
