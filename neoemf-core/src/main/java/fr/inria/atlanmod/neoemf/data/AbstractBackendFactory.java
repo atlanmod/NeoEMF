@@ -174,7 +174,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
         Configuration configuration = Configuration.load(path.toFile());
 
         if (!configuration.containsKey(BACKEND_PROPERTY)) {
-            configuration.setProperty(BACKEND_PROPERTY, getName());
+            configuration.setProperty(BACKEND_PROPERTY, name());
         }
 
         configuration.save();

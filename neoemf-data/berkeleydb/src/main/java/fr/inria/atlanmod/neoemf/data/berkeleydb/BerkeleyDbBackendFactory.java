@@ -41,7 +41,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BerkeleyDbBackend.NAME;
+    public static final String NAME = BerkeleyDbBackend.NAME.toLowerCase();
 
     /**
      * Constructs a new {@code BerkeleyDbBackendFactory}.
@@ -60,7 +60,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return NAME;
     }
 

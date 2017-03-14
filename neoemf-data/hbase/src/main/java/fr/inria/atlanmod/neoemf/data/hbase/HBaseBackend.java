@@ -24,5 +24,5 @@ public interface HBaseBackend extends PersistentBackend {
     /**
      * The literal description of this back-end.
      */
-    String NAME = "hbase";
+    String NAME = "HBase";
 }

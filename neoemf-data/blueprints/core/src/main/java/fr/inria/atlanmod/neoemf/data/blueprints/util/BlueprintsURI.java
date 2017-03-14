@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
@@ -51,7 +52,7 @@ public class BlueprintsURI extends PersistenceURI {
      * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
      */
     @Nonnull
-    public static final String SCHEME = "neo-blueprints";
+    public static final String SCHEME = formatScheme(BlueprintsBackendFactory.getInstance());
 
     /**
      * This class should not be instantiated.

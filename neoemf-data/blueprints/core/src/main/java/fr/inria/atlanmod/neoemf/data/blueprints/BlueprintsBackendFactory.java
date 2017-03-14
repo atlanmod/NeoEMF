@@ -64,7 +64,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BlueprintsBackend.NAME;
+    public static final String NAME = BlueprintsBackend.NAME.toLowerCase();
 
     /**
      * The configuration file name.
@@ -91,7 +91,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return NAME;
     }
 

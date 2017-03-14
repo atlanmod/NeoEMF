@@ -24,5 +24,5 @@ public interface BlueprintsBackend extends PersistentBackend {
     /**
      * The literal description of this back-end.
      */
-    String NAME = "blueprints";
+    String NAME = "Blueprints";
 }

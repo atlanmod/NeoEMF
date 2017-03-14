@@ -59,7 +59,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = HBaseBackend.NAME;
+    public static final String NAME = HBaseBackend.NAME.toLowerCase();
 
     /**
      * The property to define the ZooKeeper host.
@@ -88,7 +88,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return NAME;
     }
 

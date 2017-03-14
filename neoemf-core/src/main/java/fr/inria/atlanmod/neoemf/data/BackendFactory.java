@@ -47,7 +47,7 @@ public interface BackendFactory {
      *
      * @return the literal description of the created {@link Backend}
      */
-    String getName();
+    String name();
 
     /**
      * Returns whether this factory supports the transient state.

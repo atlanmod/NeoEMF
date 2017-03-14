@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
@@ -52,7 +53,7 @@ public class HBaseURI extends PersistenceURI {
      * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
      */
     @Nonnull
-    public static final String SCHEME = "neo-hbase";
+    public static final String SCHEME = formatScheme(HBaseBackendFactory.getInstance());
 
     /**
      * This class should not be instantiated.

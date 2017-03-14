@@ -24,5 +24,5 @@ public interface BerkeleyDbBackend extends PersistentBackend {
     /**
      * The literal description of this back-end.
      */
-    String NAME = "berkeleydb";
+    String NAME = "BerkeleyDB";
 }

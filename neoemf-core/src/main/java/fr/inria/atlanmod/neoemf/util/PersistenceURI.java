@@ -53,12 +53,30 @@ public class PersistenceURI {
     protected static final String FILE_SCHEME = "file";
 
     /**
+     * The prefix of all {@link URI} schemes.
+     */
+    @Nonnull
+    private static final String PREFIX_SCHEME = "neo-";
+
+    /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
      */
     protected PersistenceURI() {
         throw new IllegalStateException("This class should not be instantiated");
+    }
+
+    /**
+     * Formats the {@link URI} scheme from the given {@code factory}.
+     *
+     * @param factory the factory associated to the {@link URI}
+     *
+     * @return the formatted {@link URI} scheme as {@code "neo-{factory.name()}"}
+     */
+    @Nonnull
+    protected static String formatScheme(BackendFactory factory) {
+        return String.format("%s%s", PREFIX_SCHEME, factory.name());
     }
 
     /**

@@ -31,7 +31,7 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected String name() {
-        return "HBase";
+        return HBaseBackend.NAME;
     }
 
     @Override

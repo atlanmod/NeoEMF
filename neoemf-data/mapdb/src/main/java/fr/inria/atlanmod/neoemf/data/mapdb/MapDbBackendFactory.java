@@ -52,7 +52,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = MapDbBackend.NAME;
+    public static final String NAME = MapDbBackend.NAME.toLowerCase();
 
     /**
      * Constructs a new {@code MapDbBackendFactory}.
@@ -71,7 +71,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return NAME;
     }
 

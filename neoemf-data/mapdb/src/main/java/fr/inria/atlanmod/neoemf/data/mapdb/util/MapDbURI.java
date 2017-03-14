@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
@@ -52,7 +53,7 @@ public class MapDbURI extends PersistenceURI {
      * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
      */
     @Nonnull
-    public static final String SCHEME = "neo-mapdb";
+    public static final String SCHEME = formatScheme(MapDbBackendFactory.getInstance());
 
     /**
      * This class should not be instantiated.
