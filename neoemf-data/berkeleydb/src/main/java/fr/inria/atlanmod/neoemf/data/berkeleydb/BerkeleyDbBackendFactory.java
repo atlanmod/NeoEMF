@@ -69,7 +69,10 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BerkeleyDbBackend backend;
 
-        checkArgument(uri.isFile(), "NeoEMF/BerkeleyDB only supports file URIs");
+        checkArgument(uri.isFile(),
+                "%s only supports file-based URIs",
+                BerkeleyDbBackendFactory.class.getSimpleName());
+
         File file = new File(uri.toFileString());
 
         try {

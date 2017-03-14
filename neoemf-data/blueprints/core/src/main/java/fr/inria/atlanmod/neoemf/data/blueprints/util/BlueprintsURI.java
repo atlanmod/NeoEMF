@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -81,14 +80,16 @@ public class BlueprintsURI extends PersistenceURI {
     public static URI createURI(URI uri) {
         checkNotNull(uri);
 
-        if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
+        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
             return createFileURI(uri);
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
 
-        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", BlueprintsURI.class.getSimpleName(), uri.scheme()));
+        throw new IllegalArgumentException(
+                String.format("Can not create %s from the URI scheme %s",
+                        BlueprintsURI.class.getSimpleName(), uri.scheme()));
     }
 
     /**
@@ -118,8 +119,6 @@ public class BlueprintsURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createFileURI(URI uri) {
-        checkNotNull(uri);
-
-        return createFileURI(new File(uri.toFileString()));
+        return createFileURI(new File(checkNotNull(uri).toFileString()));
     }
 }

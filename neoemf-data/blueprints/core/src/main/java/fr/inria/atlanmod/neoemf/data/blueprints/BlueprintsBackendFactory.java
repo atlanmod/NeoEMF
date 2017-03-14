@@ -100,7 +100,10 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BlueprintsBackend backend;
 
-        checkArgument(uri.isFile(), "NeoEMF/Blueprints only supports file URIs");
+        checkArgument(uri.isFile(),
+                "%s only supports file-based URIs",
+                BlueprintsBackendFactory.class.getSimpleName());
+
         File file = new File(uri.toFileString());
 
         Configuration configuration = getOrCreateBlueprintsConfiguration(file, options);

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -56,7 +57,7 @@ public class PersistenceURI {
      * The prefix of all {@link URI} schemes.
      */
     @Nonnull
-    private static final String PREFIX_SCHEME = "neo-";
+    private static final String PREFIX = "neo-";
 
     /**
      * This class should not be instantiated.
@@ -76,7 +77,7 @@ public class PersistenceURI {
      */
     @Nonnull
     protected static String formatScheme(BackendFactory factory) {
-        return String.format("%s%s", PREFIX_SCHEME, factory.name());
+        return String.format("%s%s", PREFIX, factory.name());
     }
 
     /**
@@ -96,11 +97,12 @@ public class PersistenceURI {
      * @see #createFileURI(URI, String)
      */
     @Nonnull
+    @VisibleForTesting
     public static URI createURI(URI uri) {
         checkNotNull(uri);
 
         checkArgument(!Objects.equals(uri.scheme(), FILE_SCHEME),
-                "Can not create PersistenceURI from file URI without a valid scheme");
+                "Can not create %s from file-based URI without a valid scheme", PersistenceURI.class.getSimpleName());
 
         checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()),
                 "Unregistered URI scheme %s", uri);
@@ -119,6 +121,7 @@ public class PersistenceURI {
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
+    @VisibleForTesting
     public static URI createFileURI(File file, @Nullable String scheme) {
         checkNotNull(file);
 
@@ -145,7 +148,7 @@ public class PersistenceURI {
         checkNotNull(uri);
 
         return Optional.ofNullable(scheme)
-                .map(v -> createURI(URI.createHierarchicalURI(v, uri.authority(), uri.device(), uri.segments(), uri.query(), uri.fragment())))
+                .map(s -> createURI(URI.createHierarchicalURI(s, uri.authority(), uri.device(), uri.segments(), uri.query(), uri.fragment())))
                 .orElseGet(() -> createURI(uri));
     }
 

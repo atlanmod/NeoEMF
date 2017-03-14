@@ -42,7 +42,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -277,7 +276,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         if (nonNull(previousOptions)) {
             for (Map.Entry<String, Object> entry : options.entrySet()) {
                 if (previousOptions.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), previousOptions.get(entry.getKey()))) {
-                    throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey(), entry.getValue()));
+                    throw new InvalidOptionException(
+                            String.format("key = %s; value = %s",
+                                    entry.getKey(), entry.getValue()));
                 }
             }
         }

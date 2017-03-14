@@ -100,7 +100,9 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
-        checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
+        checkArgument(uri.isHierarchical(),
+                "%s only supports hierarchical URIs",
+                HBaseBackendFactory.class.getSimpleName());
 
         return new HBaseBackendArraysStrings(createTable(uri));
     }

@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -81,14 +80,16 @@ public class BerkeleyDbURI extends PersistenceURI {
     public static URI createURI(URI uri) {
         checkNotNull(uri);
 
-        if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
+        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
             return createFileURI(new File(uri.toFileString()));
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
 
-        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", BerkeleyDbURI.class.getSimpleName(), uri.scheme()));
+        throw new IllegalArgumentException(
+                String.format("Can not create %s from the URI scheme %s",
+                        BerkeleyDbURI.class.getSimpleName(), uri.scheme()));
     }
 
     /**
@@ -103,5 +104,21 @@ public class BerkeleyDbURI extends PersistenceURI {
     @Nonnull
     public static URI createFileURI(File file) {
         return createFileURI(checkNotNull(file), SCHEME);
+    }
+
+    /**
+     * Creates a new {@code BlueprintsURI} from the given {@code uri} by checking the referenced file exists on the file
+     * system.
+     *
+     * @param uri the base {@link URI}
+     *
+     * @return the created {@link URI}
+     *
+     * @throws NullPointerException if the {@code uri} is {@code null} or if the file referenced by the {@code uri}
+     *                              cannot be found
+     */
+    @Nonnull
+    public static URI createFileURI(URI uri) {
+        return createFileURI(new File(checkNotNull(uri).toFileString()));
     }
 }

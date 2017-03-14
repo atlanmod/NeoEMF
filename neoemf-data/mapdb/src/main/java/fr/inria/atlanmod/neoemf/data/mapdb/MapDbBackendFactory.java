@@ -80,7 +80,10 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         MapDbBackend backend;
 
-        checkArgument(uri.isFile(), "NeoEMF/MapDB only supports file URIs");
+        checkArgument(uri.isFile(),
+                "%s only supports file-based URIs",
+                MapDbBackendFactory.class.getSimpleName());
+
         File file = new File(uri.toFileString());
 
         File dbFile = new File(MapDbURI.createURI(uri.appendSegment("neoemf.mapdb")).toFileString());

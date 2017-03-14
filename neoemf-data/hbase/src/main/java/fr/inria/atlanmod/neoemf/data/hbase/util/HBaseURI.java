@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -76,53 +75,19 @@ public class HBaseURI extends PersistenceURI {
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
      *                                  #FILE_SCHEME}
-     * @see #createFileURI(File)
-     * @see #createFileURI(URI)
      * @see #createHierarchicalURI(String, int, URI)
      */
     @Nonnull
     public static URI createURI(URI uri) {
         checkNotNull(uri);
 
-        if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
-            return createFileURI(uri);
-        }
-        else if (Objects.equals(SCHEME, uri.scheme())) {
+        if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
 
-        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", HBaseURI.class.getSimpleName(), uri.scheme()));
-    }
-
-    /**
-     * Creates a new {@code HBaseURI} from the given {@link File} descriptor.
-     *
-     * @param file the {@link File} to build a {@link URI} from
-     *
-     * @return the created {@link URI}
-     *
-     * @throws NullPointerException if the {@code file} is {@code null}
-     */
-    @Nonnull
-    public static URI createFileURI(File file) {
-        return createFileURI(checkNotNull(file), SCHEME);
-    }
-
-    /**
-     * Creates a new {@code HBaseURI} from the given {@code uri} by checking the referenced file exists on the file
-     * system.
-     *
-     * @param uri the base {@link URI}
-     *
-     * @return the created {@link URI}
-     *
-     * @throws NullPointerException if the {@code uri} is {@code null}
-     */
-    @Nonnull
-    public static URI createFileURI(URI uri) {
-        checkNotNull(uri);
-
-        return createFileURI(new File(uri.toFileString()));
+        throw new IllegalArgumentException(
+                String.format("Can not create %s from the URI scheme %s",
+                        HBaseURI.class.getSimpleName(), uri.scheme()));
     }
 
     /**
@@ -139,10 +104,13 @@ public class HBaseURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createHierarchicalURI(String host, int port, URI modelURI) {
-        checkNotNull(host);
-        checkNotNull(port);
-        checkNotNull(modelURI);
-        return URI.createHierarchicalURI(SCHEME, host + ':' + port, null, modelURI.segments(), null, null);
+        return URI.createHierarchicalURI(
+                SCHEME,
+                checkNotNull(host) + ':' + port,
+                null,
+                checkNotNull(modelURI).segments(),
+                null,
+                null);
     }
 
     /**
