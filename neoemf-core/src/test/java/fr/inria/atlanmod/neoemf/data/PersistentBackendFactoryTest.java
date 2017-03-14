@@ -337,32 +337,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Override
     public Context context() {
-        return MockContext.get();
-    }
+        return new CoreContext() {
 
-    /**
-     * A specific {@link Context} for this test-case.
-     */
-    private static final class MockContext extends CoreContext {
-
-        /**
-         * Constructs a new {@code MockContext}.
-         */
-        protected MockContext() {
-        }
-
-        /**
-         * Returns the instance of this class.
-         *
-         * @return the instance of this class.
-         */
-        public static Context get() {
-            return Holder.INSTANCE;
-        }
-
-        @Override
-        public BackendFactory factory() {
-            try {
+            @Override
+            public BackendFactory factory() {
                 BackendFactory factory = super.factory();
 
                 when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistentBackend.class));
@@ -370,20 +348,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
                 return factory;
             }
-            catch (InvalidDataStoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        /**
-         * The initialization-on-demand holder of the singleton of this class.
-         */
-        private static final class Holder {
-
-            /**
-             * The instance of the outer class.
-             */
-            private static final Context INSTANCE = new MockContext();
-        }
+        };
     }
 }
