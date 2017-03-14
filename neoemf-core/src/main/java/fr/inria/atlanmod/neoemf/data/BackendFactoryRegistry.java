@@ -78,7 +78,7 @@ public final class BackendFactoryRegistry {
     @Nonnull
     public static BackendFactory getFactoryProvider(String scheme) {
         return checkNotNull(FACTORIES.get(scheme),
-                "No factory is registered to process the URI scheme %s. Use the %s.register() method first",
+                "No factory is registered to process the URI scheme %s. Use the %s#register() method first",
                 scheme,
                 BackendFactoryRegistry.class.getName());
     }

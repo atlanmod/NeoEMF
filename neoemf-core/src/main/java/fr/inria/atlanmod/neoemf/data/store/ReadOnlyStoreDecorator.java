@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("MethodDoesntCallSuperMethod")
-public class ReadOnlyStoreDecorator extends AbstractStoreDecorator<Store> {
+public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
 
     /**
      * The message of the exceptions thrown when calling methods.
@@ -75,6 +75,23 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator<Store> {
      */
     @Nonnull
     @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void unsetReference(FeatureKey key) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Nonnull
+    @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         throw new UnsupportedOperationException(MSG);
     }
@@ -109,23 +126,6 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator<Store> {
      */
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
-    @Override
-    public void unsetReference(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 

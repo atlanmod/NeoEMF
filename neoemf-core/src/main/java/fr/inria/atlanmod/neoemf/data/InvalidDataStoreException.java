@@ -14,8 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 /**
- * Exception thrown when an error occurred when creating {@link Backend} or {@link Store} in
- * {@link BackendFactory}.
+ * Exception thrown when an error occurred when creating {@link Backend} or {@link Store} in {@link BackendFactory}.
  */
 public class InvalidDataStoreException extends RuntimeException {
 

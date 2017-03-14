@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-public class SizeCachingStoreDecorator extends AbstractStoreDecorator<Store> {
+public class SizeCachingStoreDecorator extends AbstractStoreDecorator {
 
     /**
      * The size of an empty element.
@@ -55,6 +55,12 @@ public class SizeCachingStoreDecorator extends AbstractStoreDecorator<Store> {
     public <V> void unsetValue(FeatureKey key) {
         cache.put(key, EMPTY);
         super.unsetValue(key);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        cache.put(key, EMPTY);
+        super.unsetReference(key);
     }
 
     @Override
@@ -93,12 +99,6 @@ public class SizeCachingStoreDecorator extends AbstractStoreDecorator<Store> {
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return cache.get(key, super::sizeOfValue);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        cache.put(key, EMPTY);
-        super.unsetReference(key);
     }
 
     @Override

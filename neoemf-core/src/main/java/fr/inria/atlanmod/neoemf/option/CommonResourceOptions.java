@@ -20,9 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface CommonResourceOptions extends PersistentResourceOptions {
 
     /**
-     * The option key to define the number of operations between each commit in autocommit mode.
+     * The option key to define the number of operations between each save in auto-save mode.
      */
-    String AUTOCOMMIT_CHUNK = "store.autocommit.chunk";
+    String AUTO_SAVE_CHUNK = "store.autosave.chunk";
 
     /**
      * The option key to define the logging level in log mode.

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.util.log.Level;
 
 import java.util.ArrayList;
@@ -207,31 +208,31 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     }
 
     /**
-     * Adds the {@code autocommit} feature in the created options.
+     * Adds the {@code autoSave} feature in the created options.
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
+     * @see AutoSaveStoreDecorator
      */
     @Nonnull
-    public B autocommit() {
-        return storeOption(CommonStoreOptions.AUTOCOMMIT);
+    public B autoSave() {
+        return storeOption(CommonStoreOptions.AUTO_SAVE);
     }
 
     /**
-     * Adds the {@code autocommit} feature with the given {@code chunk} size in the created options.
+     * Adds the {@code autoSave} feature with the given {@code chunk} size in the created options.
      *
-     * @param chunk the number of database operations between each commit
+     * @param chunk the number of database operations between each save
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
+     * @see AutoSaveStoreDecorator
      */
     @Nonnull
-    public B autocommit(@Nonnegative long chunk) {
+    public B autoSave(@Nonnegative long chunk) {
         checkArgument(chunk >= 0);
 
-        storeOption(CommonStoreOptions.AUTOCOMMIT);
-        return option(CommonResourceOptions.AUTOCOMMIT_CHUNK, Long.toString(chunk));
+        storeOption(CommonStoreOptions.AUTO_SAVE);
+        return option(CommonResourceOptions.AUTO_SAVE_CHUNK, Long.toString(chunk));
     }
 }

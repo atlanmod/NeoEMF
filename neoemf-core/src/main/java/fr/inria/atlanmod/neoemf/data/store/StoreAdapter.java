@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdResolver;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -26,6 +26,7 @@ import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -52,12 +53,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Store} used as bridge between a {@link org.eclipse.emf.ecore.InternalEObject.EStore} and a
- * {@link DataMapper}.
+ * A {@link Store} used as bridge between a {@link org.eclipse.emf.ecore.InternalEObject.EStore} and a {@link Store}.
  */
 @ParametersAreNonnullByDefault
-// TODO Declare this class as final
-public abstract class StoreAdapter implements InternalEObject.EStore, Store {
+public final class StoreAdapter extends AbstractStoreDecorator implements InternalEObject.EStore, Store, IdResolver {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
@@ -70,6 +69,26 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
                     .map(c -> PersistenceFactory.getInstance().create(c, id).isPersistent(true))
                     .<NoSuchElementException>orElseThrow(() ->
                             new NoSuchElementException(String.format("%s does not have an associated metaclass", id))));
+
+    /**
+     * Constructs a new {@code StoreAdapter} on the given {@code store}.
+     *
+     * @param store the inner store
+     */
+    private StoreAdapter(Store store) {
+        super(store);
+    }
+
+    /**
+     * Adapts the given {@code store} as a {@code StoreAdapter}.
+     *
+     * @param store the store to adapt
+     *
+     * @return the adapted {@code store}
+     */
+    public static StoreAdapter adapt(Store store) {
+        return checkNotNull(store) instanceof StoreAdapter ? (StoreAdapter) store : new StoreAdapter(store);
+    }
 
     /**
      * Checks whether the {@code feature} is an {@link EAttribute}.
@@ -563,6 +582,11 @@ public abstract class StoreAdapter implements InternalEObject.EStore, Store {
         return containerOf(PersistentEObject.from(internalObject).id())
                 .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
                 .orElse(null);
+    }
+
+    @Override
+    public EObject create(EClass eClass) {
+        throw new IllegalStateException("EStore#create() should not be called");
     }
 
     /**

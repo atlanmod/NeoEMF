@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -66,7 +67,7 @@ public enum CommonStoreOptions implements PersistentStoreOptions {
     /**
      * Automatically saves modifications as calls are made.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator
+     * @see AutoSaveStoreDecorator
      */
-    AUTOCOMMIT
+    AUTO_SAVE
 }

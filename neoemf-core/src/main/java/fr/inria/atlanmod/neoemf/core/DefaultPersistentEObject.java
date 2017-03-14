@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.core;
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
@@ -94,9 +95,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private int containerReferenceId;
 
     /**
-     * The {@link Store} where this object is stored.
+     * The {@link StoreAdapter} where this object is stored.
      */
-    private Store store;
+    private StoreAdapter store;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id}, using {@link StringId#generate()}.
@@ -146,7 +147,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
-        Store newStore = null;
+        StoreAdapter newStore = null;
 
         if (resource instanceof PersistentResource) {
             // The resource store may have been changed (persistent <-> transient)
@@ -174,17 +175,17 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Move the content from the {@code source} {@link Store} to the {@code target}.
+     * Move the content from the {@code source} {@link StoreAdapter} to the {@code target}.
      *
      * @param source the store to copy
      * @param target the store where to store data
      */
-    private void copyStore(Store source, Store target) {
+    private void copyStore(StoreAdapter source, StoreAdapter target) {
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {
                 if (!f.isMany()) {
-                    getValueFrom(source, f, Store.NO_INDEX)
-                            .ifPresent(v -> target.set(this, f, Store.NO_INDEX, v));
+                    getValueFrom(source, f, StoreAdapter.NO_INDEX)
+                            .ifPresent(v -> target.set(this, f, StoreAdapter.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, f);
@@ -207,10 +208,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @return an {@link Optional} containing the adapted value, or {@link Optional#empty()} if the value doesn't exist
      * in the {@code store}
      *
-     * @see Store#get(InternalEObject, EStructuralFeature, int)
+     * @see StoreAdapter#get(InternalEObject, EStructuralFeature, int)
      */
     @Nonnull
-    private Optional<Object> getValueFrom(Store store, EStructuralFeature feature, int index) {
+    private Optional<Object> getValueFrom(StoreAdapter store, EStructuralFeature feature, int index) {
         Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
 
         if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
@@ -294,7 +295,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nonnull
     @Override
-    public Store eStore() {
+    public StoreAdapter eStore() {
         if (isNull(store)) {
             store = createBoundedStore();
         }
@@ -323,7 +324,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            value = eStore().get(this, feature, Store.NO_INDEX);
+            value = eStore().get(this, feature, StoreAdapter.NO_INDEX);
         }
 
         return value;
@@ -342,7 +343,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
         }
         else {
-            eStore().set(this, feature, Store.NO_INDEX, value);
+            eStore().set(this, feature, StoreAdapter.NO_INDEX, value);
         }
     }
 
@@ -392,8 +393,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @return a new {@link Store}
      */
-    private Store createBoundedStore() {
-        return new DirectWriteStore(new BoundedTransientBackend(id));
+    private StoreAdapter createBoundedStore() {
+        return StoreAdapter.adapt(new DirectWriteStore(new BoundedTransientBackend(id)));
     }
 
     @Override
@@ -559,8 +560,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Overrides the default implementation which relies on {@link #size()} and {@link
-         * Store#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
-         * Store#toArray(InternalEObject, EStructuralFeature)} implementation.
+         * StoreAdapter#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
+         * StoreAdapter#toArray(InternalEObject, EStructuralFeature)} implementation.
          */
         @Nonnull
         @Override
@@ -572,8 +573,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Overrides the default implementation which relies on {@link #size()} and {@link
-         * Store#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
-         * Store#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
+         * StoreAdapter#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
+         * StoreAdapter#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
          */
         @Nonnull
         @Override
@@ -590,7 +591,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link Store#NO_INDEX} features, meaning that the {@link
+         * providing a custom {@link StoreAdapter#NO_INDEX} features, meaning that the {@link
          * fr.inria.atlanmod.neoemf.data.Backend} has to append the result to the existing list.
          * <p>
          * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.Backend} which
@@ -606,7 +607,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     addUnique(object);
                 }
                 else {
-                    int index = size() == 0 ? 0 : Store.NO_INDEX;
+                    int index = size() == 0 ? 0 : StoreAdapter.NO_INDEX;
                     addUnique(index, object);
                 }
                 return true;

@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * All methods throws an {@link UnsupportedOperationException}.
  */
 @ParametersAreNonnullByDefault
-public final class InvalidStore extends AbstractStore {
+public final class InvalidStore implements Store {
 
     /**
      * The message of the exceptions thrown when calling methods.

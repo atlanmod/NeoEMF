@@ -54,11 +54,11 @@ public class DefaultMapperWriter implements MapperWriter {
     private static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2_000L);
 
     /**
-     * The default operation between commits.
+     * The default operation between saves.
      * <p>
      * <b>Note:</b> It is calculated according to the maximum memory dedicated to the JVM.
      */
-    private static final long DEFAULT_AUTOCOMMIT_CHUNK = adaptFromMemory(50_000L);
+    private static final long DEFAULT_AUTO_SAVE_CHUNK = adaptFromMemory(50_000L);
 
     /**
      * The default {@link Hasher} used to create unique identifiers.
@@ -85,10 +85,10 @@ public class DefaultMapperWriter implements MapperWriter {
             .build();
 
     /**
-     * Current number of modifications modulo {@link #DEFAULT_AUTOCOMMIT_CHUNK}.
+     * Current number of modifications modulo {@link #DEFAULT_AUTO_SAVE_CHUNK}.
      * Used for automatically saves modifications as calls are made.
      */
-    private long autocommitCount;
+    private long autoSaveCount;
 
     /**
      * Constructs a new {@code DefaultMapperWriter} on top of the {@code mapper}.
@@ -98,7 +98,7 @@ public class DefaultMapperWriter implements MapperWriter {
     protected DefaultMapperWriter(DataMapper mapper) {
         this.mapper = checkNotNull(mapper);
 
-        this.autocommitCount = 0;
+        this.autoSaveCount = 0;
 
         Log.debug("{0} created", getClass().getSimpleName());
     }
@@ -113,7 +113,7 @@ public class DefaultMapperWriter implements MapperWriter {
      * @return the adapted value
      *
      * @see #DEFAULT_CACHE_SIZE
-     * @see #DEFAULT_AUTOCOMMIT_CHUNK
+     * @see #DEFAULT_AUTO_SAVE_CHUNK
      */
     private static long adaptFromMemory(long value) {
         checkArgument(value >= 0);
@@ -213,7 +213,7 @@ public class DefaultMapperWriter implements MapperWriter {
             addReference(MapperConstants.ROOT_ID, reference, id);
         }
 
-        incrementAndCommit();
+        incrementAndSave();
 
         return id;
     }
@@ -298,7 +298,7 @@ public class DefaultMapperWriter implements MapperWriter {
             }
         }
 
-        incrementAndCommit();
+        incrementAndSave();
     }
 
     /**
@@ -336,7 +336,7 @@ public class DefaultMapperWriter implements MapperWriter {
             }
         }
 
-        incrementAndCommit();
+        incrementAndSave();
     }
 
     /**
@@ -357,7 +357,7 @@ public class DefaultMapperWriter implements MapperWriter {
             mapper.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
         }
 
-        incrementAndCommit();
+        incrementAndSave();
     }
 
     /**
@@ -380,16 +380,16 @@ public class DefaultMapperWriter implements MapperWriter {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");
         }
 
-        incrementAndCommit();
+        incrementAndSave();
     }
 
     /**
-     * Increments the operation counter, and commit the mapper if the number of operation is equals to
-     * {@code OPS_BETWEEN_COMMITS_DEFAULT}.
+     * Increments the operation counter, and saves the mapper if the number of operation is equals to
+     * {@link #DEFAULT_AUTO_SAVE_CHUNK}.
      */
-    private void incrementAndCommit() {
-        autocommitCount = (autocommitCount + 1) % DEFAULT_AUTOCOMMIT_CHUNK;
-        if (autocommitCount == 0) {
+    private void incrementAndSave() {
+        autoSaveCount = (autoSaveCount + 1) % DEFAULT_AUTO_SAVE_CHUNK;
+        if (autoSaveCount == 0) {
             mapper.save();
         }
     }

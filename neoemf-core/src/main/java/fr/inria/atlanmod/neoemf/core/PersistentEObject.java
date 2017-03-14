@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -37,7 +37,7 @@ public interface PersistentEObject extends InternalEObject {
      * assigned as a {@code PersistentEObject}
      */
     static PersistentEObject from(@Nullable Object object) {
-        return PersistentEObjectAdapter.getAdapter(object);
+        return PersistentEObjectAdapter.adapt(object);
     }
 
     /**
@@ -89,5 +89,5 @@ public interface PersistentEObject extends InternalEObject {
     void resource(@Nullable Resource.Internal resource);
 
     @Override
-    Store eStore();
+    StoreAdapter eStore();
 }

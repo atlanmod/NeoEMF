@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches {@link EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public class FeatureCachingStoreDecorator extends AbstractStoreDecorator<Store> {
+public class FeatureCachingStoreDecorator extends AbstractStoreDecorator {
 
     /**
      * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
@@ -67,6 +67,28 @@ public class FeatureCachingStoreDecorator extends AbstractStoreDecorator<Store> 
         cache.invalidate(key);
 
         super.unsetValue(key);
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    public Optional<Id> referenceOf(FeatureKey key) {
+        return Optional.ofNullable((Id) cache.get(key, k -> super.referenceOf(k).orElse(null)));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        cache.put(key, reference);
+
+        return super.referenceFor(key, reference);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        cache.invalidate(key);
+
+        super.unsetReference(key);
     }
 
     @Nonnull
@@ -116,28 +138,6 @@ public class FeatureCachingStoreDecorator extends AbstractStoreDecorator<Store> 
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllValues(key);
-    }
-
-    @Nonnull
-    @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public Optional<Id> referenceOf(FeatureKey key) {
-        return Optional.ofNullable((Id) cache.get(key, k -> super.referenceOf(k).orElse(null)));
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        cache.put(key, reference);
-
-        return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        cache.invalidate(key);
-
-        super.unsetReference(key);
     }
 
     @Nonnull

@@ -72,7 +72,7 @@ final class PersistentEObjectAdapter {
      * @throws NullPointerException if the {@code type} is {@code null}
      */
     @Nullable
-    private static <T extends PersistentEObject> T getAdapter(@Nullable Object o, Class<T> type) {
+    private static <T extends PersistentEObject> T adapt(@Nullable Object o, Class<T> type) {
         if (isNull(o)) {
             return null;
         }
@@ -107,11 +107,11 @@ final class PersistentEObjectAdapter {
      * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
      * assigned as a {@link PersistentEObject}
      *
-     * @see #getAdapter(Object, Class)
+     * @see #adapt(Object, Class)
      */
     @Nullable
-    public static PersistentEObject getAdapter(@Nullable Object o) {
-        return getAdapter(o, PersistentEObject.class);
+    public static PersistentEObject adapt(@Nullable Object o) {
+        return adapt(o, PersistentEObject.class);
     }
 
     /**

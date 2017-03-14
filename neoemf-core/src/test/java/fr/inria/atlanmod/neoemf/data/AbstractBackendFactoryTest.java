@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
+import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.lang.reflect.Field;
@@ -26,12 +26,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     /**
      * The field name describing the inner {@link Store} in a {@link AbstractStoreDecorator}.
      */
-    private static final String INNER_STORE_FIELDNAME = "next";
-
-    /**
-     * The field name describing the inner {@link Backend} in a {@link DirectWriteStore}.
-     */
-    private static final String INNER_BACKEND_FIELDNAME = "backend";
+    private static final String INNER_MAPPER_FIELDNAME = "next";
 
     /**
      * Retrieves the value of a field, identified by its {@code fieldName}, in the given {@code object}.
@@ -68,17 +63,6 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * @return the inner store
      */
     protected Store getInnerStore(Store store) {
-        return getValue(store, INNER_STORE_FIELDNAME, AbstractStoreDecorator.class, Store.class);
-    }
-
-    /**
-     * Retrieves the inner {@link Backend} in the given {@code store}.
-     *
-     * @param store the store where to look for the inner back-end
-     *
-     * @return the inner back-end
-     */
-    protected Backend getInnerBackend(Store store) {
-        return store.backend();
+        return getValue(store, INNER_MAPPER_FIELDNAME, AbstractMapperDecorator.class, Store.class);
     }
 }

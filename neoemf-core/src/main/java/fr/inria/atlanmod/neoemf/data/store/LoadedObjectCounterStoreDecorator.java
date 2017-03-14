@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that count the number elements used.
  */
 @ParametersAreNonnullByDefault
-public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator<Store> {
+public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
 
     /**
      * Set that holds loaded objects.
@@ -48,6 +48,32 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator<St
         loadedObjects = new TreeSet<>();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> Log.info("{0} objects loaded during the execution", loadedObjects.size())));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        loadedObjects.add(id);
+        return super.containerOf(id);
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        loadedObjects.add(id);
+        super.containerFor(id, container);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
+        loadedObjects.add(id);
+        return super.metaclassOf(id);
+    }
+
+    @Override
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        loadedObjects.add(id);
+        super.metaclassFor(id, metaclass);
     }
 
     @Nonnull
@@ -74,6 +100,32 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator<St
     public <V> boolean hasValue(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.hasValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        loadedObjects.add(key.id());
+        return super.referenceFor(key, reference);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        loadedObjects.add(key.id());
+        super.unsetReference(key);
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        loadedObjects.add(key.id());
+        return super.hasReference(key);
     }
 
     @Nonnull
@@ -157,32 +209,6 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator<St
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        loadedObjects.add(key.id());
-        return super.referenceOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        loadedObjects.add(key.id());
-        return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        loadedObjects.add(key.id());
-        super.unsetReference(key);
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        loadedObjects.add(key.id());
-        return super.hasReference(key);
-    }
-
-    @Nonnull
-    @Override
     public Optional<Id> referenceOf(ManyFeatureKey key) {
         loadedObjects.add(key.id());
         return super.referenceOf(key);
@@ -258,31 +284,5 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator<St
     public OptionalInt sizeOfReference(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.sizeOfReference(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        loadedObjects.add(id);
-        return super.metaclassOf(id);
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        loadedObjects.add(id);
-        super.metaclassFor(id, metaclass);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        loadedObjects.add(id);
-        return super.containerOf(id);
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        loadedObjects.add(id);
-        super.containerFor(id, container);
     }
 }

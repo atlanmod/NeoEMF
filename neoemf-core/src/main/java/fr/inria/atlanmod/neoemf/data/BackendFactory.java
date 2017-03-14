@@ -44,6 +44,13 @@ public interface BackendFactory {
     String BACKEND_PROPERTY = "backend";
 
     /**
+     * Returns the literal description of the created {@link Backend}.
+     *
+     * @return the literal description of the created {@link Backend}
+     */
+    String getName();
+
+    /**
      * Creates an in-memory {@link Backend}.
      *
      * @return a new back-end

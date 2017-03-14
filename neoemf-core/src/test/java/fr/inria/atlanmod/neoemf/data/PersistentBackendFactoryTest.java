@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.Context;
 import fr.inria.atlanmod.neoemf.CoreContext;
 import fr.inria.atlanmod.neoemf.CoreTest;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
@@ -154,50 +154,50 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks the setup of the {@link AutocommitStoreDecorator} without chuck.
+     * Checks the setup of the {@link AutoSaveStoreDecorator} without chunk.
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testAutocommitOption() {
-        final long expectedChuck = 100_000;
+    public void testAutoSaveOption() {
+        final long expectedChunk = 100_000;
 
         Map<String, Object> options = CommonOptions.newBuilder()
-                .autocommit()
+                .autoSave()
                 .asMap();
 
         Store store;
 
         store = context().factory().createPersistentStore(null, null, options);
-        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
+        assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
-        long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
-        assertThat(actualChuck).isEqualTo(expectedChuck);
+        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
+        assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link AutocommitStoreDecorator} with chuck.
+     * Checks the setup of the {@link AutoSaveStoreDecorator} with chunk.
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
-    public void testAutocommitWithChuckOption() {
-        final long expectedChuck = 12_345;
+    public void testAutoSaveWithChunkOption() {
+        final long expectedChunk = 12_345;
 
         Map<String, Object> options = CommonOptions.newBuilder()
-                .autocommit(expectedChuck)
+                .autoSave(expectedChunk)
                 .asMap();
 
         Store store;
 
         store = context().factory().createPersistentStore(null, null, options);
-        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
+        assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
-        long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
-        assertThat(actualChuck).isEqualTo(expectedChuck);
+        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
+        assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -294,30 +294,30 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      * <li>{@link SizeCachingStoreDecorator}</li>
      * <li>{@link FeatureCachingStoreDecorator}</li>
      * <li>{@link LoggingStoreDecorator}</li>
-     * <li>{@link AutocommitStoreDecorator}</li>
+     * <li>{@link AutoSaveStoreDecorator}</li>
      * </ul>
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testAllOptions() {
-        long expectedChuck = 12_345;
+        long expectedChunk = 12_345;
 
         Map<String, Object> options = CommonOptions.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()
                 .log()
-                .autocommit(expectedChuck)
+                .autoSave(expectedChunk)
                 .asMap();
 
         Store store;
 
         store = context().factory().createPersistentStore(null, null, options);
-        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class);
+        assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
-        long actualChuck = getValue(store, "autocommitChuck", AutocommitStoreDecorator.class, Long.class);
-        assertThat(actualChuck).isEqualTo(expectedChuck);
+        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
+        assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
@@ -363,7 +363,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         @Override
         public BackendFactory factory() {
             try {
-                AbstractBackendFactory factory = (AbstractBackendFactory) super.factory();
+                BackendFactory factory = super.factory();
 
                 when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistentBackend.class));
                 when(factory.createPersistentStore(any(), any(), notNull())).thenCallRealMethod();

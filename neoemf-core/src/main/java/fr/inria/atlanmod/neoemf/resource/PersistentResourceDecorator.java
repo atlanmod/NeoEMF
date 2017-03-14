@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
@@ -198,7 +198,7 @@ public class PersistentResourceDecorator implements PersistentResource {
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Store store() {
+    public StoreAdapter store() {
         return resource.store();
     }
 

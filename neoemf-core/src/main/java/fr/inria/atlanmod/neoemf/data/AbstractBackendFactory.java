@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
@@ -91,13 +91,6 @@ public abstract class AbstractBackendFactory implements BackendFactory {
         return storeOptions;
     }
 
-    /**
-     * Returns the literal description of the created {@link Backend}.
-     *
-     * @return the literal description of the created {@link Backend}
-     */
-    protected abstract String getName();
-
     @Nonnull
     @Override
     public Store createTransientStore(PersistentResource resource, Backend backend) {
@@ -137,13 +130,13 @@ public abstract class AbstractBackendFactory implements BackendFactory {
             if (storeOptions.contains(CommonStoreOptions.READ_ONLY)) {
                 store = new ReadOnlyStoreDecorator(store);
             }
-            if (storeOptions.contains(CommonStoreOptions.AUTOCOMMIT)) {
-                if (options.containsKey(CommonResourceOptions.AUTOCOMMIT_CHUNK)) {
-                    long autoCommitChunk = Long.valueOf((String) options.get(CommonResourceOptions.AUTOCOMMIT_CHUNK));
-                    store = new AutocommitStoreDecorator(store, autoCommitChunk);
+            if (storeOptions.contains(CommonStoreOptions.AUTO_SAVE)) {
+                if (options.containsKey(CommonResourceOptions.AUTO_SAVE_CHUNK)) {
+                    long chunk = Long.valueOf((String) options.get(CommonResourceOptions.AUTO_SAVE_CHUNK));
+                    store = new AutoSaveStoreDecorator(store, chunk);
                 }
                 else {
-                    store = new AutocommitStoreDecorator(store);
+                    store = new AutoSaveStoreDecorator(store);
                 }
             }
         }

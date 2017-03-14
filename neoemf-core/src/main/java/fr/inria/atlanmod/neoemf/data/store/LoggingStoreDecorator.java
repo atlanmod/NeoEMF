@@ -31,7 +31,7 @@ import static java.util.Objects.nonNull;
  * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
-public class LoggingStoreDecorator extends AbstractStoreDecorator<Store> {
+public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     /**
      * The {@link Logger} for this class.
@@ -87,6 +87,32 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator<Store> {
     public <V> boolean hasValue(FeatureKey key) {
         called("isSet", key);
         return super.hasValue(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        called("get", key);
+        return super.referenceOf(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        called("set", key, reference);
+        return super.referenceFor(key, reference);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        called("unSet", key);
+        super.unsetReference(key);
+    }
+
+    @Override
+    public boolean hasReference(FeatureKey key) {
+        called("isSet", key);
+        return super.hasReference(key);
     }
 
     @Nonnull
@@ -166,32 +192,6 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator<Store> {
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         called("size", key);
         return super.sizeOfValue(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        called("get", key);
-        return super.referenceOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        called("set", key, reference);
-        return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        called("unSet", key);
-        super.unsetReference(key);
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        called("isSet", key);
-        return super.hasReference(key);
     }
 
     @Nonnull

@@ -36,7 +36,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
         Store store = context().factory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
-        assertThat(getInnerBackend(store)).isSameAs(backend);
+        assertThat(store.backend()).isSameAs(backend);
     }
 
     @Test
@@ -52,6 +52,6 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
         Store store = context().factory().createPersistentStore(null, backend, BlueprintsOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
-        assertThat(getInnerBackend(store)).isSameAs(backend);
+        assertThat(store.backend()).isSameAs(backend);
     }
 }

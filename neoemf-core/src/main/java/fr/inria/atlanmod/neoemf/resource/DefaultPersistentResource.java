@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.Iterables;
@@ -83,10 +84,10 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private final RootObject rootObject;
 
     /**
-     * The {@link Store} responsible of the database serialization.
+     * The {@link StoreAdapter} responsible of the database serialization.
      */
     @Nonnull
-    protected Store store;
+    protected StoreAdapter store;
 
     /**
      * The last options used during {@link #load(Map)}.
@@ -104,7 +105,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         rootObject = new RootObject(this);
 
         BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
-        store = factory.createTransientStore(this);
+        store = StoreAdapter.adapt(factory.createTransientStore(this));
 
         Log.info("{0} created", PersistentResource.class.getSimpleName());
     }
@@ -174,7 +175,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         if (!isLoaded || !isPersistent()) {
             BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
-            Store newStore = factory.createPersistentStore(this, options);
+            StoreAdapter newStore = StoreAdapter.adapt(factory.createPersistentStore(this, options));
 
             // Direct copy to the backend
             store.copyTo(newStore.backend());
@@ -211,7 +212,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     store.close();
 
                     BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
-                    store = factory.createPersistentStore(this, options);
+                    store = StoreAdapter.adapt(factory.createPersistentStore(this, options));
 
                     rootObject.isPersistent(true);
                 }
@@ -234,7 +235,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         store.close();
 
         BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
-        store = factory.createTransientStore(this);
+        store = StoreAdapter.adapt(factory.createTransientStore(this));
 
         isLoaded = false;
 
@@ -243,7 +244,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
-    public Store store() {
+    public StoreAdapter store() {
         return store;
     }
 
@@ -350,7 +351,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @param feature ???
          * @param store   ???
          */
-        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, Store store) {
+        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, StoreAdapter store) {
             super(owner, feature, store);
         }
 

@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the presence of a value.
  */
 @ParametersAreNonnullByDefault
-public class IsSetCachingStoreDecorator extends AbstractStoreDecorator<Store> {
+public class IsSetCachingStoreDecorator extends AbstractStoreDecorator {
 
     /**
      * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
@@ -70,6 +70,33 @@ public class IsSetCachingStoreDecorator extends AbstractStoreDecorator<Store> {
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> boolean hasValue(FeatureKey key) {
         return cache.get(key, super::hasValue);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(FeatureKey key) {
+        Optional<Id> value = super.referenceOf(key);
+        cache.put(key, value.isPresent());
+        return value;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+        cache.put(key, true);
+        return super.referenceFor(key, reference);
+    }
+
+    @Override
+    public void unsetReference(FeatureKey key) {
+        cache.put(key, false);
+        super.unsetReference(key);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public boolean hasReference(FeatureKey key) {
+        return cache.get(key, super::hasReference);
     }
 
     @Nonnull
@@ -124,33 +151,6 @@ public class IsSetCachingStoreDecorator extends AbstractStoreDecorator<Store> {
         OptionalInt size = super.sizeOfValue(key);
         cache.put(key, size.isPresent() && size.getAsInt() != 0);
         return size;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        Optional<Id> value = super.referenceOf(key);
-        cache.put(key, value.isPresent());
-        return value;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        cache.put(key, true);
-        return super.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        cache.put(key, false);
-        super.unsetReference(key);
-    }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public boolean hasReference(FeatureKey key) {
-        return cache.get(key, super::hasReference);
     }
 
     @Nonnull

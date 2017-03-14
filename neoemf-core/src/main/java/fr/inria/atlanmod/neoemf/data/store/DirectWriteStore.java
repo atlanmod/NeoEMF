@@ -11,20 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
-
-import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,13 +28,7 @@ import static java.util.Objects.nonNull;
  * A {@link Store} that translates model-level operations into datastore calls.
  */
 @ParametersAreNonnullByDefault
-public final class DirectWriteStore extends AbstractStore {
-
-    /**
-     * The persistence back-end used to store the model.
-     */
-    @Nonnull
-    protected final Backend backend;
+public final class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
 
     /**
      * The resource to store and access.
@@ -67,8 +53,8 @@ public final class DirectWriteStore extends AbstractStore {
      * @param resource the resource to store and access
      */
     public DirectWriteStore(Backend backend, @Nullable PersistentResource resource) {
+        super(backend);
         this.resource = resource;
-        this.backend = backend;
 
         if (nonNull(resource)) { // isAttached ?
             closeOnExit(backend, resource.getURI());
@@ -99,232 +85,6 @@ public final class DirectWriteStore extends AbstractStore {
     @Nonnull
     @Override
     public Backend backend() {
-        return backend;
-    }
-
-    @Override
-    public void save() {
-        backend.save();
-    }
-
-    @Override
-    public void close() {
-        backend.close();
-    }
-
-    @Override
-    public void copyTo(DataMapper target) {
-        backend.copyTo(target);
-    }
-
-    @Override
-    public boolean exists(Id id) {
-        return backend.exists(id);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
-        return backend.valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        return backend.valueFor(key, value);
-    }
-
-    @Override
-    public <V> void unsetValue(FeatureKey key) {
-        backend.unsetValue(key);
-    }
-
-    @Override
-    public <V> boolean hasValue(FeatureKey key) {
-        return backend.hasValue(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        return backend.valueOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
-        return backend.allValuesOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        return backend.valueFor(key, value);
-    }
-
-    @Override
-    public <V> boolean hasAnyValue(FeatureKey key) {
-        return backend.hasAnyValue(key);
-    }
-
-    @Override
-    public <V> void addValue(ManyFeatureKey key, V value) {
-        backend.addValue(key, value);
-    }
-
-    @Override
-    public <V> void appendValue(FeatureKey key, V value) {
-        backend.appendValue(key, value);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        return backend.removeValue(key);
-    }
-
-    @Override
-    public <V> void removeAllValues(FeatureKey key) {
-        backend.removeAllValues(key);
-    }
-
-    @Override
-    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        return backend.containsValue(key, value);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
-        return backend.indexOfValue(key, value);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
-        return backend.lastIndexOfValue(key, value);
-    }
-
-    @Nonnull
-    @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        return backend.sizeOfValue(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
-        return backend.referenceOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        return backend.referenceFor(key, reference);
-    }
-
-    @Override
-    public void unsetReference(FeatureKey key) {
-        backend.unsetReference(key);
-    }
-
-    @Override
-    public boolean hasReference(FeatureKey key) {
-        return backend.hasReference(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(ManyFeatureKey key) {
-        return backend.referenceOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Iterable<Id> allReferencesOf(FeatureKey key) {
-        return backend.allReferencesOf(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        return backend.referenceFor(key, reference);
-    }
-
-    @Override
-    public boolean hasAnyReference(FeatureKey key) {
-        return backend.hasAnyReference(key);
-    }
-
-    @Override
-    public void addReference(ManyFeatureKey key, Id reference) {
-        backend.addReference(key, reference);
-    }
-
-    @Override
-    public void appendReference(FeatureKey key, Id reference) {
-        backend.appendReference(key, reference);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> removeReference(ManyFeatureKey key) {
-        return backend.removeReference(key);
-    }
-
-    @Override
-    public void removeAllReferences(FeatureKey key) {
-        backend.removeAllReferences(key);
-    }
-
-    @Override
-    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        return backend.containsReference(key, reference);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
-        return backend.indexOfReference(key, reference);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
-        return backend.lastIndexOfReference(key, reference);
-    }
-
-    @Nonnull
-    @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
-        return backend.sizeOfReference(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        return backend.metaclassOf(id);
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        backend.metaclassFor(id, metaclass);
-    }
-
-    @Nonnull
-    @Override
-    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
-        return backend.allInstancesOf(metaclass, strict);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        return backend.containerOf(id);
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        backend.containerFor(id, container);
+        return next();
     }
 }

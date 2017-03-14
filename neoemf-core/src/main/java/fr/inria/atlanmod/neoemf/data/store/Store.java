@@ -11,14 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.core.IdResolver;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,8 +25,7 @@ import static java.util.Objects.nonNull;
  * A {@link DataMapper} to establish a mapping between {@link PersistentResource}s and {@link Backend}s.
  */
 @ParametersAreNonnullByDefault
-// TODO Remove inheritance from InternalEObject.EStore
-public interface Store extends InternalEObject.EStore, DataMapper, IdResolver {
+public interface Store extends DataMapper {
 
     /**
      * Returns the {@link PersistentResource} to store and access.
@@ -59,9 +53,4 @@ public interface Store extends InternalEObject.EStore, DataMapper, IdResolver {
      */
     @Nonnull
     Backend backend();
-
-    @Override
-    default EObject create(EClass eClass) {
-        throw new IllegalStateException("EStore#create() should not be called");
-    }
 }

@@ -97,12 +97,6 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Store createTransientStore(PersistentResource resource, Backend backend) {
-        return new InvalidStore();
-    }
-
-    @Nonnull
-    @Override
     public Backend createTransientBackend() {
         return new InvalidTransientBackend();
     }
@@ -113,6 +107,12 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
         return new HBaseBackendArraysStrings(createTable(uri));
+    }
+
+    @Nonnull
+    @Override
+    public Store createTransientStore(PersistentResource resource, Backend backend) {
+        return new InvalidStore();
     }
 
     /**

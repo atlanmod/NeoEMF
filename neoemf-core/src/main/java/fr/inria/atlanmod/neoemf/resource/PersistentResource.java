@@ -12,11 +12,10 @@
 package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
@@ -37,12 +36,12 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     void close();
 
     /**
-     * Returns the {@link InternalEObject.EStore} used to store the model.
+     * Returns the {@link StoreAdapter} used to store the model.
      *
-     * @return the {@link InternalEObject.EStore}
+     * @return the {@link StoreAdapter}
      */
     @Nonnull
-    Store store();
+    StoreAdapter store();
 
     /**
      * Checks whether this resource is mapped to a {@link PersistentBackend}.

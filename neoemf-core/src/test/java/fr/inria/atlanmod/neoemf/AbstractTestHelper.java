@@ -158,7 +158,7 @@ public abstract class AbstractTestHelper<B extends AbstractTestHelper<B>> implem
     private Map<String, Object> defaultOptions() {
         return optionsBuilder()
                 .log()
-                .autocommit()
+                .autoSave()
                 .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()
