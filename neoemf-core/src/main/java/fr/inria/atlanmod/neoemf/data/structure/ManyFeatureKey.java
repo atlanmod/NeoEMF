@@ -11,13 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
@@ -34,7 +38,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class ManyFeatureKey extends FeatureKey implements Serializable {
+public class ManyFeatureKey extends FeatureKey {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 7159493156068733506L;
@@ -43,7 +47,17 @@ public class ManyFeatureKey extends FeatureKey implements Serializable {
      * The position of this key.
      */
     @Nonnegative
-    protected final int position;
+    protected int position;
+
+    /**
+     * Constructs a new {@code FeatureKey}.
+     * <p>
+     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
+     */
+    @VisibleForTesting
+    public ManyFeatureKey() {
+        this(new StringId(), "", 0);
+    }
 
     /**
      * Constructs a new {@code ManyFeatureKey} with the given {@code id} and the given {@code name}, which are
@@ -182,5 +196,17 @@ public class ManyFeatureKey extends FeatureKey implements Serializable {
     @Override
     public String toString() {
         return String.format("%s {%s # %s [%d]}", getClass().getSimpleName(), id, name, position);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeInt(position);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        position = in.readInt();
     }
 }

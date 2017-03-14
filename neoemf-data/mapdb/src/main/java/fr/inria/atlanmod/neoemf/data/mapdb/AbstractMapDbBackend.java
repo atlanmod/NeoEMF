@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -21,23 +20,17 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.mapdb.DB;
-import org.mapdb.DataInput2;
-import org.mapdb.DataOutput2;
-import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * The abstract implementation of a {@link MapDbBackend}.
@@ -49,20 +42,20 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final HTreeMap<Id, ContainerDescriptor> containersMap;
+    private final ConcurrentMap<Id, ContainerDescriptor> containersMap;
 
     /**
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final HTreeMap<Id, ClassDescriptor> instanceOfMap;
+    private final ConcurrentMap<Id, ClassDescriptor> instanceOfMap;
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
      * associated {@link FeatureKey}.
      */
     @Nonnull
-    private final HTreeMap<FeatureKey, Object> features;
+    private final ConcurrentMap<FeatureKey, Object> features;
 
     /**
      * The MapDB database.
@@ -88,17 +81,17 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
         this.db = checkNotNull(db);
 
         containersMap = db.hashMap("eContainer")
-                .keySerializer(new IdSerializer())
+                .keySerializer(Serializer.JAVA)
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
         instanceOfMap = db.hashMap("neoInstanceOf")
-                .keySerializer(new IdSerializer())
+                .keySerializer(Serializer.JAVA)
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
         features = db.hashMap("features")
-                .keySerializer(new FeatureKeySerializer())
+                .keySerializer(Serializer.JAVA)
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
     }
@@ -218,7 +211,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> get(HTreeMap<K, ? super V> database, K key) {
+    protected <K, V> Optional<V> get(Map<K, ? super V> database, K key) {
         return Optional.ofNullable((V) database.get(key));
     }
 
@@ -236,7 +229,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> put(HTreeMap<K, ? super V> database, K key, V value) {
+    protected <K, V> Optional<V> put(Map<K, ? super V> database, K key, V value) {
         return Optional.ofNullable((V) database.put(key, value));
     }
 
@@ -247,88 +240,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
      * @param key      the key of the element to remove
      * @param <K>      the type of the key
      */
-    protected <K> void delete(HTreeMap<K, ?> database, K key) {
+    protected <K> void delete(Map<K, ?> database, K key) {
         database.remove(key);
-    }
-
-    /**
-     * A {@link Serializer} implementation for {@link Id}s.
-     * <p>
-     * <b>Note:</b> For now, this serializer only works with {@link StringId}.
-     *
-     * @see Id
-     * @see StringId
-     */
-    @ParametersAreNonnullByDefault
-    protected static class IdSerializer implements Serializer<Id> {
-
-        /**
-         * An embedded {@link String} {@link Serializer} used to handle {@link StringId}s.
-         */
-        private final Serializer<String> serializer = STRING;
-
-        @Override
-        public void serialize(DataOutput2 out, Id id) throws IOException {
-            serializer.serialize(out, id.toString());
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(serializer);
-        }
-
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (isNull(o) || !(o instanceof IdSerializer)) {
-                return false;
-            }
-
-            IdSerializer that = (IdSerializer) o;
-
-            return Objects.equals(serializer, that.serializer);
-        }
-
-        @Nonnull
-        @Override
-        public Id deserialize(DataInput2 in, int i) throws IOException {
-            return StringId.of(serializer.deserialize(in, i));
-        }
-    }
-
-    /**
-     * A {@link Serializer} implementation for {@link FeatureKey}.
-     *
-     * @see FeatureKey
-     */
-    @ParametersAreNonnullByDefault
-    protected static class FeatureKeySerializer implements Serializer<FeatureKey> {
-
-        /**
-         * The {@link Serializer} that manages {@link String}s.
-         */
-        private final Serializer<String> stringSerializer = STRING;
-
-        /**
-         * The {@link Serializer} the manages {@link Id}s.
-         */
-        private final Serializer<Id> idSerializer = new IdSerializer();
-
-        @Override
-        public void serialize(DataOutput2 out, FeatureKey key) throws IOException {
-            idSerializer.serialize(out, key.id());
-            stringSerializer.serialize(out, key.name());
-        }
-
-        @Nonnull
-        @Override
-        public FeatureKey deserialize(DataInput2 in, int i) throws IOException {
-            return FeatureKey.of(
-                    idSerializer.deserialize(in, -1),
-                    stringSerializer.deserialize(in, -1)
-            );
-        }
     }
 }

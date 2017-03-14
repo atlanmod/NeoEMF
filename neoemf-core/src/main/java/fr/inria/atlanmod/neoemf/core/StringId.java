@@ -11,8 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -36,7 +41,17 @@ public class StringId implements Id {
      * The literal representation of this {@code Id} as a {@link String}.
      */
     @Nonnull
-    private final String literalId;
+    private String literalId;
+
+    /**
+     * Constructs a new {@code StringId}.
+     * <p>
+     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
+     */
+    @VisibleForTesting
+    public StringId() {
+        this("");
+    }
 
     /**
      * Constructs a new {@code StringId} with its literal representation.
@@ -115,5 +130,15 @@ public class StringId implements Id {
     @Override
     public String toString() {
         return literalId;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(literalId);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException {
+        literalId = in.readUTF();
     }
 }

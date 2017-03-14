@@ -11,12 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.eclipse.emf.ecore.EReference;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -32,7 +37,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class ContainerDescriptor implements Serializable {
+public final class ContainerDescriptor implements Externalizable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -3357337595522803972L;
@@ -41,13 +46,23 @@ public final class ContainerDescriptor implements Serializable {
      * The identifier of the object.
      */
     @Nonnull
-    private final Id id;
+    private Id id;
 
     /**
      * The name of the reference used to retrieve the container of the object.
      */
     @Nonnull
-    private final String name;
+    private String name;
+
+    /**
+     * Constructs a new {@code ContainerDescriptor}.
+     * <p>
+     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
+     */
+    @VisibleForTesting
+    public ContainerDescriptor() {
+        this(new StringId(), "");
+    }
 
     /**
      * Constructs a new {@code ContainerDescriptor} with the given {@code id} and the given {@code name}.
@@ -131,5 +146,17 @@ public final class ContainerDescriptor implements Serializable {
     @Override
     public String toString() {
         return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(id);
+        out.writeUTF(name);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        id = (Id) in.readObject();
+        name = in.readUTF();
     }
 }

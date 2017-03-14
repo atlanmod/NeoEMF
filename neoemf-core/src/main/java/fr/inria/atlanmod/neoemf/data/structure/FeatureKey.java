@@ -11,13 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
@@ -33,7 +38,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class FeatureKey implements Comparable<FeatureKey>, Serializable {
+public class FeatureKey implements Comparable<FeatureKey>, Externalizable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -2197099155190693261L;
@@ -42,13 +47,23 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * The identifier of the object.
      */
     @Nonnull
-    protected final Id id;
+    protected Id id;
 
     /**
      * The name of the feature of the object.
      */
     @Nonnull
-    protected final String name;
+    protected String name;
+
+    /**
+     * Constructs a new {@code FeatureKey}.
+     * <p>
+     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
+     */
+    @VisibleForTesting
+    public FeatureKey() {
+        this(new StringId(), "");
+    }
 
     /**
      * Constructs a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as
@@ -187,5 +202,17 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     @Override
     public String toString() {
         return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(id);
+        out.writeUTF(name);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        id = (Id) in.readObject();
+        name = in.readUTF();
     }
 }

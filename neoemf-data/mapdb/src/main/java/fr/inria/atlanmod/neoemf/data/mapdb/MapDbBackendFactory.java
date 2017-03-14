@@ -93,7 +93,10 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
             }
         }
 
-        DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
+        DB db = DBMaker.fileDB(dbFile)
+                .fileMmapEnableIfSupported()
+                .make();
+
         backend = new MapDbBackendIndices(db);
         processGlobalConfiguration(file);
 

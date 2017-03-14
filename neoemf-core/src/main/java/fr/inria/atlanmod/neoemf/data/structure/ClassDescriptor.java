@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -18,7 +19,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -38,7 +42,7 @@ import static java.util.Objects.nonNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class ClassDescriptor implements Serializable {
+public final class ClassDescriptor implements Externalizable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
@@ -47,18 +51,28 @@ public final class ClassDescriptor implements Serializable {
      * The name of the metaclass.
      */
     @Nonnull
-    private final String name;
+    private String name;
 
     /**
      * The literal representation of the {@link URI} of the metaclass.
      */
     @Nonnull
-    private final String uri;
+    private String uri;
 
     /**
      * The represented {@link EClass}.
      */
     private transient EClass eClass;
+
+    /**
+     * Constructs a new {@code ClassDescriptor}.
+     * <p>
+     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
+     */
+    @VisibleForTesting
+    public ClassDescriptor() {
+        this("", "");
+    }
 
     /**
      * Constructs a new {@code ClassDescriptor} with the given {@code name} and {@code uri}, which are used as a
@@ -242,6 +256,18 @@ public final class ClassDescriptor implements Serializable {
     @Override
     public String toString() {
         return String.format("%s {%s @ %s}", getClass().getSimpleName(), name, uri);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(name);
+        out.writeUTF(uri);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name = in.readUTF();
+        uri = in.readUTF();
     }
 }
 
