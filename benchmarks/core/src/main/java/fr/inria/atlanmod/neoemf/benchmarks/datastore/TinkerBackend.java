@@ -52,6 +52,7 @@ public class TinkerBackend extends AbstractNeoBackend {
     @Override
     public Map<String, Object> getOptions() {
         return BlueprintsOptions.newBuilder()
+//                .autoSave()
                 .asMap();
     }
 }
