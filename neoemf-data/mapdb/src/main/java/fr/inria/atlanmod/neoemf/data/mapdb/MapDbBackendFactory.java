@@ -77,13 +77,6 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createTransientBackend() {
-        DB db = DBMaker.memoryDB().make();
-        return new MapDbBackendIndices(db);
-    }
-
-    @Nonnull
-    @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         MapDbBackend backend;
 
@@ -105,6 +98,13 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
         processGlobalConfiguration(file);
 
         return backend;
+    }
+
+    @Nonnull
+    @Override
+    public Backend createTransientBackend() {
+        DB db = DBMaker.memoryDB().make();
+        return new MapDbBackendIndices(db);
     }
 
     /**

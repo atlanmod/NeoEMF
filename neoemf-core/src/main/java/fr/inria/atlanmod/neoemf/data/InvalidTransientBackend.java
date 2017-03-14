@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -62,6 +63,11 @@ public final class InvalidTransientBackend implements TransientBackend {
     @Override
     public void close() {
         // No need to close anything
+    }
+
+    @Override
+    public void copyTo(DataMapper target) {
+        // No need to copy anything
     }
 
     @Override

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -95,6 +96,11 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
         containerMap.clear();
         instanceOfMap.clear();
         features.clear();
+    }
+
+    @Override
+    public void copyTo(DataMapper target) {
+        // No need to copy anything
     }
 
     @Nonnull

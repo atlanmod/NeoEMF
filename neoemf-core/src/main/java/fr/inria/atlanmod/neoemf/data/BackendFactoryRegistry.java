@@ -37,7 +37,6 @@ import static java.util.Objects.nonNull;
  * @see PersistentResource#load(Map)
  * @see PersistentResource#save(Map)
  */
-// TODO Can be renamed as "MapperFactoryRegistry"
 @ParametersAreNonnullByDefault
 public final class BackendFactoryRegistry {
 

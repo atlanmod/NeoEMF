@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -67,33 +66,6 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createTransientBackend() {
-        BerkeleyDbBackend backend;
-
-        try {
-            File dir = new File(BerkeleyDbURI.createFileURI(Files.createTempDirectory("neoemf").toFile()).toFileString());
-
-            EnvironmentConfig envConfig = new EnvironmentConfig()
-                    .setAllowCreate(true)
-                    .setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
-
-            DatabaseConfig dbConfig = new DatabaseConfig()
-                    .setAllowCreate(true)
-                    .setSortedDuplicates(false)
-                    .setDeferredWrite(true);
-
-            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
-        }
-        catch (IOException e) {
-            Log.error(e);
-            throw new InvalidDataStoreException(e);
-        }
-
-        return backend;
-    }
-
-    @Nonnull
-    @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BerkeleyDbBackend backend;
 
@@ -119,7 +91,32 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
             processGlobalConfiguration(file);
         }
         catch (IOException e) {
-            Log.error(e);
+            throw new InvalidDataStoreException(e);
+        }
+
+        return backend;
+    }
+
+    @Nonnull
+    @Override
+    public Backend createTransientBackend() {
+        BerkeleyDbBackend backend;
+
+        try {
+            File dir = new File(BerkeleyDbURI.createFileURI(Files.createTempDirectory("neoemf").toFile()).toFileString());
+
+            EnvironmentConfig envConfig = new EnvironmentConfig()
+                    .setAllowCreate(true)
+                    .setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
+
+            DatabaseConfig dbConfig = new DatabaseConfig()
+                    .setAllowCreate(true)
+                    .setSortedDuplicates(false)
+                    .setDeferredWrite(true);
+
+            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
+        }
+        catch (IOException e) {
             throw new InvalidDataStoreException(e);
         }
 

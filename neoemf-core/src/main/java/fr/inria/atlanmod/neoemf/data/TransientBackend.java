@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -27,18 +25,12 @@ public interface TransientBackend extends Backend {
     }
 
     @Override
-    default void copyTo(DataMapper target) {
-        // TODO Implement this method
-    }
-
-    @Override
     default boolean isPersistent() {
         return false;
     }
 
     @Override
     default boolean isDistributed() {
-        // A transient backend cannot be distributed
         return false;
     }
 }

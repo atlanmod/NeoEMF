@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
@@ -44,7 +45,6 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 /**
  * An abstract {@link BackendFactory} that processes common store options and manages the configuration.
  */
-// TODO Can be renamed as "AbstractMapperFactory"
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackendFactory implements BackendFactory {
 
@@ -93,8 +93,24 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
     @Nonnull
     @Override
+    public Backend createTransientBackend() {
+        if (supportsTransient()) {
+            return new DefaultTransientBackend();
+        }
+        else {
+            return new InvalidTransientBackend();
+        }
+    }
+
+    @Nonnull
+    @Override
     public Store createTransientStore(PersistentResource resource, Backend backend) {
-        return new DirectWriteStore(backend, resource);
+        if (supportsTransient()) {
+            return new DirectWriteStore(backend, resource);
+        }
+        else {
+            return new InvalidStore();
+        }
     }
 
     @Nonnull

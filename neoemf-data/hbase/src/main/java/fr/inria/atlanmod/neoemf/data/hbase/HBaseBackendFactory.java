@@ -15,11 +15,8 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.hadoop.conf.Configuration;
@@ -95,10 +92,9 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
         return NAME;
     }
 
-    @Nonnull
     @Override
-    public Backend createTransientBackend() {
-        return new InvalidTransientBackend();
+    public boolean supportsTransient() {
+        return false;
     }
 
     @Nonnull
@@ -107,12 +103,6 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
         checkArgument(uri.isHierarchical(), "NeoEMF/HBase only supports hierarchical URIs");
 
         return new HBaseBackendArraysStrings(createTable(uri));
-    }
-
-    @Nonnull
-    @Override
-    public Store createTransientStore(PersistentResource resource, Backend backend) {
-        return new InvalidStore();
     }
 
     /**

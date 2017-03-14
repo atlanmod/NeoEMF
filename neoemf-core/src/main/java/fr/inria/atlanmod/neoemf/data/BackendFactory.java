@@ -29,7 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
  */
-// TODO Can be renamed as "MapperFactory"
 @ParametersAreNonnullByDefault
 public interface BackendFactory {
 
@@ -51,18 +50,31 @@ public interface BackendFactory {
     String getName();
 
     /**
+     * Returns whether this factory supports the transient state.
+     *
+     * @return {@code true} if this factory supports the transient state, {@code false} otherwise
+     *
+     * @see #createTransientStore(PersistentResource, Backend)
+     * @see #createTransientBackend()
+     */
+    default boolean supportsTransient() {
+        return true;
+    }
+
+    /**
      * Creates an in-memory {@link Backend}.
      *
      * @return a new back-end
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
+     * @see #supportsTransient()
      */
     @Nonnull
     Backend createTransientBackend();
 
     /**
-     * Creates a {@link Backend} in the given {@code directory}.
+     * Creates a {@link Backend} by using the given {@code uri}.
      *
      * @param uri     the directory
      * @param options the options that defines the behaviour of the back-end
@@ -82,6 +94,8 @@ public interface BackendFactory {
      * @param backend  the back-end where to store data
      *
      * @return a new store
+     *
+     * @see #supportsTransient()
      */
     @Nonnull
     Store createTransientStore(PersistentResource resource, Backend backend);

@@ -97,12 +97,6 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createTransientBackend() {
-        return new BlueprintsBackendIndices(new TinkerGraph());
-    }
-
-    @Nonnull
-    @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BlueprintsBackend backend;
 
@@ -131,6 +125,12 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         processGlobalConfiguration(file);
 
         return backend;
+    }
+
+    @Nonnull
+    @Override
+    public Backend createTransientBackend() {
+        return new BlueprintsBackendIndices(new TinkerGraph());
     }
 
     /**
