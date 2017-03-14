@@ -57,7 +57,7 @@ public class BlueprintsImporter {
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
         try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
-            Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder().weakCache().autocommit().asMap();
+            Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder().weakCache().autoSave().asMap();
             persistentResource.save(options);
 
             Instant start = Instant.now();

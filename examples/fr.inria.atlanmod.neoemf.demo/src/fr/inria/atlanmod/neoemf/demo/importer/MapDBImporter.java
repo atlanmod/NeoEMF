@@ -58,7 +58,7 @@ public class MapDBImporter {
 
         try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
             Map<String, Object> options = MapDbOptions.newBuilder()
-                    .autocommit()
+                    .autoSave()
                     .cacheIsSet()
                     .cacheSizes()
                     .asMap();
