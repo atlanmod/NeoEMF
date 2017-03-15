@@ -269,9 +269,8 @@
                             ${project.groupId}.data.hbase
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.data.hbase.*,
+                            fr.inria.atlanmod.neoemf.data.hbase.*
                         </Export-Package>
-                        <_exportcontents />
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>

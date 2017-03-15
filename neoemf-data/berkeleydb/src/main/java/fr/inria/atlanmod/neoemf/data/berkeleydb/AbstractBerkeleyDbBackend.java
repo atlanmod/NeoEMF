@@ -46,7 +46,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * ???
+ * The abstract implementation of a {@link BerkeleyDbBackend}.
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {

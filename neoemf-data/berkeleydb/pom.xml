@@ -95,9 +95,6 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.berkeleydb.*
                         </Export-Package>
-                        <_exportcontents>
-                            com.sleepycat,
-                        </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>

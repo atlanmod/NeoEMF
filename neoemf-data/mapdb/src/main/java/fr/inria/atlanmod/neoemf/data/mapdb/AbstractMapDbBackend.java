@@ -66,13 +66,13 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     /**
      * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code db}.
      * <p>
-     * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
+     * This constructor initialize the different {@link ConcurrentMap}s from the MapDB engine and set their respective
      * {@link Serializer}s.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
      * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
-     * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
+     * @param db the {@link DB} used to creates the used {@link ConcurrentMap}s and manage the database
      *
      * @see MapDbBackendFactory
      */

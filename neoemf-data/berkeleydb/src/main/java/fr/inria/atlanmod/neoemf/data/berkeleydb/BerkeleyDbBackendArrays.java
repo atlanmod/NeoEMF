@@ -18,26 +18,28 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 
 import java.io.File;
-import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * A {@link BerkeleyDbBackend} that use a {@link ManyValueWithArrays} mapping for storing features.
+ *
+ * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
 class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend implements ManyValueWithArrays {
 
     /**
-     * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given {@code envConfig}.
+     * Constructs a new {@code BerkeleyDbBackendArrays} wrapping the provided {@code db}.
      * <p>
-     * <b>Note:</b> The detail message associated with cause is not automatically incorporated into this exception's
-     * detail message. This constructor is protected. To create a new {@code BerkeleyDbBackendArrays} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * <b>Note:</b> This constructor is protected. To create a new {@link BerkeleyDbBackend} use {@link
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param file      ???
      * @param envConfig ???
      * @param dbConfig  ???
+     *
+     * @see BerkeleyDbBackendFactory
      */
     protected BerkeleyDbBackendArrays(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);

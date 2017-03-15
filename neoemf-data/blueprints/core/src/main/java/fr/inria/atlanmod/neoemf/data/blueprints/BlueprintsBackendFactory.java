@@ -48,7 +48,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
  * PersistentResource#load(Map)} option maps.
  * <p>
- * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
+ * The factory handles transient back-ends by creating an in-memory {@code TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (see {@link BlueprintsResourceOptions}. Default back-end
  * configuration (store directory and graph type) is called dynamically according to the provided Blueprints
  * implementation {@link BlueprintsTgConfiguration}.

@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,7 +28,7 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     String GRAPH_TYPE = "blueprints.graph";
 
     /**
-     * The default option value to define {@link TinkerGraph} as the graph implementation to use.
+     * The default option value to define {@code TinkerGraph} as the graph implementation to use.
      */
     String GRAPH_TYPE_DEFAULT = com.tinkerpop.blueprints.impls.tg.TinkerGraph.class.getName();
 }

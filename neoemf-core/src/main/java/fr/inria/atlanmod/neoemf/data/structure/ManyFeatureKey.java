@@ -77,8 +77,7 @@ public class ManyFeatureKey extends FeatureKey {
     /**
      * Creates a new {@code ManyFeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code from(PersistentEObject.from(internalObject), feature,
-     * position)}.
+     * This method behaves like: {@code from(PersistentEObject.from(internalObject), feature, position)}.
      *
      * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
      *                       identifier
@@ -163,7 +162,9 @@ public class ManyFeatureKey extends FeatureKey {
         if (!(o instanceof ManyFeatureKey)) {
             return AFTER;
         }
+
         int comparison = super.compareTo(o);
+
         if (comparison == EQUAL) {
             ManyFeatureKey that = (ManyFeatureKey) o;
             return (position > that.position) ? AFTER : (position < that.position) ? BEFORE : EQUAL;

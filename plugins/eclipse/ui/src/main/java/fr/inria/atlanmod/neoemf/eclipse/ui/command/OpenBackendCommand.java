@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
@@ -22,8 +23,6 @@ import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -44,6 +43,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -87,20 +87,20 @@ public class OpenBackendCommand extends AbstractHandler {
         @Override
         public IStatus runInUIThread(IProgressMonitor monitor) {
             Path root = Paths.get(folder.getRawLocation().toOSString());
-            Path path = root.resolve(BackendFactory.CONFIG_FILE);
-            Log.info("Running at: {0}", path.toString());
+            File configurationFile = root.resolve(BackendFactory.CONFIG_FILE).toFile();
 
-            PropertiesConfiguration configuration;
-            try {
-                configuration = new PropertiesConfiguration(path.toFile());
-            }
-            catch (ConfigurationException e) {
+            Log.info("Running at: {0}", configurationFile.toString());
+
+            if (!configurationFile.exists()) {
                 Log.error("Unable to find {0} file", BackendFactory.CONFIG_FILE);
-                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", e);
+                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", null);
             }
+
+            Configuration configuration = Configuration.load(configurationFile);
 
             URI uri = null;
-            String backendType = configuration.getString(BackendFactory.BACKEND_PROPERTY);
+            String backendType = configuration.getProperty(BackendFactory.BACKEND_PROPERTY).toString();
+
             if (isNull(backendType)) {
                 Log.error("{0} does not contain {1} property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
@@ -125,6 +125,7 @@ public class OpenBackendCommand extends AbstractHandler {
             catch (PartInitException e) {
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor", e);
             }
+
             return Status.OK_STATUS;
         }
     }

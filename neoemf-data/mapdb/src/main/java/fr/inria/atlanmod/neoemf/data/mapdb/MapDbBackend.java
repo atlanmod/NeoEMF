@@ -17,6 +17,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistentBackend} that is responsible of low-level access to a MapDB database.
+ * <p>
+ * It wraps an existing MapDB database and provides facilities to create and retrieve elements.
+ * <p>
+ * <b>Note:</b> Instances of {@code MapDbBackend} are created by {@link MapDbBackendFactory} that provides an usable
+ * database that can be manipulated by this wrapper.
+ *
+ * @see MapDbBackendFactory
  */
 @ParametersAreNonnullByDefault
 public interface MapDbBackend extends PersistentBackend {

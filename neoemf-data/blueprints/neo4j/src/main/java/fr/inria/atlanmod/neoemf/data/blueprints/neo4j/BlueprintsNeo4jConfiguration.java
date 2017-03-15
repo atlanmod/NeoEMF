@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
-import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
-
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
@@ -23,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An internal class that sets Blueprints {@link Neo4jGraph} default configuration properties in the current NeoEMF
+ * An internal class that sets Blueprints {@code Neo4jGraph} default configuration properties in the current NeoEMF
  * {@link Configuration}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used to
@@ -36,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class BlueprintsNeo4jConfiguration implements BlueprintsConfiguration {
 
     /**
-     * The property to define the directory of the {@link Neo4jGraph} instance.
+     * The property to define the directory of the {@code Neo4jGraph} instance.
      */
     private static final String DIRECTORY = "blueprints.neo4j.directory";
 

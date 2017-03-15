@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -33,7 +34,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
- * ???
+ * A factory that creates instances of {@link BerkeleyDbBackend}.
+ * <p>
+ * As other implementations of {@link BackendFactory}, this class can create transient and persistent databases.
+ * Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
+ * PersistentResource#load(Map)} option maps.
+ *
+ * @see PersistentResource
+ * @see BerkeleyDbBackend
+ * @see fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder
  */
 @ParametersAreNonnullByDefault
 public class BerkeleyDbBackendFactory extends AbstractBackendFactory {

@@ -17,6 +17,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link PersistentBackend} that is responsible of low-level access to a Blueprints database.
+ * <p>
+ * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@code Vertex} elements in order to speed up attribute access,
+ * and manage a set of lightweight caches to improve access time of {@code Vertex} from their corresponding {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
 public interface BlueprintsBackend extends PersistentBackend {

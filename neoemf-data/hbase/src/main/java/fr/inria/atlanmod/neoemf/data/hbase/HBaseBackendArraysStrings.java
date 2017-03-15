@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceWithStrings;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.mapper.ReferenceWithString;
@@ -21,20 +21,19 @@ import org.apache.hadoop.hbase.client.Table;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} implementation for HBase to fit core architecture.
- * <p>
- * This class does not access HBase database, but is here to fit the requirement of the core architecture. For
- * historical reasons the real access to the HBase Table is done in {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}.
- * <p>
- * Moving HBase access to this class to fit NeoEMF back-end architecture is planned in a future release.
+ * A {@link HBaseBackend} that use a {@link ManyValueWithArrays} mapping for storing attributes and
+ * {@link ReferenceWithString}/{@link ManyReferenceWithStrings} mappings for storing references.
  *
- * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
+ * @see HBaseBackendFactory
  */
 @ParametersAreNonnullByDefault
 class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ManyValueWithArrays, ReferenceWithString, ManyReferenceWithStrings {
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
+     * <p>
+     * <b>Note:</b> This constructor is protected. To create a new {@link HBaseBackend} use {@link
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param table the HBase table
      */

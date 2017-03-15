@@ -132,7 +132,6 @@
                             org.codehaus.stax2.*,
                             com.ctc.wstx.*,
                         </Export-Package>
-                        <_exportcontents />
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>

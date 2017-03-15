@@ -46,7 +46,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Checks whether this resource is mapped to a {@link PersistentBackend}.
      * <p>
-     * This method acts the same as {@code #store().backend().isPersistent()}.
+     * This method behaves like: {@code #store().backend().isPersistent()}.
      *
      * @return {@code true} if the resource is persistent, {@code false} otherwise
      */
@@ -57,7 +57,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Checks whether this resource is mapped to a distributed {@link PersistentBackend}.
      * <p>
-     * This method acts the same as {@code #store().backend().isDistributed()}.
+     * This method behaves like: {@code #store().backend().isDistributed()}.
      *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
      */
@@ -68,7 +68,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).
      * <p>
-     * This method acts the same as {@code #allInstances(EClass, false)}.
+     * This method behaves like: {@code #allInstances(EClass, false)}.
      *
      * @param eClass the {@link EClass} for which look for instances
      *

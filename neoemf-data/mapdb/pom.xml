@@ -87,10 +87,8 @@
                             ${project.groupId}.data.mapdb
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.data.mapdb.*,
-                            org.mapdb.*,
+                            fr.inria.atlanmod.neoemf.data.mapdb.*
                         </Export-Package>
-                        <_exportcontents />
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>

@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -34,17 +33,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
- * A factory that creates instances of {@link MapDbBackendIndices}.
+ * A factory that creates instances of {@link MapDbBackend}.
  * <p>
- * As other implementations of {@link BackendFactory}, this class can create transient and persistent
- * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
+ * As other implementations of {@link BackendFactory}, this class can create transient and persistent databases.
+ * Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
  * PersistentResource#load(Map)} option maps.
- * <p>
- * The factory handles transient back-ends by creating in-memory {@link Map} instances.
  *
  * @see PersistentResource
- * @see MapDbBackendIndices
- * @see MapDbOptionsBuilder
+ * @see MapDbBackend
+ * @see fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder
  */
 @ParametersAreNonnullByDefault
 public class MapDbBackendFactory extends AbstractBackendFactory {

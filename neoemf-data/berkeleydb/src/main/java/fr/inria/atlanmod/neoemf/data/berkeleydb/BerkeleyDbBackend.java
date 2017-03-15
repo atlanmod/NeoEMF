@@ -16,7 +16,14 @@ import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
+ * A {@link PersistentBackend} that is responsible of low-level access to a BerkeleyDB database.
+ * <p>
+ * It wraps an existing MapDB database and provides facilities to create and retrieve elements.
+ * <p>
+ * <b>Note:</b> Instances of {@code BerkeleyDbBackend} are created by {@link BerkeleyDbBackendFactory} that provides an
+ * usable database that can be manipulated by this wrapper.
  *
+ * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
 public interface BerkeleyDbBackend extends PersistentBackend {

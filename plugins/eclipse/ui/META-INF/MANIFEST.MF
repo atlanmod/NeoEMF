@@ -25,11 +25,7 @@ Require-Bundle: org.eclipse.core.runtime,
  fr.inria.atlanmod.neoemf.data.blueprints.core;bundle-version="1.0.2",
  fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.2",
  fr.inria.atlanmod.neoemf.data.berkeleydb;bundle-version="1.0.2"
-Bundle-ClassPath: .,
- commons-configuration.jar,
- commons-lang.jar,
- log4j-api.jar,
- log4j-core.jar
+Bundle-ClassPath: .
 Import-Package: org.eclipse.emf.common,
  org.eclipse.emf.ecore,
  org.eclipse.emf.codegen.ecore,
@@ -42,6 +38,5 @@ Import-Package: org.eclipse.emf.common,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.swt,
- org.apache.commons.configuration,
  org.eclipse.osgi.util,
  org.osgi.framework

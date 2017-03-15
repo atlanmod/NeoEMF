@@ -99,10 +99,8 @@
                         </Bundle-SymbolicName>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*,
-                            com.tinkerpop.blueprints.impls.neo4j.*,
+                            fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
-                        <_exportcontents />
                         <Embed-Dependency>
                             blueprints-neo4j-graph
                         </Embed-Dependency>

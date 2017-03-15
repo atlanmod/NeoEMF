@@ -35,6 +35,11 @@ import static java.util.Objects.nonNull;
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
  * <p>
  * It provides a default behavior to represent the "multi-valued" directly with their position.
+ * <p>
+ * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to store. Using this
+ * approach avoid to deserialize entire {@link java.util.Collection}s to retrieve a single element, which can be an
+ * important bottleneck in terms of execution time and memory consumption if the underlying model contains very large
+ * {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWithIndices extends ManyValueMapper {
@@ -194,12 +199,12 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
      * <p>
-     * This method acts as {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued feature
-     * already exists, in order to replace it. If {@code value == null}, the key is removed.
+     * This method behaves like: {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued
+     * feature already exists, in order to replace it. If {@code value == null}, the key is removed.
      * <p>
-     * <b>Note:</b> This method is used by the default {@link #valueFor(FeatureKey, Object)},
-     * {@link #addValue(ManyFeatureKey, Object)} and {@link #removeValue(ManyFeatureKey)} methods. If you intend to use
-     * them, you have to override it.
+     * <b>Note:</b> This method is used by the default {@link #valueFor(FeatureKey, Object)}, {@link
+     * #addValue(ManyFeatureKey, Object)} and {@link #removeValue(ManyFeatureKey)} methods. If you intend to use them,
+     * you have to override it.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to set

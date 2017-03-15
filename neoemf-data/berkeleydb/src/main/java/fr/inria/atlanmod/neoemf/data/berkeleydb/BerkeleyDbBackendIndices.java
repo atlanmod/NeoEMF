@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -35,7 +34,9 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * ???
+ * A {@link BerkeleyDbBackend} that use a {@link ManyValueWithIndices} mapping for storing features.
+ *
+ * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
 class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements ManyValueWithIndices {
@@ -48,15 +49,16 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     private final Database multivaluedFeatures;
 
     /**
-     * Constructs a new {@code BerkeleyDbBackendIndices} on the given {@code file} with the given
-     * {@code envConfig}.
+     * Constructs a new {@code BerkeleyDbBackendIndices} wrapping the provided {@code db}.
      * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@code BerkeleyDbBackendIndices} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
+     * <b>Note:</b> This constructor is protected. To create a new {@link BerkeleyDbBackend} use {@link
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param file      ???
      * @param envConfig ???
      * @param dbConfig  ???
+     *
+     * @see BerkeleyDbBackendFactory
      */
     protected BerkeleyDbBackendIndices(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
         super(file, envConfig, dbConfig);
