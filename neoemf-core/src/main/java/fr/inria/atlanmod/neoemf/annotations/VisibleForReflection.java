@@ -17,12 +17,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a program element that exists, or is more widely visible than otherwise necessary, only for use in test
- * code.
+ * Annotates a constructor that exists only for reflection usage.
  * <p>
- * <b>These elements should not be called in standard use.</b>
+ * <b>These constructors should not be called in standard use.</b>
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
-public @interface VisibleForTesting {
+@Target(ElementType.CONSTRUCTOR)
+public @interface VisibleForReflection {
 }

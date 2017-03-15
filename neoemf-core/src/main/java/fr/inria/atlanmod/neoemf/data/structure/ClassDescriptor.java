@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
+import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -69,7 +69,7 @@ public final class ClassDescriptor implements Externalizable {
      * <p>
      * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
      */
-    @VisibleForTesting
+    @VisibleForReflection
     public ClassDescriptor() {
         this("", "");
     }

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
+import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -48,7 +48,7 @@ public class StringId implements Id {
      * <p>
      * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
      */
-    @VisibleForTesting
+    @VisibleForReflection
     public StringId() {
         this("");
     }

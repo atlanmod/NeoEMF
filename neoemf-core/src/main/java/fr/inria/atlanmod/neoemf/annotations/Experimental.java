@@ -11,11 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Annotates a program element that exists but is still being experimented. These elements may be incomplete, and are
  * subject to incompatible changes, or even removal, in a future release.
  * <p>
  * <b>Note:</b> It is advisable not to call these elements, at this time.
  */
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Experimental {
 }

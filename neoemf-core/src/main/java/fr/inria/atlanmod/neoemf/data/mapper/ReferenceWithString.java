@@ -23,8 +23,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * A {@link ReferenceMapper} that provides a default behavior to use {@link String} instead of {@link Id} for references.
- * This behavior is specified by the {@link #toString(Id)} and {@link #fromString(String)} methods.
+ * A {@link ReferenceMapper} that provides a default behavior to use {@link String} instead of {@link Id} for
+ * references. This behavior is specified by the {@link #toString(Id)} and {@link #fromString(String)} methods.
  */
 @ParametersAreNonnullByDefault
 public interface ReferenceWithString extends ReferenceMapper {
