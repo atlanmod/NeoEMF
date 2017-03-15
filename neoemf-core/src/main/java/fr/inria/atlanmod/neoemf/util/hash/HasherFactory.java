@@ -35,33 +35,33 @@ public class HasherFactory {
     }
 
     /**
-     * Returns an instance of a {@link Hasher} using {@code MD5} algorithm.
+     * Returns a {@link Hasher} that uses the {@code MD5} algorithm.
      *
      * @return a new {@link Hasher}
      */
     @Nonnull
     public static Hasher md5() {
-        return bytes -> new HashCode(hash("MD5", bytes));
+        return bytes -> new HashCode(nativeHash("MD5", checkNotNull(bytes)));
     }
 
     /**
-     * Returns an instance of a {@link Hasher} using {@code SHA-1} algorithm.
+     * Returns a {@link Hasher} that uses the {@code SHA-1} algorithm.
      *
      * @return a new {@link Hasher}
      */
     @Nonnull
     public static Hasher sha1() {
-        return bytes -> new HashCode(hash("SHA-1", bytes));
+        return bytes -> new HashCode(nativeHash("SHA-1", checkNotNull(bytes)));
     }
 
     /**
-     * Returns an instance of a {@link Hasher} using {@code SHA-1} algorithm.
+     * Returns a {@link Hasher} that uses the {@code SHA-256} algorithm.
      *
      * @return a new {@link Hasher}
      */
     @Nonnull
     public static Hasher sha256() {
-        return bytes -> new HashCode(hash("SHA-256", bytes));
+        return bytes -> new HashCode(nativeHash("SHA-256", checkNotNull(bytes)));
     }
 
     /**
@@ -73,9 +73,9 @@ public class HasherFactory {
      * @return a message hash instance
      */
     @Nonnull
-    private static byte[] hash(String algorithm, byte[] bytes) {
+    private static byte[] nativeHash(String algorithm, byte[] bytes) {
         try {
-            return MessageDigest.getInstance(algorithm).digest(checkNotNull(bytes));
+            return MessageDigest.getInstance(algorithm).digest(bytes);
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

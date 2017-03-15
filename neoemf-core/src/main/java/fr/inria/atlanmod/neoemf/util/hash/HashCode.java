@@ -79,7 +79,9 @@ public final class HashCode implements Serializable {
      * @return an integer
      */
     public int toInt() {
-        checkState(bytes.length >= 4, "#asInt() requires >= 4 bytes (it only has %s bytes).", bytes.length);
+        checkState(bytes.length >= 4,
+                "%s#toInt() requires at least 4 bytes (it only has %s bytes).",
+                HashCode.class.getSimpleName(), bytes.length);
 
         return (bytes[0] & 0xFF) |
                 ((bytes[1] & 0xFF) << 8) |
@@ -93,7 +95,9 @@ public final class HashCode implements Serializable {
      * @return a long
      */
     public long toLong() {
-        checkState(bytes.length >= 8, "#asLong() requires >= 8 bytes (it only has %s bytes).", bytes.length);
+        checkState(bytes.length >= 8,
+                "%s#toLong() requires at least 8 bytes (it only has %s bytes).",
+                HashCode.class.getSimpleName(), bytes.length);
 
         long value = (bytes[0] & 0xFF);
         for (int i = 1; i < Math.min(bytes.length, 8); i++) {
