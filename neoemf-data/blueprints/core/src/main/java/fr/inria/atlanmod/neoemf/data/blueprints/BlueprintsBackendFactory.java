@@ -42,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
- * A factory that creates instances of {@link BlueprintsBackend}.
+ * A factory that creates {@link BlueprintsBackend} instances.
  * <p>
  * As other implementations of {@link BackendFactory}, this class can create transient and persistent
  * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link

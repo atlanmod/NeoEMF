@@ -40,7 +40,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
- * A factory that creates instances of {@link HBaseBackend}.
+ * A factory that creates {@link HBaseBackend} instances.
  * <p>
  * This class only creates persistent databases that can be configured using {@link PersistentResource#save(Map)} and
  * {@link PersistentResource#load(Map)} options maps.

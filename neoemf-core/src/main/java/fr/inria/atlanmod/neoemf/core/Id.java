@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import java.io.Externalizable;
+import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,7 +26,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public interface Id extends Comparable<Id>, Externalizable {
+public interface Id extends Comparable<Id>, Serializable {
 
     /**
      * Returns the {@link String} representation of this {@code Id}.
@@ -42,6 +42,5 @@ public interface Id extends Comparable<Id>, Externalizable {
      *
      * @return a long
      */
-    @Nonnull
-    Long toLong();
+    long toLong();
 }

@@ -11,13 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -40,15 +35,7 @@ public class StringId implements Id {
      * The literal representation of this {@code Id} as a {@link String}.
      */
     @Nonnull
-    private String literalId;
-
-    /**
-     * Constructs a new {@code StringId}.
-     */
-    @VisibleForReflection
-    public StringId() {
-        this("");
-    }
+    private final String literalId;
 
     /**
      * Constructs a new {@code StringId} with its literal representation.
@@ -99,9 +86,8 @@ public class StringId implements Id {
         return o.toString().compareTo(toString());
     }
 
-    @Nonnull
     @Override
-    public Long toLong() {
+    public long toLong() {
         throw new UnsupportedOperationException("This Id can not have a Long representation");
     }
 
@@ -127,15 +113,5 @@ public class StringId implements Id {
     @Override
     public String toString() {
         return literalId;
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(literalId);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException {
-        literalId = in.readUTF();
     }
 }

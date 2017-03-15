@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * The factory that creates {@link PersistentResource}s.
+ * The factory that creates {@link PersistentResource} instances.
  */
 @ParametersAreNonnullByDefault
 public class PersistentResourceFactory implements Resource.Factory {

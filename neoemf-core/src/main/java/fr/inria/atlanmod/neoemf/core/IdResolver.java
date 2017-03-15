@@ -17,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An object able to retrieve a {@link PersistentEObject} from an {@link Id}.
  */
+@FunctionalInterface
 @ParametersAreNonnullByDefault
 public interface IdResolver {
 

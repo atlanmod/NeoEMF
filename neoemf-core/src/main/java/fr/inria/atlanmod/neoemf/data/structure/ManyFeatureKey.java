@@ -11,17 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
@@ -46,15 +41,7 @@ public class ManyFeatureKey extends FeatureKey {
      * The position of this key.
      */
     @Nonnegative
-    protected int position;
-
-    /**
-     * Constructs a new {@code FeatureKey}.
-     */
-    @VisibleForReflection
-    public ManyFeatureKey() {
-        this(new StringId(), "", 0);
-    }
+    protected final int position;
 
     /**
      * Constructs a new {@code ManyFeatureKey} with the given {@code id} and the given {@code name}, which are
@@ -196,17 +183,5 @@ public class ManyFeatureKey extends FeatureKey {
     @Override
     public String toString() {
         return String.format("%s {%s # %s [%d]}", getClass().getSimpleName(), id, name, position);
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeInt(position);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        position = in.readInt();
     }
 }

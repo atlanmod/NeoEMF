@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * The factory that creates instances of {@link Reader}s.
+ * The factory that creates {@link Reader} instances.
  */
 @ParametersAreNonnullByDefault
 public class ReaderFactory {

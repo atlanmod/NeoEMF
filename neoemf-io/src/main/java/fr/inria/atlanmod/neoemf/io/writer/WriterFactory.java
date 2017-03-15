@@ -21,7 +21,7 @@ import java.io.OutputStream;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates instances of {@link Writer}s.
+ * The factory that creates {@link Writer} instances.
  */
 @ParametersAreNonnullByDefault
 public class WriterFactory {

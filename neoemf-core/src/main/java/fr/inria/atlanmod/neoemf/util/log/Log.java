@@ -23,7 +23,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * The factory that creates instances of {@link Logger}s.
+ * The factory that creates {@link Logger} instances.
  * <p>
  * It also provides static methods for logging without declaring a specific instance. In this case, the
  * {@link #rootLogger()} is used by default.

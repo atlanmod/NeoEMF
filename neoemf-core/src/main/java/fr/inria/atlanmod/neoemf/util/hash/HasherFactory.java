@@ -11,11 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import com.google.common.hash.Hashing;
+
+import java.nio.charset.Charset;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
- * The factory that creates instances of {@link Hasher}.
+ * The factory that creates {@link Hasher} instances.
  */
 @ParametersAreNonnullByDefault
 public class HasherFactory {
@@ -30,12 +36,32 @@ public class HasherFactory {
     }
 
     /**
-     * Returns an instance of a {@link Hasher} using {@code MD5} (128 bits).
+     * Returns an instance of a {@link Hasher} using {@code MD5} algorithm.
      *
-     * @return an instance of a {@link Hasher} using {@code MD5} (128 bits)
+     * @return a new {@link Hasher}
      */
     @Nonnull
     public static Hasher md5() {
-        return Md5Hasher.getInstance();
+        return value -> new HashCode(
+                Hashing.md5()
+                        .newHasher()
+                        .putString(checkNotNull(value), Charset.forName("UTF-8"))
+                        .hash()
+                        .asBytes());
+    }
+
+    /**
+     * Returns an instance of a {@link Hasher} using {@code SHA-1} algorithm.
+     *
+     * @return a new {@link Hasher}
+     */
+    @Nonnull
+    public static Hasher sha1() {
+        return value -> new HashCode(
+                Hashing.sha1()
+                        .newHasher()
+                        .putString(checkNotNull(value), Charset.forName("UTF-8"))
+                        .hash()
+                        .asBytes());
     }
 }

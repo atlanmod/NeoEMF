@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link PersistentEObject}s from {@link EClass}es.
+ * The factory that creates {@link PersistentEObject} instances from {@link EClass}es.
  */
 @ParametersAreNonnullByDefault
 public class PersistenceFactory extends EFactoryImpl implements EFactory {

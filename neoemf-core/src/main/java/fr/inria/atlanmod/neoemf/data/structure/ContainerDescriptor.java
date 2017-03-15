@@ -11,17 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.eclipse.emf.ecore.EReference;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -36,7 +31,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class ContainerDescriptor implements Externalizable {
+public final class ContainerDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -3357337595522803972L;
@@ -45,21 +40,13 @@ public final class ContainerDescriptor implements Externalizable {
      * The identifier of the object.
      */
     @Nonnull
-    private Id id;
+    private final Id id;
 
     /**
      * The name of the reference used to retrieve the container of the object.
      */
     @Nonnull
-    private String name;
-
-    /**
-     * Constructs a new {@code ContainerDescriptor}.
-     */
-    @VisibleForReflection
-    public ContainerDescriptor() {
-        this(new StringId(), "");
-    }
+    private final String name;
 
     /**
      * Constructs a new {@code ContainerDescriptor} with the given {@code id} and the given {@code name}.
@@ -144,17 +131,5 @@ public final class ContainerDescriptor implements Externalizable {
     @Override
     public String toString() {
         return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(id);
-        out.writeUTF(name);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id = (Id) in.readObject();
-        name = in.readUTF();
     }
 }

@@ -24,6 +24,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * Implementations of this interface are expected to be thread-safe, and can be safely accessed by multiple concurrent
  * threads.
  */
+@FunctionalInterface
 @ThreadSafe
 @Immutable
 @ParametersAreNullableByDefault

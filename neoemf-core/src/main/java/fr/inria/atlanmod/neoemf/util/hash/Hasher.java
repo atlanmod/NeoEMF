@@ -17,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An object that calculates a {@link HashCode} from a value.
  */
+@FunctionalInterface
 @ParametersAreNonnullByDefault
 public interface Hasher {
 
@@ -25,7 +26,7 @@ public interface Hasher {
      *
      * @param value the value to hash
      *
-     * @return an hashcode
+     * @return a hash code
      */
     @Nonnull
     HashCode hash(String value);
