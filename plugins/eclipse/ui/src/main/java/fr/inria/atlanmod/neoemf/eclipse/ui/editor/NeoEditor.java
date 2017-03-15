@@ -98,29 +98,23 @@ public class NeoEditor extends EcoreEditor {
     }
 
     @Override
-    public void createPages()
-    {
+    public void createPages() {
         Instant begin = Instant.now();
         createModel();
 
         // Only creates the other pages if there is something that can be edited
         if (!getEditingDomain().getResourceSet().getResources().isEmpty()) {
+
             // Create a page for the selection tree view.
             Tree tree = new Tree(getContainer(), SWT.VIRTUAL | SWT.FULL_SELECTION);
-//	        Tree tree = new Tree(getContainer(), SWT.VIRTUAL | SWT.MULTI);
+
             selectionViewer = new TreeViewer(tree);
             setCurrentViewer(selectionViewer);
 
-//	        selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
             selectionViewer.setContentProvider(new LazyAdapterFactoryContentProvider(adapterFactory));
-//	        selectionViewer.setLabelProvider(new DecoratingColumLabelProvider(new AdapterFactoryLabelProvider(adapterFactory), new DiagnosticDecorator(editingDomain, selectionViewer, EcoreEditorPlugin.getPlugin().getDialogSettings())));
             selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
             selectionViewer.setUseHashlookup(true);
             selectionViewer.setInput(editingDomain.getResourceSet());
-//	        selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
-
-//	        new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
-//	        new ColumnViewerInformationControlToolTipSupport(selectionViewer, new DiagnosticDecorator.EditingDomainLocationListener(editingDomain, selectionViewer));
 
             createContextMenuFor(selectionViewer);
             int pageIndex = addPage(tree);

@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.tester;
 
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.Path;
@@ -29,7 +31,7 @@ public class IsNeoBackendTester extends PropertyTester {
         if (Objects.equals(IS_NEOEMF_DB, property) && receiver instanceof IFolder) {
             boolean expected = (Boolean) expectedValue;
             IFolder folder = (IFolder) receiver;
-            if (folder.exists(new Path("neoconfig.properties")) == expected) {
+            if (folder.exists(new Path(BackendFactory.CONFIG_FILE)) == expected) {
                 return true;
             }
         }
