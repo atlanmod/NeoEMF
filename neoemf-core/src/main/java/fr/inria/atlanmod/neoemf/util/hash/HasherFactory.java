@@ -11,9 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
-import com.google.common.hash.Hashing;
-
-import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,12 +41,7 @@ public class HasherFactory {
      */
     @Nonnull
     public static Hasher md5() {
-        return value -> new HashCode(
-                Hashing.md5()
-                        .newHasher()
-                        .putString(checkNotNull(value), Charset.forName("UTF-8"))
-                        .hash()
-                        .asBytes());
+        return bytes -> new HashCode(hash("MD5", bytes));
     }
 
     /**
@@ -57,11 +51,34 @@ public class HasherFactory {
      */
     @Nonnull
     public static Hasher sha1() {
-        return value -> new HashCode(
-                Hashing.sha1()
-                        .newHasher()
-                        .putString(checkNotNull(value), Charset.forName("UTF-8"))
-                        .hash()
-                        .asBytes());
+        return bytes -> new HashCode(hash("SHA-1", bytes));
+    }
+
+    /**
+     * Returns an instance of a {@link Hasher} using {@code SHA-1} algorithm.
+     *
+     * @return a new {@link Hasher}
+     */
+    @Nonnull
+    public static Hasher sha256() {
+        return bytes -> new HashCode(hash("SHA-256", bytes));
+    }
+
+    /**
+     * Creates a new {@link HashCode} from the given {@code bytes} by using the given {@code algorithm}.
+     *
+     * @param algorithm the name of the algorithm requested
+     * @param bytes     the value to hash
+     *
+     * @return a message hash instance
+     */
+    @Nonnull
+    private static byte[] hash(String algorithm, byte[] bytes) {
+        try {
+            return MessageDigest.getInstance(algorithm).digest(checkNotNull(bytes));
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

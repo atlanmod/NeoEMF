@@ -47,17 +47,6 @@ public class WriterFactory {
     }
 
     /**
-     * Creates a {@link MapperWriter} on the given {@code mapper} with conflict resolution feature.
-     *
-     * @param mapper the mapper where to write data
-     *
-     * @return a new writer
-     */
-    public static Writer toMapperWithResolve(DataMapper mapper) {
-        return new MapperResolverWriter(mapper);
-    }
-
-    /**
      * Creates a {@link StreamWriter} on the given {@code stream}.
      *
      * @param file the file where to write data

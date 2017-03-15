@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import java.nio.charset.Charset;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,12 +24,62 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface Hasher {
 
     /**
-     * Calculates the {@link HashCode} of the given {@code value}.
+     * Calculates the {@link HashCode} of the given {@code byte[]}.
      *
      * @param value the value to hash
      *
-     * @return a hash code
+     * @return a new hash code
      */
     @Nonnull
-    HashCode hash(String value);
+    HashCode hash(byte[] value);
+
+    /**
+     * Calculates the {@link HashCode} of the given {@code int}.
+     *
+     * @param value the value to hash
+     *
+     * @return a new hash code
+     */
+    @Nonnull
+    default HashCode hash(int value) {
+        byte[] bytesValue = new byte[]{
+                (byte) (value >> 24),
+                (byte) (value >> 16),
+                (byte) (value >> 8),
+                (byte) value};
+
+        return hash(bytesValue);
+    }
+
+    /**
+     * Calculates the {@link HashCode} of the given {@code long}.
+     *
+     * @param value the value to hash
+     *
+     * @return a new hash code
+     */
+    @Nonnull
+    default HashCode hash(long value) {
+        byte[] bytesValue = new byte[8];
+        for (int i = 7; i >= 0; i--) {
+            bytesValue[i] = (byte) (value & 0xffL);
+            value >>= 8;
+        }
+
+        return hash(bytesValue);
+    }
+
+    /**
+     * Calculates the {@link HashCode} of the given {@link String}.
+     *
+     * @param value the value to hash
+     *
+     * @return a new hash code
+     */
+    @Nonnull
+    default HashCode hash(String value) {
+        byte[] bytesValue = value.getBytes(Charset.forName("UTF-8"));
+
+        return hash(bytesValue);
+    }
 }

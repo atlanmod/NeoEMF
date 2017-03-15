@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
@@ -196,7 +195,6 @@ public class DefaultMapperWriter implements MapperWriter {
         checkNotNull(element);
         checkNotNull(id);
 
-        checkDoesNotExist(id);
         updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
         Optional.ofNullable(element.className()).ifPresent(c -> {
@@ -281,8 +279,6 @@ public class DefaultMapperWriter implements MapperWriter {
         checkNotNull(id);
         checkNotNull(attribute);
 
-        checkExists(id);
-
         FeatureKey key = FeatureKey.of(id, attribute.name());
 
         if (!attribute.isMany()) {
@@ -312,9 +308,6 @@ public class DefaultMapperWriter implements MapperWriter {
         checkNotNull(id);
         checkNotNull(reference);
         checkNotNull(idReference);
-
-        checkExists(id);
-        checkExists(idReference);
 
         // Update the containment reference if needed
         if (reference.isContainment()) {
@@ -392,27 +385,5 @@ public class DefaultMapperWriter implements MapperWriter {
         if (autoSaveCount == 0) {
             mapper.save();
         }
-    }
-
-    /**
-     * Checks that the specified {@code id} exists in the {@link DataMapper}.
-     *
-     * @param id the identifier to check
-     *
-     * @throws java.util.NoSuchElementException if no element is found with the {@code id}
-     */
-    protected void checkExists(Id id) {
-        // Do nothing
-    }
-
-    /**
-     * Checks that the specified {@code id} doesn't already exists in the {@link DataMapper}.
-     *
-     * @param id the identifier to check
-     *
-     * @throws AlreadyExistingIdException if the {@code id} is already used as primary key for another element
-     */
-    protected void checkDoesNotExist(Id id) {
-        // Do nothing
     }
 }
