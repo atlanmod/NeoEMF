@@ -40,3 +40,4 @@ Import-Package: org.eclipse.emf.common,
  org.eclipse.swt,
  org.eclipse.osgi.util,
  org.osgi.framework
+Export-Package: fr.inria.atlanmod.neoemf.eclipse.ui.*
