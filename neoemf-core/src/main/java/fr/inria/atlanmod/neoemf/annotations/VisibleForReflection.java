@@ -11,17 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.annotations;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Annotates a constructor that exists only for reflection usage.
  * <p>
  * <b>These constructors should not be called in standard use.</b>
  */
-@Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.CONSTRUCTOR)
+@Retention(SOURCE)
+@Target(CONSTRUCTOR)
 public @interface VisibleForReflection {
 }

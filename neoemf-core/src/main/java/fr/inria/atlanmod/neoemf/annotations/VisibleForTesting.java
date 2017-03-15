@@ -11,10 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.annotations;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Annotates a program element that exists, or is more widely visible than otherwise necessary, only for use in test
@@ -22,7 +25,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>These elements should not be called in standard use.</b>
  */
-@Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@Retention(SOURCE)
+@Target({TYPE, FIELD, METHOD})
 public @interface VisibleForTesting {
 }
