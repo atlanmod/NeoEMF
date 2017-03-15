@@ -32,9 +32,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
- * <p>
- * It provides a default behavior to represent the "multi-valued" directly with their position.
+ * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" directly with their
+ * position.
  * <p>
  * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to store. Using this
  * approach avoid to deserialize entire {@link java.util.Collection}s to retrieve a single element, which can be an

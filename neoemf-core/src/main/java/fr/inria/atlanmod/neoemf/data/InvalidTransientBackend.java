@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An invalid {@link TransientBackend}.
+ * A {@link TransientBackend} used with databases that does not support the transient state.
  * <p>
  * All methods throws an {@link UnsupportedOperationException}.
  */

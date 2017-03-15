@@ -41,7 +41,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * The abstract implementation of a {@link HBaseBackend}.
+ * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractHBaseBackend implements HBaseBackend {

@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} that only allows read operations on the underlying database.
+ * A {@link Store} wrapper that only allows read operations on the underlying database.
  * <p>
  * Read-only configuration allows to access model element faster, without checking value consistency between database
  * calls. This store re-implements all the mutators and throws an {@link UnsupportedOperationException} when they are

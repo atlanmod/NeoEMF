@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The abstract implementation of a {@link Reader}.
+ * An abstract {@link Reader}.
  *
  * @param <T> the type of the read source
  */

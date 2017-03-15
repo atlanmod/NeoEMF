@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object capable of mapping metaclasses represented as a set of key/value pair.
+ * An object capable of mapping {@link ClassDescriptor}.
  *
  * @see ClassDescriptor
  */

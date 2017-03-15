@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * The default implementation of a {@link TransientBackend}.
+ * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
  */
 @ParametersAreNonnullByDefault
 public class DefaultTransientBackend implements TransientBackend, ManyValueWithLists {

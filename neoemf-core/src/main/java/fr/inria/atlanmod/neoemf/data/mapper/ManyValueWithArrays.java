@@ -29,9 +29,8 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
- * <p>
- * It provides a default behavior to represent the "multi-valued" characteristic as arrays.
+ * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
+ * {@link Object[]}.
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWithArrays extends ManyValueMapper {

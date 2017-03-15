@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The abstract implementation of {@link PersistenceOptions}.
+ * An abstract {@link PersistenceOptions} that provides overall behavior for the management of options.
  * <p>
  * <b>Note:</b> Not implemented yet.
  * <p>

@@ -34,7 +34,7 @@ import javax.annotation.concurrent.Immutable;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * A simple representation of a {@link EStructuralFeature} of a {@link PersistentEObject}.
+ * A simple representation of a single-valued {@link EStructuralFeature} of a {@link PersistentEObject}.
  */
 @Immutable
 @ParametersAreNonnullByDefault

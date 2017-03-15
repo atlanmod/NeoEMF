@@ -29,9 +29,8 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
- * <p>
- * It provides a default behavior to represent the "multi-valued" characteristic as {@link List}s.
+ * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
+ * {@link List}s. The implementation used is specified by the {@link #newList()} method.
  * <p>
  * Using a {@link List}-based implementation allows to benefit from the rich Java {@link java.util.Collection} API, with
  * the cost of a small memory overhead compared to raw arrays.

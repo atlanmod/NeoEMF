@@ -33,7 +33,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * The abstract implementation of a {@link MapDbBackend}.
+ * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractMapDbBackend implements MapDbBackend {

@@ -34,10 +34,9 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An object capable of mapping multi-valued references represented as a set of key/value pair.
- * <p>
- * It provides a default behavior to use {@link String} instead of {@link Id[]} for multi-valued references. This
- * behavior is specified by the {@link #arrayToString(Id[])} and {@link #arrayFromString(String)} methods.
+ * A {@link ManyReferenceMapper} that provides a default behavior to use {@link String} instead of {@link Id[]} for
+ * multi-valued references. This behavior is specified by the {@link #arrayToString(Id[])} and
+ * {@link #arrayFromString(String)} methods.
  */
 @ParametersAreNonnullByDefault
 public interface ManyReferenceWithStrings extends ManyReferenceMapper {

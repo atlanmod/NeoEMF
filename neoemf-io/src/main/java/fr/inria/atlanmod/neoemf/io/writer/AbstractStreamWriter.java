@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The abstract implementation of a {@link StreamWriter}.
+ * A abstract {@link StreamWriter}.
  */
 @Experimental
 @ParametersAreNonnullByDefault
