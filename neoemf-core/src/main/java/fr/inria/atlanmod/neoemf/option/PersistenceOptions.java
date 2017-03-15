@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -39,6 +40,7 @@ public interface PersistenceOptions {
      *
      * @throws InvalidOptionException if a conflict is detected
      */
+    @Nonnull
     Map<String, Object> toMap();
 
     /**

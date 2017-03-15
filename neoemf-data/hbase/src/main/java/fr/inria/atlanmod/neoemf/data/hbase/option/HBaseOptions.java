@@ -61,6 +61,7 @@ public class HBaseOptions extends AbstractPersistenceOptions {
         return new HBaseOptionsBuilder();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         return super.toMap();

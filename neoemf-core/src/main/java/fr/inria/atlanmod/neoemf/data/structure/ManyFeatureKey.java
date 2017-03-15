@@ -51,8 +51,6 @@ public class ManyFeatureKey extends FeatureKey {
 
     /**
      * Constructs a new {@code FeatureKey}.
-     * <p>
-     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
      */
     @VisibleForReflection
     public ManyFeatureKey() {

@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -43,6 +44,7 @@ public interface Cache<K, V> {
      * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key
      */
+    @Nullable
     V get(K key);
 
     /**
@@ -56,8 +58,8 @@ public interface Cache<K, V> {
      * @param key             the key with which the specified value is to be associated
      * @param mappingFunction the function to compute a value
      *
-     * @return the current (existing or computed) value associated with the specified key, or null if the computed value
-     * is null
+     * @return the current (existing or computed) value associated with the specified key, or {@code null} if the
+     * computed value is {@code null}
      *
      * @throws IllegalStateException if the computation detectably attempts a recursive update to this cache that would
      *                               otherwise never complete
@@ -163,5 +165,6 @@ public interface Cache<K, V> {
      *
      * @return the current snapshot of the statistics of this cache
      */
+    @Nonnull
     CacheStats stats();
 }

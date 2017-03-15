@@ -59,6 +59,7 @@ public class CommonOptions extends AbstractPersistenceOptions {
         return new CommonOptionsBuilder();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         return super.toMap();

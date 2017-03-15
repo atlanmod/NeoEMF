@@ -77,7 +77,7 @@ public class PersistenceURI {
      */
     @Nonnull
     protected static String formatScheme(BackendFactory factory) {
-        return String.format("%s%s", PREFIX, factory.name());
+        return String.format("%s%s", PREFIX, checkNotNull(factory).name());
     }
 
     /**

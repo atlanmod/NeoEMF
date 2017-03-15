@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.option;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -30,5 +31,6 @@ public interface PersistenceOptionsBuilder {
      *
      * @throws InvalidOptionException if a conflict is detected during building
      */
+    @Nonnull
     Map<String, Object> asMap();
 }

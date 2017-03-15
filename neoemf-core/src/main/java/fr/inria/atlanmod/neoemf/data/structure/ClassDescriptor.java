@@ -66,8 +66,6 @@ public final class ClassDescriptor implements Externalizable {
 
     /**
      * Constructs a new {@code ClassDescriptor}.
-     * <p>
-     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
      */
     @VisibleForReflection
     public ClassDescriptor() {

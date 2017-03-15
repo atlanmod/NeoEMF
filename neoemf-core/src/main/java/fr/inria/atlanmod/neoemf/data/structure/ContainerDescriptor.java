@@ -56,8 +56,6 @@ public final class ContainerDescriptor implements Externalizable {
 
     /**
      * Constructs a new {@code ContainerDescriptor}.
-     * <p>
-     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
      */
     @VisibleForReflection
     public ContainerDescriptor() {

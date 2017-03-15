@@ -37,18 +37,21 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
+    @Nonnull
     private final Map<Id, ContainerDescriptor> containerMap = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
+    @Nonnull
     private final Map<Id, ClassDescriptor> instanceOfMap = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link FeatureKey}.
      */
+    @Nonnull
     private final Map<FeatureKey, Object> features = new ConcurrentHashMap<>();
 
     /**

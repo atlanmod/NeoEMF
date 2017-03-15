@@ -64,8 +64,8 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      *
      * @return a immutable list of store options
      */
-    @SuppressWarnings("unchecked")
     @Nonnull
+    @SuppressWarnings("unchecked")
     protected static List<PersistentStoreOptions> getStoreOptions(@Nullable Map<String, Object> options) {
         List<PersistentStoreOptions> storeOptions;
 

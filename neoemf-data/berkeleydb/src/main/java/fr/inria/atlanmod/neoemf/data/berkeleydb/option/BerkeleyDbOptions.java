@@ -61,6 +61,7 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions {
         return new BerkeleyDbOptionsBuilder();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         return super.toMap();

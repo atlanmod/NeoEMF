@@ -38,24 +38,28 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     /**
      * The owner of this back-end.
      */
+    @Nonnull
     private final Id ownerId;
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
+    @Nonnull
     private final Map<Id, ContainerDescriptor> containerMap = new HashMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
+    @Nonnull
     private final Map<Id, ClassDescriptor> instanceOfMap = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by their name.
      */
+    @Nonnull
     private final Map<String, Object> features = new HashMap<>();
 
     /**

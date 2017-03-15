@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.util.cache;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -37,6 +38,7 @@ class CaffeineLoadingCache<K, V> extends CaffeineManualCache<K, V> {
         super(cache);
     }
 
+    @Nullable
     @Override
     public V get(K key) {
         checkNotNull(key);

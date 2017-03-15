@@ -11,9 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The factory that creates instances of {@link Hasher}.
  */
+@ParametersAreNonnullByDefault
 public class HasherFactory {
 
     /**
@@ -30,6 +34,7 @@ public class HasherFactory {
      *
      * @return an instance of a {@link Hasher} using {@code MD5} (128 bits)
      */
+    @Nonnull
     public static Hasher md5() {
         return Md5Hasher.getInstance();
     }

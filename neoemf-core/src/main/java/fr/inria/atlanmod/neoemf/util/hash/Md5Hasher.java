@@ -17,15 +17,20 @@ import com.google.common.hash.Hashing;
 import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
  * A {@link Hasher} using the {@code MD5} algorithm.
  */
+@ParametersAreNonnullByDefault
 class Md5Hasher implements Hasher {
 
     /**
      * The hash function implementing the MD5 hash algorithm (128 hash bits).
      */
+    @Nonnull
     private static final HashFunction hashFunction = Hashing.md5();
 
     /**
@@ -44,8 +49,11 @@ class Md5Hasher implements Hasher {
         return Holder.INSTANCE;
     }
 
+    @Nonnull
     @Override
     public HashCode hash(String value) {
+        checkNotNull(value);
+
         String hash = hashFunction.newHasher().putString(value, Charset.forName("UTF-8")).hash().toString();
 
         return new StringHashCode(hash);

@@ -11,9 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An object that calculates a {@link HashCode} from a value.
  */
+@ParametersAreNonnullByDefault
 public interface Hasher {
 
     /**
@@ -23,5 +27,6 @@ public interface Hasher {
      *
      * @return an hashcode
      */
+    @Nonnull
     HashCode hash(String value);
 }

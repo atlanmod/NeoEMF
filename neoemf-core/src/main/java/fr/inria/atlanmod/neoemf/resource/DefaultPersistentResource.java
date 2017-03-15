@@ -29,12 +29,12 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EClassifierImpl;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
-import org.eclipse.emf.ecore.impl.EStoreEObjectImpl.EStoreEList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
@@ -57,8 +57,8 @@ import static java.util.Objects.nonNull;
 /**
  * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
  * <p>
- * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations
- * to its internal {@link Store} which is responsible of database access.
+ * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations to its internal
+ * {@link Store} which is responsible of database access.
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
@@ -66,26 +66,32 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * An unknown URI fragment.
      */
+    @Nonnull
     private static final String URI_UNKNOWN = "/-1";
 
     /**
-     * The {@link org.eclipse.emf.ecore.EReference} representing the link between the {@link #rootObject} and its
-     * content.
+     * The reference representing the link between the {@link #rootObject} and its content.
      */
     @Nonnull
-    private static final RootContentsReference ROOT_CONTENTS_REFERENCE = new RootContentsReference();
+    private static final EReference ROOT_CONTENTS_REFERENCE = new RootContentsReference();
 
     /**
-     * The {@link PersistentEObject} representing the root and the entry-point of this {@link PersistentResource}.
+     * The object representing the root and the entry-point of this resource.
      */
     @Nonnull
-    private final RootObject rootObject;
+    private final PersistentEObject rootObject;
+
+    /**
+     * The {@link BackendFactory} associated to the {@link #uri}.
+     */
+    @Nonnull
+    private final BackendFactory factory;
 
     /**
      * The {@link StoreAdapter} responsible of the database serialization.
      */
     @Nonnull
-    protected StoreAdapter store;
+    private StoreAdapter store;
 
     /**
      * The last options used during {@link #load(Map)}.
@@ -100,9 +106,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     public DefaultPersistentResource(URI uri) {
         super(uri);
+
         rootObject = new RootObject(this);
 
-        BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
+        factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
+
         store = StoreAdapter.adapt(factory.createTransientStore(this));
 
         Log.info("{0} created", PersistentResource.class.getSimpleName());
@@ -111,7 +119,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Nonnull
     @Override
     public EList<EObject> getContents() {
-        return new ResourceContentsEStoreEList<>();
+        return new RootContentsList<>();
     }
 
     @Nonnull
@@ -172,7 +180,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         checkOptions(options);
 
         if (!isLoaded || !isPersistent()) {
-            BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
             StoreAdapter newStore = StoreAdapter.adapt(factory.createPersistentStore(this, options));
 
             // Direct copy to the backend
@@ -206,10 +213,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
             if (!isLoaded) {
                 if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
-                    // Closes the previous store
                     store.close();
 
-                    BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
                     store = StoreAdapter.adapt(factory.createPersistentStore(this, options));
 
                     rootObject.isPersistent(true);
@@ -232,7 +237,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void close() {
         store.close();
 
-        BackendFactory factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
         store = StoreAdapter.adapt(factory.createTransientStore(this));
 
         isLoaded = false;
@@ -275,9 +279,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         if (nonNull(previousOptions)) {
             for (Map.Entry<String, Object> entry : options.entrySet()) {
                 if (previousOptions.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), previousOptions.get(entry.getKey()))) {
-                    throw new InvalidOptionException(
-                            String.format("key = %s; value = %s",
-                                    entry.getKey(), entry.getValue()));
+                    throw new InvalidOptionException(String.format("key = %s; value = %s", entry.getKey(), entry.getValue()));
                 }
             }
         }
@@ -337,19 +339,20 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     /**
-     * A notifying {@link EStoreEList} list implementation for supporting {@link Resource#getContents}.
+     * A {@link java.util.List} that delegates its operations to a {@link Store} for supporting {@link
+     * Resource#getContents}.
      *
      * @see RootContentsReference
      */
-    private class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
+    private class RootContentsList<E> extends EStoreEObjectImpl.EStoreEList<E> {
 
         @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 4130828923851153715L;
 
         /**
-         * Constructs a new {@code ResourceContentsEStoreEList}.
+         * Constructs a new {@code RootContentsList}.
          */
-        public ResourceContentsEStoreEList() {
+        public RootContentsList() {
             super(rootObject, ROOT_CONTENTS_REFERENCE, store());
         }
 

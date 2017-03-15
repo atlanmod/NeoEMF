@@ -99,6 +99,7 @@ public final class Configuration {
      * @return the value to which this configuration maps the specified {@code key}, or {@code null} if the
      * configuration contains no mapping for this {@code key}
      */
+//    @Nullable
     public Object getProperty(String key) {
         checkNotNull(key);
         return properties.getProperty(key);

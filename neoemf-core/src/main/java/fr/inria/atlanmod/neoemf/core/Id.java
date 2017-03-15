@@ -34,6 +34,7 @@ public interface Id extends Comparable<Id>, Externalizable {
      * @return a string
      */
     @Nonnull
+    @Override
     String toString();
 
     /**

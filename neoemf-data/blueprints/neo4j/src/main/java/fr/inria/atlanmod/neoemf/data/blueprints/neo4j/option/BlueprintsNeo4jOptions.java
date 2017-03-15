@@ -61,6 +61,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
         return new BlueprintsNeo4jOptionsBuilder();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         return super.toMap();

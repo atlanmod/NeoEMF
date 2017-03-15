@@ -60,6 +60,7 @@ public class BlueprintsOptions extends AbstractBlueprintsOptions {
         return new BlueprintsOptionsBuilder();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         return super.toMap();

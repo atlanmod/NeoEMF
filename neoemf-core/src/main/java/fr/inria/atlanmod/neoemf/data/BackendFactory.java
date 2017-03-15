@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.URI;
 
 import java.util.Map;
 
+import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,6 +48,7 @@ public interface BackendFactory {
      *
      * @return the literal description of the created {@link Backend}
      */
+    @MatchesPattern("^[a-z]+$")
     String name();
 
     /**
@@ -153,6 +155,7 @@ public interface BackendFactory {
      * @see #createPersistentStore(PersistentResource, Backend, Map)
      * @see #createPersistentBackend(URI, Map)
      */
+    @Nonnull
     default Store createPersistentStore(PersistentResource resource, Map<String, Object> options) {
         return createPersistentStore(resource, createPersistentBackend(resource.getURI(), options), options);
     }

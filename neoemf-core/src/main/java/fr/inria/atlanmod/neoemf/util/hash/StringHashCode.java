@@ -11,9 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
  * A {@link HashCode} with a {@link String} representation.
  */
+@ParametersAreNonnullByDefault
 class StringHashCode implements HashCode {
 
     /**
@@ -27,9 +33,10 @@ class StringHashCode implements HashCode {
      * @param hashCode the literal representation of this hashcode
      */
     public StringHashCode(String hashCode) {
-        this.hashCode = hashCode;
+        this.hashCode = checkNotNull(hashCode);
     }
 
+    @Nonnull
     @Override
     public String toString() {
         return hashCode;

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -40,6 +41,7 @@ public final class Iterables {
      *
      * @return a sequential {@link Stream} of the contents of {@code iterable}
      */
+    @Nonnull
     public static <E> Stream<E> stream(Iterable<E> iterable) {
         return (iterable instanceof Collection)
                 ? ((Collection<E>) iterable).stream()

@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -36,6 +37,7 @@ public abstract class AbstractPersistenceOptions implements PersistenceOptions {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         throw new UnsupportedOperationException("Not implemented yet");

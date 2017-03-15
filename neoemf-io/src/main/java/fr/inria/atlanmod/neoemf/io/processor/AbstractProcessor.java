@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that delegates all methods to its underlying processor.
+ * A abstract {@link Processor} that delegates all methods to an internal {@link Processor}.
  *
  * @param <H> the type of notified {@link Handler}
  */

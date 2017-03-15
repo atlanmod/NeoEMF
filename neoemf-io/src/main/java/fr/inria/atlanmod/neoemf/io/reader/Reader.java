@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.io.Notifier;
 import java.io.IOException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.WillNotClose;
 
 /**
  * A {@link Notifier} able to read data from an {@link Object}.
@@ -34,5 +35,5 @@ public interface Reader<T> extends Notifier<Handler> {
      * @throws IllegalArgumentException if this reader hasn't any handler
      * @throws IOException              if an error occurred during the I/O process
      */
-    void read(T source) throws IOException;
+    void read(@WillNotClose T source) throws IOException;
 }

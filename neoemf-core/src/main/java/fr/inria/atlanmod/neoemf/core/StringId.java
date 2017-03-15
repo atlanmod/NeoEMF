@@ -45,8 +45,6 @@ public class StringId implements Id {
 
     /**
      * Constructs a new {@code StringId}.
-     * <p>
-     * <b>WARNING:</b> This constructor is intend to be used for serialization and tests.
      */
     @VisibleForReflection
     public StringId() {

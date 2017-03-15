@@ -20,6 +20,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNullableByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
  * The factory that creates instances of {@link Logger}s.
  * <p>
@@ -54,6 +56,7 @@ public final class Log {
      *
      * @see #customLogger(String)
      */
+    @Nonnull
     public static Logger rootLogger() {
         return customLogger(Logger.ROOT_LOGGER_NAME);
     }
@@ -65,8 +68,9 @@ public final class Log {
      *
      * @return the {@link Logger}
      */
+    @Nonnull
     public static Logger customLogger(@Nonnull String name) {
-        return LOGGERS.get(name, AsyncLogger::new);
+        return LOGGERS.get(checkNotNull(name), AsyncLogger::new);
     }
 
     /**

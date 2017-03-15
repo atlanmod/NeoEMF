@@ -31,6 +31,7 @@ public interface CacheBuilder<K, V> {
      *
      * @see #maximumSize(long)
      */
+    @Nonnegative
     long DEFAULT_MAX_SIZE = 10_000;
 
     /**
@@ -39,6 +40,7 @@ public interface CacheBuilder<K, V> {
      *
      * @return a new builder
      */
+    @Nonnull
     static CacheBuilder<Object, Object> newBuilder() {
         return new CaffeineCacheBuilder<>();
     }
@@ -86,6 +88,7 @@ public interface CacheBuilder<K, V> {
      * @throws IllegalArgumentException if {@code size} is negative
      * @see #maximumSize(long)
      */
+    @Nonnull
     default CacheBuilder<K, V> maximumSize() {
         return maximumSize(DEFAULT_MAX_SIZE);
     }

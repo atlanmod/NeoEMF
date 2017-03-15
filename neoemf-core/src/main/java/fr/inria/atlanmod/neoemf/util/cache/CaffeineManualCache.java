@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -43,6 +44,7 @@ class CaffeineManualCache<K, V> implements Cache<K, V> {
         this.cache = cache;
     }
 
+    @Nullable
     @Override
     public V get(K key) {
         checkNotNull(key);
@@ -121,6 +123,7 @@ class CaffeineManualCache<K, V> implements Cache<K, V> {
         return cache.asMap();
     }
 
+    @Nonnull
     @Override
     public CacheStats stats() {
         com.github.benmanes.caffeine.cache.stats.CacheStats stats = cache.stats();

@@ -61,6 +61,7 @@ public class MapDbOptions extends AbstractPersistenceOptions {
         return new MapDbOptionsBuilder();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> toMap() {
         return super.toMap();

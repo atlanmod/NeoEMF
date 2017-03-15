@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -30,31 +31,37 @@ public final class CacheStats {
     /**
      * The number of cache hits.
      */
+    @Nonnegative
     private final long hitCount;
 
     /**
      * The number of cache misses.
      */
+    @Nonnegative
     private final long missCount;
 
     /**
      * The number of successful cache loads.
      */
+    @Nonnegative
     private final long loadSuccessCount;
 
     /**
      * The number of failed cache loads.
      */
+    @Nonnegative
     private final long loadFailureCount;
 
     /**
      * The total load time (success and failure) in nanoseconds.
      */
+    @Nonnegative
     private final long totalLoadTime;
 
     /**
      * The number of entries evicted from the cache.
      */
+    @Nonnegative
     private final long evictionCount;
 
     /**
@@ -240,6 +247,7 @@ public final class CacheStats {
      *
      * @return the difference between this instance and {@code other}
      */
+    @Nonnull
     public CacheStats minus(CacheStats other) {
         return new CacheStats(
                 Math.max(0L, hitCount - other.hitCount),
@@ -257,6 +265,7 @@ public final class CacheStats {
      *
      * @return the sum of the statistics
      */
+    @Nonnull
     public CacheStats plus(CacheStats other) {
         return new CacheStats(
                 hitCount + other.hitCount,

@@ -11,13 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A simple hashcode.
  *
  * @see Hasher#hash(String)
  */
+@ParametersAreNonnullByDefault
 public interface HashCode {
 
+    @Nonnull
     @Override
     String toString();
 }

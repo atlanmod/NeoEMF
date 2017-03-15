@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.RegEx;
 
 import static java.util.Objects.nonNull;
 
@@ -46,21 +47,31 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
-     * A regex pattern of an attribute containing one or several references (XPath reference). Multiple references must
-     * be separated by a space.
+     * Regular expression of an attribute containing one or several references.
+     */
+    @RegEx
+    private static final String REGEX_REFERENCE = "(/{1,2}@\\w+(\\.\\d+)?[ ]?)+";
+
+    /**
+     * Regular expression of a prefixed value.
+     */
+    @RegEx
+    private static final String REGEX_PREFIXED_VALUE = "(\\w+):(\\w+)";
+
+    /**
+     * Pattern of an attribute containing one or several references (XPath reference). Multiple references must be
+     * separated by a space.
      * <p>
      * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
      */
-    private static final Pattern PATTERN_WELL_FORMED_REF =
-            Pattern.compile("(/{1,2}@\\w+(\\.\\d+)?[ ]?)+", Pattern.UNICODE_CASE);
+    private static final Pattern PATTERN_REFERENCE = Pattern.compile(REGEX_REFERENCE, Pattern.UNICODE_CASE);
 
     /**
-     * A regex pattern of a prefixed value.
+     * Pattern of a prefixed value.
      * <p>
      * Example of recognized strings : {@code "&lt;prefix&gt;:&lt;name&gt;"}
      */
-    private static final Pattern PATTERN_PREFIXED_VALUE =
-            Pattern.compile("(\\w+):(\\w+)");
+    private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile(REGEX_PREFIXED_VALUE);
 
     /**
      * Whether the current element has to be ignored.
@@ -257,14 +268,14 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
      * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code value} does not
-     * match with {@link #PATTERN_WELL_FORMED_REF}.
+     * match with {@link #PATTERN_REFERENCE}.
      *
      * @param value the value to parse
      *
      * @return a list of {@link String} representing XPath references, or {@code null} if the {@code value} does not
-     * match with {@link #PATTERN_WELL_FORMED_REF}
+     * match with {@link #PATTERN_REFERENCE}
      *
-     * @see #PATTERN_WELL_FORMED_REF
+     * @see #PATTERN_REFERENCE
      */
     @Nonnull
     private List<String> parseReference(String value) {
@@ -275,7 +286,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
             boolean isReference = true;
             for (int i = 0; i < references.size() && isReference; i++) {
-                isReference = PATTERN_WELL_FORMED_REF.matcher(references.get(i)).matches();
+                isReference = PATTERN_REFERENCE.matcher(references.get(i)).matches();
             }
 
             if (!isReference) {

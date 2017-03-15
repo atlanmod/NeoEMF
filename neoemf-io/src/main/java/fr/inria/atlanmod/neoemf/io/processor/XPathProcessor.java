@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.RegEx;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -40,12 +41,17 @@ import static java.util.Objects.nonNull;
 public class XPathProcessor extends AbstractProcessor<Processor> {
 
     /**
+     * Regular expression for detecting nodes which have no index in their path.
+     */
+    @RegEx
+    private static final String REGEX_NO_INDEX = "((@\\w+)(?!\\.\\d+)(/|\\z))";
+
+    /**
      * Pattern for detecting nodes which have no index in their path.
      * <p>
      * <b>Example:</b> {@code .../@name/...} instead of {@code .../@name.0/...}
      */
-    private static final Pattern PATTERN_NODE_WITHOUT_INDEX =
-            Pattern.compile("((@\\w+)(?!\\.\\d+)(/|\\z))", Pattern.UNICODE_CASE);
+    private static final Pattern PATTERN_NO_INDEX = Pattern.compile(REGEX_NO_INDEX, Pattern.UNICODE_CASE);
 
     /**
      * The XPath structure.
@@ -151,7 +157,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
         String modifiedReference = path.replaceFirst(XPathConstants.START_EXPR, expressionStart);
 
         // Replace elements which has not index : all elements must have an index (default = 0)
-        Matcher matcher = PATTERN_NODE_WITHOUT_INDEX.matcher(modifiedReference);
+        Matcher matcher = PATTERN_NO_INDEX.matcher(modifiedReference);
         while (matcher.find()) {
             modifiedReference = matcher.replaceAll("$2.0$3");
         }
