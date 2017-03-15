@@ -75,19 +75,54 @@ public class HBaseURI extends PersistenceURI {
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
      *                                  #FILE_SCHEME}
+     * @see #createFileURI(File)
+     * @see #createFileURI(URI)
      * @see #createHierarchicalURI(String, int, URI)
      */
     @Nonnull
     public static URI createURI(URI uri) {
         checkNotNull(uri);
 
-        if (Objects.equals(SCHEME, uri.scheme())) {
+        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
+            return createFileURI(uri);
+        }
+        else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
 
         throw new IllegalArgumentException(
                 String.format("Can not create %s from the URI scheme %s",
                         HBaseURI.class.getSimpleName(), uri.scheme()));
+    }
+
+    /**
+     * Creates a new {@code HBaseURI} from the given {@link File} descriptor.
+     *
+     * @param file the {@link File} to build a {@link URI} from
+     *
+     * @return the created {@link URI}
+     *
+     * @throws NullPointerException if the {@code file} is {@code null}
+     */
+    @Nonnull
+    public static URI createFileURI(File file) {
+        return createFileURI(checkNotNull(file), SCHEME);
+    }
+
+    /**
+     * Creates a new {@code HBaseURI} from the given {@code uri} by checking the referenced file exists on the file
+     * system.
+     *
+     * @param uri the base {@link URI}
+     *
+     * @return the created {@link URI}
+     *
+     * @throws NullPointerException if the {@code uri} is {@code null} or if the file referenced by the {@code uri}
+     *                              cannot be found
+     */
+    @Nonnull
+    public static URI createFileURI(URI uri) {
+        return createFileURI(new File(checkNotNull(uri).toFileString()));
     }
 
     /**
