@@ -12,11 +12,12 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * A {@link PersistenceOptionsBuilder} that creates BerkeleyDB specific options.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */

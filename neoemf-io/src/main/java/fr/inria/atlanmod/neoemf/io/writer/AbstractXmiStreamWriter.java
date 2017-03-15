@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * An abstract {@link StreamWriter} that writes data into an XMI file.
  */
 @Experimental
 @ParametersAreNonnullByDefault

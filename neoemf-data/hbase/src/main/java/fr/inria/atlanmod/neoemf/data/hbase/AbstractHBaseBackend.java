@@ -87,7 +87,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     protected final Table table;
 
     /**
-     * ???
+     * Whether this back-end is closed.
      */
     private boolean isClosed;
 

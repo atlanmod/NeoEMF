@@ -29,7 +29,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EClassifierImpl;
@@ -112,7 +111,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Nonnull
     @Override
     public EList<EObject> getContents() {
-        return new ResourceContentsEStoreEList<>(rootObject, ROOT_CONTENTS_REFERENCE, store());
+        return new ResourceContentsEStoreEList<>();
     }
 
     @Nonnull
@@ -339,6 +338,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     /**
      * A notifying {@link EStoreEList} list implementation for supporting {@link Resource#getContents}.
+     *
+     * @see RootContentsReference
      */
     private class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
 
@@ -347,13 +348,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         /**
          * Constructs a new {@code ResourceContentsEStoreEList}.
-         *
-         * @param owner   the owner of this list
-         * @param feature ???
-         * @param store   ???
          */
-        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, StoreAdapter store) {
-            super(owner, feature, store);
+        public ResourceContentsEStoreEList() {
+            super(rootObject, ROOT_CONTENTS_REFERENCE, store());
         }
 
         @Override

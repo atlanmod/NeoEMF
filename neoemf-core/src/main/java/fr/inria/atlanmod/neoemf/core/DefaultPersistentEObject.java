@@ -415,7 +415,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * An {@link EContentsEList} implementation that delegates its operations to the associated {@link Store}.
+     * A {@link List} that delegates its operations to the associated {@link Store}.
      * <p>
      * Instances of this class are created by {@link PersistentResource#getContents()} and allows to access the content
      * of a {@link PersistentResource} by lazily loading the elements.
@@ -538,9 +538,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * ???
+     * A {@link List} representing a multi-valued feature which behaves as a proxy and that delegates its operations to
+     * the associated {@link Store}.
      *
      * @param <E> the type of elements in this list
+     *
+     * @see #eStore()
      */
     private class DelegatedStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
@@ -616,10 +619,13 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * ???
+     * A {@link java.util.Map} representing a multi-valued feature which behaves as a proxy and that delegates its
+     * operations to the associated {@link Store}.
      *
      * @param <K> the type of keys maintained by this map
      * @param <V> the type of mapped values
+     *
+     * @see #eStore()
      */
     private class DelegatedStoreMap<K, V> extends EcoreEMap<K, V> {
 
@@ -639,7 +645,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         /**
-         * ???
+         * A {@link List} that holds entries of this map.
          */
         private class EntriesList extends EStoreEObjectImpl.BasicEStoreEList<Entry<K, V>> {
 

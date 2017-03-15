@@ -35,9 +35,9 @@ class BerkeleyDbBackendArrays extends AbstractBerkeleyDbBackend implements ManyV
      * <b>Note:</b> This constructor is protected. To create a new {@link BerkeleyDbBackend} use {@link
      * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
-     * @param file      ???
-     * @param envConfig ???
-     * @param dbConfig  ???
+     * @param file      the file to store the databases
+     * @param envConfig the configuration of the environment
+     * @param dbConfig  the configuration of databases
      *
      * @see BerkeleyDbBackendFactory
      */
