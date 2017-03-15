@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.demo.query;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
@@ -24,7 +26,6 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -49,12 +50,14 @@ public class EMFProtectedMethod {
     public static void main(String[] args) throws IOException {
         BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
         BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
         BackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
 
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
 
         Instant start, end;
@@ -74,14 +77,22 @@ public class EMFProtectedMethod {
             end = Instant.now();
             Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
-
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
+        
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(BerkeleyDbURI.createFileURI(new File("models/sample.berkeleydb")))) {
             resource.load(Collections.emptyMap());
             start = Instant.now();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
-            Log.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            Log.info("[ProtectedMethods - BerkeleyB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
+
+//        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
+//            resource.load(Collections.emptyMap());
+//            start = Instant.now();
+//            EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
+//            end = Instant.now();
+//            Log.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+//        }
     }
 
     private static EList<MethodDeclaration> getProtectedMethodDeclarations(Resource resource) {

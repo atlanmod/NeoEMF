@@ -28,7 +28,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 
-public class MapDBCounter {
+public class MapDbCounter {
 
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();

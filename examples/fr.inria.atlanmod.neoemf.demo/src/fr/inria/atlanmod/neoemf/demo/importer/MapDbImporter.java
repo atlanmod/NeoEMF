@@ -45,7 +45,7 @@ import java.util.Map;
 //import org.eclipse.emf.compare.scope.IComparisonScope;
 //import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
-public class MapDBImporter {
+public class MapDbImporter {
 
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
