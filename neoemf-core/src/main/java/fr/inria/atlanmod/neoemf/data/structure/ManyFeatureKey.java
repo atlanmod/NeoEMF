@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -178,16 +177,18 @@ public class ManyFeatureKey extends FeatureKey {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ManyFeatureKey)) {
             return false;
         }
+
         if (!super.equals(o)) {
             return false;
         }
+
         ManyFeatureKey that = (ManyFeatureKey) o;
         return position == that.position;
     }

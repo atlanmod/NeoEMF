@@ -25,7 +25,6 @@ import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -129,13 +128,14 @@ public final class ContainerDescriptor implements Externalizable {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ContainerDescriptor)) {
             return false;
         }
+
         ContainerDescriptor that = (ContainerDescriptor) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name);

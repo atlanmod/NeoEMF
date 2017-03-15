@@ -21,7 +21,6 @@ import java.io.ObjectOutput;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -108,12 +107,12 @@ public class StringId implements Id {
 
     @Override
     public int hashCode() {
-        return literalId.hashCode();
+        return Objects.hash(literalId);
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
-        if (o == this) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
         if (!(o instanceof StringId)) {

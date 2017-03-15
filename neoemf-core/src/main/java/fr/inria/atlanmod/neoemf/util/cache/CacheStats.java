@@ -286,9 +286,10 @@ public final class CacheStats {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof CacheStats)) {
             return false;
         }
+
         CacheStats that = (CacheStats) o;
         return hitCount == that.hitCount &&
                 missCount == that.missCount &&

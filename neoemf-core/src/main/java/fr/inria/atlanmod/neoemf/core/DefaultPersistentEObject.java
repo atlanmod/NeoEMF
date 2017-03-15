@@ -399,19 +399,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hash(id);
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (isNull(o) || getClass() != o.getClass()) {
+        if (!(o instanceof DefaultPersistentEObject)) {
             return false;
         }
-        PersistentEObject other = (PersistentEObject) o;
-        return Objects.equals(id, other.id());
+
+        DefaultPersistentEObject that = (DefaultPersistentEObject) o;
+        return Objects.equals(id, that.id);
     }
 
     /**

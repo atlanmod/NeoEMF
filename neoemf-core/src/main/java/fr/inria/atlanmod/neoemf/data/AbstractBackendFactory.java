@@ -148,7 +148,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
             }
             if (storeOptions.contains(CommonStoreOptions.AUTO_SAVE)) {
                 if (options.containsKey(CommonResourceOptions.AUTO_SAVE_CHUNK)) {
-                    long chunk = Long.valueOf((String) options.get(CommonResourceOptions.AUTO_SAVE_CHUNK));
+                    long chunk = Long.parseLong((String) options.get(CommonResourceOptions.AUTO_SAVE_CHUNK));
                     store = new AutoSaveStoreDecorator(store, chunk);
                 }
                 else {

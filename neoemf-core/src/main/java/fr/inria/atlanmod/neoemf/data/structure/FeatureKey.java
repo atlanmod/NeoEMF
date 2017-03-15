@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -185,13 +184,14 @@ public class FeatureKey implements Comparable<FeatureKey>, Externalizable {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof FeatureKey)) {
             return false;
         }
+
         FeatureKey that = (FeatureKey) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name);

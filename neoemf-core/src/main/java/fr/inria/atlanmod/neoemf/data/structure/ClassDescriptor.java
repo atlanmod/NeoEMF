@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
@@ -239,13 +238,14 @@ public final class ClassDescriptor implements Externalizable {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ClassDescriptor)) {
             return false;
         }
+
         ClassDescriptor that = (ClassDescriptor) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(uri, that.uri);
