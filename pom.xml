@@ -142,7 +142,7 @@
 
         <assertj.version>3.6.2</assertj.version>
         <junit.version>4.12</junit.version>
-        <mockito.version>2.7.14</mockito.version>
+        <mockito.version>2.7.17</mockito.version>
     </properties>
 
     <dependencies>
@@ -444,7 +444,7 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
+                <plugin> <!-- v2.9.2+ causes issues when generating code -->
                     <groupId>org.eclipse.xtext</groupId>
                     <artifactId>xtext-maven-plugin</artifactId>
                     <version>2.9.2</version>
@@ -494,23 +494,8 @@
                                 </excludePackageNames>
                                 <detectLinks>true</detectLinks>
                                 <links>
-                                    <!-- Common -->
-                                    <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
-                                    <link>https://commons.apache.org/proper/commons-io/javadocs/api-release/</link>
-                                    <link>https://commons.apache.org/proper/commons-configuration/javadocs/v1.10/apidocs/</link>
-                                    <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
-                                    <link>https://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
                                     <link>https://osgi.org/javadoc/r6/core/</link>
-
-                                    <!-- EMF -->
                                     <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
-
-                                    <!-- Back-end implementations -->
-                                    <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>   <!-- Blueprints -->
-                                    <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>            <!-- BerkeleyDB -->
-                                    <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>                 <!-- MapDB -->
-                                    <link>https://hbase.apache.org/1.2/apidocs/</link>                      <!-- HBase -->
-                                    <link>https://hadoop.apache.org/docs/stable/api/</link>                 <!-- Hadoop -->
                                 </links>
                             </configuration>
                         </plugin>
