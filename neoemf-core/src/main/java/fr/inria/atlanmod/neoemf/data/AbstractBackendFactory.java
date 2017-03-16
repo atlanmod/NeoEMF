@@ -27,17 +27,14 @@ import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Level;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -54,43 +51,6 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     protected AbstractBackendFactory() {
     }
 
-    /**
-     * Parses the store options from the given {@code options}.
-     * <p>
-     * The store options must be a {@code List<PersistentStoreOptions>} registered with the
-     * {@link PersistentResourceOptions#STORE_OPTIONS} key.
-     *
-     * @param options the options
-     *
-     * @return a immutable list of store options
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    protected static List<PersistentStoreOptions> getStoreOptions(@Nullable Map<String, Object> options) {
-        List<PersistentStoreOptions> storeOptions;
-
-        try {
-            try {
-                Object storeOptionsRaw = checkNotNull(options).get(PersistentResourceOptions.STORE_OPTIONS);
-                storeOptions = (List<PersistentStoreOptions>) storeOptionsRaw;
-
-                // Use an immutable list to avoid later modification
-                storeOptions = Collections.unmodifiableList(storeOptions);
-            }
-            catch (ClassCastException e) {
-                Log.warn("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>. Consider that there is no option.");
-                throw new NullPointerException();
-            }
-        }
-        catch (NullPointerException e) {
-            storeOptions = Collections.emptyList();
-        }
-
-        Log.debug("StoreOptions: " + storeOptions);
-
-        return storeOptions;
-    }
-
     @Nonnull
     @Override
     public Backend createTransientBackend() {
@@ -104,21 +64,32 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
     @Nonnull
     @Override
-    public Store createTransientStore(PersistentResource resource, Backend backend) {
-        if (supportsTransient()) {
-            return new DirectWriteStore(backend, resource);
-        }
-        else {
+    public Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
+        if (!supportsTransient()) {
             return new InvalidStore();
         }
-    }
 
-    @Nonnull
-    @Override
-    public Store createPersistentStore(PersistentResource resource, Backend backend, Map<String, Object> options) {
         Store store = new DirectWriteStore(backend, resource);
 
-        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
+        if (checkNotNull(options).containsKey(PersistentResourceOptions.STORE_OPTIONS)) {
+            store = decorateStore(store, options);
+        }
+
+        return store;
+    }
+
+    /**
+     * Decorates a {@code store} with other stores, as specified by the {@code options}.
+     *
+     * @param store   the store to decorate
+     * @param options the options defining the stores to use
+     *
+     * @return the decorated {@code store}
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    private Store decorateStore(Store store, Map<String, Object> options) {
+        List<PersistentStoreOptions> storeOptions = (List<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORE_OPTIONS);
 
         if (!storeOptions.isEmpty()) {
             if (storeOptions.contains(CommonStoreOptions.CACHE_IS_SET)) {
@@ -131,8 +102,8 @@ public abstract class AbstractBackendFactory implements BackendFactory {
                 store = new SizeCachingStoreDecorator(store);
             }
             if (storeOptions.contains(CommonStoreOptions.LOG)) {
-                if (options.containsKey(CommonResourceOptions.LOGGING_LEVEL)) {
-                    Level level = Level.valueOf(String.valueOf(options.get(CommonResourceOptions.LOGGING_LEVEL)));
+                if (options.containsKey(CommonResourceOptions.LOG_LEVEL)) {
+                    Level level = Level.valueOf(String.valueOf(options.get(CommonResourceOptions.LOG_LEVEL)));
                     store = new LoggingStoreDecorator(store, level);
                 }
                 else {
@@ -156,6 +127,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
                 }
             }
         }
+
         return store;
     }
 

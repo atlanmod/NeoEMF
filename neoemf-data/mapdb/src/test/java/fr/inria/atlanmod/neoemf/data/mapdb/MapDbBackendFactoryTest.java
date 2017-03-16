@@ -33,7 +33,8 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
     public void testCreateTransientStore() {
         Backend backend = context().factory().createTransientBackend();
 
-        Store store = context().factory().createTransientStore(null, backend);
+        //noinspection ConstantConditions
+        Store store = context().factory().createStore(backend, null, null);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -49,7 +50,8 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
     public void testCreatePersistentStore() {
         Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), MapDbOptions.noOption());
 
-        Store store = context().factory().createPersistentStore(null, backend, MapDbOptions.noOption());
+        //noinspection ConstantConditions
+        Store store = context().factory().createStore(backend, null, MapDbOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);

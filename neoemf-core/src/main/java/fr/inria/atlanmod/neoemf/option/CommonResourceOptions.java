@@ -21,11 +21,15 @@ public interface CommonResourceOptions extends PersistentResourceOptions {
 
     /**
      * The option key to define the number of operations between each save in auto-save mode.
+     *
+     * @see CommonStoreOptions#AUTO_SAVE
      */
     String AUTO_SAVE_CHUNK = "store.autosave.chunk";
 
     /**
      * The option key to define the logging level in log mode.
+     *
+     * @see CommonStoreOptions#LOG
      */
-    String LOGGING_LEVEL = "store.logging.level";
+    String LOG_LEVEL = "store.log.level";
 }

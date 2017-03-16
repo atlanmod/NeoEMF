@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -52,11 +53,11 @@ public interface BackendFactory {
     String name();
 
     /**
-     * Returns whether this factory supports the transient state.
+     * Returns whether the {@link Backend}s created by this factory support the transient state.
      *
-     * @return {@code true} if this factory supports the transient state, {@code false} otherwise
+     * @return {@code true} if the {@link Backend}s created by this factory support the transient state, {@code false} otherwise
      *
-     * @see #createTransientStore(PersistentResource, Backend)
+     * @see #createTransientStore(PersistentResource)
      * @see #createTransientBackend()
      */
     default boolean supportsTransient() {
@@ -78,7 +79,7 @@ public interface BackendFactory {
     /**
      * Creates a {@link Backend} by using the given {@code uri}.
      *
-     * @param uri     the directory
+     * @param uri     the {@link URI} where to store the back-end
      * @param options the options that defines the behaviour of the back-end
      *
      * @return a new back-end
@@ -90,42 +91,29 @@ public interface BackendFactory {
     Backend createPersistentBackend(URI uri, Map<String, Object> options);
 
     /**
-     * Creates a {@link Store} between the given {@code resource} and the given in-memory {@code backend}.
-     *
-     * @param resource the resource to store and access
-     * @param backend  the back-end where to store data
-     *
-     * @return a new store
-     *
-     * @see #supportsTransient()
-     */
-    @Nonnull
-    Store createTransientStore(PersistentResource resource, Backend backend);
-
-    /**
-     * Creates a {@link Store} between the given {@code resource} and the default in-memory {@code backend}.
+     * Creates a {@link Store} between the given {@code resource} and an in-memory backend, created with the {@link
+     * #createTransientBackend()} method.
      *
      * @param resource the resource to store and access
      *
      * @return a new store
      *
-     * @see #createTransientStore(PersistentResource, Backend)
+     * @see #createStore(Backend, PersistentResource, Map)
      * @see #createTransientBackend()
      */
     @Nonnull
     default Store createTransientStore(PersistentResource resource) {
-        return createTransientStore(resource, createTransientBackend());
+        return createStore(createTransientBackend(), resource, CommonOptions.noOption());
     }
 
     /**
-     * Creates a {@link Store} between the given {@code resource} and the given {@code backend}
-     * according to the given {@code options}.
+     * Creates a {@link Store} between the given {@code resource} and a persistent backend, created with the {@link
+     * #createPersistentBackend(URI, Map)} method, according to the given {@code options}.
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *
      * @param resource the resource to store and access
-     * @param backend  the back-end where to store data
-     * @param options  the options that defines the behaviour of the back-end
+     * @param options  the options that defines the behaviour of the back-end and stores
      *
      * @return a new store
      *
@@ -133,30 +121,31 @@ public interface BackendFactory {
      *                                   missing
      * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
      *                                   for this factory
-     */
-    @Nonnull
-    Store createPersistentStore(PersistentResource resource, Backend backend, Map<String, Object> options);
-
-    /**
-     * Creates a {@link Store} between the given {@code resource} and the default persistent {@code backend}
-     * according to the given {@code options}.
-     * <p>
-     * The returned {@link Store} may be a succession of several {@link Store}.
-     *
-     * @param resource the resource to store and access
-     * @param options  the options that defines the behaviour of the back-end
-     *
-     * @return a new store
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
-     *                                   missing
-     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
-     *                                   for this factory
-     * @see #createPersistentStore(PersistentResource, Backend, Map)
+     * @see #createStore(Backend, PersistentResource, Map)
      * @see #createPersistentBackend(URI, Map)
      */
     @Nonnull
     default Store createPersistentStore(PersistentResource resource, Map<String, Object> options) {
-        return createPersistentStore(resource, createPersistentBackend(resource.getURI(), options), options);
+        return createStore(createPersistentBackend(resource.getURI(), options), resource, options);
     }
+
+    /**
+     * Creates a {@link Store} between the given {@code resource} and the given {@code backend} according to the given
+     * {@code options}.
+     * <p>
+     * The returned {@link Store} may be a succession of several {@link Store}.
+     *
+     * @param backend  the back-end where to store data
+     * @param resource the resource to store and access
+     * @param options  the options that defines the behaviour of the back-end and stores
+     *
+     * @return a new store
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
+     *                                   missing
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
+     *                                   for this factory
+     */
+    @Nonnull
+    Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options);
 }

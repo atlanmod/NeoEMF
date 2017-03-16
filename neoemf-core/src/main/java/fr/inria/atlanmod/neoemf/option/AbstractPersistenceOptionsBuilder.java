@@ -180,7 +180,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     public B log(Level level) {
         storeOption(CommonStoreOptions.LOG);
-        return option(CommonResourceOptions.LOGGING_LEVEL, level.name());
+        return option(CommonResourceOptions.LOG_LEVEL, level.name());
     }
 
     /**
