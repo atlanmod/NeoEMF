@@ -32,11 +32,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link BackendFactory} that processes common store options and manages the configuration.
@@ -48,6 +50,25 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      * Constructs a new {@code AbstractBackendFactory}.
      */
     protected AbstractBackendFactory() {
+    }
+
+    /**
+     * Retrieves the mapping to use from the given {@code options}.
+     *
+     * @param options the options defining the mapping to use
+     *
+     * @return an {@link Optional} containing the name of the mapping to use, or {@link Optional#empty()} if the mapping
+     * is not defined.
+     */
+    protected static Optional<String> mapping(Map<String, Object> options) {
+        Object mapping = options.get(PersistentResourceOptions.MAPPING);
+
+        if (nonNull(mapping)) {
+            return Optional.of(mapping.toString());
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     @Nonnull
@@ -66,7 +87,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     public Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
         Store store = new DirectWriteStore(backend, resource);
 
-        if (checkNotNull(options).containsKey(PersistentResourceOptions.STORE_OPTIONS)) {
+        if (checkNotNull(options).containsKey(PersistentResourceOptions.STORES)) {
             store = decorateStore(store, options);
         }
 
@@ -84,7 +105,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     @Nonnull
     @SuppressWarnings("unchecked")
     private Store decorateStore(Store store, Map<String, Object> options) {
-        List<PersistentStoreOptions> storeOptions = (List<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORE_OPTIONS);
+        List<PersistentStoreOptions> storeOptions = (List<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
 
         if (!storeOptions.isEmpty()) {
             if (storeOptions.contains(CommonStoreOptions.CACHE_IS_SET)) {

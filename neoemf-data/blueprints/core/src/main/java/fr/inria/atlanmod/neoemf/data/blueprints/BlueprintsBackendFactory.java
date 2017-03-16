@@ -108,13 +108,11 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         Configuration configuration = getOrCreateBlueprintsConfiguration(file, options);
 
+        Graph graph;
         try {
-            Graph graph = GraphFactory.open(configuration.asMap());
+            graph = GraphFactory.open(configuration.asMap());
 
-            if (graph.getFeatures().supportsKeyIndices) {
-                backend = new BlueprintsBackendIndices((KeyIndexableGraph) graph);
-            }
-            else {
+            if (!graph.getFeatures().supportsKeyIndices) {
                 throw new InvalidDataStoreException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
             }
         }
@@ -124,6 +122,9 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         finally {
             configuration.save();
         }
+
+        // Defines the default mapping
+        backend = new BlueprintsBackendIndices((KeyIndexableGraph) graph);
 
         processGlobalConfiguration(file);
 

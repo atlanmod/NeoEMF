@@ -19,15 +19,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Represents options related to resource-level features.
+ *
+ * @see Resource#load(Map)
+ * @see Resource#save(Map)
  */
 @ParametersAreNonnullByDefault
 public interface PersistentResourceOptions {
 
     /**
-     * The key identifying the {@link PersistentStoreOptions} list in the options {@link Map}.
-     *
-     * @see Resource#load(Map)
-     * @see Resource#save(Map)
+     * The key identifying the {@link PersistentStoreOptions} list.
      */
-    String STORE_OPTIONS = "stores";
+    String STORES = "neoemf.stores";
+
+    /**
+     * The key identifying the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}.
+     */
+    String MAPPING = "neoemf.mapping";
 }

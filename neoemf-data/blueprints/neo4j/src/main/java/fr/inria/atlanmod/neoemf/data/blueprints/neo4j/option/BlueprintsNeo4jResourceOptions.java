@@ -26,7 +26,7 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     /**
      * The option value to define {@code Neo4jGraph} as the graph implementation to use.
      */
-    String GRAPH_TYPE_NEO4J = com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph.class.getName();
+    String GRAPH_TYPE_NEO4J = "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph";
 
     /**
      * The option key to define the cache type used by Neo4j.
@@ -73,22 +73,22 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     enum CacheType {
 
         /**
-         *
+         * ???
          */
         NONE("none"),
 
         /**
-         *
+         * ???
          */
         SOFT("soft"),
 
         /**
-         *
+         * ???
          */
         WEAK("weak"),
 
         /**
-         *
+         * ???
          */
         STRONG("strong");
 

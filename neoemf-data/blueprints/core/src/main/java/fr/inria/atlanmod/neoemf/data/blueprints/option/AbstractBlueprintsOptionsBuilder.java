@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
@@ -49,5 +50,19 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      */
     protected B graph(String graphType) {
         return option(BlueprintsResourceOptions.GRAPH_TYPE, graphType);
+    }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
+     * <p>
+     * This mapping corresponds to a simple representation of multi-valued features, by using the {@link
+     * ManyFeatureKey#position()}.
+     * <p>
+     * <b>Note:</b> This is the default mapping.
+     *
+     * @return this builder (for chaining)
+     */
+    public B withIndices() {
+        return mapping(BlueprintsResourceOptions.MAPPING_INDICES);
     }
 }

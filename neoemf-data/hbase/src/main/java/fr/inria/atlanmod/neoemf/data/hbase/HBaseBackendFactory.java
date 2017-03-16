@@ -100,11 +100,18 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
+        Backend backend;
+
         checkArgument(uri.isHierarchical(),
                 "%s only supports hierarchical URIs",
                 HBaseBackendFactory.class.getSimpleName());
 
-        return new HBaseBackendArraysStrings(createTable(uri));
+        Table table = createTable(uri);
+
+        // Defines the default mapping
+        backend = new HBaseBackendArraysStrings(table);
+
+        return backend;
     }
 
     /**

@@ -26,6 +26,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkState;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link PersistenceOptionsBuilder} that manages the assembly and the construction of
@@ -52,6 +54,11 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     private final List<PersistentStoreOptions> storeOptions;
 
     /**
+     * The mapping to use.
+     */
+    private String mapping;
+
+    /**
      * Constructs a new {@code AbstractPersistenceOptionsBuilder}.
      */
     protected AbstractPersistenceOptionsBuilder() {
@@ -64,9 +71,14 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     public final Map<String, Object> asMap() {
         validate();
 
-        if (!storeOptions.isEmpty()) {
-            option(PersistentResourceOptions.STORE_OPTIONS, Collections.unmodifiableList(storeOptions));
+        if (nonNull(mapping)) {
+            option(PersistentResourceOptions.MAPPING, mapping);
         }
+
+        if (!storeOptions.isEmpty()) {
+            option(PersistentResourceOptions.STORES, Collections.unmodifiableList(storeOptions));
+        }
+
         return Collections.unmodifiableMap(options);
     }
 
@@ -118,6 +130,24 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
         checkNotNull(value);
 
         options.put(key, value);
+        return me();
+    }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}.
+     *
+     * @param mapping the mapping to use
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws IllegalStateException if the mapping has already been defined
+     */
+    @Nonnull
+    protected B mapping(String mapping) {
+        checkNotNull(mapping);
+        checkState(nonNull(this.mapping), "The mapping has already been defined as %s", this.mapping);
+
+        this.mapping = mapping;
         return me();
     }
 

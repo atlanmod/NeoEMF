@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbResourceOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -27,11 +28,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 /**
  * A factory that creates {@link BerkeleyDbBackend} instances.
@@ -76,7 +80,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
-        BerkeleyDbBackend backend;
+        BerkeleyDbBackend backend = null;
 
         checkArgument(uri.isFile(),
                 "%s only supports file-based URIs",
@@ -98,7 +102,21 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
+            // Defines the mapping
+            Optional<String> mapping = mapping(options);
+            if (mapping.isPresent()) {
+                if (Objects.equals(mapping.get(), BerkeleyDbResourceOptions.MAPPING_ARRAYS)) {
+                    backend = new BerkeleyDbBackendArrays(dir, envConfig, dbConfig);
+                }
+                else if (Objects.equals(mapping.get(), BerkeleyDbResourceOptions.MAPPING_LISTS)) {
+                    backend = new BerkeleyDbBackendLists(dir, envConfig, dbConfig);
+                }
+            }
+
+            // Defines the default mapping
+            if (isNull(backend)) {
+                backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
+            }
 
             processGlobalConfiguration(file);
         }
