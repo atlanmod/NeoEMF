@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
 
@@ -34,7 +35,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         Backend backend = context().factory().createTransientBackend();
 
         //noinspection ConstantConditions
-        Store store = context().factory().createStore(backend, null, null);
+        Store store = context().factory().createStore(backend, null, CommonOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);

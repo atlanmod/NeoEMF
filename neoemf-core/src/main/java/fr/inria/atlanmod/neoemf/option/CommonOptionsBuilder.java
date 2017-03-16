@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -22,10 +19,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  * <p>
- * <b>Note:</b> This class is visible only for testing. In a standard use, you should use the {@link PersistenceOptions}
- * implementation corresponding to the {@link PersistentBackend} you want.
+ * <b>Note:</b> In a standard use, you should use the {@link PersistenceOptions} implementation corresponding to the
+ * {@link fr.inria.atlanmod.neoemf.data.Backend} you want.
  */
-@VisibleForTesting
 @ParametersAreNonnullByDefault
 public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<CommonOptionsBuilder, CommonOptions> {
 

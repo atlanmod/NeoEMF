@@ -55,7 +55,8 @@ public interface BackendFactory {
     /**
      * Returns whether the {@link Backend}s created by this factory support the transient state.
      *
-     * @return {@code true} if the {@link Backend}s created by this factory support the transient state, {@code false} otherwise
+     * @return {@code true} if the {@link Backend}s created by this factory support the transient state, {@code false}
+     * otherwise
      *
      * @see #createTransientStore(PersistentResource)
      * @see #createTransientBackend()

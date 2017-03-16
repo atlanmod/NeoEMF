@@ -23,6 +23,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * <b>Note:</b> Not implemented yet.
  * <p>
+ * <b>Note:</b> In a standard use, you should use the {@link PersistenceOptions} implementation corresponding to the
+ * {@link fr.inria.atlanmod.neoemf.data.Backend} you want.
+ * <p>
  * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
  * near future.
  *
