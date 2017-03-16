@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbTest;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 public class BerkeleyDbUriTest extends AbstractUriTest implements BerkeleyDbTest {

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.CoreTest;
+import fr.inria.atlanmod.neoemf.context.CoreTest;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.Test;

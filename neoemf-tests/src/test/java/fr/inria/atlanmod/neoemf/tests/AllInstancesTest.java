@@ -109,9 +109,9 @@ public class AllInstancesTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         fillResource(resource);
 
-        resource.save(context().defaultOptions());
+        resource.save(context().optionsBuilder().asMap());
         resource.close();
-        resource.load(context().defaultOptions());
+        resource.load(context().optionsBuilder().asMap());
 
         assertAllInstancesHas(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
@@ -129,9 +129,9 @@ public class AllInstancesTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         fillResource(resource);
 
-        resource.save(context().defaultOptions());
+        resource.save(context().optionsBuilder().asMap());
         resource.close();
-        resource.load(context().defaultOptions());
+        resource.load(context().optionsBuilder().asMap());
 
         assertAllInstancesHas(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }

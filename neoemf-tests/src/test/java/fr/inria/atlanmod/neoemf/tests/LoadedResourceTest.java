@@ -153,7 +153,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
         mapSampleModel.getContentObjects().add(mapSampleContentObject);
         resource.getContents().add(mapSampleModel);
 
-        resource.save(context().defaultOptions());
+        resource.save(context().optionsBuilder().asMap());
         resource.close();
 
         PersistentResource newResource = context().loadResource(EPACKAGE, file());

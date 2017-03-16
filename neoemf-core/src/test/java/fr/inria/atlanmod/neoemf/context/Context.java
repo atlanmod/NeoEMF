@@ -9,10 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf;
+package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -21,7 +22,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A utility class representing a test-case context.
@@ -31,30 +31,37 @@ import java.util.Map;
 public interface Context {
 
     /**
-     * Returns the name of this {@code Context}.
+     * Returns the name of this context.
      *
-     * @return the name of this context
+     * @return the name
      */
     String name();
 
     /**
-     * Returns the default options of this {@code Context}.
+     * Returns the {@link BackendFactory} used by this context.
      *
-     * @return an immutable {@link Map}
-     *
-     * @see fr.inria.atlanmod.neoemf.option.PersistenceOptions
+     * @return the factory
      */
-    Map<String, Object> defaultOptions();
+    BackendFactory factory();
 
     /**
-     * Returns the {@link URI} scheme used by this {@code Context}.
+     * Returns the {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} used by this context.
+     *
+     * @return a new options builder
+     *
+     * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
+     */
+    AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder();
+
+    /**
+     * Returns the {@link URI} scheme used by this context.
      *
      * @return the {@link URI} scheme
      */
     String uriScheme();
 
     /**
-     * Creates a new {@link URI} from the given {@code uri}, according to this {@code Context}.
+     * Creates a new {@link URI} from the given {@code uri}, according to this context.
      *
      * @param uri the base {@link URI}
      *
@@ -62,10 +69,10 @@ public interface Context {
      *
      * @see PersistenceURI#createURI(URI)
      */
-    URI createURI(URI uri);
+    URI createUri(URI uri);
 
     /**
-     * Creates a new {@link URI} from the given {@code file}, according to this {@code Context}.
+     * Creates a new {@link URI} from the given {@code file}, according to this context.
      *
      * @param file the {@link File} to build a {@link URI} from
      *
@@ -73,7 +80,7 @@ public interface Context {
      *
      * @see PersistenceURI#createFileURI(File, String)
      */
-    URI createFileURI(File file);
+    URI createFileUri(File file);
 
     /**
      * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.
@@ -84,9 +91,11 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestHelper
+     * @see ContextualResourceBuilder
      */
-    PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
+    default PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
+        return new ContextualResourceBuilder(this, ePackage).persistent().file(file).createResource();
+    }
 
     /**
      * Creates a new transient resource from the given {@code ePackage} on the given {@code file}.
@@ -97,9 +106,16 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestHelper
+     * @see ContextualResourceBuilder
      */
-    PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
+    default PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
+        if (!factory().supportsTransient()) {
+            return createPersistentResource(ePackage, file);
+        }
+        else {
+            return new ContextualResourceBuilder(this, ePackage).file(file).createResource();
+        }
+    }
 
     /**
      * Loads an existing resource from the given {@code ePackage} on the given {@code file}.
@@ -110,9 +126,11 @@ public interface Context {
      * @return a new {@link PersistentResource}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestHelper
+     * @see ContextualResourceBuilder
      */
-    PersistentResource loadResource(EPackage ePackage, File file) throws IOException;
+    default PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+        return new ContextualResourceBuilder(this, ePackage).file(file).loadResource();
+    }
 
     /**
      * Creates a new {@link Backend} on the given {@code uri}.
@@ -122,14 +140,9 @@ public interface Context {
      * @return a new {@link Backend}
      *
      * @throws IOException if an I/O error occurs
-     * @see TestHelper
+     * @see ContextualResourceBuilder
      */
-    Backend createPersistentBackend(File file) throws IOException;
-
-    /**
-     * Returns the {@link BackendFactory} used by this {@code Context}
-     *
-     * @return the {@link BackendFactory}
-     */
-    BackendFactory factory();
+    default Backend createBackend(File file) throws IOException {
+        return new ContextualResourceBuilder(this, null).file(file).createPersistentBackend();
+    }
 }

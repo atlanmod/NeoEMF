@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.CoreContext;
-import fr.inria.atlanmod.neoemf.CoreTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.CoreContext;
+import fr.inria.atlanmod.neoemf.context.CoreTest;
 import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest {

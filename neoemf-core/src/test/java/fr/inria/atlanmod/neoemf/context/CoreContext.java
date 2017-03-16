@@ -9,12 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf;
+package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
@@ -24,7 +25,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 
@@ -39,18 +39,12 @@ public class CoreContext implements Context {
     public static final String NAME = "Core";
 
     /**
-     * Constructs a new {@code CoreContext}.
-     */
-    protected CoreContext() {
-    }
-
-    /**
      * Returns the instance of this class.
      *
      * @return the instance of this class.
      */
     public static Context get() {
-        return Holder.INSTANCE;
+        return new CoreContext();
     }
 
     @Override
@@ -59,8 +53,13 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public Map<String, Object> defaultOptions() {
-        return CommonOptions.noOption();
+    public BackendFactory factory() {
+        return mock(AbstractBackendFactory.class);
+    }
+
+    @Override
+    public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+        return CommonOptions.newBuilder();
     }
 
     @Override
@@ -69,12 +68,12 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public URI createURI(URI uri) {
+    public URI createUri(URI uri) {
         return PersistenceURI.createURI(uri);
     }
 
     @Override
-    public URI createFileURI(File file) {
+    public URI createFileUri(File file) {
         return PersistenceURI.createFileURI(file, uriScheme());
     }
 
@@ -102,29 +101,20 @@ public class CoreContext implements Context {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This {@code Context} doesn't support the {@link PersistentResource} loading.
+     *
+     * @throws UnsupportedOperationException every time
+     */
     @Override
     public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Backend createPersistentBackend(File file) throws IOException {
+    public Backend createBackend(File file) throws IOException {
         return new DefaultTransientBackend();
-    }
-
-    @Override
-    public BackendFactory factory() {
-        return mock(AbstractBackendFactory.class);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        private static final Context INSTANCE = new CoreContext();
     }
 }

@@ -9,30 +9,28 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase;
+package fr.inria.atlanmod.neoemf.data.hbase.context;
 
-import fr.inria.atlanmod.neoemf.AbstractTestHelper;
-import fr.inria.atlanmod.neoemf.TestHelper;
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
 import static java.util.Objects.isNull;
 
 /**
- * A specific {@link TestHelper} for the MapDB implementation.
+ * A specific {@link Context} for the HBase implementation.
  */
-public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
+public abstract class HBaseContext implements Context {
 
     /**
      * Facility for testing HBase.
@@ -50,50 +48,31 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
     private static int port;
 
     /**
-     * Constructs a new {@code HBaseTestHelper} with the given {@code ePackage}.
+     * Creates a new {@code HBaseContext} with a mapping with arrays and strings.
      *
-     * @param ePackage the {@link EPackage} associated to the built {@link Resource}
-     *
-     * @see EPackage.Registry
+     * @return a new context.
      */
-    public HBaseTestHelper(EPackage ePackage) {
-        super(ePackage);
+    public static Context getWithArraysAndStrings() {
+        return new HBaseContext() {
+            @Override
+            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+                return HBaseOptions.newBuilder().withArraysAndStrings();
+            }
+        };
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Creates a mocked {@link BackendFactory} for testing HBase in a local environment.
-     */
     @Override
-    protected BackendFactory factory() {
+    public String name() {
+        return "HBase";
+    }
+
+    @Override
+    public BackendFactory factory() {
         if (isNull(hbase)) {
             initMiniCluster();
         }
 
         return HBaseBackendFactory.getInstance();
-    }
-
-    @Override
-    protected HBaseOptionsBuilder optionsBuilder() {
-        return HBaseOptions.newBuilder();
-    }
-
-    @Override
-    protected String uriScheme() {
-        return HBaseURI.SCHEME;
-    }
-
-    @Override
-    public HBaseTestHelper uri(URI uri) {
-        this.uri = HBaseURI.createHierarchicalURI(host, port, uri);
-        return me();
-    }
-
-    @Override
-    public HBaseTestHelper file(File file) {
-        this.uri = HBaseURI.createHierarchicalURI(host, port, URI.createURI(file.getName()));
-        return me();
     }
 
     /**
@@ -107,8 +86,8 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
             hbase.startMiniCluster(1);
 
             Configuration conf = hbase.getConnection().getConfiguration();
-            host = conf.get(HBaseBackendFactory.HOST_PROPERTY);
-            port = Integer.parseInt(conf.get(HBaseBackendFactory.PORT_PROPERTY));
+            host = conf.get("hbase.zookeeper.quorum");
+            port = Integer.parseInt(conf.get("hbase.zookeeper.property.clientPort"));
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
@@ -123,5 +102,20 @@ public class HBaseTestHelper extends AbstractTestHelper<HBaseTestHelper> {
             Log.error(e, "Unable to create the Hadoop mini-cluster. If you're testing on Windows, you need to install Cygwin");
             throw new RuntimeException(e);
         }
+    }    @Override
+    public String uriScheme() {
+        return HBaseURI.SCHEME;
     }
+
+    @Override
+    public URI createUri(URI uri) {
+        return HBaseURI.createHierarchicalURI(host, port, uri);
+    }
+
+    @Override
+    public URI createFileUri(File file) {
+        return HBaseURI.createHierarchicalURI(host, port, URI.createURI(file.getName()));
+    }
+
+
 }

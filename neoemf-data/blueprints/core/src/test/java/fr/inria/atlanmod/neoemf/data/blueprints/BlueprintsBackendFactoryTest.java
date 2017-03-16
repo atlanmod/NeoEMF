@@ -13,12 +13,15 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,14 +45,24 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     @Test
-    public void testCreatePersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
-        assertThat(backend).isInstanceOf(BlueprintsBackend.class);
+    public void testCreateDefaultPersistentBackend() {
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BlueprintsOptions.noOption());
+        assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
+    }
+
+    @Test
+    public void testCreateIndicesPersistentBackend() {
+        Map<String, Object> options = BlueprintsOptions.newBuilder()
+                .withIndices()
+                .asMap();
+
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BlueprintsOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BlueprintsOptions.noOption());
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, BlueprintsOptions.noOption());

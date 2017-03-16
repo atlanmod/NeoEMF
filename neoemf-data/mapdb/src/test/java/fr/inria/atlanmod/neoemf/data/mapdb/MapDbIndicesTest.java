@@ -11,10 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
-/**
- *
- */
-public class MapDbIndicesTest extends AbstractPersistenceMapperTest implements MapDbTest {
+public class MapDbIndicesTest extends AbstractPersistenceMapperTest {
+
+    @Override
+    public Context context() {
+        return MapDbContext.getWithIndices();
+    }
 }

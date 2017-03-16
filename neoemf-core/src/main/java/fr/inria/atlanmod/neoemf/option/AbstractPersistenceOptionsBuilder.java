@@ -27,6 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkState;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -145,7 +146,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     @Nonnull
     protected B mapping(String mapping) {
         checkNotNull(mapping);
-        checkState(nonNull(this.mapping), "The mapping has already been defined as %s", this.mapping);
+        checkState(isNull(this.mapping), "The mapping has already been defined as %s", this.mapping);
 
         this.mapping = mapping;
         return me();

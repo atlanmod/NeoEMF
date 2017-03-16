@@ -11,10 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
-/**
- *
- */
-public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest implements BlueprintsTest {
+public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
+
+    @Override
+    public Context context() {
+        return BlueprintsContext.getWithIndices();
+    }
 }

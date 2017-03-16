@@ -11,8 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
-import fr.inria.atlanmod.neoemf.data.hbase.HBaseTest;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
+import org.junit.Ignore;
+
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
+
+    @Ignore
+    @Override
+    public void testCreateUriFromStandardUriInvalidScheme() {
+    }
 }

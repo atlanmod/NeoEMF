@@ -36,7 +36,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
     @Test
     public void testCreateUriFromStandardUri() {
         URI validURI = URI.createURI(context().uriScheme() + ":/test");
-        URI neoURI = context().createURI(validURI);
+        URI neoURI = context().createUri(validURI);
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 
@@ -46,7 +46,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
     @Test
     public void testCreateUriFromFileUri() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
-        URI neoURI = context().createURI(fileURI);
+        URI neoURI = context().createUri(fileURI);
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 
@@ -55,7 +55,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateFileUriFromFile() {
-        URI neoURI = context().createFileURI(file());
+        URI neoURI = context().createFileUri(file());
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 
@@ -66,7 +66,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
     public void testCreateUriFromStandardUriInvalidScheme() {
         URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
 
-        Throwable thrown = catchThrowable(() -> context().createURI(invalidURI));
+        Throwable thrown = catchThrowable(() -> context().createUri(invalidURI));
         Assertions.assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }

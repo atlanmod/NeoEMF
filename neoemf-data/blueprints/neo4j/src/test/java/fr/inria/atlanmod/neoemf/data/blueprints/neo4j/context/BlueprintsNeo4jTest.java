@@ -9,15 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf;
+package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
+
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 
 /**
- * A test-case that uses a {@link CoreContext}.
+ * A test-case that uses a {@link BlueprintsNeo4jContext}.
  */
-public interface CoreTest extends ContextualTest {
+public interface BlueprintsNeo4jTest extends BlueprintsTest {
 
     @Override
     default Context context() {
-        return CoreContext.get();
+        return BlueprintsNeo4jContext.getWithIndices();
     }
 }

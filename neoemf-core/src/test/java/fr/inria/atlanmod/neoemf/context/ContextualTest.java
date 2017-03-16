@@ -9,10 +9,17 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.util;
+package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+/**
+ * A test-case that needs a {@link Context}.
+ */
+public interface ContextualTest {
 
-public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
+    /**
+     * Returns the current {@link Context}.
+     *
+     * @return the current {@link Context}.
+     */
+    Context context();
 }

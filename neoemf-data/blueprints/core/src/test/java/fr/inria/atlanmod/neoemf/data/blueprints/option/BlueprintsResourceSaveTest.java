@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.Configuration;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 

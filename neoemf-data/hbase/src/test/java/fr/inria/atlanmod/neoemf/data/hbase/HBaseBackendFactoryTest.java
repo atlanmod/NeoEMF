@@ -9,28 +9,30 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb;
+package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
+import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implements MapDbTest {
+public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implements HBaseTest {
 
     @Test
     public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
-        assertThat(backend).isInstanceOf(MapDbBackend.class);
+        assertThat(backend).isInstanceOf(InvalidTransientBackend.class);
     }
 
     @Test
@@ -46,46 +48,26 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
     @Test
     public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), MapDbOptions.noOption());
-        assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), HBaseOptions.noOption());
+        assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
     }
 
     @Test
     public void testCreateIndicesPersistentBackend() {
-        Map<String, Object> options = MapDbOptions.newBuilder()
-                .withIndices()
+        Map<String, Object> options = HBaseOptions.newBuilder()
+                .withArraysAndStrings()
                 .asMap();
 
         Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
-        assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
-    }
-
-    @Test
-    public void testCreateArraysPersistentBackend() {
-        Map<String, Object> options = MapDbOptions.newBuilder()
-                .withArrays()
-                .asMap();
-
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
-        assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
-    }
-
-    @Test
-    public void testCreateListsPersistentBackend() {
-        Map<String, Object> options = MapDbOptions.newBuilder()
-                .withLists()
-                .asMap();
-
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
-        assertThat(backend).isInstanceOf(MapDbBackendLists.class);
+        assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), MapDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), HBaseOptions.noOption());
 
         //noinspection ConstantConditions
-        Store store = context().factory().createStore(backend, null, MapDbOptions.noOption());
+        Store store = context().factory().createStore(backend, null, HBaseOptions.noOption());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -96,12 +78,13 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      * Only empty back-ends are tested.
      */
     @Test
+    @Ignore("HBase back-ends don't support copy")
     public void testCopyBackend() {
         Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
+        assertThat(transientBackend).isInstanceOf(HBaseBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileUri(file()), MapDbOptions.noOption());
-        assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileUri(file()), HBaseOptions.noOption());
+        assertThat(persistentBackend).isInstanceOf(HBaseBackend.class);
 
         transientBackend.copyTo(persistentBackend);
     }

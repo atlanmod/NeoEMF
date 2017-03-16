@@ -11,18 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbTest;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
 
-import java.util.stream.IntStream;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,14 +45,44 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     @Test
-    public void testCreatePersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
-        assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
+    public void testCreateDefaultPersistentBackend() {
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BerkeleyDbOptions.noOption());
+        assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
+    }
+
+    @Test
+    public void testCreateIndicesPersistentBackend() {
+        Map<String, Object> options = BerkeleyDbOptions.newBuilder()
+                .withIndices()
+                .asMap();
+
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
+    }
+
+    @Test
+    public void testCreateArraysPersistentBackend() {
+        Map<String, Object> options = BerkeleyDbOptions.newBuilder()
+                .withArrays()
+                .asMap();
+
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
+    }
+
+    @Test
+    public void testCreateListsPersistentBackend() {
+        Map<String, Object> options = BerkeleyDbOptions.newBuilder()
+                .withLists()
+                .asMap();
+
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BerkeleyDbOptions.noOption());
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, BerkeleyDbOptions.noOption());
@@ -71,28 +100,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileURI(file()), BerkeleyDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileUri(file()), BerkeleyDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);
-    }
-
-    @Test
-    public void testTransientBackend() {
-        final int TIMES = 1000;
-
-        try (Backend backend = context().factory().createTransientBackend()) {
-            IntStream.range(0, TIMES).forEach(i -> {
-                FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
-                assertThat(backend.valueFor(key, "value" + i)).isNotPresent();
-            });
-        }
-
-        try (Backend other = context().factory().createTransientBackend()) {
-            IntStream.range(0, TIMES).forEach(i -> {
-                FeatureKey key = FeatureKey.of(StringId.of("object" + i), "name" + i);
-                assertThat(other.hasValue(key)).isFalse();
-            });
-        }
     }
 }

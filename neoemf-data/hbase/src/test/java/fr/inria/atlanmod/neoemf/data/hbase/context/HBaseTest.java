@@ -9,16 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb;
+package fr.inria.atlanmod.neoemf.data.hbase.context;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
-public class BerkeleyDbIndicesTest extends AbstractPersistenceMapperTest {
+/**
+ * A test-case that uses a {@link HBaseContext}.
+ */
+public interface HBaseTest extends ContextualTest {
 
     @Override
-    public Context context() {
-        return BerkeleyDbContext.getWithIndices();
+    default Context context() {
+        return HBaseContext.getWithArraysAndStrings();
     }
 }

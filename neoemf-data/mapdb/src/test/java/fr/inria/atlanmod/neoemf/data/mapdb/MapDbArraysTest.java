@@ -9,18 +9,16 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints;
+package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.ContextualTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
-/**
- * A test-case that uses a {@link BlueprintsContext}.
- */
-public interface BlueprintsTest extends ContextualTest {
+public class MapDbArraysTest extends AbstractPersistenceMapperTest {
 
     @Override
-    default Context context() {
-        return BlueprintsContext.get();
+    public Context context() {
+        return MapDbContext.getWithArrays();
     }
 }

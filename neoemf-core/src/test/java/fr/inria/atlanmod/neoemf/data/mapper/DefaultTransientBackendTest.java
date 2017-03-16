@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.CoreTest;
+import fr.inria.atlanmod.neoemf.context.CoreTest;
 
 /**
  * A test case for {@link fr.inria.atlanmod.neoemf.data.DefaultTransientBackend}.

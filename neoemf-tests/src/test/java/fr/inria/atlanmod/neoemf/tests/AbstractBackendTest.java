@@ -12,13 +12,13 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
-import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.ContextualTest;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.BlueprintsNeo4jContext;
-import fr.inria.atlanmod.neoemf.data.hbase.HBaseContext;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbContext;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.ContextualTest;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
@@ -81,11 +81,24 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
-                new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
-                new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
-                new Object[]{MapDbContext.get(), MapDbContext.NAME},
-                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME},
-                new Object[]{HBaseContext.get(), HBaseContext.NAME}
+                // Blueprints : Tinker
+                new Object[]{BlueprintsContext.getWithIndices(), "Tinker-indices"},
+
+                // Blueprints : Neo4j
+                new Object[]{BlueprintsNeo4jContext.getWithIndices(), "Neo4j-indices"},
+
+                // MapDB
+                new Object[]{MapDbContext.getWithIndices(), "MapDb-indices"},
+//                new Object[]{MapDbContext.getWithArrays(), "MapDb-arrays"},
+//                new Object[]{MapDbContext.getWithLists(), "MapDb-lists"},
+
+                // BerkeleyDB
+                new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB-indices"},
+//                new Object[]{BerkeleyDbContext.getWithArrays(), "BerkeleyDB-arrays"},
+//                new Object[]{BerkeleyDbContext.getWithLists(), "BerkeleyDB-lists"},
+
+                // HBase
+                new Object[]{HBaseContext.getWithArraysAndStrings(), "HBase-indices"}
         );
     }
 

@@ -9,18 +9,16 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb;
+package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.ContextualTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
-/**
- * A test-case that uses a {@link MapDbContext}.
- */
-public interface MapDbTest extends ContextualTest {
+public class BerkeleyDbArraysTest extends AbstractPersistenceMapperTest {
 
     @Override
-    default Context context() {
-        return MapDbContext.get();
+    public Context context() {
+        return BerkeleyDbContext.getWithArrays();
     }
 }

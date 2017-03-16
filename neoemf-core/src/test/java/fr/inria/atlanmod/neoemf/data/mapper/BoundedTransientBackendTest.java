@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.CoreContext;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 
@@ -29,7 +29,7 @@ public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
         return new CoreContext() {
 
             @Override
-            public Backend createPersistentBackend(File file) throws IOException {
+            public Backend createBackend(File file) throws IOException {
                 return new BoundedTransientBackend(id0);
             }
         };

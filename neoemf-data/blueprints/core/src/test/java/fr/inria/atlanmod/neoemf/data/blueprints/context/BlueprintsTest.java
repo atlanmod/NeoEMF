@@ -9,18 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb;
+package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
-import fr.inria.atlanmod.neoemf.Context;
-import fr.inria.atlanmod.neoemf.ContextualTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
 /**
- * A test-case that uses a {@link BerkeleyDbContext}.
+ * A test-case that uses a {@link BlueprintsContext}.
  */
-public interface BerkeleyDbTest extends ContextualTest {
+public interface BlueprintsTest extends ContextualTest {
 
     @Override
     default Context context() {
-        return BerkeleyDbContext.get();
+        return BlueprintsContext.getWithIndices();
     }
 }
