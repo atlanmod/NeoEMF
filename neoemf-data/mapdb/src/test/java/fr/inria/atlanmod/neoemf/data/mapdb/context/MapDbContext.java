@@ -90,7 +90,7 @@ public abstract class MapDbContext implements Context {
     }
 
     @Override
-    public URI createFileUri(File file) {
+    public URI createUri(File file) {
         return MapDbURI.createFileURI(file);
     }
 }

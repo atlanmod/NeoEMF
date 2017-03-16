@@ -62,7 +62,7 @@ public abstract class BlueprintsContext implements Context {
     }
 
     @Override
-    public URI createFileUri(File file) {
+    public URI createUri(File file) {
         return BlueprintsURI.createFileURI(file);
     }
 }

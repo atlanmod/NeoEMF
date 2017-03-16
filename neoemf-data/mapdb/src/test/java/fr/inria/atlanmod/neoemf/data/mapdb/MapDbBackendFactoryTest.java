@@ -46,7 +46,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
     @Test
     public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), MapDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
@@ -56,7 +56,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
                 .withIndices()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
@@ -66,7 +66,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
                 .withArrays()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
     }
 
@@ -76,13 +76,13 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
                 .withLists()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(MapDbBackendLists.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), MapDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, MapDbOptions.noOption());
@@ -100,7 +100,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileUri(file()), MapDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);

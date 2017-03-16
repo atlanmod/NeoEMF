@@ -48,7 +48,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
     @Test
     public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), HBaseOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), HBaseOptions.noOption());
         assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
     }
 
@@ -58,13 +58,13 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
                 .withArraysAndStrings()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), HBaseOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), HBaseOptions.noOption());
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, HBaseOptions.noOption());
@@ -83,7 +83,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(HBaseBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileUri(file()), HBaseOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), HBaseOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(HBaseBackend.class);
 
         transientBackend.copyTo(persistentBackend);

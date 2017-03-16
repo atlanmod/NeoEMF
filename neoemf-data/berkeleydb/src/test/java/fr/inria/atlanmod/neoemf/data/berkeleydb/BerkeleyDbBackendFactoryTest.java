@@ -46,7 +46,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Test
     public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BerkeleyDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
@@ -56,7 +56,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .withIndices()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
@@ -66,7 +66,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .withArrays()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
     }
 
@@ -76,13 +76,13 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .withLists()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BerkeleyDbOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, BerkeleyDbOptions.noOption());
@@ -100,7 +100,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createFileUri(file()), BerkeleyDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);

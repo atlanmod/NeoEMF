@@ -90,7 +90,7 @@ public abstract class BerkeleyDbContext implements Context {
     }
 
     @Override
-    public URI createFileUri(File file) {
+    public URI createUri(File file) {
         return BerkeleyDbURI.createFileURI(file);
     }
 }

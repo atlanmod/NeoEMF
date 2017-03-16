@@ -73,7 +73,7 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public URI createFileUri(File file) {
+    public URI createUri(File file) {
         return PersistenceURI.createFileURI(file, uriScheme());
     }
 

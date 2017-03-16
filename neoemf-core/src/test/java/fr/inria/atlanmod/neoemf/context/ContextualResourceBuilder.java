@@ -26,6 +26,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
  * A builder that manages the assembly and the construction of {@link PersistentResource}.
  */
@@ -35,11 +39,6 @@ final class ContextualResourceBuilder {
      * The {@link Context} of this helper.
      */
     private final Context context;
-
-    /**
-     * The {@link EPackage} associated to the built resource.
-     */
-    private final EPackage ePackage;
 
     /**
      * The {@link ResourceSet} used to create the resource.
@@ -64,9 +63,8 @@ final class ContextualResourceBuilder {
      *
      * @see EPackage.Registry
      */
-    public ContextualResourceBuilder(Context context, EPackage ePackage) {
-        this.ePackage = ePackage;
-        this.context = context;
+    public ContextualResourceBuilder(Context context, @Nullable EPackage ePackage) {
+        this.context = checkNotNull(context);
 
         BackendFactoryRegistry.unregisterAll();
         BackendFactoryRegistry.register(context.uriScheme(), context.factory());
@@ -125,7 +123,7 @@ final class ContextualResourceBuilder {
      * @return this builder (for chaining)
      */
     public ContextualResourceBuilder file(File file) {
-        this.uri = context.createFileUri(file);
+        this.uri = context.createUri(file);
         return this;
     }
 

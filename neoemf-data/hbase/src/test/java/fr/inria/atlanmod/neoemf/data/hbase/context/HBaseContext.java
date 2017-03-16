@@ -61,24 +61,10 @@ public abstract class HBaseContext implements Context {
         };
     }
 
-    @Override
-    public String name() {
-        return "HBase";
-    }
-
-    @Override
-    public BackendFactory factory() {
-        if (isNull(hbase)) {
-            initMiniCluster();
-        }
-
-        return HBaseBackendFactory.getInstance();
-    }
-
     /**
      * Initializes the mini-cluster.
      */
-    private void initMiniCluster() {
+    private static void initMiniCluster() {
         try {
             Log.info("Initializing the Hadoop mini-cluster... (This may take several minutes)");
 
@@ -102,7 +88,23 @@ public abstract class HBaseContext implements Context {
             Log.error(e, "Unable to create the Hadoop mini-cluster. If you're testing on Windows, you need to install Cygwin");
             throw new RuntimeException(e);
         }
-    }    @Override
+    }
+
+    @Override
+    public String name() {
+        return "HBase";
+    }
+
+    @Override
+    public BackendFactory factory() {
+        if (isNull(hbase)) {
+            initMiniCluster();
+        }
+
+        return HBaseBackendFactory.getInstance();
+    }
+
+    @Override
     public String uriScheme() {
         return HBaseURI.SCHEME;
     }
@@ -113,9 +115,7 @@ public abstract class HBaseContext implements Context {
     }
 
     @Override
-    public URI createFileUri(File file) {
+    public URI createUri(File file) {
         return HBaseURI.createHierarchicalURI(host, port, URI.createURI(file.getName()));
     }
-
-
 }

@@ -80,7 +80,7 @@ public interface Context {
      *
      * @see PersistenceURI#createFileURI(File, String)
      */
-    URI createFileUri(File file);
+    URI createUri(File file);
 
     /**
      * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.

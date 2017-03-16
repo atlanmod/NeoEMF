@@ -55,7 +55,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateFileUriFromFile() {
-        URI neoURI = context().createFileUri(file());
+        URI neoURI = context().createUri(file());
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 

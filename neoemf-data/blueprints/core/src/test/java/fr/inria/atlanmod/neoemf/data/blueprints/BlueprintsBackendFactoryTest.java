@@ -46,7 +46,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     @Test
     public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BlueprintsOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
     }
 
@@ -56,13 +56,13 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .withIndices()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
     }
 
     @Test
     public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createFileUri(file()), BlueprintsOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, BlueprintsOptions.noOption());
