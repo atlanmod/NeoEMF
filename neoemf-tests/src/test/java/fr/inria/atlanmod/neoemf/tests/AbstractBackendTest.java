@@ -81,6 +81,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return a collection
      */
+    // FIXME Using different mapping is not supported yet (TransientBackend <-> PersistentBackend)
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
@@ -92,8 +93,8 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
 
                 // MapDB
                 new Object[]{MapDbContext.getWithIndices(), "MapDb : Indices"},
-                new Object[]{MapDbContext.getWithArrays(), "MapDb : Arrays"},
-                new Object[]{MapDbContext.getWithLists(), "MapDb : Lists"},
+//                new Object[]{MapDbContext.getWithArrays(), "MapDb : Arrays"},
+//                new Object[]{MapDbContext.getWithLists(), "MapDb : Lists"},
 
                 // BerkeleyDB
                 new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB : Indices"},

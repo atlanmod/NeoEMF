@@ -26,6 +26,8 @@ import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.nonNull;
+
 /**
  * An abstract {@link DataMapper} wrapper that delegates method calls to an internal {@link DataMapper}.
  *
@@ -47,7 +49,10 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     protected AbstractMapperDecorator(M mapper) {
         this.next = mapper;
 
-        Log.debug("{0} created", getClass().getSimpleName());
+        //noinspection ConstantConditions
+        if (nonNull(mapper)) {
+            Log.info("{0} created -> {1}", getClass().getSimpleName(), mapper.getClass().getSimpleName());
+        }
     }
 
     /**

@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
@@ -86,5 +88,11 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
         else {
             delete(multivaluedFeatures, key);
         }
+    }
+
+    @Override
+    public void copyTo(DataMapper target) {
+        checkArgument(target instanceof MapDbBackendIndices);
+        super.copyTo(target);
     }
 }

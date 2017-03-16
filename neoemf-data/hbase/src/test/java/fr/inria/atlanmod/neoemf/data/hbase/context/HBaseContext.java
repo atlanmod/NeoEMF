@@ -66,7 +66,7 @@ public abstract class HBaseContext implements Context {
      */
     private static void initMiniCluster() {
         try {
-            Log.info("Initializing the Hadoop mini-cluster... (This may take several minutes)");
+            Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
 
             hbase = new HBaseTestingUtility();
             hbase.startMiniCluster(1);
@@ -75,9 +75,11 @@ public abstract class HBaseContext implements Context {
             host = conf.get("hbase.zookeeper.quorum");
             port = Integer.parseInt(conf.get("hbase.zookeeper.property.clientPort"));
 
+            Log.info("Hadoop cluster running at {0}:{1}", host, port);
+
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    Log.info("Shutting down the Hadoop minicluster...");
+                    Log.info("Shutting down the Hadoop mini-cluster...");
                     hbase.shutdownMiniCluster();
                 }
                 catch (Exception ignore) {
@@ -85,7 +87,7 @@ public abstract class HBaseContext implements Context {
             }));
         }
         catch (Exception e) {
-            Log.error(e, "Unable to create the Hadoop mini-cluster. If you're testing on Windows, you need to install Cygwin");
+            Log.error(e, "Unable to create the Hadoop cluster. If you're testing on Windows, you need to install Cygwin (https://hbase.apache.org/cygwin.html)");
             throw new RuntimeException(e);
         }
     }
