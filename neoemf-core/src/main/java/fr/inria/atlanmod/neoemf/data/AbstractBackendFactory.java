@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.InvalidStore;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
@@ -65,10 +64,6 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     @Nonnull
     @Override
     public Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
-        if (!supportsTransient()) {
-            return new InvalidStore();
-        }
-
         Store store = new DirectWriteStore(backend, resource);
 
         if (checkNotNull(options).containsKey(PersistentResourceOptions.STORE_OPTIONS)) {
