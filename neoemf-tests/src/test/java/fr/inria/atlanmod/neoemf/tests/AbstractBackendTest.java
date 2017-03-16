@@ -82,23 +82,23 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 // Blueprints : Tinker
-                new Object[]{BlueprintsContext.getWithIndices(), "Tinker-indices"},
+                new Object[]{BlueprintsContext.getWithIndices(), "Tinker : Indices"},
 
                 // Blueprints : Neo4j
-                new Object[]{BlueprintsNeo4jContext.getWithIndices(), "Neo4j-indices"},
+                new Object[]{BlueprintsNeo4jContext.getWithIndices(), "Neo4j : Indices"},
 
                 // MapDB
-                new Object[]{MapDbContext.getWithIndices(), "MapDb-indices"},
-//                new Object[]{MapDbContext.getWithArrays(), "MapDb-arrays"},
-//                new Object[]{MapDbContext.getWithLists(), "MapDb-lists"},
+                new Object[]{MapDbContext.getWithIndices(), "MapDb : Indices"},
+                new Object[]{MapDbContext.getWithArrays(), "MapDb : Arrays"},
+                new Object[]{MapDbContext.getWithLists(), "MapDb : Lists"},
 
                 // BerkeleyDB
-                new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB-indices"},
-//                new Object[]{BerkeleyDbContext.getWithArrays(), "BerkeleyDB-arrays"},
-//                new Object[]{BerkeleyDbContext.getWithLists(), "BerkeleyDB-lists"},
+                new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB : Indices"},
+//                new Object[]{BerkeleyDbContext.getWithArrays(), "BerkeleyDB : Arrays"},
+//                new Object[]{BerkeleyDbContext.getWithLists(), "BerkeleyDB : Lists"},
 
                 // HBase
-                new Object[]{HBaseContext.getWithArraysAndStrings(), "HBase-indices"}
+                new Object[]{HBaseContext.getWithArraysAndStrings(), "HBase : Arrays & Strings"}
         );
     }
 
