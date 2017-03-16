@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
+import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
@@ -54,12 +55,14 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     /**
      * The current context.
      */
+    @VisibleForReflection
     @Parameterized.Parameter()
     public Context context;
 
     /**
      * The name of the current context.
      */
+    @VisibleForReflection
     @Parameterized.Parameter(1)
     public String name;
 
