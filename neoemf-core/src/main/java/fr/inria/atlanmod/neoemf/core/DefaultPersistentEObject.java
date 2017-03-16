@@ -184,8 +184,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {
                 if (!f.isMany()) {
-                    getValueFrom(source, f, StoreAdapter.NO_INDEX)
-                            .ifPresent(v -> target.set(this, f, StoreAdapter.NO_INDEX, v));
+                    getValueFrom(source, f, EStore.NO_INDEX)
+                            .ifPresent(v -> target.set(this, f, EStore.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, f);
@@ -324,7 +324,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            value = eStore().get(this, feature, StoreAdapter.NO_INDEX);
+            value = eStore().get(this, feature, EStore.NO_INDEX);
         }
 
         return value;
@@ -343,7 +343,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
         }
         else {
-            eStore().set(this, feature, StoreAdapter.NO_INDEX, value);
+            eStore().set(this, feature, EStore.NO_INDEX, value);
         }
     }
 
@@ -611,7 +611,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     addUnique(object);
                 }
                 else {
-                    int index = size() == 0 ? 0 : StoreAdapter.NO_INDEX;
+                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
                     addUnique(index, object);
                 }
                 return true;

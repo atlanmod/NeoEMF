@@ -13,7 +13,11 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -25,7 +29,6 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
-import fr.inria.atlanmod.neoemf.util.hash.Hasher;
 import fr.inria.atlanmod.neoemf.util.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -34,6 +37,8 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
@@ -46,48 +51,22 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 public class DefaultMapperWriter implements MapperWriter {
 
     /**
-     * The default cache size.
-     * <p>
-     * <b>Note:</b> It is calculated according to the maximum memory dedicated to the JVM.
-     */
-    private static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2_000L);
-
-    /**
-     * The default operation between saves.
-     * <p>
-     * <b>Note:</b> It is calculated according to the maximum memory dedicated to the JVM.
-     */
-    private static final long DEFAULT_AUTO_SAVE_CHUNK = adaptFromMemory(50_000L);
-
-    /**
-     * The default {@link Hasher} used to create unique identifiers.
-     */
-    private static final Hasher DEFAULT_HASHER = HasherFactory.md5();
-
-    /**
-     * The data mapper.
+     * The mapper where to write data.
      */
     protected final DataMapper mapper;
 
     /**
-     * Queue holding the current {@link Id} chain (current element and its parent).
-     * <p>
-     * It is updated after each addition/deletion of an element.
+     * Queue that holds the current {@link Id} chain. It contains the current element and its parent and is updated
+     * after each addition/deletion of an element.
      */
-    protected final Deque<Id> idsStack = new ArrayDeque<>();
+    protected final Deque<Id> stack = new ArrayDeque<>();
 
     /**
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
-    private final Cache<String, Id> idsCache = CacheBuilder.newBuilder()
-            .maximumSize(DEFAULT_CACHE_SIZE)
+    private final Cache<String, Id> cache = CacheBuilder.newBuilder()
+            .maximumSize(adaptFromMemory(2_000L))
             .build();
-
-    /**
-     * Current number of modifications modulo {@link #DEFAULT_AUTO_SAVE_CHUNK}.
-     * Used for automatically saves modifications as calls are made.
-     */
-    private long autoSaveCount;
 
     /**
      * Constructs a new {@code DefaultMapperWriter} on top of the {@code mapper}.
@@ -95,11 +74,34 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param mapper the mapper where to write data
      */
     protected DefaultMapperWriter(DataMapper mapper) {
-        this.mapper = checkNotNull(mapper);
+        checkNotNull(mapper);
 
-        this.autoSaveCount = 0;
+        this.mapper = asAutoSave(mapper);
 
         Log.debug("{0} created", getClass().getSimpleName());
+    }
+
+    /**
+     * Adds the auto-save feature on the given {@code mapper}, if supported.
+     *
+     * @param mapper the mapper
+     *
+     * @return an auto-saving mapper from the {@code mapper}, or the {@code mapper} if the auto-save feature is not
+     * supported by it
+     */
+    @Nonnull
+    private static DataMapper asAutoSave(DataMapper mapper) {
+        DataMapper m = mapper;
+
+        if (m instanceof Backend) {
+            m = new DirectWriteStore((Backend) m);
+        }
+
+        if (m instanceof Store && !((Store) m).isAutoSave()) {
+            m = new AutoSaveStoreDecorator((Store) m, adaptFromMemory(50_000L));
+        }
+
+        return m;
     }
 
     /**
@@ -110,11 +112,9 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param value the value to adapt
      *
      * @return the adapted value
-     *
-     * @see #DEFAULT_CACHE_SIZE
-     * @see #DEFAULT_AUTO_SAVE_CHUNK
      */
-    private static long adaptFromMemory(long value) {
+    @Nonnegative
+    private static long adaptFromMemory(@Nonnegative long value) {
         checkArgument(value >= 0);
 
         long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
@@ -143,14 +143,14 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onStartElement(RawElement element) {
-        idsStack.addLast(createElement(element));
+        stack.addLast(createElement(element));
     }
 
     @Override
     public void onAttribute(RawAttribute attribute) {
         Id id = Optional.ofNullable(attribute.id())
                 .map(this::getOrCreateId)
-                .orElse(idsStack.getLast());
+                .orElse(stack.getLast());
 
         addAttribute(id, attribute);
     }
@@ -159,7 +159,7 @@ public class DefaultMapperWriter implements MapperWriter {
     public void onReference(RawReference reference) {
         Id id = Optional.ofNullable(reference.id())
                 .map(this::getOrCreateId)
-                .orElse(idsStack.getLast());
+                .orElse(stack.getLast());
 
         Id idReference = getOrCreateId(reference.idReference());
 
@@ -173,7 +173,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onEndElement() {
-        idsStack.removeLast();
+        stack.removeLast();
     }
 
     @Override
@@ -211,8 +211,6 @@ public class DefaultMapperWriter implements MapperWriter {
             addReference(MapperConstants.ROOT_ID, reference, id);
         }
 
-        incrementAndSave();
-
         return id;
     }
 
@@ -231,7 +229,7 @@ public class DefaultMapperWriter implements MapperWriter {
         Id id = createId(element.id());
 
         createElement(element, id);
-        idsCache.put(element.id().value(), id);
+        cache.put(element.id().value(), id);
 
         return id;
     }
@@ -246,7 +244,7 @@ public class DefaultMapperWriter implements MapperWriter {
     protected Id getOrCreateId(RawId identifier) {
         checkNotNull(identifier);
 
-        return idsCache.get(identifier.value(), value -> createId(identifier));
+        return cache.get(identifier.value(), value -> createId(identifier));
     }
 
     /**
@@ -263,7 +261,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
         // If identifier has been generated we hash it, otherwise we use the original
         if (identifier.isGenerated()) {
-            idValue = DEFAULT_HASHER.hash(idValue).toString();
+            idValue = HasherFactory.md5().hash(idValue).toString();
         }
 
         return StringId.of(idValue);
@@ -286,15 +284,13 @@ public class DefaultMapperWriter implements MapperWriter {
         }
         else {
             int index = attribute.index();
-            if (index == -1) {
+            if (index == DataMapper.NO_INDEX) {
                 mapper.appendValue(key, attribute.value());
             }
             else {
                 mapper.addValue(key.withPosition(index), attribute.value());
             }
         }
-
-        incrementAndSave();
     }
 
     /**
@@ -321,15 +317,13 @@ public class DefaultMapperWriter implements MapperWriter {
         }
         else {
             int index = reference.index();
-            if (index == -1) {
+            if (index == DataMapper.NO_INDEX) {
                 mapper.appendReference(key, idReference);
             }
             else {
                 mapper.addReference(key.withPosition(index), idReference);
             }
         }
-
-        incrementAndSave();
     }
 
     /**
@@ -349,8 +343,6 @@ public class DefaultMapperWriter implements MapperWriter {
         if (!container.isPresent() || !Objects.equals(container.get().id(), idContainer)) {
             mapper.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
         }
-
-        incrementAndSave();
     }
 
     /**
@@ -371,19 +363,6 @@ public class DefaultMapperWriter implements MapperWriter {
         }
         else {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");
-        }
-
-        incrementAndSave();
-    }
-
-    /**
-     * Increments the operation counter, and saves the mapper if the number of operation is equals to
-     * {@link #DEFAULT_AUTO_SAVE_CHUNK}.
-     */
-    private void incrementAndSave() {
-        autoSaveCount = (autoSaveCount + 1) % DEFAULT_AUTO_SAVE_CHUNK;
-        if (autoSaveCount == 0) {
-            mapper.save();
         }
     }
 }

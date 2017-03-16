@@ -157,7 +157,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
         return this.<String>valueOf(key)
                 .map(s -> {
                     int index = ArrayUtils.indexOf(arrayFromString(s), reference);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }
@@ -172,7 +172,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
         return this.<String>valueOf(key)
                 .map(s -> {
                     int index = ArrayUtils.lastIndexOf(arrayFromString(s), reference);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }

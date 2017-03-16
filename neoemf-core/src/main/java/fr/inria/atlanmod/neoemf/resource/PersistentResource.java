@@ -26,8 +26,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link Resource} that provides efficient model-level operations that are not accessible using the standard EMF API.
  * <p>
- * For example, {@code allInstances()} is a utility method that computes efficiently all the instances of a given type
- * by delegating the operation to the underlying database, that can benefits of its internal optimizations and indices.
+ * For example, {@link #allInstancesOf(EClass)} is a utility method that computes efficiently all the instances of a
+ * given type by delegating the operation to the underlying database, that can benefits of its internal optimizations
+ * and indices.
  */
 @ParametersAreNonnullByDefault
 public interface PersistentResource extends Resource, Resource.Internal, Closeable {
@@ -49,6 +50,9 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * This method behaves like: {@code store().backend().isPersistent()}.
      *
      * @return {@code true} if the resource is persistent, {@code false} otherwise
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.Store
+     * @see fr.inria.atlanmod.neoemf.data.Backend
      */
     default boolean isPersistent() {
         return store().backend().isPersistent();
@@ -60,6 +64,9 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * This method behaves like: {@code store().backend().isDistributed()}.
      *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.Store
+     * @see fr.inria.atlanmod.neoemf.data.Backend
      */
     default boolean isDistributed() {
         return store().backend().isDistributed();
@@ -68,15 +75,17 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).
      * <p>
-     * This method behaves like: {@code allInstances(EClass, false)}.
+     * This method behaves like: {@code allInstancesOf(EClass, false)}.
      *
      * @param eClass the {@link EClass} for which look for instances
      *
      * @return all the instances of the given {@link EClass} from the resource
+     *
+     * @see #allInstancesOf(EClass, boolean)
      */
     @Nonnull
-    default Iterable<EObject> allInstances(EClass eClass) {
-        return allInstances(eClass, false);
+    default Iterable<EObject> allInstancesOf(EClass eClass) {
+        return allInstancesOf(eClass, false);
     }
 
     /**
@@ -89,5 +98,5 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * it also returns the instances of the sub-types of {@code eClass}.
      */
     @Nonnull
-    Iterable<EObject> allInstances(EClass eClass, boolean strict);
+    Iterable<EObject> allInstancesOf(EClass eClass, boolean strict);
 }

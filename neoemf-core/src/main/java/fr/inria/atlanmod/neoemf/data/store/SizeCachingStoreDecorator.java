@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -27,20 +25,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-public class SizeCachingStoreDecorator extends AbstractStoreDecorator {
+public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<OptionalInt> {
 
     /**
      * The size of an empty element.
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static final OptionalInt EMPTY = OptionalInt.of(0);
-
-    /**
-     * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
-     */
-    private final Cache<FeatureKey, OptionalInt> cache = CacheBuilder.newBuilder()
-            .maximumSize()
-            .build();
 
     /**
      * Constructs a new {@code SizeCachingStoreDecorator} with the default cache size.

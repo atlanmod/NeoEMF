@@ -170,4 +170,9 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
     public void removeAllReferences(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return true;
+    }
 }

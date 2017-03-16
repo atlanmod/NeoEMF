@@ -252,7 +252,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
-    public Iterable<EObject> allInstances(EClass eClass, boolean strict) {
+    public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
             return Iterables.stream(store.allInstancesOf(ClassDescriptor.from(eClass), strict))
@@ -260,7 +260,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
-            Log.info("The store does not support advanced allInstances() computation: using standard EMF API instead");
+            Log.info("The store does not support advanced allInstancesOf() computation: using standard EMF API instead");
 
             return Iterables.stream(this::getAllContents)
                     .filter(eClass::isInstance)

@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -60,6 +62,16 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      */
     public AutoSaveStoreDecorator(Store store) {
         this(store, 100_000);
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        thenIncrementAndSave(() -> super.containerFor(id, container));
+    }
+
+    @Override
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        thenIncrementAndSave(() -> super.metaclassFor(id, metaclass));
     }
 
     @Nonnull
@@ -196,5 +208,10 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         finally {
             super.finalize();
         }
+    }
+
+    @Override
+    public boolean isAutoSave() {
+        return true;
     }
 }

@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -27,14 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the presence of a value.
  */
 @ParametersAreNonnullByDefault
-public class IsSetCachingStoreDecorator extends AbstractStoreDecorator {
-
-    /**
-     * In-memory cache that holds presence of a value, identified by the associated {@link FeatureKey}.
-     */
-    private final Cache<FeatureKey, Boolean> cache = CacheBuilder.newBuilder()
-            .maximumSize()
-            .build();
+public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Boolean> {
 
     /**
      * Constructs a new {@code IsSetCachingStoreDecorator} with the default cache size.

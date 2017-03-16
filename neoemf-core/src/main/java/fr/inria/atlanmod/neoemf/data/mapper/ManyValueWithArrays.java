@@ -150,7 +150,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         return this.<V[]>valueOf(key)
                 .map(values -> {
                     int index = ArrayUtils.indexOf(values, value);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }
@@ -165,7 +165,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         return this.<V[]>valueOf(key)
                 .map(values -> {
                     int index = ArrayUtils.lastIndexOf(values, value);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }

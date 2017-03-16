@@ -145,7 +145,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         return this.<List<V>>valueOf(key)
                 .map(values -> {
                     int index = values.indexOf(value);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }
@@ -160,7 +160,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         return this.<List<V>>valueOf(key)
                 .map(values -> {
                     int index = values.lastIndexOf(value);
-                    return index == -1 ? OptionalInt.empty() : OptionalInt.of(index);
+                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
     }

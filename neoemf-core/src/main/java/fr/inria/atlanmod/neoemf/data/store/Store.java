@@ -36,11 +36,11 @@ public interface Store extends DataMapper {
     PersistentResource resource();
 
     /**
-     * Checks whether this {@code Store} is attached to a {@link PersistentResource}.
+     * Checks whether this store is attached to a {@link PersistentResource}.
      * <p>
-     * A {@code Store} is only attached in a persistent context.
+     * A store is only attached in a persistent context.
      *
-     * @return {@code true} if this {@code Store} is attached to a resource, {@code false} otherwise
+     * @return {@code true} if this store is attached to a resource, {@code false} otherwise
      */
     default boolean isAttached() {
         return nonNull(resource());
@@ -53,4 +53,26 @@ public interface Store extends DataMapper {
      */
     @Nonnull
     Backend backend();
+
+    /**
+     * Checks whether this store supports auto-save.
+     *
+     * @return {@code true} if this store supports auto-save, {@code false} otherwise
+     *
+     * @see AutoSaveStoreDecorator
+     */
+    default boolean isAutoSave() {
+        return false;
+    }
+
+    /**
+     * Checks whether this store is read-only.
+     *
+     * @return {@code true} if this store is read-only, {@code false} otherwise
+     *
+     * @see ReadOnlyStoreDecorator
+     */
+    default boolean isReadOnly() {
+        return false;
+    }
 }

@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -29,14 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches {@link EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public class FeatureCachingStoreDecorator extends AbstractStoreDecorator {
-
-    /**
-     * In-memory cache that holds loaded features, identified by their {@link FeatureKey}.
-     */
-    private final Cache<FeatureKey, Object> cache = CacheBuilder.newBuilder()
-            .maximumSize()
-            .build();
+public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<Object> {
 
     /**
      * Constructs a new {@code FeatureCachingStoreDecorator}.

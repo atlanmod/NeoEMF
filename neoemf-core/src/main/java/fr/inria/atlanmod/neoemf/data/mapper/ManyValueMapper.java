@@ -31,6 +31,11 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 public interface ManyValueMapper extends ValueMapper {
 
     /**
+     * A value indicating that no index is specified.
+     */
+    int NO_INDEX = -1;
+
+    /**
      * Retrieves the value of the specified {@code key} at a defined position.
      *
      * @param key the key identifying the multi-valued attribute

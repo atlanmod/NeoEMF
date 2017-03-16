@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test case about the {@link PersistentResource#allInstances(EClass, boolean)} method.
+ * Test case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
  */
 public class AllInstancesTest extends AbstractBackendTest {
 
@@ -193,7 +193,7 @@ public class AllInstancesTest extends AbstractBackendTest {
 
     /**
      * Assert that the {@code resource} has the expected number of each element after calling {@link
-     * PersistentResource#allInstances(EClass, boolean)}.
+     * PersistentResource#allInstancesOf(EClass, boolean)}.
      *
      * @param resource                 the resource to test
      * @param strict                   {@code true} if the lookup searches for strict instances
@@ -201,19 +201,19 @@ public class AllInstancesTest extends AbstractBackendTest {
      * @param packContentCount         the expected number of {@link PackContent}
      */
     private void assertAllInstancesHas(PersistentResource resource, boolean strict, int abstractPackContentCount, int packContentCount) {
-        Iterable<EObject> allPacks = resource.allInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
+        Iterable<EObject> allPacks = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getPack(), strict);
         assertThat(allPacks).hasSize(PACK_COUNT);
 
-        Iterable<EObject> allAbstractPackContents = resource.allInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
+        Iterable<EObject> allAbstractPackContents = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
         assertThat(allAbstractPackContents).hasSize(abstractPackContentCount);
 
-        Iterable<EObject> allPackContents = resource.allInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
+        Iterable<EObject> allPackContents = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getPackContent(), strict);
         assertThat(allPackContents).hasSize(packContentCount);
 
-        Iterable<EObject> allSpecializedPackContents = resource.allInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
+        Iterable<EObject> allSpecializedPackContents = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
         assertThat(allSpecializedPackContents).hasSize(SPECIALIZED_PACK_CONTENT_COUNT);
 
-        Iterable<EObject> allPackContents2 = resource.allInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
+        Iterable<EObject> allPackContents2 = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
         assertThat(allPackContents2).hasSize(PACK_CONTENT_2_COUNT);
     }
 }

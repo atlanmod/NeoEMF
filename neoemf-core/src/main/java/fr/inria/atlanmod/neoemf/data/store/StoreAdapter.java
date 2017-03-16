@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
@@ -53,10 +54,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Store} used as bridge between a {@link org.eclipse.emf.ecore.InternalEObject.EStore} and a {@link Store}.
+ * A {@link Store} used as bridge between a {@link EStore} and a {@link Store}.
  */
 @ParametersAreNonnullByDefault
-public final class StoreAdapter extends AbstractStoreDecorator implements InternalEObject.EStore, Store, IdResolver {
+public final class StoreAdapter extends AbstractStoreDecorator implements EStore, Store, IdResolver {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
@@ -347,13 +348,13 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
         checkArgument(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
 
         if (isNull(value)) {
-            return NO_INDEX;
+            return EStore.NO_INDEX;
         }
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
         if (!exists(key.id())) {
-            return NO_INDEX;
+            return EStore.NO_INDEX;
         }
 
         OptionalInt index;
@@ -363,7 +364,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
         else {
             index = indexOfReference(key, PersistentEObject.from(value).id());
         }
-        return index.orElse(NO_INDEX);
+        return index.orElse(EStore.NO_INDEX);
     }
 
     @Override
@@ -374,13 +375,13 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
         checkArgument(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
 
         if (isNull(value)) {
-            return NO_INDEX;
+            return EStore.NO_INDEX;
         }
 
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
         if (!exists(key.id())) {
-            return NO_INDEX;
+            return EStore.NO_INDEX;
         }
 
         OptionalInt index;
@@ -390,7 +391,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
         else {
             index = lastIndexOfReference(key, PersistentEObject.from(value).id());
         }
-        return index.orElse(NO_INDEX);
+        return index.orElse(EStore.NO_INDEX);
     }
 
     @Override
@@ -400,7 +401,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
         checkNotNull(value);
         checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
-        if (index != NO_INDEX) {
+        if (index != EStore.NO_INDEX) {
             checkPositionIndex(index, size(internalObject, feature));
         }
 
@@ -410,7 +411,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
         if (isAttribute(feature)) {
             persist(object);
 
-            if (index == NO_INDEX) {
+            if (index == EStore.NO_INDEX) {
                 appendValue(key, serialize((EAttribute) feature, value));
             }
             else {
@@ -421,7 +422,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements Intern
             PersistentEObject referencedObject = PersistentEObject.from(value);
             persist(object, (EReference) feature, referencedObject);
 
-            if (index == NO_INDEX) {
+            if (index == EStore.NO_INDEX) {
                 appendReference(key, referencedObject.id());
             }
             else {
