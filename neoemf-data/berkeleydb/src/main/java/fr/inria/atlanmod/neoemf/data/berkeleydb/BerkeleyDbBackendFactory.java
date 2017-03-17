@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import com.sleepycat.je.DatabaseConfig;
+import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
@@ -25,7 +26,6 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
 
@@ -82,31 +82,31 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         checkArgument(uri.isFile(),
                 "%s only supports file-based URIs",
                 BerkeleyDbBackendFactory.class.getSimpleName());
-
-        File file = new File(uri.toFileString());
-
         try {
+            File file = new File(uri.toFileString());
+
             File directory = new File(uri.toFileString());
             if (!directory.exists()) {
                 Files.createDirectories(directory.toPath());
             }
 
-            EnvironmentConfig envConfig = new EnvironmentConfig()
+            EnvironmentConfig environmentConfig = new EnvironmentConfig()
                     .setAllowCreate(true);
 
-            DatabaseConfig dbConfig = new DatabaseConfig()
+            Environment environment = new Environment(directory, environmentConfig);
+
+            DatabaseConfig databaseConfig = new DatabaseConfig()
                     .setAllowCreate(true)
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
             backend = newInstanceOf(mappingFrom(options),
-                    new ConstructorParameter(directory),
-                    new ConstructorParameter(envConfig),
-                    new ConstructorParameter(dbConfig));
+                    new ConstructorParameter(environment, Environment.class),
+                    new ConstructorParameter(databaseConfig, DatabaseConfig.class));
 
             processGlobalConfiguration(file);
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new InvalidDataStoreException(e);
         }
 
@@ -119,20 +119,22 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         BerkeleyDbBackend backend;
 
         try {
-            File dir = new File(BerkeleyDbURI.createFileURI(Files.createTempDirectory("neoemf").toFile()).toFileString());
+            File directory = new File(BerkeleyDbURI.createFileURI(Files.createTempDirectory("neoemf").toFile()).toFileString());
 
-            EnvironmentConfig envConfig = new EnvironmentConfig()
+            EnvironmentConfig environmentConfig = new EnvironmentConfig()
                     .setAllowCreate(true)
-                    .setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
+                    .setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, Boolean.TRUE.toString());
 
-            DatabaseConfig dbConfig = new DatabaseConfig()
+            Environment environment = new Environment(directory, environmentConfig);
+
+            DatabaseConfig databaseConfig = new DatabaseConfig()
                     .setAllowCreate(true)
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = new BerkeleyDbBackendIndices(dir, envConfig, dbConfig);
+            backend = new BerkeleyDbBackendIndices(environment, databaseConfig);
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new InvalidDataStoreException(e);
         }
 

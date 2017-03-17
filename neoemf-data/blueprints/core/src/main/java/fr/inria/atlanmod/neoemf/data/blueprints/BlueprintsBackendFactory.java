@@ -104,29 +104,26 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
                 "%s only supports file-based URIs",
                 BlueprintsBackendFactory.class.getSimpleName());
 
-        File file = new File(uri.toFileString());
-
-        Configuration configuration = getOrCreateBlueprintsConfiguration(file, options);
-
-        Graph graph;
         try {
-            graph = GraphFactory.open(configuration.asMap());
+            File file = new File(uri.toFileString());
 
+            Configuration configuration = getOrCreateBlueprintsConfiguration(file, options);
+
+            Graph graph = GraphFactory.open(configuration.asMap());
             if (!graph.getFeatures().supportsKeyIndices) {
                 throw new InvalidDataStoreException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
             }
+
+            configuration.save();
+
+            backend = newInstanceOf(mappingFrom(options),
+                    new ConstructorParameter(graph, KeyIndexableGraph.class));
+
+            processGlobalConfiguration(file);
         }
-        catch (RuntimeException e) {
+        catch (Exception e) {
             throw new InvalidDataStoreException(e);
         }
-        finally {
-            configuration.save();
-        }
-
-        backend = newInstanceOf(mappingFrom(options),
-                new ConstructorParameter(graph, KeyIndexableGraph.class));
-
-        processGlobalConfiguration(file);
 
         return backend;
     }
@@ -134,7 +131,12 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createTransientBackend() {
-        return new BlueprintsBackendIndices(new TinkerGraph());
+        try {
+            return new BlueprintsBackendIndices(new TinkerGraph());
+        }
+        catch (Exception e) {
+            throw new InvalidDataStoreException(e);
+        }
     }
 
     /**

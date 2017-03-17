@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -82,26 +83,31 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
                 "%s only supports file-based URIs",
                 MapDbBackendFactory.class.getSimpleName());
 
-        File file = new File(uri.toFileString());
+        try {
+            File file = new File(uri.toFileString());
 
-        File dbFile = new File(MapDbURI.createURI(uri.appendSegment("neoemf.mapdb")).toFileString());
-        if (!dbFile.getParentFile().exists()) {
-            try {
-                Files.createDirectories(dbFile.getParentFile().toPath());
+            File dbFile = new File(MapDbURI.createURI(uri.appendSegment("neoemf.mapdb")).toFileString());
+            if (!dbFile.getParentFile().exists()) {
+                try {
+                    Files.createDirectories(dbFile.getParentFile().toPath());
+                }
+                catch (IOException e) {
+                    Log.error(e);
+                }
             }
-            catch (IOException e) {
-                Log.error(e);
-            }
+
+            DB db = DBMaker.fileDB(dbFile)
+                    .fileMmapEnableIfSupported()
+                    .make();
+
+            backend = newInstanceOf(mappingFrom(options),
+                    new ConstructorParameter(db, DB.class));
+
+            processGlobalConfiguration(file);
         }
-
-        DB db = DBMaker.fileDB(dbFile)
-                .fileMmapEnableIfSupported()
-                .make();
-
-        backend = newInstanceOf(mappingFrom(options),
-                new ConstructorParameter(db));
-
-        processGlobalConfiguration(file);
+        catch (Exception e) {
+            throw new InvalidDataStoreException(e);
+        }
 
         return backend;
     }
@@ -109,8 +115,13 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createTransientBackend() {
-        DB db = DBMaker.memoryDB().make();
-        return new MapDbBackendIndices(db);
+        try {
+            DB db = DBMaker.memoryDB().make();
+            return new MapDbBackendIndices(db);
+        }
+        catch (Exception e) {
+            throw new InvalidDataStoreException(e);
+        }
     }
 
     /**

@@ -16,7 +16,6 @@ import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.Environment;
-import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
@@ -29,7 +28,6 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -84,20 +82,18 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
     /**
      * Creates a new {@code AbstractBerkeleyDbBackend} with the configuration of the databases.
      *
-     * @param file      the file to store the databases
-     * @param envConfig the configuration of the environment
-     * @param dbConfig  the configuration of databases
+     * @param environment    the database environment
+     * @param databaseConfig the database configuration
      */
-    protected AbstractBerkeleyDbBackend(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
-        checkNotNull(file);
-        checkNotNull(envConfig);
-        checkNotNull(dbConfig);
+    protected AbstractBerkeleyDbBackend(Environment environment, DatabaseConfig databaseConfig) {
+        checkNotNull(environment);
+        checkNotNull(databaseConfig);
 
-        environment = new Environment(file, envConfig);
+        this.environment = environment;
 
-        containers = environment.openDatabase(null, "eContainer", dbConfig);
-        instances = environment.openDatabase(null, "neoInstanceOf", dbConfig);
-        features = environment.openDatabase(null, "features", dbConfig);
+        containers = environment.openDatabase(null, "eContainer", databaseConfig);
+        instances = environment.openDatabase(null, "neoInstanceOf", databaseConfig);
+        features = environment.openDatabase(null, "features", databaseConfig);
 
         isClosed = false;
     }
@@ -209,6 +205,9 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
      * Returns all loaded databases.
      *
      * @return a list of {@link Database}
+     *
+     * @see #close()
+     * @see #save()
      */
     @Nonnull
     protected List<Database> allDatabases() {

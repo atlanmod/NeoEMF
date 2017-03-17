@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -59,7 +58,6 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      * @throws InvalidOptionException if the mapping is not defined
      */
     protected static String mappingFrom(Map<String, Object> options) {
-        // Defines the mapping
         if (!options.containsKey(PersistentResourceOptions.MAPPING)) {
             throw new InvalidOptionException("No mapping is defined");
         }
@@ -112,36 +110,17 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
     @Nonnull
     @Override
+    @SuppressWarnings("unchecked")
     public Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
         Store store = new DirectWriteStore(backend, resource);
 
         if (checkNotNull(options).containsKey(PersistentResourceOptions.STORES)) {
-            store = decorateStore(store, options);
-        }
+            List<PersistentStoreOptions> storeOptions = (List<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
 
-        return store;
-    }
-
-    /**
-     * Decorates a {@code store} with other stores, as specified by the {@code options}.
-     *
-     * @param store   the store to decorate
-     * @param options the options defining the stores to use
-     *
-     * @return the decorated {@code store}
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private Store decorateStore(Store store, Map<String, Object> options) {
-        List<PersistentStoreOptions> storeOptions = (List<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
-
-        if (!storeOptions.isEmpty()) {
             for (PersistentStoreOptions opt : storeOptions.stream().sorted().collect(Collectors.toList())) {
                 List<ConstructorParameter> parameters = opt.parameters().stream()
                         .filter(options::containsKey)
-                        .map(options::get)
-                        .filter(Objects::nonNull)
-                        .map(ConstructorParameter::new)
+                        .map(key -> new ConstructorParameter(options.get(key)))
                         .collect(Collectors.toList());
 
                 parameters.add(0,

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
-import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.Environment;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,21 +48,20 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     private final Database multivaluedFeatures;
 
     /**
-     * Constructs a new {@code BerkeleyDbBackendIndices} wrapping the provided {@code db}.
+     * Constructs a new {@code BerkeleyDbBackendIndices} wrapping the provided {@code environment}.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@link BerkeleyDbBackend} use {@link
      * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
-     * @param file      the file to store the databases
-     * @param envConfig the configuration of the environment
-     * @param dbConfig  the configuration of databases
+     * @param environment    the database environment
+     * @param databaseConfig the database configuration
      *
      * @see BerkeleyDbBackendFactory
      */
-    protected BerkeleyDbBackendIndices(File file, EnvironmentConfig envConfig, DatabaseConfig dbConfig) {
-        super(file, envConfig, dbConfig);
+    protected BerkeleyDbBackendIndices(Environment environment, DatabaseConfig databaseConfig) {
+        super(environment, databaseConfig);
 
-        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", dbConfig);
+        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
     }
 
     @Override

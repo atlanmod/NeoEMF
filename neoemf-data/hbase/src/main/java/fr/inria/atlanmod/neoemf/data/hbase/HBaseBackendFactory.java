@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
 import org.eclipse.emf.common.util.URI;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -60,16 +59,6 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
      * The literal description of the factory.
      */
     public static final String NAME = HBaseBackend.NAME.toLowerCase();
-
-    /**
-     * The property to define the ZooKeeper host.
-     */
-    protected static final String HOST_PROPERTY = "hbase.zookeeper.quorum";
-
-    /**
-     * The property to define the ZooKeeper port.
-     */
-    protected static final String PORT_PROPERTY = "hbase.zookeeper.property.clientPort";
 
     /**
      * Constructs a new {@code HBaseBackendFactory}.
@@ -106,26 +95,12 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                 "%s only supports hierarchical URIs",
                 HBaseBackendFactory.class.getSimpleName());
 
-        Table table = createTable(uri);
+        Table table;
 
-        backend = newInstanceOf(mappingFrom(options),
-                new ConstructorParameter(table));
-
-        return backend;
-    }
-
-    /**
-     * Retrieves or creates or a new {@link Table} with the given {@code uri}.
-     *
-     * @param uri the {@link URI} to get information about it
-     *
-     * @return a new {@link Table}
-     */
-    private Table createTable(URI uri) {
         try {
             Configuration configuration = HBaseConfiguration.create();
-            configuration.set(HOST_PROPERTY, uri.host());
-            configuration.set(PORT_PROPERTY, isNull(uri.port()) ? "2181" : uri.port());
+            configuration.set("hbase.zookeeper.quorum", uri.host());
+            configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
 
             Connection connection = ConnectionFactory.createConnection(configuration);
             Admin admin = connection.getAdmin();
@@ -145,11 +120,16 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                 admin.createTable(desc);
             }
 
-            return connection.getTable(tableName);
+            table = connection.getTable(tableName);
+
+            backend = newInstanceOf(mappingFrom(options),
+                    new ConstructorParameter(table, Table.class));
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new InvalidDataStoreException(e);
         }
+
+        return backend;
     }
 
     /**
