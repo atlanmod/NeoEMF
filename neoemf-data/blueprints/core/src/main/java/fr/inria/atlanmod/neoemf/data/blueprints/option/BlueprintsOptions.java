@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
@@ -20,24 +19,21 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistenceOptions} that holds Blueprints TinkerGraph specific options.
+ * A {@link PersistenceOptions} that creates Blueprints TinkerGraph specific options.
  * <p>
- * <b>Note:</b> Not implemented yet.
+ * This builder doesn't contain specific methods for now: the only {@code TinkerGraph} configuration supported is the
+ * graph type, which is set by default.
  * <p>
- * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
- * near future.
- *
- * @see BlueprintsOptionsBuilder
+ * All features are all optional: options can be created using all or none of them.
  */
-@Experimental
 @ParametersAreNonnullByDefault
-public class BlueprintsOptions extends AbstractBlueprintsOptions {
+public class BlueprintsOptions extends AbstractBlueprintsOptions<BlueprintsOptions> {
 
     /**
      * Constructs a new {@code BlueprintsOptions}.
      */
     protected BlueprintsOptions() {
-        super();
+        withIndices();
     }
 
     /**
@@ -47,27 +43,16 @@ public class BlueprintsOptions extends AbstractBlueprintsOptions {
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return new BlueprintsOptionsBuilder().asMap();
+        return newBuilder().asMap();
     }
 
     /**
-     * Constructs a new {@link BlueprintsOptionsBuilder} instance with default settings.
+     * Constructs a new {@code BlueprintsOptions} instance with default settings.
      *
      * @return a new builder
      */
     @Nonnull
-    public static BlueprintsOptionsBuilder newBuilder() {
-        return new BlueprintsOptionsBuilder();
-    }
-
-    @Nonnull
-    @Override
-    public Map<String, Object> toMap() {
-        return super.toMap();
-    }
-
-    @Override
-    public void fromMap(Map<String, Object> options) {
-        super.fromMap(options);
+    public static BlueprintsOptions newBuilder() {
+        return new BlueprintsOptions();
     }
 }

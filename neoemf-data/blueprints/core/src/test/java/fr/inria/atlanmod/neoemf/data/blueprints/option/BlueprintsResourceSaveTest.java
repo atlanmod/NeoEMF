@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class BlueprintsResourceSaveTest extends AbstractUnitTest implements BlueprintsTest {
 
@@ -57,11 +59,8 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
 
     @Test
     public void testSaveGraphResourceNoOption() throws IOException {
-        resource.save(Collections.emptyMap());
-
-        Configuration configuration = getConfiguration();
-        assertThat(configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertConfigurationHasSize(configuration, 3);
+        Throwable thrown = catchThrowable(() -> resource.save(Collections.emptyMap()));
+        assertThat(thrown).isInstanceOf(InvalidOptionException.class);
     }
 
     @Test

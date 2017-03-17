@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 /**
  * A specific {@link Context} for the Blueprints Neo4j implementation.
@@ -29,7 +29,7 @@ public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
     public static Context getWithIndices() {
         return new BlueprintsNeo4jContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return BlueprintsNeo4jOptions.newBuilder().withIndices();
             }
         };

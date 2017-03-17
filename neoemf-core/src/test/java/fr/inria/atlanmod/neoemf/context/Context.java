@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -45,13 +46,13 @@ public interface Context {
     BackendFactory factory();
 
     /**
-     * Returns the {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} used by this context.
+     * Returns the {@link PersistenceOptions} used by this context.
      *
      * @return a new options builder
      *
-     * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
+     * @see PersistenceOptions
      */
-    AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder();
+    AbstractPersistenceOptions<?> optionsBuilder();
 
     /**
      * Returns the {@link URI} scheme used by this context.

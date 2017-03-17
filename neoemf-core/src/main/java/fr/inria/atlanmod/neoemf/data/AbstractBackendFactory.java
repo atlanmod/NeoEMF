@@ -13,19 +13,25 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -44,21 +50,52 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     }
 
     /**
-     * Retrieves the mapping to use from the given {@code options}.
+     * Retrieves the mapping to use from the {@code options}.
      *
-     * @param options the options defining the mapping to use
+     * @param options the options containing the mapping
      *
-     * @return an {@link Optional} containing the name of the mapping to use, or {@link Optional#empty()} if the mapping
-     * is not defined.
+     * @return the class name of the mapping to use
+     *
+     * @throws InvalidOptionException if the mapping is not defined
      */
-    protected static Optional<String> mapping(Map<String, Object> options) {
-        Object mapping = options.get(PersistentResourceOptions.MAPPING);
-
-        if (nonNull(mapping)) {
-            return Optional.of(mapping.toString());
+    protected static String mappingFrom(Map<String, Object> options) {
+        // Defines the mapping
+        if (!options.containsKey(PersistentResourceOptions.MAPPING)) {
+            throw new InvalidOptionException("No mapping is defined");
         }
-        else {
-            return Optional.empty();
+
+        return options.get(PersistentResourceOptions.MAPPING).toString();
+    }
+
+    /**
+     * Creates a new instance of the represented {@link Store}.
+     *
+     * @param className  the name of the class to instantiate
+     * @param parameters the parameters of the constructor
+     *
+     * @return a new instance of {@link Store}
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    protected <T> T newInstanceOf(String className, ConstructorParameter... parameters) {
+        try {
+            Class<?> type = Class.forName(className, false, getClass().getClassLoader());
+
+            List<Class<?>> types = Arrays.stream(parameters)
+                    .map(p -> p.type)
+                    .collect(Collectors.toList());
+
+            Constructor<?> constructor = type.getDeclaredConstructor(types.toArray(new Class<?>[types.size()]));
+            constructor.setAccessible(true);
+
+            List<Object> values = Arrays.stream(parameters)
+                    .map(p -> p.value)
+                    .collect(Collectors.toList());
+
+            return (T) constructor.newInstance(values.toArray());
+        }
+        catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -100,14 +137,19 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
         if (!storeOptions.isEmpty()) {
             for (PersistentStoreOptions opt : storeOptions.stream().sorted().collect(Collectors.toList())) {
-                List<Object> parameters = opt.parameters().stream()
+                List<ConstructorParameter> parameters = opt.parameters().stream()
                         .filter(options::containsKey)
                         .map(options::get)
+                        .filter(Objects::nonNull)
+                        .map(ConstructorParameter::new)
                         .collect(Collectors.toList());
 
-                parameters.add(0, store);
+                parameters.add(0,
+                        new ConstructorParameter(store, Store.class));
 
-                store = opt.newInstance(parameters.toArray());
+                Log.info("{0}", parameters);
+
+                store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
             }
         }
 
@@ -133,5 +175,46 @@ public abstract class AbstractBackendFactory implements BackendFactory {
         }
 
         configuration.save();
+    }
+
+    /**
+     * A simple wrapper for constructor parameters.
+     *
+     * @see #newInstanceOf(String, ConstructorParameter...)
+     * @see Class#getDeclaredConstructor(Class[])
+     * @see Constructor#newInstance(Object...)
+     */
+    protected static final class ConstructorParameter {
+
+        /**
+         * The value to use in the constructor.
+         */
+        private final Object value;
+
+        /**
+         * The declared type of the value in the constructor.
+         */
+        private final Class<?> type;
+
+        /**
+         * Constructs a new {@code ConstructorParameter} with the value, and the declared type.
+         *
+         * @param value the value to use in the constructor
+         * @param type  the declared type of the value in the constructor
+         */
+        public ConstructorParameter(Object value, @Nullable Class<?> type) {
+            this.value = value;
+            this.type = nonNull(type) ? type : value.getClass();
+        }
+
+        /**
+         * Constructs a new {@code ConstructorParameter} with the value, and the direct {@link Class} of the
+         * {@code value}.
+         *
+         * @param value the value to use in the constructor
+         */
+        public ConstructorParameter(Object value) {
+            this(value, null);
+        }
     }
 }

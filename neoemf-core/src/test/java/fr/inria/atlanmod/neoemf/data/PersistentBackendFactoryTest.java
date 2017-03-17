@@ -354,11 +354,13 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
             @Override
             public BackendFactory factory() {
-                BackendFactory factory = super.factory();
+                AbstractBackendFactory factory = (AbstractBackendFactory) super.factory();
 
                 when(factory.createPersistentBackend(any(), notNull())).thenReturn(mock(PersistentBackend.class));
-                when(factory.createStore(any(), any(), notNull())).thenCallRealMethod();
+
                 when(factory.supportsTransient()).thenCallRealMethod();
+                when(factory.newInstanceOf(any(), any())).thenCallRealMethod();
+                when(factory.createStore(any(), any(), notNull())).thenCallRealMethod();
 
                 return factory;
             }

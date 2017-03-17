@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -51,7 +51,7 @@ import static java.util.Objects.isNull;
  *
  * @see PersistentResource
  * @see HBaseBackend
- * @see HBaseOptionsBuilder
+ * @see HBaseOptions
  */
 @ParametersAreNonnullByDefault
 public class HBaseBackendFactory extends AbstractBackendFactory {
@@ -100,7 +100,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
-        Backend backend;
+        HBaseBackend backend;
 
         checkArgument(uri.isHierarchical(),
                 "%s only supports hierarchical URIs",
@@ -108,8 +108,8 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
         Table table = createTable(uri);
 
-        // Defines the default mapping
-        backend = new HBaseBackendArraysStrings(table);
+        backend = newInstanceOf(mappingFrom(options),
+                new ConstructorParameter(table));
 
         return backend;
     }

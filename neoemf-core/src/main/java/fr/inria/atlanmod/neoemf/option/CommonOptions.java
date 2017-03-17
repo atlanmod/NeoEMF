@@ -11,35 +11,27 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
-
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistenceOptions} that holds common options.
+ * A common {@link PersistenceOptions} that creates common options that are available for all back-end
+ * implementations.
  * <p>
- * <b>Note:</b> Not implemented yet.
+ * All features are all optional: options can be created using all or none of them.
  * <p>
  * <b>Note:</b> In a standard use, you should use the {@link PersistenceOptions} implementation corresponding to the
  * {@link fr.inria.atlanmod.neoemf.data.Backend} you want.
- * <p>
- * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
- * near future.
- *
- * @see CommonOptionsBuilder
  */
-@Experimental
 @ParametersAreNonnullByDefault
-public class CommonOptions extends AbstractPersistenceOptions {
+public class CommonOptions extends AbstractPersistenceOptions<CommonOptions> {
 
     /**
      * Constructs a new {@code CommonOptions}.
      */
     protected CommonOptions() {
-        super();
     }
 
     /**
@@ -49,27 +41,16 @@ public class CommonOptions extends AbstractPersistenceOptions {
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return new CommonOptionsBuilder().asMap();
+        return newBuilder().asMap();
     }
 
     /**
-     * Constructs a new {@code CommonOptionsBuilder} instance.
+     * Constructs a new {@code CommonOptions} instance.
      *
      * @return a new builder
      */
     @Nonnull
-    public static CommonOptionsBuilder newBuilder() {
-        return new CommonOptionsBuilder();
-    }
-
-    @Nonnull
-    @Override
-    public Map<String, Object> toMap() {
-        return super.toMap();
-    }
-
-    @Override
-    public void fromMap(Map<String, Object> options) {
-        super.fromMap(options);
+    public static CommonOptions newBuilder() {
+        return new CommonOptions();
     }
 }

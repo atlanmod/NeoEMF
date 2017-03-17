@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
@@ -55,7 +55,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  *
  * @see PersistentResource
  * @see BlueprintsBackend
- * @see BlueprintsOptionsBuilder
+ * @see BlueprintsOptions
  * @see BlueprintsResourceOptions
  */
 @ParametersAreNonnullByDefault
@@ -123,8 +123,8 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             configuration.save();
         }
 
-        // Defines the default mapping
-        backend = new BlueprintsBackendIndices((KeyIndexableGraph) graph);
+        backend = newInstanceOf(mappingFrom(options),
+                new ConstructorParameter(graph, KeyIndexableGraph.class));
 
         processGlobalConfiguration(file);
 

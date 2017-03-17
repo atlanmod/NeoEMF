@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbResourceOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -27,14 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 
 /**
  * A factory that creates {@link MapDbBackend} instances.
@@ -45,7 +42,7 @@ import static java.util.Objects.isNull;
  *
  * @see PersistentResource
  * @see MapDbBackend
- * @see fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder
+ * @see MapDbOptions
  */
 @ParametersAreNonnullByDefault
 public class MapDbBackendFactory extends AbstractBackendFactory {
@@ -79,7 +76,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     @Nonnull
     @Override
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
-        MapDbBackend backend = null;
+        MapDbBackend backend;
 
         checkArgument(uri.isFile(),
                 "%s only supports file-based URIs",
@@ -101,21 +98,8 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
                 .fileMmapEnableIfSupported()
                 .make();
 
-        // Defines the mapping
-        Optional<String> mapping = mapping(options);
-        if (mapping.isPresent()) {
-            if (Objects.equals(mapping.get(), MapDbResourceOptions.MAPPING_ARRAYS)) {
-                backend = new MapDbBackendArrays(db);
-            }
-            else if (Objects.equals(mapping.get(), MapDbResourceOptions.MAPPING_LISTS)) {
-                backend = new MapDbBackendLists(db);
-            }
-        }
-
-        // Defines the default mapping
-        if (isNull(backend)) {
-            backend = new MapDbBackendIndices(db);
-        }
+        backend = newInstanceOf(mappingFrom(options),
+                new ConstructorParameter(db));
 
         processGlobalConfiguration(file);
 

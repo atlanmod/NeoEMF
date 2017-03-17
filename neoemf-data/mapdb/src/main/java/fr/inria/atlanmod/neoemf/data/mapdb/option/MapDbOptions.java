@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
@@ -21,24 +21,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistenceOptions} that holds MapDB specific options.
+ * A {@link PersistenceOptions} that creates MapDB specific options.
  * <p>
- * <b>Note:</b> Not implemented yet.
- * <p>
- * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
- * near future.
- *
- * @see MapDbOptionsBuilder
+ * All features are all optional: options can be created using all or none of them.
  */
-@Experimental
 @ParametersAreNonnullByDefault
-public class MapDbOptions extends AbstractPersistenceOptions {
+public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
 
     /**
      * Constructs a new {@code MapDbOptions}.
      */
     protected MapDbOptions() {
-        super();
+        withIndices();
     }
 
     /**
@@ -48,27 +42,58 @@ public class MapDbOptions extends AbstractPersistenceOptions {
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return new MapDbOptionsBuilder().asMap();
+        return newBuilder().asMap();
     }
 
     /**
-     * Constructs a new {@code MapDbOptionsBuilder} instance.
+     * Constructs a new {@code MapDbOptions} instance.
      *
      * @return a new builder
      */
     @Nonnull
-    public static MapDbOptionsBuilder newBuilder() {
-        return new MapDbOptionsBuilder();
+    public static MapDbOptions newBuilder() {
+        return new MapDbOptions();
     }
 
-    @Nonnull
-    @Override
-    public Map<String, Object> toMap() {
-        return super.toMap();
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
+     * <p>
+     * This mapping corresponds to a simple representation of multi-valued features, by using the {@link
+     * ManyFeatureKey#position()}.
+     * <p>
+     * <b>Note:</b> This is the default mapping.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices
+     */
+    public MapDbOptions withIndices() {
+        return mapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendIndices");
     }
 
-    @Override
-    public void fromMap(Map<String, Object> options) {
-        super.fromMap(options);
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
+     * <p>
+     * This mapping corresponds to an {@link Object[]} representation of multi-valued features.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays
+     */
+    public MapDbOptions withArrays() {
+        return mapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendArrays");
+    }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
+     * <p>
+     * This mapping corresponds to a {@link java.util.List} representation of multi-valued features.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists
+     */
+    public MapDbOptions withLists() {
+        return mapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendLists");
     }
 }

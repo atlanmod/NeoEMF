@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -35,7 +35,7 @@ public abstract class BerkeleyDbContext implements Context {
     public static Context getWithIndices() {
         return new BerkeleyDbContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return BerkeleyDbOptions.newBuilder().withIndices();
             }
         };
@@ -49,7 +49,7 @@ public abstract class BerkeleyDbContext implements Context {
     public static Context getWithArrays() {
         return new BerkeleyDbContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return BerkeleyDbOptions.newBuilder().withArrays();
             }
         };
@@ -63,7 +63,7 @@ public abstract class BerkeleyDbContext implements Context {
     public static Context getWithLists() {
         return new BerkeleyDbContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return BerkeleyDbOptions.newBuilder().withLists();
             }
         };

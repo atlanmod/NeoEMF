@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -35,7 +35,7 @@ public abstract class MapDbContext implements Context {
     public static Context getWithIndices() {
         return new MapDbContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return MapDbOptions.newBuilder().withIndices();
             }
         };
@@ -49,7 +49,7 @@ public abstract class MapDbContext implements Context {
     public static Context getWithArrays() {
         return new MapDbContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return MapDbOptions.newBuilder().withArrays();
             }
         };
@@ -63,7 +63,7 @@ public abstract class MapDbContext implements Context {
     public static Context getWithLists() {
         return new MapDbContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return MapDbOptions.newBuilder().withLists();
             }
         };

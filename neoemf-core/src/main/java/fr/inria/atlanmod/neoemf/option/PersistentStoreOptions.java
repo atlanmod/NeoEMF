@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
@@ -21,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,54 +40,54 @@ public enum PersistentStoreOptions {
      *
      * @see IsSetCachingStoreDecorator
      */
-    CACHE_IS_SET(IsSetCachingStoreDecorator.class),
+    CACHE_IS_SET("fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator"),
 
     /**
      * Caches the size data.
      *
      * @see SizeCachingStoreDecorator
      */
-    CACHE_SIZE(SizeCachingStoreDecorator.class),
+    CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator"),
 
     /**
      * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
      *
      * @see FeatureCachingStoreDecorator
      */
-    CACHE_STRUCTURAL_FEATURE(FeatureCachingStoreDecorator.class),
+    CACHE_STRUCTURAL_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator"),
 
     /**
      * Counts all loaded objects.
      *
      * @see LoadedObjectCounterStoreDecorator
      */
-    COUNT_LOADED_OBJECT(LoadedObjectCounterStoreDecorator.class),
+    COUNT_LOADED_OBJECT("fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator"),
 
     /**
      * Logs every call to a methods.
      *
      * @see LoggingStoreDecorator
      */
-    LOG(LoggingStoreDecorator.class, PersistentResourceOptions.LOG_LEVEL),
+    LOG("fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator", PersistentResourceOptions.LOG_LEVEL),
 
     /**
      * Automatically saves modifications as calls are made.
      *
      * @see AutoSaveStoreDecorator
      */
-    AUTO_SAVE(AutoSaveStoreDecorator.class, PersistentResourceOptions.AUTO_SAVE_CHUNK),
+    AUTO_SAVE("fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator", PersistentResourceOptions.AUTO_SAVE_CHUNK),
 
     /**
      * Only allows read operations.
      *
      * @see ReadOnlyStoreDecorator
      */
-    READ_ONLY(ReadOnlyStoreDecorator.class);
+    READ_ONLY("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator");
 
     /**
      * The type of the represented {@link Store}
      */
-    private final Class<? extends AbstractStoreDecorator> type;
+    private final String className;
 
     /**
      * The optional parameters of this option.
@@ -99,32 +97,22 @@ public enum PersistentStoreOptions {
     /**
      * Constructs a new {@code PersistentStoreOptions} with the given {@code type}.
      *
-     * @param type       the type of the represented {@link Store}
+     * @param className  the type of the represented {@link Store}
      * @param parameters the optional parameters of this option
      */
-    PersistentStoreOptions(Class<? extends AbstractStoreDecorator> type, String... parameters) {
-        this.type = checkNotNull(type);
+    PersistentStoreOptions(String className, String... parameters) {
+        this.className = checkNotNull(className);
         this.parameters = Arrays.stream(parameters).collect(Collectors.toList());
     }
 
     /**
-     * Creates a new instance of the represented {@link Store}.
+     * Returns the class name of the represented {@link Store}.
      *
-     * @param parameters the parameters of the constructor of the new instance
-     *
-     * @return a new instance of {@link Store}
+     * @return the name of the class
      */
     @Nonnull
-    public Store newInstance(Object... parameters) {
-        try {
-            List<Class<?>> types = Arrays.stream(parameters).map(Object::getClass).collect(Collectors.toList());
-            types.set(0, Store.class);
-
-            return type.getConstructor(types.toArray(new Class<?>[types.size()])).newInstance(parameters);
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+    public String className() {
+        return className;
     }
 
     /**

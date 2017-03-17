@@ -31,9 +31,4 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
      * The default option value to define {@code TinkerGraph} as the graph implementation to use.
      */
     String GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
-
-    /**
-     * ???
-     */
-    String MAPPING_INDICES = "neoemf.blueprints.indices";
 }

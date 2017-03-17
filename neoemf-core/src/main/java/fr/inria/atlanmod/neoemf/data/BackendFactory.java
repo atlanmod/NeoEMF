@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * The creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
  * option maps.
  *
- * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
+ * @see fr.inria.atlanmod.neoemf.option.PersistenceOptions
  */
 @ParametersAreNonnullByDefault
 public interface BackendFactory {

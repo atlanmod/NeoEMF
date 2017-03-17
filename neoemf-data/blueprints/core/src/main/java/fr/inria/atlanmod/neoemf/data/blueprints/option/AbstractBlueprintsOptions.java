@@ -11,42 +11,56 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
+import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract {@link PersistenceOptions} that holds generic options for all Blueprints based implementations.
+ * An abstract {@link PersistenceOptions} that provides utility methods to create generic Blueprints options.
  * <p>
- * <b>Note:</b> Not implemented yet.
+ * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features.
  * <p>
- * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
- * near future.
+ * All features are all optional: options can be created using all or none of them.
  *
- * @see AbstractBlueprintsOptionsBuilder
+ * @param <B> the "self"-type of this {@link PersistenceOptions}
+ *
+ * @see BlueprintsResourceOptions
  */
-@Experimental
 @ParametersAreNonnullByDefault
-public abstract class AbstractBlueprintsOptions extends AbstractPersistenceOptions {
+public abstract class AbstractBlueprintsOptions<B extends AbstractBlueprintsOptions<B>> extends AbstractPersistenceOptions<B> {
 
-    @SuppressWarnings("JavaDoc")
+    /**
+     * Constructs a new {@code AbstractBlueprintsOptions}.
+     */
     protected AbstractBlueprintsOptions() {
-        super();
     }
 
-    @Nonnull
-    @Override
-    public Map<String, Object> toMap() {
-        return super.toMap();
+    /**
+     * Adds the given {@code graphType} in the created options.
+     *
+     * @param graphType the type of the Blueprints graph
+     *
+     * @return this builder (for chaining)
+     *
+     * @see BlueprintsResourceOptions#GRAPH_TYPE
+     */
+    protected B graph(String graphType) {
+        return option(BlueprintsResourceOptions.GRAPH_TYPE, graphType);
     }
 
-    @Override
-    public void fromMap(Map<String, Object> options) {
-        super.fromMap(options);
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
+     * <p>
+     * This mapping corresponds to a simple representation of multi-valued features, by using the {@link
+     * ManyFeatureKey#position()}.
+     * <p>
+     * <b>Note:</b> This is the default mapping.
+     *
+     * @return this builder (for chaining)
+     */
+    public B withIndices() {
+        return mapping("fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendIndices");
     }
 }

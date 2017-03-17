@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.option;
 /**
  * Exception thrown if an error is detected when validating options during assembly.
  *
- * @see PersistenceOptionsBuilder#asMap()
+ * @see PersistenceOptions#asMap()
  */
 public class InvalidOptionException extends RuntimeException {
 

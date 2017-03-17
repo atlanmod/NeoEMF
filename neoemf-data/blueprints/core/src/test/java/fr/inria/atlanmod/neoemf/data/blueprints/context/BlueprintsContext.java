@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -35,7 +35,7 @@ public abstract class BlueprintsContext implements Context {
     public static Context getWithIndices() {
         return new BlueprintsContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return BlueprintsOptions.newBuilder().withIndices();
             }
         };

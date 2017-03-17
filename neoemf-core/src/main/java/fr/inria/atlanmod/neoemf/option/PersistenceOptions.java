@@ -11,42 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents options managed by {@link BackendFactory}.
+ * A builder of {@link Map} options managed by {@link fr.inria.atlanmod.neoemf.data.BackendFactory}.
  * <p>
- * <b>Note:</b> Not implemented yet.
- * <p>
- * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
- * near future.
- *
- * @see PersistenceOptionsBuilder
+ * All features are all optional: options can be created using all or none of them.
  */
-@Experimental
 @ParametersAreNonnullByDefault
 public interface PersistenceOptions {
 
     /**
-     * Converts this {@code PersistenceOptions} as a {@link Map} that contains all defined options.
+     * Returns an immutable {@link Map} containing all defined options.
      *
      * @return an immutable {@link Map}
      *
-     * @throws InvalidOptionException if a conflict is detected
+     * @throws InvalidOptionException if a conflict is detected during building
      */
     @Nonnull
-    Map<String, Object> toMap();
-
-    /**
-     * Fills this {@code PersistenceOptions} with all options contained in the given {@link Map}.
-     *
-     * @param options the options to parse
-     */
-    void fromMap(Map<String, Object> options);
+    Map<String, Object> asMap();
 }

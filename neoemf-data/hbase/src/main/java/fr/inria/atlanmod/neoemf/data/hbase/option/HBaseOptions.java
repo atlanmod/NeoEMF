@@ -11,9 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.option;
 
-import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
@@ -21,24 +19,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistenceOptions} that holds HBase specific options.
+ * A {@link AbstractPersistenceOptions} subclass that creates HBase specific options.
  * <p>
- * <b>Note:</b> Not implemented yet.
- * <p>
- * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
- * near future.
- *
- * @see HBaseOptionsBuilder
+ * All features are all optional: options can be created using all or none of them.
  */
-@Experimental
 @ParametersAreNonnullByDefault
-public class HBaseOptions extends AbstractPersistenceOptions {
+public class HBaseOptions extends AbstractPersistenceOptions<HBaseOptions> {
 
     /**
      * Constructs a new {@code HBaseOptions}.
      */
     protected HBaseOptions() {
-        super();
+        withArraysAndStrings();
     }
 
     /**
@@ -48,27 +40,38 @@ public class HBaseOptions extends AbstractPersistenceOptions {
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return new HBaseOptionsBuilder().asMap();
+        return new HBaseOptions().asMap();
     }
 
     /**
-     * CConstructs a new {@code HBaseOptionsBuilder} instance.
+     * CConstructs a new {@code HBaseOptions} instance.
      *
      * @return a new builder
      */
     @Nonnull
-    public static HBaseOptionsBuilder newBuilder() {
-        return new HBaseOptionsBuilder();
+    public static HBaseOptions newBuilder() {
+        return new HBaseOptions();
     }
 
-    @Nonnull
-    @Override
-    public Map<String, Object> toMap() {
-        return super.toMap();
-    }
-
-    @Override
-    public void fromMap(Map<String, Object> options) {
-        super.fromMap(options);
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend}.
+     * <p>
+     * This mapping corresponds to:
+     * <ul>
+     * <li>an {@link Object[]} representation of multi-valued attributes</li>
+     * <li>a {@link String} representation for single-valued references</li>
+     * <li>a {@link String[]} representation for multi-valued references</li>
+     * </ul>
+     * <p>
+     * <b>Note:</b> This is the default mapping.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ReferenceWithString
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceWithStrings
+     */
+    public HBaseOptions withArraysAndStrings() {
+        return mapping("fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendArraysStrings");
     }
 }

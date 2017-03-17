@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.apache.hadoop.conf.Configuration;
@@ -55,7 +55,7 @@ public abstract class HBaseContext implements Context {
     public static Context getWithArraysAndStrings() {
         return new HBaseContext() {
             @Override
-            public AbstractPersistenceOptionsBuilder<?, ?> optionsBuilder() {
+            public AbstractPersistenceOptions<?> optionsBuilder() {
                 return HBaseOptions.newBuilder().withArraysAndStrings();
             }
         };
