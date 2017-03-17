@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -34,6 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkState;
 import static java.util.Objects.isNull;
 
 /**
@@ -152,7 +154,12 @@ public abstract class AbstractBackendFactory implements BackendFactory {
             configuration.setProperty(BACKEND_PROPERTY, name());
         }
 
-        if (!configuration.containsKey(PersistentResourceOptions.MAPPING)) {
+        if (configuration.containsKey(PersistentResourceOptions.MAPPING)) {
+            String savedMapping = configuration.getProperty(PersistentResourceOptions.MAPPING).toString();
+            checkState(Objects.equals(mapping, savedMapping),
+                    "The back-end is mapped with %s (but actual is %s)", savedMapping, mapping);
+        }
+        else {
             configuration.setProperty(PersistentResourceOptions.MAPPING, mapping);
         }
 
