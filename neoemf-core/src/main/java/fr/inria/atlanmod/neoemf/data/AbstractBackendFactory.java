@@ -33,8 +33,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link BackendFactory} that processes common store options and manages the configuration.
@@ -183,7 +184,13 @@ public abstract class AbstractBackendFactory implements BackendFactory {
          */
         public ConstructorParameter(Object value, @Nullable Class<?> type) {
             this.value = value;
-            this.type = nonNull(type) ? type : value.getClass();
+
+            if (isNull(type)) {
+                type = value.getClass();
+            }
+
+            checkArgument(type.isInstance(value));
+            this.type = type;
         }
 
         /**
