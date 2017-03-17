@@ -49,7 +49,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param store         the inner store
      * @param autoSaveChunk the number of modifications between saves
      */
-    public AutoSaveStoreDecorator(Store store, long autoSaveChunk) {
+    public AutoSaveStoreDecorator(Store store, Long autoSaveChunk) {
         super(store);
         this.autoSaveChunk = autoSaveChunk;
         Log.debug("{0} chunk = {1}", getClass().getSimpleName(), autoSaveChunk);
@@ -61,7 +61,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param store the underlying store
      */
     public AutoSaveStoreDecorator(Store store) {
-        this(store, 100_000);
+        this(store, 100_000L);
     }
 
     @Override

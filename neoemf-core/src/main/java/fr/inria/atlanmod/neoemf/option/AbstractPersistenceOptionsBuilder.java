@@ -161,7 +161,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B cacheIsSet() {
-        return storeOption(CommonStoreOptions.CACHE_IS_SET);
+        return storeOption(PersistentStoreOptions.CACHE_IS_SET);
     }
 
     /**
@@ -173,7 +173,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B cacheSizes() {
-        return storeOption(CommonStoreOptions.CACHE_SIZE);
+        return storeOption(PersistentStoreOptions.CACHE_SIZE);
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B cacheFeatures() {
-        return storeOption(CommonStoreOptions.CACHE_STRUCTURAL_FEATURE);
+        return storeOption(PersistentStoreOptions.CACHE_STRUCTURAL_FEATURE);
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B log() {
-        return storeOption(CommonStoreOptions.LOG);
+        return storeOption(PersistentStoreOptions.LOG);
     }
 
     /**
@@ -210,8 +210,8 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
      */
     public B log(Level level) {
-        storeOption(CommonStoreOptions.LOG);
-        return option(CommonResourceOptions.LOG_LEVEL, level.name());
+        storeOption(PersistentStoreOptions.LOG);
+        return option(PersistentResourceOptions.LOG_LEVEL, level);
     }
 
     /**
@@ -223,7 +223,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B countLoadedObjects() {
-        return storeOption(CommonStoreOptions.COUNT_LOADED_OBJECT);
+        return storeOption(PersistentStoreOptions.COUNT_LOADED_OBJECT);
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B readOnly() {
-        return storeOption(CommonStoreOptions.READ_ONLY);
+        return storeOption(PersistentStoreOptions.READ_ONLY);
     }
 
     /**
@@ -247,7 +247,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
      */
     @Nonnull
     public B autoSave() {
-        return storeOption(CommonStoreOptions.AUTO_SAVE);
+        return storeOption(PersistentStoreOptions.AUTO_SAVE);
     }
 
     /**
@@ -263,7 +263,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     public B autoSave(@Nonnegative long chunk) {
         checkArgument(chunk >= 0);
 
-        storeOption(CommonStoreOptions.AUTO_SAVE);
-        return option(CommonResourceOptions.AUTO_SAVE_CHUNK, Long.toString(chunk));
+        storeOption(PersistentStoreOptions.AUTO_SAVE);
+        return option(PersistentResourceOptions.AUTO_SAVE_CHUNK, chunk);
     }
 }

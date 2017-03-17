@@ -289,10 +289,11 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         //noinspection ConstantConditions
         store = context().factory().createStore(null, null, options);
-        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -335,10 +336,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
