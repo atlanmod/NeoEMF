@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -126,8 +125,6 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
                 parameters.add(0,
                         new ConstructorParameter(store, Store.class));
-
-                Log.info("{0}", parameters);
 
                 store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
             }

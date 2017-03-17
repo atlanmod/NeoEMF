@@ -113,7 +113,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         store = StoreAdapter.adapt(factory.createTransientStore(this));
 
-        Log.info("{0} created", PersistentResource.class.getSimpleName());
+        Log.info("{0} created: {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
     @Nonnull
