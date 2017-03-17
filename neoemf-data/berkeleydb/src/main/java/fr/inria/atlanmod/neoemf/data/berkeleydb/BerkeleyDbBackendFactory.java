@@ -100,11 +100,12 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = newInstanceOf(mappingFrom(options),
+            String mapping = mappingFrom(options);
+            backend = newInstanceOf(mapping,
                     new ConstructorParameter(environment, Environment.class),
                     new ConstructorParameter(databaseConfig, DatabaseConfig.class));
 
-            processGlobalConfiguration(file);
+            processGlobalConfiguration(file, mapping);
         }
         catch (Exception e) {
             throw new InvalidDataStoreException(e);

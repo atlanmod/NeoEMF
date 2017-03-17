@@ -30,24 +30,24 @@ public interface PersistentResourceOptions {
     /**
      * The key identifying the {@link PersistentStoreOptions} list.
      */
-    String STORES = "neoemf.stores";
+    String STORES = "stores";
 
     /**
      * The key identifying the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}.
      */
-    String MAPPING = "neoemf.mapping";
+    String MAPPING = "mapping";
 
     /**
      * The option key to define the number of operations between each save in auto-save mode.
      *
      * @see PersistentStoreOptions#AUTO_SAVE
      */
-    String AUTO_SAVE_CHUNK = "neoemf.store.autosave.chunk";
+    String AUTO_SAVE_CHUNK = "store.autosave.chunk";
 
     /**
      * The option key to define the logging level in log mode.
      *
      * @see PersistentStoreOptions#LOG
      */
-    String LOG_LEVEL = "neoemf.store.log.level";
+    String LOG_LEVEL = "store.log.level";
 }

@@ -140,15 +140,20 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      * PersistentBackend}.
      *
      * @param directory the directory where the configuration must be stored
+     * @param mapping   the used mapping
      *
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}
      */
-    protected void processGlobalConfiguration(File directory) {
+    protected void processGlobalConfiguration(File directory, String mapping) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
         Configuration configuration = Configuration.load(path.toFile());
 
         if (!configuration.containsKey(BACKEND_PROPERTY)) {
             configuration.setProperty(BACKEND_PROPERTY, name());
+        }
+
+        if (!configuration.containsKey(PersistentResourceOptions.MAPPING)) {
+            configuration.setProperty(PersistentResourceOptions.MAPPING, mapping);
         }
 
         configuration.save();

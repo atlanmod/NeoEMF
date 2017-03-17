@@ -100,10 +100,11 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
                     .fileMmapEnableIfSupported()
                     .make();
 
-            backend = newInstanceOf(mappingFrom(options),
+            String mapping = mappingFrom(options);
+            backend = newInstanceOf(mapping,
                     new ConstructorParameter(db, DB.class));
 
-            processGlobalConfiguration(file);
+            processGlobalConfiguration(file, mapping);
         }
         catch (Exception e) {
             throw new InvalidDataStoreException(e);

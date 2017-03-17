@@ -116,10 +116,11 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
             configuration.save();
 
-            backend = newInstanceOf(mappingFrom(options),
+            String mapping = mappingFrom(options);
+            backend = newInstanceOf(mapping,
                     new ConstructorParameter(graph, KeyIndexableGraph.class));
 
-            processGlobalConfiguration(file);
+            processGlobalConfiguration(file, mapping);
         }
         catch (Exception e) {
             throw new InvalidDataStoreException(e);
