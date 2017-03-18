@@ -79,9 +79,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         MapDbBackend backend;
 
-        checkArgument(uri.isFile(),
-                "%s only supports file-based URIs",
-                MapDbBackendFactory.class.getSimpleName());
+        checkArgument(uri.isFile(),"MapDbBackendFactory only supports file-based URIs");
 
         try {
             File file = new File(uri.toFileString());

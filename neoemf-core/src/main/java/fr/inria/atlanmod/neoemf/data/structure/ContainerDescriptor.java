@@ -130,6 +130,6 @@ public final class ContainerDescriptor implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
+        return String.format("ContainerDescriptor {%s # %s}", id, name);
     }
 }

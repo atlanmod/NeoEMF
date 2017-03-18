@@ -301,7 +301,7 @@ public final class CacheStats {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
+        return "CacheStats {" +
                 "hitCount=" + hitCount +
                 ", missCount=" + missCount +
                 ", loadSuccessCount=" + loadSuccessCount +

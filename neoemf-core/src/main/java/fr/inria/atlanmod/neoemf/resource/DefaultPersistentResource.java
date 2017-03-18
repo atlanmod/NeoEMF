@@ -113,7 +113,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         store = StoreAdapter.adapt(factory.createTransientStore(this));
 
-        Log.info("{0} created: {1}", PersistentResource.class.getSimpleName(), uri);
+        Log.info("PersistentResource created: {0}", uri);
     }
 
     @Nonnull
@@ -194,7 +194,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         store.save();
 
-        Log.info("{0} saved:   {1}", PersistentResource.class.getSimpleName(), uri);
+        Log.info("PersistentResource saved:   {0}", uri);
     }
 
     /**
@@ -229,7 +229,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
         finally {
             isLoading = false;
-            Log.info("{0} loaded:  {1}", PersistentResource.class.getSimpleName(), uri);
+            Log.info("PersistentResource loaded:  {0}", uri);
         }
     }
 
@@ -241,7 +241,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         isLoaded = false;
 
-        Log.info("{0} closed:  {1}", PersistentResource.class.getSimpleName(), uri);
+        Log.info("PersistentResource closed:  {0}", uri);
     }
 
     @Nonnull

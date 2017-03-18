@@ -99,7 +99,7 @@ final class ContextualResourceBuilder {
                 .autoSave(2L)
                 .cacheIsSet()
                 .cacheSizes()
-//                .cacheFeatures()
+                .cacheFeatures()
                 .asMap();
     }
 

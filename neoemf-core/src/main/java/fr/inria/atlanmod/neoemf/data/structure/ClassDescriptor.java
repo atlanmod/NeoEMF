@@ -205,7 +205,7 @@ public final class ClassDescriptor implements Serializable {
     /**
      * Retrieves the {@link EClass} corresponding to this {@code ClassDescriptor}.
      *
-     * @return a class, or {@code null} if it can not be found
+     * @return a class, or {@code null} if it cannot be found
      */
     public EClass get() {
         if (isNull(eClass)) {
@@ -241,7 +241,7 @@ public final class ClassDescriptor implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s {%s @ %s}", getClass().getSimpleName(), name, uri);
+        return String.format("ClassDescriptor {%s @ %s}", name, uri);
     }
 }
 

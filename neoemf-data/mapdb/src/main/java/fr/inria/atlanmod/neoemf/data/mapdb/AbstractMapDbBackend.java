@@ -125,7 +125,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
                 toMap.putAll(fromMap);
             }
             else {
-                throw new UnsupportedOperationException("Cannot copy MapDB backend: store type " + collection.getClass().getSimpleName() + " is not supported");
+                throw new UnsupportedOperationException(String.format("Cannot copy MapDB backend: store type %s is not supported", collection.getClass().getSimpleName()));
             }
         }
     }

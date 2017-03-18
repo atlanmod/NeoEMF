@@ -66,6 +66,14 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
+    public void save() {
+        Log.debug("PersistentResource saved:   {0} (auto-save after {1} changes)", isAttached() ? resource().getURI() : "", changesCount);
+        changesCount = 0L;
+
+        super.save();
+    }
+
+    @Override
     public void containerFor(Id id, ContainerDescriptor container) {
         thenIncrementAndSave(() -> super.containerFor(id, container), 1);
     }
@@ -209,9 +217,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         changesCount += count;
 
         if (changesCount >= autoSaveChunk) {
-            Log.debug("{0} saving after {1} changes", getClass().getSimpleName(), changesCount);
-            changesCount = 0L;
-            this.save();
+            save();
         }
     }
 
@@ -223,7 +229,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     @Override
     protected void finalize() throws Throwable {
         try {
-            this.save();
+            save();
         }
         catch (Exception ignored) {
         }

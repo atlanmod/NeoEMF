@@ -90,9 +90,7 @@ public class HBaseURI extends PersistenceURI {
             return PersistenceURI.createURI(uri);
         }
 
-        throw new IllegalArgumentException(
-                String.format("Can not create %s from the URI scheme %s",
-                        HBaseURI.class.getSimpleName(), uri.scheme()));
+        throw new IllegalArgumentException(String.format("Cannot create HBaseURI from the URI scheme %s", uri.scheme()));
     }
 
     /**

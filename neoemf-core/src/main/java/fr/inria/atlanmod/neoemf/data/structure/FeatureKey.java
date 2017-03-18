@@ -186,6 +186,6 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s {%s # %s}", getClass().getSimpleName(), id, name);
+        return String.format("FeatureKey {%s # %s}", id, name);
     }
 }

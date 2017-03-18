@@ -88,7 +88,7 @@ public class StringId implements Id {
 
     @Override
     public long toLong() {
-        throw new UnsupportedOperationException("This Id can not have a Long representation");
+        throw new UnsupportedOperationException("This Id cannot have a Long representation");
     }
 
     @Override

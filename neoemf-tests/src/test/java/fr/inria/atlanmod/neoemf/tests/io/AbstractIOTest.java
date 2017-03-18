@@ -350,6 +350,6 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             ReaderFactory.fromXmi(file, WriterFactory.toMapper(mapper));
         }
 
-        return context().loadResource(null, file());
+        return closeAtExit(context().loadResource(null, file()));
     }
 }

@@ -182,6 +182,6 @@ public class ManyFeatureKey extends FeatureKey {
 
     @Override
     public String toString() {
-        return String.format("%s {%s # %s [%d]}", getClass().getSimpleName(), id, name, position);
+        return String.format("ManyFeatureKey {%s # %s [%d]}", id, name, position);
     }
 }

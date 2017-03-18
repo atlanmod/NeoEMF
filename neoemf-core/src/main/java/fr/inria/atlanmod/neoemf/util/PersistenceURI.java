@@ -101,11 +101,9 @@ public class PersistenceURI {
     public static URI createURI(URI uri) {
         checkNotNull(uri);
 
-        checkArgument(!Objects.equals(uri.scheme(), FILE_SCHEME),
-                "Can not create %s from file-based URI without a valid scheme", PersistenceURI.class.getSimpleName());
+        checkArgument(!Objects.equals(uri.scheme(), FILE_SCHEME),"Cannot create PersistenceURI from file-based URI without a valid scheme");
 
-        checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()),
-                "Unregistered URI scheme %s", uri);
+        checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()),"Unregistered URI scheme %s", uri);
 
         return new DelegatedURI(uri);
     }

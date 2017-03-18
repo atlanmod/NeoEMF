@@ -91,9 +91,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         HBaseBackend backend;
 
-        checkArgument(uri.isHierarchical(),
-                "%s only supports hierarchical URIs",
-                HBaseBackendFactory.class.getSimpleName());
+        checkArgument(uri.isHierarchical(),"HBaseBackendFactory only supports hierarchical URIs");
 
         Table table;
 
