@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -48,7 +49,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
-    default <V> Iterable<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(FeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
                 .orElse((V[]) new Object[0]);
 

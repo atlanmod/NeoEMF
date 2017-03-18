@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -127,7 +128,7 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 
@@ -194,7 +195,7 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public Iterable<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(FeatureKey key) {
         throw new UnsupportedOperationException(MSG);
     }
 

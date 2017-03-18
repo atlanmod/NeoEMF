@@ -55,7 +55,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Before
     public void createMapper() throws IOException {
-        mapper = context().createBackend(file());
+        mapper = context().createMapper(file());
     }
 
     /**
@@ -143,8 +143,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Test
     public void testGetInexistingContainer() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containerOf(id0)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.containerOf(id0)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -154,8 +154,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testSetNullContainer() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.containerFor(id0, null))
-        ).isInstanceOf(NullPointerException.class);
+                mapper.containerFor(id0, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     //endregion
@@ -208,8 +208,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     public void testGetInexistingMetaclass() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.metaclassOf(id0)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.metaclassOf(id0)).isNotPresent()
+        )).isNull();
     }
 
     //endregion
@@ -223,8 +223,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testSetNullMetaclass() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.metaclassFor(id0, null))
-        ).isInstanceOf(NullPointerException.class);
+                mapper.metaclassFor(id0, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -254,8 +254,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.valueOf(key)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -267,8 +267,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(key, null)).isNotPresent())
-        ).isInstanceOf(NullPointerException.class);
+                assertThat(mapper.valueFor(key, null)).isNotPresent()
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -299,8 +299,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasValue(key)).isFalse())
-        ).isNull();
+                assertThat(mapper.hasValue(key)).isFalse()
+        )).isNull();
     }
 
     /**
@@ -311,8 +311,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                mapper.unsetValue(key))
-        ).isNull();
+                mapper.unsetValue(key)
+        )).isNull();
     }
 
     //endregion
@@ -349,8 +349,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.valueOf(key)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -362,8 +362,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(key, "Value0")).isNotPresent())
-        ).isInstanceOf(NoSuchElementException.class);
+                assertThat(mapper.valueFor(key, "Value0")).isNotPresent()
+        )).isInstanceOf(NoSuchElementException.class);
     }
 
     /**
@@ -375,8 +375,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(key, null)).isNotPresent())
-        ).isInstanceOf(NullPointerException.class);
+                assertThat(mapper.valueFor(key, null)).isNotPresent()
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -394,7 +394,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendValue(key, value2);
 
         // Post-process the returned Iterable
-        List<String> actualValues = Iterables.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
+        List<String> actualValues = mapper.allValuesOf(key);
 
         assertThat(actualValues).hasSize(3);
 
@@ -419,7 +419,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
 
         // Post-process the returned Iterable
-        List<String> actualValues = Iterables.stream(mapper.<String>allValuesOf(key)).collect(Collectors.toList());
+        List<String> actualValues = mapper.allValuesOf(key);
 
         assertThat(actualValues).hasSize(3);
 
@@ -438,8 +438,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.allValuesOf(key)).isNotNull().isEmpty())
-        ).isNull();
+                assertThat(mapper.allValuesOf(key)).isNotNull().isEmpty()
+        )).isNull();
     }
 
     /**
@@ -450,8 +450,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyValue(key)).isFalse())
-        ).isNull();
+                assertThat(mapper.hasAnyValue(key)).isFalse()
+        )).isNull();
     }
 
     /**
@@ -507,8 +507,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.addValue(key, null))
-        ).isInstanceOf(NullPointerException.class);
+                mapper.addValue(key, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -536,7 +536,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> mapper.appendValue(key, null))).isInstanceOf(NullPointerException.class);
+        assertThat(catchThrowable(() ->
+                mapper.appendValue(key, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -614,8 +616,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeValue(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.removeValue(key)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -658,8 +660,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                mapper.removeAllValues(key))
-        ).isNull();
+                mapper.removeAllValues(key)
+        )).isNull();
     }
 
     /**
@@ -694,8 +696,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsValue(key, "aaa")).isFalse())
-        ).isNull();
+                assertThat(mapper.containsValue(key, "aaa")).isFalse()
+        )).isNull();
     }
 
     /**
@@ -706,8 +708,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsValue(key, null)).isFalse())
-        ).isNull();
+                assertThat(mapper.containsValue(key, null)).isFalse()
+        )).isNull();
     }
 
     /**
@@ -744,8 +746,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfValue(key, "aaa")).isNotPresent())
-        ).isNull();
+                assertThat(mapper.indexOfValue(key, "aaa")).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -756,8 +758,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfValue(key, null)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.indexOfValue(key, null)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -795,8 +797,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfValue(key, "aaa")).isNotPresent())
-        ).isNull();
+                assertThat(mapper.lastIndexOfValue(key, "aaa")).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -808,8 +810,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfValue(key, null)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.lastIndexOfValue(key, null)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -842,8 +844,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfValue(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.sizeOfValue(key)).isNotPresent()
+        )).isNull();
     }
 
     //endregion
@@ -877,8 +879,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceOf(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.referenceOf(key)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -890,8 +892,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, null)).isNotPresent())
-        ).isInstanceOf(NullPointerException.class);
+                assertThat(mapper.referenceFor(key, null)).isNotPresent()
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -923,8 +925,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasReference(key)).isFalse())
-        ).isNull();
+                assertThat(mapper.hasReference(key)).isFalse()
+        )).isNull();
     }
 
     /**
@@ -935,8 +937,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                mapper.unsetReference(key))
-        ).isNull();
+                mapper.unsetReference(key)
+        )).isNull();
     }
 
     //endregion
@@ -973,8 +975,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceOf(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.referenceOf(key)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -987,8 +989,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, StringId.of("Ref0"))).isNotPresent())
-        ).isInstanceOf(NoSuchElementException.class);
+                assertThat(mapper.referenceFor(key, StringId.of("Ref0"))).isNotPresent()
+        )).isInstanceOf(NoSuchElementException.class);
     }
 
     /**
@@ -1001,8 +1003,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, null)).isNotPresent())
-        ).isInstanceOf(NullPointerException.class);
+                assertThat(mapper.referenceFor(key, null)).isNotPresent()
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -1064,8 +1066,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.allReferencesOf(key)).isNotNull().isEmpty())
-        ).isNull();
+                assertThat(mapper.allReferencesOf(key)).isNotNull().isEmpty()
+        )).isNull();
     }
 
     /**
@@ -1076,8 +1078,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyReference(key)).isFalse())
-        ).isNull();
+                assertThat(mapper.hasAnyReference(key)).isFalse()
+        )).isNull();
     }
 
     /**
@@ -1134,8 +1136,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.addReference(key, null))
-        ).isInstanceOf(NullPointerException.class);
+                mapper.addReference(key, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -1164,7 +1166,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> mapper.appendReference(key, null))).isInstanceOf(NullPointerException.class);
+        assertThat(catchThrowable(() ->
+                mapper.appendReference(key, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -1243,8 +1247,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeReference(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.removeReference(key)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -1288,8 +1292,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                mapper.removeAllReferences(key))
-        ).isNull();
+                mapper.removeAllReferences(key)
+        )).isNull();
     }
 
     /**
@@ -1325,8 +1329,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsReference(key, StringId.of("aaa"))).isFalse())
-        ).isNull();
+                assertThat(mapper.containsReference(key, StringId.of("aaa"))).isFalse()
+        )).isNull();
     }
 
     /**
@@ -1338,8 +1342,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsReference(key, null)).isFalse())
-        ).isNull();
+                assertThat(mapper.containsReference(key, null)).isFalse()
+        )).isNull();
     }
 
     /**
@@ -1377,8 +1381,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfReference(key, StringId.of("aaa"))).isNotPresent())
-        ).isNull();
+                assertThat(mapper.indexOfReference(key, StringId.of("aaa"))).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -1390,8 +1394,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfReference(key, null)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.indexOfReference(key, null)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -1429,8 +1433,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfReference(key, StringId.of("aaa"))).isNotPresent())
-        ).isNull();
+                assertThat(mapper.lastIndexOfReference(key, StringId.of("aaa"))).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -1442,8 +1446,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfReference(key, null)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.lastIndexOfReference(key, null)).isNotPresent()
+        )).isNull();
     }
 
     /**
@@ -1476,8 +1480,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfReference(key)).isNotPresent())
-        ).isNull();
+                assertThat(mapper.sizeOfReference(key)).isNotPresent()
+        )).isNull();
     }
 
     //endregion

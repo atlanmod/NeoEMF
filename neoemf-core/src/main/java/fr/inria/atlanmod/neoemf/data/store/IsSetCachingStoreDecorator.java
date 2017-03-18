@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -28,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Boolean> {
 
     /**
-     * Constructs a new {@code IsSetCachingStoreDecorator} with the default cache size.
+     * Constructs a new {@code IsSetCachingStoreDecorator}.
      *
      * @param store the inner store
      */
@@ -123,6 +124,12 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Bo
         super.appendValue(key, value);
     }
 
+    @Override
+    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+        cache.put(key, true);
+        super.appendAllValues(key, values);
+    }
+
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
@@ -175,6 +182,12 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Bo
     public void appendReference(FeatureKey key, Id reference) {
         cache.put(key, true);
         super.appendReference(key, reference);
+    }
+
+    @Override
+    public void appendAllReferences(FeatureKey key, List<Id> references) {
+        cache.put(key, true);
+        super.appendAllReferences(key, references);
     }
 
     @Nonnull

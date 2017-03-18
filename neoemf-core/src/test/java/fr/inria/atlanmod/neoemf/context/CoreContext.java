@@ -114,7 +114,7 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public Backend createBackend(File file) throws IOException {
+    public Backend createMapper(File file) throws IOException {
         return new DefaultTransientBackend();
     }
 }

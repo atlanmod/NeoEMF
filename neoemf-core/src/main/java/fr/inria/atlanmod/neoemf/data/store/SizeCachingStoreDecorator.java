@@ -15,9 +15,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,13 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<OptionalInt> {
 
     /**
-     * The size of an empty element.
-     */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static final OptionalInt EMPTY = OptionalInt.of(0);
-
-    /**
-     * Constructs a new {@code SizeCachingStoreDecorator} with the default cache size.
+     * Constructs a new {@code SizeCachingStoreDecorator}.
      *
      * @param store the inner store
      */
@@ -44,44 +40,44 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Opt
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        cache.put(key, EMPTY);
+        cacheSize(key, 0);
         super.unsetValue(key);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        cache.put(key, EMPTY);
+        cacheSize(key, 0);
         super.unsetReference(key);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        Optional.ofNullable(cache.get(key.withoutPosition()))
-                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
-
+        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).orElse(0) + 1);
         super.addValue(key, value);
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        Optional.ofNullable(cache.get(key))
-                .ifPresent(s -> cache.put(key, OptionalInt.of(s.orElse(0) + 1)));
-
+        cacheSize(key, sizeOfValue(key).orElse(0) + 1);
         super.appendValue(key, value);
+    }
+
+    @Override
+    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+        cacheSize(key, sizeOfValue(key).orElse(0) + values.size());
+        super.appendAllValues(key, values);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        Optional.ofNullable(cache.get(key.withoutPosition()))
-                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
-
+        sizeOfValue(key.withoutPosition()).ifPresent(s -> cacheSize(key.withoutPosition(), s - 1));
         return super.removeValue(key);
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        cache.put(key, EMPTY);
+        cacheSize(key, 0);
         super.removeAllValues(key);
     }
 
@@ -94,32 +90,32 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Opt
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        Optional.ofNullable(cache.get(key.withoutPosition()))
-                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) + 1)));
-
+        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).orElse(0) + 1);
         super.addReference(key, reference);
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        Optional.ofNullable(cache.get(key))
-                .ifPresent(s -> cache.put(key, OptionalInt.of(s.orElse(0) + 1)));
-
+        cacheSize(key, sizeOfReference(key).orElse(0) + 1);
         super.appendReference(key, reference);
+    }
+
+    @Override
+    public void appendAllReferences(FeatureKey key, List<Id> references) {
+        cacheSize(key, sizeOfReference(key).orElse(0) + references.size());
+        super.appendAllReferences(key, references);
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        Optional.ofNullable(cache.get(key.withoutPosition()))
-                .ifPresent(s -> cache.put(key.withoutPosition(), OptionalInt.of(s.orElse(0) - 1)));
-
+        sizeOfReference(key.withoutPosition()).ifPresent(s -> cacheSize(key.withoutPosition(), s - 1));
         return super.removeReference(key);
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        cache.put(key, EMPTY);
+        cacheSize(key, 0);
         super.removeAllReferences(key);
     }
 
@@ -128,5 +124,15 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Opt
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public OptionalInt sizeOfReference(FeatureKey key) {
         return cache.get(key, super::sizeOfReference);
+    }
+
+    /**
+     * Defines the number of elements of the given {@code key}.
+     *
+     * @param key  the key to define the size
+     * @param size the size
+     */
+    private void cacheSize(FeatureKey key, @Nonnegative int size) {
+        cache.put(key, size == 0 ? OptionalInt.empty() : OptionalInt.of(size));
     }
 }

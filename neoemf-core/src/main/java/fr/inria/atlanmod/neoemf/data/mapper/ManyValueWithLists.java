@@ -50,7 +50,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Iterable<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(FeatureKey key) {
         return this.<List<V>>valueOf(key)
                 .orElse(Collections.emptyList());
     }

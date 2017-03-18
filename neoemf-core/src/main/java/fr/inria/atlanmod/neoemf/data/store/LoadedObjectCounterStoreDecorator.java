@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -137,7 +138,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.allValuesOf(key);
     }
@@ -216,7 +217,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public Iterable<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(FeatureKey key) {
         loadedObjects.add(key.id());
         return super.allReferencesOf(key);
     }

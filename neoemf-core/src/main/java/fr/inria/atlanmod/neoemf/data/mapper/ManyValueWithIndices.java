@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Iterable<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(FeatureKey key) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
                 .collect(Collectors.toList());

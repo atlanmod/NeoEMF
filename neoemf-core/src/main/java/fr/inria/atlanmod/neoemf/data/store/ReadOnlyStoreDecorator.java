@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -115,6 +116,14 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
     /**
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
+    @Override
+    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
@@ -151,6 +160,14 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      */
     @Override
     public void appendReference(FeatureKey key, Id reference) {
+        throw new UnsupportedOperationException(MSG);
+    }
+
+    /**
+     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
+     */
+    @Override
+    public void appendAllReferences(FeatureKey key, List<Id> references) {
         throw new UnsupportedOperationException(MSG);
     }
 

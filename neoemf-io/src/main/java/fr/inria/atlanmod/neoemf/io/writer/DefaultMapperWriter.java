@@ -13,11 +13,7 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -38,7 +34,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
@@ -65,7 +60,7 @@ public class DefaultMapperWriter implements MapperWriter {
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
     private final Cache<String, Id> cache = CacheBuilder.newBuilder()
-            .maximumSize(adaptFromMemory(2_000L))
+            .maximumSize(adaptFromMemory(10_000L))
             .build();
 
     /**
@@ -74,34 +69,9 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param mapper the mapper where to write data
      */
     protected DefaultMapperWriter(DataMapper mapper) {
-        checkNotNull(mapper);
-
-        this.mapper = asAutoSave(mapper);
+        this.mapper = checkNotNull(mapper);
 
         Log.debug("{0} created", getClass().getSimpleName());
-    }
-
-    /**
-     * Adds the auto-save feature on the given {@code mapper}, if supported.
-     *
-     * @param mapper the mapper
-     *
-     * @return an auto-saving mapper from the {@code mapper}, or the {@code mapper} if the auto-save feature is not
-     * supported by it
-     */
-    @Nonnull
-    private static DataMapper asAutoSave(DataMapper mapper) {
-        DataMapper m = mapper;
-
-        if (m instanceof Backend) {
-            m = new DirectWriteStore((Backend) m);
-        }
-
-        if (m instanceof Store && !((Store) m).isAutoSave()) {
-            m = new AutoSaveStoreDecorator((Store) m, adaptFromMemory(50_000L));
-        }
-
-        return m;
     }
 
     /**

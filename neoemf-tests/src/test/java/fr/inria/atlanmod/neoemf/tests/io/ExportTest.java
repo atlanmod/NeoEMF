@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -43,11 +44,11 @@ public class ExportTest extends AbstractIOTest {
         File sourceBackend = file();
         File targetBackend = Paths.get(file() + "-copy").toFile();
 
-        try (Backend backend = context().createBackend(sourceBackend)) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(backend));
+        try (DataMapper sourceMapper = context().createMapper(sourceBackend)) {
+            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(sourceMapper));
 
-            try (Backend target = context().createBackend(targetBackend)) {
-                ReaderFactory.fromMapper(backend, WriterFactory.toMapper(target));
+            try (DataMapper targetMapper = context().createMapper(targetBackend)) {
+                ReaderFactory.fromMapper(sourceMapper, WriterFactory.toMapper(targetMapper));
             }
         }
 
@@ -99,9 +100,9 @@ public class ExportTest extends AbstractIOTest {
 
         Log.info("Writing to {0}", targetFile);
 
-        try (Backend backend = context().createBackend(file())) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(backend));
-            ReaderFactory.fromMapper(backend, WriterFactory.toXmi(targetFile));
+        try (DataMapper mapper = context().createMapper(file())) {
+            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(mapper));
+            ReaderFactory.fromMapper(mapper, WriterFactory.toXmi(targetFile));
         }
 
         EObject sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);

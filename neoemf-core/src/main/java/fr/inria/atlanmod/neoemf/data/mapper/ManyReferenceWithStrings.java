@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -52,7 +53,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
     @Nonnull
     @Override
-    default Iterable<Id> allReferencesOf(FeatureKey key) {
+    default List<Id> allReferencesOf(FeatureKey key) {
         Optional<Id[]> ids = this.<String>valueOf(key)
                 .map(this::arrayFromString);
 

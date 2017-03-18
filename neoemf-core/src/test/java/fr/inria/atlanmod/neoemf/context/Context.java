@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -134,16 +134,16 @@ public interface Context {
     }
 
     /**
-     * Creates a new {@link Backend} on the given {@code uri}.
+     * Creates a new {@link DataMapper} on the given {@code uri}.
      *
      * @param file the URI of the backend
      *
-     * @return a new {@link Backend}
+     * @return a new {@link DataMapper}
      *
      * @throws IOException if an I/O error occurs
      * @see ContextualResourceBuilder
      */
-    default Backend createBackend(File file) throws IOException {
-        return new ContextualResourceBuilder(this, null).file(file).createPersistentBackend();
+    default DataMapper createMapper(File file) throws IOException {
+        return new ContextualResourceBuilder(this, null).file(file).createPersistentMapper();
     }
 }

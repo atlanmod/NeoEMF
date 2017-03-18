@@ -27,6 +27,7 @@ import fr.inria.atlanmod.neoemf.util.Iterables;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -185,7 +186,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(FeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -409,7 +410,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public Iterable<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(FeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());

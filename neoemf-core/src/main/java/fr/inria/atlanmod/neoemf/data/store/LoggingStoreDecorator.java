@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.util.log.Level;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 import fr.inria.atlanmod.neoemf.util.log.Logger;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -124,7 +125,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(FeatureKey key) {
         called("toArray", key);
         return super.allValuesOf(key);
     }
@@ -203,7 +204,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public Iterable<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(FeatureKey key) {
         called("toArray", key);
         return super.allReferencesOf(key);
     }

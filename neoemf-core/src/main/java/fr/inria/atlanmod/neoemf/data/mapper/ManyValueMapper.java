@@ -14,9 +14,11 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,12 +55,12 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an {@link Iterable} containing all values
+     * @return an immutable {@link List} containing all values
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Iterable<V> allValuesOf(FeatureKey key);
+    <V> List<V> allValuesOf(FeatureKey key);
 
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
@@ -72,7 +74,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NoSuchElementException if the {@code key} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
-     * @throws NoSuchElementException if the {@code key} doesn't exist
+     *
      * @see #addValue(ManyFeatureKey, Object)
      * @see #appendValue(FeatureKey, Object)
      */
@@ -113,11 +115,35 @@ public interface ManyValueMapper extends ValueMapper {
      * @param <V>   the type of value
      *
      * @throws NullPointerException if any parameter is {@code null}
+     *
+     * @see #addValue(ManyFeatureKey, Object)
      */
     default <V> void appendValue(FeatureKey key, V value) {
         checkNotNull(key);
 
         addValue(key.withPosition(sizeOfValue(key).orElse(0)), value);
+    }
+
+    /**
+     * Adds all {@code values} to the specified {@code key} from the last position.
+     *
+     * @param key    the key identifying the multi-valued attribute
+     * @param values the values to add
+     * @param <V>    the type of values
+     *
+     * @throws NullPointerException if any parameter is {@code null}
+     *
+     * @see #addValue(ManyFeatureKey, Object)
+     * @see #appendValue(FeatureKey, Object)
+     */
+    default <V> void appendAllValues(FeatureKey key, List<V> values) {
+        checkNotNull(key);
+        checkNotNull(values);
+
+        int size = sizeOfValue(key).orElse(0);
+
+        IntStream.range(0, values.size())
+                .forEach(i -> addValue(key.withPosition(size + i), values.get(i)));
     }
 
     /**

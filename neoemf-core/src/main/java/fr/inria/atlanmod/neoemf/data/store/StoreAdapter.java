@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.Iterables;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
@@ -35,6 +34,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -523,34 +523,32 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         Stream<Object> stream;
 
         if (isAttribute(feature)) {
-            Iterable<String> values;
+            List<String> values;
 
             if (feature.isMany()) {
                 values = allValuesOf(key);
             }
             else {
                 values = this.<String>valueOf(key)
-                        .map(Collections::singleton)
-                        .orElseGet(Collections::emptySet);
+                        .map(Collections::singletonList)
+                        .orElseGet(Collections::emptyList);
             }
 
-            stream = Iterables.stream(values)
-                    .map(v -> deserialize((EAttribute) feature, v));
+            stream = values.stream().map(v -> deserialize((EAttribute) feature, v));
         }
         else {
-            Iterable<Id> references;
+            List<Id> references;
 
             if (feature.isMany()) {
                 references = allReferencesOf(key);
             }
             else {
                 references = referenceOf(key)
-                        .map(Collections::singleton)
-                        .orElseGet(Collections::emptySet);
+                        .map(Collections::singletonList)
+                        .orElseGet(Collections::emptyList);
             }
 
-            stream = Iterables.stream(references)
-                    .map(this::resolve);
+            stream = references.stream().map(this::resolve);
         }
 
         if (isNull(array)) {

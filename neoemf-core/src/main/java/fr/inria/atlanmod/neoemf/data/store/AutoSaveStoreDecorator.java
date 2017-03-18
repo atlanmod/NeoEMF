@@ -20,6 +20,8 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -34,14 +36,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     /**
-     * Number of allowed modifications between saves on the underlying {@link EStore} for this store.
+     * Number of allowed changes between saves on the underlying {@link EStore} for this store.
      */
     private final long autoSaveChunk;
 
     /**
-     * Current number of modifications modulo {@link #autoSaveChunk}.
+     * Current number of changes made since the last call of {@link #incremendAndSave(int)}.
      */
-    private long modificationsCount = 0L;
+    private long changesCount = 0L;
 
     /**
      * Constructs a new {@code AutoSaveStoreDecorator} with the given {@code chunk}.
@@ -52,7 +54,6 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     public AutoSaveStoreDecorator(Store store, Long autoSaveChunk) {
         super(store);
         this.autoSaveChunk = autoSaveChunk;
-        Log.debug("{0} chunk = {1}", getClass().getSimpleName(), autoSaveChunk);
     }
 
     /**
@@ -61,93 +62,103 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param store the underlying store
      */
     public AutoSaveStoreDecorator(Store store) {
-        this(store, 100_000L);
+        this(store, 10_000L);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        thenIncrementAndSave(() -> super.containerFor(id, container));
+        thenIncrementAndSave(() -> super.containerFor(id, container), 1);
     }
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        thenIncrementAndSave(() -> super.metaclassFor(id, metaclass));
+        thenIncrementAndSave(() -> super.metaclassFor(id, metaclass), 1);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        return thenIncrementAndSave(() -> super.valueFor(key, value));
+        return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        thenIncrementAndSave(() -> super.unsetValue(key));
+        thenIncrementAndSave(() -> super.unsetValue(key), 1);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        return thenIncrementAndSave(() -> super.referenceFor(key, reference));
+        return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        thenIncrementAndSave(() -> super.unsetReference(key));
+        thenIncrementAndSave(() -> super.unsetReference(key), 1);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        return thenIncrementAndSave(() -> super.valueFor(key, value));
+        return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        thenIncrementAndSave(() -> super.addValue(key, value));
+        thenIncrementAndSave(() -> super.addValue(key, value), 1);
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        thenIncrementAndSave(() -> super.appendValue(key, value));
+        thenIncrementAndSave(() -> super.appendValue(key, value), 1);
+    }
+
+    @Override
+    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+        thenIncrementAndSave(() -> super.appendAllValues(key, values), values.size());
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        return thenIncrementAndSave(() -> super.removeValue(key));
+        return thenIncrementAndSave(() -> super.removeValue(key), 1);
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        thenIncrementAndSave(() -> super.removeAllValues(key));
+        thenIncrementAndSave(() -> super.removeAllValues(key), sizeOfValue(key).orElse(0));
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        return thenIncrementAndSave(() -> super.referenceFor(key, reference));
+        return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        thenIncrementAndSave(() -> super.addReference(key, reference));
+        thenIncrementAndSave(() -> super.addReference(key, reference), 1);
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        thenIncrementAndSave(() -> super.appendReference(key, reference));
+        thenIncrementAndSave(() -> super.appendReference(key, reference), 1);
+    }
+
+    @Override
+    public void appendAllReferences(FeatureKey key, List<Id> references) {
+        thenIncrementAndSave(() -> super.appendAllReferences(key, references), references.size());
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        return thenIncrementAndSave(() -> super.removeReference(key));
+        return thenIncrementAndSave(() -> super.removeReference(key), 1);
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        thenIncrementAndSave(() -> super.removeAllReferences(key));
+        thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
     }
 
     /**
@@ -155,19 +166,23 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * {@code count % chunk == 0}.
      *
      * @param method the method to call before saving
+     * @param count  the number of changes made
      *
      * @return the result of the {@code method}
      */
-    private <V> V thenIncrementAndSave(Callable<V> method) {
+    private <V> V thenIncrementAndSave(Callable<V> method, int count) {
         V result;
         try {
             result = method.call();
+        }
+        catch (NoSuchElementException | NullPointerException e) { // known exceptions
+            throw e;
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        incremendAndSave();
+        incremendAndSave(count);
 
         return result;
     }
@@ -177,18 +192,25 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * {@code count % chunk == 0}.
      *
      * @param method the method to call before saving
+     * @param count  the number of changes made
      */
-    private void thenIncrementAndSave(Runnable method) {
+    private void thenIncrementAndSave(Runnable method, int count) {
         method.run();
-        incremendAndSave();
+
+        incremendAndSave(count);
     }
 
     /**
      * Increments the number of operation, and saves if necessary, i.e when {@code count % chunk == 0}.
+     *
+     * @param count the number of changes made
      */
-    private void incremendAndSave() {
-        modificationsCount = (modificationsCount + 1) % autoSaveChunk;
-        if (modificationsCount == 0) {
+    private void incremendAndSave(int count) {
+        changesCount += count;
+
+        if (changesCount >= autoSaveChunk) {
+            Log.debug("{0} saving after {1} changes", getClass().getSimpleName(), changesCount);
+            changesCount = 0L;
             this.save();
         }
     }

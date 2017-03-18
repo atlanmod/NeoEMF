@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -176,7 +177,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Iterable<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(FeatureKey key) {
         return next.allValuesOf(key);
     }
 
@@ -203,6 +204,12 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public <V> void appendValue(FeatureKey key, V value) {
         next.appendValue(key, value);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+        next.appendAllValues(key, values);
     }
 
     @Nonnull
@@ -255,7 +262,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(FeatureKey key) {
         return next.allReferencesOf(key);
     }
 
@@ -282,6 +289,12 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public void appendReference(FeatureKey key, Id reference) {
         next.appendReference(key, reference);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void appendAllReferences(FeatureKey key, List<Id> references) {
+        next.appendAllReferences(key, references);
     }
 
     @Nonnull

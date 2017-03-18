@@ -29,7 +29,7 @@ public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
         return new CoreContext() {
 
             @Override
-            public Backend createBackend(File file) throws IOException {
+            public Backend createMapper(File file) throws IOException {
                 return new BoundedTransientBackend(id0);
             }
         };

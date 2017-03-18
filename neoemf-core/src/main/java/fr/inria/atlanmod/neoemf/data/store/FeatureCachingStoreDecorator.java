@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -109,9 +110,19 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        cache.put(key, value);
+        cache.put(key.withPosition(sizeOfValue(key).orElse(0)), value);
 
         super.appendValue(key, value);
+    }
+
+    @Override
+    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+        int size = sizeOfValue(key).orElse(0);
+
+        IntStream.range(0, values.size())
+                .forEach(i -> cache.put(key.withPosition(size + i), values.get(i)));
+
+        super.appendAllValues(key, values);
     }
 
     @Nonnull
@@ -158,9 +169,19 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        cache.put(key, reference);
+        cache.put(key.withPosition(sizeOfReference(key).orElse(0)), reference);
 
         super.appendReference(key, reference);
+    }
+
+    @Override
+    public void appendAllReferences(FeatureKey key, List<Id> references) {
+        int size = sizeOfReference(key).orElse(0);
+
+        IntStream.range(0, references.size())
+                .forEach(i -> cache.put(key.withPosition(size + i), references.get(i)));
+
+        super.appendAllReferences(key, references);
     }
 
     @Nonnull

@@ -15,9 +15,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,7 +30,8 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 /**
  * An object capable of mapping multi-valued references represented as a set of key/value pair.
  * <p>
- * By default, the references are processed as values with {@link ManyValueMapper}.
+ * By default, the references are processed as values with {@link ManyValueMapper}, except for composed methods such as
+ * {@link #appendReference(FeatureKey, Id)} and {@link #appendAllReferences(FeatureKey, List)}.
  */
 @ParametersAreNonnullByDefault
 public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
@@ -53,12 +56,12 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an {@link Iterable} containing all references
+     * @return an immutable {@link List} containing all references
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default Iterable<Id> allReferencesOf(FeatureKey key) {
+    default List<Id> allReferencesOf(FeatureKey key) {
         return allValuesOf(key);
     }
 
@@ -71,9 +74,9 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @return an {@link Optional} containing the previous reference of the {@code key}, or {@link Optional#empty()} if
      * the key has no reference before
      *
-     * @throws java.util.NoSuchElementException if the {@code key} doesn't exist
-     * @throws NullPointerException             if any parameter is {@code null}
-     * @throws NoSuchElementException           if the {@code key} doesn't exist
+     * @throws NoSuchElementException if the {@code key} doesn't exist
+     * @throws NullPointerException   if any parameter is {@code null}
+     *
      * @see #addReference(ManyFeatureKey, Id)
      * @see #appendReference(FeatureKey, Id)
      */
@@ -115,11 +118,34 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param reference the reference to add
      *
      * @throws NullPointerException if any parameter is {@code null}
+     *
+     * @see #addReference(ManyFeatureKey, Id)
      */
     default void appendReference(FeatureKey key, Id reference) {
         checkNotNull(key);
 
         addReference(key.withPosition(sizeOfReference(key).orElse(0)), reference);
+    }
+
+    /**
+     * Adds all {@code references} to the specified {@code key} from the last position.
+     *
+     * @param key        the key identifying the multi-valued reference
+     * @param references the references to add
+     *
+     * @throws NullPointerException if any parameter is {@code null}
+     *
+     * @see #addReference(ManyFeatureKey, Id)
+     * @see #appendReference(FeatureKey, Id)
+     */
+    default void appendAllReferences(FeatureKey key, List<Id> references) {
+        checkNotNull(key);
+        checkNotNull(references);
+
+        int size = sizeOfReference(key).orElse(0);
+
+        IntStream.range(0, references.size())
+                .forEach(i -> addReference(key.withPosition(size + i), references.get(i)));
     }
 
     /**

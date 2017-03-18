@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -346,8 +346,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     protected PersistentResource loadWithNeoEMF(File file) throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
-        try (Backend backend = context().createBackend(file())) {
-            ReaderFactory.fromXmi(file, WriterFactory.toMapper(backend));
+        try (DataMapper mapper = context().createMapper(file())) {
+            ReaderFactory.fromXmi(file, WriterFactory.toMapper(mapper));
         }
 
         return context().loadResource(null, file());
