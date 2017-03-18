@@ -19,11 +19,11 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -125,7 +125,7 @@ final class PersistentEObjectAdapter {
     @Nonnull
     private static <T> Object createAdapter(Object o, Class<T> type) {
         // Compute the interfaces that the proxy has to implement
-        List<Class<?>> interfaces = ClassUtils.getAllInterfaces(o.getClass());
+        Set<Class<?>> interfaces = getAllInterfaces(o.getClass());
         interfaces.add(type);
 
         // Create the proxy
@@ -141,6 +141,40 @@ final class PersistentEObjectAdapter {
         proxy.setCallback(new PersistentEObjectInterceptor());
 
         return proxy.create();
+    }
+
+    /**
+     * Retrieves all interfaces implemented by the given class and its superclasses.
+     * <p>
+     * The order is determined by looking through each interface in turn as declared in the source file and following
+     * its hierarchy up. Then each superclass is considered in the same way. Later duplicates are ignored, so the order
+     * is maintained.
+     *
+     * @param cls the class to look up
+     *
+     * @return a {@link Set} of interfaces in order
+     */
+    private static Set<Class<?>> getAllInterfaces(Class<?> cls) {
+        Set<Class<?>> interfaces = new LinkedHashSet<>();
+        getAllInterfaces(cls, interfaces);
+        return interfaces;
+    }
+
+    /**
+     * Retrieves recursively the interfaces for the specified class.
+     *
+     * @param cls        the class to look up
+     * @param interfaces the {@link Set} of interfaces for the class
+     */
+    private static void getAllInterfaces(Class<?> cls, Set<Class<?>> interfaces) {
+        while (cls != null) {
+            for (Class<?> i : cls.getInterfaces()) {
+                if (interfaces.add(i)) {
+                    getAllInterfaces(i, interfaces);
+                }
+            }
+            cls = cls.getSuperclass();
+        }
     }
 
     /**

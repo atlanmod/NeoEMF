@@ -291,10 +291,10 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
     }
 
     /**
-     * Simple class to serialize/deserialize objects from/to byte arrays.
+     * Utility class that is responsible of {@link Object} to {@code byte[]} encoding.
      */
     @ParametersAreNonnullByDefault
-    protected static final class Serializer {
+    private static final class Serializer {
 
         /**
          * This class should not be instantiated.

@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import com.google.common.base.Splitter;
-
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
@@ -26,12 +24,14 @@ import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -282,7 +282,10 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
         List<String> references;
 
         if (!value.trim().isEmpty()) {
-            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(value);
+            references = Arrays.stream(value.split(" "))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
 
             boolean isReference = true;
             for (int i = 0; i < references.size() && isReference; i++) {

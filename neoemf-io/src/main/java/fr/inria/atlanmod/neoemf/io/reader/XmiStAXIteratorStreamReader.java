@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.util.Iterables;
+import fr.inria.atlanmod.neoemf.util.MoreIterables;
 
 import org.codehaus.stax2.XMLInputFactory2;
 
@@ -69,13 +69,13 @@ public class XmiStAXIteratorStreamReader extends AbstractXmiStreamReader {
             if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
 
-                Iterables.stream((Iterable<Namespace>) element::getNamespaces)
+                MoreIterables.stream((Iterable<Namespace>) element::getNamespaces)
                         .forEach(ns -> readNamespace(ns.getPrefix(), ns.getNamespaceURI()));
 
                 QName elementName = element.getName();
                 readStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
-                Iterables.stream((Iterable<Attribute>) element::getAttributes).forEach(a -> {
+                MoreIterables.stream((Iterable<Attribute>) element::getAttributes).forEach(a -> {
                     QName attributeName = a.getName();
                     readAttribute(
                             attributeName.getPrefix(),

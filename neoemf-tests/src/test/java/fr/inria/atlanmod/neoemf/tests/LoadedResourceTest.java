@@ -58,7 +58,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)
-    @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
+    @Ignore("Performance issues") // FIXME Check if we have to correct it or not (performance issues)
     public void testGetElementsEInternalContainer() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
@@ -71,7 +71,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)
-    @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
+    @Ignore("Performance issues") // FIXME Check if we have to correct it or not (performance issues)
     public void testGetAllContentsEInternalContainer() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 

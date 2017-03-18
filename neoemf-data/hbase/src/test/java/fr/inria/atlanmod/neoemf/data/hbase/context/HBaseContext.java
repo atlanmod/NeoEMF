@@ -75,7 +75,7 @@ public abstract class HBaseContext implements Context {
             host = conf.get("hbase.zookeeper.quorum");
             port = Integer.parseInt(conf.get("hbase.zookeeper.property.clientPort"));
 
-            Log.info("Hadoop cluster running at {0}:{1}", host, port);
+            Log.info("Hadoop cluster running at {0}:{1,number,#}", host, port);
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {

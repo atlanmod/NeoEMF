@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
 import org.junit.Ignore;
 
-// FIXME `AbstractHBaseBackend#unsetValue` does not correctly clean many values/references
 public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
 
     @Override
@@ -25,32 +24,32 @@ public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
         return HBaseContext.getWithArraysAndStrings();
     }
 
-    @Ignore
+    @Ignore("Deletion issue")
     @Override
     public void testRemoveValue() {
     }
 
-    @Ignore
+    @Ignore("Deletion issue")
     @Override
     public void testRemoveAllValues() {
     }
 
-    @Ignore
+    @Ignore("Deletion issue")
     @Override
     public void testContainsValue() {
     }
 
-    @Ignore
+    @Ignore("Deletion issue")
     @Override
     public void testRemoveReference() {
     }
 
-    @Ignore
+    @Ignore("Deletion issue")
     @Override
     public void testRemoveAllReferences() {
     }
 
-    @Ignore
+    @Ignore("Deletion issue")
     @Override
     public void testContainsReference() {
     }

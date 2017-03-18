@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -141,7 +142,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return Optional.of(ContainerDescriptor.of(Serializer.deserialize(byteId), Serializer.deserialize(byteName)));
+                        return Optional.of(ContainerDescriptor.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
                     }
                     return Optional.<ContainerDescriptor>empty();
                 })
@@ -154,12 +155,13 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         checkNotNull(container);
 
         try {
-            Put put = new Put(Serializer.serialize(id));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Serializer.serialize(container.id()));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Serializer.serialize(container.name()));
+            Put put = new Put(Bytes.toBytes(id.toString()));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()));
+            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
             table.put(put);
         }
-        catch (IOException ignore) {
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -173,7 +175,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
                     if (nonNull(byteName) && nonNull(byteUri)) {
-                        return Optional.of(ClassDescriptor.of(Serializer.deserialize(byteName), Serializer.deserialize(byteUri)));
+                        return Optional.of(ClassDescriptor.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
                     }
                     return Optional.<ClassDescriptor>empty();
                 })
@@ -186,12 +188,13 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         checkNotNull(metaclass);
 
         try {
-            Put put = new Put(Serializer.serialize(id));
-            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Serializer.serialize(metaclass.name()));
-            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Serializer.serialize(metaclass.uri()));
+            Put put = new Put(Bytes.toBytes(id.toString()));
+            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(metaclass.name()));
+            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(metaclass.uri()));
             table.put(put);
         }
-        catch (IOException ignore) {
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -236,12 +239,11 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    protected <V> Optional<V> get(FeatureKey key) {
+    private <V> Optional<V> get(FeatureKey key) {
         return get(key.id())
-                .map(result -> {
-                    Optional<byte[]> value = Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Serializer.serialize(key.name())));
-                    return value.map(bytes -> Optional.<V>of(Serializer.deserialize(bytes))).orElse(Optional.empty());
-                })
+                .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
+                        .map(value -> Optional.<V>of(Serializer.deserialize(value)))
+                        .orElse(Optional.empty()))
                 .orElse(Optional.empty());
     }
 
@@ -251,13 +253,14 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
      * @param key   the key of the element to save
      * @param value the value to save
      */
-    protected <V> void put(FeatureKey key, V value) {
+    private <V> void put(FeatureKey key, V value) {
         try {
-            Put put = new Put(Serializer.serialize(key.id()));
-            put.addColumn(PROPERTY_FAMILY, Serializer.serialize(key.name()), Serializer.serialize(value));
+            Put put = new Put(Bytes.toBytes(key.id().toString()));
+            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializer.serialize(value));
             table.put(put);
         }
-        catch (IOException ignore) {
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -266,13 +269,15 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
      *
      * @param key the key of the element to remove
      */
-    protected void delete(FeatureKey key) {
+    // FIXME Does not correctly delete the value (see #unset(FeatureKey))
+    private void delete(FeatureKey key) {
         try {
-            Delete delete = new Delete(Serializer.serialize(key.id()));
-            delete.addColumn(PROPERTY_FAMILY, Serializer.serialize(key.name()));
+            Delete delete = new Delete(Bytes.toBytes(key.id().toString()));
+            delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()));
             table.delete(delete);
         }
-        catch (IOException ignore) {
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -288,23 +293,24 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         Optional<Result> value = Optional.empty();
 
         try {
-            Get get = new Get(Serializer.serialize(id));
+            Get get = new Get(Bytes.toBytes(id.toString()));
             Result result = table.get(get);
             if (!result.isEmpty()) {
                 value = Optional.of(result);
             }
         }
-        catch (IOException ignore) {
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return value;
     }
 
     /**
-     * Utility class that is responsible of {@link Object} to {@link Byte} encoding.
+     * Utility class that is responsible of {@link Object} to {@code byte[]} encoding.
      */
     @ParametersAreNonnullByDefault
-    protected static class Serializer {
+    private static final class Serializer {
 
         /**
          * This class should not be instantiated.

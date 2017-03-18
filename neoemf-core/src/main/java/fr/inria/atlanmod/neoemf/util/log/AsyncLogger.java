@@ -11,14 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.util.log;
 
-import com.google.common.util.concurrent.MoreExecutors;
-
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
@@ -35,22 +32,9 @@ import javax.annotation.concurrent.ThreadSafe;
 class AsyncLogger extends AbstractLogger {
 
     /**
-     * The number of threads in the pool. Use a single thread to ensure the log order.
-     */
-    private static final int THREADS = 1;
-
-    /**
-     * The time, in millis, to wait for the executor to finish before terminating the JVM.
-     */
-    private static final int TERMINATION_TIMEOUT_MS = 100;
-
-    /**
      * The concurrent pool.
      */
-    private static final ExecutorService pool =
-            MoreExecutors.getExitingExecutorService(
-                    (ThreadPoolExecutor) Executors.newFixedThreadPool(THREADS),
-                    TERMINATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+    private static final ExecutorService pool = createService();
 
     /**
      * Constructs a new {@code AsyncLogger} with the given {@code name}.
@@ -59,6 +43,34 @@ class AsyncLogger extends AbstractLogger {
      */
     public AsyncLogger(String name) {
         super(name);
+    }
+
+    /**
+     * Creates a new {@link ExecutorService} that will be closed when the application will exit.
+     *
+     * @return a new service
+     */
+    private static ExecutorService createService() {
+        ExecutorService service = Executors.unconfigurableExecutorService(
+                Executors.newFixedThreadPool(1, r -> {
+                    Thread thread = Executors.defaultThreadFactory().newThread(r);
+                    thread.setDaemon(true);
+                    return thread;
+                }));
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                service.shutdown();
+
+                if (service.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                    service.shutdownNow().forEach(Runnable::run);
+                }
+            }
+            catch (InterruptedException ignored) {
+            }
+        }));
+
+        return service;
     }
 
     @Override

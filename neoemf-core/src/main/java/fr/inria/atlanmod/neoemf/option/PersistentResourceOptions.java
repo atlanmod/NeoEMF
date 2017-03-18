@@ -23,7 +23,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see Resource#load(Map)
  * @see Resource#save(Map)
  */
-// TODO Move options associated to PersistentStoreOptions in a separate class
 @ParametersAreNonnullByDefault
 public interface PersistentResourceOptions {
 

@@ -131,7 +131,6 @@
         <argLine /> <!-- Keep it empty -->
         <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
 
-        <guava.version>20.0</guava.version> <!-- 'guava:21.0+' is incompatible with 'hadoop-common:2.7.3' -->
         <osgi.version>6.0.0</osgi.version>
 
         <emf.version>2.12.0</emf.version>
@@ -156,14 +155,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- Common -->
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
 
             <!-- EMF -->
 

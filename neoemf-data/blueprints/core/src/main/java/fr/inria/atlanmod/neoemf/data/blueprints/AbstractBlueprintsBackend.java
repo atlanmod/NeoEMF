@@ -26,7 +26,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.util.Iterables;
+import fr.inria.atlanmod.neoemf.util.MoreIterables;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
@@ -210,7 +210,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
 
         indexedMetaclasses.forEach(m -> {
             Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, m.name());
-            checkArgument(Iterables.isEmpty(metaclasses), "Index is not consistent");
+            checkArgument(MoreIterables.isEmpty(metaclasses), "Index is not consistent");
             to.metaclassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         });
     }
@@ -237,7 +237,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
         }
 
         Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
-        Optional<Edge> containerEdge = Iterables.stream(containerEdges).findAny();
+        Optional<Edge> containerEdge = MoreIterables.stream(containerEdges).findAny();
 
         Optional<ContainerDescriptor> container = Optional.empty();
         if (containerEdge.isPresent()) {
@@ -275,7 +275,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
         }
 
         Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
-        Optional<Vertex> metaclassVertex = Iterables.stream(metaclassVertices).findAny();
+        Optional<Vertex> metaclassVertex = MoreIterables.stream(metaclassVertices).findAny();
 
         return metaclassVertex.map(v -> ClassDescriptor.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
     }
@@ -286,7 +286,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
         checkNotNull(metaclass);
 
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
-        Vertex metaclassVertex = Iterables.stream(metaclassVertices).findAny().orElse(null);
+        Vertex metaclassVertex = MoreIterables.stream(metaclassVertices).findAny().orElse(null);
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = graph.addVertex(buildId(metaclass).toString());
@@ -323,8 +323,8 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
 
             // Get all vertices that are indexed with one of the metaclass
             return allInstances.stream()
-                    .flatMap(mc -> Iterables.stream(metaclassIndex.get(KEY_NAME, mc.name()))
-                            .flatMap(mcv -> Iterables.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
+                    .flatMap(mc -> MoreIterables.stream(metaclassIndex.get(KEY_NAME, mc.name()))
+                            .flatMap(mcv -> MoreIterables.stream(mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
                                     .map(v -> StringId.from(v.getId()))))
                     .collect(Collectors.toList());
         }
@@ -435,7 +435,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
                 super.remove();
 
                 Iterable<Edge> edges = referencedVertex.getEdges(Direction.IN);
-                if (Iterables.isEmpty(edges)) {
+                if (MoreIterables.isEmpty(edges)) {
                     // If the Vertex has no more incoming edges remove it from the DB
                     referencedVertex.remove();
                 }

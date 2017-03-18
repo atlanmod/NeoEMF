@@ -71,7 +71,7 @@ public class ExportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occurs
      */
     @Test
-    @Ignore // FIXME Some attributes cannot be written
+    @Ignore("Incomplete implementation") // FIXME Some attributes cannot be written
     public void testCopyFile() throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
@@ -92,7 +92,7 @@ public class ExportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occurs
      */
     @Test
-    @Ignore // FIXME Some elements are missing
+    @Ignore("Incomplete implementation") // FIXME Some elements are missing
     public void testExportToXmi() throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 

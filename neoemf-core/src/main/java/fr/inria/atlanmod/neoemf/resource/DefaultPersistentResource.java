@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
-import fr.inria.atlanmod.neoemf.util.Iterables;
+import fr.inria.atlanmod.neoemf.util.MoreIterables;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -159,7 +159,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         getErrors().clear();
         getWarnings().clear();
 
-        Iterables.stream(allContents)
+        MoreIterables.stream(allContents)
                 .map(InternalEObject.class::cast)
                 .forEach(this::unloaded);
 
@@ -255,14 +255,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
         Iterable<EObject> allInstances;
         try {
-            return Iterables.stream(store.allInstancesOf(ClassDescriptor.from(eClass), strict))
+            return MoreIterables.stream(store.allInstancesOf(ClassDescriptor.from(eClass), strict))
                     .map(id -> store.resolve(id))
                     .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
             Log.info("The store does not support advanced allInstancesOf() computation: using standard EMF API instead");
 
-            return Iterables.stream(this::getAllContents)
+            return MoreIterables.stream(this::getAllContents)
                     .filter(eClass::isInstance)
                     .map(o -> !strict || Objects.equals(o.eClass(), eClass) ? o : null)
                     .filter(Objects::nonNull)
@@ -419,7 +419,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             PersistentEObject eObject = PersistentEObject.from(object);
 
             // Collect all contents
-            Set<EObject> allContents = Iterables.stream(eObject::eAllContents)
+            Set<EObject> allContents = MoreIterables.stream(eObject::eAllContents)
                     .collect(Collectors.toSet());
 
             allContents.add(eObject);
@@ -443,7 +443,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             PersistentEObject eObject = PersistentEObject.from(previousValue);
 
             // Collect all contents
-            Set<E> allContents = Iterables.stream(eObject::eAllContents)
+            Set<E> allContents = MoreIterables.stream(eObject::eAllContents)
                     .map(e -> (E) e)
                     .collect(Collectors.toSet());
 

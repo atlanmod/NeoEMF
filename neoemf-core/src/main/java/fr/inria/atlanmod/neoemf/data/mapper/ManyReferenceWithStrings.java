@@ -15,8 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-
-import org.apache.commons.lang3.ArrayUtils;
+import fr.inria.atlanmod.neoemf.util.MoreArrays;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -91,14 +90,14 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
                 .orElse(new Id[0]);
 
         while (key.position() > ids.length) {
-            ids = ArrayUtils.add(ids, ids.length, null);
+            ids = MoreArrays.append(ids, null);
         }
 
         if (key.position() < ids.length && isNull(ids[key.position()])) {
             ids[key.position()] = reference;
         }
         else {
-            ids = ArrayUtils.add(ids, key.position(), reference);
+            ids = MoreArrays.add(ids, key.position(), reference);
         }
 
         valueFor(key.withoutPosition(), arrayToString(ids));
@@ -121,7 +120,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
         if (key.position() < ids.length) {
             previousId = Optional.of(ids[key.position()]);
 
-            ids = ArrayUtils.remove(ids, key.position());
+            ids = MoreArrays.remove(ids, key.position());
 
             if (ids.length == 0) {
                 removeAllReferences(key.withoutPosition());
@@ -144,7 +143,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
         }
 
         return this.<String>valueOf(key)
-                .map(s -> ArrayUtils.contains(arrayFromString(s), reference))
+                .map(s -> MoreArrays.contains(arrayFromString(s), reference))
                 .orElse(false);
     }
 
@@ -157,7 +156,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
         return this.<String>valueOf(key)
                 .map(s -> {
-                    int index = ArrayUtils.indexOf(arrayFromString(s), reference);
+                    int index = MoreArrays.indexOf(arrayFromString(s), reference);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -172,7 +171,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
         return this.<String>valueOf(key)
                 .map(s -> {
-                    int index = ArrayUtils.lastIndexOf(arrayFromString(s), reference);
+                    int index = MoreArrays.lastIndexOf(arrayFromString(s), reference);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());

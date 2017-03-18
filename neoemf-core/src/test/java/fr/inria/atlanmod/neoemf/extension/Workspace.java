@@ -11,19 +11,22 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.rules.ExternalResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
 
 /**
  * An {@link ExternalResource} that manages temporary resources.
  */
+@ParametersAreNonnullByDefault
 public class Workspace extends ExternalResource {
 
     /**
@@ -34,21 +37,17 @@ public class Workspace extends ExternalResource {
     /**
      * The temporary folder.
      */
-    private File temporaryFolder;
+    private Path temporaryFolder;
 
     @Override
     public void before() throws IOException {
-        temporaryFolder = Files.createTempDirectory(PREFIX).toFile();
+        temporaryFolder = Files.createTempDirectory(PREFIX);
     }
 
     @Override
     public void after() {
-        if (nonNull(temporaryFolder) && temporaryFolder.exists() && !FileUtils.deleteQuietly(temporaryFolder)) {
-            try {
-                FileUtils.forceDeleteOnExit(temporaryFolder);
-            }
-            catch (IOException ignore) {
-            }
+        if (nonNull(temporaryFolder) && temporaryFolder.toFile().exists()) {
+            deleteAll(temporaryFolder);
         }
     }
 
@@ -62,8 +61,38 @@ public class Workspace extends ExternalResource {
      * @throws IOException if an I/O error occurs
      */
     public File newFile(String prefix) throws IOException {
-        Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), prefix);
+        Path createdFolder = Files.createTempDirectory(temporaryFolder, prefix);
         Files.deleteIfExists(createdFolder);
         return createdFolder.toFile();
+    }
+
+    /**
+     * Deletes the given {@code path} if it exists.
+     *
+     * @param path the file/directory path to delete
+     *
+     * @return {@code true} if the path has correctly been deleted
+     */
+    private void deleteAll(Path path) {
+        try {
+            if (path.toFile().isDirectory()) {
+                Files.walk(path, FileVisitOption.FOLLOW_LINKS)
+                        .forEach(p -> {
+                            try {
+                                Files.deleteIfExists(p);
+                            }
+                            catch (Exception ignored) {
+                            }
+                        });
+            }
+            Files.deleteIfExists(path);
+        }
+        catch (Exception e) {
+            try {
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteAll(path)));
+            }
+            catch (IllegalStateException ignored) {
+            }
+        }
     }
 }

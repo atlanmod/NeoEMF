@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
@@ -71,21 +70,5 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
-    }
-
-    /**
-     * Checks if {@link Backend#copyTo} creates the persistent datastores from the transient ones.
-     * Only empty back-ends are tested.
-     */
-    @Test
-    @Ignore("HBase back-ends don't support copy")
-    public void testCopyBackend() {
-        Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(HBaseBackend.class);
-
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), HBaseOptions.noOption());
-        assertThat(persistentBackend).isInstanceOf(HBaseBackend.class);
-
-        transientBackend.copyTo(persistentBackend);
     }
 }

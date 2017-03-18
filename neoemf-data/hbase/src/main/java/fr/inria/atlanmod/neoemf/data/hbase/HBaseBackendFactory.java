@@ -91,9 +91,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         HBaseBackend backend;
 
-        checkArgument(uri.isHierarchical(),"HBaseBackendFactory only supports hierarchical URIs");
-
-        Table table;
+        checkArgument(uri.isHierarchical(), "HBaseBackendFactory only supports hierarchical URIs");
 
         try {
             Configuration configuration = HBaseConfiguration.create();
@@ -107,7 +105,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
             // Initialize
             if (!admin.tableExists(tableName)) {
-                // FIXME Don't initialize this table in READ ONLY.
+                // TODO Don't initialize this table in READ ONLY.
                 HTableDescriptor desc = new HTableDescriptor(tableName);
                 HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.PROPERTY_FAMILY);
                 HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.TYPE_FAMILY);
@@ -118,7 +116,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                 admin.createTable(desc);
             }
 
-            table = connection.getTable(tableName);
+            Table table = connection.getTable(tableName);
 
             backend = newInstanceOf(mappingFrom(options),
                     new ConstructorParameter(table, Table.class));

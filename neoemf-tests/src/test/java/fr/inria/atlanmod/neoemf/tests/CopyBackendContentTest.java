@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
@@ -58,8 +57,7 @@ public class CopyBackendContentTest extends AbstractBackendTest {
         PersistentResource resource = createTransientStore();
         fillResource(resource);
 
-        // FIXME Use `context().optionsBuilder()` cause some problems with Neo4j
-        resource.save(CommonOptions.noOption());
+        resource.save(context.optionsBuilder().asMap());
         assertThat(resource.getContents()).isNotEmpty();
         assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class);
 

@@ -13,8 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-
-import org.apache.commons.lang3.ArrayUtils;
+import fr.inria.atlanmod.neoemf.util.MoreArrays;
 
 import java.util.Arrays;
 import java.util.List;
@@ -84,14 +83,14 @@ public interface ManyValueWithArrays extends ManyValueMapper {
                 .orElse((V[]) new Object[0]);
 
         while (key.position() > values.length) {
-            values = ArrayUtils.add(values, values.length, null);
+            values = MoreArrays.append(values, null);
         }
 
         if (key.position() < values.length && isNull(values[key.position()])) {
             values[key.position()] = value;
         }
         else {
-            values = ArrayUtils.add(values, key.position(), value);
+            values = MoreArrays.add(values, key.position(), value);
         }
 
         valueFor(key.withoutPosition(), values);
@@ -114,7 +113,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         if (key.position() < values.length) {
             previousValue = Optional.of(values[key.position()]);
 
-            values = ArrayUtils.remove(values, key.position());
+            values = MoreArrays.remove(values, key.position());
 
             if (values.length == 0) {
                 removeAllValues(key.withoutPosition());
@@ -137,7 +136,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         }
 
         return this.<V[]>valueOf(key)
-                .map(values -> ArrayUtils.contains(values, value))
+                .map(values -> MoreArrays.contains(values, value))
                 .orElse(false);
     }
 
@@ -150,7 +149,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
         return this.<V[]>valueOf(key)
                 .map(values -> {
-                    int index = ArrayUtils.indexOf(values, value);
+                    int index = MoreArrays.indexOf(values, value);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());
@@ -165,7 +164,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
         return this.<V[]>valueOf(key)
                 .map(values -> {
-                    int index = ArrayUtils.lastIndexOf(values, value);
+                    int index = MoreArrays.lastIndexOf(values, value);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
                 .orElse(OptionalInt.empty());

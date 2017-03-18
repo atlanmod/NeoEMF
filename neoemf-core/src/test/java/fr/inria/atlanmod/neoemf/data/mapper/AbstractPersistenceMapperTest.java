@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.Iterables;
+import fr.inria.atlanmod.neoemf.util.MoreIterables;
 
 import org.junit.After;
 import org.junit.Before;
@@ -1022,7 +1022,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendReference(key, ref2);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = Iterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
+        List<Id> actualReferences = MoreIterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 
@@ -1047,7 +1047,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(1), ref1);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = Iterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
+        List<Id> actualReferences = MoreIterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 

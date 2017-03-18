@@ -22,14 +22,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Static utility methods related to {@link Iterable} instances.
  */
 @ParametersAreNonnullByDefault
-public final class Iterables {
+public final class MoreIterables {
 
     /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
      */
-    private Iterables() {
+    private MoreIterables() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 

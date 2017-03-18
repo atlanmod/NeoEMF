@@ -100,7 +100,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
         BlueprintsBackend backend;
 
-        checkArgument(uri.isFile(),"BlueprintsBackendFactory only supports file-based URIs");
+        checkArgument(uri.isFile(), "BlueprintsBackendFactory only supports file-based URIs");
 
         try {
             File file = new File(uri.toFileString());

@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
-import com.google.common.base.Splitter;
-
 import fr.inria.atlanmod.neoemf.util.log.Log;
 import fr.inria.atlanmod.neoemf.util.log.Logger;
 
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
+
+import java.util.Arrays;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -43,7 +43,8 @@ public class Watcher extends org.junit.rules.TestWatcher {
             LOG.warn("[WARN] --- Failed");
         }
         else if (AssertionError.class.isInstance(e) && nonNull(e.getMessage())) {
-            Splitter.on('\n').omitEmptyStrings().splitToList(e.getMessage())
+            Arrays.stream(e.getMessage().split("\n"))
+                    .filter(s -> !s.isEmpty())
                     .forEach(m -> LOG.warn("[WARN] {0}", m));
 
             LOG.warn("[WARN]");

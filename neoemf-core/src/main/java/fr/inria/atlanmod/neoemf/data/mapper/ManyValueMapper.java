@@ -74,7 +74,6 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NoSuchElementException if the {@code key} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
-     *
      * @see #addValue(ManyFeatureKey, Object)
      * @see #appendValue(FeatureKey, Object)
      */
@@ -115,7 +114,6 @@ public interface ManyValueMapper extends ValueMapper {
      * @param <V>   the type of value
      *
      * @throws NullPointerException if any parameter is {@code null}
-     *
      * @see #addValue(ManyFeatureKey, Object)
      */
     default <V> void appendValue(FeatureKey key, V value) {
@@ -132,7 +130,6 @@ public interface ManyValueMapper extends ValueMapper {
      * @param <V>    the type of values
      *
      * @throws NullPointerException if any parameter is {@code null}
-     *
      * @see #addValue(ManyFeatureKey, Object)
      * @see #appendValue(FeatureKey, Object)
      */

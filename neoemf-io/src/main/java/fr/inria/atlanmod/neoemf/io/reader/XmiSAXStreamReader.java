@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import com.google.common.base.Splitter;
-
 import fr.inria.atlanmod.neoemf.io.Handler;
 
 import org.xml.sax.Attributes;
@@ -20,7 +18,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -119,7 +119,11 @@ public class XmiSAXStreamReader extends AbstractXmiStreamReader {
             String prefix = null;
 
             if (nonNull(prefixedValue)) {
-                List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
+                List<String> splittedName = Arrays.stream(prefixedValue.split(":"))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toList());
+
                 if (splittedName.size() > 1) {
                     prefix = splittedName.get(0);
                 }

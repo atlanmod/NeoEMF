@@ -180,6 +180,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param source the store to copy
      * @param target the store where to store data
      */
+    // TODO Move the copy at DataMapper level
     private void copyStore(StoreAdapter source, StoreAdapter target) {
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {

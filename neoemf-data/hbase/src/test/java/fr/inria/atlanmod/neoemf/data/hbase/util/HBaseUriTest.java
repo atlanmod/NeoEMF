@@ -18,7 +18,7 @@ import org.junit.Ignore;
 
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
-    @Ignore
+    @Ignore("Not supported because of the mini-cluster")
     @Override
     public void testCreateUriFromStandardUriInvalidScheme() {
     }

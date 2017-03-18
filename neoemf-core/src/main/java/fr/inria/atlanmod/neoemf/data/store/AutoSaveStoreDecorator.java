@@ -66,15 +66,6 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void save() {
-        //noinspection ConstantConditions
-        Log.info("PersistentResource saved:   {0} (auto-save after {1} changes)", isAttached() ? resource().getURI() : "", changesCount);
-        changesCount = 0L;
-
-        super.save();
-    }
-
-    @Override
     public void containerFor(Id id, ContainerDescriptor container) {
         thenIncrementAndSave(() -> super.containerFor(id, container), 1);
     }
@@ -171,6 +162,26 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     /**
+     * @see #save()
+     */
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            save();
+        }
+        catch (Exception ignored) {
+        }
+        finally {
+            super.finalize();
+        }
+    }
+
+    @Override
+    public boolean isAutoSave() {
+        return true;
+    }
+
+    /**
      * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when
      * {@code count % chunk == 0}.
      *
@@ -178,6 +189,8 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param count  the number of changes made
      *
      * @return the result of the {@code method}
+     *
+     * @see #incremendAndSave(int)
      */
     private <V> V thenIncrementAndSave(Callable<V> method, int count) {
         V result;
@@ -202,6 +215,8 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      *
      * @param method the method to call before saving
      * @param count  the number of changes made
+     *
+     * @see #incremendAndSave(int)
      */
     private void thenIncrementAndSave(Runnable method, int count) {
         method.run();
@@ -213,34 +228,18 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * Increments the number of operation, and saves if necessary, i.e when {@code count % chunk == 0}.
      *
      * @param count the number of changes made
+     *
+     * @see #save()
      */
     private void incremendAndSave(int count) {
         changesCount += count;
 
         if (changesCount >= autoSaveChunk) {
+            //noinspection ConstantConditions
+            Log.info("PersistentResource saved:   {0} (auto-save after {1} changes)", isAttached() ? resource().getURI() : "", changesCount);
+
+            changesCount = 0L;
             save();
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * In our case, it saves the last modifications.
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            save();
-        }
-        catch (Exception ignored) {
-        }
-        finally {
-            super.finalize();
-        }
-    }
-
-    @Override
-    public boolean isAutoSave() {
-        return true;
     }
 }

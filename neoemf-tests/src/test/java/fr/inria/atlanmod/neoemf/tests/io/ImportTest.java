@@ -177,7 +177,7 @@ public class ImportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Ignore // FIXME Inverse references don't exist in EMF
+    @Ignore("Incomplete implementation") // FIXME Inverse references don't exist in EMF
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
         File file = getXmiWithId();

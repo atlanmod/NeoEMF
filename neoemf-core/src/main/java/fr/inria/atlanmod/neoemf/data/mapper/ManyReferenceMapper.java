@@ -76,7 +76,6 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @throws NoSuchElementException if the {@code key} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
-     *
      * @see #addReference(ManyFeatureKey, Id)
      * @see #appendReference(FeatureKey, Id)
      */
@@ -118,7 +117,6 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param reference the reference to add
      *
      * @throws NullPointerException if any parameter is {@code null}
-     *
      * @see #addReference(ManyFeatureKey, Id)
      */
     default void appendReference(FeatureKey key, Id reference) {
@@ -134,7 +132,6 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param references the references to add
      *
      * @throws NullPointerException if any parameter is {@code null}
-     *
      * @see #addReference(ManyFeatureKey, Id)
      * @see #appendReference(FeatureKey, Id)
      */
