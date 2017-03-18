@@ -166,7 +166,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testAutoSaveOption() {
-        final long expectedChunk = 10_000L;
+        final long expectedChunk = 50_000L;
 
         Map<String, Object> options = CommonOptions.newBuilder()
                 .autoSave()
