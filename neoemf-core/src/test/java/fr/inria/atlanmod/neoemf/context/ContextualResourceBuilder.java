@@ -96,7 +96,7 @@ final class ContextualResourceBuilder {
     private Map<String, Object> allOptions() {
         return context.optionsBuilder()
                 .log()
-                .autoSave(2L)
+                .autoSave(100)
                 .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()
