@@ -62,11 +62,12 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param store the underlying store
      */
     public AutoSaveStoreDecorator(Store store) {
-        this(store, 10_000L);
+        this(store, 50_000L);
     }
 
     @Override
     public void save() {
+        //noinspection ConstantConditions
         Log.debug("PersistentResource saved:   {0} (auto-save after {1} changes)", isAttached() ? resource().getURI() : "", changesCount);
         changesCount = 0L;
 
