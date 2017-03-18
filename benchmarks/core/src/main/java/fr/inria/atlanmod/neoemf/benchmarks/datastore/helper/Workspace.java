@@ -157,12 +157,16 @@ public class Workspace {
 
                 @Override
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    if (!includingRoot || !Objects.equals(dir, directory)) {
+                    if (!Objects.equals(dir, directory)) {
                         Files.deleteIfExists(dir);
                     }
                     return FileVisitResult.CONTINUE;
                 }
             });
+
+            if (includingRoot) {
+                Files.deleteIfExists(directory);
+            }
         }
         catch (Exception ignored) {
         }

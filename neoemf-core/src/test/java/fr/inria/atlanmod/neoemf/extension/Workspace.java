@@ -86,9 +86,10 @@ public class Workspace extends ExternalResource {
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                     Files.deleteIfExists(dir);
                     return FileVisitResult.CONTINUE;
-
                 }
             });
+
+            Files.deleteIfExists(directory);
         }
         catch (Exception e) {
             try {
