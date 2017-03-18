@@ -13,12 +13,14 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -87,6 +89,7 @@ public class Workspace {
         if (isNull(TEMP_DIRECTORY)) {
             try {
                 TEMP_DIRECTORY = Files.createTempDirectory("neoemf-benchmark");
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteDirectory(TEMP_DIRECTORY, true)));
             }
             catch (IOException e) {
                 Log.warn(e);
@@ -114,11 +117,7 @@ public class Workspace {
      */
     public static void cleanTempDirectory() {
         if (nonNull(TEMP_DIRECTORY)) {
-            try {
-                FileUtils.cleanDirectory(TEMP_DIRECTORY.toFile());
-            }
-            catch (IOException ignore) {
-            }
+            deleteDirectory(TEMP_DIRECTORY, false);
         }
     }
 
@@ -130,7 +129,7 @@ public class Workspace {
      * @return the {@code path}
      */
     private static Path createIfNecessary(Path path) {
-        if (!path.toFile().exists()) {
+        if (!Files.exists(path)) {
             try {
                 Files.createDirectories(path);
             }
@@ -139,5 +138,33 @@ public class Workspace {
             }
         }
         return path;
+    }
+
+    /**
+     * Deletes the given directory with all its files and sub-directories.
+     *
+     * @param directory     the directory directory to delete
+     * @param includingRoot {@code true} if the {@code directory} must be deleted
+     */
+    private static void deleteDirectory(Path directory, boolean includingRoot) {
+        try {
+            Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (!includingRoot || !Objects.equals(dir, directory)) {
+                        Files.deleteIfExists(dir);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+        catch (Exception ignored) {
+        }
     }
 }

@@ -15,9 +15,11 @@ import org.junit.rules.ExternalResource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -46,8 +48,8 @@ public class Workspace extends ExternalResource {
 
     @Override
     public void after() {
-        if (nonNull(temporaryFolder) && temporaryFolder.toFile().exists()) {
-            deleteAll(temporaryFolder);
+        if (nonNull(temporaryFolder) && Files.exists(temporaryFolder)) {
+            deleteDirectory(temporaryFolder);
         }
     }
 
@@ -67,29 +69,30 @@ public class Workspace extends ExternalResource {
     }
 
     /**
-     * Deletes the given {@code path} if it exists.
+     * Deletes the given directory with all its files and sub-directories.
      *
-     * @param path the file/directory path to delete
-     *
-     * @return {@code true} if the path has correctly been deleted
+     * @param directory the directory to delete
      */
-    private void deleteAll(Path path) {
+    private void deleteDirectory(Path directory) {
         try {
-            if (path.toFile().isDirectory()) {
-                Files.walk(path, FileVisitOption.FOLLOW_LINKS)
-                        .forEach(p -> {
-                            try {
-                                Files.deleteIfExists(p);
-                            }
-                            catch (Exception ignored) {
-                            }
-                        });
-            }
-            Files.deleteIfExists(path);
+            Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+
+                }
+            });
         }
         catch (Exception e) {
             try {
-                Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteAll(path)));
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteDirectory(directory)));
             }
             catch (IllegalStateException ignored) {
             }

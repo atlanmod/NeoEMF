@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.InternalBackend;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -33,7 +32,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,18 +103,28 @@ public final class BackendHelper {
      * @throws IOException if an I/O error occurs during the copy
      */
     public static File copyStore(File sourceFile) throws IOException {
-        File outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName()).toFile();
+        Path outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName());
 
         Log.info("Copy {0} to {1}", sourceFile, outputFile);
 
-        if (sourceFile.isDirectory()) {
-            FileUtils.copyDirectory(sourceFile, outputFile, true);
-        }
-        else {
-            FileUtils.copyFile(sourceFile, outputFile);
-        }
+        Files.walkFileTree(sourceFile.toPath(), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                Path targetPath = outputFile.resolve(sourceFile.toPath().relativize(dir));
+                if (!Files.exists(targetPath)) {
+                    Files.createDirectory(targetPath);
+                }
+                return FileVisitResult.CONTINUE;
+            }
 
-        return outputFile;
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.copy(file, outputFile.resolve(sourceFile.toPath().relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+
+        return outputFile.toFile();
     }
 
     /**
