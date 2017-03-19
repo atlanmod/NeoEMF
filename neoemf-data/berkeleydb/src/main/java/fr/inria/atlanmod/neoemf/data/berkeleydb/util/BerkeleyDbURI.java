@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -58,8 +57,8 @@ public class BerkeleyDbURI extends PersistenceURI {
      *
      * @throws IllegalStateException every time
      */
-    protected BerkeleyDbURI() {
-        super();
+    private BerkeleyDbURI() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**
@@ -74,20 +73,10 @@ public class BerkeleyDbURI extends PersistenceURI {
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
      *                                  #FILE_SCHEME}
-     * @see #createFileURI(File)
      */
     @Nonnull
     public static URI createURI(URI uri) {
-        checkNotNull(uri);
-
-        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
-            return createFileURI(new File(uri.toFileString()));
-        }
-        else if (Objects.equals(SCHEME, uri.scheme())) {
-            return PersistenceURI.createURI(uri);
-        }
-
-        throw new IllegalArgumentException(String.format("Cannot create BerkeleyDbURI from the URI scheme %s", uri.scheme()));
+        return UriBuilder.newBuilder(SCHEME).fromUri(uri);
     }
 
     /**
@@ -101,7 +90,7 @@ public class BerkeleyDbURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createFileURI(File file) {
-        return createFileURI(checkNotNull(file), SCHEME);
+        return UriBuilder.newBuilder(SCHEME).fromFile(file);
     }
 
     /**

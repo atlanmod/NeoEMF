@@ -23,14 +23,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
@@ -92,18 +91,11 @@ public class PersistenceURI {
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
      *                                  BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
-     * @see #createFileURI(File, String)
-     * @see #createFileURI(URI, String)
      */
     @Nonnull
     @VisibleForTesting
     public static URI createURI(URI uri) {
-        checkNotNull(uri);
-
-        checkArgument(!Objects.equals(uri.scheme(), FILE_SCHEME), "Cannot create PersistenceURI from file-based URI without a valid scheme");
-        checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered URI scheme %s", uri);
-
-        return new DelegatedURI(uri);
+        return UriBuilder.newBuilder(uri.scheme()).fromUri(uri);
     }
 
     /**
@@ -118,14 +110,8 @@ public class PersistenceURI {
      */
     @Nonnull
     @VisibleForTesting
-    public static URI createFileURI(File file, @Nullable String scheme) {
-        checkNotNull(file);
-
-        URI fileUri = URI.createFileURI(file.getAbsolutePath());
-
-        return Optional.ofNullable(scheme)
-                .map(v -> createFileURI(fileUri, v))
-                .orElseGet(() -> createURI(fileUri));
+    public static URI createFileURI(File file, String scheme) {
+        return UriBuilder.newBuilder(scheme).fromFile(file);
     }
 
     /**
@@ -140,12 +126,140 @@ public class PersistenceURI {
      * @throws NullPointerException if the {@code uri} is {@code null}
      */
     @Nonnull
-    protected static URI createFileURI(URI uri, @Nullable String scheme) {
-        checkNotNull(uri);
+    @VisibleForTesting
+    public static URI createFileURI(URI uri, String scheme) {
+        return UriBuilder.newBuilder(scheme).fromFile(uri);
+    }
 
-        return Optional.ofNullable(scheme)
-                .map(s -> createURI(URI.createHierarchicalURI(s, uri.authority(), uri.device(), uri.segments(), uri.query(), uri.fragment())))
-                .orElseGet(() -> createURI(uri));
+    /**
+     * A builder for {@link PersistenceURI} instances.
+     */
+    @ParametersAreNonnullByDefault
+    protected static final class UriBuilder {
+
+        /**
+         * The scheme to identify the {@link BackendFactory} to use.
+         */
+        private final String scheme;
+
+        /**
+         * Constructs a new {@code UriBuilder}.
+         *
+         * @param scheme the scheme to identify the {@link BackendFactory} to use
+         */
+        private UriBuilder(String scheme) {
+            checkArgument(nonNull(scheme), "Cannot create URI without a valid scheme");
+            this.scheme = scheme;
+        }
+
+        /**
+         * Creates a new {@code UriBuilder}.
+         *
+         * @param scheme the scheme to identify the {@link BackendFactory} to use
+         *
+         * @return a new builder
+         */
+        @Nonnull
+        public static UriBuilder newBuilder(String scheme) {
+            return new UriBuilder(scheme);
+        }
+
+        /**
+         * Creates a new {@code URI} from the given {@code uri}.
+         * <p>
+         * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
+         * PersistenceURI}. Its scheme must be registered in the {@link BackendFactoryRegistry}.
+         *
+         * @param uri the base {@link URI}
+         *
+         * @return a new URI
+         *
+         * @throws NullPointerException     if the {@code uri} is {@code null}
+         * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
+         *                                  BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
+         * @see #fromFile(File)
+         * @see #fromFile(URI)
+         */
+        @Nonnull
+        public URI fromUri(URI uri) {
+            checkNotNull(uri);
+
+            if (Objects.equals(scheme, uri.scheme())) {
+                checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme %s", uri);
+                return new FileBasedUri(uri);
+            }
+
+            if (Objects.equals(FILE_SCHEME, uri.scheme())) {
+                return fromFile(new File(uri.toFileString()));
+            }
+
+            throw new IllegalArgumentException(String.format("Cannot create URI with the scheme %s", uri.scheme()));
+        }
+
+        /**
+         * Creates a new {@code URI} from the given {@code file} descriptor.
+         *
+         * @param file the {@link File} to build a {@link URI} from
+         *
+         * @return a new URI
+         *
+         * @throws NullPointerException if the {@code file} is {@code null}
+         */
+        @Nonnull
+        public URI fromFile(File file) {
+            checkNotNull(file);
+
+            return fromFile(URI.createFileURI(file.getAbsolutePath()));
+        }
+
+        /**
+         * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the
+         * file system.
+         *
+         * @param uri the base {@link URI}
+         *
+         * @return a new URI
+         *
+         * @throws NullPointerException if the {@code uri} is {@code null}
+         */
+        @Nonnull
+        public URI fromFile(URI uri) {
+            checkNotNull(uri);
+
+            return fromUri(URI.createHierarchicalURI(scheme,
+                    uri.authority(),
+                    uri.device(),
+                    uri.segments(),
+                    uri.query(),
+                    uri.fragment()));
+        }
+
+        /**
+         * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical
+         * {@link URI} that references the distant model resource.
+         *
+         * @param host  the address of the server (use {@code localhost} if the server is running locally)
+         * @param port  the port of the server
+         * @param model a {@link URI} identifying the model in the database
+         *
+         * @return a new URI
+         *
+         * @throws NullPointerException     if any of the parameters is {@code null}
+         * @throws IllegalArgumentException if {@code port < 0}
+         */
+        @Nonnull
+        public URI fromServer(String host, int port, URI model) {
+            checkNotNull(host);
+            checkNotNull(model);
+            checkArgument(port >= 0);
+
+            return URI.createHierarchicalURI(scheme,
+                    String.format("%s:%d", host, port),
+                    null,
+                    model.segments(),
+                    null,
+                    null);
+        }
     }
 
     /**
@@ -153,7 +267,7 @@ public class PersistenceURI {
      * {@link URI}. All methods are delegated to the internal {@link URI}.
      */
     @ParametersAreNonnullByDefault
-    private static class DelegatedURI extends URI {
+    private static class FileBasedUri extends URI {
 
         /**
          * The base {@link URI}.
@@ -162,16 +276,13 @@ public class PersistenceURI {
         private final URI baseUri;
 
         /**
-         * Constructs a new {@code DelegatedURI} from the given {@code internalURI}.
-         * <p>
-         * <b>Note:</b> This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link
-         * #createURI(URI)}, {@link #createFileURI(File, String)}, or {@link #createFileURI(URI, String)} instead.
+         * Constructs a new {@code FileBasedUri} from the given {@code baseUri}.
          *
-         * @param baseURI the base {@link URI}
+         * @param baseUri the base {@link URI}
          */
-        protected DelegatedURI(URI baseURI) {
-            super(baseURI.hashCode());
-            this.baseUri = baseURI;
+        protected FileBasedUri(URI baseUri) {
+            super(baseUri.hashCode());
+            this.baseUri = baseUri;
         }
 
         @Override

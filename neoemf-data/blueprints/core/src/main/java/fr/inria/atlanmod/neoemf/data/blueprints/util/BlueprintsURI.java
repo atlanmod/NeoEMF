@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -58,8 +57,8 @@ public class BlueprintsURI extends PersistenceURI {
      *
      * @throws IllegalStateException every time
      */
-    protected BlueprintsURI() {
-        super();
+    private BlueprintsURI() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**
@@ -78,16 +77,7 @@ public class BlueprintsURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createURI(URI uri) {
-        checkNotNull(uri);
-
-        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
-            return createFileURI(uri);
-        }
-        else if (Objects.equals(SCHEME, uri.scheme())) {
-            return PersistenceURI.createURI(uri);
-        }
-
-        throw new IllegalArgumentException(String.format("Cannot create BlueprintsURI from the URI scheme %s", uri.scheme()));
+        return UriBuilder.newBuilder(SCHEME).fromUri(uri);
     }
 
     /**
@@ -101,7 +91,7 @@ public class BlueprintsURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createFileURI(File file) {
-        return createFileURI(checkNotNull(file), SCHEME);
+        return UriBuilder.newBuilder(SCHEME).fromFile(file);
     }
 
     /**

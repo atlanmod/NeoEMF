@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.hadoop.conf.Configuration;
@@ -31,11 +30,13 @@ import org.apache.hadoop.hbase.client.Table;
 import org.eclipse.emf.common.util.URI;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -101,7 +102,10 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
             Connection connection = ConnectionFactory.createConnection(configuration);
             Admin admin = connection.getAdmin();
 
-            TableName tableName = TableName.valueOf(HBaseURI.format(uri));
+            TableName tableName = TableName.valueOf(
+                    checkNotNull(uri).segmentsList().stream()
+                            .map(s -> s.replaceAll("-", "_"))
+                            .collect(Collectors.joining("_")));
 
             // Initialize
             if (!admin.tableExists(tableName)) {

@@ -18,8 +18,6 @@ import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File}
+ * A specific subclass of {@link PersistenceURI} that creates HBase specific resource {@link URI}s from a {@link File}
  * descriptor or an existing {@link URI}.
  * <p>
  * The class defines a HBase specific {@link URI} scheme that is used to register {@link
@@ -59,8 +57,8 @@ public class HBaseURI extends PersistenceURI {
      *
      * @throws IllegalStateException every time
      */
-    protected HBaseURI() {
-        super();
+    private HBaseURI() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**
@@ -81,16 +79,7 @@ public class HBaseURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createURI(URI uri) {
-        checkNotNull(uri);
-
-        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
-            return createFileURI(uri);
-        }
-        else if (Objects.equals(SCHEME, uri.scheme())) {
-            return PersistenceURI.createURI(uri);
-        }
-
-        throw new IllegalArgumentException(String.format("Cannot create HBaseURI from the URI scheme %s", uri.scheme()));
+        return UriBuilder.newBuilder(SCHEME).fromUri(uri);
     }
 
     /**
@@ -104,7 +93,7 @@ public class HBaseURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createFileURI(File file) {
-        return createFileURI(checkNotNull(file), SCHEME);
+        return UriBuilder.newBuilder(SCHEME).fromFile(file);
     }
 
     /**
@@ -137,26 +126,6 @@ public class HBaseURI extends PersistenceURI {
      */
     @Nonnull
     public static URI createHierarchicalURI(String host, int port, URI modelURI) {
-        return URI.createHierarchicalURI(
-                SCHEME,
-                checkNotNull(host) + ':' + port,
-                null,
-                checkNotNull(modelURI).segments(),
-                null,
-                null);
-    }
-
-    /**
-     * Format the given {@code uri} by removing HBase reserved characters.
-     *
-     * @param uri the {@link URI} to format
-     *
-     * @return the formatted {@link URI}
-     */
-    @Nonnull
-    public static String format(URI uri) {
-        return checkNotNull(uri).segmentsList().stream()
-                .map(s -> s.replaceAll("-", "_"))
-                .collect(Collectors.joining("_"));
+        return UriBuilder.newBuilder(SCHEME).fromServer(host, port, modelURI);
     }
 }
