@@ -139,6 +139,9 @@
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-packaging-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
+                    <configuration>
+                        <strictVersions>false</strictVersions>
+                    </configuration>
                 </plugin>
 
                 <plugin>
