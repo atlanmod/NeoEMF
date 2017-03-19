@@ -34,8 +34,8 @@ public final class MoreIterables {
     }
 
     /**
-     * Returns a sequential {@link Stream} of the contents of {@code iterable}, delegating to
-     * {@link Collection#stream} if possible.
+     * Returns a sequential {@link Stream} of the contents of {@code iterable}, delegating to {@link Collection#stream}
+     * if possible.
      *
      * @param iterable the iterable
      *
@@ -43,7 +43,7 @@ public final class MoreIterables {
      */
     @Nonnull
     public static <E> Stream<E> stream(Iterable<E> iterable) {
-        return (iterable instanceof Collection)
+        return iterable instanceof Collection
                 ? ((Collection<E>) iterable).stream()
                 : StreamSupport.stream(iterable.spliterator(), false);
     }
@@ -56,10 +56,9 @@ public final class MoreIterables {
      * @return {@code true} if the iterable contains no element
      */
     public static <E> boolean isEmpty(Iterable<E> iterable) {
-        if (iterable instanceof Collection) {
-            return ((Collection<E>) iterable).isEmpty();
-        }
-        return !iterable.iterator().hasNext();
+        return iterable instanceof Collection
+                ? ((Collection<E>) iterable).isEmpty()
+                : !iterable.iterator().hasNext();
     }
 
     /**
