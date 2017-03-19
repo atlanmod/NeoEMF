@@ -119,7 +119,7 @@ public final class MoreArrays {
      * @throws IndexOutOfBoundsException if the {@code index} is out of range (index &lt; 0 || index &gt; array.length)
      */
     @Nonnull
-    public static <T> T[] add(T[] array, int index, @Nullable T element) {
+    public static <T> T[] add(T[] array, @Nonnegative int index, @Nullable T element) {
         checkNotNull(array);
         checkElementIndex(index, array.length + 1);
 
@@ -148,7 +148,7 @@ public final class MoreArrays {
      * @throws IndexOutOfBoundsException if the {@code index} is out of range (index &lt; 0 || index &gt; array.length)
      */
     @Nonnull
-    public static <T> T[] remove(T[] array, int index) {
+    public static <T> T[] remove(T[] array, @Nonnegative int index) {
         checkNotNull(array);
         checkElementIndex(index, array.length);
 
