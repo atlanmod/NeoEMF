@@ -14,9 +14,12 @@ package fr.inria.atlanmod.neoemf.util;
 import java.lang.reflect.Array;
 import java.util.Objects;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkElementIndex;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
@@ -41,6 +44,51 @@ public final class MoreArrays {
     }
 
     /**
+     * Creates a new array with the specified component {@code type} and {@code length}.
+     *
+     * @param type   the class of the new array
+     * @param length the length of the new array
+     * @param <T>    the type of the new array
+     *
+     * @return a new array
+     *
+     * @throws NullPointerException     if the {@code type} is {@code null}
+     * @throws IllegalArgumentException if the {@code length} is negative
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static <T> T[] newArray(Class<?> type, @Nonnegative int length) {
+        checkNotNull(type);
+        checkArgument(length >= 0);
+
+        return (T[]) Array.newInstance(type, length);
+    }
+
+    /**
+     * Resizes the {@code array} with the given {@code length}.
+     *
+     * @param array  the array to resize
+     * @param length the new length of the array
+     * @param <T>    the type of the new array
+     *
+     * @return a new array containing the existing elements with the new size
+     *
+     * @throws NullPointerException     if the {@code type} is {@code null}
+     * @throws IllegalArgumentException if the {@code length} is lower than {@code array.length}
+     */
+    @Nonnull
+    public static <T> T[] resize(T[] array, @Nonnegative int length) {
+        checkNotNull(array);
+        checkArgument(length >= array.length);
+
+        T[] newArray = newArray(array.getClass().getComponentType(), length);
+
+        System.arraycopy(array, 0, newArray, 0, array.length);
+
+        return newArray;
+    }
+
+    /**
      * Adds the specified {@code element} at the last position in the {@code array}.
      *
      * @param array   the array to add the element to
@@ -51,6 +99,7 @@ public final class MoreArrays {
      *
      * @throws NullPointerException if the {@code array} is {@code null}
      */
+    @Nonnull
     public static <T> T[] append(T[] array, @Nullable T element) {
         return add(array, array.length, element);
     }
@@ -68,22 +117,22 @@ public final class MoreArrays {
      * @throws NullPointerException      if the {@code array} is {@code null}
      * @throws IndexOutOfBoundsException if the {@code index} is out of range (index &lt; 0 || index &gt; array.length)
      */
+    @Nonnull
     public static <T> T[] add(T[] array, int index, @Nullable T element) {
         checkNotNull(array);
         checkElementIndex(index, array.length + 1);
 
-        @SuppressWarnings("unchecked")
-        T[] result = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length + 1);
+        T[] newArray = newArray(array.getClass().getComponentType(), array.length + 1);
 
-        System.arraycopy(array, 0, result, 0, index);
+        System.arraycopy(array, 0, newArray, 0, index);
 
-        result[index] = element;
+        newArray[index] = element;
 
         if (index < array.length) {
-            System.arraycopy(array, index, result, index + 1, array.length - index);
+            System.arraycopy(array, index, newArray, index + 1, array.length - index);
         }
 
-        return result;
+        return newArray;
     }
 
     /**
@@ -98,20 +147,20 @@ public final class MoreArrays {
      * @throws NullPointerException      if the {@code array} is {@code null}
      * @throws IndexOutOfBoundsException if the {@code index} is out of range (index &lt; 0 || index &gt; array.length)
      */
+    @Nonnull
     public static <T> T[] remove(T[] array, int index) {
         checkNotNull(array);
         checkElementIndex(index, array.length);
 
-        @SuppressWarnings("unchecked")
-        T[] result = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length - 1);
+        T[] newArray = newArray(array.getClass().getComponentType(), array.length - 1);
 
-        System.arraycopy(array, 0, result, 0, index);
+        System.arraycopy(array, 0, newArray, 0, index);
 
         if (index < array.length - 1) {
-            System.arraycopy(array, index + 1, result, index, array.length - index - 1);
+            System.arraycopy(array, index + 1, newArray, index, array.length - index - 1);
         }
 
-        return result;
+        return newArray;
     }
 
     /**

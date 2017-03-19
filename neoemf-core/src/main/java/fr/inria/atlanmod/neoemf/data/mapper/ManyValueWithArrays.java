@@ -47,10 +47,9 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    @SuppressWarnings("unchecked")
     default <V> List<V> allValuesOf(FeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
-                .orElse((V[]) new Object[0]);
+                .orElse(MoreArrays.newArray(Object.class, 0));
 
         return Arrays.asList(values);
     }
@@ -74,16 +73,15 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     default <V> void addValue(ManyFeatureKey key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElse((V[]) new Object[0]);
+                .orElse(MoreArrays.newArray(Object.class, 0));
 
-        while (key.position() > values.length) {
-            values = MoreArrays.append(values, null);
+        if (key.position() > values.length) {
+            values = MoreArrays.resize(values, key.position() + 1);
         }
 
         if (key.position() < values.length && isNull(values[key.position()])) {

@@ -89,8 +89,8 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
                 .map(this::arrayFromString)
                 .orElse(new Id[0]);
 
-        while (key.position() > ids.length) {
-            ids = MoreArrays.append(ids, null);
+        if (key.position() > ids.length) {
+            ids = MoreArrays.resize(ids, key.position() + 1);
         }
 
         if (key.position() < ids.length && isNull(ids[key.position()])) {

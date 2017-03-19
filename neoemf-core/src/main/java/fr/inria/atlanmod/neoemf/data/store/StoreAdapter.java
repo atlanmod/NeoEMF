@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.util.MoreArrays;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
@@ -517,7 +518,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
         if (!exists(key.id())) {
-            return nonNull(array) ? array : (T[]) new Object[0];
+            return nonNull(array) ? array : MoreArrays.newArray(Object.class, 0);
         }
 
         Stream<Object> stream;
