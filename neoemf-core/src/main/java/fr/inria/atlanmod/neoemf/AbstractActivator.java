@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -25,6 +26,7 @@ import org.osgi.framework.BundleContext;
  * <p>
  * <b>Note:</b> This class should not be used in standard use.
  */
+@VisibleForReflection
 public abstract class AbstractActivator implements BundleActivator {
 
     /**

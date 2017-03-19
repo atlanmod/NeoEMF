@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.AbstractActivator;
+import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
@@ -27,6 +28,7 @@ import org.osgi.framework.BundleActivator;
  * @see MapDbBackendFactory
  * @see BackendFactoryRegistry
  */
+@VisibleForReflection
 public class Activator extends AbstractActivator {
 
     @Override

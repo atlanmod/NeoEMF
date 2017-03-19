@@ -264,7 +264,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B autoSave(@Nonnegative long chunk) {
-        if(chunk < 0) {
+        if (chunk < 0) {
             throw new InvalidOptionException(String.format("The auto-save chuck cannot be lower than 0 (but it was %d)", chunk));
         }
 
