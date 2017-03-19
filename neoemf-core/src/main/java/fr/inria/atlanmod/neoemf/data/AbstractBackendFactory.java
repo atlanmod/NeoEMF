@@ -148,7 +148,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      */
     protected void processGlobalConfiguration(File directory, String mapping) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
-        Configuration configuration = Configuration.load(path.toFile());
+        Configuration configuration = Configuration.load(path);
 
         if (!configuration.containsKey(BACKEND_PROPERTY)) {
             configuration.setProperty(BACKEND_PROPERTY, name());

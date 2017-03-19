@@ -36,9 +36,8 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
  * {@link URI}. All methods are delegated to the internal {@link URI}.
  * <p>
- * The created {@link URI} are used to register {@link BackendFactory} in
- * {@link BackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing
- * {@link ResourceSet} with a {@link PersistentResourceFactory}.
+ * The created {@link URI} are used to register {@link BackendFactory} in {@link BackendFactoryRegistry} and configure
+ * the {@code protocol to factory} map of an existing {@link ResourceSet} with a {@link PersistentResourceFactory}.
  *
  * @see BackendFactoryRegistry
  * @see ResourceSet#getResourceFactoryRegistry()

@@ -22,7 +22,6 @@
     <properties>
         <caffeine.version>2.4.0</caffeine.version>
         <cglib.version>3.2.5</cglib.version>
-        <commons-configuration.version>1.10</commons-configuration.version>
         <log4j.version>2.8.1</log4j.version>
     </properties>
 
@@ -43,11 +42,6 @@
         </dependency>
 
         <!-- Common -->
-
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
 
         <dependency> <!-- Could be remove with EMF compare -->
             <groupId>com.google.guava</groupId>
@@ -152,12 +146,6 @@
             </dependency>
 
             <!-- Common -->
-
-            <dependency>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-                <version>${commons-configuration.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.osgi</groupId>

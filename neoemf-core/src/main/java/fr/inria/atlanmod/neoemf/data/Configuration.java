@@ -13,12 +13,14 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
-import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,54 +35,82 @@ import static java.util.Objects.nonNull;
 public final class Configuration {
 
     /**
+     * The header of the configuration file.
+     */
+    private static final String COMMENTS = "NeoEMF Configuration v1.0.2";
+
+    /**
      * The inner properties.
      */
     @Nonnull
-    private final PropertiesConfiguration properties;
+    private final Properties properties;
+
+    /**
+     * The file path to store the configuration.
+     */
+    @Nonnull
+    private final Path file;
 
     /**
      * Constructs a new {@code Configuration} on the given {@code configuration}.
      *
      * @param properties the inner properties
+     * @param file       the file to store the properties
      */
-    private Configuration(PropertiesConfiguration properties) {
+    private Configuration(Properties properties, Path file) {
         this.properties = checkNotNull(properties);
+        this.file = checkNotNull(file);
     }
 
     /**
-     * Creates a new {@code Configuration} and loads it from the specified {@code file}.
+     * Creates a new {@code Configuration} and loads it from the specified {@code file} if it exists.
      *
      * @param file the properties file to load
      *
      * @return a new configuration
      */
     @Nonnull
-    public static Configuration load(File file) {
+    public static Configuration load(Path file) {
         checkNotNull(file);
 
         try {
-            return new Configuration(new PropertiesConfiguration(file));
+            Properties properties = new Properties();
+
+            if (Files.exists(file)) {
+                try (Reader reader = Files.newBufferedReader(file)) {
+                    properties.load(reader);
+                }
+            }
+
+            return new Configuration(properties, file);
         }
-        catch (ConfigurationException e) {
+        catch (IOException e) {
             throw new InvalidDataStoreException(e);
         }
     }
 
     /**
-     * Save this {@code Configuration}.
+     * Stores this configuration.
      */
     public void save() {
         try {
-            properties.save();
+            if (!Files.exists(file)) {
+                Files.createDirectories(file.getParent());
+                Files.createFile(file);
+            }
+
+            try (Writer writer = Files.newBufferedWriter(file)) {
+                properties.store(writer, COMMENTS);
+            }
         }
-        catch (ConfigurationException e) {
+        catch (IOException e) {
             // Supposedly it's a minor error.
             Log.warn(e);
         }
     }
 
     /**
-     * Check if this {@code Configuration} contains the specified {@code key}.
+     * Check if this configuration contains the specified {@code key}.
      *
      * @param key the key whose presence in this configuration is to be tested
      *
@@ -88,21 +118,22 @@ public final class Configuration {
      */
     public boolean containsKey(String key) {
         checkNotNull(key);
+
         return properties.containsKey(key) && nonNull(getProperty(key));
     }
 
     /**
-     * Gets a property.
+     * Retrieves a property.
      *
      * @param key the key of the property to retrieve
      *
      * @return the value to which this configuration maps the specified {@code key}, or {@code null} if the
      * configuration contains no mapping for this {@code key}
      */
-//    @Nullable
     public Object getProperty(String key) {
         checkNotNull(key);
-        return properties.getProperty(key);
+
+        return properties.get(key);
     }
 
     /**
@@ -114,7 +145,8 @@ public final class Configuration {
     public void setProperty(String key, Object value) {
         checkNotNull(key);
         checkNotNull(value);
-        properties.setProperty(key, value);
+
+        properties.put(key, value);
     }
 
     /**
@@ -124,7 +156,8 @@ public final class Configuration {
      */
     public void removeProperty(String key) {
         checkNotNull(key);
-        properties.clearProperty(key);
+
+        properties.remove(key);
     }
 
     /**
@@ -135,7 +168,7 @@ public final class Configuration {
     @Nonnull
     public Map<Object, Object> asMap() {
         Map<Object, Object> configurationMap = new HashMap<>();
-        properties.getKeys().forEachRemaining(key -> configurationMap.put(key, properties.getProperty(key)));
+        properties.keySet().forEach(key -> configurationMap.put(key, properties.get(key)));
         return configurationMap;
     }
 }

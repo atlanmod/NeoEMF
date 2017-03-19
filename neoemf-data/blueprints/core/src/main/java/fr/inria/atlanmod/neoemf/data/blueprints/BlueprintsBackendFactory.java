@@ -151,7 +151,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
      */
     private Configuration getOrCreateBlueprintsConfiguration(File directory, Map<String, Object> options) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(BLUEPRINTS_CONFIG_FILE);
-        Configuration configuration = Configuration.load(path.toFile());
+        Configuration configuration = Configuration.load(path);
 
         // Initialize value if the configuration file has just been created
         if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {

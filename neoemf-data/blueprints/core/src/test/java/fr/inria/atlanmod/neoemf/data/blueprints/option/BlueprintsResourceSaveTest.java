@@ -24,8 +24,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +69,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
      * @return the current configuration
      */
     protected Configuration getConfiguration() {
-        File configurationFile = file().toPath().resolve("config.properties").toFile();
+        Path configurationFile = file().toPath().resolve("config.properties");
         assertThat(configurationFile).exists();
         return Configuration.load(configurationFile);
     }
