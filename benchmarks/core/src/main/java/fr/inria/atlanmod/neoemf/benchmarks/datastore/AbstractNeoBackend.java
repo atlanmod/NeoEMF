@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -31,11 +32,11 @@ abstract class AbstractNeoBackend extends AbstractBackend {
     }
 
     @Override
-    public Resource load(File file) throws Exception {
+    public Resource load(File file, PersistenceOptions options) throws Exception {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(getOptions());
+        resource.load(options.merge(getOptions()).asMap());
 
         return resource;
     }

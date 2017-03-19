@@ -69,7 +69,7 @@ public class ReadOnlyRunnerState extends RunnerState {
         storeFile = getBackend().getOrCreateStore(getResourceFile());
 
         Log.info("Loading the resource");
-        resource = getBackend().load(getStoreLocation());
+        resource = getBackend().load(getStoreLocation(), getOptions());
     }
 
     /**

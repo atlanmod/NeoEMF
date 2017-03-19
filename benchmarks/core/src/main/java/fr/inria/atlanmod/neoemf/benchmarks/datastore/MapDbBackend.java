@@ -47,8 +47,6 @@ public class MapDbBackend extends AbstractNeoBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return MapDbOptions.newBuilder()
-                .autoSave()
-                .asMap();
+        return MapDbOptions.newBuilder().asMap();
     }
 }

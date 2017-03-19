@@ -18,6 +18,9 @@ import fr.inria.atlanmod.neoemf.benchmarks.datastore.MapDbBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Neo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.TinkerBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.openjdk.jmh.annotations.Level;
@@ -30,9 +33,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 /**
  * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Backend} and the preloaded
@@ -40,8 +43,6 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
  */
 @State(Scope.Thread)
 public class RunnerState {
-
-    private static final Map<String, Class<? extends Backend>> registeredBackends = init();
 
     /**
      * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
@@ -67,6 +68,14 @@ public class RunnerState {
     protected String b;
 
     /**
+     * The name of the current {@link fr.inria.atlanmod.neoemf.data.store.Store}s.
+     * <p>
+     * By default, no store is used.
+     */
+    @Param("a")
+    protected String o;
+
+    /**
      * The current {@link Backend}.
      */
     private Backend backend;
@@ -77,11 +86,53 @@ public class RunnerState {
     private File resourceFile;
 
     /**
+     * The current {@link PersistenceOptions}.
+     */
+    private PersistenceOptions options;
+
+    /**
+     * Returns the current backend.
+     */
+    public Backend getBackend() throws Exception {
+        if (isNull(backend)) {
+            Map<String, Class<? extends Backend>> allBackends = allBackends();
+            checkArgument(allBackends.containsKey(b), "No backend named '%s' is registered", b);
+            backend = allBackends.get(b).newInstance();
+        }
+        return backend;
+    }
+
+    /**
+     * Returns the current resource file.
+     */
+    public File getResourceFile() throws Exception {
+        return resourceFile;
+    }
+
+    public PersistenceOptions getOptions() {
+        if (isNull(options)) {
+            options = parseOptions();
+        }
+        return options;
+    }
+
+    /**
+     * Loads and creates the current resource file.
+     * <p/>
+     * This method is automatically called when setup the trial level.
+     */
+    @Setup(Level.Trial)
+    public void initResource() throws Exception {
+        Log.info("Initializing the resource");
+        resourceFile = getBackend().getOrCreateResource(r);
+    }
+
+    /**
      * Returns all existing {@link Backend} instances.
      *
      * @return an immutable map
      */
-    private static Map<String, Class<? extends Backend>> init() {
+    private Map<String, Class<? extends Backend>> allBackends() {
         Map<String, Class<? extends Backend>> map = new HashMap<>();
 
         map.put(XmiBackend.NAME, XmiBackend.class);
@@ -95,31 +146,45 @@ public class RunnerState {
     }
 
     /**
-     * Returns the current backend.
+     * Returns all existing {@link PersistentStoreOptions} instances.
+     *
+     * @return an immutable map
      */
-    public Backend getBackend() throws Exception {
-        if (Objects.isNull(backend)) {
-            checkArgument(registeredBackends.containsKey(b), "No backend named '%s' is registered", b);
-            backend = registeredBackends.get(b).newInstance();
+    // TODO Use Pattern and Matcher for safety
+    private PersistenceOptions parseOptions() {
+        CommonOptions options = CommonOptions.newBuilder();
+
+        if (isNull(o) || o.isEmpty()) {
+            return options;
         }
-        return backend;
-    }
 
-    /**
-     * Returns the current resource file.
-     */
-    public File getResourceFile() throws Exception {
-        return resourceFile;
-    }
+        String lowerOptions = o.toLowerCase();
 
-    /**
-     * Loads and creates the current resource file.
-     * <p/>
-     * This method is automatically called when setup the trial level.
-     */
-    @Setup(Level.Trial)
-    public void initResource() throws Exception {
-        Log.info("Initializing the resource");
-        resourceFile = getBackend().getOrCreateResource(r);
+        if (lowerOptions.contains("f")) { // Cache features
+            Log.info("Use feature caching");
+            options.cacheFeatures();
+        }
+
+        if (lowerOptions.contains("i")) { // Cache presence
+            Log.info("Use presence caching");
+            options.cacheIsSet();
+        }
+
+        if (lowerOptions.contains("s")) { // Cache sizes
+            Log.info("Use size caching");
+            options.cacheSizes();
+        }
+
+        if (lowerOptions.contains("a{")) { // Auto-saving: a{\d+}
+            long chunk = Long.parseLong(lowerOptions.substring(lowerOptions.indexOf("a{") + 2, lowerOptions.indexOf("}")));
+            Log.info("Use auto-saving with chunk = {0,number,#}", chunk);
+            options.autoSave(chunk);
+        }
+        else { // Defined by default
+            Log.info("Use auto-saving with default chunk");
+            options.autoSave();
+        }
+
+        return options;
     }
 }

@@ -69,6 +69,20 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
         return Collections.unmodifiableMap(options);
     }
 
+    @Nonnull
+    public PersistenceOptions merge(Map<String, Object> options) {
+        checkNotNull(options);
+
+        AbstractPersistenceOptions<?> newOptions = CommonOptions.newBuilder();
+
+        newOptions.options.putAll(this.options);
+        newOptions.options.putAll(options);
+
+        newOptions.storeOptions.addAll(storeOptions);
+
+        return newOptions;
+    }
+
     /**
      * Validates the defined options, and checks if there is conflict between them.
      *

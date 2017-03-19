@@ -38,8 +38,6 @@ public class Neo4jBackend extends TinkerBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsNeo4jOptions.newBuilder()
-                .autoSave()
-                .asMap();
+        return BlueprintsNeo4jOptions.newBuilder().asMap();
     }
 }
