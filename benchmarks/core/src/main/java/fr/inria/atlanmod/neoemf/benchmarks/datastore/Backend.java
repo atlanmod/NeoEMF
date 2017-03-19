@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.Workspace;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -53,7 +53,7 @@ public interface Backend {
      *
      * @return the loaded resource
      */
-    Resource load(File file, PersistenceOptions options) throws Exception;
+    Resource load(File file, CommonOptions options) throws Exception;
 
     /**
      * Saves the given {@code resource}.

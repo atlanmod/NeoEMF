@@ -33,17 +33,4 @@ public interface PersistenceOptions {
      */
     @Nonnull
     Map<String, Object> asMap();
-
-    /**
-     * Merge the {@code options} with the options defined in this {@code PersistenceOptions}. In case of conflict, the
-     * options defined in {@code options} are used.
-     *
-     * @param options the options to merge
-     *
-     * @return a new options containing the existing options and the options defined in {@code other}
-     *
-     * @throws NullPointerException if {@code options} is {@code null}
-     */
-    @Nonnull
-    PersistenceOptions merge(Map<String, Object> options);
 }

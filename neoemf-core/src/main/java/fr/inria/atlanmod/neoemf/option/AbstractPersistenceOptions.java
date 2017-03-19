@@ -11,20 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.util.log.Level;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
@@ -47,49 +45,24 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      * List that holds all defined store options in this builder.
      */
     @Nonnull
-    private final List<PersistentStoreOptions> storeOptions;
+    private final Set<PersistentStoreOptions> stores;
 
     /**
      * Constructs a new {@code AbstractPersistenceOptions}.
      */
     protected AbstractPersistenceOptions() {
         this.options = new HashMap<>();
-        this.storeOptions = new ArrayList<>();
+        this.stores = new HashSet<>();
     }
 
     @Nonnull
     @Override
     public final Map<String, Object> asMap() {
-        validate();
-
-        if (!storeOptions.isEmpty()) {
-            option(PersistentResourceOptions.STORES, Collections.unmodifiableList(storeOptions));
+        if (!stores.isEmpty()) {
+            withOption(PersistentResourceOptions.STORES, Collections.unmodifiableSet(stores));
         }
 
         return Collections.unmodifiableMap(options);
-    }
-
-    @Nonnull
-    public PersistenceOptions merge(Map<String, Object> options) {
-        checkNotNull(options);
-
-        AbstractPersistenceOptions<?> newOptions = CommonOptions.newBuilder();
-
-        newOptions.options.putAll(this.options);
-        newOptions.options.putAll(options);
-
-        newOptions.storeOptions.addAll(storeOptions);
-
-        return newOptions;
-    }
-
-    /**
-     * Validates the defined options, and checks if there is conflict between them.
-     *
-     * @throws InvalidOptionException if a conflict is detected
-     */
-    protected void validate() {
-        // Do nothing, for now
     }
 
     /**
@@ -103,49 +76,78 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
     }
 
     /**
-     * Adds a feature defined by the given {@code storeOption} in the created options.
-     *
-     * @param storeOption the option to add
-     *
-     * @return this builder (for chaining)
-     */
-    @Nonnull
-    protected B storeOption(@Nonnull PersistentStoreOptions storeOption) {
-        checkNotNull(storeOption);
-
-        this.storeOptions.add(storeOption);
-        return me();
-    }
-
-    /**
      * Adds a key/value in the created options. A custom configuration, which is not part of NeoEMF, can be added.
      *
      * @param key   the key to add
      * @param value the value of the {@code key}
      *
      * @return this builder (for chaining)
+     *
+     * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    public B option(@Nonnull String key, @Nonnull Object value) {
-        checkNotNull(key);
-        checkNotNull(value);
+    public B withOption(String key, Object value) {
+        options.put(checkNotNull(key), checkNotNull(value));
 
-        options.put(key, value);
         return me();
     }
 
     /**
-     * Defines the className to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}.
+     * Adds all key/value pairs of the {@code options} in the created options. A custom configuration, which is not part
+     * of NeoEMF, can be added.
+     * <p>
+     * <b>Note:</b> In case of key conflicts, the value of the specified {@code options} will be used.
      *
-     * @param className the className to use
+     * @param options the options to add
      *
      * @return this builder (for chaining)
      *
-     * @throws IllegalStateException if the className has already been defined
+     * @throws NullPointerException if the {@code options} is {@code null}
      */
     @Nonnull
-    protected B mapping(String className) {
-        return option(PersistentResourceOptions.MAPPING, className);
+    public B withOptions(Map<String, Object> options) {
+        checkNotNull(options).entrySet()
+                .forEach(e -> withOption(e.getKey(), e.getValue()));
+
+        return me();
+    }
+
+    /**
+     * Adds a feature defined by the given {@code store} in the created options.
+     *
+     * @param store the option to add
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException   if the {@code store} is {@code null}
+     * @throws InvalidOptionException if the {@code store} has already been defined
+     */
+    @Nonnull
+    protected B withStore(PersistentStoreOptions store) {
+        checkNotNull(store);
+
+        if (stores.contains(store)) {
+            throw new InvalidOptionException(String.format("The store has already been defined (%s)", store.name()));
+        }
+
+        stores.add(store);
+
+        return me();
+    }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}. If the mapping has
+     * already been defined, then it will be erased by the new.
+     *
+     * @param mapping the class name of the mapping to use
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException if the {@code mapping} is {@code null}
+     */
+    @Nonnull
+    protected B withMapping(String mapping) {
+        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping));
     }
 
     /**
@@ -157,7 +159,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B cacheIsSet() {
-        return storeOption(PersistentStoreOptions.CACHE_IS_SET);
+        return withStore(PersistentStoreOptions.CACHE_IS_SET);
     }
 
     /**
@@ -169,7 +171,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B cacheSizes() {
-        return storeOption(PersistentStoreOptions.CACHE_SIZE);
+        return withStore(PersistentStoreOptions.CACHE_SIZE);
     }
 
     /**
@@ -181,7 +183,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B cacheFeatures() {
-        return storeOption(PersistentStoreOptions.CACHE_STRUCTURAL_FEATURE);
+        return withStore(PersistentStoreOptions.CACHE_STRUCTURAL_FEATURE);
     }
 
     /**
@@ -193,7 +195,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B log() {
-        return storeOption(PersistentStoreOptions.LOG);
+        return withStore(PersistentStoreOptions.LOG);
     }
 
     /**
@@ -203,11 +205,13 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      *
      * @return this builder (for chaining)
      *
+     * @throws NullPointerException if the {@code level} is {@code null}
      * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
      */
+    @Nonnull
     public B log(Level level) {
-        storeOption(PersistentStoreOptions.LOG);
-        return option(PersistentResourceOptions.LOG_LEVEL, level);
+        withStore(PersistentStoreOptions.LOG);
+        return withOption(PersistentResourceOptions.LOG_LEVEL, checkNotNull(level));
     }
 
     /**
@@ -219,7 +223,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B countLoadedObjects() {
-        return storeOption(PersistentStoreOptions.COUNT_LOADED_OBJECT);
+        return withStore(PersistentStoreOptions.COUNT_LOADED_OBJECT);
     }
 
     /**
@@ -231,7 +235,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B readOnly() {
-        return storeOption(PersistentStoreOptions.READ_ONLY);
+        return withStore(PersistentStoreOptions.READ_ONLY);
     }
 
     /**
@@ -239,27 +243,32 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      *
      * @return this builder (for chaining)
      *
-     * @see AutoSaveStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
      */
     @Nonnull
     public B autoSave() {
-        return storeOption(PersistentStoreOptions.AUTO_SAVE);
+        return withStore(PersistentStoreOptions.AUTO_SAVE);
     }
 
     /**
      * Adds the {@code autoSave} feature with the given {@code chunk} size in the created options.
+     * <p>
+     * <b>WARNING:</b> When {@code chunk} is zero, the store will be saved at each call.
      *
      * @param chunk the number of database operations between each save
      *
      * @return this builder (for chaining)
      *
-     * @see AutoSaveStoreDecorator
+     * @throws InvalidOptionException if the {@code chunk} is {@code &lt; 0}
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
      */
     @Nonnull
     public B autoSave(@Nonnegative long chunk) {
-        checkArgument(chunk >= 0);
+        if(chunk < 0) {
+            throw new InvalidOptionException(String.format("The auto-save chuck cannot be lower than 0 (but it was %d)", chunk));
+        }
 
-        storeOption(PersistentStoreOptions.AUTO_SAVE);
-        return option(PersistentResourceOptions.AUTO_SAVE_CHUNK, chunk);
+        withStore(PersistentStoreOptions.AUTO_SAVE);
+        return withOption(PersistentResourceOptions.AUTO_SAVE_CHUNK, chunk);
     }
 }

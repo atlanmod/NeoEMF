@@ -47,7 +47,7 @@ public abstract class AbstractBlueprintsOptions<B extends AbstractBlueprintsOpti
      * @see BlueprintsResourceOptions#GRAPH_TYPE
      */
     protected B graph(String graphType) {
-        return option(BlueprintsResourceOptions.GRAPH_TYPE, graphType);
+        return withOption(BlueprintsResourceOptions.GRAPH_TYPE, graphType);
     }
 
     /**
@@ -61,6 +61,6 @@ public abstract class AbstractBlueprintsOptions<B extends AbstractBlueprintsOpti
      * @return this builder (for chaining)
      */
     public B withIndices() {
-        return mapping("fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendIndices");
+        return withMapping("fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendIndices");
     }
 }

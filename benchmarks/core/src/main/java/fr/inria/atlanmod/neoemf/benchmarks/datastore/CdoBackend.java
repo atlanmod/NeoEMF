@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.cdo.eresource.CDOResource;
@@ -90,7 +90,7 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    public Resource load(File file, PersistenceOptions options) throws Exception {
+    public Resource load(File file, CommonOptions options) throws Exception {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());

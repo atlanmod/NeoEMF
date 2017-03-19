@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -45,7 +45,7 @@ public class XmiBackend extends AbstractBackend {
     }
 
     @Override
-    public Resource load(File file, PersistenceOptions options) throws Exception {
+    public Resource load(File file, CommonOptions options) throws Exception {
         initAndGetEPackage();
 
         ResourceSet resourceSet = new ResourceSetImpl();

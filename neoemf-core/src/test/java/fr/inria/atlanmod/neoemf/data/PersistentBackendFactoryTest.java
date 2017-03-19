@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.mock;
@@ -42,8 +44,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testNoOption() {
@@ -55,9 +55,16 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
+     * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
+     */
+    @Test
+    public void testAlreadyDefinedOption() {
+        Throwable thrown = catchThrowable(() -> CommonOptions.newBuilder().autoSave().autoSave());
+        assertThat(thrown).isExactlyInstanceOf(InvalidOptionException.class);
+    }
+
+    /**
      * Checks the setup of the {@link IsSetCachingStoreDecorator}.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testIsSetCachingOption() {
@@ -77,8 +84,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the {@link LoggingStoreDecorator}.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testLoggingOption() {
@@ -98,8 +103,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the {@link SizeCachingStoreDecorator}.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testSizeCachingOption() {
@@ -119,8 +122,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the {@link FeatureCachingStoreDecorator}.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testFeatureCachingOption() {
@@ -140,8 +141,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the {@link LoadedObjectCounterStoreDecorator}.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testLoadedObjectCounterLoggingOption() {
@@ -161,8 +160,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the {@link AutoSaveStoreDecorator} without chunk.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testAutoSaveOption() {
@@ -187,8 +184,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
     /**
      * Checks the setup of the {@link AutoSaveStoreDecorator} with chunk.
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testAutoSaveWithChunkOption() {
@@ -212,13 +207,20 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
+     * Checks the setup of the {@link AutoSaveStoreDecorator} with negative chunk.
+     */
+    @Test
+    public void testAutoSaveWithNegativeChunkOption() {
+        Throwable thrown = catchThrowable(() -> CommonOptions.newBuilder().autoSave(-2));
+        assertThat(thrown).isExactlyInstanceOf(InvalidOptionException.class);
+    }
+
+    /**
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
      * <li>{@link IsSetCachingStoreDecorator}</li>
      * <li>{@link LoggingStoreDecorator}</li>
      * </ul>
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testIsSetCachingLoggingOptions() {
@@ -231,10 +233,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         //noinspection ConstantConditions
         store = context().factory().createStore(null, null, options);
-        assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -246,8 +248,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      * <li>{@link IsSetCachingStoreDecorator}</li>
      * <li>{@link SizeCachingStoreDecorator}</li>
      * </ul>
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() {
@@ -260,10 +260,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         //noinspection ConstantConditions
         store = context().factory().createStore(null, null, options);
-        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -275,8 +275,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      * <li>{@link SizeCachingStoreDecorator}</li>
      * <li>{@link FeatureCachingStoreDecorator}</li>
      * </ul>
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testSizeCachingFeatureCachingOptions() {
@@ -289,10 +287,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         //noinspection ConstantConditions
         store = context().factory().createStore(null, null, options);
-        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
 
         store = getInnerStore(store);
@@ -308,8 +306,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      * <li>{@link LoggingStoreDecorator}</li>
      * <li>{@link AutoSaveStoreDecorator}</li>
      * </ul>
-     *
-     * @throws InvalidDataStoreException if there is at least one invalid value in options
      */
     @Test
     public void testAllOptions() {
@@ -333,16 +329,16 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);

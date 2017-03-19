@@ -85,7 +85,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     protected BlueprintsNeo4jOptions cache(BlueprintsNeo4jResourceOptions.CacheType type) {
-        return option(BlueprintsNeo4jResourceOptions.CACHE_TYPE, type);
+        return withOption(BlueprintsNeo4jResourceOptions.CACHE_TYPE, type);
     }
 
     /**
@@ -152,7 +152,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions memoryMappedBuffers() {
-        return option(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, true);
+        return withOption(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, true);
     }
 
     /**
@@ -166,7 +166,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions memoryMappedBuffers(boolean memoryBuffers) {
-        return option(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, memoryBuffers);
+        return withOption(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, memoryBuffers);
     }
 
     /**
@@ -181,7 +181,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions stringsMappedBuffer(@Nonnegative int size) {
-        return option(BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, formatSize(size));
+        return withOption(BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -196,7 +196,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions arraysMappedBuffer(@Nonnegative int size) {
-        return option(BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, formatSize(size));
+        return withOption(BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -211,7 +211,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions nodesMappedBuffer(@Nonnegative int size) {
-        return option(BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, formatSize(size));
+        return withOption(BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -226,7 +226,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions propertiesMappedBuffer(@Nonnegative int size) {
-        return option(BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, formatSize(size));
+        return withOption(BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, formatSize(size));
     }
 
     /**
@@ -241,6 +241,6 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public BlueprintsNeo4jOptions relationshipsMappedBuffer(@Nonnegative int size) {
-        return option(BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, formatSize(size));
+        return withOption(BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, formatSize(size));
     }
 }

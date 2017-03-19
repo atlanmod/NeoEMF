@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.datastore.Neo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.TinkerBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -33,6 +32,10 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -86,13 +89,9 @@ public class RunnerState {
     private File resourceFile;
 
     /**
-     * The current {@link PersistenceOptions}.
-     */
-    private PersistenceOptions options;
-
-    /**
      * Returns the current backend.
      */
+    @Nonnull
     public Backend getBackend() throws Exception {
         if (isNull(backend)) {
             Map<String, Class<? extends Backend>> allBackends = allBackends();
@@ -105,15 +104,9 @@ public class RunnerState {
     /**
      * Returns the current resource file.
      */
+    @Nonnull
     public File getResourceFile() throws Exception {
         return resourceFile;
-    }
-
-    public PersistenceOptions getOptions() {
-        if (isNull(options)) {
-            options = parseOptions();
-        }
-        return options;
     }
 
     /**
@@ -132,6 +125,7 @@ public class RunnerState {
      *
      * @return an immutable map
      */
+    @Nonnull
     private Map<String, Class<? extends Backend>> allBackends() {
         Map<String, Class<? extends Backend>> map = new HashMap<>();
 
@@ -150,38 +144,51 @@ public class RunnerState {
      *
      * @return an immutable map
      */
-    // TODO Use Pattern and Matcher for safety
-    private PersistenceOptions parseOptions() {
+    @Nonnull
+    public CommonOptions getOptions() {
         CommonOptions options = CommonOptions.newBuilder();
-
-        if (isNull(o) || o.isEmpty()) {
-            return options;
-        }
 
         String lowerOptions = o.toLowerCase();
 
-        if (lowerOptions.contains("f")) { // Cache features
-            Log.info("Use feature caching");
+        // Cache features
+        if (lowerOptions.contains("f")) {
+            Log.debug("Use feature caching");
             options.cacheFeatures();
         }
 
-        if (lowerOptions.contains("i")) { // Cache presence
-            Log.info("Use presence caching");
+        // Cache presence
+        if (lowerOptions.contains("i")) {
+            Log.debug("Use presence caching");
             options.cacheIsSet();
         }
 
-        if (lowerOptions.contains("s")) { // Cache sizes
-            Log.info("Use size caching");
+        // Cache sizes
+        if (lowerOptions.contains("s")) {
+            Log.debug("Use size caching");
             options.cacheSizes();
         }
 
-        if (lowerOptions.contains("a{")) { // Auto-saving: a{\d+}
-            long chunk = Long.parseLong(lowerOptions.substring(lowerOptions.indexOf("a{") + 2, lowerOptions.indexOf("}")));
-            Log.info("Use auto-saving with chunk = {0,number,#}", chunk);
+        // Logging
+        Matcher levelMatcher = Pattern.compile("l\\{([a-zA-Z]+)\\}").matcher(lowerOptions);
+        if (levelMatcher.find()) {
+            fr.inria.atlanmod.neoemf.util.log.Level level = fr.inria.atlanmod.neoemf.util.log.Level.valueOf(levelMatcher.group(1).toUpperCase());
+            Log.debug("Use logging with level = {0}", level.name());
+            options.log(level);
+        }
+        else if (lowerOptions.contains("l")) {
+            Log.debug("Use logging with default level");
+            options.log();
+        }
+
+        // Auto-saving
+        Matcher chuckMatcher = Pattern.compile("a\\{(-?[0-9]+)\\}").matcher(lowerOptions);
+        if (chuckMatcher.find()) {
+            long chunk = Long.parseLong(chuckMatcher.group(1));
+            Log.debug("Use auto-saving with chunk = {0,number,#}", chunk);
             options.autoSave(chunk);
         }
         else { // Defined by default
-            Log.info("Use auto-saving with default chunk");
+            Log.debug("Use auto-saving with default chunk");
             options.autoSave();
         }
 

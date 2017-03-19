@@ -68,7 +68,7 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
      * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices
      */
     public BerkeleyDbOptions withIndices() {
-        return mapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendIndices");
+        return withMapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendIndices");
     }
 
     /**
@@ -81,7 +81,7 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
      * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays
      */
     public BerkeleyDbOptions withArrays() {
-        return mapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendArrays");
+        return withMapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendArrays");
     }
 
     /**
@@ -94,6 +94,6 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
      * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists
      */
     public BerkeleyDbOptions withLists() {
-        return mapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendLists");
+        return withMapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendLists");
     }
 }

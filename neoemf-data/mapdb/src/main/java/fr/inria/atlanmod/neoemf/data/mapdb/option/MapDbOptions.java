@@ -68,7 +68,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices
      */
     public MapDbOptions withIndices() {
-        return mapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendIndices");
+        return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendIndices");
     }
 
     /**
@@ -81,7 +81,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays
      */
     public MapDbOptions withArrays() {
-        return mapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendArrays");
+        return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendArrays");
     }
 
     /**
@@ -94,6 +94,6 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists
      */
     public MapDbOptions withLists() {
-        return mapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendLists");
+        return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendLists");
     }
 }

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -117,7 +118,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
         Store store = new DirectWriteStore(backend, resource);
 
         if (checkNotNull(options).containsKey(PersistentResourceOptions.STORES)) {
-            List<PersistentStoreOptions> storeOptions = (List<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
+            Set<PersistentStoreOptions> storeOptions = (Set<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
 
             for (PersistentStoreOptions opt : storeOptions.stream().sorted().collect(Collectors.toList())) {
                 List<ConstructorParameter> parameters = opt.parameters().stream()
