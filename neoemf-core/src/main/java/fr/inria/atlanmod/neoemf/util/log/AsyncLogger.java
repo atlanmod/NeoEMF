@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util.log;
 
+import org.apache.logging.log4j.LogManager;
+
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +31,7 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 @Immutable
 @ParametersAreNonnullByDefault
-class AsyncLogger extends AbstractLogger {
+class AsyncLogger implements Logger {
 
     /**
      * The concurrent pool.
@@ -37,12 +39,17 @@ class AsyncLogger extends AbstractLogger {
     private static final ExecutorService pool = createService();
 
     /**
+     * The internal logger.
+     */
+    private final org.apache.logging.log4j.Logger logger;
+
+    /**
      * Constructs a new {@code AsyncLogger} with the given {@code name}.
      *
      * @param name the name of this logger
      */
     public AsyncLogger(String name) {
-        super(name);
+        this.logger = LogManager.getLogger(name);
     }
 
     /**
@@ -77,7 +84,7 @@ class AsyncLogger extends AbstractLogger {
     public void log(Level level, @Nullable Throwable e, @Nullable CharSequence message, @Nullable Object... params) {
         execute(() -> {
             try {
-                logger().log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse("").toString(), params), e);
+                logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse("").toString(), params), e);
             }
             catch (Exception ignore) {
             }
