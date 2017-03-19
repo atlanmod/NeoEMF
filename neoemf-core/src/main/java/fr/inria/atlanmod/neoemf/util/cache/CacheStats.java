@@ -301,13 +301,15 @@ public final class CacheStats {
 
     @Override
     public String toString() {
-        return "CacheStats {" +
-                "hitCount=" + hitCount +
-                ", missCount=" + missCount +
-                ", loadSuccessCount=" + loadSuccessCount +
-                ", loadFailureCount=" + loadFailureCount +
-                ", totalLoadTime=" + totalLoadTime +
-                ", evictionCount=" + evictionCount +
-                '}';
+        return String.format("CacheStats {" +
+                        "Hit = %d (%.2f%%), " +
+                        "Miss = %d (%.2f%%), " +
+                        "Eviction Count = %d" +
+                        "}",
+                hitCount(),
+                hitRate(),
+                missCount(),
+                missRate(),
+                evictionCount());
     }
 }
