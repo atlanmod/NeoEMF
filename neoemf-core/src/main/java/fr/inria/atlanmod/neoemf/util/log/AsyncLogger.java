@@ -34,6 +34,11 @@ import javax.annotation.concurrent.ThreadSafe;
 class AsyncLogger implements Logger {
 
     /**
+     * An empty message.
+     */
+    private static final String NO_MESSAGE = "";
+
+    /**
      * The concurrent pool.
      */
     private static final ExecutorService pool = createService();
@@ -84,7 +89,7 @@ class AsyncLogger implements Logger {
     public void log(Level level, @Nullable Throwable e, @Nullable CharSequence message, @Nullable Object... params) {
         execute(() -> {
             try {
-                logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse("").toString(), params), e);
+                logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse(NO_MESSAGE).toString(), params), e);
             }
             catch (Exception ignore) {
             }
