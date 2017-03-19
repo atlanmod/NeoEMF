@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.BerkeleyDbBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.MapDbBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.Neo4jBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.TinkerBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.Neo4jAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.TinkerAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -41,7 +41,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
- * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Backend} and the preloaded
+ * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Adapter} and the preloaded
  * resource file. The datastore is not loaded.
  */
 @State(Scope.Thread)
@@ -56,19 +56,19 @@ public class RunnerState {
     protected String r;
 
     /**
-     * The name of the current {@link Backend}.
+     * The name of the current {@link Adapter}.
      * <p>
-     * By default, all registered {@link Backend}s are used.
+     * By default, all registered {@link Adapter}s are used.
      */
     @Param({
-            XmiBackend.NAME,
-            CdoBackend.NAME,
-            MapDbBackend.NAME,
-            BerkeleyDbBackend.NAME,
-            TinkerBackend.NAME,
-            Neo4jBackend.NAME,
+            XmiAdapter.NAME,
+            CdoAdapter.NAME,
+            MapDbAdapter.NAME,
+            BerkeleyDbAdapter.NAME,
+            TinkerAdapter.NAME,
+            Neo4jAdapter.NAME,
     })
-    protected String b;
+    protected String a;
 
     /**
      * The name of the current {@link fr.inria.atlanmod.neoemf.data.store.Store}s.
@@ -79,9 +79,9 @@ public class RunnerState {
     protected String o;
 
     /**
-     * The current {@link Backend}.
+     * The current {@link Adapter}.
      */
-    private Backend backend;
+    private Adapter adapter;
 
     /**
      * The current {@link org.eclipse.emf.ecore.resource.Resource} file.
@@ -89,16 +89,16 @@ public class RunnerState {
     private File resourceFile;
 
     /**
-     * Returns the current backend.
+     * Returns the current adapter.
      */
     @Nonnull
-    public Backend getBackend() throws Exception {
-        if (isNull(backend)) {
-            Map<String, Class<? extends Backend>> allBackends = allBackends();
-            checkArgument(allBackends.containsKey(b), "No backend named '%s' is registered", b);
-            backend = allBackends.get(b).newInstance();
+    public Adapter getAdapter() throws Exception {
+        if (isNull(adapter)) {
+            Map<String, Class<? extends Adapter>> allAdapters = allAdapters();
+            checkArgument(allAdapters.containsKey(a), "No adapter named '%s' is registered", a);
+            adapter = allAdapters.get(a).newInstance();
         }
-        return backend;
+        return adapter;
     }
 
     /**
@@ -117,24 +117,24 @@ public class RunnerState {
     @Setup(Level.Trial)
     public void initResource() throws Exception {
         Log.info("Initializing the resource");
-        resourceFile = getBackend().getOrCreateResource(r);
+        resourceFile = getAdapter().getOrCreateResource(r);
     }
 
     /**
-     * Returns all existing {@link Backend} instances.
+     * Returns all existing {@link Adapter} instances.
      *
      * @return an immutable map
      */
     @Nonnull
-    private Map<String, Class<? extends Backend>> allBackends() {
-        Map<String, Class<? extends Backend>> map = new HashMap<>();
+    private Map<String, Class<? extends Adapter>> allAdapters() {
+        Map<String, Class<? extends Adapter>> map = new HashMap<>();
 
-        map.put(XmiBackend.NAME, XmiBackend.class);
-        map.put(CdoBackend.NAME, CdoBackend.class);
-        map.put(MapDbBackend.NAME, MapDbBackend.class);
-        map.put(BerkeleyDbBackend.NAME, BerkeleyDbBackend.class);
-        map.put(TinkerBackend.NAME, TinkerBackend.class);
-        map.put(Neo4jBackend.NAME, Neo4jBackend.class);
+        map.put(XmiAdapter.NAME, XmiAdapter.class);
+        map.put(CdoAdapter.NAME, CdoAdapter.class);
+        map.put(MapDbAdapter.NAME, MapDbAdapter.class);
+        map.put(BerkeleyDbAdapter.NAME, BerkeleyDbAdapter.class);
+        map.put(TinkerAdapter.NAME, TinkerAdapter.class);
+        map.put(Neo4jAdapter.NAME, Neo4jAdapter.class);
 
         return Collections.unmodifiableMap(map);
     }
@@ -157,7 +157,7 @@ public class RunnerState {
         }
 
         // Cache presence
-        if (lowerOptions.contains("i")) {
+        if (lowerOptions.contains("p")) {
             Log.debug("Use presence caching");
             options.cacheIsSet();
         }

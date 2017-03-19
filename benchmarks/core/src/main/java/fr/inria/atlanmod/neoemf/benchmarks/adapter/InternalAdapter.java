@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
-public interface InternalBackend extends Backend {
+public interface InternalAdapter extends Adapter {
 
     String getName();
 

@@ -18,10 +18,10 @@ Possible values for `<args>` can be found by using the `-help` argument, or [her
 
 #### Parameters
 By default, all resources are executed on all backends. But you can choose to execute one (or more) specific resource on one (or more) specific backend by using the `-p` argument with the following parameters:
-- `b=<backend>,...`     where `<backend>`  is `[xmi|cdo|neo-mapdb|neo-tinker|neo-neo4j]`
-- `r=<resource>,...`    where `<resource>` is :
-  - the filename, if it's included in `/resources.zip`.
-  By default, this archive contains the following resource which can be declared by using their acronym:
+- `a=<adapters>,...`    where `<adapters>`  is any of `[xmi|cdo|neo-mapdb|neo-berkeleydb|neo-tinker|neo-neo4j]`
+
+- `r=<resources>,...`   where `<resources>` is any of:
+  - the filename or the acronym of the resource, if they are included in `/resources.zip`.
     - `set1` = `fr.inria.atlanmod.kyanos.tests.xmi` (130 KB)
     - `set2` = `fr.inria.atlanmod.neo4emf.neo4jresolver.xmi` (2 MB)
     - `set3` = `org.eclipse.gmt.modisco.java.kyanos.xmi` (20 MB)
@@ -29,11 +29,22 @@ By default, all resources are executed on all backends. But you can choose to ex
     - `set5` = `org.eclipse.jdt.source.all.xmi` (983 MB)
 
   - the absolute file path, otherwise.
-  For now, only `*.xmi` and `*.zxmi` that use the `http://www.eclipse.org/MoDisco/Java/0.2.incubation/java` package are allowed.
+    For now, only `*.xmi` and `*.zxmi` that use the `http://www.eclipse.org/MoDisco/Java/0.2.incubation/java` package are allowed.
 
-__Example:__ To run the query `traverse` on XMI and Neo4j backends, with the resource "fr.inria.atlanmod.kyanos.tests.xmi", you need to execute:
+- `s=<stores>,...`      where `<stores>` is a string containing the following characters (without specific order):
+  - `A{<chuck>}` for auto-saving, with the specified chunk *(default = 100000)*
+  - `F`          for caching the features
+  - `S`          for caching the sizes
+  - `P`          for caching the presence of values
+  - `L{<level>}` for logging the database accesses, at the specified level *(default = INFO)*
+  
+**NOTE:** Values that are wrapped in `{***}` are optional.
 
-    java -jar ... traverse -p b=xmi,neo-graph-neo4j -p r=fr.inria.atlanmod.kyanos.tests.xmi
+**NOTE2:** All parameters can be multi-valued by separating them with `,` (without any space). They will be executed in different iterations.
+
+**Example:** To run the query `traverse` on *XMI* and *Neo4j*, with the resources "set1" and "set3", with feature caching, auto-saving (chuck = 50 000) and logging (default level), you need to execute:
+
+    java -jar ... -p a=xmi,neo-neo4j -p r=set1,set3 -p o=FA{50000}L traverse
 
 #### Initialization _(optional)_
 Backends have to be created before executing requests on it.
@@ -47,13 +58,4 @@ To initialize them, you can execute:
     
 Backends are created in the workspace directory, which is by default `<tmp-dir>/neoemf-benchmarks`.
 
-__NOTE:__ The creation time is not taken in account in benchmark results, that's why this step is optional.
-
-### Running with Maven
-You can also run a pre-configured execution from Maven:
-    
-    mvn -f core exec:exec
-    
-Which is the same than execute:
-
-    java -jar ... -rf json -rff <tmp-dir>/neoemf-benchmarks-<timestamp>.json
+**NOTE:** The creation time is not taken in account in benchmark results, that's why this step is optional.

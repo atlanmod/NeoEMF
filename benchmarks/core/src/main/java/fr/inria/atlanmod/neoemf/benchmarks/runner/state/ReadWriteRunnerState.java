@@ -25,7 +25,7 @@ public class ReadWriteRunnerState extends ReadOnlyRunnerState {
     @Override
     protected File getStoreLocation() {
         try {
-            return getBackend().copy(super.getStoreLocation());
+            return getAdapter().copy(super.getStoreLocation());
         }
         catch (Exception e) {
             throw new RuntimeException(e);

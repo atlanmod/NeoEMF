@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -54,7 +54,7 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class CdoBackend extends AbstractBackend {
+public class CdoAdapter extends AbstractAdapter {
 
     public static final String NAME = "cdo";
 
@@ -68,7 +68,7 @@ public class CdoBackend extends AbstractBackend {
     private CDOTransaction transaction;
 
     @SuppressWarnings("unused") // Called dynamically
-    public CdoBackend() {
+    public CdoAdapter() {
         super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
 

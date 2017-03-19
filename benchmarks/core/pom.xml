@@ -174,7 +174,6 @@
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.neo4j:neo4j-lucene-index</exclude>
-                                    <exclude>fr.inria.atlanmod.neoemf:neoemf-core.p2</exclude> <!-- FIXME Invalid signature -->
                                 </excludes>
                             </artifactSet>
                         </configuration>

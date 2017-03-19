@@ -9,9 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter.helper;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.InternalBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.InternalAdapter;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -56,7 +56,7 @@ import static java.util.Objects.nonNull;
 /**
  * A class that provides static methods for {@link Resource} management.
  */
-public final class BackendHelper {
+public final class ResourceHelper {
 
     private static final String XMI = "xmi";
     private static final String ZXMI = "zxmi";
@@ -76,7 +76,7 @@ public final class BackendHelper {
      */
     private static Map<String, String> REGISTERED_RESOURCES;
 
-    private BackendHelper() {
+    private ResourceHelper() {
     }
 
     /**
@@ -129,55 +129,55 @@ public final class BackendHelper {
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in a temporary
+     * from the given {@code sourceFile}, and stores it to the given {@code targetAdapter}, located in a temporary
      * directory.
      *
      * @param sourceFile    the resource file
-     * @param targetBackend the backend where to store the resource
+     * @param targetAdapter the adapter where to store the resource
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the store
      * @see Workspace#newTempDirectory()
      */
-    public static File createTempStore(File sourceFile, InternalBackend targetBackend) throws Exception {
-        return createStore(sourceFile, targetBackend, Workspace.newTempDirectory());
+    public static File createTempStore(File sourceFile, InternalAdapter targetAdapter) throws Exception {
+        return createStore(sourceFile, targetAdapter, Workspace.newTempDirectory());
     }
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in the workspace.
+     * from the given {@code sourceFile}, and stores it to the given {@code targetAdapter}, located in the workspace.
      *
      * @param sourceFile    the resource file
-     * @param targetBackend the backend where to store the resource
+     * @param targetAdapter the adapter where to store the resource
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the store
      * @see Workspace#getStoreDirectory()
      */
-    public static File createStore(File sourceFile, InternalBackend targetBackend) throws Exception {
-        return createStore(sourceFile, targetBackend, Workspace.getStoreDirectory());
+    public static File createStore(File sourceFile, InternalAdapter targetAdapter) throws Exception {
+        return createStore(sourceFile, targetAdapter, Workspace.getStoreDirectory());
     }
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetBackend}, located in {@code
+     * from the given {@code sourceFile}, and stores it to the given {@code targetAdapter}, located in {@code
      * targetDir}.
      *
      * @param sourceFile    the resource file
-     * @param targetBackend the backend where to store the resource
-     * @param targetDir     the location of the backend
+     * @param targetAdapter the adapter where to store the resource
+     * @param targetDir     the location of the adapter
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the store
      */
-    private static File createStore(File sourceFile, InternalBackend targetBackend, Path targetDir) throws Exception {
+    private static File createStore(File sourceFile, InternalAdapter targetAdapter, Path targetDir) throws Exception {
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
 
-        String targetFileName = getNameWithoutExtension(sourceFile.getAbsolutePath()) + "." + targetBackend.getStoreExtension();
+        String targetFileName = getNameWithoutExtension(sourceFile.getAbsolutePath()) + "." + targetAdapter.getStoreExtension();
         File targetFile = targetDir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
@@ -191,7 +191,7 @@ public final class BackendHelper {
 
         Resource sourceResource = resourceSet.createResource(sourceUri);
 
-        targetBackend.initAndGetEPackage();
+        targetAdapter.initAndGetEPackage();
 
         Log.info("Loading '{0}'", sourceUri);
         Map<String, Object> loadOpts = new HashMap<>();
@@ -202,33 +202,33 @@ public final class BackendHelper {
 
         Log.info("Migrating");
 
-        Resource targetResource = targetBackend.createResource(targetFile, resourceSet);
-        targetBackend.save(targetResource);
+        Resource targetResource = targetAdapter.createResource(targetFile, resourceSet);
+        targetAdapter.save(targetResource);
 
         targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
 
         sourceResource.unload();
 
         Log.info("Saving to '{0}'", targetResource.getURI());
-        targetBackend.save(targetResource);
+        targetAdapter.save(targetResource);
 
-        targetBackend.unload(targetResource);
+        targetAdapter.unload(targetResource);
 
         return targetFile;
     }
 
     /**
      * Creates a new {@link Resource} from the given {@code sourceFilename}, and adapts it for the given
-     * {@code targetBackend}. The resource file can be placed in the resource ZIP, or in the file system.
+     * {@code targetAdapter}. The resource file can be placed in the resource ZIP, or in the file system.
      *
      * @param sourceFilename the name of the resource file
-     * @param targetBackend  the backend where to store the resource
+     * @param targetAdapter  the adapter where to store the resource
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the resource
      */
-    public static File createResource(String sourceFilename, InternalBackend targetBackend) throws Exception {
+    public static File createResource(String sourceFilename, InternalAdapter targetAdapter) throws Exception {
         if (getRegisteredResources().containsKey(sourceFilename.toLowerCase())) {
             sourceFilename = getRegisteredResources().get(sourceFilename.toLowerCase());
         }
@@ -245,21 +245,21 @@ public final class BackendHelper {
 
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
-        return createResource(sourceFile, targetBackend);
+        return createResource(sourceFile, targetAdapter);
     }
 
     /**
-     * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code targetBackend}.
+     * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code targetAdapter}.
      *
      * @param sourceFile    the resource file
-     * @param targetBackend the backend where to store the resource
+     * @param targetAdapter the adapter where to store the resource
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the resource
      */
-    private static File createResource(File sourceFile, InternalBackend targetBackend) throws Exception {
-        String targetFileName = getNameWithoutExtension(sourceFile.getName()) + "." + targetBackend.getResourceExtension() + "." + ZXMI;
+    private static File createResource(File sourceFile, InternalAdapter targetAdapter) throws Exception {
+        String targetFileName = getNameWithoutExtension(sourceFile.getName()) + "." + targetAdapter.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
@@ -282,7 +282,7 @@ public final class BackendHelper {
         URI targetURI = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetURI);
 
-        targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
+        targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetAdapter.initAndGetEPackage()));
 
         sourceResource.unload();
 
@@ -408,7 +408,7 @@ public final class BackendHelper {
         if (isNull(AVAILABLE_RESOURCES)) {
             AVAILABLE_RESOURCES = new ArrayList<>();
 
-            try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
+            try (ZipInputStream inputStream = new ZipInputStream(ResourceHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
                 ZipEntry entry = inputStream.getNextEntry();
                 while (nonNull(entry)) {
                     if (!entry.isDirectory()) {
@@ -433,7 +433,7 @@ public final class BackendHelper {
     private static Map<String, String> getRegisteredResources() throws IOException {
         if (isNull(REGISTERED_RESOURCES)) {
             Properties properties = new Properties();
-            properties.load(BackendHelper.class.getResourceAsStream("/resources.properties"));
+            properties.load(ResourceHelper.class.getResourceAsStream("/resources.properties"));
             REGISTERED_RESOURCES = properties.entrySet().stream()
                     .collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
         }
@@ -453,7 +453,7 @@ public final class BackendHelper {
     private static File extractFromZip(String filename, Path outputDir) throws IOException {
         File outputFile = null;
         boolean fileFound = false;
-        try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
+        try (ZipInputStream inputStream = new ZipInputStream(ResourceHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
             ZipEntry entry = inputStream.getNextEntry();
             while (nonNull(entry) || !fileFound) {
                 if (!entry.isDirectory() && Objects.equals(new File(entry.getName()).getName(), filename)) {

@@ -9,9 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.BackendHelper;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.ResourceHelper;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -22,7 +22,7 @@ import java.io.File;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
-abstract class AbstractBackend implements Backend, InternalBackend {
+abstract class AbstractAdapter implements Adapter, InternalAdapter {
 
     protected final String name;
 
@@ -31,7 +31,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
 
     protected final Class<?> packageClass;
 
-    protected AbstractBackend(String name, String resourceExtension, String storeExtension, Class<?> packageClass) {
+    protected AbstractAdapter(String name, String resourceExtension, String storeExtension, Class<?> packageClass) {
         this.name = checkNotNull(name);
         this.resourceExtension = checkNotNull(resourceExtension);
         this.storeExtension = checkNotNull(storeExtension);
@@ -62,7 +62,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
 
     @Override
     public File getOrCreateResource(String resourceName) throws Exception {
-        return BackendHelper.createResource(resourceName, this);
+        return ResourceHelper.createResource(resourceName, this);
     }
 
     @Override
@@ -82,17 +82,17 @@ abstract class AbstractBackend implements Backend, InternalBackend {
 
     @Override
     public File copy(File storeLocation) throws Exception {
-        return BackendHelper.copyStore(storeLocation);
+        return ResourceHelper.copyStore(storeLocation);
     }
 
     protected File getOrCreateStore(File resourceFile, boolean temporary) throws Exception {
         File storeFile;
 
         if (temporary) {
-            storeFile = BackendHelper.createTempStore(resourceFile, this);
+            storeFile = ResourceHelper.createTempStore(resourceFile, this);
         }
         else {
-            storeFile = BackendHelper.createStore(resourceFile, this);
+            storeFile = ResourceHelper.createStore(resourceFile, this);
         }
 
         if (isNull(storeFile) || !storeFile.exists()) {

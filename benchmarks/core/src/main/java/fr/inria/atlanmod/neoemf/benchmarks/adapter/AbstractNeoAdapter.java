@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -21,13 +21,13 @@ import java.io.File;
 
 import static java.util.Objects.nonNull;
 
-abstract class AbstractNeoBackend extends AbstractBackend {
+abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     private static final String RESOURCE_EXTENSION = "neoemf";
 
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
 
-    protected AbstractNeoBackend(String name, String storeExtension) {
+    protected AbstractNeoAdapter(String name, String storeExtension) {
         super(name, RESOURCE_EXTENSION, storeExtension, EPACKAGE_CLASS);
     }
 

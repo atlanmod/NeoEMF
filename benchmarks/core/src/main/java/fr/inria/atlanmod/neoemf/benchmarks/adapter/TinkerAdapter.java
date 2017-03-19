@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
@@ -24,18 +24,18 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
-public class TinkerBackend extends AbstractNeoBackend {
+public class TinkerAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-tinker";
 
     private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
 
     @SuppressWarnings("unused") // Called dynamically
-    public TinkerBackend() {
+    public TinkerAdapter() {
         this(NAME, STORE_EXTENSION);
     }
 
-    protected TinkerBackend(String name, String storeExtension) {
+    protected TinkerAdapter(String name, String storeExtension) {
         super(name, storeExtension);
     }
 

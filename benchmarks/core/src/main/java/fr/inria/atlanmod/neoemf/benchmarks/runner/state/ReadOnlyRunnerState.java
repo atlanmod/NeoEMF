@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -35,7 +35,7 @@ public class ReadOnlyRunnerState extends RunnerState {
     protected Resource resource;
 
     /**
-     * The location of the current {@link Backend}.
+     * The location of the current {@link Adapter}.
      */
     protected File storeFile;
 
@@ -50,9 +50,9 @@ public class ReadOnlyRunnerState extends RunnerState {
     }
 
     /**
-     * Returns the location of the current {@link Backend}.
+     * Returns the location of the current {@link Adapter}.
      *
-     * @return the location of the current {@link Backend}.
+     * @return the location of the current {@link Adapter}.
      */
     protected File getStoreLocation() {
         return storeFile;
@@ -66,10 +66,10 @@ public class ReadOnlyRunnerState extends RunnerState {
     @Setup(Level.Iteration)
     public void loadResource() throws Exception {
         Log.info("Initializing the datastore");
-        storeFile = getBackend().getOrCreateStore(getResourceFile());
+        storeFile = getAdapter().getOrCreateStore(getResourceFile());
 
         Log.info("Loading the resource");
-        resource = getBackend().load(getStoreLocation(), getOptions());
+        resource = getAdapter().load(getStoreLocation(), getOptions());
     }
 
     /**
@@ -81,9 +81,9 @@ public class ReadOnlyRunnerState extends RunnerState {
     public void unloadResource() throws Exception {
         Log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {
-            getBackend().unload(resource);
+            getAdapter().unload(resource);
             resource = null;
         }
-        Backend.clean();
+        Adapter.clean();
     }
 }

@@ -9,19 +9,19 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.Workspace;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.Workspace;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
-public interface Backend {
+public interface Adapter {
 
     /**
-     * Cleans temporary files from backends.
+     * Cleans temporary files from adapters.
      */
     static void clean() {
         Workspace.cleanTempDirectory();

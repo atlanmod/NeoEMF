@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
@@ -24,14 +24,14 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
-public class BerkeleyDbBackend extends AbstractNeoBackend {
+public class BerkeleyDbAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-berkeleydb";
 
     private static final String STORE_EXTENSION = "berkeleydb.resource"; // -> neoemf.mapdb.resource
 
     @SuppressWarnings("unused") // Called dynamically
-    public BerkeleyDbBackend() {
+    public BerkeleyDbAdapter() {
         super(NAME, STORE_EXTENSION);
     }
 

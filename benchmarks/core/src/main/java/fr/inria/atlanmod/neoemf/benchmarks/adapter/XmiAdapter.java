@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
@@ -23,7 +23,7 @@ import java.io.File;
 
 import static java.util.Objects.nonNull;
 
-public class XmiBackend extends AbstractBackend {
+public class XmiAdapter extends AbstractAdapter {
 
     public static final String NAME = "xmi";
 
@@ -33,7 +33,7 @@ public class XmiBackend extends AbstractBackend {
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
 
     @SuppressWarnings("unused") // Called dynamically
-    public XmiBackend() {
+    public XmiAdapter() {
         super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
 

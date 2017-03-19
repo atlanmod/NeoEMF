@@ -9,20 +9,20 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.datastore;
+package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 
 import java.util.Map;
 
-public class Neo4jBackend extends TinkerBackend {
+public class Neo4jAdapter extends TinkerAdapter {
 
     public static final String NAME = "neo-neo4j";
 
     private static final String STORE_EXTENSION = "neo4j.resource"; // -> neoemf.neo4j.resource
 
     @SuppressWarnings("unused") // Called dynamically
-    public Neo4jBackend() {
+    public Neo4jAdapter() {
         super(NAME, STORE_EXTENSION);
     }
 

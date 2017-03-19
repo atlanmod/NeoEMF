@@ -84,7 +84,7 @@ public class RunnerQuery extends Runner {
         String name = UUID.randomUUID().toString();
         Resource resource = state.getResource();
         Void result = QueryFactory.queryRenameAllMethods(resource, name).callWithResult();
-        state.getBackend().save(resource);
+        state.getAdapter().save(resource);
         return result;
     }
 
