@@ -61,7 +61,9 @@ public final class MoreArrays {
         checkNotNull(type);
         checkArgument(length >= 0);
 
-        return (T[]) Array.newInstance(type, length);
+        return (type == Object.class)
+                ? (T[]) new Object[length]
+                : (T[]) Array.newInstance(type, length);
     }
 
     /**
@@ -82,7 +84,6 @@ public final class MoreArrays {
         checkArgument(length >= array.length);
 
         T[] newArray = newArray(array.getClass().getComponentType(), length);
-
         System.arraycopy(array, 0, newArray, 0, array.length);
 
         return newArray;
@@ -123,7 +124,6 @@ public final class MoreArrays {
         checkElementIndex(index, array.length + 1);
 
         T[] newArray = newArray(array.getClass().getComponentType(), array.length + 1);
-
         System.arraycopy(array, 0, newArray, 0, index);
 
         newArray[index] = element;
@@ -153,7 +153,6 @@ public final class MoreArrays {
         checkElementIndex(index, array.length);
 
         T[] newArray = newArray(array.getClass().getComponentType(), array.length - 1);
-
         System.arraycopy(array, 0, newArray, 0, index);
 
         if (index < array.length - 1) {
@@ -191,11 +190,13 @@ public final class MoreArrays {
      */
     public static <T> int indexOf(T[] array, @Nullable T value) {
         checkNotNull(array);
+
         for (int i = 0; i < array.length; i++) {
             if (Objects.equals(value, array[i])) {
                 return i;
             }
         }
+
         return NO_INDEX;
     }
 
@@ -211,11 +212,13 @@ public final class MoreArrays {
      */
     public static <T> int lastIndexOf(T[] array, @Nullable T value) {
         checkNotNull(array);
+
         for (int i = array.length - 1; i >= 0; i--) {
             if (Objects.equals(value, array[i])) {
                 return i;
             }
         }
+
         return NO_INDEX;
     }
 }
