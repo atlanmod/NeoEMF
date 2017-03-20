@@ -68,6 +68,26 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.close();
     }
 
+    /**
+     * Checks the behavior of {@link DataMapper#close()}. A call to {@link DataMapper#close()} on a closed
+     * {@link DataMapper} should do nothing.
+     */
+    @Test
+    public void testCloseThenClose() {
+        // First close
+        mapper.close();
+
+        // Second close
+        assertThat(catchThrowable(() ->
+                mapper.close()
+        )).isNull();
+
+        // Third close
+        assertThat(catchThrowable(() ->
+                mapper.close()
+        )).isNull();
+    }
+
     //region Persistence
 
     /**
