@@ -240,21 +240,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin> <!-- Add ${osgi.***Version} properties for `maven-bundle-plugin` -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>parse-version</goal>
-                        </goals>
-                        <configuration>
-                            <propertyPrefix>osgi</propertyPrefix>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
 
         <pluginManagement>
@@ -273,17 +258,10 @@
                     <configuration>
                         <instructions>
                             <Bundle-Version>
-                                <!-- Properties ${osgi.XXX} : Created by build-helper-maven-plugin:parse-version -->
-                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${maven.build.timestamp}
+                                1.0.2.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                            <Import-Package />
-                            <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
-                                 internal class loading (in particular caches are not recognized anymore) -->
                             <Embed-Dependency>
-                                <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
-                                     otherwise it creates conflicts with running osgi version (these dependencies are
-                                     only needed when running the plugins in an eclipse-based environment) -->
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
@@ -419,8 +397,6 @@
                     <configuration>
                         <!-- Property @{argLine} : created by jacoco:prepare-agent -->
                         <argLine>@{argLine} ${argLine.global}</argLine>
-                        <!-- '/tmp' directory doesn't exist in Windows : think to comment this line before commit -->
-                        <!--<argLine>-Djava.io.tmpdir=/tmp/</argLine>-->
                         <failIfNoTests>false</failIfNoTests>
                     </configuration>
                 </plugin>

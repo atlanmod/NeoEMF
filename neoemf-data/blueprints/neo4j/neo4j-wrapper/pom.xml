@@ -115,10 +115,6 @@
                             org.neo4j.*;-split-package:=first,
                             javax.transaction.*;-split-package:=first,
                         </Export-Package>
-                        <Private-Package>
-<!--                             javax.transaction, -->
-<!--                             javax.transaction.xa, -->
-                        </Private-Package>
                         <Embed-Dependency>
                             neo4j-lucene-index,
                             lucene-core,
