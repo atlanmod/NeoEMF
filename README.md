@@ -1,6 +1,6 @@
 NeoEMF
 ======
-[![Build Status](https://travis-ci.org/atlanmod/NeoEMF.svg?branch=master)](https://travis-ci.org/atlanmod/NeoEMF) [![codecov](https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg)](https://codecov.io/gh/atlanmod/NeoEMF) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd284a572d0f4604b51dc4c7f8570b18)](https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf)
+[![Build Status](https://travis-ci.org/atlanmod/NeoEMF.svg?branch=master)](https://travis-ci.org/atlanmod/NeoEMF) [![codecov](https://codecov.io/gh/atlanmod/NeoEMF/branch/backend-abstraction/graph/badge.svg)](https://codecov.io/gh/atlanmod/NeoEMF/branch/backend-abstraction) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd284a572d0f4604b51dc4c7f8570b18)](https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf)
 
 ## What is NeoEMF?
 
