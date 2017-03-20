@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
-import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceWriter;
-import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
+import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
+import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
@@ -42,9 +42,9 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         Namespace.Registry.getInstance().clean();
     }
 
-    protected void assertValidElement(ElementMock mock, String name, int size, String id, String className, boolean root) {
+    protected void assertValidElement(DummyElement mock, String name, int size, String id, String className, boolean root) {
         assertThat(mock.name()).isEqualTo(name);
-        assertThat(mock.elements()).hasSize(size);
+        assertThat(mock.children()).hasSize(size);
         assertThat(mock.className()).isEqualTo(className);
         assertThat(mock.isRoot()).isEqualTo(root);
 
@@ -75,8 +75,8 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         assertThat(attribute.index()).isEqualTo(index);
     }
 
-    private StructuralPersistanceWriter read(File filePath) throws IOException {
-        StructuralPersistanceWriter persistanceHandler = new StructuralPersistanceWriter();
+    private DummyWriter read(File filePath) throws IOException {
+        DummyWriter persistanceHandler = new DummyWriter();
 
         Processor processor = new DirectWriteProcessor(persistanceHandler);
         processor = new CounterProcessor(processor);

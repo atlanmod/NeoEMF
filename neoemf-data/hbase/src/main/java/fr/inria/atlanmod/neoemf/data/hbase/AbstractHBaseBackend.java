@@ -93,7 +93,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     private boolean isClosed;
 
     /**
-     * Constructs a new {@code AbstractHBaseBackend} on th given {@code table}
+     * Constructs a new {@code AbstractHBaseBackend} on the given {@code table}.
      *
      * @param table the HBase table
      */

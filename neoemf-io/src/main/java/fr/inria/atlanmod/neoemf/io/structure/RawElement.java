@@ -84,9 +84,9 @@ public class RawElement extends RawMetaclass {
     }
 
     /**
-     * Returns the metaclassifier of this classifier.
+     * Returns the metaclass of this classifier.
      *
-     * @return the metaclassifier
+     * @return the metaclass
      */
     public RawMetaclass metaclass() {
         return metaclass;

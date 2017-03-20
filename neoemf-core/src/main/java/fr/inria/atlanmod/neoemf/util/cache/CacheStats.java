@@ -291,12 +291,12 @@ public final class CacheStats {
         }
 
         CacheStats that = (CacheStats) o;
-        return hitCount == that.hitCount &&
-                missCount == that.missCount &&
-                loadSuccessCount == that.loadSuccessCount &&
-                loadFailureCount == that.loadFailureCount &&
-                totalLoadTime == that.totalLoadTime &&
-                evictionCount == that.evictionCount;
+        return hitCount == that.hitCount
+                && missCount == that.missCount
+                && loadSuccessCount == that.loadSuccessCount
+                && loadFailureCount == that.loadFailureCount
+                && totalLoadTime == that.totalLoadTime
+                && evictionCount == that.evictionCount;
     }
 
     @Override

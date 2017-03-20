@@ -11,17 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.writer.MapperWriter;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,22 +32,38 @@ import static java.util.Objects.nonNull;
  * A {@link MapperWriter} that stores all elements in {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault
-public class StructuralPersistanceWriter implements MapperWriter {
+public class DummyWriter implements MapperWriter {
 
-    private final Map<String, ElementMock> elementMocks;
+    /**
+     * A map that holds the identifier of all elements.
+     */
+    private final Map<String, DummyElement> identifiers;
 
-    private final Deque<ElementMock> elementsStack;
+    /**
+     * A stack that holds the current path, from the root to the current element.
+     */
+    private final Deque<DummyElement> stack;
 
-    private final List<ElementMock> elements;
+    /**
+     * The root element.
+     */
+    private DummyElement root;
 
-    public StructuralPersistanceWriter() {
-        this.elementMocks = new HashMap<>();
-        this.elementsStack = new ArrayDeque<>();
-        this.elements = new ArrayList<>();
+    /**
+     * Constructs a new {@code DummyWriter}.
+     */
+    public DummyWriter() {
+        this.identifiers = new HashMap<>();
+        this.stack = new ArrayDeque<>();
     }
 
-    public List<ElementMock> getElements() {
-        return elements;
+    /**
+     * Returns the root element.
+     *
+     * @return the root element
+     */
+    public DummyElement getRoot() {
+        return root;
     }
 
     @Override
@@ -60,27 +73,27 @@ public class StructuralPersistanceWriter implements MapperWriter {
 
     @Override
     public void onStartElement(RawElement element) {
-        ElementMock mock = new ElementMock(element);
+        DummyElement mock = new DummyElement(element);
 
-        if (!elementsStack.isEmpty()) {
-            elementsStack.getLast().elements().add(mock);
+        if (stack.isEmpty()) {
+            root = mock;
         }
         else {
-            elements.add(mock);
+            stack.getLast().children().add(mock);
         }
 
-        Optional.ofNullable(element.id()).ifPresent(v -> elementMocks.put(element.id().value(), mock));
+        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id().value(), mock));
 
-        elementsStack.addLast(mock);
+        stack.addLast(mock);
     }
 
     @Override
     public void onAttribute(RawAttribute attribute) {
-        if (isNull(attribute.id()) || attribute.id().equals(elementsStack.getLast().id())) {
-            elementsStack.getLast().attributes().add(attribute);
+        if (isNull(attribute.id()) || attribute.id().equals(stack.getLast().id())) {
+            stack.getLast().attributes().add(attribute);
         }
         else {
-            ElementMock mock = elementMocks.get(attribute.id().value());
+            DummyElement mock = identifiers.get(attribute.id().value());
             if (nonNull(mock) && Objects.equals(mock.id(), attribute.id())) {
                 mock.attributes().add(attribute);
             }
@@ -92,11 +105,11 @@ public class StructuralPersistanceWriter implements MapperWriter {
 
     @Override
     public void onReference(RawReference reference) {
-        if (isNull(reference.id()) || reference.id().equals(elementsStack.getLast().id())) {
-            elementsStack.getLast().references().add(reference);
+        if (isNull(reference.id()) || reference.id().equals(stack.getLast().id())) {
+            stack.getLast().references().add(reference);
         }
         else {
-            ElementMock mock = elementMocks.get(reference.id().value());
+            DummyElement mock = identifiers.get(reference.id().value());
             if (nonNull(mock) && Objects.equals(mock.id(), reference.id())) {
                 mock.references().add(reference);
             }
@@ -113,11 +126,12 @@ public class StructuralPersistanceWriter implements MapperWriter {
 
     @Override
     public void onEndElement() {
-        elementsStack.removeLast();
+        stack.removeLast();
     }
 
     @Override
     public void onComplete() {
-        // Do nothing
+        stack.clear();
+        identifiers.clear();
     }
 }

@@ -81,10 +81,10 @@ public final class HashCode implements Serializable {
     public int toInt() {
         checkState(bytes.length >= 4, "HashCode#toInt() requires at least 4 bytes (it only has %s bytes).", bytes.length);
 
-        return (bytes[0] & 0xFF) |
-                ((bytes[1] & 0xFF) << 8) |
-                ((bytes[2] & 0xFF) << 16) |
-                ((bytes[3] & 0xFF) << 24);
+        return (bytes[0] & 0xFF)
+                | ((bytes[1] & 0xFF) << 8)
+                | ((bytes[2] & 0xFF) << 16)
+                | ((bytes[3] & 0xFF) << 24);
     }
 
     /**

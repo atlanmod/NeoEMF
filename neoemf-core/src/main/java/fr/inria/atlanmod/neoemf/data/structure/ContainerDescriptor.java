@@ -124,8 +124,8 @@ public final class ContainerDescriptor implements Serializable {
         }
 
         ContainerDescriptor that = (ContainerDescriptor) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name);
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name);
     }
 
     @Override

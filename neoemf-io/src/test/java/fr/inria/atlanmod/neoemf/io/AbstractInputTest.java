@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
-import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceWriter;
+import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -34,7 +34,7 @@ public abstract class AbstractInputTest extends AbstractTest {
 
     protected static final int UNKNOWN_INDEX = -1;
 
-    protected StructuralPersistanceWriter persistanceHandler;
+    protected DummyWriter persistanceHandler;
 
     protected File sample;
 

@@ -85,7 +85,7 @@ public enum PersistentStoreOptions {
     READ_ONLY("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator");
 
     /**
-     * The type of the represented {@link Store}
+     * The type of the represented {@link Store}.
      */
     private final String className;
 

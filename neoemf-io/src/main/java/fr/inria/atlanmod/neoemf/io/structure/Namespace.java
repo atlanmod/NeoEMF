@@ -69,7 +69,7 @@ public class Namespace {
     }
 
     /**
-     * Returns the literal representation of the URI of this namespace
+     * Returns the literal representation of the URI of this namespace.
      *
      * @return the literal representation of the URI
      */

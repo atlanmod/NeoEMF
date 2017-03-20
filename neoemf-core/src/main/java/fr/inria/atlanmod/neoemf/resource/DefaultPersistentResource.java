@@ -413,9 +413,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         protected void delegateAdd(int index, Object object) {
             /*
              * FIXME Maintain a list of hard links to the elements while moving them to the new resource.
-			 * If a garbage collection happens while traversing the children elements, some unsaved objects that are
-			 * referenced from a saved object may be garbage collected before they have been completely stored in the DB
-			 */
+             * If a garbage collection happens while traversing the children elements, some unsaved objects that are
+             * referenced from a saved object may be garbage collected before they have been completely stored in the DB
+             */
             PersistentEObject eObject = PersistentEObject.from(object);
 
             // Collect all contents
@@ -426,8 +426,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
             /*
              * Iterate using the hard links set instead the getAllContents.
-			 * We ensure that using the hard links set it is not taken out by JIT compiler.
-			 */
+             * We ensure that using the hard links set it is not taken out by JIT compiler.
+             */
             allContents.stream()
                     .map(PersistentEObject::from)
                     .forEach(e -> e.resource(DefaultPersistentResource.this));
@@ -451,8 +451,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
             /*
              * Iterate using the hard links set instead the getAllContents.
-			 * We ensure that using the hard links set it is not taken out by JIT compiler.
-			 */
+             * We ensure that using the hard links set it is not taken out by JIT compiler.
+             */
             allContents.stream()
                     .map(PersistentEObject::from)
                     .forEach(e -> e.resource(null));

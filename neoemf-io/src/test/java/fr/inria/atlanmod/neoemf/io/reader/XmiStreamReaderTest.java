@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.io.mock.beans.ElementMock;
+import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -49,7 +49,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         Iterable<String> prefixes = nsRegistry.getPrefixes();
         assertThat(prefixes).containsExactlyInAnyOrder("xsi", "java", "xmi");
 
-        ElementMock root = persistanceHandler.getElements().get(0);
+        DummyElement root = persistanceHandler.getRoot();
         assertThat(root.ns()).isNotNull();
         assertThat(root.ns().prefix()).isEqualTo("java");
     }
@@ -60,41 +60,41 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     @Category(Tags.IOTests.class)
     public void testElementsAndChildren() {
-        assertThat(persistanceHandler.getElements()).isNotEmpty();
+        assertThat(persistanceHandler.getRoot()).isNotNull();
 
-        ElementMock mock;
-        ElementMock mockChild;
+        DummyElement mock;
+        DummyElement mockChild;
 
-        ElementMock root = persistanceHandler.getElements().get(0);
+        DummyElement root = persistanceHandler.getRoot();
         assertValidElement(root, "Model", 19, null);
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ElementMock.childFrom(root, 0, 0, 0, 0, 0, 0);
+            mock = DummyElement.childFrom(root, 0, 0, 0, 0, 0, 0);
             assertValidElement(mock, "ownedElements", 7, null);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
-                mockChild = ElementMock.childFrom(mock, 0);
+                mockChild = DummyElement.childFrom(mock, 0);
                 assertValidElement(mockChild, "modifier", 0, null);
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
-                mockChild = ElementMock.childFrom(mock, 3);
+                mockChild = DummyElement.childFrom(mock, 3);
                 assertValidElement(mockChild, "bodyDeclarations", 5, null);
             }
 
             //@Model/@ownedElements.1
-            mock = ElementMock.childFrom(root, 1);
+            mock = DummyElement.childFrom(root, 1);
             assertValidElement(mock, "ownedElements", 5, null);
 
             //@Model/@orphanTypes.5
-            mock = ElementMock.childFrom(root, 8);
+            mock = DummyElement.childFrom(root, 8);
             assertValidElement(mock, "orphanTypes", 0, null);
 
             //@Model/@compilationUnits.1
-            mock = ElementMock.childFrom(root, 17);
+            mock = DummyElement.childFrom(root, 17);
             assertValidElement(mock, "compilationUnits", 16, null);
             {
                 //@Model/@compilationUnits.1/@imports.2
-                mockChild = ElementMock.childFrom(mock, 2);
+                mockChild = DummyElement.childFrom(mock, 2);
                 assertValidElement(mockChild, "imports", 0, null);
             }
         }
@@ -106,49 +106,49 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     @Category(Tags.IOTests.class)
     public void testAttributes() {
-        ElementMock mock;
-        ElementMock mockChild;
+        DummyElement mock;
+        DummyElement mockChild;
 
         List<RawAttribute> attributeList;
 
-        ElementMock root = persistanceHandler.getElements().get(0);
+        DummyElement root = persistanceHandler.getRoot();
         assertThat(root.attributes()).isEmpty(); // Assert that 'xmi:version' and 'xmlns' don't exist
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ElementMock.childFrom(root, 0, 0, 0, 0, 0, 0);
+            mock = DummyElement.childFrom(root, 0, 0, 0, 0, 0, 0);
             attributeList = mock.attributes();
             assertThat(attributeList).isEmpty();
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
-                mockChild = ElementMock.childFrom(mock, 0);
+                mockChild = DummyElement.childFrom(mock, 0);
                 attributeList = mockChild.attributes();
                 assertThat(attributeList).hasSize(1);
                 assertValidAttribute(attributeList.get(0), "visibility", "public");
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
-                mockChild = ElementMock.childFrom(mock, 3);
+                mockChild = DummyElement.childFrom(mock, 3);
                 attributeList = mockChild.attributes();
                 assertThat(attributeList).isEmpty();
             }
 
             //@Model/@ownedElements.1
-            mock = ElementMock.childFrom(root, 1);
+            mock = DummyElement.childFrom(root, 1);
             attributeList = mock.attributes();
             assertThat(attributeList).hasSize(1);
             assertValidAttribute(attributeList.get(0), "proxy", "true");
 
             //@Model/@orphanTypes.5
-            mock = ElementMock.childFrom(root, 8);
+            mock = DummyElement.childFrom(root, 8);
             attributeList = mock.attributes();
             assertThat(attributeList).isEmpty();
 
             //@Model/@compilationUnits.1
-            mock = ElementMock.childFrom(root, 17);
+            mock = DummyElement.childFrom(root, 17);
             attributeList = mock.attributes();
             assertThat(attributeList).hasSize(1);
             {
                 //@Model/@compilationUnits.1/@imports.2
-                mockChild = ElementMock.childFrom(mock, 2);
+                mockChild = DummyElement.childFrom(mock, 2);
                 assertThat(mockChild.attributes()).isEmpty();
             }
         }
@@ -161,50 +161,50 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     @Category(Tags.IOTests.class)
     public void testReferences() {
-        ElementMock mock;
-        ElementMock mockChild;
+        DummyElement mock;
+        DummyElement mockChild;
 
         List<RawReference> referenceList;
 
-        ElementMock root = persistanceHandler.getElements().get(0);
+        DummyElement root = persistanceHandler.getRoot();
         assertThat(root.references()).isEmpty();
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ElementMock.childFrom(root, 0, 0, 0, 0, 0, 0);
+            mock = DummyElement.childFrom(root, 0, 0, 0, 0, 0, 0);
             referenceList = mock.references();
             assertThat(referenceList).hasSize(1);
             assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "//@compilationUnits.0");
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
-                mockChild = ElementMock.childFrom(mock, 0);
+                mockChild = DummyElement.childFrom(mock, 0);
                 assertThat(mockChild.references()).isEmpty();
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
-                mockChild = ElementMock.childFrom(mock, 3);
+                mockChild = DummyElement.childFrom(mock, 3);
                 referenceList = mockChild.references();
                 assertThat(referenceList).hasSize(1);
                 assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "//@compilationUnits.0");
             }
 
             //@Model/@ownedElements.1
-            mock = ElementMock.childFrom(root, 1);
+            mock = DummyElement.childFrom(root, 1);
             assertThat(mock.references()).isEmpty();
 
             //@Model/@orphanTypes.5
-            mock = ElementMock.childFrom(root, 8);
+            mock = DummyElement.childFrom(root, 8);
             referenceList = mock.references();
             assertThat(referenceList).hasSize(12);
             assertValidReference(referenceList.get(0), "usagesInTypeAccess", 0, "//@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.1/@returnType");
             assertValidReference(referenceList.get(9), "usagesInTypeAccess", 9, "//@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.1/@bodyDeclarations.5/@returnType");
 
             //@Model/@compilationUnits.1
-            mock = ElementMock.childFrom(root, 17);
+            mock = DummyElement.childFrom(root, 17);
             referenceList = mock.references();
             assertThat(referenceList).hasSize(2);
             assertValidReference(referenceList.get(0), "package", 0, "//@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0");
             {
                 //@Model/@compilationUnits.1/@imports.2
-                mockChild = ElementMock.childFrom(mock, 2);
+                mockChild = DummyElement.childFrom(mock, 2);
                 referenceList = mockChild.references();
                 assertThat(referenceList).hasSize(2);
                 assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "//@compilationUnits.1");
@@ -219,40 +219,40 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     @Category(Tags.IOTests.class)
     public void testMetaClasses() {
-        ElementMock mock;
-        ElementMock mockChild;
+        DummyElement mock;
+        DummyElement mockChild;
 
-        ElementMock root = persistanceHandler.getElements().get(0);
+        DummyElement root = persistanceHandler.getRoot();
         Namespace ns = root.ns();
         assertThat(root.metaClass()).isNull();
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ElementMock.childFrom(root, 0, 0, 0, 0, 0, 0);
+            mock = DummyElement.childFrom(root, 0, 0, 0, 0, 0, 0);
             assertValidMetaClass(mock.metaClass(), "ClassDeclaration", ns);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
-                mockChild = ElementMock.childFrom(mock, 0);
+                mockChild = DummyElement.childFrom(mock, 0);
                 assertThat(mockChild.metaClass()).isNull();
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
-                mockChild = ElementMock.childFrom(mock, 3);
+                mockChild = DummyElement.childFrom(mock, 3);
                 assertValidMetaClass(mockChild.metaClass(), "MethodDeclaration", ns);
             }
 
             //@Model/@ownedElements.1
-            mock = ElementMock.childFrom(root, 1);
+            mock = DummyElement.childFrom(root, 1);
             assertThat(mock.metaClass()).isNull();
 
             //@Model/@orphanTypes.5
-            mock = ElementMock.childFrom(root, 8);
+            mock = DummyElement.childFrom(root, 8);
             assertValidMetaClass(mock.metaClass(), "PrimitiveTypeVoid", ns);
 
             //@Model/@compilationUnits.1
-            mock = ElementMock.childFrom(root, 17);
+            mock = DummyElement.childFrom(root, 17);
             assertThat(mock.metaClass()).isNull();
             {
                 //@Model/@compilationUnits.1/@imports.2
-                mockChild = ElementMock.childFrom(mock, 2);
+                mockChild = DummyElement.childFrom(mock, 2);
                 assertThat(mockChild.metaClass()).isNull();
             }
         }

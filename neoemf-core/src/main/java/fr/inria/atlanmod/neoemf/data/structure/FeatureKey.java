@@ -150,14 +150,12 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     @Override
     public int compareTo(FeatureKey o) {
-        final int EQUAL = 0;
-
         if (this == o) {
-            return EQUAL;
+            return 0;
         }
         int comparison = id.compareTo(o.id);
 
-        if (comparison == EQUAL) {
+        if (comparison == 0) {
             return name.compareTo(o.name);
         }
         else {
@@ -180,8 +178,8 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         }
 
         FeatureKey that = (FeatureKey) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name);
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name);
     }
 
     @Override

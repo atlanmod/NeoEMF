@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * The default implementation of a {@link MapperReader}.
  */
 @ParametersAreNonnullByDefault
 public class DefaultMapperReader extends AbstractReader<DataMapper> implements MapperReader {

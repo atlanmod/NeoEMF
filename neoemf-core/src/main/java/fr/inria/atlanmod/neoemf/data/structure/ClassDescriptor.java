@@ -235,8 +235,8 @@ public final class ClassDescriptor implements Serializable {
         }
 
         ClassDescriptor that = (ClassDescriptor) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(uri, that.uri);
+        return Objects.equals(name, that.name)
+                && Objects.equals(uri, that.uri);
     }
 
     @Override
