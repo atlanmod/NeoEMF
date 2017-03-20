@@ -1,11 +1,26 @@
 comment: false
+
+branch: master
+
 coverage:
   precision: 2
-  range:
-  - 50.0
-  - 90.0
   round: down
+  range:
+    - 50.0
+    - 90.0
+
   status:
     changes: false
     patch: true
     project: true
+
+  ignore:
+  # Ignore OSGi activators
+    - "*/Activator.java"
+    - "*/*Activator.java"
+
+  # Ignore tests
+    - "*/tests/*"
+
+  # Ignore logging
+    - "*/util/log"
