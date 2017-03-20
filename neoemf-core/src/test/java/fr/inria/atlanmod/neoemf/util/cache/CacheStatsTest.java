@@ -19,6 +19,7 @@ import org.junit.Test;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * A test-case that checks the specific behavior of {@link CacheStats}.
@@ -30,6 +31,30 @@ public class CacheStatsTest extends AbstractTest {
     @Before
     public void setUp() {
         stats = new CacheStats(30, 10, 15, 5, 2000, 2);
+    }
+
+    @Test
+    public void testConstructor() {
+        Throwable thrown0 = catchThrowable(() -> new CacheStats(0, 0, 0, 0, 0, 0));
+        assertThat(thrown0).isNull();
+
+        Throwable thrown1 = catchThrowable(() -> new CacheStats(-1, 0, 0, 0, 0, 0));
+        assertThat(thrown1).isInstanceOf(IllegalArgumentException.class);
+
+        Throwable thrown2 = catchThrowable(() -> new CacheStats(0, -1, 0, 0, 0, 0));
+        assertThat(thrown2).isInstanceOf(IllegalArgumentException.class);
+
+        Throwable thrown3 = catchThrowable(() -> new CacheStats(0, 0, -1, 0, 0, 0));
+        assertThat(thrown3).isInstanceOf(IllegalArgumentException.class);
+
+        Throwable thrown4 = catchThrowable(() -> new CacheStats(0, 0, 0, -1, 0, 0));
+        assertThat(thrown4).isInstanceOf(IllegalArgumentException.class);
+
+        Throwable thrown5 = catchThrowable(() -> new CacheStats(0, 0, 0, 0, -1, 0));
+        assertThat(thrown5).isInstanceOf(IllegalArgumentException.class);
+
+        Throwable thrown6 = catchThrowable(() -> new CacheStats(0, 0, 0, 0, 0, -1));
+        assertThat(thrown6).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -144,5 +169,28 @@ public class CacheStatsTest extends AbstractTest {
 
         //noinspection ObjectEqualsNull, EqualsReplaceableByObjectsCall
         assertThat(stats.equals(null)).isFalse();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(new CacheStats(0, 10, 15, 5, 2000, 2))).isFalse();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(new CacheStats(30, 0, 15, 5, 2000, 2))).isFalse();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(new CacheStats(30, 10, 0, 5, 2000, 2))).isFalse();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(new CacheStats(30, 10, 15, 0, 2000, 2))).isFalse();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(new CacheStats(30, 10, 15, 5, 0, 2))).isFalse();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(new CacheStats(30, 10, 15, 5, 2000, 0))).isFalse();
+    }
+
+    @Test
+    public void testToString() {
+        assertThat(stats).hasToString("CacheStats {Hit = 30 (0,75%), Miss = 10 (0,25%), Eviction Count = 2}");
     }
 }

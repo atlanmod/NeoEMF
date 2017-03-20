@@ -16,11 +16,11 @@ coverage:
 
   ignore:
   # Ignore OSGi activators
-    - "*/Activator.java"
-    - "*/*Activator.java"
+    - "**/Activator.java"
+    - "**/AbstractActivator.java"
 
   # Ignore tests
-    - "*/tests/*"
+    - "**/tests/.*"
 
   # Ignore logging
-    - "*/util/log"
+    - "**/util/log/.*"

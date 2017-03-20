@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * A test-case that checks the specific behavior of {@link Cache}.
@@ -47,6 +48,12 @@ public class CacheTest extends AbstractTest {
     public void tearDown() {
         cache.invalidateAll();
         cache.cleanUp();
+    }
+
+    @Test
+    public void createCacheInvalidSize() {
+        Throwable thrown = catchThrowable(() -> CacheBuilder.newBuilder().maximumSize(-1));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -83,7 +90,10 @@ public class CacheTest extends AbstractTest {
         assertThat(cache.get(0)).isNull();
 
         assertThat(cache.get(0, key -> null)).isNull();
+        assertThat(cache.get(0)).isNull();
 
+        // Do nothing
+        cache.refresh(0);
         assertThat(cache.get(0)).isNull();
     }
 
