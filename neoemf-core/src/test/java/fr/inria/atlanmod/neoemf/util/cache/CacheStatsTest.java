@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,76 +29,75 @@ public class CacheStatsTest extends AbstractTest {
     private CacheStats stats;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         stats = new CacheStats(30, 10, 15, 5, 2000, 2);
-
     }
 
     @Test
-    public void testRequestCount() throws Exception {
+    public void testRequestCount() {
         assertThat(stats.requestCount()).isEqualTo(40);
     }
 
     @Test
-    public void testHitCount() throws Exception {
+    public void testHitCount() {
         assertThat(stats.hitCount()).isEqualTo(30);
     }
 
     @Test
-    public void testHitRate() throws Exception {
+    public void testHitRate() {
         assertThat(stats.hitRate()).isEqualTo(0.75);
     }
 
     @Test
-    public void testMissCount() throws Exception {
+    public void testMissCount() {
         assertThat(stats.missCount()).isEqualTo(10);
     }
 
     @Test
-    public void testMissRate() throws Exception {
+    public void testMissRate() {
         assertThat(stats.missRate()).isEqualTo(0.25);
     }
 
     @Test
-    public void testLoadCount() throws Exception {
+    public void testLoadCount() {
         assertThat(stats.loadCount()).isEqualTo(20);
     }
 
     @Test
-    public void testLoadSuccessCount() throws Exception {
+    public void testLoadSuccessCount() {
         assertThat(stats.loadSuccessCount()).isEqualTo(15);
     }
 
     @Test
-    public void testLoadFailureCount() throws Exception {
+    public void testLoadFailureCount() {
         assertThat(stats.loadFailureCount()).isEqualTo(5);
     }
 
     @Test
-    public void testLoadFailureRate() throws Exception {
+    public void testLoadFailureRate() {
         assertThat(stats.loadFailureRate()).isEqualTo(0.25);
     }
 
     @Test
-    public void testTotalLoadTime() throws Exception {
+    public void testTotalLoadTime() {
         assertThat(stats.totalLoadTime()).isEqualByComparingTo(Duration.ofNanos(2000));
     }
 
     @Test
-    public void testAverageLoadPenalty() throws Exception {
+    public void testAverageLoadPenalty() {
         assertThat(stats.averageLoadPenalty()).isEqualTo(100);
     }
 
     @Test
-    public void testEvictionCount() throws Exception {
+    public void testEvictionCount() {
         assertThat(stats.evictionCount()).isEqualTo(2);
     }
 
     @Test
-    public void testMinus() throws Exception {
+    public void testMinus() {
         CacheStats result = stats.minus(stats);
 
-        assertThat(stats).isNotEqualTo(result);
+        assertThat(Objects.equals(stats, result)).isFalse();
         assertThat(stats.hashCode()).isNotEqualTo(result.hashCode());
 
         assertThat(result.requestCount()).isEqualTo(0);
@@ -115,10 +115,10 @@ public class CacheStatsTest extends AbstractTest {
     }
 
     @Test
-    public void testPlus() throws Exception {
+    public void testPlus() {
         CacheStats result = stats.plus(stats);
 
-        assertThat(stats).isNotEqualTo(result);
+        assertThat(Objects.equals(stats, result)).isFalse();
         assertThat(stats.hashCode()).isNotEqualTo(result.hashCode());
 
         assertThat(result.requestCount()).isEqualTo(80);
@@ -133,5 +133,12 @@ public class CacheStatsTest extends AbstractTest {
         assertThat(result.totalLoadTime()).isEqualByComparingTo(Duration.ofNanos(4000));
         assertThat(result.averageLoadPenalty()).isEqualTo(100);
         assertThat(result.evictionCount()).isEqualTo(4);
+    }
+
+    @Test
+    public void testEquals() {
+        assertThat(Objects.equals(stats, stats)).isTrue();
+
+        assertThat(Objects.equals(stats, null)).isFalse();
     }
 }
