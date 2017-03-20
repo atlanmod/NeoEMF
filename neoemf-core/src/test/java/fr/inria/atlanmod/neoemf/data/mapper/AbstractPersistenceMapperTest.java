@@ -140,8 +140,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetDifferentContainer() {
         Id containerId1 = StringId.of("ContainerId0");
 
-        ContainerDescriptor container0 = ContainerDescriptor.of(containerId1, "Container0"),
-                container1 = ContainerDescriptor.of(containerId1, "Container1");
+        ContainerDescriptor container0 = ContainerDescriptor.of(containerId1, "Container0");
+        ContainerDescriptor container1 = ContainerDescriptor.of(containerId1, "Container1");
 
         Id id1 = StringId.of("Id1");
 
@@ -206,8 +206,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSetDifferentMetaclass() {
-        ClassDescriptor metaclass0 = ClassDescriptor.of("Metaclass0", "Uri0"),
-                metaclass1 = ClassDescriptor.of("Metaclass1", "Uri1");
+        ClassDescriptor metaclass0 = ClassDescriptor.of("Metaclass0", "Uri0");
+        ClassDescriptor metaclass1 = ClassDescriptor.of("Metaclass1", "Uri1");
 
         Id id1 = StringId.of("Id1");
 
@@ -255,7 +255,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetValue() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1";
+        String value0 = "Value0";
+        String value1 = "Value1";
 
         // Define values
         mapper.valueFor(key, value0);
@@ -347,7 +348,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetManyValue() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2", value3 = "Value3";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
+        String value3 = "Value3";
 
         // Initialize values
         mapper.addValue(key.withPosition(0), value0);
@@ -406,7 +410,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAllValuesOf() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Add values in natural order
         mapper.appendValue(key, value0);
@@ -431,7 +437,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAllValuesOfUnorderedAdd() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Add values in any order
         mapper.addValue(key.withPosition(2), value2);
@@ -481,7 +489,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddValue() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Add values in natural order
         mapper.addValue(key.withPosition(0), value0);
@@ -501,7 +511,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAnyOrderAddValue() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Add values in any order
         mapper.addValue(key.withPosition(2), value2);
@@ -538,7 +550,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAppendValue() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1";
+        String value0 = "Value0";
+        String value1 = "Value1";
 
         // Append values
         mapper.appendValue(key, value0);
@@ -591,7 +604,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemovedValueBefore() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Initialize values
         mapper.addValue(key.withPosition(0), value0);
@@ -613,7 +628,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemovedValueAfter() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Initialize values
         mapper.addValue(key.withPosition(0), value0);
@@ -648,7 +665,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemoveAllValues() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         // Initialize values
         mapper.appendValue(key, value0);
@@ -880,7 +899,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetReference() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
 
         // Define references
         mapper.referenceFor(key, ref0);
@@ -973,7 +993,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSetManyReference() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2"), ref3 = StringId.of("Ref3");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
+        Id ref3 = StringId.of("Ref3");
 
         // Initialize the references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1034,7 +1057,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAllReferencesOf() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Add references in natural order
         mapper.appendReference(key, ref0);
@@ -1059,7 +1084,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAllReferencesOfUnorderedAdd() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Add references in any order
         mapper.addReference(key.withPosition(2), ref2);
@@ -1109,7 +1136,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddReference() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Add references in natural order
         mapper.addReference(key.withPosition(0), ref0);
@@ -1129,7 +1158,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAnyOrderAddReference() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Add references in any order
         mapper.addReference(key.withPosition(2), ref2);
@@ -1167,7 +1198,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAppendReference() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
 
         // Append references
         mapper.appendReference(key, ref0);
@@ -1221,7 +1253,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemovedReferenceBefore() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1243,7 +1277,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemovedReferenceAfter() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1279,7 +1315,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemoveAllReferences() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0"), ref1 = StringId.of("Ref1"), ref2 = StringId.of("Ref2");
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
 
         // Initialize references
         mapper.appendReference(key, ref0);

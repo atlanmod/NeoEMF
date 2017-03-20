@@ -181,7 +181,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
             try {
                 graph.shutdown();
             }
-            catch (Exception ignore) {
+            catch (Exception ignored) {
             }
         }
     }
@@ -197,7 +197,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
         try {
             graph.shutdown();
         }
-        catch (Exception ignore) {
+        catch (Exception ignored) {
         }
     }
 

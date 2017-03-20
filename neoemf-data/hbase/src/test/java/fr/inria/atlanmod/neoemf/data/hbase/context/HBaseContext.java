@@ -82,7 +82,7 @@ public abstract class HBaseContext implements Context {
                     Log.info("Shutting down the Hadoop mini-cluster...");
                     hbase.shutdownMiniCluster();
                 }
-                catch (Exception ignore) {
+                catch (Exception ignored) {
                 }
             }));
         }

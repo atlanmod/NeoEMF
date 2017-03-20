@@ -155,7 +155,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
             try {
                 progress((double) (total - stream.available()) / (double) total * 100d);
             }
-            catch (Exception ignore) {
+            catch (Exception ignored) {
             }
         }
     }

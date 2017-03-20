@@ -37,12 +37,12 @@ public class BackendFactoryRegistryTest extends AbstractTest {
     /**
      * The first {@link BackendFactory}.
      */
-    private final BackendFactory backendFactory_1 = mock(BackendFactory.class);
+    private final BackendFactory backendFactory1 = mock(BackendFactory.class);
 
     /**
      * The second {@link BackendFactory}.
      */
-    private final BackendFactory backendFactory_2 = mock(BackendFactory.class);
+    private final BackendFactory backendFactory2 = mock(BackendFactory.class);
 
     /**
      * Unregisters all factories in the {@link BackendFactoryRegistry}.
@@ -57,11 +57,11 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      */
     @Test
     public void testSingleAdd() {
-        BackendFactoryRegistry.register(MOCK_1, backendFactory_1);
+        BackendFactoryRegistry.register(MOCK_1, backendFactory1);
         assertThat(BackendFactoryRegistry.getFactories()).hasSize(1);
 
         BackendFactory registeredFactory = BackendFactoryRegistry.getFactoryProvider(MOCK_1);
-        assertThat(registeredFactory).isNotNull().isSameAs(backendFactory_1);
+        assertThat(registeredFactory).isNotNull().isSameAs(backendFactory1);
     }
 
     /**
@@ -69,14 +69,14 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      */
     @Test
     public void testMultipleAdd() {
-        BackendFactoryRegistry.register(MOCK_1, backendFactory_1);
-        BackendFactoryRegistry.register(MOCK_2, backendFactory_2);
+        BackendFactoryRegistry.register(MOCK_1, backendFactory1);
+        BackendFactoryRegistry.register(MOCK_2, backendFactory2);
         assertThat(BackendFactoryRegistry.getFactories()).hasSize(2);
 
         BackendFactory registeredFactory1 = BackendFactoryRegistry.getFactoryProvider(MOCK_1);
-        assertThat(registeredFactory1).isNotNull().isSameAs(backendFactory_1);
+        assertThat(registeredFactory1).isNotNull().isSameAs(backendFactory1);
 
         BackendFactory registeredFactory2 = BackendFactoryRegistry.getFactoryProvider(MOCK_2);
-        assertThat(registeredFactory2).isNotNull().isSameAs(backendFactory_2);
+        assertThat(registeredFactory2).isNotNull().isSameAs(backendFactory2);
     }
 }

@@ -91,7 +91,7 @@ class AsyncLogger implements Logger {
             try {
                 logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse(NO_MESSAGE).toString(), params), e);
             }
-            catch (Exception ignore) {
+            catch (Exception ignored) {
             }
         });
     }

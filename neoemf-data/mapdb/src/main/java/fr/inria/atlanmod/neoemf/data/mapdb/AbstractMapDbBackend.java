@@ -106,7 +106,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
         try {
             db.close();
         }
-        catch (Exception ignore) {
+        catch (Exception ignored) {
         }
     }
 

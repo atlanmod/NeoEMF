@@ -99,7 +99,9 @@ public class CacheTest extends AbstractTest {
 
     @Test
     public void testGetPutAllKeys() {
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         Map<Integer, String> original = new HashMap<>();
         original.put(0, value0);
@@ -122,7 +124,8 @@ public class CacheTest extends AbstractTest {
 
     @Test
     public void testInvalidate() {
-        String value0 = "Value0", value1 = "Value1";
+        String value0 = "Value0";
+        String value1 = "Value1";
 
         cache.put(0, value0);
         cache.put(1, value1);
@@ -142,7 +145,9 @@ public class CacheTest extends AbstractTest {
 
     @Test
     public void testInvalidateAllKeys() {
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         cache.put(0, value0);
         cache.put(1, value1);
@@ -165,7 +170,8 @@ public class CacheTest extends AbstractTest {
 
     @Test
     public void testInvalidateAll() {
-        String value0 = "Value0", value1 = "Value1";
+        String value0 = "Value0";
+        String value1 = "Value1";
 
         cache.put(0, value0);
         cache.put(1, value1);
@@ -185,7 +191,9 @@ public class CacheTest extends AbstractTest {
 
     @Test
     public void asMap() throws Exception {
-        String value0 = "Value0", value1 = "Value1", value2 = "Value2";
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
 
         Map<Integer, String> original = new HashMap<>();
         original.put(0, value0);

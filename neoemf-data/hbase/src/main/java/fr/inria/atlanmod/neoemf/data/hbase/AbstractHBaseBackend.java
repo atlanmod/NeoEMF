@@ -118,7 +118,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         try {
             table.close();
         }
-        catch (IOException ignore) {
+        catch (IOException ignored) {
         }
     }
 

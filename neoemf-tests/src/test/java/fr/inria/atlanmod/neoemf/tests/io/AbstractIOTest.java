@@ -287,7 +287,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
                 EAttribute attribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
                 assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
             }
-            catch (NullPointerException ignore) {
+            catch (NullPointerException ignored) {
                 // It's not a problem if this happens
             }
         }

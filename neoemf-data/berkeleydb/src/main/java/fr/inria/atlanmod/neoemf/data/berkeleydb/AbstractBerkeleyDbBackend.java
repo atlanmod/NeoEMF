@@ -117,7 +117,7 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
             allDatabases().forEach(Database::close);
             environment.close();
         }
-        catch (Exception ignore) {
+        catch (Exception ignored) {
         }
     }
 
