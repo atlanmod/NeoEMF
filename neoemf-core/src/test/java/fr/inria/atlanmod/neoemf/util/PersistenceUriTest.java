@@ -16,6 +16,10 @@ import fr.inria.atlanmod.neoemf.context.CoreTest;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -23,6 +27,18 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case that checks the specific behavior of {@link PersistenceURI}.
  */
 public class PersistenceUriTest extends AbstractUriTest implements CoreTest {
+
+    @Test
+    public void testConstructor() throws Exception {
+        Constructor<?> constructor = PersistenceURI.class.getDeclaredConstructor();
+        assertThat(Modifier.isProtected(constructor.getModifiers())).isTrue();
+
+        constructor.setAccessible(true);
+
+        Throwable thrown = catchThrowable(constructor::newInstance);
+        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
+        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+    }
 
     @Test
     @Override

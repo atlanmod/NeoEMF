@@ -11,11 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import fr.inria.atlanmod.neoemf.AbstractTest;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case that checks the specific behavior of {@link HashCode}.
  */
-public class HashCodeTest {
+public class HashCodeTest extends AbstractTest {
 
     private HashCode hash;
 
@@ -75,12 +76,17 @@ public class HashCodeTest {
 
     @Test
     public void testEquals() {
-        assertThat(Objects.equals(hash, hash)).isTrue();
+        //noinspection EqualsWithItself,EqualsReplaceableByObjectsCall
+        assertThat(hash.equals(hash)).isTrue();
 
-        assertThat(Objects.equals(hash, null)).isFalse();
+        //noinspection ObjectEqualsNull,EqualsReplaceableByObjectsCall
+        assertThat(hash.equals(null)).isFalse();
 
-        assertThat(Objects.equals(hash, new HashCode("HashCode0".getBytes(Charset.forName("UTF-8"))))).isTrue();
-        assertThat(Objects.equals(hash, new HashCode("HC".getBytes(Charset.forName("UTF-8"))))).isFalse();
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(hash.equals(new HashCode("HashCode0".getBytes(Charset.forName("UTF-8"))))).isTrue();
+
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(hash.equals(new HashCode("HC".getBytes(Charset.forName("UTF-8"))))).isFalse();
     }
 
     @Test

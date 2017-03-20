@@ -11,16 +11,42 @@
 
 package fr.inria.atlanmod.neoemf.util.hash;
 
+import fr.inria.atlanmod.neoemf.AbstractTest;
+
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * A test-case that checks the specific behavior of {@link Hasher}s.
  */
-public class HasherTest {
+public class HasherTest extends AbstractTest {
+
+    @Test
+    public void testConstructor() throws Exception {
+        Constructor<?> constructor = HasherFactory.class.getDeclaredConstructor();
+        assertThat(Modifier.isPrivate(constructor.getModifiers())).isTrue();
+
+        constructor.setAccessible(true);
+
+        Throwable thrown = catchThrowable(constructor::newInstance);
+        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
+        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+    }
+
+    @Test
+    public void testInvalidAlgorithm() {
+        Throwable thrown = catchThrowable(() -> HasherFactory.nativeHash("unknown", new byte[0]));
+        assertThat(thrown).isInstanceOf(RuntimeException.class);
+        assertThat(thrown).hasCauseInstanceOf(NoSuchAlgorithmException.class);
+    }
 
     @Test
     public void testMD5WithBytes() throws Exception {

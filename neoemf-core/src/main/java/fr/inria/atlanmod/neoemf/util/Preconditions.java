@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.util;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static java.util.Objects.isNull;
-
 /**
  * Static convenience methods that help a method or constructor check whether it was invoked correctly (whether its
  * <i>preconditions</i> have been met). These methods generally accept a {@code boolean} expression which is expected to
@@ -81,7 +79,7 @@ public final class Preconditions {
      */
     public static void checkArgument(boolean expression, String pattern, Object... args) {
         if (!expression) {
-            throw new IllegalArgumentException(String.format(pattern, args));
+            throw new IllegalArgumentException(format(pattern, args));
         }
     }
 
@@ -128,7 +126,7 @@ public final class Preconditions {
      */
     public static void checkState(boolean expression, String pattern, Object... args) {
         if (!expression) {
-            throw new IllegalStateException(String.format(pattern, args));
+            throw new IllegalStateException(format(pattern, args));
         }
     }
 
@@ -142,7 +140,7 @@ public final class Preconditions {
      * @throws NullPointerException if {@code reference} is null
      */
     public static <T> T checkNotNull(@Nullable T reference) {
-        if (isNull(reference)) {
+        if (null == reference) {
             throw new NullPointerException();
         }
         return reference;
@@ -159,7 +157,7 @@ public final class Preconditions {
      * @throws NullPointerException if {@code reference} is null
      */
     public static <T> T checkNotNull(@Nullable T reference, String message) {
-        if (isNull(reference)) {
+        if (null == reference) {
             throw new NullPointerException(message);
         }
         return reference;
@@ -178,8 +176,8 @@ public final class Preconditions {
      * @throws NullPointerException if {@code reference} is null
      */
     public static <T> T checkNotNull(@Nullable T reference, String pattern, Object... args) {
-        if (isNull(reference)) {
-            throw new NullPointerException(String.format(pattern, args));
+        if (null == reference) {
+            throw new NullPointerException(format(pattern, args));
         }
         return reference;
     }
@@ -198,13 +196,13 @@ public final class Preconditions {
      */
     public static int checkElementIndex(int index, int size) {
         if (index < 0) {
-            throw new IndexOutOfBoundsException(String.format("index (%s) must not be negative", index));
+            throw new IndexOutOfBoundsException(format("index (%d) must not be negative", index));
         }
         else if (size < 0) {
-            throw new IllegalArgumentException("negative size: " + size);
+            throw new IllegalArgumentException(format("negative size: %d", size));
         }
         else if (index >= size) {
-            throw new IndexOutOfBoundsException(String.format("index (%s) must be less than size (%s)", index, size));
+            throw new IndexOutOfBoundsException(format("index (%d) must be less than size (%d)", index, size));
         }
         return index;
     }
@@ -223,14 +221,26 @@ public final class Preconditions {
      */
     public static int checkPositionIndex(int index, int size) {
         if (index < 0) {
-            throw new IndexOutOfBoundsException(String.format("index (%s) must not be negative", index));
+            throw new IndexOutOfBoundsException(format("index (%d) must not be negative", index));
         }
         else if (size < 0) {
-            throw new IllegalArgumentException("negative size: " + size);
+            throw new IllegalArgumentException(format("negative size: %d", size));
         }
         else if (index > size) {
-            throw new IndexOutOfBoundsException(String.format("index (%s) must not be greater than size (%s)", index, size));
+            throw new IndexOutOfBoundsException(format("index (%d) must not be greater than size (%d)", index, size));
         }
         return index;
+    }
+
+    /**
+     * Returns a formatted string using the specified format string and arguments.
+     *
+     * @param pattern a format string
+     * @param args    the arguments referenced by the format specifiers in the format string
+     *
+     * @return a formatted string
+     */
+    private static String format(String pattern, Object... args) {
+        return String.format(pattern, args);
     }
 }

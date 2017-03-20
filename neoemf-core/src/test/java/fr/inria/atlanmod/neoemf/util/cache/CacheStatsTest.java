@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -97,7 +96,9 @@ public class CacheStatsTest extends AbstractTest {
     public void testMinus() {
         CacheStats result = stats.minus(stats);
 
-        assertThat(Objects.equals(stats, result)).isFalse();
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(result)).isFalse();
+
         assertThat(stats.hashCode()).isNotEqualTo(result.hashCode());
 
         assertThat(result.requestCount()).isEqualTo(0);
@@ -118,7 +119,8 @@ public class CacheStatsTest extends AbstractTest {
     public void testPlus() {
         CacheStats result = stats.plus(stats);
 
-        assertThat(Objects.equals(stats, result)).isFalse();
+        //noinspection EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(result)).isFalse();
         assertThat(stats.hashCode()).isNotEqualTo(result.hashCode());
 
         assertThat(result.requestCount()).isEqualTo(80);
@@ -137,8 +139,10 @@ public class CacheStatsTest extends AbstractTest {
 
     @Test
     public void testEquals() {
-        assertThat(Objects.equals(stats, stats)).isTrue();
+        //noinspection EqualsWithItself, EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(stats)).isTrue();
 
-        assertThat(Objects.equals(stats, null)).isFalse();
+        //noinspection ObjectEqualsNull, EqualsReplaceableByObjectsCall
+        assertThat(stats.equals(null)).isFalse();
     }
 }

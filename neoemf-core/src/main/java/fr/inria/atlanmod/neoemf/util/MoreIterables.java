@@ -18,6 +18,8 @@ import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
  * Static utility methods related to {@link Iterable} instances.
  */
@@ -43,6 +45,8 @@ public final class MoreIterables {
      */
     @Nonnull
     public static <E> Stream<E> stream(Iterable<E> iterable) {
+        checkNotNull(iterable);
+
         return iterable instanceof Collection
                 ? ((Collection<E>) iterable).stream()
                 : StreamSupport.stream(iterable.spliterator(), false);
@@ -56,6 +60,8 @@ public final class MoreIterables {
      * @return {@code true} if the iterable contains no element
      */
     public static <E> boolean isEmpty(Iterable<E> iterable) {
+        checkNotNull(iterable);
+
         return iterable instanceof Collection
                 ? ((Collection<E>) iterable).isEmpty()
                 : !iterable.iterator().hasNext();

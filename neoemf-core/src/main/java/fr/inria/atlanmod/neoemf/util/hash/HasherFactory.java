@@ -73,7 +73,7 @@ public class HasherFactory {
      * @return a message hash instance
      */
     @Nonnull
-    private static byte[] nativeHash(String algorithm, byte[] bytes) {
+    protected static byte[] nativeHash(String algorithm, byte[] bytes) {
         try {
             return MessageDigest.getInstance(algorithm).digest(bytes);
         }
