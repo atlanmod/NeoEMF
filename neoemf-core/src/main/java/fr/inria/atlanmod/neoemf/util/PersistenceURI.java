@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -58,12 +57,30 @@ public class PersistenceURI {
     private static final String PREFIX = "neo-";
 
     /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
+     * The scheme to identify the {@link BackendFactory} to use.
      */
-    protected PersistenceURI() {
-        throw new IllegalStateException("This class should not be instantiated");
+    private final String scheme;
+
+    /**
+     * Constructs a new {@code PersistenceURI}.
+     *
+     * @param scheme the scheme to identify the {@link BackendFactory} to use
+     */
+    protected PersistenceURI(String scheme) {
+        checkArgument(nonNull(scheme), "Cannot create URI without a valid scheme");
+        this.scheme = scheme;
+    }
+
+    /**
+     * Creates a new {@code UriBuilder}.
+     *
+     * @param scheme the scheme to identify the {@link BackendFactory} to use
+     *
+     * @return a new builder
+     */
+    @Nonnull
+    public static PersistenceURI newBuilder(String scheme) {
+        return new PersistenceURI(scheme);
     }
 
     /**
@@ -79,187 +96,109 @@ public class PersistenceURI {
     }
 
     /**
-     * Creates a new {@code PersistenceURI} from the given {@code uri}.
+     * Returns the {@link URI} scheme associated to the {@link BackendFactory} to use.
+     *
+     * @return the URI scheme
+     */
+    public String scheme() {
+        return scheme;
+    }
+
+    /**
+     * Creates a new {@code URI} from the given {@code uri}.
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
      * PersistenceURI}. Its scheme must be registered in the {@link BackendFactoryRegistry}.
      *
      * @param uri the base {@link URI}
      *
-     * @return the created {@link URI}
+     * @return a new URI
      *
-     * @throws NullPointerException     if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
-     *                                  BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
+     * @throws UnsupportedOperationException if this URI does not support this method
+     * @throws NullPointerException          if the {@code uri} is {@code null}
+     * @throws IllegalArgumentException      if the scheme of the provided {@code uri} is not registered in the {@link
+     *                                       BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
      */
     @Nonnull
-    @VisibleForTesting
-    public static URI createURI(URI uri) {
-        return UriBuilder.newBuilder(uri.scheme()).fromUri(uri);
+    public URI fromUri(URI uri) {
+        checkNotNull(uri);
+
+        if (Objects.equals(scheme, uri.scheme())) {
+            checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme %s", uri);
+            return new FileBasedUri(uri);
+        }
+
+        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
+            return fromFile(new File(uri.toFileString()));
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot create URI with the scheme %s", uri.scheme()));
     }
 
     /**
-     * Creates a new {@code PersistenceURI} from the given {@code file} descriptor.
+     * Creates a new {@code URI} from the given {@code file} descriptor.
      *
-     * @param file   the {@link File} to build a {@link URI} from
-     * @param scheme the scheme to identify the {@link BackendFactory} to use
+     * @param file the {@link File} to build a {@link URI} from
      *
-     * @return the created {@link URI}
+     * @return a new URI
      *
-     * @throws NullPointerException if the {@code file} is {@code null}
+     * @throws UnsupportedOperationException if this URI does not support this method
+     * @throws NullPointerException          if the {@code file} is {@code null}
      */
     @Nonnull
-    @VisibleForTesting
-    public static URI createFileURI(File file, String scheme) {
-        return UriBuilder.newBuilder(scheme).fromFile(file);
+    public URI fromFile(File file) {
+        checkNotNull(file);
+
+        return fromFile(URI.createFileURI(file.getAbsolutePath()));
     }
 
     /**
-     * Creates a new {@code PersistenceURI} from the given {@code uri} by checking the referenced file exists on the
+     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the
      * file system.
      *
-     * @param uri    the base {@link URI}
-     * @param scheme the scheme to identify the {@link BackendFactory} to use
+     * @param uri the base {@link URI}
      *
-     * @return the created {@link URI}
+     * @return a new URI
      *
-     * @throws NullPointerException if the {@code uri} is {@code null}
+     * @throws UnsupportedOperationException if this URI does not support this method
+     * @throws NullPointerException          if the {@code uri} is {@code null}
      */
     @Nonnull
-    @VisibleForTesting
-    public static URI createFileURI(URI uri, String scheme) {
-        return UriBuilder.newBuilder(scheme).fromFile(uri);
+    private URI fromFile(URI uri) {
+        return fromUri(URI.createHierarchicalURI(scheme,
+                uri.authority(),
+                uri.device(),
+                uri.segments(),
+                uri.query(),
+                uri.fragment()));
     }
 
     /**
-     * A builder for {@link PersistenceURI} instances.
+     * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical
+     * {@link URI} that references the distant model resource.
+     *
+     * @param host  the address of the server (use {@code localhost} if the server is running locally)
+     * @param port  the port of the server
+     * @param model a {@link URI} identifying the model in the database
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI does not support this method
+     * @throws NullPointerException          if any of the parameters is {@code null}
+     * @throws IllegalArgumentException      if {@code port < 0}
      */
-    @ParametersAreNonnullByDefault
-    protected static final class UriBuilder {
+    @Nonnull
+    public URI fromServer(String host, int port, URI model) {
+        checkNotNull(host);
+        checkNotNull(model);
+        checkArgument(port >= 0);
 
-        /**
-         * The scheme to identify the {@link BackendFactory} to use.
-         */
-        private final String scheme;
-
-        /**
-         * Constructs a new {@code UriBuilder}.
-         *
-         * @param scheme the scheme to identify the {@link BackendFactory} to use
-         */
-        private UriBuilder(String scheme) {
-            checkArgument(nonNull(scheme), "Cannot create URI without a valid scheme");
-            this.scheme = scheme;
-        }
-
-        /**
-         * Creates a new {@code UriBuilder}.
-         *
-         * @param scheme the scheme to identify the {@link BackendFactory} to use
-         *
-         * @return a new builder
-         */
-        @Nonnull
-        public static UriBuilder newBuilder(String scheme) {
-            return new UriBuilder(scheme);
-        }
-
-        /**
-         * Creates a new {@code URI} from the given {@code uri}.
-         * <p>
-         * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
-         * PersistenceURI}. Its scheme must be registered in the {@link BackendFactoryRegistry}.
-         *
-         * @param uri the base {@link URI}
-         *
-         * @return a new URI
-         *
-         * @throws NullPointerException     if the {@code uri} is {@code null}
-         * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
-         *                                  BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
-         * @see #fromFile(File)
-         * @see #fromFile(URI)
-         */
-        @Nonnull
-        public URI fromUri(URI uri) {
-            checkNotNull(uri);
-
-            if (Objects.equals(scheme, uri.scheme())) {
-                checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme %s", uri);
-                return new FileBasedUri(uri);
-            }
-
-            if (Objects.equals(FILE_SCHEME, uri.scheme())) {
-                return fromFile(new File(uri.toFileString()));
-            }
-
-            throw new IllegalArgumentException(String.format("Cannot create URI with the scheme %s", uri.scheme()));
-        }
-
-        /**
-         * Creates a new {@code URI} from the given {@code file} descriptor.
-         *
-         * @param file the {@link File} to build a {@link URI} from
-         *
-         * @return a new URI
-         *
-         * @throws NullPointerException if the {@code file} is {@code null}
-         */
-        @Nonnull
-        public URI fromFile(File file) {
-            checkNotNull(file);
-
-            return fromFile(URI.createFileURI(file.getAbsolutePath()));
-        }
-
-        /**
-         * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the
-         * file system.
-         *
-         * @param uri the base {@link URI}
-         *
-         * @return a new URI
-         *
-         * @throws NullPointerException if the {@code uri} is {@code null}
-         */
-        @Nonnull
-        public URI fromFile(URI uri) {
-            checkNotNull(uri);
-
-            return fromUri(URI.createHierarchicalURI(scheme,
-                    uri.authority(),
-                    uri.device(),
-                    uri.segments(),
-                    uri.query(),
-                    uri.fragment()));
-        }
-
-        /**
-         * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical
-         * {@link URI} that references the distant model resource.
-         *
-         * @param host  the address of the server (use {@code localhost} if the server is running locally)
-         * @param port  the port of the server
-         * @param model a {@link URI} identifying the model in the database
-         *
-         * @return a new URI
-         *
-         * @throws NullPointerException     if any of the parameters is {@code null}
-         * @throws IllegalArgumentException if {@code port < 0}
-         */
-        @Nonnull
-        public URI fromServer(String host, int port, URI model) {
-            checkNotNull(host);
-            checkNotNull(model);
-            checkArgument(port >= 0);
-
-            return URI.createHierarchicalURI(scheme,
-                    String.format("%s:%d", host, port),
-                    null,
-                    model.segments(),
-                    null,
-                    null);
-        }
+        return URI.createHierarchicalURI(scheme,
+                String.format("%s:%d", host, port),
+                null,
+                model.segments(),
+                null,
+                null);
     }
 
     /**

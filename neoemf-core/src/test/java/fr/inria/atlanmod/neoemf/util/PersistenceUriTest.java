@@ -16,10 +16,6 @@ import fr.inria.atlanmod.neoemf.context.CoreTest;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -29,71 +25,38 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class PersistenceUriTest extends AbstractUriTest implements CoreTest {
 
     @Test
-    public void testConstructor() throws Exception {
-        Constructor<?> constructor = PersistenceURI.class.getDeclaredConstructor();
-        assertThat(Modifier.isProtected(constructor.getModifiers())).isTrue();
-
-        constructor.setAccessible(true);
-
-        Throwable thrown = catchThrowable(constructor::newInstance);
-        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
-        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+    public void testCreateUriWithoutScheme() {
+        //noinspection ConstantConditions
+        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder(null));
+        assertThat(thrown0).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @Override
-    public void testCreateUriFromFileUri() {
-        Throwable thrown = catchThrowable(super::testCreateUriFromFileUri);
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+    public void testCreateUriFromUriWithNull() {
+        //noinspection ConstantConditions
+        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromUri(null));
+        assertThat(thrown0).isInstanceOf(NullPointerException.class);
     }
 
-    /**
-     * Checks the creation of a file {@link URI} from another.
-     */
     @Test
-    public void testCreateFileUriFromFileUri() {
-        URI fileURI = URI.createFileURI(file().getAbsolutePath());
-        URI neoURI = PersistenceURI.createFileURI(fileURI, context().uriScheme());
-        assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
+    public void testCreateUriFromFileWithNull() {
+        //noinspection ConstantConditions
+        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromFile(null));
+        assertThat(thrown0).isInstanceOf(NullPointerException.class);
     }
 
-    /**
-     * Checks the creation of a file {@link URI} from a {@link java.io.File}, with an invalid scheme.
-     */
     @Test
-    public void testCreateFileUriFromFileInvalidScheme() {
-        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(file(), SCHEME_INVALID));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-    }
+    public void testCreateUriFromServerWithNull() {
+        //noinspection ConstantConditions
+        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromServer(null, 0, URI.createURI("uri0")));
+        assertThat(thrown0).isInstanceOf(NullPointerException.class);
 
-    /**
-     * Checks the creation of a file {@link URI} from a {@link java.io.File}, with a {@code null} scheme.
-     */
-    @Test
-    public void testCreateFileUriFromFileNullScheme() {
-        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(file(), null));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-    }
+        //noinspection ConstantConditions
+        Throwable thrown1 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromServer("localhost", -1, URI.createURI("uri0")));
+        assertThat(thrown1).isInstanceOf(IllegalArgumentException.class);
 
-    /**
-     * Checks the creation of a file {@link URI} from another, with an invalid scheme.
-     */
-    @Test
-    public void testCreateFileUriFromFileUriInvalidScheme() {
-        URI fileUri = URI.createFileURI(file().getAbsolutePath());
-
-        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(fileUri, SCHEME_INVALID));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    /**
-     * Checks the creation of a file {@link URI} from another, with a {@code null} scheme.
-     */
-    @Test
-    public void testCreateFileUriFromFileUriNullScheme() {
-        URI fileURI = URI.createFileURI(file().getAbsolutePath());
-
-        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(fileURI, null));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+        //noinspection ConstantConditions
+        Throwable thrown2 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromServer("localhost", 0, null));
+        assertThat(thrown2).isInstanceOf(NullPointerException.class);
     }
 }

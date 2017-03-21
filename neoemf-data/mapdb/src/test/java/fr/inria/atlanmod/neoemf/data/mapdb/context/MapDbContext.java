@@ -86,11 +86,11 @@ public abstract class MapDbContext implements Context {
 
     @Override
     public URI createUri(URI uri) {
-        return MapDbURI.createURI(uri);
+        return MapDbURI.newBuilder().fromUri(uri);
     }
 
     @Override
     public URI createUri(File file) {
-        return MapDbURI.createFileURI(file);
+        return MapDbURI.newBuilder().fromFile(file);
     }
 }

@@ -113,11 +113,11 @@ public abstract class HBaseContext implements Context {
 
     @Override
     public URI createUri(URI uri) {
-        return HBaseURI.createHierarchicalURI(host, port, uri);
+        return HBaseURI.newBuilder().fromServer(host, port, uri);
     }
 
     @Override
     public URI createUri(File file) {
-        return HBaseURI.createHierarchicalURI(host, port, URI.createURI(file.getName()));
+        return HBaseURI.newBuilder().fromServer(host, port, URI.createURI(file.getName()));
     }
 }

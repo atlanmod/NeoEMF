@@ -84,7 +84,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
         try {
             File file = new File(uri.toFileString());
 
-            File dbFile = new File(MapDbURI.createURI(uri.appendSegment("neoemf.mapdb")).toFileString());
+            File dbFile = new File(MapDbURI.newBuilder().fromUri(uri.appendSegment("neoemf.mapdb")).toFileString());
             if (!dbFile.getParentFile().exists()) {
                 try {
                     Files.createDirectories(dbFile.getParentFile().toPath());

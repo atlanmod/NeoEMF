@@ -67,14 +67,20 @@ public class CoreContext implements Context {
         return "mock";
     }
 
+    /**
+     * @see #uriScheme()
+     */
     @Override
     public URI createUri(URI uri) {
-        return PersistenceURI.createURI(uri);
+        return PersistenceURI.newBuilder(uriScheme()).fromUri(uri);
     }
 
+    /**
+     * @see #uriScheme()
+     */
     @Override
     public URI createUri(File file) {
-        return PersistenceURI.createFileURI(file, uriScheme());
+        return PersistenceURI.newBuilder(uriScheme()).fromFile(file);
     }
 
     /**

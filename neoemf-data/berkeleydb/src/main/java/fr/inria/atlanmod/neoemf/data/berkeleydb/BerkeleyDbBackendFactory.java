@@ -119,7 +119,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         BerkeleyDbBackend backend;
 
         try {
-            File directory = new File(BerkeleyDbURI.createFileURI(Files.createTempDirectory("neoemf").toFile()).toFileString());
+            File directory = new File(BerkeleyDbURI.newBuilder().fromFile(Files.createTempDirectory("neoemf").toFile()).toFileString());
 
             EnvironmentConfig environmentConfig = new EnvironmentConfig()
                     .setAllowCreate(true)

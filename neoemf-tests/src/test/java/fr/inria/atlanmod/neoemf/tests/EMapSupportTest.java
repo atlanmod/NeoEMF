@@ -25,7 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class EMapSupportTest extends AbstractBackendTest {
 
-    private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
+    private static final String KEY1 = "key1";
+    private static final String KEY2 = "key2";
+
+    private static final String VALUE1 = "value1";
+    private static final String VALUE2 = "value2";
 
     @Test
     @Category(Tags.PersistentTests.class)

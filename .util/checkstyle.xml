@@ -130,13 +130,12 @@
             <property name="throwsIndent" value="4" />
             <property name="lineWrappingIndentation" value="4" />
             <property name="arrayInitIndent" value="2" />
+            <property name="forceStrictCondition" value="false" />
         </module>
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false" />
             <property name="allowedAbbreviationLength" value="3" />
         </module>
-        <module name="OverloadMethodsDeclarationOrder" />
-        <module name="VariableDeclarationUsageDistance" />
         <module name="CustomImportOrder">
             <property name="specialImportsRegExp" value="com.google" />
             <property name="sortImportsInGroupAlphabetically" value="true" />
@@ -188,6 +187,8 @@
         <module name="EmptyCatchBlock">
             <property name="exceptionVariableName" value="expected|ignored" />
         </module>
-        <module name="CommentsIndentation" />
+        <module name="CommentsIndentation">
+            <property name="tokens" value="BLOCK_COMMENT_BEGIN" />
+        </module>
     </module>
 </module>

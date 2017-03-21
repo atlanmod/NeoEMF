@@ -86,11 +86,11 @@ public abstract class BerkeleyDbContext implements Context {
 
     @Override
     public URI createUri(URI uri) {
-        return BerkeleyDbURI.createURI(uri);
+        return BerkeleyDbURI.newBuilder().fromUri(uri);
     }
 
     @Override
     public URI createUri(File file) {
-        return BerkeleyDbURI.createFileURI(file);
+        return BerkeleyDbURI.newBuilder().fromFile(file);
     }
 }

@@ -22,8 +22,6 @@ import java.io.File;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-
 /**
  * A specific {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File} descriptor or
  * an existing {@link URI}.
@@ -54,60 +52,25 @@ public class MapDbURI extends PersistenceURI {
     public static final String SCHEME = formatScheme(MapDbBackendFactory.getInstance());
 
     /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
+     * Constructs a new {@code MapDbURI}.
      */
     private MapDbURI() {
-        throw new IllegalStateException("This class should not be instantiated");
+        super(SCHEME);
     }
 
     /**
-     * Create a new {@code MapDbURI} from the given {@code uri}. This method checks that the scheme of the provided
-     * {@code uri} can be used to create a new {@code MapDbURI}.
+     * Creates a new {@code MapDbURI}.
      *
-     * @param uri the base {@link URI}
-     *
-     * @return the created {@link URI}
-     *
-     * @throws NullPointerException     if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
-     *                                  #FILE_SCHEME}
-     * @see #createFileURI(File)
-     * @see #createFileURI(URI)
+     * @return a new builder
      */
     @Nonnull
-    public static URI createURI(URI uri) {
-        return UriBuilder.newBuilder(SCHEME).fromUri(uri);
+    public static PersistenceURI newBuilder() {
+        return new MapDbURI();
     }
 
-    /**
-     * Creates a new {@code MapDbURI} from the given {@link File} descriptor.
-     *
-     * @param file the {@link File} to build a {@link URI} from
-     *
-     * @return the created {@link URI}
-     *
-     * @throws NullPointerException if the {@code file} is {@code null}
-     */
     @Nonnull
-    public static URI createFileURI(File file) {
-        return UriBuilder.newBuilder(SCHEME).fromFile(file);
-    }
-
-    /**
-     * Creates a new {@code MapDbURI} from the given {@code uri} by checking the referenced file exists on the file
-     * system.
-     *
-     * @param uri the base {@link URI}
-     *
-     * @return the created {@link URI}
-     *
-     * @throws NullPointerException if the {@code uri} is {@code null} or if the file referenced by the {@code uri}
-     *                              cannot be found
-     */
-    @Nonnull
-    public static URI createFileURI(URI uri) {
-        return createFileURI(new File(checkNotNull(uri).toFileString()));
+    @Override
+    public URI fromServer(String host, int port, URI model) {
+        throw new UnsupportedOperationException("MapDbURI does not support server-based URIs");
     }
 }

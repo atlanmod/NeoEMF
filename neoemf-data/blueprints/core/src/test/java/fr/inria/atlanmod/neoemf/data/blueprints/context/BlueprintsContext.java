@@ -58,11 +58,11 @@ public abstract class BlueprintsContext implements Context {
 
     @Override
     public URI createUri(URI uri) {
-        return BlueprintsURI.createURI(uri);
+        return BlueprintsURI.newBuilder().fromUri(uri);
     }
 
     @Override
     public URI createUri(File file) {
-        return BlueprintsURI.createFileURI(file);
+        return BlueprintsURI.newBuilder().fromFile(file);
     }
 }

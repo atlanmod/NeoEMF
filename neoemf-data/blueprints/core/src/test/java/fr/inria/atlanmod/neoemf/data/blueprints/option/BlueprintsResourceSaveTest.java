@@ -43,7 +43,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
     public final void initResource() {
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        resource = resourceSet.createResource(BlueprintsURI.createFileURI(file()));
+        resource = resourceSet.createResource(BlueprintsURI.newBuilder().fromFile(file()));
     }
 
     /**

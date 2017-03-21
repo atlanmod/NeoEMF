@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -67,8 +66,6 @@ public interface Context {
      * @param uri the base {@link URI}
      *
      * @return the created {@link URI}
-     *
-     * @see PersistenceURI#createURI(URI)
      */
     URI createUri(URI uri);
 
@@ -78,8 +75,6 @@ public interface Context {
      * @param file the {@link File} to build a {@link URI} from
      *
      * @return the created {@link URI}
-     *
-     * @see PersistenceURI#createFileURI(File, String)
      */
     URI createUri(File file);
 

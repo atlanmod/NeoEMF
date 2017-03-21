@@ -26,18 +26,13 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public abstract class AbstractUriTest extends AbstractUnitTest {
 
     /**
-     * The scheme of an invalid {@link URI}.
-     */
-    protected static final String SCHEME_INVALID = "invalid";
-
-    /**
      * Checks the creation of a {@link URI} from another.
      */
     @Test
     public void testCreateUriFromStandardUri() {
-        URI validURI = URI.createURI(context().uriScheme() + ":/test");
-        URI neoURI = context().createUri(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
+        URI validUri = URI.createURI(context().uriScheme() + ":/test");
+        URI persistenceUri = context().createUri(validUri);
+        assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
     }
 
     /**
@@ -45,9 +40,9 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromFileUri() {
-        URI fileURI = URI.createFileURI(file().getAbsolutePath());
-        URI neoURI = context().createUri(fileURI);
-        assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
+        URI fileUri = URI.createFileURI(file().getAbsolutePath());
+        URI persistenceUri = context().createUri(fileUri);
+        assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
     }
 
     /**
@@ -55,8 +50,8 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateFileUriFromFile() {
-        URI neoURI = context().createUri(file());
-        assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
+        URI persistenceUri = context().createUri(file());
+        assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
     }
 
     /**
@@ -64,7 +59,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromStandardUriInvalidScheme() {
-        URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
+        URI invalidURI = URI.createURI("invalid:/test");
 
         Throwable thrown = catchThrowable(() -> context().createUri(invalidURI));
         Assertions.assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
