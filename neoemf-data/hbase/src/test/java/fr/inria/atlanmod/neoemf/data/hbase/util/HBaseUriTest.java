@@ -14,8 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
-import org.assertj.core.api.Assertions;
-import org.eclipse.emf.common.util.URI;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,12 +22,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
+    @Ignore("Not supported because of the mini-cluster")
     @Override
     public void testCreateUriFromStandardUriInvalidScheme() {
-        URI invalidURI = URI.createURI("invalid:/test");
-
-        Throwable thrown = catchThrowable(() -> context().createUri(invalidURI));
-        Assertions.assertThat(thrown).isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test

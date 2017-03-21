@@ -11,9 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.serializer;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The factory that creates {@link Serializer} instances.
  */
+@ParametersAreNonnullByDefault
 public final class Serializers {
 
     /**

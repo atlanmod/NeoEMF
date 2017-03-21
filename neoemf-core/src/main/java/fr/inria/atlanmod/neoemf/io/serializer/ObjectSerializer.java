@@ -11,17 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.io.serializer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.WillNotClose;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -34,16 +35,16 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 class ObjectSerializer<T> implements Serializer<T> {
 
-    @Nonnull
-    public byte[] serialize(T value) {
+    @Override
+    public void serialize(T value, @WillNotClose OutputStream stream) {
         checkNotNull(value);
+        checkNotNull(stream);
         checkArgument(value instanceof Serializable,
                 "ObjectSerializer requires a Serializable payload but received an object of type " + value.getClass().getName());
 
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(baos)) {
-            out.writeObject(value);
-            out.flush();
-            return baos.toByteArray();
+        try (ObjectOutput output = new ObjectOutputStream(stream)) {
+            output.writeObject(value);
+            output.flush();
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -51,12 +52,13 @@ class ObjectSerializer<T> implements Serializer<T> {
     }
 
     @Nonnull
+    @Override
     @SuppressWarnings("unchecked")
-    public T deserialize(byte[] data) {
-        checkNotNull(data);
+    public T deserialize(@WillNotClose InputStream stream) {
+        checkNotNull(stream);
 
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(data); ObjectInput in = new ObjectInputStream(bais)) {
-            return (T) in.readObject();
+        try (ObjectInput input = new ObjectInputStream(stream)) {
+            return (T) input.readObject();
         }
         catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
