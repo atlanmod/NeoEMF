@@ -19,7 +19,8 @@ env:
 before_install:
   # Replace 'nexus.codehaus.org' from '.m2/settings.xml' in Travis (see https://github.com/travis-ci/travis-ci/issues/4629#issuecomment-131214465)
   - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
-  # Init Codacy
+
+  # Init Codacy code coverage
   - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
   - java -jar jpm4j.jar -u init
   - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
@@ -31,12 +32,16 @@ script:
 after_success:
   # Publish code coverage in CodeCov
   - bash <(curl -s https://codecov.io/bash)
+
   # Publish code coverage in Codacy
   - ~/jpm/bin/codacy-coverage-reporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
+
   # Publish Javadoc in Github
   - bash .util/publish_javadoc.sh
+
   # Publish snapshot in Maven central
   - bash .util/publish_snapshot.sh
+
   # Publish update-site in Github
   - bash .util/publish_eclipse.sh
 
