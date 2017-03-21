@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case that checks the specific behavior of {@link URIBuilder}.
  */
-public class PersistenceUriTest extends AbstractUriTest implements CoreTest {
+public class URIBuilderTest extends AbstractUriTest implements CoreTest {
 
     @Test
     public void testCreateUriWithoutScheme() {
