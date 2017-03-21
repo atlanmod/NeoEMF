@@ -91,13 +91,13 @@ public class URIBuilder {
      * @return this builder (for chaining)
      *
      * @throws NullPointerException  if the {@code scheme} is {@code null}
-     * @throws IllegalStateException if the scheme is already defined
+     * @throws IllegalStateException if the scheme has already been defined
      */
     @Nonnull
     @VisibleForTesting
     public final URIBuilder withScheme(String scheme) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
-        checkState(isNull(this.scheme), "The scheme is already defined as %s", scheme);
+        checkState(isNull(this.scheme), "The scheme has already been defined as %s", scheme);
 
         this.scheme = scheme;
 
