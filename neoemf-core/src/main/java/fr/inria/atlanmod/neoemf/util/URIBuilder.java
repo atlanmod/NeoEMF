@@ -29,6 +29,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkState;
+import static java.util.Objects.isNull;
 
 /**
  * A builder of {@link URI} used to register {@link BackendFactory} in the {@link BackendFactoryRegistry} and configure
@@ -88,12 +90,15 @@ public class URIBuilder {
      *
      * @return this builder (for chaining)
      *
-     * @throws NullPointerException if the {@code scheme} is {@code null}
+     * @throws NullPointerException  if the {@code scheme} is {@code null}
+     * @throws IllegalStateException if the scheme is already defined
      */
     @Nonnull
     @VisibleForTesting
     public final URIBuilder withScheme(String scheme) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        checkState(isNull(this.scheme), "The scheme is already defined as %s", scheme);
+
         this.scheme = scheme;
 
         return this;
