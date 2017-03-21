@@ -14,5 +14,17 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
+
+    @Test
+    public void testCreateUriFromServer() {
+        //noinspection ConstantConditions
+        Throwable thrown = catchThrowable(() -> MapDbURI.newBuilder().fromServer("host", 0, null));
+        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+    }
 }

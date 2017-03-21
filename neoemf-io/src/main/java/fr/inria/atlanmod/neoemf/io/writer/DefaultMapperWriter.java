@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.io.hash.Hashers;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawElement;
 import fr.inria.atlanmod.neoemf.io.structure.RawId;
@@ -25,7 +26,6 @@ import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
-import fr.inria.atlanmod.neoemf.util.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayDeque;
@@ -231,7 +231,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
         // If identifier has been generated we hash it, otherwise we use the original
         if (identifier.isGenerated()) {
-            idValue = HasherFactory.md5().hash(idValue).toString();
+            idValue = Hashers.md5().hash(idValue).toString();
         }
 
         return StringId.of(idValue);

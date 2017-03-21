@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides hash functions and related structures.
+ * Provides methods and classes for working with I/O and security.
  */
 
-package fr.inria.atlanmod.neoemf.util.hash;
+package fr.inria.atlanmod.neoemf.io;

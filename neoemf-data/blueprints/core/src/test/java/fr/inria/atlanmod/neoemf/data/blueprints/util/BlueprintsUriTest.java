@@ -14,5 +14,17 @@ package fr.inria.atlanmod.neoemf.data.blueprints.util;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest {
+
+    @Test
+    public void testCreateUriFromServer() {
+        //noinspection ConstantConditions
+        Throwable thrown = catchThrowable(() -> BlueprintsURI.newBuilder().fromServer("host", 0, null));
+        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+    }
 }

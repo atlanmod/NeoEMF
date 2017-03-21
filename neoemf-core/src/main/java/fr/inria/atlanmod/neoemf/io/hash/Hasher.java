@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.util.hash;
+package fr.inria.atlanmod.neoemf.io.hash;
 
 import java.nio.charset.Charset;
 

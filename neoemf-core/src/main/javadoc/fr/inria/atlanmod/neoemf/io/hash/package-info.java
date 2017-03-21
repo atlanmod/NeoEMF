@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides methods and classes for working with Java I/O, such as import/export features.
+ * Provides hash functions and related structures.
  */
 
-package fr.inria.atlanmod.neoemf.io;
+package fr.inria.atlanmod.neoemf.io.hash;

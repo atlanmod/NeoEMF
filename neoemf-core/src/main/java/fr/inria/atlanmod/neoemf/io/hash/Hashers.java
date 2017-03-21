@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.util.hash;
+package fr.inria.atlanmod.neoemf.io.hash;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,14 +23,14 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * The factory that creates {@link Hasher} instances.
  */
 @ParametersAreNonnullByDefault
-public class HasherFactory {
+public final class Hashers {
 
     /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
      */
-    private HasherFactory() {
+    private Hashers() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 

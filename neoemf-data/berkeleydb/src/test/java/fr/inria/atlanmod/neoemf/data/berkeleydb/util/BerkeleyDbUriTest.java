@@ -14,5 +14,17 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 public class BerkeleyDbUriTest extends AbstractUriTest implements BerkeleyDbTest {
+
+    @Test
+    public void testCreateUriFromServer() {
+        //noinspection ConstantConditions
+        Throwable thrown = catchThrowable(() -> BerkeleyDbURI.newBuilder().fromServer("host", 0, null));
+        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+    }
 }
