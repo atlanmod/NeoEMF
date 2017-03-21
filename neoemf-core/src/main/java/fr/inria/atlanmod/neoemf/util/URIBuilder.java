@@ -221,7 +221,7 @@ public class URIBuilder {
          *
          * @param baseUri the base {@link URI}
          */
-        protected FileBasedUri(URI baseUri) {
+        private FileBasedUri(URI baseUri) {
             super(baseUri.hashCode());
             this.baseUri = baseUri;
         }
