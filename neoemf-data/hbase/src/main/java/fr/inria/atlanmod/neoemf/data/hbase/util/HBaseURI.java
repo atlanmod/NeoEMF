@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+import fr.inria.atlanmod.neoemf.util.URIBuilder;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -23,20 +23,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A specific subclass of {@link PersistenceURI} that creates HBase specific resource {@link URI}s from a {@link File}
- * descriptor or an existing {@link URI}.
+ * A {@link URIBuilder} that creates HBase specific resource {@link URI}s.
  * <p>
- * The class defines a HBase specific {@link URI} scheme that is used to register {@link
- * fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} in {@link BackendFactoryRegistry}
- * and configure the {@code protocol-to-factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet}
- * with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
+ * The class defines a BerkeleyDB specific {@link URI} scheme that is used to register {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} in {@link BackendFactoryRegistry} and configure the {@code
+ * protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet} with a {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
  * @see BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-public class HBaseURI extends PersistenceURI {
+public class HBaseURI extends URIBuilder {
 
     /**
      * The scheme associated to the URI. This scheme is used to register {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory}
@@ -54,17 +53,23 @@ public class HBaseURI extends PersistenceURI {
      * Constructs a new {@code HBaseURI}.
      */
     private HBaseURI() {
-        super(SCHEME);
+        super();
     }
 
     /**
-     * Creates a new {@code BlueprintsURI}.
+     * Creates a new {@code HBaseURI} with the pre-configured scheme.
      *
      * @return a new builder
      */
     @Nonnull
-    public static PersistenceURI newBuilder() {
-        return new HBaseURI();
+    public static URIBuilder newBuilder() {
+        return new HBaseURI().withScheme(SCHEME);
+    }
+
+    @Nonnull
+    @Override
+    public URI fromUri(URI uri) {
+        throw new UnsupportedOperationException("HBaseURI does not support file-based URIs");
     }
 
     @Nonnull

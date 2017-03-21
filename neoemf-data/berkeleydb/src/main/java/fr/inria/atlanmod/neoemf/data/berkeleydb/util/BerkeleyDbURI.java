@@ -13,30 +13,27 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+import fr.inria.atlanmod.neoemf.util.URIBuilder;
 
 import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A specific {@link PersistenceURI} that creates BerkeleyDB specific resource {@link URI}s from a {@link File}
- * descriptor or an existing {@link URI}.
+ * A {@link URIBuilder} that creates BerkeleyDB specific resource {@link URI}s.
  * <p>
  * The class defines a BerkeleyDB specific {@link URI} scheme that is used to register {@link
- * fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory} in {@link BackendFactoryRegistry}
- * and configure the {@code protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet}
- * with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
+ * fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory} in {@link BackendFactoryRegistry} and configure
+ * the {@code protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet} with a {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
  * @see BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbURI extends PersistenceURI {
+public class BerkeleyDbURI extends URIBuilder {
 
     /**
      * The scheme associated to the URI. This scheme is used to register {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory}
@@ -54,17 +51,17 @@ public class BerkeleyDbURI extends PersistenceURI {
      * Constructs a new {@code BerkeleyDbURI}.
      */
     private BerkeleyDbURI() {
-        super(SCHEME);
+        super();
     }
 
     /**
-     * Creates a new {@code BerkeleyDbURI}.
+     * Creates a new {@code BerkeleyDbURI} with the pre-configured scheme.
      *
      * @return a new builder
      */
     @Nonnull
-    public static PersistenceURI newBuilder() {
-        return new BerkeleyDbURI();
+    public static URIBuilder newBuilder() {
+        return new BerkeleyDbURI().withScheme(SCHEME);
     }
 
     @Nonnull

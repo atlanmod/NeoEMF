@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * An abstract test-case that checks the behavior of {@link PersistenceURI}s.
+ * An abstract test-case that checks the behavior of {@link URIBuilder}s.
  */
 public abstract class AbstractUriTest extends AbstractUnitTest {
 

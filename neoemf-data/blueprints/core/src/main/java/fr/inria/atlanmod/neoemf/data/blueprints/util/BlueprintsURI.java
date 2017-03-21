@@ -13,30 +13,27 @@ package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+import fr.inria.atlanmod.neoemf.util.URIBuilder;
 
 import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A specific {@link PersistenceURI} that creates Blueprints specific resource {@link URI}s from a {@link File}
- * descriptor or an existing {@link URI}.
+ * A {@link URIBuilder} that creates Blueprints specific resource {@link URI}s.
  * <p>
- * The class defines a Blueprints specific {@link URI} scheme that is used to register {@link
- * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} in {@link BackendFactoryRegistry}
- * and configure the {@code protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet}
- * with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
+ * The class defines a BerkeleyDB specific {@link URI} scheme that is used to register {@link
+ * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} in {@link BackendFactoryRegistry} and configure
+ * the {@code protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet} with a {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
  * @see BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsURI extends PersistenceURI {
+public class BlueprintsURI extends URIBuilder {
 
     /**
      * The scheme associated to the URI. This scheme is used to register {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory}
@@ -54,17 +51,17 @@ public class BlueprintsURI extends PersistenceURI {
      * Constructs a new {@code BlueprintsURI}.
      */
     private BlueprintsURI() {
-        super(SCHEME);
+        super();
     }
 
     /**
-     * Creates a new {@code BlueprintsURI}.
+     * Creates a new {@code BlueprintsURI} with the pre-configured scheme.
      *
      * @return a new builder
      */
     @Nonnull
-    public static PersistenceURI newBuilder() {
-        return new BlueprintsURI();
+    public static URIBuilder newBuilder() {
+        return new BlueprintsURI().withScheme(SCHEME);
     }
 
     @Nonnull

@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+import fr.inria.atlanmod.neoemf.util.URIBuilder;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -72,7 +72,7 @@ public class CoreContext implements Context {
      */
     @Override
     public URI createUri(URI uri) {
-        return PersistenceURI.newBuilder(uriScheme()).fromUri(uri);
+        return URIBuilder.newBuilder().withScheme(uriScheme()).fromUri(uri);
     }
 
     /**
@@ -80,7 +80,7 @@ public class CoreContext implements Context {
      */
     @Override
     public URI createUri(File file) {
-        return PersistenceURI.newBuilder(uriScheme()).fromFile(file);
+        return URIBuilder.newBuilder().withScheme(uriScheme()).fromFile(file);
     }
 
     /**

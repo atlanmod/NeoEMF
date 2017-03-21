@@ -20,43 +20,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the specific behavior of {@link PersistenceURI}.
+ * A test-case that checks the specific behavior of {@link URIBuilder}.
  */
 public class PersistenceUriTest extends AbstractUriTest implements CoreTest {
 
     @Test
     public void testCreateUriWithoutScheme() {
         //noinspection ConstantConditions
-        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder(null));
-        assertThat(thrown0).isInstanceOf(IllegalArgumentException.class);
+        Throwable thrown0 = catchThrowable(() -> URIBuilder.newBuilder().withScheme(null));
+        assertThat(thrown0).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateUriFromUriWithNull() {
         //noinspection ConstantConditions
-        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromUri(null));
+        Throwable thrown0 = catchThrowable(() -> URIBuilder.newBuilder().withScheme("scheme").fromUri(null));
         assertThat(thrown0).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateUriFromFileWithNull() {
         //noinspection ConstantConditions
-        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromFile(null));
+        Throwable thrown0 = catchThrowable(() -> URIBuilder.newBuilder().withScheme("scheme").fromFile(null));
         assertThat(thrown0).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateUriFromServerWithNull() {
         //noinspection ConstantConditions
-        Throwable thrown0 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromServer(null, 0, URI.createURI("uri0")));
+        Throwable thrown0 = catchThrowable(() -> URIBuilder.newBuilder().withScheme("scheme").fromServer(null, 0, URI.createURI("uri0")));
         assertThat(thrown0).isInstanceOf(NullPointerException.class);
 
         //noinspection ConstantConditions
-        Throwable thrown1 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromServer("localhost", -1, URI.createURI("uri0")));
+        Throwable thrown1 = catchThrowable(() -> URIBuilder.newBuilder().withScheme("scheme").fromServer("localhost", -1, URI.createURI("uri0")));
         assertThat(thrown1).isInstanceOf(IllegalArgumentException.class);
 
         //noinspection ConstantConditions
-        Throwable thrown2 = catchThrowable(() -> PersistenceURI.newBuilder("scheme").fromServer("localhost", 0, null));
+        Throwable thrown2 = catchThrowable(() -> URIBuilder.newBuilder().withScheme("scheme").fromServer("localhost", 0, null));
         assertThat(thrown2).isInstanceOf(NullPointerException.class);
     }
 }
