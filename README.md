@@ -18,13 +18,12 @@ Some Blueprints connectors are also available to ease the integration of graph d
 
 ## What are the features?
 
-NeoEMF comes with some features depending on the backend used:
+NeoEMF comes with some features:
 
-- __Lazy-loading__ mechanism: A model is loaded part by part while needed (**All backends**)
-- __Caching__: NeoEMF relies on database caches to retrieve EObjects. But in some situation where time performance is important this is not enough and it is possible to use application-level caches to speed up 
-information loading (**All backends**)
-- __Auto-commit__: For the backend having restrictions on transaction sizes it is possible to use the auto-commit feature to split large transaction into several small ones (**Blueprints backend**)
-- __Dirty saving__: Handle large models that haven't been persisted to avoid memory overhead (**Blueprints backend**)
+- __Lazy-loading__ mechanism: A model is loaded part by part while needed
+- __Caching__: NeoEMF relies on database caches to retrieve EObjects. But in some situation where time performance is important this is not enough and it is possible to use application-level caches to speed up information loading
+- __Auto-commit__: For the backend having restrictions on transaction sizes it is possible to use the auto-commit feature to split large transaction into several small ones
+- __Dirty saving__: Handle large models that haven't been persisted to avoid memory overhead
 
 ## Why should I use NeoEMF?
 
@@ -46,7 +45,16 @@ To add a dependency on NeoEMF using Maven, use the following:
 ```xml
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
-  <artifactId>neoemf</artifactId>
+  <artifactId>neoemf-core</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+Then add the dependency of the specific implementation you want to use:
+```xml
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-{name}</artifactId>
   <version>1.0.1</version>
 </dependency>
 ```
@@ -80,12 +88,8 @@ Go to the root of the extracted directory and run the following command:
 ```bash
 mvn clean install
 ```
-This will build NeoEMF core components and database specific implementations.
+This will build NeoEMF core component and database specific implementations in your `.m2` directory.
 
-_(optional)_ You can also run the tests by using :
-```bash
-mvn test [-pl <neoemf-core|neoemf-data|neoemf-io|...>]
-```
 ### NeoEMF : Eclipse plugin
 To build NeoEMF Eclipse plugin, you need to run the following command:
 ```bash
@@ -123,7 +127,7 @@ If you experience issues installing or using NeoEMF, you can [submit an issue on
 
 ### Known issues:
  - Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
- - The Eclipse plugins can not be built if maven can not access internet (it is needed to fetch Luna p2 repositories) 
+ - The Eclipse plugins can not be built if Maven can not access internet (it is needed to fetch Luna p2 repositories) 
  - Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
 ## Develop your backend implementation
