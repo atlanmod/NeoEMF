@@ -28,19 +28,19 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * The default implementation of a {@link Serializer}.
+ * A generic {@link Serializer}.
  *
  * @param <T> the type of serialized objects
  */
 @ParametersAreNonnullByDefault
-class ObjectSerializer<T> implements Serializer<T> {
+class GenericSerializer<T> implements Serializer<T> {
 
     @Override
     public void serialize(T value, @WillNotClose OutputStream stream) {
         checkNotNull(value);
         checkNotNull(stream);
         checkArgument(value instanceof Serializable,
-                "ObjectSerializer requires a Serializable payload but received an object of type " + value.getClass().getName());
+                "GenericSerializer requires a Serializable payload but received an object of type " + value.getClass().getName());
 
         try (ObjectOutput output = new ObjectOutputStream(stream)) {
             output.writeObject(value);

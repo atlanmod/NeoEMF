@@ -225,12 +225,12 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
      */
     @Nonnull
     protected <K, V> Optional<V> get(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forObjects().serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forGenerics().serialize(key));
         DatabaseEntry dbValue = new DatabaseEntry();
 
         Optional<V> value;
         if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(Serializers.<V>forObjects().deserialize(dbValue.getData()));
+            value = Optional.of(Serializers.<V>forGenerics().deserialize(dbValue.getData()));
         }
         else {
             value = Optional.empty();
@@ -248,8 +248,8 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
      * @param <V>      the type of the value
      */
     protected <K, V> void put(Database database, K key, V value) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forObjects().serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(Serializers.<V>forObjects().serialize(value));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forGenerics().serialize(key));
+        DatabaseEntry dbValue = new DatabaseEntry(Serializers.<V>forGenerics().serialize(value));
 
         database.put(null, dbKey, dbValue);
     }
@@ -262,7 +262,7 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
      * @param <K>      the type of the key
      */
     protected <K> void delete(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forObjects().serialize(key));
+        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forGenerics().serialize(key));
 
         database.delete(null, dbKey);
     }

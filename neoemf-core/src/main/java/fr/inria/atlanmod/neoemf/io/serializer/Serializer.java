@@ -25,9 +25,9 @@ import javax.annotation.WillNotClose;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
- * An object that is responsible of {@link Object} to {@code byte[]} encoding.
+ * An object that is responsible of {@link Object} to {@code byte[]} encoding and decoding.
  *
- * @param <T> the type of serialized objects
+ * @param <T> the type of (de)serialized objects
  */
 @ParametersAreNonnullByDefault
 public interface Serializer<T> {
@@ -65,7 +65,7 @@ public interface Serializer<T> {
     void serialize(T value, @WillNotClose OutputStream stream);
 
     /**
-     * Read (assemble) an object of type {@code T} from the given {@code data}.
+     * Reads and assembles an object of type {@code T} from the given {@code data}.
      *
      * @param data a byte array
      *
@@ -82,7 +82,7 @@ public interface Serializer<T> {
     }
 
     /**
-     * Read (assemble) an object of type {@code T} from the given {@code stream}.
+     * Reads and assembles an object of type {@code T} from the given {@code stream}.
      *
      * @param stream the input stream
      *

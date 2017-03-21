@@ -237,7 +237,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     private <V> Optional<V> get(FeatureKey key) {
         return get(key.id())
                 .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
-                        .map(value -> Optional.of(Serializers.<V>forObjects().deserialize(value)))
+                        .map(value -> Optional.of(Serializers.<V>forGenerics().deserialize(value)))
                         .orElse(Optional.empty()))
                 .orElse(Optional.empty());
     }
@@ -251,7 +251,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     private <V> void put(FeatureKey key, V value) {
         try {
             Put put = new Put(Bytes.toBytes(key.id().toString()));
-            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forObjects().serialize(value));
+            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forGenerics().serialize(value));
             table.put(put);
         }
         catch (IOException e) {

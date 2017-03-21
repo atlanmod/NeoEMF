@@ -29,13 +29,13 @@ public final class Serializers {
     }
 
     /**
-     * Creates a new {@link Serializer} for objects, using Java serialization.
+     * Creates a new {@link Serializer} for generic objects, using Java serialization.
      *
-     * @param <T> the type of serialized objects
+     * @param <T> the type of (de)serialized objects
      *
      * @return a new serializer
      */
-    public static <T> Serializer<T> forObjects() {
-        return new ObjectSerializer<>();
+    public static <T> Serializer<T> forGenerics() {
+        return new GenericSerializer<>();
     }
 }
