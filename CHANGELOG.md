@@ -68,6 +68,7 @@ Current SNAPSHOT.
 - __[UPD]__ `cglib` : `3.2.4` to `3.2.5`
 - __[UPD]__ `log4j` : `2.7` to `2.8.1`
 - __[UPD]__ `caffeine` : `2.3.5` to `2.4.0`
+- __[DEL]__ `guava` : No more needed
 - __[DEL]__ `commons-collections4` : No more needed
 - __[DEL]__ `commons-configuration` : Replaced by native `Properties`
 - __[DEL]__ `commons-io` : Replaced by `nio` methods
