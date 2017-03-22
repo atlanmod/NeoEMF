@@ -145,7 +145,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             dbFolder.delete(true, new NullProgressMonitor());
 
             // Get the URI of the model file.
-            final URI dbURI = BlueprintsURI.createFileURI(new File(dbFolder.getRawLocation().toOSString()));
+            final URI dbURI = BlueprintsURI.newBuilder().fromFile(new File(dbFolder.getRawLocation().toOSString()));
 
             // Do the work within an operation.
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {

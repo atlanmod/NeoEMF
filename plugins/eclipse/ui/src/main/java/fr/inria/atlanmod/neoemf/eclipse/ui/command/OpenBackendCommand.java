@@ -96,23 +96,23 @@ public class OpenBackendCommand extends AbstractHandler {
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", null);
             }
 
-            Configuration configuration = Configuration.load(configurationFile);
+            Configuration configuration = Configuration.load(configurationFile.toPath());
 
             URI uri = null;
-            String backendType = configuration.getProperty(BackendFactory.BACKEND_PROPERTY).toString();
+            String backendType = configuration.getProperty(BackendFactory.BACKEND_PROPERTY);
 
             if (isNull(backendType)) {
                 Log.error("{0} does not contain {1} property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
             else if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
-                uri = MapDbURI.createFileURI(root.toFile());
+                uri = MapDbURI.newBuilder().fromFile(root.toFile());
             }
             else if (Objects.equals(backendType, BlueprintsBackendFactory.NAME)) {
-                uri = BlueprintsURI.createFileURI(root.toFile());
+                uri = BlueprintsURI.newBuilder().fromFile(root.toFile());
             }
             else if (Objects.equals(backendType, BerkeleyDbBackendFactory.NAME)) {
-                uri = BerkeleyDbURI.createFileURI(root.toFile());
+                uri = BerkeleyDbURI.newBuilder().fromFile(root.toFile());
             }
 
             URIEditorInput editorInput = new URIEditorInput(uri);

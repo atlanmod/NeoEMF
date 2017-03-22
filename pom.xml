@@ -247,12 +247,12 @@
                                 1.0.2.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                            <Import-Package />
                             <Embed-Dependency>
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
                                 artifactId=!jsr305;
-                                groupId=!static-import;
                                 groupId=!${project.groupId}|org.eclipse.emf|org.osgi
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>

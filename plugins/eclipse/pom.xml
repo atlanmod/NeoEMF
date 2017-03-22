@@ -20,7 +20,7 @@
     <name>NeoEMF Eclipse</name>
     <description>
         Parent project for the Eclipse plugin generation.
-        Is responsible of ui and feature plugin generation and update site creation.
+        It is responsible of UI, features and plugins generation, and update-site creation.
     </description>
 
     <modules>
