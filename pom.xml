@@ -396,6 +396,15 @@
                         <skipDeploy>true</skipDeploy>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <rulesUri>https://atlanmod.github.io/NeoEMF/maven-version-rules.xml</rulesUri>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
