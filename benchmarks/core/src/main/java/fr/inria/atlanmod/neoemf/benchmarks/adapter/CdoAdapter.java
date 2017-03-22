@@ -31,12 +31,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.net4j.Net4jUtil;
-import org.eclipse.net4j.acceptor.IAcceptor;
+import org.eclipse.net4j.connector.IConnector;
 import org.eclipse.net4j.db.DBUtil;
 import org.eclipse.net4j.db.IDBAdapter;
 import org.eclipse.net4j.db.IDBConnectionProvider;
 import org.eclipse.net4j.db.h2.H2Adapter;
-import org.eclipse.net4j.jvm.IJVMConnector;
 import org.eclipse.net4j.jvm.JVMUtil;
 import org.eclipse.net4j.signal.ISignalProtocol;
 import org.eclipse.net4j.util.container.ContainerEventAdapter;
@@ -120,7 +119,7 @@ public class CdoAdapter extends AbstractAdapter {
     /**
      * Embedded implementation of CDO server.
      */
-    public static class EmbeddedCdoServer implements Closeable {
+    public static class EmbeddedCdoServer implements Runnable, Closeable {
 
         private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
@@ -128,7 +127,7 @@ public class CdoAdapter extends AbstractAdapter {
 
         private final String repositoryName;
 
-        private IJVMConnector connector;
+        private IConnector connector;
 
         private IManagedContainer container;
 
@@ -137,21 +136,21 @@ public class CdoAdapter extends AbstractAdapter {
             this.repositoryName = DEFAULT_REPOSITORY_NAME;
         }
 
+        @Override
         public void run() {
             try {
                 JdbcDataSource dataSource = createDataSource("jdbc:h2:" + path + "/" + repositoryName);
 
-                IStore cdoStore = createStore(dataSource);
-                IRepository cdoRepository = createRepository(cdoStore);
+                IStore store = createStore(dataSource);
+                IRepository repository = createRepository(store);
 
                 container = createContainer();
-                CDOServerUtil.addRepository(container, cdoRepository);
+                CDOServerUtil.addRepository(container, repository);
 
-                @SuppressWarnings("unused")
-                IAcceptor acceptor = JVMUtil.getAcceptor(container, "default");
+                JVMUtil.getAcceptor(container, "default");
                 connector = JVMUtil.getConnector(container, "default");
 
-                cdoRepository.getSessionManager().addListener(new ContainerEventAdapter<ISession>() {
+                repository.getSessionManager().addListener(new ContainerEventAdapter<ISession>() {
                     @Override
                     protected void onAdded(IContainer<ISession> container, ISession session) {
                         ISessionProtocol protocol = session.getProtocol();
@@ -185,7 +184,7 @@ public class CdoAdapter extends AbstractAdapter {
             return isNull(connector) || connector.isClosed();
         }
 
-        public CDOSession openSession() {
+        private CDOSession openSession() {
             CDONet4jSessionConfiguration config = CDONet4jUtil.createNet4jSessionConfiguration();
             config.setConnector(connector);
             config.setRepositoryName(repositoryName);
