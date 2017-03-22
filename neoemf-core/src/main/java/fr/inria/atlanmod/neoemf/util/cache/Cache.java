@@ -88,6 +88,17 @@ public interface Cache<K, V> {
     void put(K key, V value);
 
     /**
+     * Associates the {@code value} with the {@code key} in this cache, only if the {@code key} does not already exist.
+     * If the cache previously contained a value associated with the {@code key}, then the call does nothing.
+     *
+     * @param key   the key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     */
+    default void putIfAbsent(K key, V value) {
+        get(key, k -> value);
+    }
+
+    /**
      * Copies all of the mappings from the specified map to the cache. The effect of this call is equivalent to that of
      * calling {@link #put(Object, Object)} on this map once for each mapping from key {@code k} to value {@code v} in
      * the specified map. The behavior of this operation is undefined if the specified map is modified while the

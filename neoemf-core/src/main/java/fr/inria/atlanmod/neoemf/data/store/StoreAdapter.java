@@ -67,10 +67,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     private final Cache<Id, PersistentEObject> cache = CacheBuilder.newBuilder()
             .softValues()
             .maximumSize()
-            .build(id -> resolveInstanceOf(id)
-                    .map(c -> PersistenceFactory.getInstance().create(c, id).isPersistent(true))
-                    .<NoSuchElementException>orElseThrow(() ->
-                            new NoSuchElementException(String.format("%s does not have an associated metaclass", id))));
+            .build();
 
     /**
      * Constructs a new {@code StoreAdapter} on the given {@code store}.
@@ -597,9 +594,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @see #updateInstanceOf(PersistentEObject)
      */
     private void persist(PersistentEObject object) {
-        if (updateInstanceOf(object)) {
-            cache.put(object.id(), object);
-        }
+        updateInstanceOf(object);
+        cache.putIfAbsent(object.id(), object);
     }
 
     /**
@@ -689,7 +685,10 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = cache.get(id);
+        PersistentEObject object = cache.get(id, k -> resolveInstanceOf(k)
+                .map(c -> PersistenceFactory.getInstance().create(c, k).isPersistent(true))
+                .<NoSuchElementException>orElseThrow(() ->
+                        new NoSuchElementException(String.format("%s does not have an associated metaclass", k))));
 
         //noinspection ConstantConditions
         if (nonNull(resource()) && object.resource() != resource()) {
@@ -697,5 +696,10 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         return object;
+    }
+
+    @Override
+    public boolean exists(Id id) {
+        return nonNull(cache.get(id)) || super.exists(id);
     }
 }
