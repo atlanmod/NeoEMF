@@ -26,7 +26,8 @@
         <neo4j.version>1.9.6</neo4j.version>
 
         <cdo.version>4.3.0</cdo.version>
-        <jmh.version>1.17.5</jmh.version>
+
+        <jmh.version>1.18</jmh.version>
     </properties>
 
     <dependencyManagement>
