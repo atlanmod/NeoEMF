@@ -6,8 +6,8 @@ coverage:
   precision: 2
   round: down
   range:
-    - 50.0
-    - 90.0
+    - 40.0
+    - 70.0
 
   status:
     changes: false
