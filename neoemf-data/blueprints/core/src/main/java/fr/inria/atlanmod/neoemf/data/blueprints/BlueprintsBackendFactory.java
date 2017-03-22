@@ -159,7 +159,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         }
         else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
             // The file already exists, verify that the problem options are not conflicting.
-            String savedGraphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE).toString();
+            String savedGraphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
                 throw new InvalidDataStoreException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
@@ -176,7 +176,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             throw new InvalidDataStoreException(String.format("Graph is undefined for %s", directory.getAbsolutePath()));
         }
 
-        String graphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE).toString();
+        String graphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE);
 
         configurationFor(graphType).putDefaultConfiguration(configuration, directory);
 

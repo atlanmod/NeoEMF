@@ -18,9 +18,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -130,10 +130,10 @@ public final class Configuration {
      * @return the value to which this configuration maps the specified {@code key}, or {@code null} if the
      * configuration contains no mapping for this {@code key}
      */
-    public Object getProperty(String key) {
+    public String getProperty(String key) {
         checkNotNull(key);
 
-        return properties.get(key);
+        return properties.getProperty(key);
     }
 
     /**
@@ -142,11 +142,11 @@ public final class Configuration {
      * @param key   the key of the property to change
      * @param value the value
      */
-    public void setProperty(String key, Object value) {
+    public void setProperty(String key, String value) {
         checkNotNull(key);
         checkNotNull(value);
 
-        properties.put(key, value);
+        properties.setProperty(key, value);
     }
 
     /**
@@ -166,9 +166,9 @@ public final class Configuration {
      * @return the map representation of this configuration
      */
     @Nonnull
-    public Map<Object, Object> asMap() {
-        Map<Object, Object> configurationMap = new HashMap<>();
-        properties.keySet().forEach(key -> configurationMap.put(key, properties.get(key)));
-        return configurationMap;
+    public Map<String, String> asMap() {
+        return properties.keySet().stream()
+                .map(Object::toString)
+                .collect(Collectors.toMap(k -> k, this::getProperty));
     }
 }

@@ -156,7 +156,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
         }
 
         if (configuration.containsKey(PersistentResourceOptions.MAPPING)) {
-            String savedMapping = configuration.getProperty(PersistentResourceOptions.MAPPING).toString();
+            String savedMapping = configuration.getProperty(PersistentResourceOptions.MAPPING);
             checkState(Objects.equals(mapping, savedMapping),
                     "The back-end is mapped with %s (but actual is %s)", savedMapping, mapping);
         }
