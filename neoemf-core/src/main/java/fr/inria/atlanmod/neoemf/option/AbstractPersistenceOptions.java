@@ -106,8 +106,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      */
     @Nonnull
     public B withOptions(Map<String, Object> options) {
-        checkNotNull(options).entrySet()
-                .forEach(e -> withOption(e.getKey(), e.getValue()));
+        checkNotNull(options).forEach(this::withOption);
 
         return me();
     }

@@ -69,12 +69,14 @@ public class XmiStAXIteratorStreamReader extends AbstractXmiStreamReader {
             if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
 
+                //noinspection NullableProblems
                 MoreIterables.stream((Iterable<Namespace>) element::getNamespaces)
                         .forEach(ns -> readNamespace(ns.getPrefix(), ns.getNamespaceURI()));
 
                 QName elementName = element.getName();
                 readStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
+                //noinspection NullableProblems
                 MoreIterables.stream((Iterable<Attribute>) element::getAttributes).forEach(a -> {
                     QName attributeName = a.getName();
                     readAttribute(

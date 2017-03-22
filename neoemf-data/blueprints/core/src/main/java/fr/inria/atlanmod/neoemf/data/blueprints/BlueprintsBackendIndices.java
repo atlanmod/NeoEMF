@@ -191,6 +191,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
         Optional<Vertex> vertex = get(key.id());
 
+        //noinspection OptionalIsPresent
         if (!vertex.isPresent()) {
             return Collections.emptyList();
         }

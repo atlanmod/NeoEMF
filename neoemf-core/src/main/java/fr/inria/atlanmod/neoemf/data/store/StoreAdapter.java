@@ -597,8 +597,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @see #updateInstanceOf(PersistentEObject)
      */
     private void persist(PersistentEObject object) {
-        if (!exists(object.id())) {
-            updateInstanceOf(object);
+        if (updateInstanceOf(object)) {
             cache.put(object.id(), object);
         }
     }
@@ -622,24 +621,29 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     /**
-     * Creates a new container edge between {@code object} and {@code referencedObject}, and deletes any
-     * container edge previously linked to {@code referencedObject}. Tells the underlying database to put the
-     * {@code referencedObject} in the containment list of the {@code object}.
+     * Creates or updates the containment link between {@code referencedObject} and {@code object}, and deletes any
+     * previous link to {@code referencedObject}. Tells the underlying database to put the {@code referencedObject} in
+     * the containment list of the {@code object}.
      * <p>
      * The method checks if an existing container is stored and update it if needed.
      *
      * @param object           the container {@link PersistentEObject}
      * @param reference        the containment {@link EReference}
      * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
+     *
+     * @return {@code true} if the container has been created or updated, {@code false} otherwise
      */
-    private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+    private boolean updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         if (reference.isContainment()) {
             Optional<ContainerDescriptor> container = containerOf(referencedObject.id());
 
             if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
                 containerFor(referencedObject.id(), ContainerDescriptor.from(object, reference));
+                return true;
             }
         }
+
+        return false;
     }
 
     /**
@@ -661,18 +665,23 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     /**
-     * Computes the type of the {@code object} in a {@link ClassDescriptor} object and persists it in the database.
+     * Creates the instance of the {@code object} in a {@link ClassDescriptor} object and persists it in the database.
      * <p>
      * <b>Note:</b> The type is not updated if {@code object} was previously mapped to another type.
      *
      * @param object the {@link PersistentEObject} to store the instance-of information from
+     *
+     * @return {@code true} if the instance has been creates, {@code false} otherwise
      */
-    private void updateInstanceOf(PersistentEObject object) {
+    private boolean updateInstanceOf(PersistentEObject object) {
         Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
 
         if (!metaclass.isPresent()) {
             metaclassFor(object.id(), ClassDescriptor.from(object));
+            return true;
         }
+
+        return false;
     }
 
     @Nonnull
@@ -682,6 +691,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         PersistentEObject object = cache.get(id);
 
+        //noinspection ConstantConditions
         if (nonNull(resource()) && object.resource() != resource()) {
             object.resource(resource());
         }
