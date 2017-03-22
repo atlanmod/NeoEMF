@@ -191,13 +191,6 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
         delete(features, key);
     }
 
-    @Override
-    public boolean hasValue(FeatureKey key) {
-        checkNotNull(key);
-
-        return features.containsKey(key);
-    }
-
     /**
      * Retrieves a value from the {@code database} according to the given {@code key}.
      *

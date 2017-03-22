@@ -132,7 +132,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(id)
+        return resultFrom(id)
                 .map(result -> {
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
@@ -150,9 +150,10 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         checkNotNull(container);
 
         try {
-            Put put = new Put(Bytes.toBytes(id.toString()));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()));
-            put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
+            Put put = new Put(Bytes.toBytes(id.toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
+
             table.put(put);
         }
         catch (IOException e) {
@@ -165,7 +166,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return get(id)
+        return resultFrom(id)
                 .map(result -> {
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
@@ -183,9 +184,10 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         checkNotNull(metaclass);
 
         try {
-            Put put = new Put(Bytes.toBytes(id.toString()));
-            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(metaclass.name()));
-            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(metaclass.uri()));
+            Put put = new Put(Bytes.toBytes(id.toString()))
+                    .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(metaclass.name()))
+                    .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(metaclass.uri()));
+
             table.put(put);
         }
         catch (IOException e) {
@@ -198,7 +200,11 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     public <V> Optional<V> valueOf(FeatureKey key) {
         checkNotNull(key);
 
-        return get(key);
+        return resultFrom(key.id())
+                .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
+                        .map(value -> Optional.of(Serializers.<V>forGenerics().deserialize(value)))
+                        .orElse(Optional.empty()))
+                .orElse(Optional.empty());
     }
 
     @Nonnull
@@ -208,7 +214,17 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
-        put(key, value);
+
+        try {
+            Put put = new Put(Bytes.toBytes(key.id().toString()))
+                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forGenerics().serialize(value));
+
+            table.put(put);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return previousValue;
     }
 
@@ -216,59 +232,10 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     public void unsetValue(FeatureKey key) {
         checkNotNull(key);
 
-        delete(key);
-    }
-
-    @Override
-    public boolean hasValue(FeatureKey key) {
-        checkNotNull(key);
-
-        return get(key).isPresent();
-    }
-
-    /**
-     * Retrieves a value from the {@link Table} according to the given {@code key}.
-     *
-     * @param key the key of the element to retrieve
-     *
-     * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
-     * found
-     */
-    private <V> Optional<V> get(FeatureKey key) {
-        return get(key.id())
-                .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
-                        .map(value -> Optional.of(Serializers.<V>forGenerics().deserialize(value)))
-                        .orElse(Optional.empty()))
-                .orElse(Optional.empty());
-    }
-
-    /**
-     * Saves a {@code value} identified by the {@code key} in the {@link Table}.
-     *
-     * @param key   the key of the element to save
-     * @param value the value to save
-     */
-    private <V> void put(FeatureKey key, V value) {
         try {
-            Put put = new Put(Bytes.toBytes(key.id().toString()));
-            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forGenerics().serialize(value));
-            table.put(put);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+            Delete delete = new Delete(Bytes.toBytes(key.id().toString()))
+                    .addColumns(PROPERTY_FAMILY, Bytes.toBytes(key.name()));
 
-    /**
-     * Removes a value from the {@link Table} according to its {@code key}.
-     *
-     * @param key the key of the element to remove
-     */
-    // FIXME Does not correctly delete the value (see #unset(FeatureKey))
-    private void delete(FeatureKey key) {
-        try {
-            Delete delete = new Delete(Bytes.toBytes(key.id().toString()));
-            delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()));
             table.delete(delete);
         }
         catch (IOException e) {
@@ -284,20 +251,15 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
      * @return on {@link Optional} containing the {@link Result}, or an empty {@link Optional} if the element has not
      * been found
      */
-    private Optional<Result> get(Id id) {
-        Optional<Result> value = Optional.empty();
-
+    private Optional<Result> resultFrom(Id id) {
         try {
             Get get = new Get(Bytes.toBytes(id.toString()));
+
             Result result = table.get(get);
-            if (!result.isEmpty()) {
-                value = Optional.of(result);
-            }
+            return !result.isEmpty() ? Optional.of(result) : Optional.empty();
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return value;
     }
 }

@@ -163,13 +163,6 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
         features.remove(key.name());
     }
 
-    @Override
-    public <V> boolean hasValue(FeatureKey key) {
-        checkOwner(key.id());
-
-        return features.containsKey(key.name());
-    }
-
     /**
      * Checks that the {@code id} is the same as the owner of that store.
      *

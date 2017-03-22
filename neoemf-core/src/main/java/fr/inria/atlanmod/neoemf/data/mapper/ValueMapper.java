@@ -73,5 +73,7 @@ public interface ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> boolean hasValue(FeatureKey key);
+    default <V> boolean hasValue(FeatureKey key) {
+        return valueOf(key).isPresent();
+    }
 }

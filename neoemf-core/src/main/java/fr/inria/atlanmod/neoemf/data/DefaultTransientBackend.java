@@ -147,11 +147,4 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
 
         features.remove(key);
     }
-
-    @Override
-    public <V> boolean hasValue(FeatureKey key) {
-        checkNotNull(key);
-
-        return features.containsKey(key);
-    }
 }

@@ -188,13 +188,6 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
         delete(features, key);
     }
 
-    @Override
-    public boolean hasValue(FeatureKey key) {
-        checkNotNull(key);
-
-        return get(features, key).isPresent();
-    }
-
     /**
      * Returns all loaded databases.
      *
