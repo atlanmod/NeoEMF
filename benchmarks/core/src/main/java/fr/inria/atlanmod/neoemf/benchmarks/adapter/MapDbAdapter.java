@@ -40,7 +40,7 @@ public class MapDbAdapter extends AbstractNeoAdapter {
         BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = MapDbURI.createFileURI(file);
+        URI uri = MapDbURI.newBuilder().fromFile(file);
 
         return resourceSet.createResource(uri);
     }

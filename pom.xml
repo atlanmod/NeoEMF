@@ -134,14 +134,12 @@
         <osgi.version>6.0.0</osgi.version>
 
         <emf.version>2.12.0</emf.version>
-        <ecore.version>2.12.0</ecore.version>
-        <xcore.version>1.1.100</xcore.version>
 
         <javax-annotations.version>3.0.1</javax-annotations.version>
 
         <assertj.version>3.6.2</assertj.version>
         <junit.version>4.12</junit.version>
-        <mockito.version>2.7.18</mockito.version>
+        <mockito.version>2.7.19</mockito.version>
     </properties>
 
     <dependencies>
@@ -167,19 +165,13 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
-                <version>${ecore.version}</version>
+                <version>${emf.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>${ecore.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.emf</groupId>
-                <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
-                <version>${xcore.version}</version>
+                <version>${emf.version}</version>
             </dependency>
 
             <!-- Test -->
@@ -244,12 +236,6 @@
 
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
@@ -410,12 +396,6 @@
                         <skipDeploy>true</skipDeploy>
                     </configuration>
                 </plugin>
-
-                <plugin> <!-- v2.9.2+ causes issues when generating code -->
-                    <groupId>org.eclipse.xtext</groupId>
-                    <artifactId>xtext-maven-plugin</artifactId>
-                    <version>2.9.2</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -433,7 +413,7 @@
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
                     <artifactId>org.eclipse.emf.ecore</artifactId>
-                    <version>${ecore.version}</version>
+                    <version>${emf.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.osgi</groupId>

@@ -44,7 +44,7 @@ public class TinkerAdapter extends AbstractNeoAdapter {
         BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = BlueprintsURI.createFileURI(file);
+        URI uri = BlueprintsURI.newBuilder().fromFile(file);
 
         return resourceSet.createResource(uri);
     }

@@ -40,7 +40,7 @@ public class BerkeleyDbAdapter extends AbstractNeoAdapter {
         BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = BerkeleyDbURI.createFileURI(file);
+        URI uri = BerkeleyDbURI.newBuilder().fromFile(file);
 
         return resourceSet.createResource(uri);
     }

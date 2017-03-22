@@ -26,13 +26,15 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <xcore.version>2.11.0</xcore.version>
+
         <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
         <models.location>${project.basedir}/src/main/resources/model</models.location>
     </properties>
 
     <dependencies>
 
-        <!-- EMF dependencies -->
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -44,13 +46,27 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Xcore -->
+        <!-- EMF: Code generation -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- EMF: Code generation -->
+
+            <dependency>
+                <groupId>org.eclipse.emf</groupId>
+                <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
+                <version>1.1.100</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -69,6 +85,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -86,6 +103,7 @@
             <plugin>
                 <groupId>org.eclipse.xtext</groupId>
                 <artifactId>xtext-maven-plugin</artifactId>
+                <version>2.11.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -115,6 +133,17 @@
                     </sourceRoots>
                 </configuration>
                 <dependencies>
+
+                    <!-- Eclipse -->
+
+                    <dependency>
+                        <groupId>org.eclipse.core</groupId>
+                        <artifactId>org.eclipse.core.resources</artifactId>
+                        <version>3.7.100</version>
+                    </dependency>
+
+                    <!-- Xtext -->
+
                     <dependency>
                         <groupId>org.eclipse.text</groupId>
                         <artifactId>org.eclipse.text</artifactId>
@@ -122,10 +151,32 @@
                     </dependency>
 
                     <dependency>
-                        <groupId>org.eclipse.emf</groupId>
-                        <artifactId>org.eclipse.emf.codegen.ecore.xtext</artifactId>
-                        <version>1.2.0</version>
+                        <groupId>org.eclipse.xtext</groupId>
+                        <artifactId>org.eclipse.xtext.ecore</artifactId>
+                        <version>${xcore.version}</version>
                     </dependency>
+
+                    <!-- EMF: Ecore -->
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.common</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.ecore</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <!-- EMF: Xcore -->
 
                     <dependency>
                         <groupId>org.eclipse.emf</groupId>
@@ -137,6 +188,26 @@
                         <groupId>org.eclipse.emf</groupId>
                         <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
                         <version>1.1.100</version>
+                    </dependency>
+
+                    <!-- EMF: CodeGen -->
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.codegen</artifactId>
+                        <version>2.11.0</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.codegen.ecore.xtext</artifactId>
+                        <version>1.2.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
