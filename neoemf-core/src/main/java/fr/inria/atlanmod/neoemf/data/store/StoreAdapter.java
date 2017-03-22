@@ -670,6 +670,11 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @return {@code true} if the instance has been creates, {@code false} otherwise
      */
     private boolean updateInstanceOf(PersistentEObject object) {
+        // If the object is already in cache, then the metaclass is defined
+        if (nonNull(cache.get(object.id()))) {
+            return false;
+        }
+
         Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
 
         if (!metaclass.isPresent()) {
