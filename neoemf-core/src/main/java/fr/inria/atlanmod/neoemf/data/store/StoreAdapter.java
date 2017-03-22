@@ -137,11 +137,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             checkElementIndex(index, size(internalObject, feature));
         }
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return null;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
             Optional<String> value;
@@ -187,6 +191,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
+
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
@@ -227,11 +232,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         checkNotNull(internalObject);
         checkNotNull(feature);
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return false;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
             if (!feature.isMany()) {
@@ -256,11 +265,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         checkNotNull(internalObject);
         checkNotNull(feature);
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
             if (!feature.isMany()) {
@@ -297,11 +310,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return 0;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         OptionalInt size;
         if (isAttribute(feature)) {
@@ -324,11 +341,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             return false;
         }
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return false;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
             return containsValue(key, serialize((EAttribute) feature, value));
@@ -349,11 +370,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             return EStore.NO_INDEX;
         }
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return EStore.NO_INDEX;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         OptionalInt index;
         if (isAttribute(feature)) {
@@ -376,11 +401,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             return EStore.NO_INDEX;
         }
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return EStore.NO_INDEX;
         }
+
+        refresh(object);
+
+        FeatureKey key = FeatureKey.from(object, feature);
 
         OptionalInt index;
         if (isAttribute(feature)) {
@@ -404,6 +433,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
+
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
@@ -438,11 +468,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         checkElementIndex(index, size(internalObject, feature));
 
-        ManyFeatureKey key = ManyFeatureKey.from(internalObject, feature, index);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return null;
         }
+
+        refresh(object);
+
+        ManyFeatureKey key = ManyFeatureKey.from(object, feature, index);
 
         if (isAttribute(feature)) {
             return this.<String>removeValue(key)
@@ -488,6 +522,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             return;
         }
 
+        refresh(object);
+
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
@@ -512,14 +548,17 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         checkNotNull(internalObject);
         checkNotNull(feature);
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
-        if (!exists(key.id())) {
+        if (!exists(object.id())) {
             return nonNull(array) ? array : MoreArrays.newArray(Object.class, 0);
         }
 
-        Stream<Object> stream;
+        refresh(object);
 
+        FeatureKey key = FeatureKey.from(internalObject, feature);
+
+        Stream<Object> stream;
         if (isAttribute(feature)) {
             List<String> values;
 
@@ -567,7 +606,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     public final PersistentEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
-        return containerOf(PersistentEObject.from(internalObject).id())
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        return containerOf(object.id())
                 .map(c -> resolve(c.id()))
                 .orElse(null);
     }
@@ -576,7 +617,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     public final EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
-        return containerOf(PersistentEObject.from(internalObject).id())
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        return containerOf(object.id())
                 .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
                 .orElse(null);
     }
@@ -595,7 +638,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      */
     private void persist(PersistentEObject object) {
         updateInstanceOf(object);
-        cache.putIfAbsent(object.id(), object);
+        refresh(object);
     }
 
     /**
@@ -683,6 +726,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         return false;
+    }
+
+    /**
+     * Refreshes the {@code object} with its {@link Id} in the cache, only it does not already exist.
+     *
+     * @param object the object to refresh
+     */
+    private void refresh(PersistentEObject object) {
+        cache.putIfAbsent(object.id(), object);
     }
 
     @Nonnull
