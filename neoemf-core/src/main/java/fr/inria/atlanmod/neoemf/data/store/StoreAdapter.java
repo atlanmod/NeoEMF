@@ -161,15 +161,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
                     .orElse(null);
         }
         else {
-            Optional<Id> value;
+            Optional<Id> previousReference;
             if (!feature.isMany()) {
-                value = referenceOf(key);
+                previousReference = referenceOf(key);
             }
             else {
-                value = referenceOf(key.withPosition(index));
+                previousReference = referenceOf(key.withPosition(index));
             }
 
-            return value
+            return previousReference
                     .map(this::resolve)
                     .orElse(null);
         }
@@ -213,15 +213,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             PersistentEObject referencedObject = PersistentEObject.from(value);
             persist(object, (EReference) feature, referencedObject);
 
-            Optional<Id> previousId;
+            Optional<Id> previousReference;
             if (!feature.isMany()) {
-                previousId = referenceFor(key, referencedObject.id());
+                previousReference = referenceFor(key, referencedObject.id());
             }
             else {
-                previousId = referenceFor(key.withPosition(index), referencedObject.id());
+                previousReference = referenceFor(key.withPosition(index), referencedObject.id());
             }
 
-            return previousId
+            return previousReference
                     .map(this::resolve)
                     .orElse(null);
         }
@@ -484,16 +484,16 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
                     .orElse(null);
         }
         else {
-            PersistentEObject removedElement = removeReference(key)
+            PersistentEObject removedObject = removeReference(key)
                     .map(this::resolve)
                     .orElse(null);
 
             if (((EReference) feature).isContainment()) {
-                removedElement.eBasicSetContainer(null, -1, null);
-                removedElement.resource(null);
+                removedObject.eBasicSetContainer(null, -1, null);
+                removedObject.resource(null);
             }
 
-            return removedElement;
+            return removedObject;
         }
     }
 
@@ -504,9 +504,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
 
-        Object movedElement = remove(internalObject, feature, sourceIndex);
-        add(internalObject, feature, targetIndex, movedElement);
-        return movedElement;
+        Object movedValue = remove(internalObject, feature, sourceIndex);
+        add(internalObject, feature, targetIndex, movedValue);
+        return movedValue;
     }
 
     @Override
@@ -560,32 +560,34 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         Stream<Object> stream;
         if (isAttribute(feature)) {
-            List<String> values;
+            List<String> allValues;
 
             if (feature.isMany()) {
-                values = allValuesOf(key);
+                allValues = allValuesOf(key);
             }
             else {
-                values = this.<String>valueOf(key)
+                allValues = this.<String>valueOf(key)
                         .map(Collections::singletonList)
                         .orElseGet(Collections::emptyList);
             }
 
-            stream = values.stream().map(v -> deserialize((EAttribute) feature, v));
+            stream = allValues.stream()
+                    .map(v -> deserialize((EAttribute) feature, v));
         }
         else {
-            List<Id> references;
+            List<Id> allReferences;
 
             if (feature.isMany()) {
-                references = allReferencesOf(key);
+                allReferences = allReferencesOf(key);
             }
             else {
-                references = referenceOf(key)
+                allReferences = referenceOf(key)
                         .map(Collections::singletonList)
                         .orElseGet(Collections::emptyList);
             }
 
-            stream = references.stream().map(this::resolve);
+            stream = allReferences.stream()
+                    .map(this::resolve);
         }
 
         if (isNull(array)) {
