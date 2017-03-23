@@ -172,7 +172,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
         return valueOf(key)
                 .map(v -> OptionalInt.of((int) v))
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     /**

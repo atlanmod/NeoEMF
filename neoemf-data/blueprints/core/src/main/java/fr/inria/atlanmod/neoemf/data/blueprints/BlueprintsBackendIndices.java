@@ -360,8 +360,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         return get(key.id())
                 .map(v -> Optional.ofNullable(v.<Integer>getProperty(formatProperty(key.name(), KEY_SIZE)))
                         .map(OptionalInt::of)
-                        .orElse(OptionalInt.empty()))
-                .orElse(OptionalInt.empty());
+                        .orElseGet(OptionalInt::empty))
+                .orElseGet(OptionalInt::empty);
     }
 
     @Override

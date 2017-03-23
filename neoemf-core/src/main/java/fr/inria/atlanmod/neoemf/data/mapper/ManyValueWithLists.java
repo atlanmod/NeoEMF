@@ -52,7 +52,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Override
     default <V> List<V> allValuesOf(FeatureKey key) {
         return this.<List<V>>valueOf(key)
-                .orElse(Collections.emptyList());
+                .orElseGet(Collections::emptyList);
     }
 
     @Nonnull
@@ -77,7 +77,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(value);
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElse(newList());
+                .orElseGet(this::newList);
 
         while (key.position() > values.size()) {
             values.add(null);
@@ -147,7 +147,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
                     int index = values.indexOf(value);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     @Nonnull
@@ -162,7 +162,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
                     int index = values.lastIndexOf(value);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     @Nonnull
@@ -170,7 +170,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<List<V>>valueOf(key)
                 .map(values -> OptionalInt.of(values.size()))
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     /**

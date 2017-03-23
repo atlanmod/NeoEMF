@@ -141,7 +141,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
                     }
                     return Optional.<ContainerDescriptor>empty();
                 })
-                .orElse(Optional.empty());
+                .orElseGet(Optional::empty);
     }
 
     @Override
@@ -175,7 +175,7 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
                     }
                     return Optional.<ClassDescriptor>empty();
                 })
-                .orElse(Optional.empty());
+                .orElseGet(Optional::empty);
     }
 
     @Override
@@ -203,8 +203,8 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         return resultFrom(key.id())
                 .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
                         .map(value -> Optional.of(Serializers.<V>forGenerics().deserialize(value)))
-                        .orElse(Optional.empty()))
-                .orElse(Optional.empty());
+                        .orElseGet(Optional::empty))
+                .orElseGet(Optional::empty);
     }
 
     @Nonnull

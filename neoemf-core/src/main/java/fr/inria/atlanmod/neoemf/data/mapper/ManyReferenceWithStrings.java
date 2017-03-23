@@ -58,7 +58,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
         return ids
                 .map(Arrays::asList)
-                .orElse(Collections.emptyList());
+                .orElseGet(Collections::emptyList);
     }
 
     @Nonnull
@@ -87,7 +87,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
         Id[] ids = this.<String>valueOf(key.withoutPosition())
                 .map(this::arrayFromString)
-                .orElse(new Id[0]);
+                .orElseGet(() -> new Id[0]);
 
         if (key.position() > ids.length) {
             ids = MoreArrays.resize(ids, key.position() + 1);
@@ -159,7 +159,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
                     int index = MoreArrays.indexOf(arrayFromString(s), reference);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     @Nonnull
@@ -174,7 +174,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
                     int index = MoreArrays.lastIndexOf(arrayFromString(s), reference);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     @Nonnull
@@ -182,7 +182,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     default OptionalInt sizeOfReference(FeatureKey key) {
         return this.<String>valueOf(key)
                 .map(s -> OptionalInt.of(arrayFromString(s).length))
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     /**

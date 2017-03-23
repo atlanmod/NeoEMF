@@ -120,7 +120,7 @@ public class DefaultMapperWriter implements MapperWriter {
     public void onAttribute(RawAttribute attribute) {
         Id id = Optional.ofNullable(attribute.id())
                 .map(this::getOrCreateId)
-                .orElse(stack.getLast());
+                .orElseGet(stack::getLast);
 
         addAttribute(id, attribute);
     }
@@ -129,7 +129,7 @@ public class DefaultMapperWriter implements MapperWriter {
     public void onReference(RawReference reference) {
         Id id = Optional.ofNullable(reference.id())
                 .map(this::getOrCreateId)
-                .orElse(stack.getLast());
+                .orElseGet(stack::getLast);
 
         Id idReference = getOrCreateId(reference.idReference());
 

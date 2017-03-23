@@ -102,7 +102,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     public <V> void addValue(ManyFeatureKey key, V value) {
         cache.put(key, value);
 
-        IntStream.range(key.position() + 1, sizeOfValue(key.withoutPosition()).orElse(key.position() + 1))
+        IntStream.range(key.position() + 1, sizeOfValue(key.withoutPosition()).orElseGet(() -> key.position() + 1))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addValue(key, value);
@@ -128,7 +128,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        IntStream.range(key.position(), sizeOfValue(key.withoutPosition()).orElse(key.position()))
+        IntStream.range(key.position(), sizeOfValue(key.withoutPosition()).orElseGet(key::position))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeValue(key);
@@ -161,7 +161,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     public void addReference(ManyFeatureKey key, Id reference) {
         cache.put(key, reference);
 
-        IntStream.range(key.position() + 1, sizeOfReference(key.withoutPosition()).orElse(key.position() + 1))
+        IntStream.range(key.position() + 1, sizeOfReference(key.withoutPosition()).orElseGet(() -> key.position() + 1))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addReference(key, reference);
@@ -187,7 +187,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        IntStream.range(key.position(), sizeOfReference(key.withoutPosition()).orElse(key.position()))
+        IntStream.range(key.position(), sizeOfReference(key.withoutPosition()).orElseGet(key::position))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeReference(key);

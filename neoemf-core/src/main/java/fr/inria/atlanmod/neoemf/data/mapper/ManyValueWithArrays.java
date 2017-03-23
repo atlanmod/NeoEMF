@@ -49,7 +49,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Override
     default <V> List<V> allValuesOf(FeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
-                .orElse(MoreArrays.newArray(Object.class, 0));
+                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
         return Arrays.asList(values);
     }
@@ -78,7 +78,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(value);
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElse(MoreArrays.newArray(Object.class, 0));
+                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
         if (key.position() > values.length) {
             values = MoreArrays.resize(values, key.position() + 1);
@@ -150,7 +150,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
                     int index = MoreArrays.indexOf(values, value);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     @Nonnull
@@ -165,7 +165,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
                     int index = MoreArrays.lastIndexOf(values, value);
                     return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
                 })
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 
     @Nonnull
@@ -173,6 +173,6 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<V[]>valueOf(key)
                 .map(values -> OptionalInt.of(values.length))
-                .orElse(OptionalInt.empty());
+                .orElseGet(OptionalInt::empty);
     }
 }
