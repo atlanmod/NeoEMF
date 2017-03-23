@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -50,6 +51,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         Map<String, Object> options = CommonOptions.noOption();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
@@ -72,6 +76,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -88,6 +95,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -104,6 +114,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -120,6 +133,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -136,6 +152,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -154,6 +173,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
         long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
@@ -175,6 +197,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
         long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
@@ -208,6 +233,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -232,6 +260,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -256,6 +287,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -289,6 +323,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
         long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);

@@ -40,4 +40,12 @@ public abstract class AbstractCachingStoreDecorator<V> extends AbstractStoreDeco
     protected AbstractCachingStoreDecorator(Store store) {
         super(store);
     }
+
+    @Override
+    public void close() {
+        cache.invalidateAll();
+        cache.cleanUp();
+
+        super.close();
+    }
 }

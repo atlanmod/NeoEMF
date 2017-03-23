@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbTest;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
@@ -39,6 +40,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, CommonOptions.noOption());
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -86,6 +90,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, BerkeleyDbOptions.noOption());
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);

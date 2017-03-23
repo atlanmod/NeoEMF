@@ -70,12 +70,21 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             .build();
 
     /**
+     * The thread used to close the mapper chain when the application will exit.
+     */
+    @Nonnull
+    private final Thread shutdownHook;
+
+    /**
      * Constructs a new {@code StoreAdapter} on the given {@code store}.
      *
      * @param store the inner store
      */
     private StoreAdapter(Store store) {
         super(store);
+
+        this.shutdownHook = new Thread(store::close);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 
     /**
@@ -126,6 +135,19 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      */
     private static String serialize(EAttribute attribute, Object value) {
         return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public void close() {
+        if (Runtime.getRuntime().removeShutdownHook(shutdownHook)) {
+            shutdownHook.run();
+        }
+    }
+
+    @Override
+    public boolean exists(Id id) {
+        return nonNull(cache.get(id)) || super.exists(id);
     }
 
     @Override
@@ -755,10 +777,5 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         return object;
-    }
-
-    @Override
-    public boolean exists(Id id) {
-        return nonNull(cache.get(id)) || super.exists(id);
     }
 }

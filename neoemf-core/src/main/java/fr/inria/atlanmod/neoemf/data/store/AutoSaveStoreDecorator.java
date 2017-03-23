@@ -66,6 +66,21 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
+    public void save() {
+        try {
+            super.save();
+        }
+        catch (Exception ignored) {
+        }
+    }
+
+    @Override
+    public void close() {
+        save();
+        super.close();
+    }
+
+    @Override
     public void containerFor(Id id, ContainerDescriptor container) {
         thenIncrementAndSave(() -> super.containerFor(id, container), 1);
     }
@@ -159,21 +174,6 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     @Override
     public void removeAllReferences(FeatureKey key) {
         thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
-    }
-
-    /**
-     * @see #save()
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            save();
-        }
-        catch (Exception ignored) {
-        }
-        finally {
-            super.finalize();
-        }
     }
 
     @Override

@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
@@ -40,6 +41,9 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, CommonOptions.noOption());
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -67,6 +71,9 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
         //noinspection ConstantConditions
         Store store = context().factory().createStore(backend, null, HBaseOptions.noOption());
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
