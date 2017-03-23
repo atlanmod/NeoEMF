@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.context.CoreTest;
 import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
@@ -33,10 +31,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Test cases about {@link BackendFactory#createStore(Backend, PersistentResource, Map)}.
@@ -345,21 +340,5 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    @Override
-    public Context context() {
-        return new CoreContext() {
-
-            @Override
-            public BackendFactory factory() {
-                AbstractBackendFactory factory = (AbstractBackendFactory) super.factory();
-
-                when(factory.createStore(any(), any(), notNull())).thenCallRealMethod();
-                when(factory.newInstanceOf(any(), any())).thenCallRealMethod();
-
-                return factory;
-            }
-        };
     }
 }

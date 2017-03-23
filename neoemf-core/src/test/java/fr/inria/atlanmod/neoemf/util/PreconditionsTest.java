@@ -44,7 +44,6 @@ public class PreconditionsTest extends AbstractTest {
         Throwable thrown0 = catchThrowable(() -> Preconditions.checkArgument(true));
         assertThat(thrown0).isNull();
 
-        //noinspection ConstantConditions
         Throwable thrown1 = catchThrowable(() -> Preconditions.checkArgument(false));
         assertThat(thrown1).isExactlyInstanceOf(IllegalArgumentException.class).hasNoCause().hasMessage(null);
     }
@@ -54,7 +53,6 @@ public class PreconditionsTest extends AbstractTest {
         Throwable thrown0 = catchThrowable(() -> Preconditions.checkArgument(true, "Message0"));
         assertThat(thrown0).isNull();
 
-        //noinspection ConstantConditions
         Throwable thrown1 = catchThrowable(() -> Preconditions.checkArgument(false, "Message0"));
         assertThat(thrown1).isExactlyInstanceOf(IllegalArgumentException.class).hasNoCause().hasMessage("Message0");
     }
@@ -64,7 +62,6 @@ public class PreconditionsTest extends AbstractTest {
         Throwable thrown0 = catchThrowable(() -> Preconditions.checkArgument(true, "Message%d", 0));
         assertThat(thrown0).isNull();
 
-        //noinspection ConstantConditions
         Throwable thrown1 = catchThrowable(() -> Preconditions.checkArgument(false, "Message%d", 0));
         assertThat(thrown1).isExactlyInstanceOf(IllegalArgumentException.class).hasNoCause().hasMessage("Message0");
     }
@@ -74,7 +71,6 @@ public class PreconditionsTest extends AbstractTest {
         Throwable thrown0 = catchThrowable(() -> Preconditions.checkState(true));
         assertThat(thrown0).isNull();
 
-        //noinspection ConstantConditions
         Throwable thrown1 = catchThrowable(() -> Preconditions.checkState(false));
         assertThat(thrown1).isExactlyInstanceOf(IllegalStateException.class).hasNoCause().hasMessage(null);
     }
@@ -84,7 +80,6 @@ public class PreconditionsTest extends AbstractTest {
         Throwable thrown0 = catchThrowable(() -> Preconditions.checkState(true, "Message0"));
         assertThat(thrown0).isNull();
 
-        //noinspection ConstantConditions
         Throwable thrown1 = catchThrowable(() -> Preconditions.checkState(false, "Message0"));
         assertThat(thrown1).isExactlyInstanceOf(IllegalStateException.class).hasNoCause().hasMessage("Message0");
     }
@@ -94,7 +89,6 @@ public class PreconditionsTest extends AbstractTest {
         Throwable thrown0 = catchThrowable(() -> Preconditions.checkState(true, "Message%d", 0));
         assertThat(thrown0).isNull();
 
-        //noinspection ConstantConditions
         Throwable thrown1 = catchThrowable(() -> Preconditions.checkState(false, "Message%d", 0));
         assertThat(thrown1).isExactlyInstanceOf(IllegalStateException.class).hasNoCause().hasMessage("Message0");
     }

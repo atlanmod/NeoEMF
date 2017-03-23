@@ -15,10 +15,6 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
 
@@ -32,20 +28,6 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
     public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(MapDbBackend.class);
-    }
-
-    @Test
-    public void testCreateTransientStore() {
-        Backend backend = context().factory().createTransientBackend();
-
-        //noinspection ConstantConditions
-        Store store = context().factory().createStore(backend, null, CommonOptions.noOption());
-        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isInstanceOf(DirectWriteStore.class);
-
-        assertThat(store.backend()).isSameAs(backend);
     }
 
     @Test
@@ -84,24 +66,6 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(backend).isInstanceOf(MapDbBackendLists.class);
     }
 
-    @Test
-    public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
-
-        //noinspection ConstantConditions
-        Store store = context().factory().createStore(backend, null, MapDbOptions.noOption());
-        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isInstanceOf(DirectWriteStore.class);
-
-        assertThat(store.backend()).isSameAs(backend);
-    }
-
-    /**
-     * Checks if {@link Backend#copyTo} creates the persistent datastores from the transient ones.
-     * Only empty back-ends are tested.
-     */
     @Test
     public void testCopyBackend() {
         Backend transientBackend = context().factory().createTransientBackend();

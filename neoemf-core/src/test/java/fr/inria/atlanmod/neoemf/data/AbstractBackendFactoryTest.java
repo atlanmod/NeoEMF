@@ -14,9 +14,17 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
+import org.junit.Test;
 
 import java.lang.reflect.Field;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  * Abstract test cases for {@link BackendFactory}s that provides methods to retrieve private fields.
@@ -53,6 +61,38 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
         catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Check the creation of chaining between the default {@link Store}s and a {@link TransientBackend}.
+     */
+    @Test
+    public void testCreateTransientStore() {
+        Backend backend = context().factory().createTransientBackend();
+
+        Store store = context().factory().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isInstanceOf(DirectWriteStore.class);
+
+        assertThat(store.backend()).isSameAs(backend);
+    }
+
+    /**
+     * Check the creation of chaining between the default {@link Store}s and a {@link PersistentBackend}.
+     */
+    @Test
+    public void testCreatePersistentStore() {
+        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), context().optionsBuilder().asMap());
+
+        Store store = context().factory().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isInstanceOf(DirectWriteStore.class);
+
+        assertThat(store.backend()).isSameAs(backend);
     }
 
     /**

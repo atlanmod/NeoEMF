@@ -14,11 +14,15 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
+import org.eclipse.emf.common.util.URI;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.mock;
 
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
@@ -29,15 +33,13 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
     @Test
     public void testCreateUriFromUri() {
-        //noinspection ConstantConditions
-        Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromUri(null));
+        Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromUri(mock(URI.class)));
         assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void testCreateUriFromFile() {
-        //noinspection ConstantConditions
-        Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromFile(null));
+        Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromFile(mock(File.class)));
         assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 }

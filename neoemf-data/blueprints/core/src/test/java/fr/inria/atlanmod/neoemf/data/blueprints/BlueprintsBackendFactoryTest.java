@@ -15,10 +15,6 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.junit.Test;
 
@@ -35,20 +31,6 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     @Test
-    public void testCreateTransientStore() {
-        Backend backend = context().factory().createTransientBackend();
-
-        //noinspection ConstantConditions
-        Store store = context().factory().createStore(backend, null, CommonOptions.noOption());
-        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isInstanceOf(DirectWriteStore.class);
-
-        assertThat(store.backend()).isSameAs(backend);
-    }
-
-    @Test
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
@@ -62,19 +44,5 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
-    }
-
-    @Test
-    public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
-
-        //noinspection ConstantConditions
-        Store store = context().factory().createStore(backend, null, BlueprintsOptions.noOption());
-        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isInstanceOf(DirectWriteStore.class);
-
-        assertThat(store.backend()).isSameAs(backend);
     }
 }

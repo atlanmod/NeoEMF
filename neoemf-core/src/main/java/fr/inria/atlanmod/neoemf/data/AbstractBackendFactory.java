@@ -79,7 +79,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <T> T newInstanceOf(String className, ConstructorParameter... parameters) {
+    protected final <T> T newInstanceOf(String className, ConstructorParameter... parameters) {
         try {
             Class<?> type = Class.forName(className, false, getClass().getClassLoader());
 
@@ -115,7 +115,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
-    public Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
+    public final Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
         Store store = new DirectWriteStore(backend, resource);
 
         if (checkNotNull(options).containsKey(PersistentResourceOptions.STORES)) {
@@ -148,7 +148,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      *
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}
      */
-    protected void processGlobalConfiguration(File directory, String mapping) {
+    protected final void processGlobalConfiguration(File directory, String mapping) {
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
         Configuration configuration = Configuration.load(path);
 

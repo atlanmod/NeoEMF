@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -26,7 +27,9 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * A specific {@link Context} for the core.
@@ -54,7 +57,15 @@ public class CoreContext implements Context {
 
     @Override
     public BackendFactory factory() {
-        return mock(AbstractBackendFactory.class);
+        AbstractBackendFactory factory = mock(AbstractBackendFactory.class);
+
+        when(factory.name()).thenReturn("mock");
+        when(factory.supportsTransient()).thenCallRealMethod();
+
+        when(factory.createTransientBackend()).thenCallRealMethod();
+        when(factory.createPersistentBackend(any(), any())).thenReturn(mock(PersistentBackend.class));
+
+        return factory;
     }
 
     @Override
