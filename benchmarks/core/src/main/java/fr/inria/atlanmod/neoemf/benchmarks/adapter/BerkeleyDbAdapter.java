@@ -24,6 +24,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
+/**
+ * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
+ */
 public class BerkeleyDbAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-berkeleydb";
@@ -36,7 +39,7 @@ public class BerkeleyDbAdapter extends AbstractNeoAdapter {
     }
 
     @Override
-    public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
+    public Resource createResource(File file, ResourceSet resourceSet) {
         BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
 

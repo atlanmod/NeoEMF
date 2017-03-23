@@ -53,6 +53,9 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * An {@link Adapter} on top of a CDO server.
+ */
 public class CdoAdapter extends AbstractAdapter {
 
     public static final String NAME = "cdo";
@@ -63,7 +66,9 @@ public class CdoAdapter extends AbstractAdapter {
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
 
     private EmbeddedCdoServer server;
+
     private CDOSession session;
+
     private CDOTransaction transaction;
 
     @SuppressWarnings("unused") // Called dynamically
@@ -72,7 +77,7 @@ public class CdoAdapter extends AbstractAdapter {
     }
 
     @Override
-    public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
+    public Resource createResource(File file, ResourceSet resourceSet) {
         server = new EmbeddedCdoServer(file.toPath());
         server.run();
         session = server.openSession();

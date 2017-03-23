@@ -19,18 +19,54 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * An {@link Adapter} used to create {@link Resource}s.
+ */
 public interface InternalAdapter extends Adapter {
 
+    /**
+     * Returns the name of this adapter.
+     *
+     * @return the name
+     */
     String getName();
 
+    /**
+     * Returns the extension of the adapted {@link Resource}, used to create the stores.
+     *
+     * @return the extension
+     */
     String getResourceExtension();
 
+    /**
+     * Returns the extension of the {@link Resource}, used for benchmarks.
+     *
+     * @return the extension
+     */
     String getStoreExtension();
 
-    EPackage initAndGetEPackage() throws Exception;
+    /**
+     * Retrieves and initializes the {@link EPackage} used by this adapter.
+     *
+     * @return the package
+     */
+    EPackage initAndGetEPackage();
 
-    Resource createResource(File file, ResourceSet resourceSet) throws Exception;
+    /**
+     * Creates a new {@link Resource} in the given {@code file}, by using the given {@code resourceSet}.
+     *
+     * @param file        the file to create the resource
+     * @param resourceSet the resource set used to created the resource
+     *
+     * @return a new resource
+     */
+    Resource createResource(File file, ResourceSet resourceSet);
 
+    /**
+     * Returns the default {@link Map} options of this adapter
+     *
+     * @return the {@link Map} options
+     */
     default Map<String, Object> getOptions() {
         return Collections.emptyMap();
     }

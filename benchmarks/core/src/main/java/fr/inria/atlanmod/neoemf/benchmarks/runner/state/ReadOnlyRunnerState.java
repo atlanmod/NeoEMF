@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.Workspace;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -84,6 +85,7 @@ public class ReadOnlyRunnerState extends RunnerState {
             getAdapter().unload(resource);
             resource = null;
         }
-        Adapter.clean();
+
+        Workspace.cleanTempDirectory();
     }
 }

@@ -21,6 +21,9 @@ import java.io.File;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * An abstract {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+ */
 abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     private static final String RESOURCE_EXTENSION = "neoemf";

@@ -23,6 +23,9 @@ import java.io.File;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * An {@link Adapter} on top a an original XMI {@link Resource}.
+ */
 public class XmiAdapter extends AbstractAdapter {
 
     public static final String NAME = "xmi";
@@ -38,7 +41,7 @@ public class XmiAdapter extends AbstractAdapter {
     }
 
     @Override
-    public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
+    public Resource createResource(File file, ResourceSet resourceSet) {
         URI targetUri = URI.createFileURI(file.getAbsolutePath());
 
         return resourceSet.createResource(targetUri);

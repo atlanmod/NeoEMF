@@ -11,42 +11,38 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.Workspace;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
+/**
+ * An adapter on top of a {@code Resource} manager.
+ */
 public interface Adapter {
 
     /**
-     * Cleans temporary files from adapters.
-     */
-    static void clean() {
-        Workspace.cleanTempDirectory();
-    }
-
-    /**
-     * Creates a resource from the given {@code resourceName} and returns its path.
+     * Creates a resource from the given {@code name} and returns its path.
      *
      * @return the resource file
      */
-    File getOrCreateResource(String resourceName) throws Exception;
+    File getOrCreateResource(String name) throws Exception;
 
     /**
-     * Creates a datastore from the given {@code resourceFile} in the default location.
+     * Creates a datastore from the given {@code file} in the default location.
      *
      * @return the datastore location
      */
-    File getOrCreateStore(File resourceFile) throws Exception;
+    File getOrCreateStore(File file) throws Exception;
 
     /**
-     * Creates a datastore from the given {@code resourceFile} in a temporary location.
+     * Creates a datastore from the given {@code file} in a temporary location.
      *
      * @return the datastore location
      */
-    File createTempStore(File resourceFile) throws Exception;
+    @SuppressWarnings("UnusedReturnValue")
+    File createTempStore(File file) throws Exception;
 
     /**
      * Loads a resource file from the given {@code file}.
@@ -66,9 +62,9 @@ public interface Adapter {
     void unload(Resource resource) throws Exception;
 
     /**
-     * Copies a datastore from the {@code storeLocation} to a temporary location.
+     * Copies a datastore from the {@code file} to a temporary location.
      *
      * @return the location of the new datastore
      */
-    File copy(File storeLocation) throws Exception;
+    File copy(File file) throws Exception;
 }

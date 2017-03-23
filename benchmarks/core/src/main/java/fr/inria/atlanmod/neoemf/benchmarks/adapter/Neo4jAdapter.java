@@ -15,6 +15,9 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 
 import java.util.Map;
 
+/**
+ * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} using Neo4j.
+ */
 public class Neo4jAdapter extends TinkerAdapter {
 
     public static final String NAME = "neo-neo4j";
