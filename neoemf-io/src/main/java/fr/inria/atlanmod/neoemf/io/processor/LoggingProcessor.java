@@ -31,7 +31,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     /**
      * The special logger.
      */
-    private static final Logger log = Log.rootLogger();
+    private static final Logger LOG = Log.rootLogger();
 
     /**
      * The current identifier, used to replace a full reference by "this".
@@ -49,14 +49,14 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onInitialize() {
-        log.info("[#] Starting document");
+        LOG.info("[#] Starting document");
 
         notifyInitialize();
     }
 
     @Override
     public void onStartElement(RawElement element) {
-        log.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
+        LOG.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 element.ns().prefix(),
                 element.name(),
                 element.className(),
@@ -70,7 +70,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(RawAttribute attribute) {
-        log.info("[A]    {0}{1} = {2}",
+        LOG.info("[A]    {0}{1} = {2}",
                 attribute.name(),
                 attribute.isMany() ? " many[" + attribute.index() + "]" : "",
                 attribute.value());
@@ -80,7 +80,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(RawReference reference) {
-        log.info("[R]    {0}{1} = {2} -{3}> {4}",
+        LOG.info("[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
                 reference.isMany() ? " many[" + reference.index() + "]" : "",
                 Objects.isNull(reference.id()) ? "this" : reference.id(),
@@ -92,7 +92,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onComplete() {
-        log.info("[#] Ending document");
+        LOG.info("[#] Ending document");
 
         notifyComplete();
     }

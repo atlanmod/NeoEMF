@@ -37,10 +37,10 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger log = Log.customLogger(LoggingStoreDecorator.class.getName());
+    private static final Logger LOG = Log.customLogger(LoggingStoreDecorator.class.getName());
 
     /**
-     * The default {@link Level} for the {@link #log}.
+     * The default {@link Level} for the {@link #LOG}.
      */
     private final Level level;
 
@@ -294,10 +294,10 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     private void called(String method, FeatureKey key, @Nullable Object value) {
         if (key instanceof ManyFeatureKey) {
             ManyFeatureKey multiKey = (ManyFeatureKey) key;
-            log.log(level, "Called {0}() for {1}.{2} [{3}]" + (nonNull(value) ? " with {4}" : ""), method, multiKey.id(), multiKey.name(), multiKey.position(), value);
+            LOG.log(level, "Called {0}() for {1}.{2} [{3}]" + (nonNull(value) ? " with {4}" : ""), method, multiKey.id(), multiKey.name(), multiKey.position(), value);
         }
         else {
-            log.log(level, "Called {0}() for {1}.{2}" + (nonNull(value) ? " with {3}" : ""), method, key.id(), key.name(), value);
+            LOG.log(level, "Called {0}() for {1}.{2}" + (nonNull(value) ? " with {3}" : ""), method, key.id(), key.name(), value);
         }
     }
 }

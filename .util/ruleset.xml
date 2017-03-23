@@ -37,6 +37,8 @@
         <exclude name="ShortClassName" />
         <exclude name="ShortMethodName" />
         <exclude name="ShortVariable" />
+        <exclude name="LongVariable" />
+        <exclude name="AvoidFieldNameMatchingMethodName" />
     </rule>
 
     <rule ref="rulesets/java/optimizations.xml">
