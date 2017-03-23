@@ -638,13 +638,14 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     @Override
-    public final EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+    public final EReference getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return containerOf(object.id())
                 .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
+                .map(EReference.class::cast)
                 .orElse(null);
     }
 
