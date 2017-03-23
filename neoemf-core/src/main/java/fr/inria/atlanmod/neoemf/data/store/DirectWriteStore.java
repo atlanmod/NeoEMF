@@ -13,10 +13,9 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,17 +33,13 @@ public final class DirectWriteStore extends AbstractMapperDecorator<Backend> imp
      * The resource to store and access.
      */
     @Nullable
-    private final PersistentResource resource;
+    private final Resource.Internal resource;
 
     /**
-     * Constructs a new {@code DirectWriteStore} on the given {@code backend}. This {@code DirectWriteStore} will be
-     * detached of a {@link PersistentResource}.
-     *
-     * @param backend the back-end used to store the model
+     * The thread used to close the back-end when the application will exit.
      */
-    public DirectWriteStore(Backend backend) {
-        this(backend, null);
-    }
+    @Nullable
+    private final Thread shutdownHook;
 
     /**
      * Constructs a new {@code DirectWriteStore} between the given {@code resource} and the {@code backend}.
@@ -52,33 +47,32 @@ public final class DirectWriteStore extends AbstractMapperDecorator<Backend> imp
      * @param backend  the back-end used to store the model
      * @param resource the resource to store and access
      */
-    public DirectWriteStore(Backend backend, @Nullable PersistentResource resource) {
+    public DirectWriteStore(Backend backend, @Nullable Resource.Internal resource) {
         super(backend);
         this.resource = resource;
 
-        if (nonNull(resource)) { // isAttached ?
-            closeOnExit(backend, resource.getURI());
-        }
-    }
+        this.shutdownHook = new Thread(() -> {
+            backend.close();
 
-    /**
-     * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
-     *
-     * @param backend the back-end to stop when the application will exit
-     * @param uri     the {@link URI} of the resource used by the {@code backend}
-     */
-    private static void closeOnExit(Backend backend, URI uri) {
-        //noinspection ConstantConditions
-        if (nonNull(backend)) { // The backend can be null in tests by using mocks
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                backend.close();
-                Log.debug("{0} closed: {1} ", backend.getClass().getSimpleName(), uri);
-            }));
-        }
+            if (nonNull(resource)) {
+                Log.debug("{0} closed: {1}", backend.getClass().getSimpleName(), resource.getURI());
+            }
+        });
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 
     @Override
-    public PersistentResource resource() {
+    public void close() {
+        if (nonNull(shutdownHook)) {
+            Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        }
+
+        super.close();
+    }
+
+    @Nullable
+    @Override
+    public Resource.Internal resource() {
         return resource;
     }
 

@@ -154,7 +154,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             newStore = ((PersistentResource) resource).store();
         }
         else if (this.resource != resource) {
-            newStore = createBoundedStore();
+            newStore = createBoundedStore(resource);
         }
 
         this.resource = resource;
@@ -164,9 +164,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             if (nonNull(store)) {
                 copyStore(store, newStore);
 
-                // Close the previous store if it's not attached to a resource
+                // Close the previous store if it's not attached to a persistent resource
                 // Otherwise the resource will close it
-                if (!store.isAttached()) {
+                if (!store.isPersistent()) {
                     store.close();
                 }
             }
@@ -298,7 +298,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public StoreAdapter eStore() {
         if (isNull(store)) {
-            store = createBoundedStore();
+            store = createBoundedStore(resource);
         }
         return store;
     }
@@ -392,10 +392,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * Creates a new {@link Store} bounded to this object.
      *
+     * @param resource the resource to attach the store
+     *
      * @return a new {@link Store}
      */
-    private StoreAdapter createBoundedStore() {
-        return StoreAdapter.adapt(new DirectWriteStore(new BoundedTransientBackend(id)));
+    private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
+        return StoreAdapter.adapt(new DirectWriteStore(new BoundedTransientBackend(id), resource));
     }
 
     @Override

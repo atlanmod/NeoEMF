@@ -13,9 +13,11 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
+import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -34,9 +36,10 @@ public abstract class AbstractStoreDecorator extends AbstractMapperDecorator<Sto
         super(store);
     }
 
+    @Nullable
     @Override
     @OverridingMethodsMustInvokeSuper
-    public PersistentResource resource() {
+    public Resource.Internal resource() {
         return next().resource();
     }
 

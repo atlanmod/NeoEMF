@@ -15,41 +15,39 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.ecore.resource.Resource;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static java.util.Objects.nonNull;
-
 /**
- * A {@link DataMapper} to establish a mapping between {@link PersistentResource}s and {@link Backend}s.
+ * A {@link DataMapper} to establish a mapping between a {@link Resource.Internal} and a {@link Backend}.
  */
 @ParametersAreNonnullByDefault
 public interface Store extends DataMapper {
 
     /**
-     * Returns the {@link PersistentResource} to store and access.
+     * Returns the resource to store and access.
      *
-     * @return the resource to store and access
+     * @return the resource
      */
     @Nullable
-    PersistentResource resource();
+    Resource.Internal resource();
 
     /**
      * Checks whether this store is attached to a {@link PersistentResource}.
-     * <p>
-     * A store is only attached in a persistent context.
      *
-     * @return {@code true} if this store is attached to a resource, {@code false} otherwise
+     * @return {@code true} if this store is attached, {@code false} otherwise
      */
-    default boolean isAttached() {
-        return nonNull(resource());
+    default boolean isPersistent() {
+        return resource() instanceof PersistentResource;
     }
 
     /**
-     * Returns the {@link Backend} where data are stored.
+     * Returns the back-end where data are stored.
      *
-     * @return the backend where data are stored
+     * @return the back-end
      */
     @Nonnull
     Backend backend();

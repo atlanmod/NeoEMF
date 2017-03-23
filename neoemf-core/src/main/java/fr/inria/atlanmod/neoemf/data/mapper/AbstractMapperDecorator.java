@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+
 /**
  * An abstract {@link DataMapper} wrapper that delegates method calls to an internal {@link DataMapper}.
  *
@@ -46,7 +48,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
      * @param mapper the inner mapper
      */
     protected AbstractMapperDecorator(M mapper) {
-        this.next = mapper;
+        this.next = checkNotNull(mapper);
+
         Log.debug("{0} created", getClass().getSimpleName());
     }
 
@@ -55,6 +58,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
      *
      * @return the inner mapper
      */
+    @Nonnull
     protected M next() {
         return next;
     }
