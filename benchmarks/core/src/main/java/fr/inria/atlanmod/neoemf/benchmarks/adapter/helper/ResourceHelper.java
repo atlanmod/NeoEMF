@@ -105,7 +105,7 @@ public final class ResourceHelper {
     public static File copyStore(File sourceFile) throws IOException {
         Path outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName());
 
-        Log.info("Copy {0} to {1}", sourceFile, outputFile);
+        Log.info("Copying {0} to {1}", sourceFile, outputFile);
 
         Files.walkFileTree(sourceFile.toPath(), new SimpleFileVisitor<Path>() {
             @Override
@@ -181,7 +181,7 @@ public final class ResourceHelper {
         File targetFile = targetDir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            Log.info("Already existing store {0}", targetFile);
+            Log.info("Already existing store: {0}", targetFile);
             return targetFile;
         }
 
@@ -193,14 +193,14 @@ public final class ResourceHelper {
 
         targetAdapter.initAndGetEPackage();
 
-        Log.info("Loading '{0}'", sourceUri);
+        Log.info("Loading store from: {0}", sourceUri);
         Map<String, Object> loadOpts = new HashMap<>();
         if (Objects.equals(ZXMI, sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
         sourceResource.load(loadOpts);
 
-        Log.info("Migrating");
+        Log.info("Migrating store");
 
         Resource targetResource = targetAdapter.createResource(targetFile, resourceSet);
         targetAdapter.save(targetResource);
@@ -209,7 +209,7 @@ public final class ResourceHelper {
 
         sourceResource.unload();
 
-        Log.info("Saving to '{0}'", targetResource.getURI());
+        Log.info("Saving store to: {0}", targetResource.getURI());
         targetAdapter.save(targetResource);
 
         targetAdapter.unload(targetResource);
@@ -263,7 +263,7 @@ public final class ResourceHelper {
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            Log.info("Already existing resource {0}", targetFile);
+            Log.info("Already existing resource: {0}", targetFile);
             return targetFile;
         }
 
@@ -271,10 +271,10 @@ public final class ResourceHelper {
 
         URI sourceURI = URI.createFileURI(sourceFile.getAbsolutePath());
 
-        Log.info("Loading '{0}'", sourceURI);
+        Log.info("Loading resource from: {0}", sourceURI);
         Resource sourceResource = resourceSet.getResource(sourceURI, true);
 
-        Log.info("Migrating");
+        Log.info("Migrating resource");
 
         Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
@@ -286,7 +286,7 @@ public final class ResourceHelper {
 
         sourceResource.unload();
 
-        Log.info("Saving to '{0}'", targetResource.getURI());
+        Log.info("Saving resource to: {0}", targetResource.getURI());
 
         targetResource.save(saveOpts);
 
@@ -295,9 +295,7 @@ public final class ResourceHelper {
         return targetFile;
     }
 
-    /*
-     * EMF migration
-     */
+    //region EMF migration
 
     /**
      * Creates a new pre-configured {@link ResourceSet} able to handle registered extensions.
@@ -310,6 +308,7 @@ public final class ResourceHelper {
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(XMI, new XMIResourceFactoryImpl());
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(ZXMI, new XMIResourceFactoryImpl());
+
         return resourceSet;
     }
 
@@ -393,9 +392,9 @@ public final class ResourceHelper {
         return correspondingObject;
     }
 
-    /*
-     * ZIP extraction
-     */
+    //endregion
+
+    //region ZIP extraction
 
     /**
      * Returns all resources contained in the default ZIP file.
@@ -481,7 +480,7 @@ public final class ResourceHelper {
     private static File extractEntryFromZip(ZipInputStream input, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (outputFile.exists()) {
-            Log.info("Already extracted resource {0}", outputFile);
+            Log.info("Already extracted resource: {0}", outputFile);
             return outputFile;
         }
 
@@ -495,6 +494,8 @@ public final class ResourceHelper {
 
         return outputFile;
     }
+
+    //endregion
 
     /**
      * Retrieves the file name without its extension of {@code file}.

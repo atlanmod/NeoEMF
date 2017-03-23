@@ -82,7 +82,7 @@ abstract class AbstractAdapter implements InternalAdapter {
     public final EPackage initAndGetEPackage() {
         try {
             EPackage ePackage = (EPackage) packageClass.getMethod("init").invoke(null);
-            Log.info("Loading package with uri {0}", ePackage.getNsURI());
+            Log.info("Loading EPackage with URI: {0}", ePackage.getNsURI());
             return ePackage;
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
