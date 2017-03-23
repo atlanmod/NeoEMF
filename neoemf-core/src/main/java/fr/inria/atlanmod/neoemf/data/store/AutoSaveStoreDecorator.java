@@ -235,8 +235,10 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         changesCount += count;
 
         if (changesCount >= autoSaveChunk) {
-            //noinspection ConstantConditions
-            Log.debug("PersistentResource saved:   {0} (auto-save after {1} changes)", isAttached() ? resource().getURI() : "", changesCount);
+            if (isPersistent()) {
+                //noinspection ConstantConditions
+                Log.debug("PersistentResource saved:   {0} (auto-save after {1} changes)", resource().getURI(), changesCount);
+            }
 
             changesCount = 0L;
             save();
