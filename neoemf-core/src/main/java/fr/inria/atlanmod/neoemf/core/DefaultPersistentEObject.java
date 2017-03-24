@@ -17,10 +17,10 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -217,8 +217,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
             PersistentEObject object = PersistentEObject.from(value.get());
-            if (object.resource() != resource()) {
-                object.resource(resource());
+            if (object.resource() != resource) {
+                object.resource(resource);
             }
         }
         return value;
@@ -227,31 +227,25 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public EObject eContainer() {
-        if (resource instanceof PersistentResource) {
-            /*
-             * If the resource is not distributed and if the value of the eContainer field is set, it is not needed to
-             * get it from the backend. This is not true in a distributed context when another client can the database
-             * without notifying others.
-             */
-            if (!((PersistentResource) resource).isDistributed() && nonNull(this.container)) {
-                return this.container;
-            }
-            else {
-                InternalEObject internalContainer = eStore().getContainer(this);
-                eBasicSetContainer(internalContainer);
-                eBasicSetContainerFeatureID(eContainerFeatureID());
-                return internalContainer;
-            }
-        }
+        return Optional.<EObject>ofNullable(container).orElseGet(() -> {
+            Optional<EObject> internalContainer = Optional.ofNullable(eStore().getContainer(this));
+            eBasicSetContainer((InternalEObject) internalContainer.orElse(null));
+            eBasicSetContainerFeatureID(eContainerFeatureID());
 
-        return super.eContainer();
+            return internalContainer.<EObject>orElseGet(super::eContainer);
+        });
     }
 
     @Nullable
     @Override
     public Resource eResource() {
-        return Optional.<Resource>ofNullable(resource)
-                .orElseGet(super::eResource);
+        return Optional.<Resource>ofNullable(resource).orElseGet(super::eResource);
+    }
+
+    @Override
+    public NotificationChain eSetResource(Resource.Internal resource, NotificationChain notifications) {
+        resource(resource);
+        return super.eSetResource(resource, notifications);
     }
 
     @Override
@@ -276,8 +270,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    protected void eBasicSetContainer(InternalEObject container) {
+    protected void eBasicSetContainer(@Nullable InternalEObject container) {
         this.container = container;
+
         if (nonNull(container) && container.eResource() != resource) {
             resource((Resource.Internal) container.eResource());
         }
@@ -311,40 +306,38 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public Object dynamicGet(int dynamicFeatureId) {
-        Object value;
-
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
-        EClassifier eType = feature.getEType();
 
-        if (feature.isMany()) {
-            if (Objects.equals(eType.getInstanceClassName(), java.util.Map.Entry.class.getName())) {
-                value = new DelegatedStoreMap<>(feature);
-            }
-            else {
-                value = new DelegatedStoreList<>(feature);
-            }
+        if (!feature.isMany()) {
+            return eStore().get(this, feature, EStore.NO_INDEX);
         }
         else {
-            value = eStore().get(this, feature, EStore.NO_INDEX);
+            if (Objects.equals(feature.getEType().getInstanceClassName(), java.util.Map.Entry.class.getName())) {
+                return new DelegatedStoreMap<>(feature);
+            }
+            else {
+                return new DelegatedStoreList<>(feature);
+            }
         }
-
-        return value;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void dynamicSet(int dynamicFeatureId, Object value) {
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 
-        if (feature.isMany()) {
-            // TODO This operation should be atomic. Reset the old value in case the operation fails in the middle
-            eStore().unset(this, feature);
-
-            List<Object> collection = (List<Object>) value;
-            IntStream.range(0, collection.size()).forEach(i -> eStore().set(this, feature, i, collection.get(i)));
+        if (!feature.isMany()) {
+            eStore().set(this, feature, EStore.NO_INDEX, value);
         }
         else {
-            eStore().set(this, feature, EStore.NO_INDEX, value);
+            // TODO This operation should be atomic.
+            // Reset the old value in case the operation fails in the middle
+            eStore().unset(this, feature);
+
+            @SuppressWarnings("unchecked")
+            List<Object> collection = (List<Object>) value;
+
+            IntStream.range(0, collection.size()).forEach(i ->
+                    eStore().set(this, feature, i, collection.get(i)));
         }
     }
 
@@ -366,25 +359,23 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public InternalEObject eInternalContainer() {
-        // Don't load the container from the store here: it creates an important overhead and performance loss.
-        // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
-        return container;
-//        return isNull(container) ? super.eInternalContainer() : container;
+        return Optional.ofNullable(container).orElseGet(super::eInternalContainer);
     }
 
     @Override
     public int eContainerFeatureID() {
-        if (containerReferenceId == UNSETTED_REFERENCE_ID && resource instanceof PersistentResource) {
-            EReference containingFeature = (EReference) eStore().getContainingFeature(this);
-            if (nonNull(containingFeature)) {
-                EReference oppositeFeature = containingFeature.getEOpposite();
-                if (nonNull(oppositeFeature)) {
-                    eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
+        if (containerReferenceId == UNSETTED_REFERENCE_ID) {
+            Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(containingReference -> {
+                EReference oppositeReference = containingReference.getEOpposite();
+                if (nonNull(oppositeReference)) {
+                    eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeReference));
                 }
-                else if (nonNull(container)) {
-                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(containingFeature));
+                else {
+                    if (nonNull(container)) {
+                        eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(containingReference));
+                    }
                 }
-            }
+            });
         }
         return containerReferenceId;
     }
@@ -396,8 +387,15 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @return a new {@link Store}
      */
+    @Nonnull
     private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
-        return StoreAdapter.adapt(new DirectWriteStore(new BoundedTransientBackend(id), resource));
+        if (isNull(store) || store.isPersistent()) {
+            return StoreAdapter.adapt(new DirectWriteStore(new BoundedTransientBackend(id), resource));
+        }
+        else {
+            store.resource(resource);
+            return store;
+        }
     }
 
     @Override
@@ -410,12 +408,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultPersistentEObject)) {
+        if (!(o instanceof PersistentEObject)) {
             return false;
         }
 
-        DefaultPersistentEObject that = (DefaultPersistentEObject) o;
-        return Objects.equals(id, that.id);
+        PersistentEObject that = (PersistentEObject) o;
+        return Objects.equals(id, that.id());
     }
 
     /**
@@ -480,17 +478,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * @return a new list
          */
         public static <E> DelegatedContentsList<E> newList(PersistentEObject owner) {
-            DelegatedContentsList<E> list;
-
             EStructuralFeature[] containments = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
+
             if (isNull(containments)) {
-                list = DelegatedContentsList.empty();
+                return DelegatedContentsList.empty();
             }
             else {
-                list = new DelegatedContentsList<>(owner, containments);
+                return new DelegatedContentsList<>(owner, containments);
             }
-
-            return list;
         }
 
         @Override
@@ -503,13 +498,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
             for (EStructuralFeature feature : eStructuralFeatures) {
                 int localFeatureSize;
+
                 if (feature.isMany()) {
                     localFeatureSize = owner.eStore().size(owner, feature);
                 }
                 else {
                     localFeatureSize = owner.eStore().isSet(owner, feature) ? 1 : 0;
                 }
+
                 featureSize += localFeatureSize;
+
                 if (featureSize > index) {
                     // The correct feature has been found
                     return (E) owner.eStore().get(owner, feature, (index - (featureSize - localFeatureSize)));

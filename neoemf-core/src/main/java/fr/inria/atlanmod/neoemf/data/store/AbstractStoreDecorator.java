@@ -43,6 +43,12 @@ public abstract class AbstractStoreDecorator extends AbstractMapperDecorator<Sto
         return next().resource();
     }
 
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void resource(@Nullable Resource.Internal resource) {
+        next().resource(resource);
+    }
+
     @Nonnull
     @Override
     public Backend backend() {

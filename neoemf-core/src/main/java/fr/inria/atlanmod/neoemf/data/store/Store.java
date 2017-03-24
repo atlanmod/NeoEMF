@@ -36,6 +36,13 @@ public interface Store extends DataMapper {
     Resource.Internal resource();
 
     /**
+     * Defines the resource to store and access.
+     *
+     * @param resource the resource
+     */
+    void resource(@Nullable Resource.Internal resource);
+
+    /**
      * Checks whether this store is attached to a {@link PersistentResource}.
      *
      * @return {@code true} if this store is attached, {@code false} otherwise
