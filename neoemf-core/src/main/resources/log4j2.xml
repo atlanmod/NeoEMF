@@ -29,13 +29,14 @@
                 <OnStartupTriggeringPolicy />
                 <TimeBasedTriggeringPolicy />
             </Policies>
+            <DefaultRolloverStrategy max="10"/>
         </RollingFile>
     </Appenders>
 
     <Loggers>
         <Root level="DEBUG">
             <AppenderRef ref="Console" level="INFO" />
-            <AppenderRef ref="RollingFile" />
+            <!--<AppenderRef ref="RollingFile" />-->
         </Root>
 
         <!-- Logger for testing -->
