@@ -24,11 +24,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link URIBuilder} that creates HBase specific resource {@link URI}s.
- * <p>
- * The class defines a BerkeleyDB specific {@link URI} scheme that is used to register {@link
- * fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} in {@link BackendFactoryRegistry} and configure the {@code
- * protocol to factory} map of an existing {@link org.eclipse.emf.ecore.resource.ResourceSet} with a {@link
- * fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
  *
  * @see BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
@@ -38,13 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HBaseURI extends URIBuilder {
 
     /**
-     * The scheme associated to the URI. This scheme is used to register {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory}
-     * and provide a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory} to an existing {@link
-     * org.eclipse.emf.ecore.resource.ResourceSet}.
-     *
-     * @see BackendFactoryRegistry
-     * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
-     * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
+     * The scheme associated to the URI.
      */
     @Nonnull
     public static final String SCHEME = formatScheme(HBaseBackendFactory.getInstance());

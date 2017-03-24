@@ -21,13 +21,6 @@
             <artifactId>blueprints-neo4j-graph</artifactId>
         </dependency>
 
-        <!-- EMF -->
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-
         <!-- Test -->
 
         <dependency>
