@@ -561,35 +561,31 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             super(DefaultPersistentEObject.this, feature);
         }
 
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link
-         * StoreAdapter#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
-         * StoreAdapter#toArray(InternalEObject, EStructuralFeature)} implementation.
-         */
         @Nonnull
         @Override
         public Object[] toArray() {
-            return eStore().toArray(owner, getEStructuralFeature());
+            return delegateToArray();
         }
 
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link
-         * StoreAdapter#get(InternalEObject, EStructuralFeature, int)} by delegating the call to the {@link
-         * StoreAdapter#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
-         */
         @Nonnull
         @Override
         public <T> T[] toArray(T[] array) {
-            return eStore().toArray(owner, getEStructuralFeature(), array);
+            return delegateToArray(array);
         }
 
         @Override
         public boolean contains(Object object) {
             return delegateContains(object);
+        }
+
+        @Override
+        public int indexOf(Object object) {
+            return delegateIndexOf(object);
+        }
+
+        @Override
+        public int lastIndexOf(Object object) {
+            return delegateLastIndexOf(object);
         }
 
         /**
