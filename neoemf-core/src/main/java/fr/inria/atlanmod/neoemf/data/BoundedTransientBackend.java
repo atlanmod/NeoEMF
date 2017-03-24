@@ -43,12 +43,6 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     private final Id ownerId;
 
     /**
-     * The container of the associated {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
-     */
-    @Nullable
-    private ContainerDescriptor container;
-
-    /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
@@ -61,6 +55,12 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
      */
     @Nonnull
     private final Map<String, Object> features = new HashMap<>();
+
+    /**
+     * The container of the associated {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
+     */
+    @Nullable
+    private ContainerDescriptor container;
 
     /**
      * Whether this back-end is closed.
