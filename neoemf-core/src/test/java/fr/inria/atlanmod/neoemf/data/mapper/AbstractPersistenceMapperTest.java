@@ -46,7 +46,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     /**
      * The {@link DataMapper} used for this test case.
      */
-    private DataMapper mapper;
+    protected DataMapper mapper;
 
     /**
      * Creates the {@link DataMapper} to test.
@@ -118,9 +118,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSetSameContainer() {
-        Id containerId1 = StringId.of("ContainerId0");
+        Id containerId0 = StringId.of("ContainerId0");
 
-        ContainerDescriptor container = ContainerDescriptor.of(containerId1, "Container0");
+        ContainerDescriptor container = ContainerDescriptor.of(containerId0, "Container0");
 
         Id id1 = StringId.of("Id1");
 
@@ -138,10 +138,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSetDifferentContainer() {
-        Id containerId1 = StringId.of("ContainerId0");
+        Id containerId0 = StringId.of("ContainerId0");
 
-        ContainerDescriptor container0 = ContainerDescriptor.of(containerId1, "Container0");
-        ContainerDescriptor container1 = ContainerDescriptor.of(containerId1, "Container1");
+        ContainerDescriptor container0 = ContainerDescriptor.of(containerId0, "Container0");
+        ContainerDescriptor container1 = ContainerDescriptor.of(containerId0, "Container1");
 
         Id id1 = StringId.of("Id1");
 
@@ -153,8 +153,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.containerOf(id1)).isPresent().contains(container1);
 
         // Replace the existing container
-        mapper.containerFor(id1, container0);
-        assertThat(mapper.containerOf(id1)).isPresent().contains(container0);
+        mapper.containerFor(id0, container1);
+        assertThat(mapper.containerOf(id0)).isPresent().contains(container1);
     }
 
     /**
