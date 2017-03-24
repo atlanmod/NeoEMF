@@ -1,24 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
+
+        <!-- The default console appender -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%-7level{WARN=[WARN], DEBUG=[DEBUG], ERROR=[ERROR], TRACE=[TRACE], INFO=[INFO]} %d{ABSOLUTE} - %msg%n%ex{full}" />
+                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %d{ABSOLUTE} - %msg%n%ex{full}" />
         </Console>
+
+        <!-- A console appender without timestamp and exception details -->
         <Console name="ConsoleTest" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %msg%n" />
+        </Console>
+
+        <!-- A console appender without any format -->
+        <Console name="ConsoleVoid" target="SYSTEM_OUT">
             <PatternLayout
                     pattern="%msg%n" />
         </Console>
+
+        <!-- The default file appender -->
+        <RollingFile name="RollingFile" fileName="logs/neoemf.log"
+                     filePattern="logs/neoemf-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout
+                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %d{ABSOLUTE} - %msg%n%ex{full}" />
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
     </Appenders>
+
     <Loggers>
-        <Root level="INFO">
-            <AppenderRef ref="Console" />
+        <Root level="DEBUG">
+            <AppenderRef ref="Console" level="INFO" />
+            <AppenderRef ref="RollingFile" />
         </Root>
 
-        <!-- Special logger for tests -->
-
+        <!-- Logger for testing -->
         <Logger name="test" level="ALL" additivity="false">
             <AppenderRef ref="ConsoleTest" />
+        </Logger>
+
+        <!-- Unformatted logger -->
+        <Logger name="void" level="ALL" additivity="false">
+            <AppenderRef ref="ConsoleVoid" />
         </Logger>
 
         <!-- Apache & co -->

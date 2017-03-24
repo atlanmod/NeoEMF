@@ -28,50 +28,62 @@ import static java.util.Objects.nonNull;
 public class Watcher extends org.junit.rules.TestWatcher {
 
     /**
-     * The special logger where messages will be sent.
+     * The special logger without timestamp.
      */
-    private static final Logger LOG = Log.customLogger("test");
+    private static final Logger LOG_TEST = Log.customLogger("test");
+
+    /**
+     * The special logger without timestamp and level.
+     */
+    private static final Logger LOG_VOID = Log.customLogger("void");
+
+    /**
+     * An empty message.
+     */
+    private static final String NO_MESSAGE = "";
 
     @Override
     protected void succeeded(Description description) {
-        LOG.info("[INFO] --- Succeeded");
+        LOG_TEST.info("--- Succeeded");
     }
 
     @Override
     protected void failed(Throwable e, Description description) {
         if (isNull(e)) {
-            LOG.warn("[WARN] --- Failed");
+            LOG_TEST.warn("--- Failed");
         }
         else if (AssertionError.class.isInstance(e) && nonNull(e.getMessage())) {
             Arrays.stream(e.getMessage().split("\n"))
-                    .filter(s -> !s.isEmpty())
-                    .forEach(m -> LOG.warn("[WARN] {0}", m));
+                    .filter(s -> nonNull(s) && !s.isEmpty())
+                    .forEach(LOG_TEST::warn);
 
-            LOG.warn("[WARN]");
-            LOG.warn("[WARN] --- Failed");
+            LOG_TEST.warn(NO_MESSAGE);
+            LOG_TEST.warn("--- Failed");
         }
         else {
             // Several exceptions
             if (MultipleFailureException.class.isInstance(e)) {
-                LOG.error(e, "[ERROR] --- Several exceptions have been thrown during the test:");
-                ((MultipleFailureException) e).getFailures().forEach(t -> LOG.error(t, ""));
-                LOG.error("");
+                MultipleFailureException me = (MultipleFailureException) e;
+
+                LOG_TEST.error(e, "--- Several exceptions have been thrown during the test:");
+                me.getFailures().forEach(LOG_VOID::error);
+                LOG_VOID.error(NO_MESSAGE);
             }
             // One exception
             else {
-                LOG.error(e, "[ERROR] --- An exception has been thrown during the test:");
+                LOG_TEST.error(e, "--- An exception has been thrown during the test:");
             }
         }
     }
 
     @Override
     protected void starting(Description description) {
-        LOG.info("");
-        LOG.info("[INFO] --- Running " + description.getMethodName());
+        LOG_VOID.info(NO_MESSAGE);
+        LOG_TEST.info("--- Running " + description.getMethodName());
     }
 
     @Override
     protected void finished(Description description) {
-        LOG.info("");
+        LOG_VOID.info(NO_MESSAGE);
     }
 }
