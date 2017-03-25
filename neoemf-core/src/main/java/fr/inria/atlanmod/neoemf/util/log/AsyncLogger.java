@@ -74,7 +74,7 @@ class AsyncLogger implements Logger {
             try {
                 service.shutdown();
 
-                if (service.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                if (service.awaitTermination(10, TimeUnit.SECONDS)) {
                     service.shutdownNow().forEach(Runnable::run);
                 }
             }
