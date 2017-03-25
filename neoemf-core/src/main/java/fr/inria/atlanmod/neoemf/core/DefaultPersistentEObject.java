@@ -399,7 +399,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
         if (isNull(store) || store.isPersistent()) {
-            return StoreAdapter.adapt(new DirectWriteStore(new BoundedTransientBackend(id), resource));
+            return StoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
         }
         else {
             store.resource(resource);

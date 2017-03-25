@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,13 +36,19 @@ import static java.util.Objects.nonNull;
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.
  */
 @ParametersAreNonnullByDefault
-public class BoundedTransientBackend implements TransientBackend, ManyValueWithLists {
+public final class BoundedTransientBackend implements TransientBackend, ManyValueWithLists {
+
+    /**
+     * A map that holds all created instances of {@code BoundedTransientBackend}.
+     */
+    @Nonnull
+    private static final Map<Id, Backend> REGISTRY = new ConcurrentHashMap<>();
 
     /**
      * The owner of this back-end.
      */
     @Nonnull
-    private final Id ownerId;
+    private final Id owner;
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -72,10 +79,21 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     /**
      * Constructs a new {@code BoundedTransientBackend} with the given {@code owner}.
      *
-     * @param ownerId the identifier of the owner of this back-end
+     * @param owner the identifier of the owner of this back-end
      */
-    public BoundedTransientBackend(Id ownerId) {
-        this.ownerId = ownerId;
+    private BoundedTransientBackend(Id owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * Retrieves or creates a new {@code BoundedTransientBackend} with the given {@code owner}.
+     *
+     * @param owner the identifier of the owner of this back-end
+     *
+     * @return a {@code BoundedTransientBackend}
+     */
+    public static Backend forId(Id owner) {
+        return REGISTRY.computeIfAbsent(owner, BoundedTransientBackend::new);
     }
 
     /**
@@ -102,6 +120,8 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
         containers.clear();
         instances.clear();
         features.clear();
+
+        REGISTRY.remove(owner);
     }
 
     @Override
@@ -174,9 +194,9 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
      *
      * @param id the identifier to check the ownership
      *
-     * @throws IllegalArgumentException if the {@code id} is not {@link #ownerId}
+     * @throws IllegalArgumentException if the {@code id} is not {@link #owner}
      */
     private void checkOwner(Id id) {
-        checkArgument(Objects.equals(ownerId, checkNotNull(id)), "%s is not the owner of this back-end (%s)", id, ownerId);
+        checkArgument(Objects.equals(owner, checkNotNull(id)), "%s is not the owner of this back-end (%s)", id, owner);
     }
 }

@@ -72,7 +72,7 @@ public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
 
             @Override
             public Backend createMapper(File file) throws IOException {
-                return new BoundedTransientBackend(id0);
+                return BoundedTransientBackend.forId(id0);
             }
         };
     }
