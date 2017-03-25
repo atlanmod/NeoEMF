@@ -29,6 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.
@@ -43,11 +44,18 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     private final Id ownerId;
 
     /**
+     * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
+     */
+    @Nonnull
+    private final Map<Id, ContainerDescriptor> containers = new HashMap<>();
+
+    /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassDescriptor> instanceOfMap = new HashMap<>();
+    private final Map<Id, ClassDescriptor> instances = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -55,12 +63,6 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
      */
     @Nonnull
     private final Map<String, Object> features = new HashMap<>();
-
-    /**
-     * The container of the associated {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
-     */
-    @Nullable
-    private ContainerDescriptor container;
 
     /**
      * Whether this back-end is closed.
@@ -97,7 +99,8 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
 
         isClosed = true;
 
-        instanceOfMap.clear();
+        containers.clear();
+        instances.clear();
         features.clear();
     }
 
@@ -111,15 +114,18 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return Objects.equals(id, ownerId) ? Optional.ofNullable(container) : Optional.empty();
+        return Optional.ofNullable(containers.get(id));
     }
 
     @Override
     public void containerFor(Id id, @Nullable ContainerDescriptor container) {
         checkNotNull(id);
 
-        if (Objects.equals(id, ownerId)) {
-            this.container = container;
+        if (nonNull(container)) {
+            containers.put(id, container);
+        }
+        else {
+            containers.remove(id);
         }
     }
 
@@ -128,7 +134,7 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(instanceOfMap.get(id));
+        return Optional.ofNullable(instances.get(id));
     }
 
     @Override
@@ -136,7 +142,7 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
         checkNotNull(id);
         checkNotNull(metaclass);
 
-        instanceOfMap.put(id, metaclass);
+        instances.put(id, metaclass);
     }
 
     @Nonnull

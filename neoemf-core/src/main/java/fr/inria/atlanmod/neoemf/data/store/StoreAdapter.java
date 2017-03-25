@@ -43,6 +43,7 @@ import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -150,6 +151,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         return nonNull(cache.get(id)) || super.exists(id);
     }
 
+    @Nullable
     @Override
     public final Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         checkNotNull(internalObject);
@@ -197,8 +199,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
     }
 
+    @Nullable
     @Override
-    public final Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+    public final Object set(InternalEObject internalObject, EStructuralFeature feature, int index, @Nullable Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -217,7 +220,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
-            persist(object);
+            updateInstanceOf(object);
 
             Optional<String> previousValue;
             if (!feature.isMany()) {
@@ -233,7 +236,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
-            persist(object, (EReference) feature, referencedObject);
+            updateContainment(object, (EReference) feature, referencedObject);
 
             Optional<Id> previousReference;
             if (!feature.isMany()) {
@@ -325,6 +328,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         return size(internalObject, feature) == 0;
     }
 
+    @Nonnegative
     @Override
     public final int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
@@ -353,7 +357,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     @Override
-    public final boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+    public final boolean contains(InternalEObject internalObject, EStructuralFeature feature, @Nullable Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -382,7 +386,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     @Override
-    public final int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+    public final int indexOf(InternalEObject internalObject, EStructuralFeature feature, @Nullable Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -413,7 +417,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     @Override
-    public final int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+    public final int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, @Nullable Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -459,7 +463,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
-            persist(object);
+            updateInstanceOf(object);
 
             if (index == EStore.NO_INDEX) {
                 appendValue(key, serialize((EAttribute) feature, value));
@@ -470,7 +474,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
-            persist(object, (EReference) feature, referencedObject);
+            updateContainment(object, (EReference) feature, referencedObject);
 
             if (index == EStore.NO_INDEX) {
                 appendReference(key, referencedObject.id());
@@ -481,8 +485,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
     }
 
+    @Nullable
     @Override
-    public final Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+    public final Object remove(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -519,8 +524,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
     }
 
+    @Nullable
     @Override
-    public final Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+    public final Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -556,6 +562,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
     }
 
+    @Nonnull
     @Override
     public final Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         checkNotNull(internalObject);
@@ -564,6 +571,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         return toArray(internalObject, feature, null);
     }
 
+    @Nonnull
     @Override
     @SuppressWarnings("unchecked")
     public final <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, @Nullable T[] array) {
@@ -626,6 +634,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         return Arrays.hashCode(toArray(internalObject, feature));
     }
 
+    @Nullable
     @Override
     public final PersistentEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
@@ -637,6 +646,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
                 .orElse(null);
     }
 
+    @Nullable
     @Override
     public final EReference getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
@@ -655,36 +665,6 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     /**
-     * Creates the given {@code object} in the underlying database if it doesn't already exist.
-     *
-     * @param object the object to persist
-     *
-     * @see #updateInstanceOf(PersistentEObject)
-     */
-    private void persist(PersistentEObject object) {
-        updateInstanceOf(object);
-        refresh(object);
-    }
-
-    /**
-     * Creates the given {@code container} and {@code object} in the underlying back-end if they don't already
-     * exist, and update the containment link between them.
-     *
-     * @param container           the container to persist
-     * @param containingReference the containingReference to link the two objects
-     * @param object              the referenced container to persist
-     *
-     * @see #persist(PersistentEObject)
-     * @see #updateContainment(PersistentEObject, EReference, PersistentEObject)
-     */
-    private void persist(PersistentEObject container, EReference containingReference, PersistentEObject object) {
-        persist(container);
-        persist(object);
-
-        updateContainment(object, containingReference, container);
-    }
-
-    /**
      * Creates or updates the containment link between {@code object} and {@code container}, and deletes any
      * previous link to {@code object}. Tells the underlying database to put the {@code object} in
      * the containment list of the {@code container}.
@@ -698,11 +678,15 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @return {@code true} if the container has been created or updated, {@code false} otherwise
      */
     public void updateContainment(PersistentEObject object, @Nullable EReference containingReference, @Nullable PersistentEObject container) {
+        checkNotNull(object);
+        updateInstanceOf(object);
+
         if (isNull(containingReference)) {
             containerFor(object.id(), null);
         }
         else if (containingReference.isContainment()) {
             checkNotNull(container);
+            updateInstanceOf(container);
 
             Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
 
@@ -750,6 +734,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         if (!metaclass.isPresent()) {
             metaclassFor(object.id(), ClassDescriptor.from(object));
         }
+
+        refresh(object);
     }
 
     /**
@@ -768,10 +754,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         PersistentEObject object = cache.get(id, k -> resolveInstanceOf(k)
                 .map(c -> PersistenceFactory.getInstance().create(c, k).isPersistent(true))
-                .<NoSuchElementException>orElseThrow(() ->
-                        new NoSuchElementException(String.format("%s does not have an associated metaclass", k))));
+                .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
-        //noinspection ConstantConditions
         if (nonNull(resource()) && object.resource() != resource()) {
             object.resource(resource());
         }
