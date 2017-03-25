@@ -45,24 +45,24 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
     private static final Map<Id, Backend> REGISTRY = new ConcurrentHashMap<>();
 
     /**
+     * A shared in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
+     */
+    @Nonnull
+    private static final Map<Id, ContainerDescriptor> CONTAINERS = new ConcurrentHashMap<>();
+
+    /**
+     * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
+     */
+    @Nonnull
+    private static final Map<Id, ClassDescriptor> INSTANCES = new ConcurrentHashMap<>();
+
+    /**
      * The owner of this back-end.
      */
     @Nonnull
     private final Id owner;
-
-    /**
-     * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the object {@link Id}.
-     */
-    @Nonnull
-    private final Map<Id, ContainerDescriptor> containers = new HashMap<>();
-
-    /**
-     * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the object {@link Id}.
-     */
-    @Nonnull
-    private final Map<Id, ClassDescriptor> instances = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -117,10 +117,15 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
 
         isClosed = true;
 
-        containers.clear();
-        instances.clear();
+        // Clear the features associated with the owner
         features.clear();
 
+        // Remove the container from the owner if present (accessible only by the owner)
+        containerFor(owner, null);
+
+        // Don't remove the metaclass for cross-references
+
+        // Unregister the current back-end
         REGISTRY.remove(owner);
     }
 
@@ -134,7 +139,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(containers.get(id));
+        return Optional.ofNullable(CONTAINERS.get(id));
     }
 
     @Override
@@ -142,10 +147,10 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
         checkNotNull(id);
 
         if (nonNull(container)) {
-            containers.put(id, container);
+            CONTAINERS.put(id, container);
         }
         else {
-            containers.remove(id);
+            CONTAINERS.remove(id);
         }
     }
 
@@ -154,7 +159,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(instances.get(id));
+        return Optional.ofNullable(INSTANCES.get(id));
     }
 
     @Override
@@ -162,7 +167,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
         checkNotNull(id);
         checkNotNull(metaclass);
 
-        instances.put(id, metaclass);
+        INSTANCES.put(id, metaclass);
     }
 
     @Nonnull
