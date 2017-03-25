@@ -96,7 +96,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         next.containerFor(id, container);
     }
 

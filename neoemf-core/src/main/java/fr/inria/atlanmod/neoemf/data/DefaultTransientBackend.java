@@ -23,11 +23,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
@@ -40,14 +38,14 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ContainerDescriptor> containerMap = new ConcurrentHashMap<>();
+    private final Map<Id, ContainerDescriptor> containers = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassDescriptor> instanceOfMap = new ConcurrentHashMap<>();
+    private final Map<Id, ClassDescriptor> instances = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -83,8 +81,8 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
         isClosed = true;
 
         new Thread(() -> {
-            containerMap.clear();
-            instanceOfMap.clear();
+            containers.clear();
+            instances.clear();
             features.clear();
         }).start();
     }
@@ -99,19 +97,15 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(containerMap.get(id));
+        return Optional.ofNullable(containers.get(id));
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         checkNotNull(id);
+        checkNotNull(container);
 
-        if (nonNull(container)) {
-            containerMap.put(id, container);
-        }
-        else {
-            containerMap.remove(id);
-        }
+        containers.put(id, container);
     }
 
     @Nonnull
@@ -119,7 +113,7 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(instanceOfMap.get(id));
+        return Optional.ofNullable(instances.get(id));
     }
 
     @Override
@@ -127,7 +121,7 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
         checkNotNull(id);
         checkNotNull(metaclass);
 
-        instanceOfMap.put(id, metaclass);
+        instances.put(id, metaclass);
     }
 
     @Nonnull

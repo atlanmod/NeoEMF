@@ -46,7 +46,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
@@ -251,18 +250,16 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         checkNotNull(id);
+        checkNotNull(container);
 
         Vertex containmentVertex = getOrCreate(id);
         containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
 
-        if (nonNull(container)) {
-            Vertex containerVertex = getOrCreate(container.id());
-
-            Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
-            edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
-        }
+        Vertex containerVertex = getOrCreate(container.id());
+        Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
+        edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
     }
 
     @Nonnull

@@ -27,12 +27,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
@@ -146,15 +144,11 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         checkNotNull(id);
+        checkNotNull(container);
 
-        if (nonNull(container)) {
-            put(containers, id, container);
-        }
-        else {
-            delete(containers, id);
-        }
+        put(containers, id, container);
     }
 
     @Nonnull

@@ -25,12 +25,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.
@@ -122,12 +120,16 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
         features.clear();
 
         // Remove the container from the owner if present (accessible only by the owner)
-        containerFor(owner, null);
-
-        // Don't remove the metaclass for cross-references
+        CONTAINERS.remove(owner);
 
         // Unregister the current back-end
         REGISTRY.remove(owner);
+
+        // Clear all maps if the registry is empty: will no longer be used
+        if (REGISTRY.isEmpty()) {
+            CONTAINERS.clear();
+            INSTANCES.clear();
+        }
     }
 
     @Override
@@ -144,15 +146,11 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         checkNotNull(id);
+        checkNotNull(container);
 
-        if (nonNull(container)) {
-            CONTAINERS.put(id, container);
-        }
-        else {
-            CONTAINERS.remove(id);
-        }
+        CONTAINERS.put(id, container);
     }
 
     @Nonnull

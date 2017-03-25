@@ -75,7 +75,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         call(() -> super.containerFor(id, container), "containerFor", id, container);
     }
 

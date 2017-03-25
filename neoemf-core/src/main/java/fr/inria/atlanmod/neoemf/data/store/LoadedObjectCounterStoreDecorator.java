@@ -59,7 +59,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         loadedObjects.add(id);
         super.containerFor(id, container);
     }

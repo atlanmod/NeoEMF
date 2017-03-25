@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -146,24 +145,16 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     }
 
     @Override
-    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
+    public void containerFor(Id id, ContainerDescriptor container) {
         checkNotNull(id);
+        checkNotNull(container);
 
         try {
-            if (nonNull(container)) {
-                Put put = new Put(Bytes.toBytes(id.toString()))
-                        .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()))
-                        .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
+            Put put = new Put(Bytes.toBytes(id.toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
 
-                table.put(put);
-            }
-            else {
-                Delete delete = new Delete(Bytes.toBytes(id.toString()))
-                        .addColumns(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER)
-                        .addColumns(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
-
-                table.delete(delete);
-            }
+            table.put(put);
         }
         catch (IOException e) {
             throw new RuntimeException(e);

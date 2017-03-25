@@ -677,20 +677,13 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      *
      * @return {@code true} if the container has been created or updated, {@code false} otherwise
      */
-    public void updateContainment(PersistentEObject object, @Nullable EReference containingReference, @Nullable PersistentEObject container) {
-        checkNotNull(object);
-
+    private void updateContainment(PersistentEObject object, EReference containingReference, PersistentEObject container) {
         // Update instances of both objects
         updateInstanceOf(object);
         updateInstanceOf(container);
 
         // Update containment if necessary
-        if (isNull(containingReference)) {
-            containerFor(object.id(), null);
-        }
-        else if (containingReference.isContainment()) {
-            checkNotNull(container);
-
+        if (containingReference.isContainment()) {
             Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
 
             if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
@@ -726,9 +719,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      *
      * @return {@code true} if the instance has been creates, {@code false} otherwise
      */
-    private void updateInstanceOf(@Nullable PersistentEObject object) {
+    private void updateInstanceOf(PersistentEObject object) {
         // If the object is already present in the cache, then the metaclass is defined
-        if (isNull(object) || nonNull(cache.get(object.id()))) {
+        if (nonNull(cache.get(object.id()))) {
             return;
         }
 
