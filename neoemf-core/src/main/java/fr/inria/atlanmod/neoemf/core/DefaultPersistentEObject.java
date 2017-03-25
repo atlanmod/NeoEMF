@@ -227,15 +227,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public EObject eContainer() {
         return Optional.<EObject>ofNullable(container).orElseGet(() -> {
-            Optional<EObject> internalContainer = Optional.ofNullable(eStore().getContainer(this));
-            if (internalContainer.isPresent()) {
-                eBasicSetContainer((InternalEObject) internalContainer.get(), eContainerFeatureID());
+            Optional<EObject> container = Optional.ofNullable(eStore().getContainer(this));
+
+            if (container.isPresent()) {
+                eBasicSetContainer((InternalEObject) container.get(), eContainerFeatureID());
             }
             else {
                 eBasicSetContainer(null, UNSETTED_REFERENCE_ID);
             }
 
-            return internalContainer.<EObject>orElseGet(super::eContainer);
+            return container.orElse(null);
         });
     }
 
@@ -275,9 +276,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject container) {
         this.container = container;
-
-        // Update the containment in the store
-        eStore().updateContainment(this, nonNull(container) ? (EReference) eContainingFeature() : null, PersistentEObject.from(container));
 
         // Update the resource according to the container
         if (nonNull(container) && container.eResource() != resource) {
@@ -367,22 +365,19 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public InternalEObject eInternalContainer() {
-        return Optional.ofNullable(container).orElseGet(super::eInternalContainer);
+        return container;
     }
 
     @Override
     public int eContainerFeatureID() {
         if (containerReferenceId == UNSETTED_REFERENCE_ID) {
-            Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(cf -> {
-                EReference oppositeReference = cf.getEOpposite();
+            Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(cr -> {
+                EReference oppositeReference = cr.getEOpposite();
                 if (nonNull(oppositeReference)) {
                     eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeReference));
                 }
                 else if (nonNull(container)) {
-                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(cf));
-                }
-                else {
-                    throw new IllegalStateException("The containing reference is defined, but cannot be retrieved");
+                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(cr));
                 }
             });
         }

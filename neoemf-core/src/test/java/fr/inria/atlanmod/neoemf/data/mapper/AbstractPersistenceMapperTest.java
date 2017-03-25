@@ -88,28 +88,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         )).isNull();
     }
 
-    //region Persistence
-
-    /**
-     * Checks the behavior of {@link DataMapper#exists(Id)}.
-     */
-    @Test
-    public void testNotExists() {
-        assertThat(mapper.exists(id0)).isFalse();
-    }
-
-    /**
-     * Checks the behavior of {@link DataMapper#exists(Id)} after defining a {@link ClassDescriptor}.
-     */
-    @Test
-    public void testExists() {
-        mapper.metaclassFor(id0, ClassDescriptor.of("Metaclass0", "Uri0"));
-
-        assertThat(mapper.exists(id0)).isTrue();
-    }
-
-    //endregion
-
     //region Containers
 
     /**

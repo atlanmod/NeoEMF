@@ -42,6 +42,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
      * A map that holds all created instances of {@code BoundedTransientBackend}.
      */
     @Nonnull
+    // TODO Attach the registry to a resource to avoid conflicts
     private static final Map<Id, Backend> REGISTRY = new ConcurrentHashMap<>();
 
     /**
@@ -117,7 +118,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
 
         isClosed = true;
 
-        // Clear the features associated with the owner
+        // Clear all features associated with the owner
         features.clear();
 
         // Remove the container from the owner if present (accessible only by the owner)

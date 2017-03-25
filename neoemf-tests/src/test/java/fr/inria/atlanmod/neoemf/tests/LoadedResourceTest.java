@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -58,7 +57,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)
-    @Ignore("Performance issues") // FIXME Check if we have to correct it or not (performance issues)
     public void testGetElementsEInternalContainer() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
@@ -71,7 +69,6 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)
-    @Ignore("Performance issues") // FIXME Check if we have to correct it or not (performance issues)
     public void testGetAllContentsEInternalContainer() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 

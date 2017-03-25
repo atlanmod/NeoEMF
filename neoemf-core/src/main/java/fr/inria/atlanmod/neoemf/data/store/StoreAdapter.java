@@ -236,7 +236,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
-            updateContainment(object, (EReference) feature, referencedObject);
+            updateContainment(referencedObject, (EReference) feature, object);
 
             Optional<Id> previousReference;
             if (!feature.isMany()) {
@@ -474,7 +474,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
-            updateContainment(object, (EReference) feature, referencedObject);
+            updateContainment(referencedObject, (EReference) feature, object);
 
             if (index == EStore.NO_INDEX) {
                 appendReference(key, referencedObject.id());
@@ -671,7 +671,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * <p>
      * The method checks if an existing container is stored and update it if needed.
      *
-     * @param object           the {@link PersistentEObject} to add in the containment list of {@code container}
+     * @param object              the {@link PersistentEObject} to add in the containment list of {@code container}
      * @param containingReference the containment {@link EReference}
      * @param container           the container {@link PersistentEObject}
      *
