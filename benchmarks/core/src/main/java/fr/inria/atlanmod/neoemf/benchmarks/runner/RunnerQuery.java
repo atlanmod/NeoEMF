@@ -18,10 +18,8 @@ import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Runner that provides benchmark methods for queries.
@@ -45,7 +43,6 @@ public class RunnerQuery extends Runner {
     }
 
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public Integer grabats(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryGrabats(state.getResource()).callWithResult();
     }
@@ -98,7 +95,6 @@ public class RunnerQuery extends Runner {
     }
 
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public Integer grabatsASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithResult();
     }
