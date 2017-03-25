@@ -9,6 +9,7 @@
         </Console>
 
         <!-- The default file appender -->
+        <!--
         <RollingFile name="RollingFile" fileName="logs/neoemf.log"
                      filePattern="logs/neoemf-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout
@@ -18,6 +19,7 @@
                 <TimeBasedTriggeringPolicy />
             </Policies>
         </RollingFile>
+        -->
     </Appenders>
     <Loggers>
         <Root level="DEBUG">
