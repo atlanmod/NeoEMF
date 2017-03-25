@@ -280,13 +280,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         eStore().updateContainment(this, nonNull(container) ? (EReference) eContainingFeature() : null, PersistentEObject.from(container));
 
         // Update the resource according to the container
-        if (nonNull(container)) {
-            if (container.eResource() != resource) {
-                resource((Resource.Internal) container.eResource());
-            }
-        }
-        else {
-            resource(null);
+        if (nonNull(container) && container.eResource() != resource) {
+            resource((Resource.Internal) container.eResource());
         }
     }
 
