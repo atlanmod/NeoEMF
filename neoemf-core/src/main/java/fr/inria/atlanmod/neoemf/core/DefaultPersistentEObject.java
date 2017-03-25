@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -229,8 +228,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public EObject eContainer() {
         return Optional.<EObject>ofNullable(container).orElseGet(() -> {
             Optional<EObject> internalContainer = Optional.ofNullable(eStore().getContainer(this));
-            eBasicSetContainer((InternalEObject) internalContainer.orElse(null));
-            eBasicSetContainerFeatureID(eContainerFeatureID());
+            if (internalContainer.isPresent()) {
+                eBasicSetContainer((InternalEObject) internalContainer.get(), eContainerFeatureID());
+            }
+            else {
+                eBasicSetContainer(null, UNSETTED_REFERENCE_ID);
+            }
 
             return internalContainer.<EObject>orElseGet(super::eContainer);
         });
@@ -273,13 +276,23 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     protected void eBasicSetContainer(@Nullable InternalEObject container) {
         this.container = container;
 
-        if (nonNull(container) && container.eResource() != resource) {
-            resource((Resource.Internal) container.eResource());
+        // Update the containment in the store
+        eStore().updateContainment(this, nonNull(container) ? (EReference) eContainingFeature() : null, PersistentEObject.from(container));
+
+        // Update the resource according to the container
+        if (nonNull(container)) {
+            if (container.eResource() != resource) {
+                resource((Resource.Internal) container.eResource());
+            }
+        }
+        else {
+            resource(null);
         }
     }
 
     @Override
     protected void eBasicSetContainerFeatureID(int containerReferenceId) {
+        // This method is always called before #eBasicSetContainer(InternalEObject) : no need to update the store here
         this.containerReferenceId = containerReferenceId;
     }
 
@@ -365,15 +378,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public int eContainerFeatureID() {
         if (containerReferenceId == UNSETTED_REFERENCE_ID) {
-            Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(containingReference -> {
-                EReference oppositeReference = containingReference.getEOpposite();
+            Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(cf -> {
+                EReference oppositeReference = cf.getEOpposite();
                 if (nonNull(oppositeReference)) {
                     eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeReference));
                 }
+                else if (nonNull(container)) {
+                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(cf));
+                }
                 else {
-                    if (nonNull(container)) {
-                        eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(containingReference));
-                    }
+                    throw new IllegalStateException("The containing reference is defined, but cannot be retrieved");
                 }
             });
         }
@@ -604,13 +618,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 return false;
             }
             else {
-                if (eStructuralFeature instanceof EAttribute) {
-                    addUnique(object);
-                }
-                else {
-                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
-                    addUnique(index, object);
-                }
+                // index = NO_INDEX results as a call to #append() in store
+                addUnique(EStore.NO_INDEX, object);
                 return true;
             }
         }

@@ -171,11 +171,18 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, ContainerDescriptor)} with a {@code null} value.
      */
     @Test
-    public void testSetNullContainer() {
-        //noinspection ConstantConditions
-        assertThat(catchThrowable(() ->
-                mapper.containerFor(id0, null)
-        )).isInstanceOf(NullPointerException.class);
+    public void testRemoveContainer() {
+        Id containerId0 = StringId.of("ContainerId0");
+
+        ContainerDescriptor container = ContainerDescriptor.of(containerId0, "Container0");
+
+        // Define the containers
+        mapper.containerFor(id0, container);
+        assertThat(mapper.containerOf(id0)).isPresent().contains(container);
+
+        // Remove the container
+        mapper.containerFor(id0, null);
+        assertThat(mapper.containerOf(id0)).isNotPresent();
     }
 
     //endregion

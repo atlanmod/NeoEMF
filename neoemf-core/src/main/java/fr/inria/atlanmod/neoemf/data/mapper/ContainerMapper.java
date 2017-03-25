@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -42,11 +43,13 @@ public interface ContainerMapper {
 
     /**
      * Stores the {@link ContainerDescriptor} for the specified {@code id}.
+     * <p>
+     * If {@code container == null}, the {@code id} is removed.
      *
      * @param id        the {@link Id} of the contained element
      * @param container the {@link ContainerDescriptor} containing element's container information to store
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @throws NullPointerException if the {@code id} is {@code null}
      */
-    void containerFor(Id id, ContainerDescriptor container);
+    void containerFor(Id id, @Nullable ContainerDescriptor container);
 }

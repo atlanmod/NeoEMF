@@ -23,9 +23,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
@@ -101,11 +103,15 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
         checkNotNull(id);
-        checkNotNull(container);
 
-        containerMap.put(id, container);
+        if (nonNull(container)) {
+            containerMap.put(id, container);
+        }
+        else {
+            containerMap.remove(id);
+        }
     }
 
     @Nonnull

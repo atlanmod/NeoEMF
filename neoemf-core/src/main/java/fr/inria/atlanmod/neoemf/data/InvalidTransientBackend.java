@@ -57,7 +57,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
         throw new UnsupportedOperationException(MSG);
     }
 

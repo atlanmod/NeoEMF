@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -81,7 +82,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
         thenIncrementAndSave(() -> super.containerFor(id, container), 1);
     }
 

@@ -115,9 +115,8 @@ public class BoundedTransientBackend implements TransientBackend, ManyValueWithL
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
         checkNotNull(id);
-        checkNotNull(container);
 
         if (Objects.equals(id, ownerId)) {
             this.container = container;

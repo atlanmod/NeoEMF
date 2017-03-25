@@ -32,10 +32,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
@@ -139,11 +141,15 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, @Nullable ContainerDescriptor container) {
         checkNotNull(id);
-        checkNotNull(container);
 
-        put(containers, id, container);
+        if (nonNull(container)) {
+            put(containers, id, container);
+        }
+        else {
+            delete(containers, id);
+        }
     }
 
     @Nonnull

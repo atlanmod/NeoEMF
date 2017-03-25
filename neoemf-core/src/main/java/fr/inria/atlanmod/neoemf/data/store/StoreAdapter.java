@@ -667,47 +667,49 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     /**
-     * Creates the given {@code object} and {@code referencedObject} in the underlying back-end if they don't already
+     * Creates the given {@code container} and {@code object} in the underlying back-end if they don't already
      * exist, and update the containment link between them.
      *
-     * @param object           the object to persist
-     * @param reference        the reference to link the two objects
-     * @param referencedObject the referenced object to persist
+     * @param container           the container to persist
+     * @param containingReference the containingReference to link the two objects
+     * @param object              the referenced container to persist
      *
      * @see #persist(PersistentEObject)
      * @see #updateContainment(PersistentEObject, EReference, PersistentEObject)
      */
-    private void persist(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+    private void persist(PersistentEObject container, EReference containingReference, PersistentEObject object) {
+        persist(container);
         persist(object);
-        persist(referencedObject);
 
-        updateContainment(object, reference, referencedObject);
+        updateContainment(object, containingReference, container);
     }
 
     /**
-     * Creates or updates the containment link between {@code referencedObject} and {@code object}, and deletes any
-     * previous link to {@code referencedObject}. Tells the underlying database to put the {@code referencedObject} in
-     * the containment list of the {@code object}.
+     * Creates or updates the containment link between {@code object} and {@code container}, and deletes any
+     * previous link to {@code object}. Tells the underlying database to put the {@code object} in
+     * the containment list of the {@code container}.
      * <p>
      * The method checks if an existing container is stored and update it if needed.
      *
-     * @param object           the container {@link PersistentEObject}
-     * @param reference        the containment {@link EReference}
-     * @param referencedObject the {@link PersistentEObject} to add in the containment list of {@code object}
+     * @param object              the {@link PersistentEObject} to add in the containment list of {@code container}
+     * @param containingReference the containment {@link EReference}
+     * @param container           the container {@link PersistentEObject}
      *
      * @return {@code true} if the container has been created or updated, {@code false} otherwise
      */
-    private boolean updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
-        if (reference.isContainment()) {
-            Optional<ContainerDescriptor> container = containerOf(referencedObject.id());
+    public void updateContainment(PersistentEObject object, @Nullable EReference containingReference, @Nullable PersistentEObject container) {
+        if (isNull(containingReference)) {
+            containerFor(object.id(), null);
+        }
+        else if (containingReference.isContainment()) {
+            checkNotNull(container);
 
-            if (!container.isPresent() || !Objects.equals(container.get().id(), object.id())) {
-                containerFor(referencedObject.id(), ContainerDescriptor.from(object, reference));
-                return true;
+            Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
+
+            if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
+                containerFor(object.id(), ContainerDescriptor.from(container, containingReference));
             }
         }
-
-        return false;
     }
 
     /**
@@ -737,20 +739,17 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      *
      * @return {@code true} if the instance has been creates, {@code false} otherwise
      */
-    private boolean updateInstanceOf(PersistentEObject object) {
+    private void updateInstanceOf(PersistentEObject object) {
         // If the object is already in cache, then the metaclass is defined
         if (nonNull(cache.get(object.id()))) {
-            return false;
+            return;
         }
 
         Optional<ClassDescriptor> metaclass = metaclassOf(object.id());
 
         if (!metaclass.isPresent()) {
             metaclassFor(object.id(), ClassDescriptor.from(object));
-            return true;
         }
-
-        return false;
     }
 
     /**
