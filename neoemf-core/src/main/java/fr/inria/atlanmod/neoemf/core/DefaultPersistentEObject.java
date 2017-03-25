@@ -232,13 +232,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * notifying others.
          */
         if (isNull(container) || resource instanceof PersistentResource && ((PersistentResource) resource).isDistributed()) {
-            PersistentEObject c = eStore().getContainer(this);
-            eBasicSetContainer(c, eContainerFeatureID());
-            return c;
+            eBasicSetContainer(eStore().getContainer(this), eContainerFeatureID());
         }
-        else {
-            return container;
-        }
+
+        return container;
     }
 
     @Nullable
