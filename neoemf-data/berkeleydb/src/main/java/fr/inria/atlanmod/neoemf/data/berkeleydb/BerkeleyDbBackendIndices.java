@@ -45,7 +45,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
      * {@link ManyFeatureKey}.
      */
     @Nonnull
-    private final Database multivaluedFeatures;
+    private final Database manyFeatures;
 
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} wrapping the provided {@code environment}.
@@ -61,7 +61,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     protected BerkeleyDbBackendIndices(Environment environment, DatabaseConfig databaseConfig) {
         super(environment, databaseConfig);
 
-        this.multivaluedFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
+        this.manyFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
     }
 
     @Override
@@ -70,14 +70,14 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
 
         super.copyTo(target);
-        this.copy(multivaluedFeatures, to.multivaluedFeatures);
+        this.copy(manyFeatures, to.manyFeatures);
     }
 
     @Nonnull
     @Override
     protected List<Database> allDatabases() {
         List<Database> databases = super.allDatabases();
-        databases.add(multivaluedFeatures);
+        databases.add(manyFeatures);
         return databases;
     }
 
@@ -86,7 +86,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(multivaluedFeatures, key);
+        return get(manyFeatures, key);
     }
 
     @Override
@@ -94,10 +94,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(multivaluedFeatures, key, value);
+            put(manyFeatures, key, value);
         }
         else {
-            delete(multivaluedFeatures, key);
+            delete(manyFeatures, key);
         }
     }
 }

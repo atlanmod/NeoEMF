@@ -44,13 +44,13 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final ConcurrentMap<Id, ContainerDescriptor> containersMap;
+    private final ConcurrentMap<Id, ContainerDescriptor> containers;
 
     /**
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final ConcurrentMap<Id, ClassDescriptor> instanceOfMap;
+    private final ConcurrentMap<Id, ClassDescriptor> instances;
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
@@ -82,12 +82,12 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     protected AbstractMapDbBackend(DB db) {
         this.db = checkNotNull(db);
 
-        containersMap = db.hashMap("eContainer")
+        containers = db.hashMap("eContainer")
                 .keySerializer(Serializer.JAVA)
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        instanceOfMap = db.hashMap("neoInstanceOf")
+        instances = db.hashMap("neoInstanceOf")
                 .keySerializer(Serializer.JAVA)
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
@@ -142,7 +142,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(containersMap, id);
+        return get(containers, id);
     }
 
     @Override
@@ -150,10 +150,10 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
         checkNotNull(id);
 
         if (nonNull(container)) {
-            put(containersMap, id, container);
+            put(containers, id, container);
         }
         else {
-            delete(containersMap, id);
+            delete(containers, id);
         }
     }
 
@@ -162,7 +162,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return get(instanceOfMap, id);
+        return get(instances, id);
     }
 
     @Override
@@ -170,7 +170,7 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
         checkNotNull(id);
         checkNotNull(metaclass);
 
-        put(instanceOfMap, id, metaclass);
+        put(instances, id, metaclass);
     }
 
     @Nonnull

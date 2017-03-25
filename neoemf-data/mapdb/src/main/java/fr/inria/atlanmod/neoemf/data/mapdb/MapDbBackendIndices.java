@@ -44,7 +44,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
      * identified by the associated {@link ManyFeatureKey}.
      */
     @Nonnull
-    private final ConcurrentMap<ManyFeatureKey, Object> multivaluedFeatures;
+    private final ConcurrentMap<ManyFeatureKey, Object> manyFeatures;
 
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
@@ -64,7 +64,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
     protected MapDbBackendIndices(DB db) {
         super(db);
 
-        multivaluedFeatures = db.hashMap("multivaluedFeatures")
+        manyFeatures = db.hashMap("multivaluedFeatures")
                 .keySerializer(Serializer.JAVA)
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
@@ -75,7 +75,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(multivaluedFeatures, key);
+        return get(manyFeatures, key);
     }
 
     @Override
@@ -83,10 +83,10 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(multivaluedFeatures, key, value);
+            put(manyFeatures, key, value);
         }
         else {
-            delete(multivaluedFeatures, key);
+            delete(manyFeatures, key);
         }
     }
 
