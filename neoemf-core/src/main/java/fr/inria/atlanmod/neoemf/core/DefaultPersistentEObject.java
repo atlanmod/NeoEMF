@@ -225,12 +225,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nullable
     @Override
-    public PersistentEObject eContainer() {
-        return Optional.ofNullable(container).orElseGet(() -> {
-            Optional<PersistentEObject> container = Optional.ofNullable(eStore().getContainer(this));
-            container.ifPresent(persistentEObject -> eBasicSetContainer(persistentEObject, eContainerFeatureID()));
-            return container.orElse(null);
-        });
+    public EObject eContainer() {
+        /*
+         * If the resource is not distributed and if the value of the eContainer field is set, it is not needed to get
+         * it from the backend. This is not true in a distributed context when another client can the database without
+         * notifying others.
+         */
+        if (isNull(container) || resource instanceof PersistentResource && ((PersistentResource) resource).isDistributed()) {
+            PersistentEObject c = eStore().getContainer(this);
+            eBasicSetContainer(c, eContainerFeatureID());
+            return c;
+        }
+        else {
+            return container;
+        }
     }
 
     @Nullable
@@ -356,6 +364,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public PersistentEObject eInternalContainer() {
+        // Don't load the container from the store here: it creates an important overhead and performance loss.
+        // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
         return container;
     }
 
@@ -599,7 +609,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 return false;
             }
             else {
-                // index = NO_INDEX results as a call to #append() in store
+                // index = NO_INDEX results as a call to #append() in store, without checking the size
                 addUnique(EStore.NO_INDEX, object);
                 return true;
             }
