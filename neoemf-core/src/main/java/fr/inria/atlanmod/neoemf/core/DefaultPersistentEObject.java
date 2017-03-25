@@ -86,7 +86,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * This information should be also maintained in the {@link #store}.
      */
     @Nullable
-    private InternalEObject container;
+    private PersistentEObject container;
 
     /**
      * The identifier of the {@link EReference} used to link this object to its container.
@@ -225,17 +225,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nullable
     @Override
-    public EObject eContainer() {
-        return Optional.<EObject>ofNullable(container).orElseGet(() -> {
-            Optional<EObject> container = Optional.ofNullable(eStore().getContainer(this));
-
-            if (container.isPresent()) {
-                eBasicSetContainer((InternalEObject) container.get(), eContainerFeatureID());
-            }
-            else {
-                eBasicSetContainer(null, UNSETTED_REFERENCE_ID);
-            }
-
+    public PersistentEObject eContainer() {
+        return Optional.ofNullable(container).orElseGet(() -> {
+            Optional<PersistentEObject> container = Optional.ofNullable(eStore().getContainer(this));
+            container.ifPresent(persistentEObject -> eBasicSetContainer(persistentEObject, eContainerFeatureID()));
             return container.orElse(null);
         });
     }
@@ -275,9 +268,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject container) {
-        this.container = container;
+        this.container = PersistentEObject.from(container);
 
-        // Update the resource according to the container
         if (nonNull(container) && container.eResource() != resource) {
             resource((Resource.Internal) container.eResource());
         }
@@ -285,7 +277,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     protected void eBasicSetContainerFeatureID(int containerReferenceId) {
-        // This method is always called before #eBasicSetContainer(InternalEObject) : no need to update the store here
         this.containerReferenceId = containerReferenceId;
     }
 
@@ -364,7 +355,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nullable
     @Override
-    public InternalEObject eInternalContainer() {
+    public PersistentEObject eInternalContainer() {
         return container;
     }
 
