@@ -276,6 +276,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject newContainer) {
         this.container = PersistentEObject.from(newContainer);
+    }
+
+    @Override
+    protected void eBasicSetContainerFeatureID(int newContainerReferenceId) {
+        this.containerReferenceId = newContainerReferenceId;
+    }
+
+    @Override
+    protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerReferenceId) {
+        super.eBasicSetContainer(newContainer, newContainerReferenceId);
 
         if (nonNull(container)) {
             eStore().updateContainment(this, eContainmentFeature(), container);
@@ -287,11 +297,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         else {
             eStore().removeContainment(this);
         }
-    }
-
-    @Override
-    protected void eBasicSetContainerFeatureID(int newContainerReferenceId) {
-        this.containerReferenceId = newContainerReferenceId;
     }
 
     @Nonnull
@@ -377,18 +382,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public int eContainerFeatureID() {
-        if (isNull(containerReferenceId)) {
-            Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(cr -> {
-                EReference oppositeReference = cr.getEOpposite();
-                if (nonNull(oppositeReference)) {
-                    eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeReference));
-                }
-                else if (nonNull(container)) {
-                    eBasicSetContainerFeatureID(EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(cr));
-                }
-            });
-        }
-        return Optional.ofNullable(containerReferenceId).orElse(0);
+        return Optional.ofNullable(containerReferenceId)
+                .orElseGet(() -> Optional.ofNullable(eStore().getContainingFeature(this))
+                        .map(cr -> Optional.ofNullable(cr.getEOpposite())
+                                .map(o -> eClass().getFeatureID(o))
+                                .orElseGet(() -> Optional.ofNullable(eInternalContainer())
+                                        .map(c -> EOPPOSITE_FEATURE_BASE - c.eClass().getFeatureID(cr))
+                                        .orElse(0)))
+                        .orElse(0));
     }
 
     /**
@@ -587,6 +588,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         @Override
         public boolean contains(Object object) {
             return delegateContains(object);
+        }
+
+        @Override
+        public int indexOf(Object object) {
+            return delegateIndexOf(object);
+        }
+
+        @Override
+        public int lastIndexOf(Object object) {
+            return delegateLastIndexOf(object);
         }
 
         /**
