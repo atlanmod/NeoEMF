@@ -21,9 +21,8 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -197,20 +196,9 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      *
      * @see #incremendAndSave(int)
      */
-    private <V> V thenIncrementAndSave(Callable<V> method, int count) {
-        V result;
-        try {
-            result = method.call();
-        }
-        catch (NoSuchElementException | NullPointerException e) { // known exceptions
-            throw e;
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+    private <V> V thenIncrementAndSave(Supplier<V> method, int count) {
+        V result = method.get();
         incremendAndSave(count);
-
         return result;
     }
 
@@ -225,7 +213,6 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      */
     private void thenIncrementAndSave(Runnable method, int count) {
         method.run();
-
         incremendAndSave(count);
     }
 

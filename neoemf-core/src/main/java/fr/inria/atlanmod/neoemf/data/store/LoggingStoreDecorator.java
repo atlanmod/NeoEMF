@@ -23,7 +23,10 @@ import fr.inria.atlanmod.neoemf.util.log.Logger;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,244 +74,249 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        return call(() -> super.containerOf(id), "containerOf", id);
+        return callAndReturn(super::containerOf, id);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        call(() -> super.containerFor(id, container), "containerFor", id, container);
+        call(super::containerFor, id, container);
     }
 
     @Override
     public void unsetContainer(Id id) {
-        call(() -> super.unsetContainer(id), "unsetContainer", id);
+        call(super::unsetContainer, id);
     }
 
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
-        return call(() -> super.metaclassOf(id), "metaclassOf", id);
+        return callAndReturn(super::metaclassOf, id);
     }
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        call(() -> super.metaclassFor(id, metaclass), "metaclassFor", id, metaclass);
+        call(super::metaclassFor, id, metaclass);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return call(() -> super.valueOf(key), "valueOf", key);
+        return callAndReturn(super::valueOf, key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        return call(() -> super.valueFor(key, value), "valueFor", key, value);
+        return callAndReturn(super::valueFor, key, value);
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        call(() -> super.unsetValue(key), "unsetValue", key);
+        call(super::unsetValue, key);
     }
 
     @Override
     public <V> boolean hasValue(FeatureKey key) {
-        return call(() -> super.hasValue(key), "hasValue", key);
+        return callAndReturn(super::hasValue, key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        return call(() -> super.referenceOf(key), "referenceOf", key);
+        return callAndReturn(super::referenceOf, key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        return call(() -> super.referenceFor(key, reference), "referenceFor", key, reference);
+        return callAndReturn(super::referenceFor, key, reference);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        call(() -> super.unsetReference(key), "unsetReference", key);
+        call(super::unsetReference, key);
     }
 
     @Override
     public boolean hasReference(FeatureKey key) {
-        return call(() -> super.hasReference(key), "hasReference", key);
+        return callAndReturn(super::hasReference, key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        return call(() -> super.valueOf(key), "valueOf", key);
+        return callAndReturn(super::valueOf, key);
     }
 
     @Nonnull
     @Override
     public <V> List<V> allValuesOf(FeatureKey key) {
-        return call(() -> super.allValuesOf(key), "allValuesOf", key);
+        return callAndReturn(super::allValuesOf, key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        return call(() -> super.valueFor(key, value), "valueFor", key, value);
+        return callAndReturn(super::valueFor, key, value);
     }
 
     @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
-        return call(() -> super.hasAnyValue(key), "hasAnyValue", key);
+        return callAndReturn(super::hasAnyValue, key);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        call(() -> super.addValue(key, value), "addValue", key, value);
+        call(super::addValue, key, value);
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        call(() -> super.appendValue(key, value), "appendValue", key, value);
+        call(super::appendValue, key, value);
     }
 
     @Override
     public <V> void appendAllValues(FeatureKey key, List<V> values) {
-        call(() -> super.appendAllValues(key, values), "appendAllValues", key, values);
+        call(super::appendAllValues, key, values);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        return call(() -> super.removeValue(key), "removeValue", key);
+        return callAndReturn(super::removeValue, key);
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        call(() -> super.removeAllValues(key), "removeAllValues", key);
+        call(super::removeAllValues, key);
     }
 
     @Override
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        return call(() -> super.containsValue(key, value), "containsValue", key, value);
+        return callAndReturn(super::containsValue, key, value);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
-        return call(() -> super.indexOfValue(key, value), "indexOfValue", key, value);
+        return callAndReturn(super::indexOfValue, key, value);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
-        return call(() -> super.lastIndexOfValue(key, value), "lastIndexOfValue", key, value);
+        return callAndReturn(super::lastIndexOfValue, key, value);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        return call(() -> super.sizeOfValue(key), "sizeOfValue", key);
+        return callAndReturn(super::sizeOfValue, key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        return call(() -> super.referenceOf(key), "referenceOf", key);
+        return callAndReturn(super::referenceOf, key);
     }
 
     @Nonnull
     @Override
     public List<Id> allReferencesOf(FeatureKey key) {
-        return call(() -> super.allReferencesOf(key), "allReferencesOf", key);
+        return callAndReturn(super::allReferencesOf, key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        return call(() -> super.referenceFor(key, reference), "referenceFor", key, reference);
+        return callAndReturn(super::referenceFor, key, reference);
     }
 
     @Override
     public boolean hasAnyReference(FeatureKey key) {
-        return call(() -> super.hasAnyReference(key), "hasAnyReference", key);
+        return callAndReturn(super::hasAnyReference, key);
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        call(() -> super.addReference(key, reference), "addReference", key, reference);
+        call(super::addReference, key, reference);
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        call(() -> super.appendReference(key, reference), "appendReference", key, reference);
+        call(super::appendReference, key, reference);
     }
 
     @Override
     public void appendAllReferences(FeatureKey key, List<Id> references) {
-        call(() -> super.appendAllReferences(key, references), "appendAllReferences", key, references);
+        call(super::appendAllReferences, key, references);
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        return call(() -> super.removeReference(key), "removeReference", key);
+        return callAndReturn(super::removeReference, key);
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        call(() -> super.removeAllReferences(key), "removeAllReferences", key);
+        call(super::removeAllReferences, key);
     }
 
     @Override
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        return call(() -> super.containsReference(key, reference), "containsReference", key, reference);
+        return callAndReturn(super::containsReference, key, reference);
     }
 
     @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
-        return call(() -> super.indexOfReference(key, reference), "indexOfReference", key, reference);
+        return callAndReturn(super::indexOfReference, key, reference);
     }
 
     @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
-        return call(() -> super.lastIndexOfReference(key, reference), "lastIndexOfReference", key, reference);
+        return callAndReturn(super::lastIndexOfReference, key, reference);
     }
 
     @Nonnull
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
-        return call(() -> super.sizeOfReference(key), "sizeOfReference", key);
+        return callAndReturn(super::sizeOfReference, key);
     }
 
     /**
      * Logs the call of a method.
      *
-     * @param runnable the method to call
-     * @param method   the name of the call method
+     * @param consumer the method to call
      * @param key      the key used during the call
      */
-    private void call(Runnable runnable, String method, Object key) {
-        call(runnable, method, key, null);
+    private <K> void call(Consumer<K> consumer, K key) {
+        try {
+            consumer.accept(key);
+            logSuccess(key, null, null);
+        }
+        catch (RuntimeException e) {
+            logFailure(key, null, e);
+            throw e;
+        }
     }
 
     /**
      * Logs the call of a method with a value.
      *
-     * @param runnable the method to call
-     * @param method   the name of the call method
+     * @param consumer the method to call
      * @param key      the key used during the call
      * @param value    the value of the key
      */
-    private void call(Runnable runnable, String method, Object key, @Nullable Object value) {
+    private <K, V> void call(BiConsumer<K, V> consumer, K key, V value) {
         try {
-            runnable.run();
-            logSuccess(method, key, value, null);
+            consumer.accept(key, value);
+            logSuccess(key, value, null);
         }
         catch (RuntimeException e) {
-            logFailure(method, key, value, e);
+            logFailure(key, value, e);
             throw e;
         }
     }
@@ -316,63 +324,72 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     /**
      * Logs the call of a method.
      *
-     * @param callable the method to call
-     * @param method   the name of the call method
+     * @param function the method to call
      * @param key      the key used during the call
      *
      * @return the result of the call
      */
-    private <T> T call(Callable<T> callable, String method, Object key) {
-        return call(callable, method, key, null);
+    private <K, R> R callAndReturn(Function<K, R> function, K key) {
+        try {
+            R result = function.apply(key);
+            logSuccess(key, null, result);
+            return result;
+        }
+        catch (RuntimeException e) {
+            logFailure(key, null, e);
+            throw e;
+        }
     }
 
     /**
      * Logs the call of a method with a value.
      *
-     * @param callable the method to call
-     * @param method   the name of the call method
+     * @param function the method to call
      * @param key      the key used during the call
      * @param value    the value of the key
      *
      * @return the result of the call
      */
-    private <T> T call(Callable<T> callable, String method, Object key, @Nullable Object value) {
-        T result;
+    private <K, V, R> R callAndReturn(BiFunction<K, V, R> function, K key, @Nullable V value) {
         try {
-            result = callable.call();
-            logSuccess(method, key, value, result);
+            R result = function.apply(key, value);
+            logSuccess(key, value, result);
+            return result;
         }
         catch (RuntimeException e) {
-            logFailure(method, key, value, e);
+            logFailure(key, value, e);
             throw e;
         }
-        catch (Exception e) { // Should never happen
-            throw new IllegalStateException(e);
-        }
-        return result;
     }
 
     /**
      * Logs a successful call of a method.
      *
-     * @param method the name of the called method
      * @param key    the key used during the call
      * @param value  the value of the key
      * @param result the result of the call
      */
-    private void logSuccess(String method, Object key, @Nullable Object value, @Nullable Object result) {
-        LOG.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + (nonNull(result) ? " = {3}" : ""), method, key, value, result);
+    private void logSuccess(Object key, @Nullable Object value, @Nullable Object result) {
+        LOG.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + (nonNull(result) ? " = {3}" : ""), getCallingMethod(), key, value, result);
     }
 
     /**
      * Logs a successful call of a method.
      *
-     * @param method the name of the called method
-     * @param key    the key used during the call
-     * @param value  the value of the key
-     * @param e      the exception thrown during the the call
+     * @param key   the key used during the call
+     * @param value the value of the key
+     * @param e     the exception thrown during the the call
      */
-    private void logFailure(String method, Object key, @Nullable Object value, Throwable e) {
-        LOG.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + " but failed with {3}", method, key, value, e.getClass().getSimpleName());
+    private void logFailure(Object key, @Nullable Object value, Throwable e) {
+        LOG.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + " but failed with {3}", getCallingMethod(), key, value, e.getClass().getSimpleName());
+    }
+
+    /**
+     * Returns the name of the calling method.
+     *
+     * @return the name
+     */
+    private String getCallingMethod() {
+        return Thread.currentThread().getStackTrace()[4].getMethodName();
     }
 }
