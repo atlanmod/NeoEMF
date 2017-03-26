@@ -219,9 +219,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
-            updateInstanceOf(object);
+        updateInstanceOf(object);
 
+        if (isAttribute(feature)) {
             Optional<String> previousValue;
             if (!feature.isMany()) {
                 previousValue = valueFor(key, serialize((EAttribute) feature, value));
@@ -236,6 +236,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
+
+            updateInstanceOf(referencedObject);
             updateContainment(referencedObject, (EReference) feature, object);
 
             Optional<Id> previousReference;
@@ -462,9 +464,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
-            updateInstanceOf(object);
+        updateInstanceOf(object);
 
+        if (isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
                 appendValue(key, serialize((EAttribute) feature, value));
             }
@@ -474,6 +476,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
+
+            updateInstanceOf(referencedObject);
             updateContainment(referencedObject, (EReference) feature, object);
 
             if (index == EStore.NO_INDEX) {
@@ -675,10 +679,6 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @param container the container
      */
     private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject container) {
-        // Update instances of both objects
-        updateInstanceOf(object);
-        updateInstanceOf(container);
-
         // Update containment if necessary
         if (reference.isContainment()) {
             Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
