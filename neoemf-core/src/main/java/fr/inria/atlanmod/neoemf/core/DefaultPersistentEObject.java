@@ -58,12 +58,6 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
-     * The identifier of the {@link EReference} used to link this object to its container, when this object has not
-     * container.
-     */
-    private static final int UNSETTED_REFERENCE_ID = -1;
-
-    /**
      * The identifier of this object.
      */
     @Nonnull
@@ -91,7 +85,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The identifier of the {@link EReference} used to link this object to its container.
      */
-    private int containerReferenceId;
+    private Integer containerReferenceId;
 
     /**
      * The {@link StoreAdapter} where this object is stored.
@@ -112,7 +106,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
-        this.containerReferenceId = UNSETTED_REFERENCE_ID;
         this.isPersistent = false;
     }
 
@@ -232,7 +225,13 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * notifying others.
          */
         if (isNull(container) || resource instanceof PersistentResource && ((PersistentResource) resource).isDistributed()) {
-            eBasicSetContainer(eStore().getContainer(this), eContainerFeatureID());
+            PersistentEObject newContainer = eStore().getContainer(this);
+
+            // If the container has changed, update it
+            if (!Objects.equals(container, newContainer)) {
+                containerReferenceId = null;
+                eBasicSetContainer(newContainer, eContainerFeatureID());
+            }
         }
 
         return container;
@@ -368,7 +367,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public int eContainerFeatureID() {
-        if (containerReferenceId == UNSETTED_REFERENCE_ID) {
+        if (isNull(containerReferenceId)) {
             Optional.ofNullable(eStore().getContainingFeature(this)).ifPresent(cr -> {
                 EReference oppositeReference = cr.getEOpposite();
                 if (nonNull(oppositeReference)) {
@@ -379,7 +378,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 }
             });
         }
-        return containerReferenceId;
+        return isNull(containerReferenceId) ? 0 : containerReferenceId;
     }
 
     /**
@@ -578,16 +577,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         @Override
         public boolean contains(Object object) {
             return delegateContains(object);
-        }
-
-        @Override
-        public int indexOf(Object object) {
-            return delegateIndexOf(object);
-        }
-
-        @Override
-        public int lastIndexOf(Object object) {
-            return delegateLastIndexOf(object);
         }
 
         /**
