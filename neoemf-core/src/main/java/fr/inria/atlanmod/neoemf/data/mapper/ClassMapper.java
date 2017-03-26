@@ -51,6 +51,19 @@ public interface ClassMapper {
     void metaclassFor(Id id, ClassDescriptor metaclass);
 
     /**
+     * Checks whether the specified {@code id} has a defined metaclass.
+     *
+     * @param id the {@link Id} of the element
+     *
+     * @return {@code true} if the {@code id} has a metaclass, {@code false} otherwise
+     *
+     * @throws NullPointerException if the {@code id} is {@code null}
+     */
+    default boolean hasMetaclass(Id id) {
+        return metaclassOf(id).isPresent();
+    }
+
+    /**
      * Retrieves all instances of the given {@code metaclass}.
      *
      * @param metaclass the metaclass to compute the instances of

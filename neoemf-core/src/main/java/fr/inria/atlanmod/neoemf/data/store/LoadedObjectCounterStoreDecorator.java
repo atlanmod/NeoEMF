@@ -64,6 +64,12 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
         super.containerFor(id, container);
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        loadedObjects.add(id);
+        super.unsetContainer(id);
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {

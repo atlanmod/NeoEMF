@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -107,6 +108,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
         this.isPersistent = false;
+
+        Log.debug("DefaultPersistentEObject created with ID {0}", id);
     }
 
     @Nonnull
@@ -271,17 +274,24 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    protected void eBasicSetContainer(@Nullable InternalEObject container) {
-        this.container = PersistentEObject.from(container);
+    protected void eBasicSetContainer(@Nullable InternalEObject newContainer) {
+        this.container = PersistentEObject.from(newContainer);
 
-        if (nonNull(container) && container.eResource() != resource) {
-            resource((Resource.Internal) container.eResource());
+        if (nonNull(container)) {
+            eStore().updateContainment(this, eContainmentFeature(), container);
+
+            if (container.eResource() != resource) {
+                resource((Resource.Internal) container.eResource());
+            }
+        }
+        else {
+            eStore().removeContainment(this);
         }
     }
 
     @Override
-    protected void eBasicSetContainerFeatureID(int containerReferenceId) {
-        this.containerReferenceId = containerReferenceId;
+    protected void eBasicSetContainerFeatureID(int newContainerReferenceId) {
+        this.containerReferenceId = newContainerReferenceId;
     }
 
     @Nonnull
@@ -378,7 +388,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 }
             });
         }
-        return isNull(containerReferenceId) ? 0 : containerReferenceId;
+        return Optional.ofNullable(containerReferenceId).orElse(0);
     }
 
     /**

@@ -262,6 +262,14 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
         edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        checkNotNull(id);
+
+        Vertex containmentVertex = getOrCreate(id);
+        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {

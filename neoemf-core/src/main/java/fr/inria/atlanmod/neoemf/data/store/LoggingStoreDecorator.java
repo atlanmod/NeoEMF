@@ -79,6 +79,11 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(() -> super.containerFor(id, container), "containerFor", id, container);
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        call(() -> super.unsetContainer(id), "unsetContainer", id);
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {

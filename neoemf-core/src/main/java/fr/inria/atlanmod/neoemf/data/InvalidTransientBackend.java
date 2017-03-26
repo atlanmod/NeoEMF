@@ -35,30 +35,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class InvalidTransientBackend implements TransientBackend {
 
     /**
-     * The message of the exceptions thrown when calling methods.
+     * The exception thrown when calling methods.
      */
-    private static final String MSG = "The back-end you are using doesn't provide a transient layer. You must save/load your resource before using it";
+    private static final RuntimeException E = new UnsupportedOperationException(
+            "The back-end you are using doesn't provide a transient layer. You must save/load your resource before using it");
 
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
+    }
+
+    @Override
+    public void unsetContainer(Id id) {
+        throw E;
     }
 
     @Override
@@ -73,184 +79,184 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Override
     public boolean exists(Id id) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> boolean hasValue(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public boolean hasReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> List<V> allValuesOf(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> void appendValue(FeatureKey key, V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public List<Id> allReferencesOf(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public boolean hasAnyReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public void appendReference(FeatureKey key, Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Override
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 
     @Nonnull
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
-        throw new UnsupportedOperationException(MSG);
+        throw E;
     }
 }

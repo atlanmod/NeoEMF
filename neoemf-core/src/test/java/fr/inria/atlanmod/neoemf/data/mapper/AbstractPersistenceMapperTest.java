@@ -108,6 +108,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         mapper.containerFor(id1, container);
         assertThat(mapper.containerOf(id1)).isPresent().contains(container);
+
+        mapper.unsetContainer(id0);
+        mapper.unsetContainer(id1);
     }
 
     /**
@@ -133,6 +136,29 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         // Replace the existing container
         mapper.containerFor(id0, container1);
         assertThat(mapper.containerOf(id0)).isPresent().contains(container1);
+
+        mapper.unsetContainer(id0);
+        mapper.unsetContainer(id1);
+    }
+
+    /**
+     * Checks the behavior of {@link ContainerMapper#containerFor(Id, ContainerDescriptor)} with a {@code null} value.
+     */
+    @Test
+    public void testUnsetContainer() {
+        Id containerId0 = StringId.of("ContainerId0");
+
+        ContainerDescriptor container0 = ContainerDescriptor.of(containerId0, "Container0");
+
+        // Define the containers
+        mapper.containerFor(id0, container0);
+        assertThat(mapper.containerOf(id0)).isPresent().contains(container0);
+
+        // Replace the existing container
+        mapper.unsetContainer(id0);
+        assertThat(mapper.containerOf(id0)).isNotPresent();
+
+        mapper.unsetContainer(id0);
     }
 
     /**

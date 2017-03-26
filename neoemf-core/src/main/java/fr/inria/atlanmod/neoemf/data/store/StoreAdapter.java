@@ -219,9 +219,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        updateInstanceOf(object);
-
         if (isAttribute(feature)) {
+            updateInstanceOf(object);
+
             Optional<String> previousValue;
             if (!feature.isMany()) {
                 previousValue = valueFor(key, serialize((EAttribute) feature, value));
@@ -237,7 +237,6 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
 
-            updateInstanceOf(referencedObject);
             updateContainment(referencedObject, (EReference) feature, object);
 
             Optional<Id> previousReference;
@@ -464,9 +463,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        updateInstanceOf(object);
-
         if (isAttribute(feature)) {
+            updateInstanceOf(object);
+
             if (index == EStore.NO_INDEX) {
                 appendValue(key, serialize((EAttribute) feature, value));
             }
@@ -477,7 +476,6 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
 
-            updateInstanceOf(referencedObject);
             updateContainment(referencedObject, (EReference) feature, object);
 
             if (index == EStore.NO_INDEX) {
@@ -674,19 +672,34 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * <p>
      * The method checks if an existing container is stored and update it if needed.
      *
-     * @param object    the object to add in the containment list of the {@code container}
-     * @param reference the containment reference, from the {@code container} to the {@code object}
-     * @param container the container
+     * @param object             the object to add in the containment list of the {@code container}
+     * @param containerReference the containment reference, from the {@code container} to the {@code object}
+     * @param container          the container
      */
-    private void updateContainment(PersistentEObject object, EReference reference, PersistentEObject container) {
+    public void updateContainment(PersistentEObject object, EReference containerReference, PersistentEObject container) {
+        updateInstanceOf(object);
+        updateInstanceOf(container);
+
         // Update containment if necessary
-        if (reference.isContainment()) {
+        if (containerReference.isContainment()) {
             Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
 
             if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
-                containerFor(object.id(), ContainerDescriptor.from(container, reference));
+                containerFor(object.id(), ContainerDescriptor.from(container, containerReference));
             }
         }
+    }
+
+    /**
+     * Removes the containment link between {@code object} and its container, and deletes any
+     * previous link to {@code object}.
+     *
+     * @param object the object to remove from the containment list of the its actual container
+     */
+    public void removeContainment(PersistentEObject object) {
+        updateInstanceOf(object);
+
+        unsetContainer(object.id());
     }
 
     /**

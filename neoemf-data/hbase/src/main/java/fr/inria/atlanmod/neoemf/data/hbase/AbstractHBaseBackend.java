@@ -161,6 +161,22 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
         }
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        checkNotNull(id);
+
+        try {
+            Delete delete = new Delete(Bytes.toBytes(id.toString()))
+                    .addColumns(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER)
+                    .addColumns(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
+
+            table.delete(delete);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {

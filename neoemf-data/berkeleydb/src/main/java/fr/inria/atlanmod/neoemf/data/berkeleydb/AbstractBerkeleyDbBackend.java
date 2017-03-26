@@ -146,6 +146,13 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
         put(containers, id, container);
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        checkNotNull(id);
+
+        delete(containers, id);
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {

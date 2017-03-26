@@ -59,15 +59,15 @@ public class ManyFeatureKey extends FeatureKey {
     }
 
     /**
-     * Creates a new {@code ManyFeatureKey} from the given {@code internalObject} and the given {@code feature}.
+     * Creates a new {@code ManyFeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code from(PersistentEObject.from(internalObject), feature, position)}.
+     * This method behaves like: {@code from(PersistentEObject.from(object), feature, position)}.
      *
-     * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
-     *                       identifier
-     * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be
-     *                       extracted
-     * @param position       the position of the {@link EStructuralFeature}
+     * @param object   the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
+     *                 identifier
+     * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be
+     *                 extracted
+     * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code ManyFeatureKey}
      *
@@ -75,8 +75,8 @@ public class ManyFeatureKey extends FeatureKey {
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
      */
-    public static ManyFeatureKey from(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int position) {
-        return from(PersistentEObject.from(internalObject), feature, position);
+    public static ManyFeatureKey from(InternalEObject object, EStructuralFeature feature, @Nonnegative int position) {
+        return from(PersistentEObject.from(object), feature, position);
     }
 
     /**

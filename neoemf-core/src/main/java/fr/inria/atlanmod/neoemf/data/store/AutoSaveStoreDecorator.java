@@ -86,6 +86,11 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
+    public void unsetContainer(Id id) {
+        thenIncrementAndSave(() -> super.unsetContainer(id), 1);
+    }
+
+    @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
         thenIncrementAndSave(() -> super.metaclassFor(id, metaclass), 1);
     }

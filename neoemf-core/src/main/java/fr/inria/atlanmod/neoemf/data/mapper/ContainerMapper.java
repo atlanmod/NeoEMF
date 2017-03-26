@@ -49,4 +49,29 @@ public interface ContainerMapper {
      * @throws NullPointerException if the {@code id} is {@code null}
      */
     void containerFor(Id id, ContainerDescriptor container);
+
+    /**
+     * Removes the {@link ContainerDescriptor} of the specified {@code id}.
+     * <p>
+     * The container must be completely removed, so that a call to {@link #containerOf(Id)} returns
+     * {@link Optional#empty()}.
+     *
+     * @param id the {@link Id} of the contained element
+     *
+     * @throws NullPointerException if the {@code id} is {@code null}
+     */
+    void unsetContainer(Id id);
+
+    /**
+     * Checks whether the specified {@code id} has a defined container.
+     *
+     * @param id the {@link Id} of the contained element
+     *
+     * @return {@code true} if the {@code id} has a container, {@code false} otherwise
+     *
+     * @throws NullPointerException if the {@code id} is {@code null}
+     */
+    default boolean hasContainer(Id id) {
+        return containerOf(id).isPresent();
+    }
 }

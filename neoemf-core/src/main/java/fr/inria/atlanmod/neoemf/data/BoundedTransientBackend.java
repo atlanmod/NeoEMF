@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +83,8 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
      */
     private BoundedTransientBackend(Id owner) {
         this.owner = owner;
+
+        Log.debug("BoundedTransientBackend created for {0}", owner);
     }
 
     /**
@@ -130,6 +133,8 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
             CONTAINERS.clear();
             INSTANCES.clear();
         }
+
+        Log.debug("BoundedTransientBackend closed for {0}", owner);
     }
 
     @Override
@@ -151,6 +156,13 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
         checkNotNull(container);
 
         CONTAINERS.put(id, container);
+    }
+
+    @Override
+    public void unsetContainer(Id id) {
+        checkNotNull(id);
+
+        CONTAINERS.remove(id);
     }
 
     @Nonnull

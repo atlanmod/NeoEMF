@@ -59,6 +59,6 @@ public interface DataMapper extends Closeable, ContainerMapper, ClassMapper, Val
      * @return {@code true} if the {@code id} exists, {@code false} otherwise.
      */
     default boolean exists(Id id) {
-        return metaclassOf(id).isPresent();
+        return hasMetaclass(id);
     }
 }

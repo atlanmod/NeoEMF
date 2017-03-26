@@ -100,6 +100,11 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.containerFor(id, container);
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        next.unsetContainer(id);
+    }
+
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper

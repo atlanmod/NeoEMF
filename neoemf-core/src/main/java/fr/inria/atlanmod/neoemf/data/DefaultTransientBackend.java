@@ -108,6 +108,13 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithL
         containers.put(id, container);
     }
 
+    @Override
+    public void unsetContainer(Id id) {
+        checkNotNull(id);
+
+        containers.remove(id);
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
