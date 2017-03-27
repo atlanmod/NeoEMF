@@ -38,7 +38,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
         assertThat(model.eContainer()).isNull();
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertThat(modelContent.eContainer()).isSameAs(model);
+        assertThat(modelContent.eContainer()).isEqualTo(model);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
         assertThat(sampleModel.eContainer()).isNull();
 
         EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eContainer()).isSameAs(sampleModel);
+        assertThat(sampleContentObject.eContainer()).isEqualTo(sampleModel);
     }
 
     @Test

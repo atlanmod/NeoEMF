@@ -37,7 +37,7 @@ public class SavedResourceTest extends AbstractBackendTest {
         fillResource(resource);
 
         assertThat(model.eContainer()).isNull();
-        assertThat(modelContentObject.eContainer()).isSameAs(model);
+        assertThat(modelContentObject.eContainer()).isEqualTo(model);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class SavedResourceTest extends AbstractBackendTest {
         assertThat(sampleModel.eContainer()).isNull();
 
         EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eContainer()).isSameAs(sampleModel);
+        assertThat(sampleContentObject.eContainer()).isEqualTo(sampleModel);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SavedResourceTest extends AbstractBackendTest {
         fillResource(resource);
 
         assertThat(model.eInternalContainer()).isNull();
-        assertThat(modelContentObject.eInternalContainer()).isSameAs(model);
+        assertThat(modelContentObject.eInternalContainer()).isEqualTo(model);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class SavedResourceTest extends AbstractBackendTest {
         assertThat(sampleModel.eInternalContainer()).isNull();
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat(sampleContentObject.eInternalContainer()).isSameAs(sampleModel);
+        assertThat(sampleContentObject.eInternalContainer()).isEqualTo(sampleModel);
     }
 
     @Test

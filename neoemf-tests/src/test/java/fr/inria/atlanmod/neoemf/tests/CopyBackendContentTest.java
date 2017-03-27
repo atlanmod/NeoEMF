@@ -71,8 +71,8 @@ public class CopyBackendContentTest extends AbstractBackendTest {
         assertThat(contentObjects.get(0).getName()).isEqualTo(CONTENT1_NAME);
         assertThat(contentObjects.get(1).getName()).isEqualTo(CONTENT2_NAME);
 
-        assertThat(contentObjects.get(0).eContainer()).isSameAs(sampleModel);
-        assertThat(contentObjects.get(1).eContainer()).isSameAs(sampleModel);
+        assertThat(contentObjects.get(0).eContainer()).isEqualTo(sampleModel);
+        assertThat(contentObjects.get(1).eContainer()).isEqualTo(sampleModel);
     }
 
     /**

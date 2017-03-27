@@ -35,18 +35,18 @@ public class ContainmentTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
 
         Pack p1 = EFACTORY.createPack();
-        p1.setName("p1");
+        p1.setName("P1");
 
         resource.getContents().add(p1);
 
         Pack p2 = EFACTORY.createPack();
-        p2.setName("p2");
+        p2.setName("P2");
         PackContent pc1 = EFACTORY.createPackContent();
 
         Pack p3 = EFACTORY.createPack();
-        p3.setName("p3");
+        p3.setName("P3");
         p2.getPacks().add(p3);
-        pc1.setName("pc1");
+        pc1.setName("PC1");
         p3.getOwnedContents().add(pc1);
 
         p1.getPacks().add(p2);
@@ -68,19 +68,19 @@ public class ContainmentTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
 
         Pack p1 = EFACTORY.createPack();
-        p1.setName("p1");
+        p1.setName("P1");
 
         resource.getContents().add(p1);
 
         Pack p2 = EFACTORY.createPack();
-        p2.setName("p2");
+        p2.setName("P2");
         p1.getPacks().add(p2);
         PackContent pc1 = EFACTORY.createPackContent();
-        pc1.setName("pc1");
+        pc1.setName("PC1");
         p2.getOwnedContents().add(pc1);
 
         AbstractPackContentComment com1 = EFACTORY.createAbstractPackContentComment();
-        com1.setContent("My Content");
+        com1.setContent("Comment1");
 
         // Add using the non-containment reference
         p2.getNonContainmentRefComments().add(com1);
@@ -92,8 +92,8 @@ public class ContainmentTest extends AbstractBackendTest {
         assertThat(com1.resource()).isSameAs(resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)
-        assertThat(com1.eContainer()).isSameAs(pc1);
-        assertThat(com1.eInternalContainer()).isSameAs(pc1);
+        assertThat(com1.eContainer()).isEqualTo(pc1);
+        assertThat(com1.eInternalContainer()).isEqualTo(pc1);
 
         // Check that the element is in the containment reference list of its parent
         assertThat(pc1.getContainmentNoOppositeRefComment()).contains(com1);
