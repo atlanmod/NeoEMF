@@ -33,10 +33,8 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
@@ -60,7 +58,7 @@ public class DefaultMapperWriter implements MapperWriter {
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
     private final Cache<String, Id> cache = CacheBuilder.newBuilder()
-            .maximumSize(adaptFromMemory(10_000L))
+            .maximumSize()
             .build();
 
     /**
@@ -72,29 +70,6 @@ public class DefaultMapperWriter implements MapperWriter {
         this.mapper = checkNotNull(mapper);
 
         Log.debug("{0} created", getClass().getSimpleName());
-    }
-
-    /**
-     * Adapts the given {@code value} according to the maximum memory dedicated to the JVM.
-     * <p>
-     * <b>Note:</b> The formulas can be improved, for sure.
-     *
-     * @param value the value to adapt
-     *
-     * @return the adapted value
-     */
-    @Nonnegative
-    private static long adaptFromMemory(@Nonnegative long value) {
-        checkArgument(value >= 0);
-
-        long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
-
-        long factor = maxMemoryGB;
-        if (maxMemoryGB > 1) {
-            factor *= 2;
-        }
-
-        return value * factor;
     }
 
     @Override
