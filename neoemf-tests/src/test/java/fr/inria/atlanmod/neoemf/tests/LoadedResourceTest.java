@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -48,11 +47,11 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        EObject sampleModel = it.next();
-        assertThat(sampleModel.eContainer()).isNull();
+        SampleModel model = (SampleModel) it.next();
+        assertThat(model.eContainer()).isNull();
 
-        EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eContainer()).isEqualTo(sampleModel);
+        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        assertThat(modelContent.eContainer()).isEqualTo(model);
     }
 
     @Test
@@ -60,10 +59,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     public void testGetElementsEInternalContainer() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
-        InternalEObject model = (InternalEObject) resource.getContents().get(0);
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.eInternalContainer()).isNull();
 
-        InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
+        SampleModelContentObject modelContent = model.getContentObjects().get(0);
         assertThat(modelContent.eInternalContainer()).isNull();
     }
 
@@ -74,11 +73,11 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat(sampleModel.eInternalContainer()).isNull();
+        SampleModel model = (SampleModel) it.next();
+        assertThat(model.eInternalContainer()).isNull();
 
-        InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat(sampleContentObject.eInternalContainer()).isNull();
+        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        assertThat(modelContent.eInternalContainer()).isNull();
     }
 
     @Test
@@ -100,10 +99,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        EObject sampleModel = it.next();
+        SampleModel sampleModel = (SampleModel) it.next();
         assertThat(sampleModel.eResource()).isSameAs(resource);
 
-        EObject sampleContentObject = it.next();
+        SampleModelContentObject sampleContentObject = (SampleModelContentObject) it.next();
         assertThat(sampleContentObject.eResource()).isSameAs(resource);
     }
 
@@ -112,10 +111,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
     public void testGetElementsEDirectResource() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
-        InternalEObject model = (InternalEObject) resource.getContents().get(0);
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.eDirectResource()).isNull();
 
-        InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
+        SampleModelContentObject modelContent = model.getContentObjects().get(0);
         assertThat(modelContent.eDirectResource()).isNull();
     }
 
@@ -126,10 +125,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        InternalEObject sampleModel = (InternalEObject) it.next();
+        SampleModel sampleModel = (SampleModel) it.next();
         assertThat(sampleModel.eDirectResource()).isNull();
 
-        InternalEObject sampleContentObject = (InternalEObject) it.next();
+        SampleModelContentObject sampleContentObject = (SampleModelContentObject) it.next();
         assertThat(sampleContentObject.eDirectResource()).isNull();
     }
 

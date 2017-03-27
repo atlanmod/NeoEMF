@@ -65,8 +65,24 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     @Nonnull
-    private final Cache<Id, PersistentEObject> cache = CacheBuilder.newBuilder()
+    private final Cache<Id, PersistentEObject> objectCache = CacheBuilder.newBuilder()
             .softValues()
+            .maximumSize()
+            .build();
+
+    /**
+     * In-memory cache that holds recently loaded {@link ContainerDescriptor}s, identified by their {@link Id}.
+     */
+    @Nonnull
+    private final Cache<Id, ContainerDescriptor> containerCache = CacheBuilder.newBuilder()
+            .maximumSize()
+            .build();
+
+    /**
+     * In-memory cache that holds recently loaded {@link ClassDescriptor}s, identified by their {@link Id}.
+     */
+    @Nonnull
+    private final Cache<Id, ClassDescriptor> metaclassCache = CacheBuilder.newBuilder()
             .maximumSize()
             .build();
 
@@ -148,7 +164,37 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
 
     @Override
     public boolean exists(Id id) {
-        return nonNull(cache.get(id)) || super.exists(id);
+        return nonNull(objectCache.get(id)) || super.exists(id);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ContainerDescriptor> containerOf(Id id) {
+        return Optional.ofNullable(containerCache.get(id, k -> super.containerOf(k).orElse(null)));
+    }
+
+    @Override
+    public void containerFor(Id id, ContainerDescriptor container) {
+        containerCache.put(id, container);
+        super.containerFor(id, container);
+    }
+
+    @Override
+    public void unsetContainer(Id id) {
+        containerCache.invalidate(id);
+        super.unsetContainer(id);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ClassDescriptor> metaclassOf(Id id) {
+        return Optional.ofNullable(metaclassCache.get(id, k -> super.metaclassOf(k).orElse(null)));
+    }
+
+    @Override
+    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+        metaclassCache.put(id, metaclass);
+        super.metaclassFor(id, metaclass);
     }
 
     @Nullable
@@ -729,7 +775,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      */
     private void updateInstanceOf(PersistentEObject object) {
         // If the object is already present in the cache, then the metaclass is defined
-        if (nonNull(cache.get(object.id()))) {
+        if (nonNull(objectCache.get(object.id()))) {
             return;
         }
 
@@ -748,7 +794,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @param object the object to refresh
      */
     private void refresh(PersistentEObject object) {
-        cache.putIfAbsent(object.id(), object);
+        objectCache.putIfAbsent(object.id(), object);
     }
 
     @Nonnull
@@ -756,7 +802,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = cache.get(id, k -> resolveInstanceOf(k)
+        PersistentEObject object = objectCache.get(id, k -> resolveInstanceOf(k)
                 .map(c -> {
                     PersistentEObject o = PersistenceFactory.getInstance().create(c, k);
                     o.isPersistent(true);

@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -48,11 +47,11 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        EObject sampleModel = it.next();
-        assertThat(sampleModel.eContainer()).isNull();
+        SampleModel model = (SampleModel) it.next();
+        assertThat(model.eContainer()).isNull();
 
-        EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eContainer()).isEqualTo(sampleModel);
+        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        assertThat(modelContent.eContainer()).isEqualTo(model);
     }
 
     @Test
@@ -73,11 +72,11 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat(sampleModel.eInternalContainer()).isNull();
+        SampleModel model = (SampleModel) it.next();
+        assertThat(model.eInternalContainer()).isNull();
 
-        InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat(sampleContentObject.eInternalContainer()).isEqualTo(sampleModel);
+        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        assertThat(modelContent.eInternalContainer()).isEqualTo(model);
     }
 
     @Test
@@ -98,11 +97,11 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        EObject sampleModel = it.next();
-        assertThat(sampleModel.eResource()).isSameAs(resource);
+        SampleModel model = (SampleModel) it.next();
+        assertThat(model.eResource()).isSameAs(resource);
 
-        EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eResource()).isSameAs(resource);
+        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        assertThat(modelContent.eResource()).isSameAs(resource);
     }
 
     @Test
@@ -123,11 +122,11 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat(sampleModel.eDirectResource()).isSameAs(resource);
+        SampleModel model = (SampleModel) it.next();
+        assertThat(model.eDirectResource()).isSameAs(resource);
 
-        InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat(sampleContentObject.eDirectResource()).isNull();
+        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        assertThat(modelContent.eDirectResource()).isNull();
     }
 
     /**

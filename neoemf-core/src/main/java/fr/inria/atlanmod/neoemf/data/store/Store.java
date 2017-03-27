@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link DataMapper} to establish a mapping between a {@link Resource.Internal} and a {@link Backend}.
+ * A {@link DataMapper} to establish a mapping between a {@link Resource} and a {@link Backend}.
  */
 @ParametersAreNonnullByDefault
 public interface Store extends DataMapper {
@@ -33,14 +33,14 @@ public interface Store extends DataMapper {
      * @return the resource
      */
     @Nullable
-    Resource.Internal resource();
+    Resource resource();
 
     /**
      * Defines the resource to store and access.
      *
      * @param resource the resource
      */
-    void resource(@Nullable Resource.Internal resource);
+    void resource(@Nullable Resource resource);
 
     /**
      * Checks whether this store is attached to a {@link PersistentResource}.

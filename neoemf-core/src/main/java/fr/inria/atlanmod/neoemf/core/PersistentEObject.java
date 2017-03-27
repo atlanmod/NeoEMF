@@ -77,14 +77,14 @@ public interface PersistentEObject extends InternalEObject {
      * @return the containing resource
      */
     @Nullable
-    Resource.Internal resource();
+    Resource resource();
 
     /**
      * Defines the resource that contains this {@code PersistentEObject}.
      *
      * @param resource the containing resource
      */
-    void resource(@Nullable Resource.Internal resource);
+    void resource(@Nullable Resource resource);
 
     @Override
     StoreAdapter eStore();

@@ -68,7 +68,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * The resource containing this object.
      */
     @Nullable
-    private Resource.Internal resource;
+    private Resource resource;
 
     /**
      * Whether this object is mapped to an entity in a {@link fr.inria.atlanmod.neoemf.data.Backend}.
@@ -130,12 +130,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     @Nullable
-    public Resource.Internal resource() {
+    public Resource resource() {
         return resource;
     }
 
     @Override
-    public void resource(@Nullable Resource.Internal resource) {
+    public void resource(@Nullable Resource resource) {
         StoreAdapter newStore = null;
 
         if (resource instanceof PersistentResource) {
@@ -223,7 +223,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public Resource eResource() {
-        return Optional.<Resource>ofNullable(resource).orElseGet(super::eResource);
+        return Optional.ofNullable(resource).orElseGet(super::eResource);
     }
 
     @Override
@@ -259,7 +259,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         if (nonNull(container)) {
             eStore().updateContainment(this, eContainmentFeature(this, container, newContainerFeatureID), container);
-            resource((Resource.Internal) container.eResource());
+            resource(container.eResource());
         }
         else {
             eStore().removeContainment(this);
@@ -366,7 +366,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @return a new {@link Store}
      */
     @Nonnull
-    private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
+    private StoreAdapter createBoundedStore(@Nullable Resource resource) {
         if (isNull(store) || store.isPersistent()) {
             return StoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
         }
