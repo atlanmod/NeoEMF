@@ -15,6 +15,7 @@ import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -25,6 +26,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -102,6 +104,8 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isFile(), "BlueprintsBackendFactory only supports file-based URIs");
 
+        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+
         try {
             File file = new File(uri.toFileString());
 
@@ -113,6 +117,10 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             }
 
             configuration.save();
+
+            if (readOnly) {
+                graph = new ReadOnlyKeyIndexableGraph<>((KeyIndexableGraph) graph);
+            }
 
             String mapping = mappingFrom(options);
             backend = newInstanceOf(mapping,

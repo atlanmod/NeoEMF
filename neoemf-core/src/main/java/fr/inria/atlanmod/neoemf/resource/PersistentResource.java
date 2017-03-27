@@ -19,6 +19,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,6 +34,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface PersistentResource extends Resource, Resource.Internal, Closeable {
+
+    @Override
+    void save(Map<?, ?> options) throws IOException;
+
+    @Override
+    void load(Map<?, ?> options) throws IOException;
 
     @Override
     void close();

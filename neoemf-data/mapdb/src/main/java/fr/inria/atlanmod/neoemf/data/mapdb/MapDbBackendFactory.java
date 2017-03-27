@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -81,6 +82,8 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isFile(), "MapDbBackendFactory only supports file-based URIs");
 
+        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+
         try {
             File file = new File(uri.toFileString());
 
@@ -94,9 +97,13 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
                 }
             }
 
-            DB db = DBMaker.fileDB(dbFile)
-                    .fileMmapEnableIfSupported()
-                    .make();
+            DBMaker.Maker dbMaker = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported();
+
+            if (readOnly) {
+                dbMaker.readOnly();
+            }
+
+            DB db = dbMaker.make();
 
             String mapping = mappingFrom(options);
             backend = newInstanceOf(mapping,

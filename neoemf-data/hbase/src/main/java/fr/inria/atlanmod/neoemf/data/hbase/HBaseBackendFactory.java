@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.hadoop.conf.Configuration;
@@ -94,6 +95,8 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isHierarchical(), "HBaseBackendFactory only supports hierarchical URIs");
 
+        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+
         try {
             Configuration configuration = HBaseConfiguration.create();
             configuration.set("hbase.zookeeper.quorum", uri.host());
@@ -108,8 +111,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                             .collect(Collectors.joining("_")));
 
             // Initialize
-            if (!admin.tableExists(tableName)) {
-                // TODO Don't initialize this table in READ ONLY.
+            if (!admin.tableExists(tableName) && !readOnly) {
                 HTableDescriptor desc = new HTableDescriptor(tableName);
                 HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.PROPERTY_FAMILY);
                 HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.TYPE_FAMILY);

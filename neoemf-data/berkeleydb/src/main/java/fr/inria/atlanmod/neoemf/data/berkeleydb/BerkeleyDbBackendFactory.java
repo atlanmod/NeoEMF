@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -81,6 +82,8 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isFile(), "BerkeleyDbBackendFactory only supports file-based URIs");
 
+        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+
         try {
             File file = new File(uri.toFileString());
 
@@ -90,12 +93,14 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
             }
 
             EnvironmentConfig environmentConfig = new EnvironmentConfig()
-                    .setAllowCreate(true);
+                    .setAllowCreate(!readOnly)
+                    .setReadOnly(readOnly);
 
             Environment environment = new Environment(directory, environmentConfig);
 
             DatabaseConfig databaseConfig = new DatabaseConfig()
-                    .setAllowCreate(true)
+                    .setAllowCreate(!readOnly)
+                    .setReadOnly(readOnly)
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 

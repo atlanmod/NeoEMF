@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -61,12 +62,34 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      *
      * @throws InvalidOptionException if the mapping is not defined
      */
+    @Nonnull
     protected static String mappingFrom(Map<String, Object> options) {
         if (!options.containsKey(PersistentResourceOptions.MAPPING)) {
             throw new InvalidOptionException("No mapping is defined");
         }
 
         return options.get(PersistentResourceOptions.MAPPING).toString();
+    }
+
+    /**
+     * Retrieves the stores to use from the {@code options}.
+     *
+     * @param options the options containing the stores declaration
+     *
+     * @return a list of stores declaration
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    protected static Set<PersistentStoreOptions> storesFrom(Map<String, Object> options) {
+        try {
+            if (options.containsKey(PersistentResourceOptions.STORES)) {
+                return (Set<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
+            }
+        }
+        catch (ClassCastException ignored) {
+        }
+
+        return Collections.emptySet();
     }
 
     /**
@@ -114,24 +137,21 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
     @Nonnull
     @Override
-    @SuppressWarnings("unchecked")
     public final Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
+        checkNotNull(options);
+
         Store store = new DirectWriteStore(backend, resource);
 
-        if (checkNotNull(options).containsKey(PersistentResourceOptions.STORES)) {
-            Set<PersistentStoreOptions> storeOptions = (Set<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
+        for (PersistentStoreOptions opt : storesFrom(options).stream().sorted().collect(Collectors.toList())) {
+            List<ConstructorParameter> parameters = opt.parameters().stream()
+                    .filter(options::containsKey)
+                    .map(key -> new ConstructorParameter(options.get(key)))
+                    .collect(Collectors.toList());
 
-            for (PersistentStoreOptions opt : storeOptions.stream().sorted().collect(Collectors.toList())) {
-                List<ConstructorParameter> parameters = opt.parameters().stream()
-                        .filter(options::containsKey)
-                        .map(key -> new ConstructorParameter(options.get(key)))
-                        .collect(Collectors.toList());
+            parameters.add(0,
+                    new ConstructorParameter(store, Store.class));
 
-                parameters.add(0,
-                        new ConstructorParameter(store, Store.class));
-
-                store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
-            }
+            store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
         }
 
         return StoreAdapter.adapt(store);
