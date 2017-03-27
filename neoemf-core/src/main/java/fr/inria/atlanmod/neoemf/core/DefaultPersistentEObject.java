@@ -84,11 +84,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private PersistentEObject container;
 
     /**
-     * The identifier of the {@link EReference} used to link this object to its container.
-     */
-    private Integer containerReferenceId;
-
-    /**
      * The {@link StoreAdapter} where this object is stored.
      */
     private StoreAdapter store;
@@ -129,9 +124,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public PersistentEObject isPersistent(boolean isPersistent) {
+    public void isPersistent(boolean isPersistent) {
         this.isPersistent = isPersistent;
-        return this;
     }
 
     @Override
@@ -221,22 +215,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nullable
     @Override
-    public EObject eContainer() {
-        /*
-         * If the resource is not distributed and if the value of the eContainer field is set, it is not needed to get
-         * it from the backend. This is not true in a distributed context when another client can the database without
-         * notifying others.
-         */
-        if (isNull(container) || resource instanceof PersistentResource && ((PersistentResource) resource).isDistributed()) {
-            PersistentEObject newContainer = eStore().getContainer(this);
-
-            // If the container has changed, update it
-            if (!Objects.equals(container, newContainer)) {
-                containerReferenceId = null;
-                eBasicSetContainer(newContainer, eContainerFeatureID());
-            }
-        }
-
+    public PersistentEObject eContainer() {
+        eBasicSetContainer(eStore().getContainer(this), eContainerFeatureID());
         return container;
     }
 
@@ -274,28 +254,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    protected void eBasicSetContainer(@Nullable InternalEObject newContainer) {
-        this.container = PersistentEObject.from(newContainer);
-    }
-
-    @Override
-    protected void eBasicSetContainerFeatureID(int newContainerReferenceId) {
-        this.containerReferenceId = newContainerReferenceId;
-    }
-
-    @Override
-    protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerReferenceId) {
-        super.eBasicSetContainer(newContainer, newContainerReferenceId);
+    protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
+        container = PersistentEObject.from(newContainer);
 
         if (nonNull(container)) {
-            eStore().updateContainment(this, eContainmentFeature(), container);
-
-            if (container.eResource() != resource) {
-                resource((Resource.Internal) container.eResource());
-            }
+            eStore().updateContainment(this, eContainmentFeature(this, container, newContainerFeatureID), container);
+            resource((Resource.Internal) container.eResource());
         }
         else {
             eStore().removeContainment(this);
+            resource(null);
         }
     }
 
@@ -382,14 +350,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public int eContainerFeatureID() {
-        return Optional.ofNullable(containerReferenceId)
-                .orElseGet(() -> Optional.ofNullable(eStore().getContainingFeature(this))
-                        .map(cr -> Optional.ofNullable(cr.getEOpposite())
-                                .map(o -> eClass().getFeatureID(o))
-                                .orElseGet(() -> Optional.ofNullable(eInternalContainer())
-                                        .map(c -> EOPPOSITE_FEATURE_BASE - c.eClass().getFeatureID(cr))
-                                        .orElse(0)))
-                        .orElse(0));
+        //noinspection ConstantConditions
+        return Optional.ofNullable(eStore().getContainingFeature(this))
+                .map(cr -> Optional.ofNullable(cr.getEOpposite())
+                        .map(op -> eClass().getFeatureID(op))
+                        .orElseGet(() -> EOPPOSITE_FEATURE_BASE - eStore().getContainer(this).eClass().getFeatureID(cr)))
+                .orElse(0);
     }
 
     /**

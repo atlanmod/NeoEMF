@@ -68,10 +68,8 @@ public interface PersistentEObject extends InternalEObject {
      * fr.inria.atlanmod.neoemf.data.Backend}.
      *
      * @param isPersistent {@code true} if this {@code PersistentEObject} is mapped, otherwise {@code false}
-     *
-     * @return this object (for chaining)
      */
-    PersistentEObject isPersistent(boolean isPersistent);
+    void isPersistent(boolean isPersistent);
 
     /**
      * Returns the resource that contains this {@code PersistentEObject}.
