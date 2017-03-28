@@ -199,8 +199,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nullable
     @Override
-    public Resource eResource() {
-        return Optional.<Resource>ofNullable(resource).orElseGet(super::eResource);
+    public Resource.Internal eInternalResource() {
+        return Optional.ofNullable(resource()).orElseGet(super::eInternalResource);
     }
 
     @Override
