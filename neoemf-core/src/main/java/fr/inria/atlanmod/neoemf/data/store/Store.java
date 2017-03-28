@@ -33,14 +33,14 @@ public interface Store extends DataMapper {
      * @return the resource
      */
     @Nullable
-    Resource resource();
+    Resource.Internal resource();
 
     /**
      * Defines the resource to store and access.
      *
      * @param resource the resource
      */
-    void resource(@Nullable Resource resource);
+    void resource(@Nullable Resource.Internal resource);
 
     /**
      * Checks whether this store is attached to a {@link PersistentResource}.

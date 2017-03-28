@@ -216,8 +216,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     store.close();
 
                     store = StoreAdapter.adapt(factory.createPersistentStore(this, options));
-
-                    rootObject.isPersistent(true);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());

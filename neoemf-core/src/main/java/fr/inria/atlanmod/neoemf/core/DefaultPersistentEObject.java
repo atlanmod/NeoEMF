@@ -68,12 +68,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * The resource containing this object.
      */
     @Nullable
-    private Resource resource;
-
-    /**
-     * Whether this object is mapped to an entity in a {@link fr.inria.atlanmod.neoemf.data.Backend}.
-     */
-    private boolean isPersistent;
+    private Resource.Internal resource;
 
     /**
      * The {@link StoreAdapter} where this object is stored.
@@ -94,7 +89,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
-        this.isPersistent = false;
 
         Log.debug("DefaultPersistentEObject created with ID {0}", id);
     }
@@ -111,30 +105,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public boolean isPersistent() {
-        return isPersistent;
-    }
-
-    @Override
-    public void isPersistent(boolean isPersistent) {
-        this.isPersistent = isPersistent;
-    }
-
-    @Override
     @Nullable
-    public Resource resource() {
+    public Resource.Internal resource() {
         return resource;
     }
 
     @Override
-    public void resource(@Nullable Resource resource) {
+    public void resource(@Nullable Resource.Internal resource) {
         StoreAdapter newStore = null;
 
         if (resource instanceof PersistentResource) {
             // The resource store may have been changed (persistent <-> transient)
             newStore = ((PersistentResource) resource).store();
         }
-        else if (this.resource != resource) {
+        else if (resource() != resource) {
             newStore = createBoundedStore(resource);
         }
 
@@ -206,23 +190,26 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
             PersistentEObject object = PersistentEObject.from(value.get());
-            if (object.resource() != resource) {
-                object.resource(resource);
-            }
+            object.resource(resource());
+            return Optional.of(object);
         }
+
         return value;
     }
 
     @Nullable
     @Override
     public Resource eResource() {
-        return Optional.ofNullable(resource).orElseGet(super::eResource);
+        return Optional.<Resource>ofNullable(resource).orElseGet(super::eResource);
     }
 
     @Override
-    public NotificationChain eSetResource(Resource.Internal resource, NotificationChain notifications) {
+    public NotificationChain eSetResource(Resource.Internal resource, NotificationChain msgs) {
+        NotificationChain notifications = super.eSetResource(resource, msgs);
+
         resource(resource);
-        return super.eSetResource(resource, notifications);
+
+        return notifications;
     }
 
     @Override
@@ -248,9 +235,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
+        PersistentEObject container = PersistentEObject.from(newContainer);
+
         if (nonNull(newContainer)) {
-            eStore().updateContainment(this, eContainmentFeature(this, newContainer, newContainerFeatureID), PersistentEObject.from(newContainer));
-            resource(newContainer.eResource());
+            eStore().updateContainment(this, eContainmentFeature(this, newContainer, newContainerFeatureID), container);
+            resource(container.resource());
         }
         else {
             eStore().removeContainment(this);
@@ -268,7 +257,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public StoreAdapter eStore() {
         if (isNull(store)) {
-            store = createBoundedStore(resource);
+            store = createBoundedStore(resource());
         }
         return store;
     }
@@ -329,7 +318,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @return a new {@link Store}
      */
     @Nonnull
-    private StoreAdapter createBoundedStore(@Nullable Resource resource) {
+    private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
         if (isNull(store) || store.isPersistent()) {
             return StoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
         }

@@ -744,14 +744,10 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         checkNotNull(id);
 
         PersistentEObject object = objectCache.get(id, k -> resolveInstanceOf(k)
-                .map(c -> {
-                    PersistentEObject o = PersistenceFactory.getInstance().create(c, k);
-                    o.isPersistent(true);
-                    return o;
-                })
+                .map(c -> PersistenceFactory.getInstance().create(c, k))
                 .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
-        if (nonNull(resource()) && object.resource() != resource()) {
+        if (nonNull(resource())) {
             object.resource(resource());
         }
 

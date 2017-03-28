@@ -30,7 +30,7 @@ public final class DirectWriteStore extends AbstractMapperDecorator<Backend> imp
      * The resource to store and access.
      */
     @Nullable
-    private Resource resource;
+    private Resource.Internal resource;
 
     /**
      * Constructs a new {@code DirectWriteStore} between the given {@code resource} and the {@code backend}.
@@ -38,19 +38,19 @@ public final class DirectWriteStore extends AbstractMapperDecorator<Backend> imp
      * @param backend  the back-end used to store the model
      * @param resource the resource to store and access
      */
-    public DirectWriteStore(Backend backend, @Nullable Resource resource) {
+    public DirectWriteStore(Backend backend, @Nullable Resource.Internal resource) {
         super(backend);
         this.resource = resource;
     }
 
     @Nullable
     @Override
-    public Resource resource() {
+    public Resource.Internal resource() {
         return resource;
     }
 
     @Override
-    public void resource(@Nullable Resource resource) {
+    public void resource(@Nullable Resource.Internal resource) {
         this.resource = resource;
     }
 

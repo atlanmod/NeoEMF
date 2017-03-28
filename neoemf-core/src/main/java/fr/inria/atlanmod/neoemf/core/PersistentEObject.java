@@ -56,35 +56,19 @@ public interface PersistentEObject extends InternalEObject {
     void id(Id id);
 
     /**
-     * Returns whether this object is mapped to an entity stored in a {@link
-     * fr.inria.atlanmod.neoemf.data.Backend}.
-     *
-     * @return {@code true} if this {@code PersistentEObject} is mapped, otherwise {@code false}
-     */
-    boolean isPersistent();
-
-    /**
-     * Defines whether this object is mapped to an entity stored in a {@link
-     * fr.inria.atlanmod.neoemf.data.Backend}.
-     *
-     * @param isPersistent {@code true} if this {@code PersistentEObject} is mapped, otherwise {@code false}
-     */
-    void isPersistent(boolean isPersistent);
-
-    /**
      * Returns the resource that contains this {@code PersistentEObject}.
      *
      * @return the containing resource
      */
     @Nullable
-    Resource resource();
+    Resource.Internal resource();
 
     /**
      * Defines the resource that contains this {@code PersistentEObject}.
      *
      * @param resource the containing resource
      */
-    void resource(@Nullable Resource resource);
+    void resource(@Nullable Resource.Internal resource);
 
     @Override
     StoreAdapter eStore();

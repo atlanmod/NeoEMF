@@ -39,13 +39,13 @@ public abstract class AbstractStoreDecorator extends AbstractMapperDecorator<Sto
     @Nullable
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Resource resource() {
+    public Resource.Internal resource() {
         return next().resource();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void resource(@Nullable Resource resource) {
+    public void resource(@Nullable Resource.Internal resource) {
         next().resource(resource);
     }
 
