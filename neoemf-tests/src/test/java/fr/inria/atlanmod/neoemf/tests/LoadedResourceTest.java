@@ -35,9 +35,11 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.eContainer()).isNull();
+        assertThat(model.eInternalContainer()).isNull();
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
         assertThat(modelContent.eContainer()).isEqualTo(model);
+        assertThat(modelContent.eInternalContainer()).isEqualTo(model);
     }
 
     @Test
@@ -49,35 +51,11 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         SampleModel model = (SampleModel) it.next();
         assertThat(model.eContainer()).isNull();
+        assertThat(model.eInternalContainer()).isNull();
 
         SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
         assertThat(modelContent.eContainer()).isEqualTo(model);
-    }
-
-    @Test
-    @Category(Tags.PersistentTests.class)
-    public void testGetElementsEInternalContainer() throws IOException {
-        PersistentResource resource = fillResource(createPersistentStore());
-
-        SampleModel model = (SampleModel) resource.getContents().get(0);
-        assertThat(model.eInternalContainer()).isNull();
-
-        SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertThat(modelContent.eInternalContainer()).isNull();
-    }
-
-    @Test
-    @Category(Tags.PersistentTests.class)
-    public void testGetAllContentsEInternalContainer() throws IOException {
-        PersistentResource resource = fillResource(createPersistentStore());
-
-        Iterator<EObject> it = resource.getAllContents();
-
-        SampleModel model = (SampleModel) it.next();
-        assertThat(model.eInternalContainer()).isNull();
-
-        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
-        assertThat(modelContent.eInternalContainer()).isNull();
+        assertThat(modelContent.eInternalContainer()).isEqualTo(model);
     }
 
     @Test

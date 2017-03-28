@@ -36,7 +36,10 @@ public class SavedResourceTest extends AbstractBackendTest {
         fillResource(resource);
 
         assertThat(model.eContainer()).isNull();
+        assertThat(model.eInternalContainer()).isNull();
+
         assertThat(modelContentObject.eContainer()).isEqualTo(model);
+        assertThat(modelContentObject.eInternalContainer()).isEqualTo(model);
     }
 
     @Test
@@ -49,33 +52,10 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         SampleModel model = (SampleModel) it.next();
         assertThat(model.eContainer()).isNull();
+        assertThat(model.eInternalContainer()).isNull();
 
         SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
         assertThat(modelContent.eContainer()).isEqualTo(model);
-    }
-
-    @Test
-    @Category(Tags.PersistentTests.class)
-    public void testEInternalContainer() {
-        PersistentResource resource = createPersistentStore();
-        fillResource(resource);
-
-        assertThat(model.eInternalContainer()).isNull();
-        assertThat(modelContentObject.eInternalContainer()).isEqualTo(model);
-    }
-
-    @Test
-    @Category(Tags.PersistentTests.class)
-    public void testGetAllContentsEInternalContainer() {
-        PersistentResource resource = createPersistentStore();
-        fillResource(resource);
-
-        Iterator<EObject> it = resource.getAllContents();
-
-        SampleModel model = (SampleModel) it.next();
-        assertThat(model.eInternalContainer()).isNull();
-
-        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
         assertThat(modelContent.eInternalContainer()).isEqualTo(model);
     }
 

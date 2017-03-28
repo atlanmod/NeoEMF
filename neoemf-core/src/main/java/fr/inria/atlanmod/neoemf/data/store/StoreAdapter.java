@@ -216,12 +216,11 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
+        updateInstanceOf(object);
 
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
-            updateInstanceOf(object);
-
             Optional<String> previousValue;
             if (!feature.isMany()) {
                 previousValue = valueFor(key, serialize((EAttribute) feature, value));
@@ -236,8 +235,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
-
-            updateContainment(referencedObject, (EReference) feature, object);
+            updateInstanceOf(referencedObject);
 
             Optional<Id> previousReference;
             if (!feature.isMany()) {
@@ -453,6 +451,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         checkNotNull(internalObject);
         checkNotNull(feature);
         checkNotNull(value);
+
         checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
         if (index != EStore.NO_INDEX) {
@@ -460,12 +459,11 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
+        updateInstanceOf(object);
 
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
-            updateInstanceOf(object);
-
             if (index == EStore.NO_INDEX) {
                 appendValue(key, serialize((EAttribute) feature, value));
             }
@@ -475,8 +473,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(value);
-
-            updateContainment(referencedObject, (EReference) feature, object);
+            updateInstanceOf(referencedObject);
 
             if (index == EStore.NO_INDEX) {
                 appendReference(key, referencedObject.id());
@@ -513,16 +510,9 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
                     .orElse(null);
         }
         else {
-            PersistentEObject removedObject = removeReference(key)
+            return removeReference(key)
                     .map(this::resolve)
                     .orElse(null);
-
-            if (((EReference) feature).isContainment()) {
-                removedObject.eBasicSetContainer(null, -1, null);
-                removedObject.resource(null);
-            }
-
-            return removedObject;
         }
     }
 
@@ -667,8 +657,8 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     }
 
     /**
-     * Creates or updates the containment link between {@code object} and {@code container}, and deletes any
-     * previous link to {@code object}. The {@code object} is added to the containment list of the {@code container}.
+     * Creates or updates the containment link between {@code object} and {@code container}, and deletes any previous
+     * link to {@code object}. The {@code object} is added to the containment list of the {@code container}.
      * <p>
      * The method checks if an existing container is stored and update it if needed.
      *
@@ -680,21 +670,18 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
         updateInstanceOf(object);
         updateInstanceOf(container);
 
-        // Update containment if necessary
-        if (containerReference.isContainment()) {
-            Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
+        Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
 
-            if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
-                containerFor(object.id(), ContainerDescriptor.from(container, containerReference));
-            }
+        if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
+            containerFor(object.id(), ContainerDescriptor.from(container, containerReference));
         }
     }
 
     /**
-     * Removes the containment link between {@code object} and its container, and deletes any
-     * previous link to {@code object}.
+     * Removes the containment link between {@code object} and its container, and deletes any previous link to
+     * {@code object}.
      *
-     * @param object the object to remove from the containment list of the its actual container
+     * @param object the object to remove from the containment list of its actual container
      */
     public void removeContainment(PersistentEObject object) {
         updateInstanceOf(object);

@@ -76,14 +76,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private boolean isPersistent;
 
     /**
-     * The internal cached value of the container.
-     * <p>
-     * This information should be also maintained in the {@link #store}.
-     */
-    @Nullable
-    private PersistentEObject container;
-
-    /**
      * The {@link StoreAdapter} where this object is stored.
      */
     private StoreAdapter store;
@@ -169,19 +161,27 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param source the store to copy
      * @param target the store where to store data
      */
-    // TODO Move the copy at DataMapper level
     private void copyStore(StoreAdapter source, StoreAdapter target) {
+        Optional<InternalEObject> container = Optional.ofNullable(source.getContainer(this));
+        if (container.isPresent()) {
+            //noinspection ConstantConditions
+            target.updateContainment(this, source.getContainingFeature(this), PersistentEObject.from(container.get()));
+        }
+        else {
+            target.removeContainment(this);
+        }
+
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {
                 if (!f.isMany()) {
-                    getValueFrom(source, f, EStore.NO_INDEX)
-                            .ifPresent(v -> target.set(this, f, EStore.NO_INDEX, v));
+                    getValueFrom(source, f, EStore.NO_INDEX).
+                            ifPresent(v -> target.set(this, f, EStore.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, f);
 
-                    IntStream.range(0, source.size(this, f)).forEach(i ->
-                            getValueFrom(source, f, i)
+                    IntStream.range(0, source.size(this, f))
+                            .forEach(i -> getValueFrom(source, f, i)
                                     .ifPresent(v -> target.add(this, f, i, v)));
                 }
             }
@@ -211,13 +211,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         return value;
-    }
-
-    @Nullable
-    @Override
-    public PersistentEObject eContainer() {
-        eBasicSetContainer(eStore().getContainer(this), eContainerFeatureID());
-        return container;
     }
 
     @Nullable
@@ -255,11 +248,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
-        container = PersistentEObject.from(newContainer);
-
-        if (nonNull(container)) {
-            eStore().updateContainment(this, eContainmentFeature(this, container, newContainerFeatureID), container);
-            resource(container.eResource());
+        if (nonNull(newContainer)) {
+            eStore().updateContainment(this, eContainmentFeature(this, newContainer, newContainerFeatureID), PersistentEObject.from(newContainer));
+            resource(newContainer.eResource());
         }
         else {
             eStore().removeContainment(this);
@@ -328,34 +319,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public void dynamicUnset(int dynamicFeatureId) {
         eStore().unset(this, eDynamicFeature(dynamicFeatureId));
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Returns the container of this {@link PersistentEObject}.
-     * <p>
-     * Do not return the same value as standard EMF implementation if the container has not been accessed with the
-     * public method {@link #eContainer()} before.
-     *
-     * @return the container of this object.
-     */
-    @Nullable
-    @Override
-    public PersistentEObject eInternalContainer() {
-        // Don't load the container from the store here: it creates an important overhead and performance loss.
-        // [Update 21-02-2017] Don't call super.eInternalContainer() either: it will delegate to the store.
-        return container;
-    }
-
-    @Override
-    public int eContainerFeatureID() {
-        //noinspection ConstantConditions
-        return Optional.ofNullable(eStore().getContainingFeature(this))
-                .map(cr -> Optional.ofNullable(cr.getEOpposite())
-                        .map(op -> eClass().getFeatureID(op))
-                        .orElseGet(() -> EOPPOSITE_FEATURE_BASE - eStore().getContainer(this).eClass().getFeatureID(cr)))
-                .orElse(0);
     }
 
     /**
