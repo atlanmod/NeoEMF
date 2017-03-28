@@ -168,6 +168,24 @@ public class RunnerState {
             options.cacheSizes();
         }
 
+        // Cache metaclasses
+        if (lowerOptions.contains("m")) {
+            Log.debug("Use metaclass caching");
+            options.cacheMetaclasses();
+        }
+
+        // Cache containers
+        if (lowerOptions.contains("c")) {
+            Log.debug("Use container caching");
+            options.cacheContainers();
+        }
+
+        // Stats recording
+        if (lowerOptions.contains("r")) {
+            Log.debug("Use statistics recording");
+            options.recordStats();
+        }
+
         // Logging
         Matcher levelMatcher = Pattern.compile("l\\{([a-zA-Z]+)\\}").matcher(lowerOptions);
         if (levelMatcher.find()) {

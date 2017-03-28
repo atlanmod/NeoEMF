@@ -32,11 +32,14 @@ By default, all resources are executed on all backends. But you can choose to ex
     For now, only `*.xmi` and `*.zxmi` that use the `http://www.eclipse.org/MoDisco/Java/0.2.incubation/java` package are allowed.
 
 - `s=<stores>,...`      where `<stores>` is a string containing the following characters (without specific order):
-  - `A{<chuck>}` for auto-saving, with the specified chunk *(default = 100000)*
-  - `F`          for caching the features
-  - `S`          for caching the sizes
-  - `P`          for caching the presence of values
+  - `A{<chuck>}` for auto-saving, with the specified chunk *(default = 50000)*
   - `L{<level>}` for logging the database accesses, at the specified level *(default = INFO)*
+  - `F`          for caching the feature values
+  - `S`          for caching the sizes of multi-valued features
+  - `P`          for caching the presence of values
+  - `M`          for caching the metaclasses
+  - `C`          for caching the containers
+  - `R`          for recording statistics *(EXPERIMENTAL)*
   
 **NOTE:** Values that are wrapped in `{***}` are optional.
 
