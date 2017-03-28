@@ -666,7 +666,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      * @param containerReference the containment reference, from the {@code container} to the {@code object}
      * @param container          the container
      */
-    public void updateContainment(PersistentEObject object, EReference containerReference, PersistentEObject container) {
+    public void updateContainer(PersistentEObject object, EReference containerReference, PersistentEObject container) {
         updateInstanceOf(object);
         updateInstanceOf(container);
 
@@ -683,7 +683,7 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
      *
      * @param object the object to remove from the containment list of its actual container
      */
-    public void removeContainment(PersistentEObject object) {
+    public void removeContainer(PersistentEObject object) {
         updateInstanceOf(object);
 
         unsetContainer(object.id());

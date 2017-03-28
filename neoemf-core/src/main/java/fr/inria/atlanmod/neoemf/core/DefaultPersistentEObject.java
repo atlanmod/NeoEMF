@@ -118,7 +118,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             // The resource store may have been changed (persistent <-> transient)
             newStore = ((PersistentResource) resource).store();
         }
-        else if (resource() != resource) {
+        else if (this.resource != resource) {
             newStore = createBoundedStore(resource);
         }
 
@@ -146,13 +146,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param target the store where to store data
      */
     private void copyStore(StoreAdapter source, StoreAdapter target) {
-        Optional<InternalEObject> container = Optional.ofNullable(source.getContainer(this));
+        Optional<PersistentEObject> container = Optional.ofNullable(source.getContainer(this));
+
         if (container.isPresent()) {
             //noinspection ConstantConditions
-            target.updateContainment(this, source.getContainingFeature(this), PersistentEObject.from(container.get()));
+            target.updateContainer(this, source.getContainingFeature(this), container.get());
         }
         else {
-            target.removeContainment(this);
+            target.removeContainer(this);
         }
 
         eClass().getEAllStructuralFeatures().forEach(f -> {
@@ -190,7 +191,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
             PersistentEObject object = PersistentEObject.from(value.get());
-            object.resource(resource());
+            object.resource(resource);
             return Optional.of(object);
         }
 
@@ -200,7 +201,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nullable
     @Override
     public Resource.Internal eInternalResource() {
-        return Optional.ofNullable(resource()).orElseGet(super::eInternalResource);
+        return Optional.ofNullable(resource).orElseGet(super::eInternalResource);
     }
 
     @Override
@@ -238,11 +239,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         PersistentEObject container = PersistentEObject.from(newContainer);
 
         if (nonNull(newContainer)) {
-            eStore().updateContainment(this, eContainmentFeature(this, newContainer, newContainerFeatureID), container);
+            eStore().updateContainer(this, eContainmentFeature(this, newContainer, newContainerFeatureID), container);
             resource(container.resource());
         }
         else {
-            eStore().removeContainment(this);
+            eStore().removeContainer(this);
             resource(null);
         }
     }
@@ -257,7 +258,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public StoreAdapter eStore() {
         if (isNull(store)) {
-            store = createBoundedStore(resource());
+            store = createBoundedStore(resource);
         }
         return store;
     }
