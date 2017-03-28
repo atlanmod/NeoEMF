@@ -87,6 +87,11 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::unsetContainer, id);
     }
 
+    @Override
+    public boolean hasContainer(Id id) {
+        return callAndReturn(super::hasContainer, id);
+    }
+
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
@@ -96,6 +101,11 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
         call(super::metaclassFor, id, metaclass);
+    }
+
+    @Override
+    public boolean hasMetaclass(Id id) {
+        return callAndReturn(super::hasMetaclass, id);
     }
 
     @Nonnull
@@ -304,7 +314,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     }
 
     /**
-     * Logs the call of a method with a value.
+     * Logs the call of a method.
      *
      * @param consumer the method to call
      * @param key      the key used during the call
@@ -322,7 +332,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     }
 
     /**
-     * Logs the call of a method.
+     * Logs the call of a method and returns the result.
      *
      * @param function the method to call
      * @param key      the key used during the call
@@ -342,7 +352,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     }
 
     /**
-     * Logs the call of a method with a value.
+     * Logs the call of a method and returns the result.
      *
      * @param function the method to call
      * @param key      the key used during the call

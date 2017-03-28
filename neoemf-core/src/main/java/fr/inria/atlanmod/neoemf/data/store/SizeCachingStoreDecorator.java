@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<OptionalInt> {
+public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, OptionalInt> {
 
     /**
      * Constructs a new {@code SizeCachingStoreDecorator}.

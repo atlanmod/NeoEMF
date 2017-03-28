@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapper;
+package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -18,341 +18,329 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
- * An abstract {@link DataMapper} wrapper that delegates method calls to an internal {@link DataMapper}.
- *
- * @param <M> the type of the inner {@link DataMapper}
+ * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
-public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper {
+@SuppressWarnings("MethodDoesntCallSuperMethod")
+public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     /**
-     * The inner mapper.
+     * A map that holds the different calls made on the {@link Store} chain.
      */
-    private final M next;
+    private final Map<String, Integer> calls = new HashMap<>();
 
     /**
-     * Constructs a new {@code AbstractStoreDecorator} on the given {@code mapper}.
+     * Constructs a new {@code LoggingStoreDecorator}.
      *
-     * @param mapper the inner mapper
+     * @param store the inner store
      */
-    protected AbstractMapperDecorator(M mapper) {
-        this.next = checkNotNull(mapper);
-
-        Log.debug("{0} created", getClass().getSimpleName());
-    }
-
-    /**
-     * Returns the inner mapper.
-     *
-     * @return the inner mapper
-     */
-    @Nonnull
-    protected M next() {
-        return next;
+    public StatsStoreDecorator(Store store) {
+        super(store);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void save() {
-        next.save();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
     public void close() {
-        next.close();
-    }
+        String storeName = "Store@" + hashCode();
+        //noinspection ConstantConditions
+        String resourceName = nonNull(resource()) ? " [" + resource().getURI() + "]" : "";
 
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void copyTo(DataMapper target) {
-        next.copyTo(target);
-    }
+        Log.debug("Statistics for {0} : {1}", String.format("%s%s", storeName, resourceName), formatAsString());
 
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean exists(Id id) {
-        return next.exists(id);
+        super.close();
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        return next.containerOf(id);
+        return record(() -> super.containerOf(id));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public void containerFor(Id id, ContainerDescriptor container) {
-        next.containerFor(id, container);
+        record(() -> super.containerFor(id, container));
     }
 
     @Override
     public void unsetContainer(Id id) {
-        next.unsetContainer(id);
+        record(() -> super.unsetContainer(id));
     }
 
     @Override
     public boolean hasContainer(Id id) {
-        return next.hasContainer(id);
+        return record(() -> super.hasContainer(id));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<ClassDescriptor> metaclassOf(Id id) {
-        return next.metaclassOf(id);
+        return record(() -> super.metaclassOf(id));
     }
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        next.metaclassFor(id, metaclass);
+        record(() -> super.metaclassFor(id, metaclass));
     }
 
     @Override
     public boolean hasMetaclass(Id id) {
-        return next.hasMetaclass(id);
+        return record(() -> super.hasMetaclass(id));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
-        return next.allInstancesOf(metaclass, strict);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> valueOf(FeatureKey key) {
-        return next.valueOf(key);
+        return record(() -> super.valueOf(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        return next.valueFor(key, value);
+        return record(() -> super.valueFor(key, value));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> void unsetValue(FeatureKey key) {
-        next.unsetValue(key);
+        record(() -> super.unsetValue(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> boolean hasValue(FeatureKey key) {
-        return next.hasValue(key);
+        return record(() -> super.hasValue(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<Id> referenceOf(FeatureKey key) {
-        return next.referenceOf(key);
+        return record(() -> super.referenceOf(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        return next.referenceFor(key, reference);
+        return record(() -> super.referenceFor(key, reference));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public void unsetReference(FeatureKey key) {
-        next.unsetReference(key);
+        record(() -> super.unsetReference(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public boolean hasReference(FeatureKey key) {
-        return next.hasReference(key);
+        return record(() -> super.hasReference(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        return next.valueOf(key);
+        return record(() -> super.valueOf(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> List<V> allValuesOf(FeatureKey key) {
-        return next.allValuesOf(key);
+        return record(() -> super.allValuesOf(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        return next.valueFor(key, value);
+        return record(() -> super.valueFor(key, value));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> boolean hasAnyValue(FeatureKey key) {
-        return next.hasAnyValue(key);
+        return record(() -> super.hasAnyValue(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> void addValue(ManyFeatureKey key, V value) {
-        next.addValue(key, value);
+        record(() -> super.addValue(key, value));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> void appendValue(FeatureKey key, V value) {
-        next.appendValue(key, value);
+        record(() -> super.appendValue(key, value));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> void appendAllValues(FeatureKey key, List<V> values) {
-        next.appendAllValues(key, values);
+        record(() -> super.appendAllValues(key, values));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        return next.removeValue(key);
+        return record(() -> super.removeValue(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> void removeAllValues(FeatureKey key) {
-        next.removeAllValues(key);
+        record(() -> super.removeAllValues(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        return next.containsValue(key, value);
+        return record(() -> super.containsValue(key, value));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
-        return next.indexOfValue(key, value);
+        return record(() -> super.indexOfValue(key, value));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
-        return next.lastIndexOfValue(key, value);
+        return record(() -> super.lastIndexOfValue(key, value));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        return next.sizeOfValue(key);
+        return record(() -> super.sizeOfValue(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        return next.referenceOf(key);
+        return record(() -> super.referenceOf(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public List<Id> allReferencesOf(FeatureKey key) {
-        return next.allReferencesOf(key);
+        return record(() -> super.allReferencesOf(key));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        return next.referenceFor(key, reference);
+        return record(() -> super.referenceFor(key, reference));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public boolean hasAnyReference(FeatureKey key) {
-        return next.hasAnyReference(key);
+        return record(() -> super.hasAnyReference(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public void addReference(ManyFeatureKey key, Id reference) {
-        next.addReference(key, reference);
+        record(() -> super.addReference(key, reference));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public void appendReference(FeatureKey key, Id reference) {
-        next.appendReference(key, reference);
+        record(() -> super.appendReference(key, reference));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public void appendAllReferences(FeatureKey key, List<Id> references) {
-        next.appendAllReferences(key, references);
+        record(() -> super.appendAllReferences(key, references));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        return next.removeReference(key);
+        return record(() -> super.removeReference(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public void removeAllReferences(FeatureKey key) {
-        next.removeAllReferences(key);
+        record(() -> super.removeAllReferences(key));
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        return next.containsReference(key, reference);
+        return record(() -> super.containsReference(key, reference));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
-        return next.indexOfReference(key, reference);
+        return record(() -> super.indexOfReference(key, reference));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
-        return next.lastIndexOfReference(key, reference);
+        return record(() -> super.lastIndexOfReference(key, reference));
     }
 
     @Nonnull
     @Override
-    @OverridingMethodsMustInvokeSuper
     public OptionalInt sizeOfReference(FeatureKey key) {
-        return next.sizeOfReference(key);
+        return record(() -> super.sizeOfReference(key));
+    }
+
+    /**
+     * Records the call of a method.
+     *
+     * @param runnable the method to call
+     */
+    private void record(Runnable runnable) {
+        record();
+        runnable.run();
+    }
+
+    /**
+     * Records the call of a method and returns the result.
+     *
+     * @param supplier the method to call
+     *
+     * @return the result of the call
+     */
+    private <R> R record(Supplier<R> supplier) {
+        record();
+        return supplier.get();
+    }
+
+    /**
+     * Records the call of a method with a value.
+     */
+    private void record() {
+        calls.compute(getCallingMethod(), (s, count) -> nonNull(count) ? count + 1 : 1);
+    }
+
+    /**
+     * Formats the results as a string.
+     *
+     * @return a formatted string
+     */
+    private String formatAsString() {
+        if (calls.isEmpty()) {
+            return "Nothing has been recorded";
+        }
+        else {
+            return "\n" + calls.entrySet().stream()
+                    .sorted((e1, e2) -> e2.getValue() - e1.getValue())
+                    .map(e -> e.getKey() + " = " + e.getValue())
+                    .collect(Collectors.joining("\n"));
+        }
+    }
+
+    /**
+     * Returns the name of the calling method.
+     *
+     * @return the name
+     */
+    private String getCallingMethod() {
+        return Thread.currentThread().getStackTrace()[4].getMethodName();
     }
 }

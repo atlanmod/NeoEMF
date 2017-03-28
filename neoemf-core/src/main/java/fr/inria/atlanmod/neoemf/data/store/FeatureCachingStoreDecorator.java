@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches {@link EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<Object> {
+public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, Object> {
 
     /**
      * Constructs a new {@code FeatureCachingStoreDecorator}.

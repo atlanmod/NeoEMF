@@ -13,12 +13,15 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.context.CoreTest;
 import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
@@ -132,6 +135,63 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+    }
+
+    /**
+     * Checks the setup of the {@link ContainerCachingStoreDecorator}.
+     */
+    @Test
+    public void testContainerCachingOption() {
+        Map<String, Object> options = CommonOptions.newBuilder()
+                .cacheContainers()
+                .asMap();
+
+        Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isInstanceOf(ContainerCachingStoreDecorator.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+    }
+
+    /**
+     * Checks the setup of the {@link MetaclassCachingStoreDecorator}.
+     */
+    @Test
+    public void testMetaclassCachingOption() {
+        Map<String, Object> options = CommonOptions.newBuilder()
+                .cacheMetaclasses()
+                .asMap();
+
+        Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isInstanceOf(MetaclassCachingStoreDecorator.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+    }
+
+    /**
+     * Checks the setup of the {@link StatsStoreDecorator}.
+     */
+    @Test
+    public void testStatsCachingOption() {
+        Map<String, Object> options = CommonOptions.newBuilder()
+                .recordStats()
+                .asMap();
+
+        Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
+        assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isInstanceOf(StatsStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -285,11 +345,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
-
-        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -315,10 +374,19 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .cacheFeatures()
                 .log()
                 .autoSave(expectedChunk)
+                .cacheContainers()
+                .cacheMetaclasses()
+                .recordStats()
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
         assertThat(store).isExactlyInstanceOf(StoreAdapter.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(StatsStoreDecorator.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
@@ -327,16 +395,19 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(MetaclassCachingStoreDecorator.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(ContainerCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);

@@ -71,22 +71,6 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
             .build();
 
     /**
-     * In-memory cache that holds recently loaded {@link ContainerDescriptor}s, identified by their {@link Id}.
-     */
-    @Nonnull
-    private final Cache<Id, ContainerDescriptor> containerCache = CacheBuilder.newBuilder()
-            .maximumSize()
-            .build();
-
-    /**
-     * In-memory cache that holds recently loaded {@link ClassDescriptor}s, identified by their {@link Id}.
-     */
-    @Nonnull
-    private final Cache<Id, ClassDescriptor> metaclassCache = CacheBuilder.newBuilder()
-            .maximumSize()
-            .build();
-
-    /**
      * The thread used to close the mapper chain when the application will exit.
      */
     @Nonnull
@@ -165,36 +149,6 @@ public final class StoreAdapter extends AbstractStoreDecorator implements EStore
     @Override
     public boolean exists(Id id) {
         return nonNull(objectCache.get(id)) || super.exists(id);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        return Optional.ofNullable(containerCache.get(id, k -> super.containerOf(k).orElse(null)));
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        containerCache.put(id, container);
-        super.containerFor(id, container);
-    }
-
-    @Override
-    public void unsetContainer(Id id) {
-        containerCache.invalidate(id);
-        super.unsetContainer(id);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        return Optional.ofNullable(metaclassCache.get(id, k -> super.metaclassOf(k).orElse(null)));
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        metaclassCache.put(id, metaclass);
-        super.metaclassFor(id, metaclass);
     }
 
     @Nullable

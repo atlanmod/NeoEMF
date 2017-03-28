@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the presence of a value.
  */
 @ParametersAreNonnullByDefault
-public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Boolean> {
+public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, Boolean> {
 
     /**
      * Constructs a new {@code IsSetCachingStoreDecorator}.

@@ -20,15 +20,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An abstract {@link AbstractStoreDecorator} that provides a pre-loaded {@link Cache}.
  *
+ * @param <K> the type of keys maintained by the cache
  * @param <V> the type of cached values
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractCachingStoreDecorator<V> extends AbstractStoreDecorator {
+public abstract class AbstractCachingStoreDecorator<K, V> extends AbstractStoreDecorator {
 
     /**
      * In-memory cache that holds loaded values, identified by their {@link FeatureKey}.
      */
-    protected final Cache<FeatureKey, V> cache = CacheBuilder.newBuilder()
+    protected final Cache<K, V> cache = CacheBuilder.newBuilder()
             .maximumSize()
             .build();
 

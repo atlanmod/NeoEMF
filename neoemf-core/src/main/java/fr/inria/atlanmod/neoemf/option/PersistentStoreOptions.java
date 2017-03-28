@@ -11,15 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.Store;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,56 +27,77 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 public enum PersistentStoreOptions {
 
     /**
+     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
+     */
+    CACHE_STRUCTURAL_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator"),
+
+    /**
      * Caches the presence of a value.
      *
-     * @see IsSetCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
      */
     CACHE_IS_SET("fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator"),
 
     /**
      * Caches the size data.
      *
-     * @see SizeCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
      */
     CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator"),
 
     /**
      * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
      *
-     * @see FeatureCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator
      */
-    CACHE_STRUCTURAL_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator"),
+    CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator"),
+
+    /**
+     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator
+     */
+    CACHE_METACLASS("fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator"),
 
     /**
      * Counts all loaded objects.
      *
-     * @see LoadedObjectCounterStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
      */
     COUNT_LOADED_OBJECT("fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator"),
 
     /**
-     * Logs every call to a methods.
-     *
-     * @see LoggingStoreDecorator
-     */
-    LOG("fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator", PersistentResourceOptions.LOG_LEVEL),
-
-    /**
      * Automatically saves modifications as calls are made.
      *
-     * @see AutoSaveStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
      */
     AUTO_SAVE("fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator", PersistentResourceOptions.AUTO_SAVE_CHUNK),
 
     /**
      * Only allows read operations.
      *
-     * @see ReadOnlyStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
      */
-    READ_ONLY("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator");
+    READ_ONLY("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator"),
 
     /**
-     * The type of the represented {@link Store}.
+     * Logs every call to a methods.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     */
+    LOG("fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator", PersistentResourceOptions.LOG_LEVEL),
+
+    /**
+     * Records several stats.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator
+     */
+    STATS("fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator");
+
+    /**
+     * The type of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}.
      */
     private final String className;
 
@@ -97,7 +109,7 @@ public enum PersistentStoreOptions {
     /**
      * Constructs a new {@code PersistentStoreOptions} with the given {@code type}.
      *
-     * @param className  the type of the represented {@link Store}
+     * @param className  the type of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}
      * @param parameters the optional parameters of this option
      */
     PersistentStoreOptions(String className, String... parameters) {
@@ -106,7 +118,7 @@ public enum PersistentStoreOptions {
     }
 
     /**
-     * Returns the class name of the represented {@link Store}.
+     * Returns the class name of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}.
      *
      * @return the name of the class
      */
