@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.util.cache;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
+import java.util.function.ToIntBiFunction;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -33,6 +34,14 @@ public interface CacheBuilder<K, V> {
      */
     @Nonnegative
     long DEFAULT_MAX_SIZE = 10_000;
+
+    /**
+     * The default maximum weight of a weight-based caches.
+     *
+     * @see #maximumWeight(ToIntBiFunction)
+     */
+    @Nonnegative
+    long DEFAULT_MAX_WEIGHT = 10_000;
 
     /**
      * Creates a new {@code CacheBuilder} with default settings, including strong keys, strong values, and no automatic
@@ -63,12 +72,14 @@ public interface CacheBuilder<K, V> {
      * <p>
      * When {@code size} is zero, elements will be evicted immediately after being loaded into the cache. This can be
      * useful in testing, or to disable caching temporarily without a code change.
+     * <p>
+     * This feature cannot be used in conjunction with {@link #maximumWeight}.
      *
      * @param maximumSize the maximum size of the cache
      *
      * @return this builder (for chaining)
      *
-     * @throws IllegalArgumentException if {@code size} is negative
+     * @throws IllegalArgumentException if {@code maximumSize} is negative
      * @throws IllegalStateException    if a maximum size or weight was already set
      */
     @Nonnull
@@ -82,15 +93,73 @@ public interface CacheBuilder<K, V> {
      * <p>
      * When {@code size} is zero, elements will be evicted immediately after being loaded into the cache. This can be
      * useful in testing, or to disable caching temporarily without a code change.
+     * <p>
+     * This feature cannot be used in conjunction with {@link #maximumWeight}.
      *
      * @return this builder (for chaining)
      *
-     * @throws IllegalArgumentException if {@code size} is negative
      * @see #maximumSize(long)
+     * @see #DEFAULT_MAX_SIZE
      */
     @Nonnull
     default CacheBuilder<K, V> maximumSize() {
         return maximumSize(DEFAULT_MAX_SIZE);
+    }
+
+    /**
+     * Specifies the maximum weight of entries the cache may contain. Weight is determined using the
+     * {@link ToIntBiFunction} specified with {@code weigher}. Weights are measured and recorded when entries are
+     * inserted into or updated in the cache, and are thus effectively static during the lifetime of a cache entry.
+     * <p>
+     * Note that the cache <b>may evict an entry before this limit is exceeded or temporarily exceed the threshold while
+     * evicting</b>. As the cache size grows close to the maximum, the cache evicts entries that are less likely to be
+     * used again. For example, the cache may evict an entry because it hasn't been used recently or very often.
+     * <p>
+     * When {@code maximumWeight} is zero, elements will be evicted immediately after being loaded into cache. This can
+     * be useful in testing, or to disable caching temporarily without a code change.
+     * <p>
+     * Note that weight is only used to determine whether the cache is over capacity; it has no effect on selecting
+     * which entry should be evicted next.
+     * <p>
+     * This feature cannot be used in conjunction with {@link #maximumSize}.
+     *
+     * @param maximumWeight the maximum total weight of entries the cache may contain
+     * @param weigher       the weigher to use in calculating the weight of cache entries
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws IllegalArgumentException if {@code maximumWeight} is negative
+     * @throws IllegalStateException    if a maximum weight or size was already set
+     */
+    <K1 extends K, V1 extends V> CacheBuilder<K, V> maximumWeight(@Nonnegative long maximumWeight, ToIntBiFunction<? super K1, ? extends V1> weigher);
+
+    /**
+     * Specifies the maximum weight of entries the cache may contain. Weight is determined using the
+     * {@link ToIntBiFunction} specified with {@code weigher}. Weights are measured and recorded when entries are
+     * inserted into or updated in the cache, and are thus effectively static during the lifetime of a cache entry.
+     * <p>
+     * Note that the cache <b>may evict an entry before this limit is exceeded or temporarily exceed the threshold while
+     * evicting</b>. As the cache size grows close to the maximum, the cache evicts entries that are less likely to be
+     * used again. For example, the cache may evict an entry because it hasn't been used recently or very often.
+     * <p>
+     * When {@code maximumWeight} is zero, elements will be evicted immediately after being loaded into cache. This can
+     * be useful in testing, or to disable caching temporarily without a code change.
+     * <p>
+     * Note that weight is only used to determine whether the cache is over capacity; it has no effect on selecting
+     * which entry should be evicted next.
+     * <p>
+     * This feature cannot be used in conjunction with {@link #maximumSize}.
+     *
+     * @param weigher the weigher to use in calculating the weight of cache entries
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws IllegalArgumentException if {@code maximumWeight} is negative
+     * @throws IllegalStateException    if a maximum weight or size was already set
+     * @see #DEFAULT_MAX_WEIGHT
+     */
+    default <K1 extends K, V1 extends V> CacheBuilder<K, V> maximumWeight(ToIntBiFunction<? super K1, ? extends V1> weigher) {
+        return maximumWeight(DEFAULT_MAX_WEIGHT, weigher);
     }
 
     /**

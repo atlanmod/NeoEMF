@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.util.cache;
 
 import java.util.function.Function;
+import java.util.function.ToIntBiFunction;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -55,6 +56,15 @@ final class CaffeineCacheBuilder<K, V> implements CacheBuilder<K, V> {
         checkArgument(maximumSize >= 0);
 
         builder.maximumSize(maximumSize);
+        return this;
+    }
+
+    @Override
+    public <K1 extends K, V1 extends V> CacheBuilder<K, V> maximumWeight(@Nonnegative long maximumWeight, ToIntBiFunction<? super K1, ? extends V1> weigher) {
+        checkArgument(maximumWeight >= 0);
+
+        builder.maximumWeight(maximumWeight);
+        builder.weigher(weigher::applyAsInt);
         return this;
     }
 
