@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.store.LocalStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -111,7 +112,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
 
-        store = StoreAdapter.adapt(factory.createTransientStore(this));
+        store = LocalStoreAdapter.adapt(factory.createTransientStore(this));
 
         Log.info("PersistentResource created: {0}", uri);
     }
@@ -180,7 +181,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         checkOptions(options);
 
         if (!isLoaded || !isPersistent()) {
-            StoreAdapter newStore = StoreAdapter.adapt(factory.createPersistentStore(this, options));
+            StoreAdapter newStore = LocalStoreAdapter.adapt(factory.createPersistentStore(this, options));
 
             // Direct copy to the backend
             store.copyTo(newStore.backend());
@@ -215,7 +216,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
                     store.close();
 
-                    store = StoreAdapter.adapt(factory.createPersistentStore(this, options));
+                    store = LocalStoreAdapter.adapt(factory.createPersistentStore(this, options));
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
@@ -235,7 +236,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void close() {
         store.close();
 
-        store = StoreAdapter.adapt(factory.createTransientStore(this));
+        store = LocalStoreAdapter.adapt(factory.createTransientStore(this));
 
         isLoaded = false;
 

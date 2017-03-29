@@ -13,12 +13,12 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.StaticStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -150,10 +150,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         if (container.isPresent()) {
             //noinspection ConstantConditions
-            target.updateContainer(this, source.getContainingFeature(this), container.get());
+            target.updateContainment(this, source.getContainingFeature(this), container.get());
         }
         else {
-            target.removeContainer(this);
+            target.removeContainment(this);
         }
 
         eClass().getEAllStructuralFeatures().forEach(f -> {
@@ -205,15 +205,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public NotificationChain eSetResource(Resource.Internal resource, NotificationChain msgs) {
-        NotificationChain notifications = super.eSetResource(resource, msgs);
-
-        resource(resource);
-
-        return notifications;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getName()).append('@').append(Integer.toHexString(hashCode()));
 
@@ -239,13 +230,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         PersistentEObject container = PersistentEObject.from(newContainer);
 
         if (nonNull(newContainer)) {
-            eStore().updateContainer(this, eContainmentFeature(this, newContainer, newContainerFeatureID), container);
+            eStore().updateContainment(this, eContainmentFeature(this, newContainer, newContainerFeatureID), container);
             resource(container.resource());
         }
         else {
-            eStore().removeContainer(this);
+            eStore().removeContainment(this);
             resource(null);
         }
+    }
+
+    @Override
+    public void eSetDirectResource(@Nullable Resource.Internal resource) {
+        resource(resource);
+
+        super.eSetDirectResource(resource);
     }
 
     @Nonnull
@@ -294,8 +292,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             eStore().set(this, feature, EStore.NO_INDEX, value);
         }
         else {
-            // TODO This operation should be atomic.
-            // Reset the old value in case the operation fails in the middle
+            // TODO This operation should be atomic: Reset the old value in case the operation fails in the middle
             eStore().unset(this, feature);
 
             @SuppressWarnings("unchecked")
@@ -321,7 +318,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
         if (isNull(store) || store.isPersistent()) {
-            return StoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
+            return StaticStoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
         }
         else {
             store.resource(resource);
@@ -594,7 +591,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
             @Override
             protected void didAdd(int index, Entry<K, V> newObject) {
-                doPut(newObject);
+                DelegatedStoreMap.this.doPut(newObject);
             }
 
             @Override
