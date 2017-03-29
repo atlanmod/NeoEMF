@@ -32,11 +32,14 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,10 +62,20 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implements StoreAdapter {
 
     /**
-     * The thread used to close the mapper chain when the application will exit.
+     * A set that holds all stores that need to be closed when the JVM will shutdown.
      */
     @Nonnull
-    private final Thread shutdownHook;
+    private static final Set<AbstractStoreAdapter> ADAPTERS = new HashSet<>();
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Iterator<AbstractStoreAdapter> allAdapters = ADAPTERS.iterator();
+            while (allAdapters.hasNext()) {
+                allAdapters.next().safeClose();
+                allAdapters.remove();
+            }
+        }));
+    }
 
     /**
      * Constructs a new {@code AbstractStoreAdapter} on the given {@code store}.
@@ -72,8 +85,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
     protected AbstractStoreAdapter(Store store) {
         super(store);
 
-        this.shutdownHook = new Thread(store::close);
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
+        ADAPTERS.add(this);
     }
 
     /**
@@ -115,20 +127,37 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 
+    /**
+     * Returns the in-memory cache holding recently loaded {@link PersistentEObject}s.
+     *
+     * @return the cache
+     */
     @Nonnull
     protected abstract Cache<Id, PersistentEObject> cache();
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public void close() {
-        if (Runtime.getRuntime().removeShutdownHook(shutdownHook)) {
-            shutdownHook.run();
+        if (ADAPTERS.remove(this)) {
+            safeClose();
         }
     }
 
     @Override
     public boolean exists(Id id) {
         return nonNull(cache().get(id)) || super.exists(id);
+    }
+
+    /**
+     * Cleanly closes this mapper, clear all data in-memory and releases any system resources associated with it. All
+     * modifications are saved before closing.
+     */
+    public void safeClose() {
+        try {
+            next().close();
+        }
+        catch (RuntimeException ignored) {
+        }
     }
 
     @Nullable
