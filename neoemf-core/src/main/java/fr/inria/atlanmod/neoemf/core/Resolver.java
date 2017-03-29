@@ -15,21 +15,24 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object able to retrieve a {@link PersistentEObject} from an {@link Id}.
+ * An object able to retrieve an object from another.
+ *
+ * @param <T> the type of object to be resolved
+ * @param <R> the type of resolved object
  */
 @FunctionalInterface
 @ParametersAreNonnullByDefault
-public interface IdResolver {
+public interface Resolver<T, R> {
 
     /**
-     * Retrieves the {@link PersistentEObject} associated to the given {@code id}.
+     * Retrieves the object associated to the given argument.
      *
-     * @param id the identifier to resolve
+     * @param t the argument to be resolved
      *
-     * @return the object associated to the given {@code id}
+     * @return the resolved object
      *
-     * @throws java.util.NoSuchElementException if no object can be retrieved with the {@code id}
+     * @throws java.util.NoSuchElementException if no object can be retrieved
      */
     @Nonnull
-    PersistentEObject resolve(Id id);
+    R resolve(T t);
 }

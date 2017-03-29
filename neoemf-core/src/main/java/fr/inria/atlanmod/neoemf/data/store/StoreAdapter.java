@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.core.IdResolver;
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.Resolver;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} used as bridge between a {@link InternalEObject.EStore} and a {@link Store}.
  */
 @ParametersAreNonnullByDefault
-public interface StoreAdapter extends InternalEObject.EStore, Store, IdResolver {
+public interface StoreAdapter extends InternalEObject.EStore, Store, Resolver<Id, PersistentEObject> {
 
     @Nullable
     @Override
