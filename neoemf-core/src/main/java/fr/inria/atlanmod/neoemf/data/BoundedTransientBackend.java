@@ -130,24 +130,18 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
 
         Log.debug("BoundedTransientBackend closed for {0}", owner);
 
+        // Cleans all shared in-memory maps: they will no longer be used
         if (REGISTRY.isEmpty()) {
-            closeAll();
+            Log.debug("Cleaning BoundedTransientBackend");
+
+            CONTAINERS.clear();
+            INSTANCES.clear();
         }
     }
 
     @Override
     public void copyTo(DataMapper target) {
         // No need to copy anything
-    }
-
-    /**
-     * Cleans all shared in-memory maps: they will no longer be used.
-     */
-    private void closeAll() {
-        Log.debug("Cleaning BoundedTransientBackend");
-
-        CONTAINERS.clear();
-        INSTANCES.clear();
     }
 
     @Nonnull

@@ -18,12 +18,14 @@ import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
 /**
  * A {@link StoreAdapter} that caches locally the rebuilt {@link PersistentEObject}s.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public class LocalStoreAdapter extends AbstractStoreAdapter {
 

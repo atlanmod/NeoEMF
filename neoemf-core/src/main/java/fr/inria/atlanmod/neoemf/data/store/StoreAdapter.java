@@ -25,10 +25,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A {@link Store} used as bridge between a {@link InternalEObject.EStore} and a {@link Store}.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public interface StoreAdapter extends InternalEObject.EStore, Store, Resolver<Id, PersistentEObject> {
 

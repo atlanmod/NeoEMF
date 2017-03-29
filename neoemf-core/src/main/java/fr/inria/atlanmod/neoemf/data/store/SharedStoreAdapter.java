@@ -17,10 +17,18 @@ import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
+import org.eclipse.emf.ecore.resource.Resource;
+
+import java.io.Closeable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 
@@ -33,22 +41,19 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  *
  * @see PersistentEObject
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public class SharedStoreAdapter extends AbstractStoreAdapter {
 
     /**
-     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
+     * A map that holds all created instances of {@link CacheHolder}, identified by a resource.
      */
-    @Nonnull
-    private static final Cache<Id, PersistentEObject> GLOBAL_CACHE = CacheBuilder.newBuilder()
-            .softValues()
-            .maximumSize()
-            .build();
+    private static final Map<Resource, CacheHolder> HOLDERS = new HashMap<>();
 
     /**
-     * The number of dependencies that use this store.
+     * The cache holder associated with the resource of the underlying store.
      */
-    private static AtomicLong dependencies = new AtomicLong();
+    private final CacheHolder holder;
 
     /**
      * Constructs a new {@code SharedStoreAdapter} on the given {@code store}.
@@ -57,7 +62,9 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
      */
     protected SharedStoreAdapter(Store store) {
         super(store);
-        dependencies.getAndIncrement();
+
+        holder = HOLDERS.computeIfAbsent(store.resource(), CacheHolder::new);
+        holder.dependencies.getAndIncrement();
     }
 
     /**
@@ -81,25 +88,66 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     @Nonnull
     @Override
     protected Cache<Id, PersistentEObject> cache() {
-        return GLOBAL_CACHE;
+        return holder.sharedCache;
     }
 
     @Override
     public void close() {
-        if (dependencies.decrementAndGet() == 0) {
-            closeAll();
+        // Cleans the shared cache: it will no longer be used
+        if (holder.dependencies.decrementAndGet() == 0) {
+            Log.debug("Cleaning SharedStoreAdapter");
+
+            HOLDERS.remove(holder.resource).close();
         }
 
         super.close();
     }
 
     /**
-     * Cleans the shared cache: it will no longer be used.
+     * A shared holder of {@link Cache}.
      */
-    private void closeAll() {
-        Log.debug("Cleaning SharedStoreAdapter");
+    @Immutable
+    @ParametersAreNonnullByDefault
+    private static final class CacheHolder implements Closeable {
 
-        GLOBAL_CACHE.invalidateAll();
-        GLOBAL_CACHE.cleanUp();
+        /**
+         * The resource associated with the {@link #sharedCache} to avoid conflicts.
+         * <p>
+         * A {@code null} resource means that the cache is completely detached from any context.
+         */
+        @Nullable
+        private final Resource resource;
+
+        /**
+         * The number of dependencies that use this store.
+         * <p>
+         * This count is used to clean caches when they become useless.
+         */
+        @Nonnegative
+        private final AtomicLong dependencies = new AtomicLong();
+
+        /**
+         * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
+         */
+        @Nonnull
+        private final Cache<Id, PersistentEObject> sharedCache = CacheBuilder.newBuilder()
+                .softValues()
+                .maximumSize()
+                .build();
+
+        /**
+         * Constructs a new {@code CacheHolder} for the given {@code resource}.
+         *
+         * @param resource the associated resource
+         */
+        private CacheHolder(@Nullable Resource resource) {
+            this.resource = resource;
+        }
+
+        @Override
+        public void close() {
+            sharedCache.invalidateAll();
+            sharedCache.cleanUp();
+        }
     }
 }

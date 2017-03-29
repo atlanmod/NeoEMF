@@ -47,6 +47,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkElementIndex;
@@ -58,6 +59,7 @@ import static java.util.Objects.nonNull;
 /**
  * The abstract implementation of a {@code StoreAdapter}.
  */
+@Immutable
 @ParametersAreNonnullByDefault
 public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implements StoreAdapter {
 
