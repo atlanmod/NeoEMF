@@ -39,6 +39,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -181,35 +182,38 @@ public final class ResourceHelper {
         File targetFile = targetDir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            Log.info("Already existing store: {0}", targetFile);
+            Log.info("Already existing resource: {0}", targetFile);
             return targetFile;
         }
 
         ResourceSet resourceSet = loadResourceSet();
 
         URI sourceUri = URI.createFileURI(sourceFile.getAbsolutePath());
-
         Resource sourceResource = resourceSet.createResource(sourceUri);
 
         targetAdapter.initAndGetEPackage();
 
-        Log.info("Loading store from: {0}", sourceUri);
+        Log.info("Loading resource from: {0}", sourceUri);
+
         Map<String, Object> loadOpts = new HashMap<>();
         if (Objects.equals(ZXMI, sourceUri.fileExtension())) {
-            loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
+            loadOpts.put(XMIResource.OPTION_ZIP, true);
         }
         sourceResource.load(loadOpts);
 
-        Log.info("Migrating store");
+        Log.info("Copying resource content");
+
+        Collection<EObject> targetContents = EcoreUtil.copyAll(sourceResource.getContents());
+        sourceResource.unload();
+
+        Log.info("Migrating resource content");
 
         Resource targetResource = targetAdapter.createResource(targetFile, resourceSet);
         targetAdapter.save(targetResource);
 
-        targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
+        targetResource.getContents().addAll(targetContents);
 
-        sourceResource.unload();
-
-        Log.info("Saving store to: {0}", targetResource.getURI());
+        Log.info("Saving resource to: {0}", targetResource.getURI());
         targetAdapter.save(targetResource);
 
         targetAdapter.unload(targetResource);
@@ -269,25 +273,28 @@ public final class ResourceHelper {
 
         ResourceSet resourceSet = loadResourceSet();
 
-        URI sourceURI = URI.createFileURI(sourceFile.getAbsolutePath());
+        URI sourceUri = URI.createFileURI(sourceFile.getAbsolutePath());
 
-        Log.info("Loading resource from: {0}", sourceURI);
-        Resource sourceResource = resourceSet.getResource(sourceURI, true);
+        Log.info("Loading resource from: {0}", sourceUri);
 
-        Log.info("Migrating resource");
+        Resource sourceResource = resourceSet.getResource(sourceUri, true);
 
-        Map<String, Object> saveOpts = new HashMap<>();
-        saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
+        Log.info("Copying resource content");
 
-        URI targetURI = URI.createFileURI(targetFile.getAbsolutePath());
-        Resource targetResource = resourceSet.createResource(targetURI);
-
-        targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetAdapter.initAndGetEPackage()));
-
+        EObject targetContent = migrate(sourceResource.getContents().get(0), targetAdapter.initAndGetEPackage());
         sourceResource.unload();
+
+        Log.info("Migrating resource content");
+
+        URI targetUri = URI.createFileURI(targetFile.getAbsolutePath());
+        Resource targetResource = resourceSet.createResource(targetUri);
+
+        targetResource.getContents().add(targetContent);
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
 
+        Map<String, Object> saveOpts = new HashMap<>();
+        saveOpts.put(XMIResource.OPTION_ZIP, true);
         targetResource.save(saveOpts);
 
         targetResource.unload();
@@ -382,14 +389,11 @@ public final class ResourceHelper {
      * @return the corresponding {@link EObject}
      */
     private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondences, EObject object, EPackage ePackage) {
-        EObject correspondingObject = correspondences.get(object);
-        if (isNull(correspondingObject)) {
+        return correspondences.computeIfAbsent(object, o -> {
             EClass eClass = object.eClass();
             EClass targetClass = (EClass) ePackage.getEClassifier(eClass.getName());
-            correspondingObject = EcoreUtil.create(targetClass);
-            correspondences.put(object, correspondingObject);
-        }
-        return correspondingObject;
+            return EcoreUtil.create(targetClass);
+        });
     }
 
     //endregion
