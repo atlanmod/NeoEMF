@@ -83,7 +83,7 @@ public class CdoAdapter extends AbstractAdapter {
         session = server.openSession();
         transaction = session.openTransaction();
 
-        return transaction.getRootResource();
+        return transaction.getOrCreateResource(file.getName());
     }
 
     @Override
@@ -204,8 +204,12 @@ public class CdoAdapter extends AbstractAdapter {
 
         private IStore createStore(JdbcDataSource dataSource) {
             IMappingStrategy mappingStrategy = CDODBUtil.createHorizontalMappingStrategy(true);
+            mappingStrategy.getProperties().put("qualifiedNames", "true");
+
             IDBAdapter dbAdapter = new H2Adapter();
+
             IDBConnectionProvider dbConnectionProvider = DBUtil.createConnectionProvider(dataSource);
+
             return CDODBUtil.createStore(mappingStrategy, dbAdapter, dbConnectionProvider);
         }
 
