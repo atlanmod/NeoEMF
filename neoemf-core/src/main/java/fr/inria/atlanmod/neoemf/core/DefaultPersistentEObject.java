@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.StaticStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.SharedStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -318,7 +318,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
         if (isNull(store) || store.isPersistent()) {
-            return StaticStoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
+            return SharedStoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
         }
         else {
             store.resource(resource);

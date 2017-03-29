@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -42,7 +43,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     /**
      * Current number of changes made since the last call of {@link #incremendAndSave(int)}.
      */
-    private long changesCount = 0L;
+    private AtomicLong changesCount = new AtomicLong();
 
     /**
      * Constructs a new {@code AutoSaveStoreDecorator} with the given {@code chunk}.
@@ -224,15 +225,13 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @see #save()
      */
     private void incremendAndSave(int count) {
-        changesCount += count;
-
-        if (changesCount >= autoSaveChunk) {
+        if (changesCount.addAndGet(count) >= autoSaveChunk) {
             if (isPersistent()) {
                 //noinspection ConstantConditions
                 Log.debug("PersistentResource saved:   {0} (auto-save after {1} changes)", resource().getURI(), changesCount);
             }
 
-            changesCount = 0L;
+            changesCount.set(0L);
             save();
         }
     }
