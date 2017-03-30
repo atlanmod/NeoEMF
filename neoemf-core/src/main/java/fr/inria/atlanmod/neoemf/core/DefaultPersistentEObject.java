@@ -127,7 +127,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         // Move contents from the previous store to the new
         if (nonNull(newStore) && newStore != store) {
             if (nonNull(store)) {
-                copyStore(store, newStore);
+                if (nonNull(resource)) {
+                    copyStore(store, newStore);
+                }
+                else {
+                    Log.warn("[{0}] Resource is unloading: no need to copy the stores.", id);
+                }
 
                 // Close the previous store if it's not attached to a persistent resource
                 // Otherwise the resource will close it
@@ -259,11 +264,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             store = createBoundedStore(resource);
         }
         return store;
-    }
-
-    @Override
-    protected boolean eIsCaching() {
-        return false;
     }
 
     @Nullable
@@ -408,12 +408,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         public static <E> DelegatedContentsList<E> newList(PersistentEObject owner) {
             EStructuralFeature[] containments = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
 
-            if (isNull(containments)) {
-                return DelegatedContentsList.empty();
-            }
-            else {
+            if (nonNull(containments)) {
                 return new DelegatedContentsList<>(owner, containments);
             }
+
+            return DelegatedContentsList.empty();
         }
 
         @Override
@@ -427,11 +426,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             for (EStructuralFeature feature : eStructuralFeatures) {
                 int localFeatureSize;
 
-                if (feature.isMany()) {
-                    localFeatureSize = owner.eStore().size(owner, feature);
+                if (!feature.isMany()) {
+                    localFeatureSize = owner.eStore().isSet(owner, feature) ? 1 : 0;
                 }
                 else {
-                    localFeatureSize = owner.eStore().isSet(owner, feature) ? 1 : 0;
+                    localFeatureSize = owner.eStore().size(owner, feature);
                 }
 
                 featureSize += localFeatureSize;
