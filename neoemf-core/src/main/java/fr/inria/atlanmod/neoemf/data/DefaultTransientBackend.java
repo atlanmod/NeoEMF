@@ -13,14 +13,14 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,28 +31,28 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend implements TransientBackend, ManyValueWithLists {
+public class DefaultTransientBackend implements TransientBackend, ManyValueWithArrays {
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ContainerDescriptor> containers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Id, ContainerDescriptor> containers = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassDescriptor> instances = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Id, ClassDescriptor> instances = new ConcurrentHashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link FeatureKey}.
      */
     @Nonnull
-    private final Map<FeatureKey, Object> features = new ConcurrentHashMap<>();
+    private final ConcurrentMap<FeatureKey, Object> features = new ConcurrentHashMap<>();
 
     /**
      * Whether this back-end is closed.

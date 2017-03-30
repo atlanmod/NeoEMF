@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,21 +43,21 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
      */
     @Nonnull
     // TODO Attach the registry to a resource to avoid conflicts
-    private static final Map<Id, Backend> REGISTRY = new ConcurrentHashMap<>();
+    private static final Map<Id, Backend> REGISTRY = new HashMap<>();
 
     /**
      * A shared in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, ContainerDescriptor> CONTAINERS = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Id, ContainerDescriptor> CONTAINERS = new ConcurrentHashMap<>();
 
     /**
      * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, ClassDescriptor> INSTANCES = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Id, ClassDescriptor> INSTANCES = new ConcurrentHashMap<>();
 
     /**
      * The owner of this back-end.
@@ -69,7 +70,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
      * identified by their name.
      */
     @Nonnull
-    private final Map<String, Object> features = new HashMap<>();
+    private final ConcurrentMap<String, Object> features = new ConcurrentHashMap<>();
 
     /**
      * Whether this back-end is closed.
