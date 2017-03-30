@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter.helper;
 
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.InternalAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -95,23 +95,23 @@ public final class ResourceHelper {
     }
 
     /**
-     * Copies the given {@code sourceFile} to the temporary directory.
+     * Copies the given {@code file} to the temporary directory.
      *
-     * @param sourceFile the file to copy
+     * @param file the file to copy
      *
      * @return the created file
      *
      * @throws IOException if an I/O error occurs during the copy
      */
-    public static File copyStore(File sourceFile) throws IOException {
-        Path outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName());
+    public static File copyStore(File file) throws IOException {
+        Path outputFile = Workspace.newTempDirectory().resolve(file.getName());
 
-        Log.info("Copying {0} to {1}", sourceFile, outputFile);
+        Log.info("Copying {0} to {1}", file, outputFile);
 
-        Files.walkFileTree(sourceFile.toPath(), new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(file.toPath(), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                Path targetPath = outputFile.resolve(sourceFile.toPath().relativize(dir));
+                Path targetPath = outputFile.resolve(file.toPath().relativize(dir));
                 if (!Files.exists(targetPath)) {
                     Files.createDirectory(targetPath);
                 }
@@ -119,8 +119,8 @@ public final class ResourceHelper {
             }
 
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.copy(file, outputFile.resolve(sourceFile.toPath().relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+                Files.copy(path, outputFile.resolve(file.toPath().relativize(path)), StandardCopyOption.REPLACE_EXISTING);
                 return FileVisitResult.CONTINUE;
             }
         });
@@ -130,56 +130,56 @@ public final class ResourceHelper {
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetAdapter}, located in a temporary
+     * from the given {@code resourceFile}, and stores it to the given {@code adapter}, located in a temporary
      * directory.
      *
-     * @param sourceFile    the resource file
-     * @param targetAdapter the adapter where to store the resource
+     * @param resourceFile the resource resourceFile
+     * @param adapter      the adapter where to store the resource
      *
-     * @return the created file
+     * @return the created resourceFile
      *
      * @throws Exception if a error occurs during the creation of the store
      * @see Workspace#newTempDirectory()
      */
-    public static File createTempStore(File sourceFile, InternalAdapter targetAdapter) throws Exception {
-        return createStore(sourceFile, targetAdapter, Workspace.newTempDirectory());
+    public static File createTempStore(File resourceFile, Adapter.Internal adapter) throws Exception {
+        return createStore(resourceFile, adapter, Workspace.newTempDirectory());
     }
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetAdapter}, located in the workspace.
+     * from the given {@code resourceFile}, and stores it to the given {@code targetAdapter}, located in the workspace.
      *
-     * @param sourceFile    the resource file
-     * @param targetAdapter the adapter where to store the resource
+     * @param resourceFile the resource resourceFile
+     * @param adapter      the adapter where to store the resource
      *
-     * @return the created file
+     * @return the created resourceFile
      *
      * @throws Exception if a error occurs during the creation of the store
      * @see Workspace#getStoreDirectory()
      */
-    public static File createStore(File sourceFile, InternalAdapter targetAdapter) throws Exception {
-        return createStore(sourceFile, targetAdapter, Workspace.getStoreDirectory());
+    public static File createStore(File resourceFile, Adapter.Internal adapter) throws Exception {
+        return createStore(resourceFile, adapter, Workspace.getStoreDirectory());
     }
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code sourceFile}, and stores it to the given {@code targetAdapter}, located in {@code
-     * targetDir}.
+     * from the given {@code resourceFile}, and stores it to the given {@code targetAdapter}, located in {@code
+     * dir}.
      *
-     * @param sourceFile    the resource file
-     * @param targetAdapter the adapter where to store the resource
-     * @param targetDir     the location of the adapter
+     * @param resourceFile the resource resourceFile
+     * @param adapter      the adapter where to store the resource
+     * @param dir          the location of the adapter
      *
-     * @return the created file
+     * @return the created resourceFile
      *
      * @throws Exception if a error occurs during the creation of the store
      */
-    private static File createStore(File sourceFile, InternalAdapter targetAdapter, Path targetDir) throws Exception {
-        checkValidResource(sourceFile.getName());
-        checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
+    private static File createStore(File resourceFile, Adapter.Internal adapter, Path dir) throws Exception {
+        checkValidResource(resourceFile.getName());
+        checkArgument(resourceFile.exists(), "Resource '%s' does not exist", resourceFile);
 
-        String targetFileName = getNameWithoutExtension(sourceFile.getAbsolutePath()) + "." + targetAdapter.getStoreExtension();
-        File targetFile = targetDir.resolve(targetFileName).toFile();
+        String targetFileName = getNameWithoutExtension(resourceFile.getAbsolutePath()) + "." + adapter.getStoreExtension();
+        File targetFile = dir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
             Log.info("Already existing resource: {0}", targetFile);
@@ -188,10 +188,10 @@ public final class ResourceHelper {
 
         ResourceSet resourceSet = loadResourceSet();
 
-        URI sourceUri = URI.createFileURI(sourceFile.getAbsolutePath());
+        URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
         Resource sourceResource = resourceSet.createResource(sourceUri);
 
-        targetAdapter.initAndGetEPackage();
+        adapter.initAndGetEPackage();
 
         Log.info("Loading resource from: {0}", sourceUri);
 
@@ -208,62 +208,62 @@ public final class ResourceHelper {
 
         Log.info("Migrating resource content");
 
-        Resource targetResource = targetAdapter.createResource(targetFile, resourceSet);
-        targetAdapter.save(targetResource);
+        Resource targetResource = adapter.createResource(targetFile, resourceSet);
+        adapter.save(targetResource);
 
         targetResource.getContents().addAll(targetContents);
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
-        targetAdapter.save(targetResource);
+        adapter.save(targetResource);
 
-        targetAdapter.unload(targetResource);
+        adapter.unload(targetResource);
 
         return targetFile;
     }
 
     /**
-     * Creates a new {@link Resource} from the given {@code sourceFilename}, and adapts it for the given
+     * Creates a new {@link Resource} from the given {@code resourceFileName}, and adapts it for the given
      * {@code targetAdapter}. The resource file can be placed in the resource ZIP, or in the file system.
      *
-     * @param sourceFilename the name of the resource file
-     * @param targetAdapter  the adapter where to store the resource
+     * @param resourceFileName the name of the resource file
+     * @param adapter          the adapter where to store the resource
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the resource
      */
-    public static File createResource(String sourceFilename, InternalAdapter targetAdapter) throws Exception {
-        if (getRegisteredResources().containsKey(sourceFilename.toLowerCase())) {
-            sourceFilename = getRegisteredResources().get(sourceFilename.toLowerCase());
+    public static File createResource(String resourceFileName, Adapter.Internal adapter) throws Exception {
+        if (getRegisteredResources().containsKey(resourceFileName.toLowerCase())) {
+            resourceFileName = getRegisteredResources().get(resourceFileName.toLowerCase());
         }
 
         File sourceFile;
-        if (getZipResources().contains(sourceFilename)) {
+        if (getZipResources().contains(resourceFileName)) {
             // Get file from the resources/resource.zip
-            sourceFile = extractFromZip(sourceFilename, Workspace.getResourcesDirectory());
+            sourceFile = extractFromZip(resourceFileName, Workspace.getResourcesDirectory());
         }
         else {
             // Get the file from the file system
-            sourceFile = new File(sourceFilename);
+            sourceFile = new File(resourceFileName);
         }
 
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
-        return createResource(sourceFile, targetAdapter);
+        return createResource(sourceFile, adapter);
     }
 
     /**
      * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code targetAdapter}.
      *
-     * @param sourceFile    the resource file
-     * @param targetAdapter the adapter where to store the resource
+     * @param resourceFile the resource file
+     * @param adapter      the adapter where to store the resource
      *
      * @return the created file
      *
      * @throws Exception if a error occurs during the creation of the resource
      */
-    private static File createResource(File sourceFile, InternalAdapter targetAdapter) throws Exception {
-        String targetFileName = getNameWithoutExtension(sourceFile.getName()) + "." + targetAdapter.getResourceExtension() + "." + ZXMI;
+    private static File createResource(File resourceFile, Adapter.Internal adapter) throws Exception {
+        String targetFileName = getNameWithoutExtension(resourceFile.getName()) + "." + adapter.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
@@ -273,7 +273,7 @@ public final class ResourceHelper {
 
         ResourceSet resourceSet = loadResourceSet();
 
-        URI sourceUri = URI.createFileURI(sourceFile.getAbsolutePath());
+        URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
 
         Log.info("Loading resource from: {0}", sourceUri);
 
@@ -281,7 +281,7 @@ public final class ResourceHelper {
 
         Log.info("Copying resource content");
 
-        EObject targetContent = migrate(sourceResource.getContents().get(0), targetAdapter.initAndGetEPackage());
+        EObject targetContent = migrate(sourceResource.getContents().get(0), adapter.initAndGetEPackage());
         sourceResource.unload();
 
         Log.info("Migrating resource content");
@@ -320,19 +320,19 @@ public final class ResourceHelper {
     }
 
     /**
-     * Adapts the given {@code object} in a particular implementation, specified by the {@code targetPackage}.
+     * Adapts the given {@code rootObject} in a particular implementation, specified by the {@code targetPackage}.
      *
-     * @param object        the root {@link EObject} to adapt
+     * @param rootObject    the root {@link EObject} to adapt
      * @param targetPackage the {@link EPackage}
      *
-     * @return the adapted {@code object}
+     * @return the adapted {@code rootObject}
      */
-    private static EObject migrate(EObject object, EPackage targetPackage) {
+    private static EObject migrate(EObject rootObject, EPackage targetPackage) {
         Map<EObject, EObject> correspondences = new HashMap<>();
-        EObject adaptedObject = getCorrespondingEObject(correspondences, object, targetPackage);
-        copy(correspondences, object, adaptedObject);
+        EObject adaptedObject = getCorrespondingEObject(correspondences, rootObject, targetPackage);
+        copy(correspondences, rootObject, adaptedObject);
 
-        Iterable<EObject> allContents = () -> EcoreUtil.getAllContents(object, true);
+        Iterable<EObject> allContents = () -> EcoreUtil.getAllContents(rootObject, true);
 
         for (EObject sourceEObject : allContents) {
             EObject targetEObject = getCorrespondingEObject(correspondences, sourceEObject, targetPackage);
@@ -378,20 +378,20 @@ public final class ResourceHelper {
     }
 
     /**
-     * Adapts the given {@code object} in a particular implementation, specified by the {@code ePackage}, and stores the
-     * correspondence in the given {@code correspondences} {@link Map}.
+     * Adapts the given {@code sourceObject} in a particular implementation, specified by the {@code targetPackage}, and
+     * stores the correspondence in the given {@code correspondences} {@link Map}.
      *
      * @param correspondences the {@link Map} where to store the link between the original {@link EObject} and its
      *                        adaptation
-     * @param object          the {@link EObject} to adapt
-     * @param ePackage        the {@link EPackage} used to retrieve the corresponding {@link EObject}
+     * @param sourceObject    the {@link EObject} to adapt
+     * @param targetPackage   the {@link EPackage} used to retrieve the corresponding {@link EObject}
      *
      * @return the corresponding {@link EObject}
      */
-    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondences, EObject object, EPackage ePackage) {
-        return correspondences.computeIfAbsent(object, o -> {
-            EClass eClass = object.eClass();
-            EClass targetClass = (EClass) ePackage.getEClassifier(eClass.getName());
+    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondences, EObject sourceObject, EPackage targetPackage) {
+        return correspondences.computeIfAbsent(sourceObject, o -> {
+            EClass eClass = sourceObject.eClass();
+            EClass targetClass = (EClass) targetPackage.getEClassifier(eClass.getName());
             return EcoreUtil.create(targetClass);
         });
     }

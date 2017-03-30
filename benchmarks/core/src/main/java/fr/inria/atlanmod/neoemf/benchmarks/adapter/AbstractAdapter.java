@@ -24,9 +24,9 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * The abstract implementation of an {@link InternalAdapter}.
+ * The abstract implementation of an {@link Adapter.Internal}.
  */
-abstract class AbstractAdapter implements InternalAdapter {
+abstract class AbstractAdapter implements Adapter.Internal {
 
     /**
      * The name of this adapter.
