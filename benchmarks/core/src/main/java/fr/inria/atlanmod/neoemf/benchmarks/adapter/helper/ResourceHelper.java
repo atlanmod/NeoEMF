@@ -39,7 +39,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,7 +202,7 @@ public final class ResourceHelper {
 
         Log.info("Copying resource content");
 
-        Collection<EObject> targetContents = EcoreUtil.copyAll(sourceResource.getContents());
+        EObject targetRoot = EcoreUtil.copy(sourceResource.getContents().get(0));
         sourceResource.unload();
 
         Log.info("Migrating resource content");
@@ -211,7 +210,7 @@ public final class ResourceHelper {
         Resource targetResource = adapter.createResource(targetFile, resourceSet);
         adapter.save(targetResource);
 
-        targetResource.getContents().addAll(targetContents);
+        targetResource.getContents().add(targetRoot);
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
         adapter.save(targetResource);
@@ -281,7 +280,7 @@ public final class ResourceHelper {
 
         Log.info("Copying resource content");
 
-        EObject targetContent = migrate(sourceResource.getContents().get(0), adapter.initAndGetEPackage());
+        EObject targetRoot = migrate(sourceResource.getContents().get(0), adapter.initAndGetEPackage());
         sourceResource.unload();
 
         Log.info("Migrating resource content");
@@ -289,7 +288,7 @@ public final class ResourceHelper {
         URI targetUri = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetUri);
 
-        targetResource.getContents().add(targetContent);
+        targetResource.getContents().add(targetRoot);
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
 
