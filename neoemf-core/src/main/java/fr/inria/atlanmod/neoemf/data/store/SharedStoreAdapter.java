@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Nonnegative;
@@ -46,14 +47,14 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 public class SharedStoreAdapter extends AbstractStoreAdapter {
 
     /**
-     * A map that holds all created instances of {@link CacheHolder}, identified by a resource.
+     * A map that holds all created instances of {@link CacheHolder}, identified by a resource hashcode.
      */
-    private static final Map<Resource, CacheHolder> HOLDERS = new HashMap<>();
+    private static final Map<Integer, CacheHolder> HOLDERS = new HashMap<>();
 
     /**
      * The cache holder associated with the resource of the underlying store.
      */
-    private final CacheHolder holder;
+    private CacheHolder holder;
 
     /**
      * Constructs a new {@code SharedStoreAdapter} on the given {@code store}.
@@ -63,7 +64,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     protected SharedStoreAdapter(Store store) {
         super(store);
 
-        holder = HOLDERS.computeIfAbsent(store.resource(), CacheHolder::new);
+        refreshHolder(store.resource());
         holder.dependencies.getAndIncrement();
     }
 
@@ -85,6 +86,21 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
                 : new SharedStoreAdapter(store);
     }
 
+    @Override
+    public void resource(@Nullable Resource.Internal resource) {
+        refreshHolder(resource);
+        super.resource(resource);
+    }
+
+    /**
+     * Refreshes the holder of this store.
+     *
+     * @param resource the resource identifying the holder to use
+     */
+    private void refreshHolder(@Nullable Resource resource) {
+        holder = HOLDERS.computeIfAbsent(Objects.hashCode(resource), CacheHolder::new);
+    }
+
     @Nonnull
     @Override
     protected Cache<Id, PersistentEObject> cache() {
@@ -94,10 +110,8 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     @Override
     public void close() {
         // Cleans the shared cache: it will no longer be used
-        if (holder.dependencies.decrementAndGet() == 0) {
-            Log.debug("Cleaning SharedStoreAdapter");
-
-            HOLDERS.remove(holder.resource).close();
+        if (holder.dependencies.decrementAndGet() <= 0) {
+            HOLDERS.remove(holder.id).close();
         }
 
         super.close();
@@ -111,12 +125,9 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     private static final class CacheHolder implements Closeable {
 
         /**
-         * The resource associated with the {@link #sharedCache} to avoid conflicts.
-         * <p>
-         * A {@code null} resource means that the cache is completely detached from any context.
+         * The name of the resource associated with the {@link #sharedCache} to avoid conflicts.
          */
-        @Nullable
-        private final Resource resource;
+        private final int id;
 
         /**
          * The number of dependencies that use this store.
@@ -138,14 +149,16 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
         /**
          * Constructs a new {@code CacheHolder} for the given {@code resource}.
          *
-         * @param resource the associated resource
+         * @param id the hashcode of the associated resource
          */
-        private CacheHolder(@Nullable Resource resource) {
-            this.resource = resource;
+        private CacheHolder(int id) {
+            this.id = id;
         }
 
         @Override
         public void close() {
+            Log.debug("Cleaning SharedStoreAdapter {0}", id);
+
             sharedCache.invalidateAll();
             sharedCache.cleanUp();
         }

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -35,7 +35,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.
  */
 @ParametersAreNonnullByDefault
-public final class BoundedTransientBackend implements TransientBackend, ManyValueWithLists {
+public final class BoundedTransientBackend implements TransientBackend, ManyValueWithArrays {
 
     /**
      * A map that holds all created instances of {@code BoundedTransientBackend}.
