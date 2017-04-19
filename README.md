@@ -10,6 +10,8 @@ It is based on our work on Neo4EMF, a scalable and graph-based backend for persi
 
 NeoEMF is a multi-backend framework developped to allow an easy integration of custom backends depending on user needs.
 
+Check out our [wiki](https://github.com/atlanmod/NeoEMF/wiki) for further information on the supported backends, code examples, and developer resources.
+
 ## What are the supported backends?
 
 NeoEMF is provided with a complete support of MapDB and Blueprints databases.
