@@ -56,16 +56,21 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
+ * A {@link PersistenceBackend} that is responsible of low-level access to a
+ * Blueprints database.
  * <p>
- * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
- * PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
- * caches to improve access time of {@link Vertex} from  their corresponding {@link PersistentEObject}.
+ * It wraps an existing Blueprints database and provides facilities to create
+ * and retrieve elements, map {@link PersistentEObject}s to {@link Vertex}
+ * elements in order to speed up attribute access, and manage a set of
+ * lightweight caches to improve access time of {@link Vertex} from their
+ * corresponding {@link PersistentEObject}.
  *
- * @note This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to
- * access and manipulate the database.
- * @note Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory}
- * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
+ * @note This class is used in {@link DirectWriteBlueprintsStore} and
+ *       {@link DirectWriteBlueprintsCacheManyStore} to access and manipulate
+ *       the database.
+ * @note Instances of {@link BlueprintsPersistenceBackend} are created by
+ *       {@link BlueprintsPersistenceBackendFactory} that provides an usable
+ *       {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsPersistenceBackendFactory
  * @see DirectWriteBlueprintsStore
  * @see DirectWriteBlueprintsCacheManyStore
@@ -80,12 +85,15 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * The property key used to set metaclass name in metaclass {@link Vertex}s.
      */
-    public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+    public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name()
+            .getName();
 
     /**
-     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex}s.
+     * The property key used to set the {@link EPackage} {@code nsURI} in
+     * metaclass {@link Vertex}s.
      */
-    public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+    public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI()
+            .getName();
 
     /**
      * The label of type conformance {@link Edge}s.
@@ -109,12 +117,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
-     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s,
+     * identified by their {@link Id}.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
+     * In-memory cache that holds recently loaded {@link Vertex}s, identified by
+     * the associated object {@link Id}.
      */
     private final Cache<Id, Vertex> verticesCache;
 
@@ -139,27 +149,35 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private boolean isClosed = false;
 
     /**
-     * Constructs a new {@code BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}.
+     * Constructs a new {@code BlueprintsPersistenceBackend} wrapping the
+     * provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
      *
-     * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
+     * @param baseGraph
+     *            the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is protected. To create a new {@code BlueprintsPersistenceBackend} use {@link
-     * BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     * @note This constructor is protected. To create a new
+     *       {@code BlueprintsPersistenceBackend} use
+     *       {@link BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}
+     *       .
      * @see BlueprintsPersistenceBackendFactory
      */
     protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
+        NeoLogger.warn("Blueprints Backend Created");
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
-        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        // this.persistentObjectsCache =
+        // Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        // this.verticesCache =
+        // Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.persistentObjectsCache = Caffeine.newBuilder().softValues().recordStats().build();
+        this.verticesCache = Caffeine.newBuilder().softValues().recordStats().build();
         this.indexedEClasses = new ArrayList<>();
 
         Index<Vertex> metaclasses = graph.getIndex(KEY_METACLASSES, Vertex.class);
         if (isNull(metaclasses)) {
             metaclassIndex = graph.createIndex(KEY_METACLASSES, Vertex.class);
-        }
-        else {
+        } else {
             metaclassIndex = metaclasses;
         }
     }
@@ -167,12 +185,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Builds the {@link Id} used to identify an {@link EClass} {@link Vertex}.
      *
-     * @param eClass the {@link EClass} to build an {@link Id} from
+     * @param eClass
+     *            the {@link EClass} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
     private static Id buildId(EClass eClass) {
-        return isNull(eClass) ? null : new StringId(eClass.getName() + '@' + eClass.getEPackage().getNsURI());
+        return isNull(eClass) ? null : new StringId(eClass.getName() + '@'
+                + eClass.getEPackage().getNsURI());
     }
 
     @Override
@@ -182,10 +202,18 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public void close() {
+        NeoLogger.warn("Closing Blueprints Backend");
+        NeoLogger.warn("Cache stats (PersistentObjectsCache)");
+        NeoLogger.warn("HitCount: {0}", this.persistentObjectsCache.stats().hitCount());
+        NeoLogger.warn("MissCount {0}", this.persistentObjectsCache.stats().missCount());
+        NeoLogger.warn("Cache stats (VerticesCache)");
+        NeoLogger.warn("HitCount: {0}", this.verticesCache.stats().hitCount());
+        NeoLogger.warn("MissCount {0}", this.verticesCache.stats().missCount());
+        NeoLogger.warn(this.persistentObjectsCache.stats().toString());
+        NeoLogger.warn(this.verticesCache.stats().toString());
         try {
             graph.shutdown();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             NeoLogger.warn(e);
         }
         isClosed = true;
@@ -195,12 +223,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public void save() {
         if (graph.getFeatures().supportsTransactions) {
             graph.commit();
-        }
-        else {
+        } else {
             graph.shutdown();
         }
     }
-    
+
     @Override
     public boolean isDistributed() {
         return false;
@@ -213,29 +240,28 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         // There is no strict instance of an abstract class
         if (eClass.isAbstract() && strict) {
             indexHits = Collections.emptyMap();
-        }
-        else {
+        } else {
             indexHits = new HashMap<>();
             Set<EClass> eClassToFind = new HashSet<>();
             eClassToFind.add(eClass);
 
-            // Find all the concrete subclasses of the given EClass (the metaclass index only stores concretes EClass)
+            // Find all the concrete subclasses of the given EClass (the
+            // metaclass index only stores concretes EClass)
             if (!strict) {
-                eClass.getEPackage().getEClassifiers()
-                        .stream()
-                        .filter(EClass.class::isInstance)
+                eClass.getEPackage().getEClassifiers().stream().filter(EClass.class::isInstance)
                         .map(EClass.class::cast)
                         .filter(c -> eClass.isSuperTypeOf(c) && !c.isAbstract())
                         .forEach(eClassToFind::add);
             }
             // Get all the vertices that are indexed with one of the EClass
             for (EClass ec : eClassToFind) {
-                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
+                Vertex metaClassVertex = Iterables.getOnlyElement(
+                        metaclassIndex.get(KEY_NAME, ec.getName()), null);
                 if (nonNull(metaClassVertex)) {
-                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
+                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(
+                            Direction.IN, KEY_INSTANCE_OF);
                     indexHits.put(ec, instanceVertexIterable);
-                }
-                else {
+                } else {
                     NeoLogger.warn("Metaclass {0} not found in index", ec.getName());
                 }
             }
@@ -244,9 +270,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Create a new vertex, add it to the graph, and return the newly created vertex.
+     * Create a new vertex, add it to the graph, and return the newly created
+     * vertex.
      *
-     * @param id the identifier of the {@link Vertex}
+     * @param id
+     *            the identifier of the {@link Vertex}
      *
      * @return the newly created vertex
      */
@@ -255,10 +283,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Create a new vertex, add it to the graph, and return the newly created vertex. The issued {@link EClass} is used
-     * to calculate the {@link Vertex} {@code id}.
+     * Create a new vertex, add it to the graph, and return the newly created
+     * vertex. The issued {@link EClass} is used to calculate the {@link Vertex}
+     * {@code id}.
      *
-     * @param eClass The corresponding {@link EClass}
+     * @param eClass
+     *            The corresponding {@link EClass}
      *
      * @return the newly created vertex
      */
@@ -270,44 +300,50 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@code id}. If no vertex corresponds to that {@code id}, then
-     * return {@code null}.
+     * Returns the vertex corresponding to the provided {@code id}. If no vertex
+     * corresponds to that {@code id}, then return {@code null}.
      *
-     * @param id the {@link Id} of the element to find
+     * @param id
+     *            the {@link Id} of the element to find
      *
-     * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
+     * @return the vertex referenced by the provided {@link EObject} or
+     *         {@code null} when no such vertex exists
      */
     public Vertex getVertex(Id id) {
         return verticesCache.get(id, key -> graph.getVertex(key.toString()));
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@link EClass}. If no vertex corresponds to that {@link EClass},
-     * then return {@code null}.
+     * Returns the vertex corresponding to the provided {@link EClass}. If no
+     * vertex corresponds to that {@link EClass}, then return {@code null}.
      *
-     * @param eClass the {@link EClass} to find
+     * @param eClass
+     *            the {@link EClass} to find
      *
-     * @return the vertex corresponding to the provided {@link EClass} or {@code null} when no such vertex exists
+     * @return the vertex corresponding to the provided {@link EClass} or
+     *         {@code null} when no such vertex exists
      */
     private Vertex getVertex(EClass eClass) {
         return getVertex(buildId(eClass));
     }
 
     /**
-     * Return the vertex corresponding to the provided {@link PersistentEObject}. If no vertex corresponds to that
-     * {@link EObject}, then the corresponding {@link Vertex} together with its {@link #KEY_INSTANCE_OF} relationship is
-     * created.
+     * Return the vertex corresponding to the provided {@link PersistentEObject}
+     * . If no vertex corresponds to that {@link EObject}, then the
+     * corresponding {@link Vertex} together with its {@link #KEY_INSTANCE_OF}
+     * relationship is created.
      *
-     * @param object the {@link PersistentEObject} to find
+     * @param object
+     *            the {@link PersistentEObject} to find
      *
-     * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
+     * @return the vertex referenced by the provided {@link EObject} or
+     *         {@code null} when no such vertex exists
      */
     public Vertex getOrCreateVertex(PersistentEObject object) {
         Vertex vertex;
         if (object.isMapped()) {
             vertex = getVertex(object.id());
-        }
-        else {
+        } else {
             vertex = createVertex(object);
         }
         return vertex;
@@ -316,8 +352,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Defines the {@code object} as mapped to the given {@code vertex}.
      *
-     * @param vertex the vertex
-     * @param object the object to define as mapped
+     * @param vertex
+     *            the vertex
+     * @param object
+     *            the object to define as mapped
      *
      * @see PersistentEObject#setMapped(boolean)
      */
@@ -328,17 +366,22 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
+     * Compute the {@link EClass} associated to the model element with the
+     * provided {@link Vertex}.
      *
-     * @param vertex the {@link Vertex} of the model element to compute the {@link EClass} from
+     * @param vertex
+     *            the {@link Vertex} of the model element to compute the
+     *            {@link EClass} from
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
     public EClass resolveInstanceOf(Vertex vertex) {
         EClass eClass = null;
-        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
+        Vertex eClassVertex = Iterables.getOnlyElement(
+                vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
         if (nonNull(eClassVertex)) {
-            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
+            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME),
+                    eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
             eClass = classInfo.eClass();
         }
         return eClass;
@@ -347,13 +390,15 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Reifies the given {@link Vertex} as a {@link PersistentEObject}.
      * <p>
-     * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
-     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
-     * collected.
+     * The method guarantees that the same {@link PersistentEObject} is returned
+     * for a given {@link Vertex} in subsequent calls, unless the
+     * {@link PersistentEObject} returned in previous calls has been already
+     * garbage collected.
      * <p>
      * This method behaves like {@code reifyVertex(vertex, null)}.
      *
-     * @param vertex the {@link Vertex} to reify
+     * @param vertex
+     *            the {@link Vertex} to reify
      *
      * @return a {@link PersistentEObject} representing the given vertex
      */
@@ -364,12 +409,16 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Reifies the given {@link Vertex} as an {@link PersistentEObject}.
      * <p>
-     * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
-     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
-     * collected.
+     * The method guarantees that the same {@link PersistentEObject} is returned
+     * for a given {@link Vertex} in subsequent calls, unless the
+     * {@link PersistentEObject} returned in previous calls has been already
+     * garbage collected.
      *
-     * @param vertex the {@link Vertex} to reify
-     * @param eClass the expected {@link EClass} of the reified object. Can be set to {@code null} if not known.
+     * @param vertex
+     *            the {@link Vertex} to reify
+     * @param eClass
+     *            the expected {@link EClass} of the reified object. Can be set
+     *            to {@code null} if not known.
      *
      * @return a {@link PersistentEObject} representing the given vertex
      */
@@ -378,9 +427,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         Id id = new StringId(vertex.getId().toString());
         try {
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(vertex, eClass));
-        }
-        catch (Exception e) {
+            object = persistentObjectsCache.get(id,
+                    new PersistentEObjectCacheLoader(vertex, eClass));
+        } catch (Exception e) {
             NeoLogger.error(e);
         }
         return object;
@@ -389,7 +438,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Creates a new {@link Vertex} from the given {@code object}.
      *
-     * @param object the object from which to create the {@link Vertex}
+     * @param object
+     *            the object from which to create the {@link Vertex}
      *
      * @return the created {@link Vertex}
      */
@@ -397,7 +447,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         Vertex vertex = addVertex(object.id());
         EClass eClass = object.eClass();
 
-        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
+        Vertex eClassVertex = Iterables.getOnlyElement(
+                metaclassIndex.get(KEY_NAME, eClass.getName()), null);
         if (isNull(eClassVertex)) {
             eClassVertex = addVertex(eClass);
             metaclassIndex.put(KEY_NAME, eClass.getName(), eClassVertex);
@@ -411,7 +462,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Copies all the contents of this back-end to the target one.
      *
-     * @param target the {@code BlueprintsPersistenceBackend} to copy the elements to
+     * @param target
+     *            the {@code BlueprintsPersistenceBackend} to copy the elements
+     *            to
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
@@ -421,9 +474,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Provides a direct access to the underlying graph.
      * <p>
-     * This method is public for tool compatibility (see the
-     * <a href="https://github.com/atlanmod/Mogwai">Mogwaï</a>) framework, NeoEMF consistency is not guaranteed if
-     * the graph is modified manually.
+     * This method is public for tool compatibility (see the <a
+     * href="https://github.com/atlanmod/Mogwai">Mogwaï</a>) framework, NeoEMF
+     * consistency is not guaranteed if the graph is modified manually.
      *
      * @return the underlying Blueprints {@link IdGraph}
      */
@@ -434,17 +487,20 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * ???
      *
-     * @param eClassList ???
+     * @param eClassList
+     *            ???
      */
     private void initMetaClassesIndex(List<EClass> eClassList) {
         for (EClass eClass : eClassList) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())), "Index is not consistent");
+            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())),
+                    "Index is not consistent");
             metaclassIndex.put(KEY_NAME, eClass.getName(), getVertex(eClass));
         }
     }
 
     /**
-     * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
+     * A cache loader to retrieve a {@link PersistentEObject} stored in the
+     * database.
      */
     private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
@@ -458,10 +514,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         private EClass eClass;
 
         /**
-         * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
+         * Constructs a new {@code PersistentEObjectCacheLoader} with the given
+         * {@code eClass}.
          *
-         * @param vertex the vertex associated with the object to retrieve
-         * @param eClass the class associated with the object to retrieve
+         * @param vertex
+         *            the vertex associated with the object to retrieve
+         * @param eClass
+         *            the class associated with the object to retrieve
          */
         private PersistentEObjectCacheLoader(Vertex vertex, EClass eClass) {
             this.vertex = vertex;
@@ -471,10 +530,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject object;
-            if(isNull(eClass)) {
+            if (isNull(eClass)) {
                 /*
-                 *  Use the embedded vertex to compute the eClass instead of the id to avoid
-                 *  a backend query to retrieve the vertex
+                 * Use the embedded vertex to compute the eClass instead of the
+                 * id to avoid a backend query to retrieve the vertex
                  */
                 eClass = BlueprintsPersistenceBackend.this.resolveInstanceOf(vertex);
             }
@@ -483,15 +542,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     // Dynamic EMF
                     eObject = PersistenceFactory.getInstance().create(eClass);
-                }
-                else {
+                } else {
                     eObject = EcoreUtil.create(eClass);
                 }
                 object = PersistentEObject.from(eObject);
                 object.id(id);
                 object.setMapped(true);
-            }
-            else {
+            } else {
                 throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
             return object;
@@ -504,9 +561,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private static class AutoCleanerIdGraph extends IdGraph<KeyIndexableGraph> {
 
         /**
-         * Constructs a new {@code AutoCleanerIdGraph} on the specified {@code baseGraph}.
+         * Constructs a new {@code AutoCleanerIdGraph} on the specified
+         * {@code baseGraph}.
          *
-         * @param baseGraph the base graph
+         * @param baseGraph
+         *            the base graph
          */
         public AutoCleanerIdGraph(KeyIndexableGraph baseGraph) {
             super(baseGraph);
@@ -525,7 +584,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         /**
          * ???
          *
-         * @param edge ???
+         * @param edge
+         *            ???
          *
          * @return ???
          */
@@ -539,9 +599,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         private class AutoCleanerIdEdge extends IdEdge {
 
             /**
-             * Constructs a new {@code AutoCleanerIdEdge} on the specified {@code edge}.
+             * Constructs a new {@code AutoCleanerIdEdge} on the specified
+             * {@code edge}.
              *
-             * @param edge the base edge
+             * @param edge
+             *            the base edge
              */
             public AutoCleanerIdEdge(Edge edge) {
                 super(edge, AutoCleanerIdGraph.this);
@@ -550,15 +612,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             /**
              * {@inheritDoc}
              * <p>
-             * If the {@link Edge} references a {@link Vertex} with no more incoming {@link Edge}, the referenced
-             * {@link Vertex} is removed as well.
+             * If the {@link Edge} references a {@link Vertex} with no more
+             * incoming {@link Edge}, the referenced {@link Vertex} is removed
+             * as well.
              */
             @Override
             public void remove() {
                 Vertex referencedVertex = getVertex(Direction.IN);
                 super.remove();
                 if (Iterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
-                    // If the Vertex has no more incoming edges remove it from the DB
+                    // If the Vertex has no more incoming edges remove it from
+                    // the DB
                     referencedVertex.remove();
                 }
             }
