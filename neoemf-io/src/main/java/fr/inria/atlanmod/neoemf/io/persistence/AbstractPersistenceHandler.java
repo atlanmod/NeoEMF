@@ -134,7 +134,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private static long adaptFromMemory(int value) {
         long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
 
-        long factor = maxMemoryGB;
+        long factor = Math.max(maxMemoryGB, 1);
         if (maxMemoryGB > 1) {
             factor *= 2;
         }
