@@ -230,6 +230,14 @@ public class PersistenceURI extends URI {
     public boolean isArchive() {
         return internalUri.isArchive();
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof URI) {
+            return this.toString().equals(obj.toString());
+        }
+        return super.equals(obj);
+    }
 
     @Override
     public int hashCode() {
