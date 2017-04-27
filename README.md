@@ -38,7 +38,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 
 ### Latest release
 
-The most recent release is NeoEMF 1.0.0, released December 06, 2016.
+The most recent release is NeoEMF 1.0.1, released January 16, 2017.
 - Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
 - Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 
@@ -47,13 +47,13 @@ To add a dependency on NeoEMF using Maven, use the following:
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
   <artifactId>neoemf</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
 ### Snapshots
 
-Snapshots are automatically build from the `master` and are available throught Maven using `1.0.1-SNAPSHOT`.
+Snapshots are automatically build from the `master` and are available throught Maven using `1.0.2-SNAPSHOT`.
 - Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
 - Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
 

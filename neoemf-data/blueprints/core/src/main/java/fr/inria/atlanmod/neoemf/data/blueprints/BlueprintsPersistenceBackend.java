@@ -103,12 +103,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public static final String KEY_NAME = "name";
 
     /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
-    /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
@@ -151,8 +145,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
-        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.persistentObjectsCache = Caffeine.newBuilder().softValues().build();
+        this.verticesCache = Caffeine.newBuilder().softValues().build();
         this.indexedEClasses = new ArrayList<>();
 
         Index<Vertex> metaclasses = graph.getIndex(KEY_METACLASSES, Vertex.class);

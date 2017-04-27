@@ -56,7 +56,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @note It is calculated according to the maximum memory dedicated to the JVM.
      */
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
-
+    
     /**
      * The persistence back-end where to store data.
      */
@@ -132,14 +132,17 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @see #OPS_BETWEEN_COMMITS_DEFAULT
      */
     private static long adaptFromMemory(int value) {
-        long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
+        double maxMemoryGB = (double)Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
 
-        long factor = maxMemoryGB;
+        double factor = maxMemoryGB;
         if (maxMemoryGB > 1) {
             factor *= 2;
         }
-
-        return value * factor;
+        long computedValue = Math.round(value * factor);
+        /*
+         * Return 1 in the worst case to avoid division by 0
+         */
+        return Math.max(computedValue, 1);
     }
 
     /**

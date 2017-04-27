@@ -10,10 +10,10 @@ mvn clean install -DskipTests
 
 - Define the new version.
 ```
-mvn versions:set -DnewVersion=X.Y.Z
+mvn versions:set -DnewVersion='X.Y.Z'
 ```
 
-- Comment the timestamp in bundle-plugin at `Version`
+- (Un)Comment the timestamp in `maven-bundle-plugin` at `Bundle-Version`, configured with `.${maven.build.timestamp}`.
 
 - Install the new version in your local repository.
 ```
