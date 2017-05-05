@@ -406,7 +406,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * @return a new list
          */
         public static <E> DelegatedContentsList<E> newList(PersistentEObject owner) {
-            EStructuralFeature[] containments = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
+            EStructuralFeature[] containments = EClassImpl.FeatureSubsetSupplier.class.cast(owner.eClass().getEAllStructuralFeatures()).containments();
 
             if (nonNull(containments)) {
                 return new DelegatedContentsList<>(owner, containments);
