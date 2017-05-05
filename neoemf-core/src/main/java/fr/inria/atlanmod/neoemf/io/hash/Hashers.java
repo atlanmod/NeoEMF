@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.hash;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -88,7 +90,8 @@ public final class Hashers {
      * @return a message hash instance
      */
     @Nonnull
-    private static byte[] nativeHash(String algorithm, byte[] bytes) {
+    @VisibleForTesting
+    protected static byte[] nativeHash(String algorithm, byte[] bytes) {
         try {
             return MessageDigest.getInstance(algorithm).digest(bytes);
         }

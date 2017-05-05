@@ -16,7 +16,7 @@
     <description>MapDB implementation of the core component.</description>
 
     <properties>
-        <mapdb.version>3.0.3</mapdb.version>
+        <mapdb.version>3.0.4</mapdb.version>
     </properties>
 
     <dependencies>
