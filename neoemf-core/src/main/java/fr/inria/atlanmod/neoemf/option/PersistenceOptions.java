@@ -21,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@FunctionalInterface
 @ParametersAreNonnullByDefault
 public interface PersistenceOptions {
 

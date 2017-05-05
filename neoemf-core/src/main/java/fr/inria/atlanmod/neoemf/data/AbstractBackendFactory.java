@@ -84,7 +84,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
     protected static Set<PersistentStoreOptions> storesFrom(Map<String, Object> options) {
         try {
             if (options.containsKey(PersistentResourceOptions.STORES)) {
-                return (Set<PersistentStoreOptions>) options.get(PersistentResourceOptions.STORES);
+                return Set.class.cast(options.get(PersistentResourceOptions.STORES));
             }
         }
         catch (ClassCastException ignored) {

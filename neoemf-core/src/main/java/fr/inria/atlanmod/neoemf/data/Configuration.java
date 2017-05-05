@@ -37,7 +37,7 @@ public final class Configuration {
     /**
      * The header of the configuration file.
      */
-    private static final String COMMENTS = "NeoEMF Configuration v1.0.2";
+    private static final String HEADER = "NeoEMF Configuration v1.0.2";
 
     /**
      * The inner properties.
@@ -100,7 +100,7 @@ public final class Configuration {
             }
 
             try (Writer writer = Files.newBufferedWriter(file)) {
-                properties.store(writer, COMMENTS);
+                properties.store(writer, HEADER);
             }
         }
         catch (IOException e) {

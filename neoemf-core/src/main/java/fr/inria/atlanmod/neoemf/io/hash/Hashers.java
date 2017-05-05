@@ -26,6 +26,21 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 public final class Hashers {
 
     /**
+     * The name to identify the {@code MD5} algorithm in {@link MessageDigest}.
+     */
+    private static final String MD5 = "MD5";
+
+    /**
+     * The name to identify the {@code SHA-1} algorithm in {@link MessageDigest}.
+     */
+    private static final String SHA1 = "SHA-1";
+
+    /**
+     * The name to identify the {@code SHA-256} algorithm in {@link MessageDigest}.
+     */
+    private static final String SHA256 = "SHA-256";
+
+    /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
@@ -41,7 +56,7 @@ public final class Hashers {
      */
     @Nonnull
     public static Hasher md5() {
-        return bytes -> new HashCode(nativeHash("MD5", checkNotNull(bytes)));
+        return bytes -> new HashCode(nativeHash(MD5, checkNotNull(bytes)));
     }
 
     /**
@@ -51,7 +66,7 @@ public final class Hashers {
      */
     @Nonnull
     public static Hasher sha1() {
-        return bytes -> new HashCode(nativeHash("SHA-1", checkNotNull(bytes)));
+        return bytes -> new HashCode(nativeHash(SHA1, checkNotNull(bytes)));
     }
 
     /**
@@ -61,7 +76,7 @@ public final class Hashers {
      */
     @Nonnull
     public static Hasher sha256() {
-        return bytes -> new HashCode(nativeHash("SHA-256", checkNotNull(bytes)));
+        return bytes -> new HashCode(nativeHash(SHA256, checkNotNull(bytes)));
     }
 
     /**
@@ -73,7 +88,7 @@ public final class Hashers {
      * @return a message hash instance
      */
     @Nonnull
-    protected static byte[] nativeHash(String algorithm, byte[] bytes) {
+    private static byte[] nativeHash(String algorithm, byte[] bytes) {
         try {
             return MessageDigest.getInstance(algorithm).digest(bytes);
         }

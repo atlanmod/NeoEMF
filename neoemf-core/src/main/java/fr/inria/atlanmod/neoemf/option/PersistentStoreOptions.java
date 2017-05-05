@@ -99,11 +99,13 @@ public enum PersistentStoreOptions {
     /**
      * The type of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}.
      */
+    @Nonnull
     private final String className;
 
     /**
      * The optional parameters of this option.
      */
+    @Nonnull
     private final List<String> parameters;
 
     /**
