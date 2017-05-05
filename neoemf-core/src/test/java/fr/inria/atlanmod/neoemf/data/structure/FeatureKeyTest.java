@@ -75,7 +75,7 @@ public class FeatureKeyTest extends AbstractTest {
             out.writeObject(key1);
 
             try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-                FeatureKey key2 = (FeatureKey) in.readObject();
+                FeatureKey key2 = FeatureKey.class.cast(in.readObject());
                 assertThat(key1).isEqualTo(key2);
             }
         }

@@ -119,7 +119,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             configuration.save();
 
             if (readOnly) {
-                graph = new ReadOnlyKeyIndexableGraph<>((KeyIndexableGraph) graph);
+                graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
             }
 
             String mapping = mappingFrom(options);
@@ -213,7 +213,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
                 Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
                 Method configClassInstanceMethod = configClass.getMethod("getInstance");
 
-                return (BlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
+                return BlueprintsConfiguration.class.cast(configClassInstanceMethod.invoke(configClass));
             }
             catch (Exception e) {
                 throw new RuntimeException(e);

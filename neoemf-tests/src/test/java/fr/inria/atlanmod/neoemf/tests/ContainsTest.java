@@ -112,7 +112,7 @@ public class ContainsTest extends AbstractBackendTest {
     }
 
     private void assertContainsExactly(PersistentResource resource, List<SampleModelContentObject> addedContent) {
-        SampleModel m = (SampleModel) resource.getContents().get(0);
+        SampleModel m = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(m.getContentObjects()).hasSize(addedContent.size());
         assertThat(m.getContentObjects()).containsExactlyElementsOf(addedContent);
     }

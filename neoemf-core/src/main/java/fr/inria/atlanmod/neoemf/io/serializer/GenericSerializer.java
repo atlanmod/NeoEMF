@@ -39,7 +39,7 @@ class GenericSerializer<T> implements Serializer<T> {
     public void serialize(T value, @WillNotClose OutputStream stream) {
         checkNotNull(value);
         checkNotNull(stream);
-        checkArgument(value instanceof Serializable,
+        checkArgument(Serializable.class.isInstance(value),
                 "GenericSerializer requires a Serializable payload but received an object of type " + value.getClass().getName());
 
         try (ObjectOutput output = new ObjectOutputStream(stream)) {

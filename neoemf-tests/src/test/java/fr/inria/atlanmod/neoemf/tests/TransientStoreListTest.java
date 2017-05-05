@@ -221,7 +221,7 @@ public class TransientStoreListTest extends AbstractTest {
         collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
 
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, (SampleModelContentObject) EFACTORY.createSampleModel()));
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, SampleModelContentObject.class.cast(EFACTORY.createSampleModel())));
         assertThat(thrown).isInstanceOf(ClassCastException.class);
     }
 

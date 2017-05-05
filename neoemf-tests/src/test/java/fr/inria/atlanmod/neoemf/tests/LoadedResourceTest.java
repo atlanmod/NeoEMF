@@ -33,7 +33,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
     public void testGetElementsContainer() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(model.eContainer()).isNull();
         assertThat(model.eInternalContainer()).isNull();
 
@@ -49,11 +49,11 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        SampleModel model = (SampleModel) it.next();
+        SampleModel model = SampleModel.class.cast(it.next());
         assertThat(model.eContainer()).isNull();
         assertThat(model.eInternalContainer()).isNull();
 
-        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        SampleModelContentObject modelContent = SampleModelContentObject.class.cast(it.next());
         assertThat(modelContent.eContainer()).isEqualTo(model);
         assertThat(modelContent.eInternalContainer()).isEqualTo(model);
     }
@@ -63,7 +63,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
     public void testGetElementsEResource() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(model.eResource()).isSameAs(resource);
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
@@ -77,10 +77,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        SampleModel sampleModel = (SampleModel) it.next();
+        SampleModel sampleModel = SampleModel.class.cast(it.next());
         assertThat(sampleModel.eResource()).isSameAs(resource);
 
-        SampleModelContentObject sampleContentObject = (SampleModelContentObject) it.next();
+        SampleModelContentObject sampleContentObject = SampleModelContentObject.class.cast(it.next());
         assertThat(sampleContentObject.eResource()).isSameAs(resource);
     }
 
@@ -89,7 +89,7 @@ public class LoadedResourceTest extends AbstractBackendTest {
     public void testGetElementsEDirectResource() throws IOException {
         PersistentResource resource = fillResource(createPersistentStore());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(model.eDirectResource()).isNull();
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
@@ -103,10 +103,10 @@ public class LoadedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        SampleModel sampleModel = (SampleModel) it.next();
+        SampleModel sampleModel = SampleModel.class.cast(it.next());
         assertThat(sampleModel.eDirectResource()).isNull();
 
-        SampleModelContentObject sampleContentObject = (SampleModelContentObject) it.next();
+        SampleModelContentObject sampleContentObject = SampleModelContentObject.class.cast(it.next());
         assertThat(sampleContentObject.eDirectResource()).isNull();
     }
 

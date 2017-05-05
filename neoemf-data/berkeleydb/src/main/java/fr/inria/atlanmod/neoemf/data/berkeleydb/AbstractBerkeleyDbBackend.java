@@ -117,8 +117,8 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
 
     @Override
     public void copyTo(DataMapper target) {
-        checkArgument(target instanceof AbstractBerkeleyDbBackend);
-        AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
+        checkArgument(AbstractBerkeleyDbBackend.class.isInstance(target));
+        AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
 
         copy(instances, to.instances);
         copy(features, to.features);

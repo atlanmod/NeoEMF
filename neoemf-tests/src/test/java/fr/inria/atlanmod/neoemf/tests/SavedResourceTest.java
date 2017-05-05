@@ -50,11 +50,11 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        SampleModel model = (SampleModel) it.next();
+        SampleModel model = SampleModel.class.cast(it.next());
         assertThat(model.eContainer()).isNull();
         assertThat(model.eInternalContainer()).isNull();
 
-        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        SampleModelContentObject modelContent = SampleModelContentObject.class.cast(it.next());
         assertThat(modelContent.eContainer()).isEqualTo(model);
         assertThat(modelContent.eInternalContainer()).isEqualTo(model);
     }
@@ -77,10 +77,10 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        SampleModel model = (SampleModel) it.next();
+        SampleModel model = SampleModel.class.cast(it.next());
         assertThat(model.eResource()).isSameAs(resource);
 
-        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        SampleModelContentObject modelContent = SampleModelContentObject.class.cast(it.next());
         assertThat(modelContent.eResource()).isSameAs(resource);
     }
 
@@ -102,10 +102,10 @@ public class SavedResourceTest extends AbstractBackendTest {
 
         Iterator<EObject> it = resource.getAllContents();
 
-        SampleModel model = (SampleModel) it.next();
+        SampleModel model = SampleModel.class.cast(it.next());
         assertThat(model.eDirectResource()).isSameAs(resource);
 
-        SampleModelContentObject modelContent = (SampleModelContentObject) it.next();
+        SampleModelContentObject modelContent = SampleModelContentObject.class.cast(it.next());
         assertThat(modelContent.eDirectResource()).isNull();
     }
 

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -25,20 +24,16 @@ import java.io.File;
 /**
  * A specific {@link Context} for the BerkeleyDB implementation.
  */
-public abstract class BerkeleyDbContext implements Context {
+@FunctionalInterface
+public interface BerkeleyDbContext extends Context {
 
     /**
      * Creates a new {@code BerkeleyDbContext} with a mapping with indices.
      *
      * @return a new context.
      */
-    public static Context getWithIndices() {
-        return new BerkeleyDbContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return BerkeleyDbOptions.newBuilder().withIndices();
-            }
-        };
+    static Context getWithIndices() {
+        return (BerkeleyDbContext) () -> BerkeleyDbOptions.newBuilder().withIndices();
     }
 
     /**
@@ -46,13 +41,8 @@ public abstract class BerkeleyDbContext implements Context {
      *
      * @return a new context.
      */
-    public static Context getWithArrays() {
-        return new BerkeleyDbContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return BerkeleyDbOptions.newBuilder().withArrays();
-            }
-        };
+    static Context getWithArrays() {
+        return (BerkeleyDbContext) () -> BerkeleyDbOptions.newBuilder().withArrays();
     }
 
     /**
@@ -60,37 +50,32 @@ public abstract class BerkeleyDbContext implements Context {
      *
      * @return a new context.
      */
-    public static Context getWithLists() {
-        return new BerkeleyDbContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return BerkeleyDbOptions.newBuilder().withLists();
-            }
-        };
+    static Context getWithLists() {
+        return (BerkeleyDbContext) () -> BerkeleyDbOptions.newBuilder().withLists();
     }
 
     @Override
-    public String name() {
+    default String name() {
         return "BerkeleyDB";
     }
 
     @Override
-    public BackendFactory factory() {
+    default BackendFactory factory() {
         return BerkeleyDbBackendFactory.getInstance();
     }
 
     @Override
-    public String uriScheme() {
+    default String uriScheme() {
         return BerkeleyDbURI.SCHEME;
     }
 
     @Override
-    public URI createUri(URI uri) {
+    default URI createUri(URI uri) {
         return BerkeleyDbURI.newBuilder().fromUri(uri);
     }
 
     @Override
-    public URI createUri(File file) {
+    default URI createUri(File file) {
         return BerkeleyDbURI.newBuilder().fromFile(file);
     }
 }

@@ -148,7 +148,7 @@ final class ContextualResourceBuilder {
      * @throws IOException if an I/O error occurs
      */
     public PersistentResource createResource() throws IOException {
-        PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
+        PersistentResource resource = PersistentResource.class.cast(resourceSet.createResource(uri));
         if (isPersistent) {
             resource.save(allOptions());
         }
@@ -166,7 +166,7 @@ final class ContextualResourceBuilder {
      * @throws IOException if an I/O error occurs
      */
     public PersistentResource loadResource() throws IOException {
-        PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
+        PersistentResource resource = PersistentResource.class.cast(resourceSet.createResource(uri));
         resource.load(allOptions());
 
         initBuilder();

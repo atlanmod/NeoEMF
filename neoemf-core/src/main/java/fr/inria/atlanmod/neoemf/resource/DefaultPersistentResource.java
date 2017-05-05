@@ -378,7 +378,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         public NotificationChain inverseAdd(E object, NotificationChain notifications) {
-            InternalEObject internalObject = (InternalEObject) object;
+            InternalEObject internalObject = InternalEObject.class.cast(object);
             notifications = internalObject.eSetResource(DefaultPersistentResource.this, notifications);
             attached(internalObject);
             return notifications;
@@ -386,7 +386,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         public NotificationChain inverseRemove(E object, NotificationChain notifications) {
-            InternalEObject internalObject = (InternalEObject) object;
+            InternalEObject internalObject = InternalEObject.class.cast(object);
             if (isLoaded || nonNull(unloadingContents)) {
                 detached(internalObject);
             }

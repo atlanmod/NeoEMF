@@ -53,6 +53,7 @@ public class StringId implements Id {
      *
      * @return a new {@code StringId}
      */
+    @Nonnull
     public static Id from(Object object) {
         return of(object.toString());
     }
@@ -64,6 +65,7 @@ public class StringId implements Id {
      *
      * @return a new {@code StringId}
      */
+    @Nonnull
     public static Id of(String literalId) {
         return new StringId(literalId);
     }
@@ -101,11 +103,11 @@ public class StringId implements Id {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StringId)) {
+        if (!StringId.class.isInstance(o)) {
             return false;
         }
 
-        StringId that = (StringId) o;
+        StringId that = StringId.class.cast(o);
         return Objects.equals(literalId, that.literalId);
     }
 

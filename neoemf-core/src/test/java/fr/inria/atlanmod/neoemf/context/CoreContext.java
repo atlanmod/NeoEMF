@@ -34,29 +34,24 @@ import static org.mockito.Mockito.when;
 /**
  * A specific {@link Context} for the core.
  */
-public class CoreContext implements Context {
-
-    /**
-     * The name of this context.
-     */
-    public static final String NAME = "Core";
+public interface CoreContext extends Context {
 
     /**
      * Returns the instance of this class.
      *
      * @return the instance of this class.
      */
-    public static Context get() {
-        return new CoreContext();
+    static Context get() {
+        return new CoreContext(){};
     }
 
     @Override
-    public String name() {
-        return NAME;
+    default String name() {
+        return "Core";
     }
 
     @Override
-    public BackendFactory factory() {
+    default BackendFactory factory() {
         AbstractBackendFactory factory = mock(AbstractBackendFactory.class);
 
         when(factory.name()).thenReturn("mock");
@@ -69,12 +64,12 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public AbstractPersistenceOptions<?> optionsBuilder() {
+    default AbstractPersistenceOptions<?> optionsBuilder() {
         return CommonOptions.newBuilder();
     }
 
     @Override
-    public String uriScheme() {
+    default String uriScheme() {
         return "mock";
     }
 
@@ -82,7 +77,7 @@ public class CoreContext implements Context {
      * @see #uriScheme()
      */
     @Override
-    public URI createUri(URI uri) {
+    default URI createUri(URI uri) {
         return URIBuilder.newBuilder().withScheme(uriScheme()).fromUri(uri);
     }
 
@@ -90,7 +85,7 @@ public class CoreContext implements Context {
      * @see #uriScheme()
      */
     @Override
-    public URI createUri(File file) {
+    default URI createUri(File file) {
         return URIBuilder.newBuilder().withScheme(uriScheme()).fromFile(file);
     }
 
@@ -102,7 +97,7 @@ public class CoreContext implements Context {
      * @throws UnsupportedOperationException every time
      */
     @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
+    default PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -114,7 +109,7 @@ public class CoreContext implements Context {
      * @throws UnsupportedOperationException every time
      */
     @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
+    default PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -126,12 +121,12 @@ public class CoreContext implements Context {
      * @throws UnsupportedOperationException every time
      */
     @Override
-    public PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+    default PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Backend createMapper(File file) throws IOException {
+    default Backend createMapper(File file) throws IOException {
         return new DefaultTransientBackend();
     }
 }

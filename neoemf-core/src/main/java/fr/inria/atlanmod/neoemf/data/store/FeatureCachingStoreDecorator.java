@@ -65,7 +65,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(FeatureKey key) {
-        return Optional.ofNullable((Id) cache.get(key, k -> super.referenceOf(k).orElse(null)));
+        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(k).orElse(null))));
     }
 
     @Nonnull
@@ -87,7 +87,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf((ManyFeatureKey) k).orElse(null)));
+        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(ManyFeatureKey.class.cast(k)).orElse(null)));
     }
 
     @Nonnull
@@ -146,7 +146,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        return Optional.ofNullable((Id) cache.get(key, k -> super.referenceOf((ManyFeatureKey) k).orElse(null)));
+        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(ManyFeatureKey.class.cast(k)).orElse(null))));
     }
 
     @Nonnull

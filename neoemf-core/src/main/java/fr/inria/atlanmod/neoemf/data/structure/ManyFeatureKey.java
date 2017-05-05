@@ -139,14 +139,14 @@ public class ManyFeatureKey extends FeatureKey {
 
     @Override
     public int compareTo(FeatureKey o) {
-        if (!(o instanceof ManyFeatureKey)) {
+        if (!ManyFeatureKey.class.isInstance(o)) {
             return 1;
         }
 
         int comparison = super.compareTo(o);
 
         if (comparison == 0) {
-            ManyFeatureKey that = (ManyFeatureKey) o;
+            ManyFeatureKey that = ManyFeatureKey.class.cast(o);
             return (position > that.position) ? 1 : (position < that.position) ? -1 : 0;
         }
         else {
@@ -164,7 +164,7 @@ public class ManyFeatureKey extends FeatureKey {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ManyFeatureKey)) {
+        if (!ManyFeatureKey.class.isInstance(o)) {
             return false;
         }
 
@@ -172,7 +172,7 @@ public class ManyFeatureKey extends FeatureKey {
             return false;
         }
 
-        ManyFeatureKey that = (ManyFeatureKey) o;
+        ManyFeatureKey that = ManyFeatureKey.class.cast(o);
         return position == that.position;
     }
 

@@ -66,8 +66,8 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
 
     @Override
     public void copyTo(DataMapper target) {
-        checkArgument(target instanceof BerkeleyDbBackendIndices);
-        BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
+        checkArgument(BerkeleyDbBackendIndices.class.isInstance(target));
+        BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
 
         super.copyTo(target);
         this.copy(manyFeatures, to.manyFeatures);

@@ -123,11 +123,11 @@ public final class HashCode implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof HashCode)) {
+        if (!HashCode.class.isInstance(o)) {
             return false;
         }
 
-        HashCode that = (HashCode) o;
+        HashCode that = HashCode.class.cast(o);
         return MessageDigest.isEqual(bytes, that.bytes);
     }
 

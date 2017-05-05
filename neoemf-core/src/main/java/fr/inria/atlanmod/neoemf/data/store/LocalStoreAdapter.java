@@ -55,13 +55,13 @@ public class LocalStoreAdapter extends AbstractStoreAdapter {
      * @return the adapted {@code store}
      */
     public static StoreAdapter adapt(Store store) {
-        if (store instanceof StoreAdapter && !(store instanceof LocalStoreAdapter)) {
+        if (StoreAdapter.class.isInstance(store) && !LocalStoreAdapter.class.isInstance(store)) {
             throw new IllegalArgumentException(String.format("Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getSimpleName()));
         }
 
         //noinspection ConstantConditions
-        return checkNotNull(store) instanceof LocalStoreAdapter
-                ? (LocalStoreAdapter) store
+        return LocalStoreAdapter.class.isInstance(checkNotNull(store))
+                ? LocalStoreAdapter.class.cast(store)
                 : new LocalStoreAdapter(store);
     }
 

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -25,44 +24,40 @@ import java.io.File;
 /**
  * A specific {@link Context} for the Blueprints implementation.
  */
-public abstract class BlueprintsContext implements Context {
+@FunctionalInterface
+public interface BlueprintsContext extends Context {
 
     /**
      * Creates a new {@code BlueprintsContext} with a mapping with indices.
      *
      * @return a new context.
      */
-    public static Context getWithIndices() {
-        return new BlueprintsContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return BlueprintsOptions.newBuilder().withIndices();
-            }
-        };
+    static Context getWithIndices() {
+        return (BlueprintsContext) () -> BlueprintsOptions.newBuilder().withIndices();
     }
 
     @Override
-    public String name() {
+    default String name() {
         return "Tinker";
     }
 
     @Override
-    public BackendFactory factory() {
+    default BackendFactory factory() {
         return BlueprintsBackendFactory.getInstance();
     }
 
     @Override
-    public String uriScheme() {
+    default String uriScheme() {
         return BlueprintsURI.SCHEME;
     }
 
     @Override
-    public URI createUri(URI uri) {
+    default URI createUri(URI uri) {
         return BlueprintsURI.newBuilder().fromUri(uri);
     }
 
     @Override
-    public URI createUri(File file) {
+    default URI createUri(File file) {
         return BlueprintsURI.newBuilder().fromFile(file);
     }
 }

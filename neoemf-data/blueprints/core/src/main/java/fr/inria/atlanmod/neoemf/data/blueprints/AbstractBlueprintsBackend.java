@@ -203,8 +203,8 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
 
     @Override
     public void copyTo(DataMapper target) {
-        checkArgument(target instanceof AbstractBlueprintsBackend);
-        AbstractBlueprintsBackend to = (AbstractBlueprintsBackend) target;
+        checkArgument(AbstractBlueprintsBackend.class.isInstance(target));
+        AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
 
         GraphHelper.copyGraph(graph, to.graph);
 

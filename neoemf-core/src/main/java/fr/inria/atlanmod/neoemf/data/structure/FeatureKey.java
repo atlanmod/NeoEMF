@@ -173,11 +173,11 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FeatureKey)) {
+        if (!FeatureKey.class.isInstance(o)) {
             return false;
         }
 
-        FeatureKey that = (FeatureKey) o;
+        FeatureKey that = FeatureKey.class.cast(o);
         return Objects.equals(id, that.id)
                 && Objects.equals(name, that.name);
     }

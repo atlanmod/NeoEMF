@@ -192,7 +192,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
             }
 
             return value
-                    .map(v -> deserialize((EAttribute) feature, v))
+                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
                     .orElse(null);
         }
         else {
@@ -234,14 +234,14 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         if (isAttribute(feature)) {
             Optional<String> previousValue;
             if (!feature.isMany()) {
-                previousValue = valueFor(key, serialize((EAttribute) feature, value));
+                previousValue = valueFor(key, serialize(EAttribute.class.cast(feature), value));
             }
             else {
-                previousValue = valueFor(key.withPosition(index), serialize((EAttribute) feature, value));
+                previousValue = valueFor(key.withPosition(index), serialize(EAttribute.class.cast(feature), value));
             }
 
             return previousValue
-                    .map(v -> deserialize((EAttribute) feature, v))
+                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
                     .orElse(null);
         }
         else {
@@ -388,7 +388,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         FeatureKey key = FeatureKey.from(object, feature);
 
         if (isAttribute(feature)) {
-            return containsValue(key, serialize((EAttribute) feature, value));
+            return containsValue(key, serialize(EAttribute.class.cast(feature), value));
         }
         else {
             return containsReference(key, PersistentEObject.from(value).id());
@@ -418,7 +418,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         OptionalInt index;
         if (isAttribute(feature)) {
-            index = indexOfValue(key, serialize((EAttribute) feature, value));
+            index = indexOfValue(key, serialize(EAttribute.class.cast(feature), value));
         }
         else {
             index = indexOfReference(key, PersistentEObject.from(value).id());
@@ -449,7 +449,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         OptionalInt index;
         if (isAttribute(feature)) {
-            index = lastIndexOfValue(key, serialize((EAttribute) feature, value));
+            index = lastIndexOfValue(key, serialize(EAttribute.class.cast(feature), value));
         }
         else {
             index = lastIndexOfReference(key, PersistentEObject.from(value).id());
@@ -476,10 +476,10 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         if (isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
-                appendValue(key, serialize((EAttribute) feature, value));
+                appendValue(key, serialize(EAttribute.class.cast(feature), value));
             }
             else {
-                addValue(key.withPosition(index), serialize((EAttribute) feature, value));
+                addValue(key.withPosition(index), serialize(EAttribute.class.cast(feature), value));
             }
         }
         else {
@@ -517,7 +517,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         if (isAttribute(feature)) {
             return this.<String>removeValue(key)
-                    .map(v -> deserialize((EAttribute) feature, v))
+                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
                     .orElse(null);
         }
         else {
@@ -605,7 +605,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
             }
 
             stream = allValues.stream()
-                    .map(v -> deserialize((EAttribute) feature, v));
+                    .map(v -> deserialize(EAttribute.class.cast(feature), v));
         }
         else {
             List<Id> allReferences;

@@ -76,13 +76,13 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
      * @return the adapted {@code store}
      */
     public static StoreAdapter adapt(Store store) {
-        if (store instanceof StoreAdapter && !(store instanceof SharedStoreAdapter)) {
+        if (StoreAdapter.class.isInstance(store) && !SharedStoreAdapter.class.isInstance(store)) {
             throw new IllegalArgumentException(String.format("Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getSimpleName()));
         }
 
         //noinspection ConstantConditions
-        return checkNotNull(store) instanceof SharedStoreAdapter
-                ? (SharedStoreAdapter) store
+        return SharedStoreAdapter.class.isInstance(checkNotNull(store))
+                ? SharedStoreAdapter.class.cast(store)
                 : new SharedStoreAdapter(store);
     }
 

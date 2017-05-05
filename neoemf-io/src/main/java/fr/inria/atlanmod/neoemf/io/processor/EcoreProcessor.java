@@ -91,15 +91,15 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EStructuralFeature feature = eClass.getEStructuralFeature(attribute.name());
 
         // Checks that the attribute is well a attribute
-        if (feature instanceof EAttribute) {
-            EAttribute eAttribute = (EAttribute) feature;
+        if (EAttribute.class.isInstance(feature)) {
+            EAttribute eAttribute = EAttribute.class.cast(feature);
             attribute.isMany(eAttribute.isMany());
 
             notifyAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
-        else if (feature instanceof EReference) {
+        else if (EReference.class.isInstance(feature)) {
             onReference(RawReference.from(attribute));
         }
     }
@@ -110,8 +110,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EStructuralFeature feature = eClass.getEStructuralFeature(reference.name());
 
         // Checks that the reference is well a reference
-        if (feature instanceof EReference) {
-            EReference eReference = (EReference) feature;
+        if (EReference.class.isInstance(feature)) {
+            EReference eReference = EReference.class.cast(feature);
             reference.isContainment(eReference.isContainment());
             reference.isMany(eReference.isMany());
 
@@ -122,7 +122,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
 
         // Otherwise redirect to the attribute handler
-        else if (feature instanceof EAttribute) {
+        else if (EAttribute.class.isInstance(feature)) {
             onAttribute(RawAttribute.from(reference));
         }
     }
@@ -164,11 +164,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         Namespace ns = checkNotNull(element.ns(), "The root element must have a namespace");
 
         // Retrieves the EPackage from NS prefix
-        EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.uri()),
+        EPackage ePackage = checkNotNull(EPackage.class.cast(EPackage.Registry.INSTANCE.get(ns.uri())),
                 "EPackage %s is not registered.", ns.uri());
 
         // Gets the current EClass
-        EClass eClass = (EClass) ePackage.getEClassifier(element.name());
+        EClass eClass = EClass.class.cast(ePackage.getEClassifier(element.name()));
 
         // Defines the metaclass of the current element if not present
         if (isNull(element.metaclass())) {
@@ -202,17 +202,26 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EClass parentEClass = classesStack.getLast();
 
         // Gets the EPackage from it
-        EPackage ePackage = parentEClass.getEPackage();
-        Namespace ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
+        Namespace ns;
+        EPackage ePackage;
+
+        if (nonNull(element.ns())) {
+            ns = element.ns();
+            ePackage = EPackage.Registry.INSTANCE.getEPackage(ns.uri());
+        }
+        else {
+            ePackage = parentEClass.getEPackage();
+            ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
+        }
 
         // Gets the structural feature from the parent, according the its local name (the attr/ref name)
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
 
-        if (feature instanceof EAttribute) {
-            processElementAsAttribute(element, (EAttribute) feature);
+        if (EAttribute.class.isInstance(feature)) {
+            processElementAsAttribute(element, EAttribute.class.cast(feature));
         }
-        else if (feature instanceof EReference) {
-            processElementAsReference(element, ns, (EReference) feature, ePackage);
+        else if (EReference.class.isInstance(feature)) {
+            processElementAsReference(element, ns, EReference.class.cast(feature), ePackage);
         }
     }
 
@@ -244,7 +253,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processElementAsReference(RawElement element, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass
-        EClass eClass = resolveInstanceOf(element, ns, (EClass) reference.getEType(), ePackage);
+        EClass eClass = resolveInstanceOf(element, ns, EClass.class.cast(reference.getEType()), ePackage);
 
         element.ns(ns);
 
@@ -283,22 +292,21 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         RawMetaclass metaClass = element.metaclass();
 
         if (nonNull(metaClass)) {
-            EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.name());
+            EClass subClass = EClass.class.cast(ePackage.getEClassifier(metaClass.name()));
 
             // Checks that the metaclass is a subtype of the reference type.
             // If true, use it instead of supertype
-            if (superClass.isSuperTypeOf(subEClass)) {
-                superClass = subEClass;
+            if (superClass.isSuperTypeOf(subClass)) {
+                superClass = subClass;
             }
             else {
-                throw new IllegalArgumentException(subEClass.getName() + " is not a subclass of " + superClass.getName());
+                throw new IllegalArgumentException(String.format("%s is not a subclass of %s", subClass.getName(), superClass.getName()));
             }
         }
 
         // If not present, create the metaclass from the current class
         else {
-            metaClass = new RawMetaclass(ns, superClass.getName());
-            element.metaclass(metaClass);
+            element.metaclass(new RawMetaclass(ns, superClass.getName()));
         }
 
         return superClass;

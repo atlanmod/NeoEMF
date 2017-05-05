@@ -63,7 +63,7 @@ public class Watcher extends org.junit.rules.TestWatcher {
         else {
             // Several exceptions
             if (MultipleFailureException.class.isInstance(e)) {
-                MultipleFailureException me = (MultipleFailureException) e;
+                MultipleFailureException me = MultipleFailureException.class.cast(e);
 
                 LOG_TEST.error(e, "--- Several exceptions have been thrown during the test:");
                 me.getFailures().forEach(LOG_VOID::error);

@@ -61,7 +61,7 @@ public class CopyBackendContentTest extends AbstractBackendTest {
         assertThat(resource.getContents()).isNotEmpty();
         assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class);
 
-        SampleModel sampleModel = (SampleModel) resource.getContents().get(0);
+        SampleModel sampleModel = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(sampleModel.getName()).isEqualTo(MODEL_NAME);
 
         EList<SampleModelContentObject> contentObjects = sampleModel.getContentObjects();

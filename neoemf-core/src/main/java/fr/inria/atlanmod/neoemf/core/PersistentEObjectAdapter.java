@@ -83,11 +83,11 @@ final class PersistentEObjectAdapter {
         if (type.isInstance(o)) {
             adapter = o;
         }
-        else if (o instanceof InternalEObject) {
+        else if (InternalEObject.class.isInstance(o)) {
             adapter = CACHE.get(o);
             if (isNull(adapter) || !type.isAssignableFrom(adapter.getClass())) {
                 adapter = createAdapter(o, type);
-                CACHE.put(o, (PersistentEObject) adapter);
+                CACHE.put(o, PersistentEObject.class.cast(adapter));
             }
         }
 
@@ -154,6 +154,7 @@ final class PersistentEObjectAdapter {
      *
      * @return a {@link Set} of interfaces in order
      */
+    @Nonnull
     private static Set<Class<?>> getAllInterfaces(Class<?> cls) {
         Set<Class<?>> interfaces = new LinkedHashSet<>();
         getAllInterfaces(cls, interfaces);
@@ -166,6 +167,7 @@ final class PersistentEObjectAdapter {
      * @param cls        the class to look up
      * @param interfaces the {@link Set} of interfaces for the class
      */
+    @Nullable
     private static void getAllInterfaces(Class<?> cls, Set<Class<?>> interfaces) {
         while (cls != null) {
             for (Class<?> i : cls.getInterfaces()) {

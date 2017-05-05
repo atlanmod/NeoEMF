@@ -47,8 +47,8 @@ public final class MoreIterables {
     public static <E> Stream<E> stream(Iterable<E> iterable) {
         checkNotNull(iterable);
 
-        return iterable instanceof Collection
-                ? ((Collection<E>) iterable).stream()
+        return Collection.class.isInstance(iterable)
+                ? Collection.class.cast(iterable).stream()
                 : StreamSupport.stream(iterable.spliterator(), false);
     }
 
@@ -62,8 +62,8 @@ public final class MoreIterables {
     public static <E> boolean isEmpty(Iterable<E> iterable) {
         checkNotNull(iterable);
 
-        return iterable instanceof Collection
-                ? ((Collection<E>) iterable).isEmpty()
+        return Collection.class.isInstance(iterable)
+                ? Collection.class.cast(iterable).isEmpty()
                 : !iterable.iterator().hasNext();
     }
 

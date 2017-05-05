@@ -113,13 +113,13 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void copyTo(DataMapper target) {
-        checkArgument(target instanceof AbstractMapDbBackend);
-        AbstractMapDbBackend to = (AbstractMapDbBackend) target;
+        checkArgument(AbstractMapDbBackend.class.isInstance(target));
+        AbstractMapDbBackend to = AbstractMapDbBackend.class.cast(target);
 
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();
-            if (collection instanceof Map) {
-                Map fromMap = (Map) collection;
+            if (Map.class.isInstance(collection)) {
+                Map fromMap = Map.class.cast(collection);
                 Map toMap = to.db.hashMap(entry.getKey()).createOrOpen();
 
                 toMap.putAll(fromMap);

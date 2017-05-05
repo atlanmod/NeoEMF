@@ -48,7 +48,7 @@ public interface Store extends DataMapper {
      * @return {@code true} if this store is attached, {@code false} otherwise
      */
     default boolean isPersistent() {
-        return resource() instanceof PersistentResource;
+        return PersistentResource.class.isInstance(resource());
     }
 
     /**

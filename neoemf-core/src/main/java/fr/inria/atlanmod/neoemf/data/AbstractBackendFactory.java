@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -195,16 +196,20 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      * @see Class#getDeclaredConstructor(Class[])
      * @see Constructor#newInstance(Object...)
      */
+    @Immutable
+    @ParametersAreNonnullByDefault
     protected static final class ConstructorParameter {
 
         /**
          * The value to use in the constructor.
          */
+        @Nonnull
         private final Object value;
 
         /**
          * The declared type of the value in the constructor.
          */
+        @Nonnull
         private final Class<?> type;
 
         /**

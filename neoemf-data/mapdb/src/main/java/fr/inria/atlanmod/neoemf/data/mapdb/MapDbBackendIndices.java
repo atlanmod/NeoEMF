@@ -92,7 +92,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
 
     @Override
     public void copyTo(DataMapper target) {
-        checkArgument(target instanceof MapDbBackendIndices);
+        checkArgument(MapDbBackendIndices.class.isInstance(target));
         super.copyTo(target);
     }
 }

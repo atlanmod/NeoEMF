@@ -119,11 +119,11 @@ public final class ContainerDescriptor implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ContainerDescriptor)) {
+        if (!ContainerDescriptor.class.isInstance(o)) {
             return false;
         }
 
-        ContainerDescriptor that = (ContainerDescriptor) o;
+        ContainerDescriptor that = ContainerDescriptor.class.cast(o);
         return Objects.equals(id, that.id)
                 && Objects.equals(name, that.name);
     }

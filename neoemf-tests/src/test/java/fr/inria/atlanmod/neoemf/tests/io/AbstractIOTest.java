@@ -142,8 +142,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
 
         Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
         EObject eObject = r.getContents().get(0);
-        if (eObject instanceof EPackage) {
-            ePackage = (EPackage) eObject;
+        if (EPackage.class.isInstance(eObject)) {
+            ePackage = EPackage.class.cast(eObject);
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
@@ -214,10 +214,10 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             Log.debug("Actual feature    : {0}", actualValue);
             Log.debug("Expected feature  : {0}", expectedValue);
 
-            if (expectedValue instanceof EObject) {
-                assertEqualEObject((EObject) actualValue, (EObject) expectedValue);
+            if (EObject.class.isInstance(expectedValue)) {
+                assertEqualEObject(EObject.class.cast(actualValue), EObject.class.cast(expectedValue));
             }
-            else if (expectedValue instanceof List) {
+            else if (List.class.isInstance(expectedValue)) {
                 List<EObject> expectedList = (List<EObject>) expectedValue;
                 List<EObject> actualList = (List<EObject>) actualValue;
 
@@ -267,7 +267,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      */
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
     protected void assertValidReference(EObject obj, String name, int index, String referenceClassName, String referenceName, boolean many, boolean containment) {
-        EReference reference = (EReference) obj.eClass().getEStructuralFeature(name);
+        EReference reference = EReference.class.cast(obj.eClass().getEStructuralFeature(name));
 
         Object objectReference = obj.eGet(reference);
         EObject eObjectReference;
@@ -277,14 +277,14 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             eObjectReference = eObjectList.get(index);
         }
         else {
-            eObjectReference = (EObject) objectReference;
+            eObjectReference = EObject.class.cast(objectReference);
         }
 
         assertThat(eObjectReference.eClass().getName()).isEqualTo(referenceClassName);
 
         if (isNull(referenceName)) {
             try {
-                EAttribute attribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
+                EAttribute attribute = EAttribute.class.cast(eObjectReference.eClass().getEStructuralFeature("name"));
                 assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
             }
             catch (NullPointerException ignored) {
@@ -292,7 +292,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
             }
         }
         else {
-            EAttribute attribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
+            EAttribute attribute = EAttribute.class.cast(eObjectReference.eClass().getEStructuralFeature("name"));
             assertThat(eObjectReference.eGet(attribute).toString()).isEqualTo(referenceName);
         }
 
@@ -309,7 +309,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param value the expected value of the attribute
      */
     protected void assertValidAttribute(EObject obj, String name, Object value) {
-        EAttribute attribute = (EAttribute) obj.eClass().getEStructuralFeature(name);
+        EAttribute attribute = EAttribute.class.cast(obj.eClass().getEStructuralFeature(name));
 
         if (isNull(value)) {
             assertThat(obj.eGet(attribute)).isEqualTo(attribute.getDefaultValue());

@@ -286,11 +286,11 @@ public final class CacheStats {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CacheStats)) {
+        if (!CacheStats.class.isInstance(o)) {
             return false;
         }
 
-        CacheStats that = (CacheStats) o;
+        CacheStats that = CacheStats.class.cast(o);
         return hitCount == that.hitCount
                 && missCount == that.missCount
                 && loadSuccessCount == that.loadSuccessCount

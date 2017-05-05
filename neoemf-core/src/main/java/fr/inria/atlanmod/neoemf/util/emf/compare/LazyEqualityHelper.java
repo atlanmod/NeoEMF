@@ -67,7 +67,7 @@ class LazyEqualityHelper extends EqualityHelper {
         final boolean equal;
 
         if (match != null) {
-            if (object2 instanceof PersistentEObject || match.getLeft() instanceof PersistentEObject || match.getRight() instanceof PersistentEObject || match.getOrigin() instanceof PersistentEObject) {
+            if (PersistentEObject.class.isInstance(object2) || PersistentEObject.class.isInstance(match.getLeft()) || PersistentEObject.class.isInstance(match.getRight()) || PersistentEObject.class.isInstance(match.getOrigin())) {
                 equal = Objects.equals(match.getLeft(), object2) || Objects.equals(match.getRight(), object2) || Objects.equals(match.getOrigin(), object2);
             }
             else {

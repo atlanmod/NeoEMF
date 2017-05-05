@@ -16,108 +16,48 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 
-import static java.util.Objects.isNull;
-
 /**
  * A specific {@link Context} for the HBase implementation.
  */
-public abstract class HBaseContext implements Context {
-
-    /**
-     * Facility for testing HBase.
-     */
-    private static HBaseTestingUtility hbase;
-
-    /**
-     * The Zookeeper host.
-     */
-    private static String host;
-
-    /**
-     * The Zookeeper port.
-     */
-    private static int port;
+@FunctionalInterface
+public interface HBaseContext extends Context {
 
     /**
      * Creates a new {@code HBaseContext} with a mapping with arrays and strings.
      *
      * @return a new context.
      */
-    public static Context getWithArraysAndStrings() {
-        return new HBaseContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return HBaseOptions.newBuilder().withArraysAndStrings();
-            }
-        };
-    }
-
-    /**
-     * Initializes the mini-cluster.
-     */
-    private static void initMiniCluster() {
-        try {
-            Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
-
-            hbase = new HBaseTestingUtility();
-            hbase.startMiniCluster(1);
-
-            Configuration conf = hbase.getConnection().getConfiguration();
-            host = conf.get("hbase.zookeeper.quorum");
-            port = Integer.parseInt(conf.get("hbase.zookeeper.property.clientPort"));
-
-            Log.info("Hadoop cluster running at {0}:{1,number,#}", host, port);
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    Log.info("Shutting down the Hadoop mini-cluster...");
-                    hbase.shutdownMiniCluster();
-                }
-                catch (Exception ignored) {
-                }
-            }));
-        }
-        catch (Exception e) {
-            Log.error(e, "Unable to create the Hadoop cluster. If you're testing on Windows, you need to install Cygwin (https://hbase.apache.org/cygwin.html)");
-            throw new RuntimeException(e);
-        }
+    static Context getWithArraysAndStrings() {
+        return (HBaseContext) () -> HBaseOptions.newBuilder().withArraysAndStrings();
     }
 
     @Override
-    public String name() {
+    default String name() {
         return "HBase";
     }
 
     @Override
-    public BackendFactory factory() {
-        if (isNull(hbase)) {
-            initMiniCluster();
-        }
-
+    default BackendFactory factory() {
         return HBaseBackendFactory.getInstance();
     }
 
     @Override
-    public String uriScheme() {
+    default String uriScheme() {
         return HBaseURI.SCHEME;
     }
 
     @Override
-    public URI createUri(URI uri) {
-        return HBaseURI.newBuilder().fromServer(host, port, uri);
+    default URI createUri(URI uri) {
+        return HBaseURI.newBuilder().fromServer(HBaseCluster.host(), HBaseCluster.port(), uri);
     }
 
     @Override
-    public URI createUri(File file) {
-        return HBaseURI.newBuilder().fromServer(host, port, URI.createURI(file.getName()));
+    default URI createUri(File file) {
+        return HBaseURI.newBuilder().fromServer(HBaseCluster.host(), HBaseCluster.port(), URI.createURI(file.getName()));
     }
 }

@@ -69,8 +69,8 @@ public abstract class AbstractInputTest extends AbstractTest {
 
         Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
         EObject eObject = r.getContents().get(0);
-        if (eObject instanceof EPackage) {
-            ePackage = (EPackage) eObject;
+        if (EPackage.class.isInstance(eObject)) {
+            ePackage = EPackage.class.cast(eObject);
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 

@@ -114,9 +114,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public void resource(@Nullable Resource.Internal resource) {
         StoreAdapter newStore = null;
 
-        if (resource instanceof PersistentResource) {
+        if (PersistentResource.class.isInstance(resource)) {
             // The resource store may have been changed (persistent <-> transient)
-            newStore = ((PersistentResource) resource).store();
+            newStore = PersistentResource.class.cast(resource).store();
         }
         else if (this.resource != resource) {
             newStore = createBoundedStore(resource);
@@ -194,7 +194,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Optional<Object> getValueFrom(StoreAdapter store, EStructuralFeature feature, int index) {
         Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
 
-        if (value.isPresent() && feature instanceof EReference && ((EReference) feature).isContainment()) {
+        if (value.isPresent() && EReference.class.isInstance(feature) && EReference.class.cast(feature).isContainment()) {
             PersistentEObject object = PersistentEObject.from(value.get());
             object.resource(resource);
             return Optional.of(object);
@@ -336,11 +336,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PersistentEObject)) {
+        if (!PersistentEObject.class.isInstance(o)) {
             return false;
         }
 
-        PersistentEObject that = (PersistentEObject) o;
+        PersistentEObject that = PersistentEObject.class.cast(o);
         return Objects.equals(id, that.id());
     }
 
@@ -394,7 +394,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          */
         @SuppressWarnings("unchecked") // Unchecked cast: 'DelegatedContentsList<?>' to 'DelegatedContentsList<E>'
         public static <E> DelegatedContentsList<E> empty() {
-            return (DelegatedContentsList<E>) EMPTY;
+            return DelegatedContentsList.class.cast(EMPTY);
         }
 
         /**
@@ -558,7 +558,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * @param feature the feature associated with this map
          */
         public DelegatedStoreMap(EStructuralFeature feature) {
-            super((EClass) feature.getEType(), Entry.class, null);
+            super(EClass.class.cast(feature.getEType()), Entry.class, null);
 
             this.delegateEList = new EntriesList(DefaultPersistentEObject.this, feature);
             this.size = delegateEList.size();

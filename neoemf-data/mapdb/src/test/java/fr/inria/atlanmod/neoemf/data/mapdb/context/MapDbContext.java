@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -25,20 +24,16 @@ import java.io.File;
 /**
  * A specific {@link Context} for the MapDB implementation.
  */
-public abstract class MapDbContext implements Context {
+@FunctionalInterface
+public interface MapDbContext extends Context {
 
     /**
      * Creates a new {@code MapDbContext} with a mapping with indices.
      *
      * @return a new context.
      */
-    public static Context getWithIndices() {
-        return new MapDbContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return MapDbOptions.newBuilder().withIndices();
-            }
-        };
+    static Context getWithIndices() {
+        return (MapDbContext) () -> MapDbOptions.newBuilder().withIndices();
     }
 
     /**
@@ -46,13 +41,8 @@ public abstract class MapDbContext implements Context {
      *
      * @return a new context.
      */
-    public static Context getWithArrays() {
-        return new MapDbContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return MapDbOptions.newBuilder().withArrays();
-            }
-        };
+    static Context getWithArrays() {
+        return (MapDbContext) () -> MapDbOptions.newBuilder().withArrays();
     }
 
     /**
@@ -60,37 +50,32 @@ public abstract class MapDbContext implements Context {
      *
      * @return a new context.
      */
-    public static Context getWithLists() {
-        return new MapDbContext() {
-            @Override
-            public AbstractPersistenceOptions<?> optionsBuilder() {
-                return MapDbOptions.newBuilder().withLists();
-            }
-        };
+    static Context getWithLists() {
+        return (MapDbContext) () -> MapDbOptions.newBuilder().withLists();
     }
 
     @Override
-    public String name() {
+    default String name() {
         return "MapDb";
     }
 
     @Override
-    public BackendFactory factory() {
+    default BackendFactory factory() {
         return MapDbBackendFactory.getInstance();
     }
 
     @Override
-    public String uriScheme() {
+    default String uriScheme() {
         return MapDbURI.SCHEME;
     }
 
     @Override
-    public URI createUri(URI uri) {
+    default URI createUri(URI uri) {
         return MapDbURI.newBuilder().fromUri(uri);
     }
 
     @Override
-    public URI createUri(File file) {
+    default URI createUri(File file) {
         return MapDbURI.newBuilder().fromFile(file);
     }
 }

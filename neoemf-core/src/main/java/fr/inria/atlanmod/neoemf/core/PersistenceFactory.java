@@ -44,6 +44,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
         return Holder.INSTANCE;
     }
 
+    @Nonnull
     @Override
     public PersistentEObject create(EClass eClass) {
         return create(eClass, StringId.generate());
@@ -57,6 +58,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
      *
      * @return a new instance of the class
      */
+    @Nonnull
     public PersistentEObject create(EClass eClass, Id id) {
         PersistentEObject newObject;
 

@@ -211,7 +211,7 @@ public final class ClassDescriptor implements Serializable {
         if (isNull(eClass)) {
             EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
             if (nonNull(ePackage)) {
-                eClass = (EClass) ePackage.getEClassifier(name);
+                eClass = EClass.class.cast(ePackage.getEClassifier(name));
             }
             else {
                 Log.warn("Unable to find EPackage for URI: {0}", uri);
@@ -230,11 +230,11 @@ public final class ClassDescriptor implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ClassDescriptor)) {
+        if (!ClassDescriptor.class.isInstance(o)) {
             return false;
         }
 
-        ClassDescriptor that = (ClassDescriptor) o;
+        ClassDescriptor that = ClassDescriptor.class.cast(o);
         return Objects.equals(name, that.name)
                 && Objects.equals(uri, that.uri);
     }

@@ -37,7 +37,7 @@ public class EMapSupportTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(model.getMap()).isInstanceOf(EMap.class);
 
         EMap<String, String> map = model.getMap();
@@ -50,7 +50,7 @@ public class EMapSupportTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         EMap<String, String> map = model.getMap();
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
@@ -68,7 +68,7 @@ public class EMapSupportTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         assertThat(model.getKvMap()).isInstanceOf(EMap.class);
 
         EMap<K, V> map = model.getKvMap();
@@ -81,7 +81,7 @@ public class EMapSupportTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
 
-        SampleModel model = (SampleModel) resource.getContents().get(0);
+        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
         EMap<K, V> map = model.getKvMap();
 
         K k1 = EFACTORY.createK();
