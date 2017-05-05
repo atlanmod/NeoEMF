@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
@@ -501,6 +502,14 @@ public class URIBuilder {
         @Override
         public URI replacePrefix(URI oldPrefix, URI newPrefix) {
             return baseUri.replacePrefix(oldPrefix, newPrefix);
+        }
+
+        @Override
+        public boolean equals(@Nullable Object o) {
+            if (URI.class.isInstance(o)) {
+                return Objects.equals(this.toString(), o.toString());
+            }
+            return super.equals(o);
         }
 
         @Override
