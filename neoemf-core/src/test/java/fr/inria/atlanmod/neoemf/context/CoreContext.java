@@ -42,7 +42,7 @@ public interface CoreContext extends Context {
      * @return the instance of this class.
      */
     static Context get() {
-        return new CoreContext(){};
+        return new CoreContext() {};
     }
 
     @Override

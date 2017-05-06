@@ -109,20 +109,22 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     }
 
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
-        cache.put(key.withPosition(sizeOfValue(key).orElse(0)), value);
+    public <V> int appendValue(FeatureKey key, V value) {
+        int position = super.appendValue(key, value);
 
-        super.appendValue(key, value);
+        cache.put(key.withPosition(position), value);
+
+        return position;
     }
 
     @Override
-    public <V> void appendAllValues(FeatureKey key, List<V> values) {
-        int size = sizeOfValue(key).orElse(0);
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+        int firstPosition = super.appendAllValues(key, values);
 
         IntStream.range(0, values.size())
-                .forEach(i -> cache.put(key.withPosition(size + i), values.get(i)));
+                .forEach(i -> cache.put(key.withPosition(firstPosition + i), values.get(i)));
 
-        super.appendAllValues(key, values);
+        return firstPosition;
     }
 
     @Nonnull
@@ -168,20 +170,22 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
-        cache.put(key.withPosition(sizeOfReference(key).orElse(0)), reference);
+    public int appendReference(FeatureKey key, Id reference) {
+        int position = super.appendReference(key, reference);
 
-        super.appendReference(key, reference);
+        cache.put(key.withPosition(position), reference);
+
+        return position;
     }
 
     @Override
-    public void appendAllReferences(FeatureKey key, List<Id> references) {
-        int size = sizeOfReference(key).orElse(0);
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
+        int firstPosition = super.appendAllReferences(key, references);
 
         IntStream.range(0, references.size())
-                .forEach(i -> cache.put(key.withPosition(size + i), references.get(i)));
+                .forEach(i -> cache.put(key.withPosition(firstPosition + i), references.get(i)));
 
-        super.appendAllReferences(key, references);
+        return firstPosition;
     }
 
     @Nonnull

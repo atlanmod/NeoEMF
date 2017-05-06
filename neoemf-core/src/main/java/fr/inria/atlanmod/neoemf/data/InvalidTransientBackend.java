@@ -155,7 +155,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(FeatureKey key, V value) {
         throw E;
     }
 
@@ -222,7 +222,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
+    public int appendReference(FeatureKey key, Id reference) {
         throw E;
     }
 

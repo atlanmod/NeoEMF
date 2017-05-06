@@ -113,13 +113,19 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to add
      * @param <V>   the type of value
      *
+     * @return the position to which the value was added
+     *
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addValue(ManyFeatureKey, Object)
      */
-    default <V> void appendValue(FeatureKey key, V value) {
+    default <V> int appendValue(FeatureKey key, V value) {
         checkNotNull(key);
 
-        addValue(key.withPosition(sizeOfValue(key).orElse(0)), value);
+        int position = sizeOfValue(key).orElse(0);
+
+        addValue(key.withPosition(position), value);
+
+        return position;
     }
 
     /**
@@ -129,18 +135,22 @@ public interface ManyValueMapper extends ValueMapper {
      * @param values the values to add
      * @param <V>    the type of values
      *
+     * @return the position to which the first value was added
+     *
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addValue(ManyFeatureKey, Object)
      * @see #appendValue(FeatureKey, Object)
      */
-    default <V> void appendAllValues(FeatureKey key, List<V> values) {
+    default <V> int appendAllValues(FeatureKey key, List<V> values) {
         checkNotNull(key);
         checkNotNull(values);
 
-        int size = sizeOfValue(key).orElse(0);
+        int firstPosition = sizeOfValue(key).orElse(0);
 
         IntStream.range(0, values.size())
-                .forEach(i -> addValue(key.withPosition(size + i), values.get(i)));
+                .forEach(i -> addValue(key.withPosition(firstPosition + i), values.get(i)));
+
+        return firstPosition;
     }
 
     /**

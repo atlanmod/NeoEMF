@@ -181,13 +181,13 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
-        call(super::appendValue, key, value);
+    public <V> int appendValue(FeatureKey key, V value) {
+        return callAndReturn(super::appendValue, key, value);
     }
 
     @Override
-    public <V> void appendAllValues(FeatureKey key, List<V> values) {
-        call(super::appendAllValues, key, values);
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+        return callAndReturn(super::appendAllValues, key, values);
     }
 
     @Nonnull
@@ -253,13 +253,13 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
-        call(super::appendReference, key, reference);
+    public int appendReference(FeatureKey key, Id reference) {
+        return callAndReturn(super::appendReference, key, reference);
     }
 
     @Override
-    public void appendAllReferences(FeatureKey key, List<Id> references) {
-        call(super::appendAllReferences, key, references);
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
+        return callAndReturn(super::appendAllReferences, key, references);
     }
 
     @Nonnull

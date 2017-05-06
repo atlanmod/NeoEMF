@@ -57,15 +57,17 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
-        cacheSize(key, sizeOfValue(key).orElse(0) + 1);
-        super.appendValue(key, value);
+    public <V> int appendValue(FeatureKey key, V value) {
+        int position = super.appendValue(key, value);
+        cacheSize(key, position + 1);
+        return position;
     }
 
     @Override
-    public <V> void appendAllValues(FeatureKey key, List<V> values) {
-        cacheSize(key, sizeOfValue(key).orElse(0) + values.size());
-        super.appendAllValues(key, values);
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+        int firstPosition = super.appendAllValues(key, values);
+        cacheSize(key, firstPosition + values.size());
+        return firstPosition;
     }
 
     @Nonnull
@@ -95,15 +97,17 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
-        cacheSize(key, sizeOfReference(key).orElse(0) + 1);
-        super.appendReference(key, reference);
+    public int appendReference(FeatureKey key, Id reference) {
+        int position = super.appendReference(key, reference);
+        cacheSize(key, position + 1);
+        return position;
     }
 
     @Override
-    public void appendAllReferences(FeatureKey key, List<Id> references) {
-        cacheSize(key, sizeOfReference(key).orElse(0) + references.size());
-        super.appendAllReferences(key, references);
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
+        int firstPosition = super.appendAllReferences(key, references);
+        cacheSize(key, firstPosition + references.size());
+        return firstPosition;
     }
 
     @Nonnull

@@ -54,242 +54,274 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        loadedObjects.add(id);
+        register(id);
         return super.containerOf(id);
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        loadedObjects.add(id);
+        register(id);
         super.containerFor(id, container);
     }
 
     @Override
     public void unsetContainer(Id id) {
-        loadedObjects.add(id);
+        register(id);
         super.unsetContainer(id);
     }
 
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
-        loadedObjects.add(id);
+        register(id);
         return super.metaclassOf(id);
     }
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        loadedObjects.add(id);
+        register(id);
         super.metaclassFor(id, metaclass);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.valueOf(key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.valueFor(key, value);
     }
 
     @Override
     public <V> void unsetValue(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         super.unsetValue(key);
     }
 
     @Override
     public <V> boolean hasValue(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.hasValue(key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.referenceOf(key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.referenceFor(key, reference);
     }
 
     @Override
     public void unsetReference(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         super.unsetReference(key);
     }
 
     @Override
     public boolean hasReference(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.hasReference(key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.valueOf(key);
     }
 
     @Nonnull
     @Override
     public <V> List<V> allValuesOf(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.allValuesOf(key);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.valueFor(key, value);
     }
 
     @Override
     public <V> boolean hasAnyValue(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.hasAnyValue(key);
     }
 
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
-        loadedObjects.add(key.id());
+        register(key);
         super.addValue(key, value);
     }
 
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
-        loadedObjects.add(key.id());
-        super.appendValue(key, value);
+    public <V> int appendValue(FeatureKey key, V value) {
+        register(key);
+        return super.appendValue(key, value);
+    }
+
+    @Override
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+        register(key);
+        return super.appendAllValues(key, values);
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.removeValue(key);
     }
 
     @Override
     public <V> void removeAllValues(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         super.removeAllValues(key);
     }
 
     @Override
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.containsValue(key, value);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.indexOfValue(key, value);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.lastIndexOfValue(key, value);
     }
 
     @Nonnull
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.sizeOfValue(key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.referenceOf(key);
     }
 
     @Nonnull
     @Override
     public List<Id> allReferencesOf(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.allReferencesOf(key);
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.referenceFor(key, reference);
     }
 
     @Override
     public boolean hasAnyReference(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.hasAnyReference(key);
     }
 
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
-        loadedObjects.add(key.id());
+        register(key);
         super.addReference(key, reference);
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
-        loadedObjects.add(key.id());
-        super.appendReference(key, reference);
+    public int appendReference(FeatureKey key, Id reference) {
+        register(key);
+        return super.appendReference(key, reference);
+    }
+
+    @Override
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
+        register(key);
+        return super.appendAllReferences(key, references);
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.removeReference(key);
     }
 
     @Override
     public void removeAllReferences(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         super.removeAllReferences(key);
     }
 
     @Override
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.containsReference(key, reference);
     }
 
     @Nonnull
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.indexOfReference(key, reference);
     }
 
     @Nonnull
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.lastIndexOfReference(key, reference);
     }
 
     @Nonnull
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
-        loadedObjects.add(key.id());
+        register(key);
         return super.sizeOfReference(key);
+    }
+
+    /**
+     * Registers the given {@code key} as loaded.
+     *
+     * @param key the key from which to extract the identifier
+     *
+     * @see #register(Id)
+     */
+    private void register(FeatureKey key) {
+        register(key.id());
+    }
+
+    /**
+     * Registers the given {@code id} as loaded.
+     *
+     * @param id the identifier to register
+     */
+    private void register(Id id) {
+        loadedObjects.add(id);
     }
 }

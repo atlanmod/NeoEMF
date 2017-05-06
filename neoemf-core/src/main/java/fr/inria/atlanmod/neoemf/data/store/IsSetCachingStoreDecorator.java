@@ -119,15 +119,15 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     }
 
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(FeatureKey key, V value) {
         cache.put(key, true);
-        super.appendValue(key, value);
+        return super.appendValue(key, value);
     }
 
     @Override
-    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
         cache.put(key, true);
-        super.appendAllValues(key, values);
+        return super.appendAllValues(key, values);
     }
 
     @Nonnull
@@ -179,15 +179,15 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     }
 
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
+    public int appendReference(FeatureKey key, Id reference) {
         cache.put(key, true);
-        super.appendReference(key, reference);
+        return super.appendReference(key, reference);
     }
 
     @Override
-    public void appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
         cache.put(key, true);
-        super.appendAllReferences(key, references);
+        return super.appendAllReferences(key, references);
     }
 
     @Nonnull

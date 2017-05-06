@@ -116,13 +116,19 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
      *
+     * @return the position to which the reference was added
+     *
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addReference(ManyFeatureKey, Id)
      */
-    default void appendReference(FeatureKey key, Id reference) {
+    default int appendReference(FeatureKey key, Id reference) {
         checkNotNull(key);
 
-        addReference(key.withPosition(sizeOfReference(key).orElse(0)), reference);
+        int position = sizeOfReference(key).orElse(0);
+
+        addReference(key.withPosition(position), reference);
+
+        return position;
     }
 
     /**
@@ -131,18 +137,22 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param key        the key identifying the multi-valued reference
      * @param references the references to add
      *
+     * @return the position to which the first reference was added
+     *
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addReference(ManyFeatureKey, Id)
      * @see #appendReference(FeatureKey, Id)
      */
-    default void appendAllReferences(FeatureKey key, List<Id> references) {
+    default int appendAllReferences(FeatureKey key, List<Id> references) {
         checkNotNull(key);
         checkNotNull(references);
 
-        int size = sizeOfReference(key).orElse(0);
+        int firstPosition = sizeOfReference(key).orElse(0);
 
         IntStream.range(0, references.size())
-                .forEach(i -> addReference(key.withPosition(size + i), references.get(i)));
+                .forEach(i -> addReference(key.withPosition(firstPosition + i), references.get(i)));
+
+        return firstPosition;
     }
 
     /**

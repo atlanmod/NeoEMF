@@ -135,7 +135,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public <V> void appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(FeatureKey key, V value) {
         throw E;
     }
 
@@ -143,7 +143,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public <V> void appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
         throw E;
     }
 
@@ -185,7 +185,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public void appendReference(FeatureKey key, Id reference) {
+    public int appendReference(FeatureKey key, Id reference) {
         throw E;
     }
 
@@ -193,7 +193,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      * @throws UnsupportedOperationException every time: operation not supported in read-only mode
      */
     @Override
-    public void appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
         throw E;
     }
 
