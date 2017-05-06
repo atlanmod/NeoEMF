@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
         DummyElement mock;
         DummyElement mockChild;
 
-        List<RawAttribute> attributeList;
+        List<BasicAttribute> attributeList;
 
         DummyElement root = persistanceHandler.getRoot();
         attributeList = root.attributes();
@@ -151,7 +151,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
         DummyElement mock;
         DummyElement mockChild;
 
-        List<RawReference> referenceList;
+        List<BasicReference> referenceList;
 
         DummyElement root = persistanceHandler.getRoot();
         referenceList = root.references();
@@ -218,7 +218,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
         DummyElement mockChild;
 
         DummyElement root = persistanceHandler.getRoot();
-        Namespace ns = root.ns();
+        BasicNamespace ns = root.ns();
         assertValidMetaClass(root.metaClass(), "Model", ns);
         {
             //@Model/@packagedElement.0

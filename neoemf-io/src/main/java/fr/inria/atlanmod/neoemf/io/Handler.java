@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,36 +39,36 @@ public interface Handler {
      * @param element the element of the new element
      *
      * @see #onEndElement()
-     * @see Notifier#notifyStartElement(RawElement)
+     * @see Notifier#notifyStartElement(BasicElement)
      */
-    void onStartElement(RawElement element);
+    void onStartElement(BasicElement element);
 
     /**
      * Handles an attribute in the current element.
      *
      * @param attribute the new attribute
      *
-     * @see #onStartElement(RawElement)
-     * @see Notifier#notifyAttribute(RawAttribute)
+     * @see #onStartElement(BasicElement)
+     * @see Notifier#notifyAttribute(BasicAttribute)
      */
-    void onAttribute(RawAttribute attribute);
+    void onAttribute(BasicAttribute attribute);
 
     /**
      * Handles a reference from the current element to another.
      *
      * @param reference the new reference
      *
-     * @see #onStartElement(RawElement)
-     * @see Notifier#notifyReference(RawReference)
+     * @see #onStartElement(BasicElement)
+     * @see Notifier#notifyReference(BasicReference)
      */
-    void onReference(RawReference reference);
+    void onReference(BasicReference reference);
 
     /**
      * Handles a set of characters.
      *
      * @param characters the new characters
      *
-     * @see #onStartElement(RawElement)
+     * @see #onStartElement(BasicElement)
      * @see Notifier#notifyCharacters(String)
      */
     void onCharacters(String characters);
@@ -76,7 +76,7 @@ public interface Handler {
     /**
      * Handles the end of the current element.
      *
-     * @see #onStartElement(RawElement)
+     * @see #onStartElement(BasicElement)
      * @see Notifier#notifyEndElement()
      */
     void onEndElement();

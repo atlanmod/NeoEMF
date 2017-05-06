@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.writer.MapperWriter;
 
 import java.util.ArrayDeque;
@@ -72,7 +72,7 @@ public class DummyWriter implements MapperWriter {
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         DummyElement mock = new DummyElement(element);
 
         if (stack.isEmpty()) {
@@ -88,7 +88,7 @@ public class DummyWriter implements MapperWriter {
     }
 
     @Override
-    public void onAttribute(RawAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         if (isNull(attribute.id()) || attribute.id().equals(stack.getLast().id())) {
             stack.getLast().attributes().add(attribute);
         }
@@ -104,7 +104,7 @@ public class DummyWriter implements MapperWriter {
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         if (isNull(reference.id()) || reference.id().equals(stack.getLast().id())) {
             stack.getLast().references().add(reference);
         }

@@ -17,12 +17,12 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicId;
+import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 
 import org.eclipse.emf.ecore.EClass;
@@ -86,16 +86,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         ClassDescriptor metaclass = mapper.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
         EClass realMetaclass = metaclass.get();
 
-        Namespace ns = Namespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
+        BasicNamespace ns = BasicNamespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
 
         // Retrieve the name of the element
         // If root it's the name of the metaclass, otherwise the name of the containing feature
         String elementName = isRoot ? metaclass.name() : mapper.containerOf(id).map(ContainerDescriptor::name).orElse(null);
 
         // Create the element
-        RawElement element = new RawElement(ns, elementName);
-        element.id(RawId.original(id.toString()));
-        element.metaclass(new RawMetaclass(ns, metaclass.name()));
+        BasicElement element = new BasicElement(ns, elementName);
+        element.id(BasicId.original(id.toString()));
+        element.metaclass(new BasicMetaclass(ns, metaclass.name()));
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
@@ -139,8 +139,8 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      */
     protected void readValue(FeatureKey key) {
         mapper.valueOf(key).ifPresent(value -> {
-            RawAttribute attribute = new RawAttribute(key.name());
-            attribute.id(RawId.original(key.id().toString()));
+            BasicAttribute attribute = new BasicAttribute(key.name());
+            attribute.id(BasicId.original(key.id().toString()));
             attribute.value(value);
 
             notifyAttribute(attribute);
@@ -157,8 +157,8 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         IntStream.range(0, size).forEach(position ->
                 mapper.valueOf(key.withPosition(0)).ifPresent(value -> {
-                    RawAttribute attribute = new RawAttribute(key.name());
-                    attribute.id(RawId.original(key.id().toString()));
+                    BasicAttribute attribute = new BasicAttribute(key.name());
+                    attribute.id(BasicId.original(key.id().toString()));
                     attribute.value(value);
                     attribute.isMany(true);
                     attribute.index(position);
@@ -175,14 +175,14 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      */
     protected void readReference(FeatureKey key, boolean isContainment) {
         mapper.referenceOf(key).ifPresent(id -> {
-            RawReference reference = new RawReference(key.name());
-            reference.id(RawId.original(key.id().toString()));
-            reference.idReference(RawId.original(id.toString()));
+            BasicReference reference = new BasicReference(key.name());
+            reference.id(BasicId.original(key.id().toString()));
+            reference.idReference(BasicId.original(id.toString()));
             reference.isContainment(isContainment);
 
             mapper.metaclassOf(id).ifPresent(m -> {
-                Namespace ns = Namespace.Registry.getInstance().getFromUri(m.uri());
-                reference.metaclassReference(new RawMetaclass(ns, m.name()));
+                BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
+                reference.metaclassReference(new BasicMetaclass(ns, m.name()));
             });
 
             notifyReference(reference);
@@ -202,16 +202,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         IntStream.range(0, size).forEach(position ->
                 mapper.referenceOf(key.withPosition(position)).ifPresent(id -> {
-                    RawReference reference = new RawReference(key.name());
-                    reference.id(RawId.original(key.id().toString()));
-                    reference.idReference(RawId.original(id.toString()));
+                    BasicReference reference = new BasicReference(key.name());
+                    reference.id(BasicId.original(key.id().toString()));
+                    reference.idReference(BasicId.original(id.toString()));
                     reference.isContainment(isContainment);
                     reference.isMany(true);
                     reference.index(position);
 
                     mapper.metaclassOf(id).ifPresent(m -> {
-                        Namespace ns = Namespace.Registry.getInstance().getFromUri(m.uri());
-                        reference.metaclassReference(new RawMetaclass(ns, m.name()));
+                        BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
+                        reference.metaclassReference(new BasicMetaclass(ns, m.name()));
                     });
 
                     notifyReference(reference);

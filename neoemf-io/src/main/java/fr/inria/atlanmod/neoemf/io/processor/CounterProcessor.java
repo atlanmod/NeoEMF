@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import javax.annotation.Nonnegative;
@@ -56,21 +56,21 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         elementCount++;
 
         notifyStartElement(element);
     }
 
     @Override
-    public void onAttribute(RawAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         attributeCount++;
 
         notifyAttribute(attribute);
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         referenceCount++;
 
         notifyReference(reference);

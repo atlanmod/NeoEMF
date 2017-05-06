@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicId;
+import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,24 +24,24 @@ import java.util.List;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 
 /**
- * A {@link RawElement} wrapper that stores all elements in different {@link List}.
+ * A {@link BasicElement} wrapper that stores all elements in different {@link List}.
  */
 public class DummyElement {
 
     /**
-     * The original {@link RawElement}.
+     * The original {@link BasicElement}.
      */
-    private final RawElement element;
+    private final BasicElement element;
 
     /**
      * A list that holds all attributes of this element.
      */
-    private final List<RawAttribute> attributes;
+    private final List<BasicAttribute> attributes;
 
     /**
      * A list that holds all references of this element.
      */
-    private final List<RawReference> references;
+    private final List<BasicReference> references;
 
     /**
      * A list that holds all children of this element.
@@ -53,7 +53,7 @@ public class DummyElement {
      *
      * @param element the element to wrap
      */
-    public DummyElement(RawElement element) {
+    public DummyElement(BasicElement element) {
         this.element = element;
 
         this.attributes = new ArrayList<>();
@@ -95,7 +95,7 @@ public class DummyElement {
      *
      * @return the namespace
      */
-    public Namespace ns() {
+    public BasicNamespace ns() {
         return element.ns();
     }
 
@@ -122,7 +122,7 @@ public class DummyElement {
      *
      * @return the identifier
      */
-    public RawId id() {
+    public BasicId id() {
         return element.id();
     }
 
@@ -131,7 +131,7 @@ public class DummyElement {
      *
      * @return the metaclass
      */
-    public RawMetaclass metaClass() {
+    public BasicMetaclass metaClass() {
         return element.metaclass();
     }
 
@@ -140,7 +140,7 @@ public class DummyElement {
      *
      * @return a mutable list
      */
-    public List<RawAttribute> attributes() {
+    public List<BasicAttribute> attributes() {
         return attributes;
     }
 
@@ -149,7 +149,7 @@ public class DummyElement {
      *
      * @return a mutable list
      */
-    public List<RawReference> references() {
+    public List<BasicReference> references() {
         return references;
     }
 

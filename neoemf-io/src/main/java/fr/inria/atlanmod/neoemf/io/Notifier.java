@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,9 +54,9 @@ public interface Notifier<H extends Handler> {
      * @param element the element of the new element
      *
      * @see #notifyEndElement()
-     * @see Handler#onStartElement(RawElement)
+     * @see Handler#onStartElement(BasicElement)
      */
-    default void notifyStartElement(RawElement element) {
+    default void notifyStartElement(BasicElement element) {
         checkNotNull(element);
 
         next().forEach(h -> h.onStartElement(element));
@@ -67,9 +67,9 @@ public interface Notifier<H extends Handler> {
      *
      * @param attribute the new attribute
      *
-     * @see Handler#onAttribute(RawAttribute)
+     * @see Handler#onAttribute(BasicAttribute)
      */
-    default void notifyAttribute(RawAttribute attribute) {
+    default void notifyAttribute(BasicAttribute attribute) {
         checkNotNull(attribute);
 
         next().forEach(h -> h.onAttribute(attribute));
@@ -80,9 +80,9 @@ public interface Notifier<H extends Handler> {
      *
      * @param reference the new reference
      *
-     * @see Handler#onReference(RawReference)
+     * @see Handler#onReference(BasicReference)
      */
-    default void notifyReference(RawReference reference) {
+    default void notifyReference(BasicReference reference) {
         checkNotNull(reference);
 
         next().forEach(h -> h.onReference(reference));
@@ -104,7 +104,7 @@ public interface Notifier<H extends Handler> {
     /**
      * Notifies all registered handlers of the end of the current element.
      *
-     * @see #notifyStartElement(RawElement)
+     * @see #notifyStartElement(BasicElement)
      * @see Handler#onEndElement()
      */
     default void notifyEndElement() {

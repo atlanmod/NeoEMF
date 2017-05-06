@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicId;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XPathConstants;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -83,7 +83,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         // If the first element has an identifier, we assume that the file is ID-based.
         if (nonNull(element.id())) {
             hasIds = true;
@@ -106,7 +106,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
 
             // Defines the new identifier as identifier of the classifier if it not already exist
             if (isNull(element.id())) {
-                element.id(RawId.generated(id));
+                element.id(BasicId.generated(id));
             }
         }
 
@@ -114,10 +114,10 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         if (!hasIds) {
             // Format the reference according internal XPath management
-            reference.idReference(RawId.generated(formatPath(reference.idReference().value())));
+            reference.idReference(BasicId.generated(formatPath(reference.idReference().value())));
         }
 
         notifyReference(reference);

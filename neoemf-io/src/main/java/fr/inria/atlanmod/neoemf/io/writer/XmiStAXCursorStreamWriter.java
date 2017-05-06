@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
@@ -73,7 +73,7 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         try {
             if (element.isRoot()) {
                 writer.writeStartElement(XmlConstants.format(element.ns().prefix(), element.name()));
@@ -103,7 +103,7 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onAttribute(RawAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         try {
             if (!attribute.isMany()) {
                 writer.writeAttribute(attribute.name(), String.valueOf(attribute.value()));
@@ -120,7 +120,7 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         try {
             if (reference.isContainment()) {
                 return;
@@ -132,7 +132,7 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
             else {
                 writer.writeStartElement(reference.name());
 
-                Optional<RawMetaclass> metaclass = Optional.ofNullable(reference.metaclassReference());
+                Optional<BasicMetaclass> metaclass = Optional.ofNullable(reference.metaclassReference());
                 if (metaclass.isPresent()) {
                     writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaclass.get().ns().prefix(), metaclass.get().name()));
                 }

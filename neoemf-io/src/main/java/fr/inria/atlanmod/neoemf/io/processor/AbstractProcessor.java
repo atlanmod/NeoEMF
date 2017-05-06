@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -43,17 +43,17 @@ public class AbstractProcessor<H extends Handler> extends AbstractNotifier<H> im
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         notifyStartElement(element);
     }
 
     @Override
-    public void onAttribute(RawAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         notifyReference(reference);
     }
 

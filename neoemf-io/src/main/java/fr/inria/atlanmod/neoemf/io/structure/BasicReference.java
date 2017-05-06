@@ -12,19 +12,19 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link RawFeature} representing a reference, which links several {@link RawElement}s.
+ * A {@link BasicFeature} representing a reference, which links several {@link BasicElement}s.
  */
-public class RawReference extends RawFeature {
+public class BasicReference extends BasicFeature {
 
     /**
      * The identifier of the referenced element.
      */
-    private RawId idReference;
+    private BasicId idReference;
 
     /**
      * The metaclass of the referenced element.
      */
-    private RawMetaclass metaclassReference;
+    private BasicMetaclass metaclassReference;
 
     /**
      * Whether this reference is a containment.
@@ -32,27 +32,27 @@ public class RawReference extends RawFeature {
     private boolean isContainment;
 
     /**
-     * Constructs a new {@code RawReference} with the given {@code name}.
+     * Constructs a new {@code BasicReference} with the given {@code name}.
      *
      * @param name the name of this reference
      */
-    public RawReference(String name) {
+    public BasicReference(String name) {
         super(name);
         this.isContainment = false;
     }
 
     /**
-     * Converts an {@link RawAttribute} to a {@code RawReference}.
+     * Converts an {@link BasicAttribute} to a {@code BasicReference}.
      *
      * @param attribute the attribute to convert
      *
      * @return a new reference
      */
-    public static RawReference from(RawAttribute attribute) {
-        RawReference reference = new RawReference(attribute.name());
+    public static BasicReference from(BasicAttribute attribute) {
+        BasicReference reference = new BasicReference(attribute.name());
         reference.id(attribute.id());
         reference.index(attribute.index());
-        reference.idReference(RawId.original(attribute.value().toString()));
+        reference.idReference(BasicId.original(attribute.value().toString()));
         return reference;
     }
 
@@ -61,7 +61,7 @@ public class RawReference extends RawFeature {
      *
      * @return the identifier
      */
-    public RawId idReference() {
+    public BasicId idReference() {
         return idReference;
     }
 
@@ -70,7 +70,7 @@ public class RawReference extends RawFeature {
      *
      * @param idReference the identifier
      */
-    public void idReference(RawId idReference) {
+    public void idReference(BasicId idReference) {
         this.idReference = idReference;
     }
 
@@ -84,7 +84,7 @@ public class RawReference extends RawFeature {
      *
      * @return the metaclass
      */
-    public RawMetaclass metaclassReference() {
+    public BasicMetaclass metaclassReference() {
         return metaclassReference;
     }
 
@@ -93,7 +93,7 @@ public class RawReference extends RawFeature {
      *
      * @param metaclassReference the metaclass
      */
-    public void metaclassReference(RawMetaclass metaclassReference) {
+    public void metaclassReference(BasicMetaclass metaclassReference) {
         this.metaclassReference = metaclassReference;
     }
 

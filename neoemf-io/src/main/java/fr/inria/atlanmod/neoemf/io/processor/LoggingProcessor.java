@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicId;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 import fr.inria.atlanmod.neoemf.util.log.Logger;
 
@@ -36,7 +36,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     /**
      * The current identifier, used to replace a full reference by "this".
      */
-    private RawId currentId;
+    private BasicId currentId;
 
     /**
      * Constructs a new {@code LoggingProcessor} with the given {@code processors}.
@@ -55,7 +55,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         LOG.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 element.ns().prefix(),
                 element.name(),
@@ -69,7 +69,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void onAttribute(RawAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         LOG.info("[A]    {0}{1} = {2}",
                 attribute.name(),
                 attribute.isMany() ? " many[" + attribute.index() + "]" : "",
@@ -79,7 +79,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         LOG.info("[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
                 reference.isMany() ? " many[" + reference.index() + "]" : "",

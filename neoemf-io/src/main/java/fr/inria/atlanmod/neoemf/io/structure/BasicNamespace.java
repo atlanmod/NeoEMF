@@ -22,12 +22,12 @@ import javax.annotation.Nullable;
 /**
  * A simple representation of a namespace with a prefix and an URI.
  */
-public class Namespace {
+public class BasicNamespace {
 
     /**
-     * The instance of the default {@code Namespace}.
+     * The instance of the default {@code BasicNamespace}.
      */
-    private static final Namespace DEFAULT = new Namespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
+    private static final BasicNamespace DEFAULT = new BasicNamespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
 
     /**
      * The prefix of this namespace.
@@ -40,12 +40,12 @@ public class Namespace {
     private final String uri;
 
     /**
-     * Constructs a new {@code Namespace} with the given {@code prefix} and {@code uri}.
+     * Constructs a new {@code BasicNamespace} with the given {@code prefix} and {@code uri}.
      *
      * @param prefix the prefix of this namespace
      * @param uri    the literal representation of the URI of this namespace
      */
-    private Namespace(String prefix, String uri) {
+    private BasicNamespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
     }
@@ -55,7 +55,7 @@ public class Namespace {
      *
      * @return the namespace representing "ecore @ http://www.eclipse.org/emf/2002/Ecore"
      */
-    public static Namespace getDefault() {
+    public static BasicNamespace getDefault() {
         return DEFAULT;
     }
 
@@ -78,19 +78,19 @@ public class Namespace {
     }
 
     /**
-     * Registry of all declared {@link Namespace}.
+     * Registry of all declared {@link BasicNamespace}.
      */
     public static class Registry {
 
         /**
-         * A map that holds registered {@link Namespace}, identified by their prefix.
+         * A map that holds registered {@link BasicNamespace}, identified by their prefix.
          */
-        private final Map<String, Namespace> namespacesByPrefix;
+        private final Map<String, BasicNamespace> namespacesByPrefix;
 
         /**
-         * A map that holds registered {@link Namespace}, identified by their URI.
+         * A map that holds registered {@link BasicNamespace}, identified by their URI.
          */
-        private final Map<String, Namespace> namespacesByUri;
+        private final Map<String, BasicNamespace> namespacesByUri;
 
         /**
          * Constructs a new {@code Registry}.
@@ -120,45 +120,45 @@ public class Namespace {
         }
 
         /**
-         * Returns a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no
+         * Returns a {@link BasicNamespace} identified by the given {@code prefix}, or {@code null} if no
          * namespace is registered with this {@code prefix}.
          *
          * @param prefix the prefix of the desired namespace
          *
-         * @return a {@code Namespace} identified by the given {@code prefix}, or {@code null} if no namespace is
+         * @return a {@code BasicNamespace} identified by the given {@code prefix}, or {@code null} if no namespace is
          * registered with this {@code prefix}
          */
-        public Namespace getFromPrefix(@Nullable String prefix) {
+        public BasicNamespace getFromPrefix(@Nullable String prefix) {
             return Optional.ofNullable(prefix)
                     .map(namespacesByPrefix::get)
                     .orElse(null);
         }
 
         /**
-         * Returns a {@link Namespace} identified by the given {@code uri}, or {@code null} if no
+         * Returns a {@link BasicNamespace} identified by the given {@code uri}, or {@code null} if no
          * namespace is registered with this {@code uri}.
          *
          * @param uri the URI of the desired namespace
          *
-         * @return a {@code Namespace} identified by the given {@code uri}, or {@code null} if no namespace is
+         * @return a {@code BasicNamespace} identified by the given {@code uri}, or {@code null} if no namespace is
          * registered with this {@code uri}.
          */
-        public Namespace getFromUri(@Nullable String uri) {
+        public BasicNamespace getFromUri(@Nullable String uri) {
             return Optional.ofNullable(uri)
                     .map(v -> namespacesByUri.get(uri))
                     .orElse(null);
         }
 
         /**
-         * Registers a new {@link Namespace} with the given {@code prefix} and {@code uri}.
+         * Registers a new {@link BasicNamespace} with the given {@code prefix} and {@code uri}.
          *
          * @param prefix the prefix of the new namespace
          * @param uri    the URI associated with the prefix
          *
-         * @return the new {@link Namespace}
+         * @return the new {@link BasicNamespace}
          */
-        public Namespace register(String prefix, String uri) {
-            Namespace ns = new Namespace(prefix, uri);
+        public BasicNamespace register(String prefix, String uri) {
+            BasicNamespace ns = new BasicNamespace(prefix, uri);
             namespacesByPrefix.put(prefix, ns);
             namespacesByUri.put(uri, ns);
             return ns;

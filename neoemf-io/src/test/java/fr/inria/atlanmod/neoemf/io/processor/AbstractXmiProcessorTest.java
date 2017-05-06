@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorStreamReader;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
 
     @After
     public final void unregisterNamespaces() {
-        Namespace.Registry.getInstance().clean();
+        BasicNamespace.Registry.getInstance().clean();
     }
 
     protected void assertValidElement(DummyElement mock, String name, int size, String id, String className, boolean root) {
@@ -56,12 +56,12 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         }
     }
 
-    protected void assertValidMetaClass(RawMetaclass metaClass, String name, Namespace ns) {
+    protected void assertValidMetaClass(BasicMetaclass metaClass, String name, BasicNamespace ns) {
         assertThat(metaClass.name()).isEqualTo(name);
         assertThat(metaClass.ns()).isSameAs(ns);
     }
 
-    protected void assertValidReference(RawReference reference, String name, int index, String idReference, boolean many, boolean containment) {
+    protected void assertValidReference(BasicReference reference, String name, int index, String idReference, boolean many, boolean containment) {
         assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
@@ -69,7 +69,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         assertThat(reference.isMany()).isEqualTo(many);
     }
 
-    protected void assertValidAttribute(RawAttribute attribute, String name, int index, Object value) {
+    protected void assertValidAttribute(BasicAttribute attribute, String name, int index, Object value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
         assertThat(attribute.index()).isEqualTo(index);

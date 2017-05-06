@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.structure;
 /**
  * A simple element that has a name.
  */
-public abstract class RawNamedElement {
+public abstract class BasicNamedElement {
 
     /**
      * The name of the element.
@@ -22,11 +22,11 @@ public abstract class RawNamedElement {
     private final String name;
 
     /**
-     * Constructs a new {@code RawNamedElement} with the given {@code name}.
+     * Constructs a new {@code BasicNamedElement} with the given {@code name}.
      *
      * @param name the name of this element
      */
-    public RawNamedElement(String name) {
+    public BasicNamedElement(String name) {
         this.name = name;
     }
 

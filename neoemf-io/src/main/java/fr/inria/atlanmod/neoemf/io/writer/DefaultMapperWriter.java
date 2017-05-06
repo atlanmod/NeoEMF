@@ -18,11 +18,11 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.io.hash.Hashers;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawElement;
-import fr.inria.atlanmod.neoemf.io.structure.RawId;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
+import fr.inria.atlanmod.neoemf.io.structure.BasicId;
+import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
@@ -75,10 +75,10 @@ public class DefaultMapperWriter implements MapperWriter {
     @Override
     public void onInitialize() {
         // Create the 'ROOT' node with the default metaclass
-        RawMetaclass metaClass = RawMetaclass.getDefault();
+        BasicMetaclass metaClass = BasicMetaclass.getDefault();
 
-        RawElement rootElement = new RawElement(metaClass.ns(), metaClass.name());
-        rootElement.id(RawId.generated(MapperConstants.ROOT_ID.toString()));
+        BasicElement rootElement = new BasicElement(metaClass.ns(), metaClass.name());
+        rootElement.id(BasicId.generated(MapperConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.isRoot(false);
         rootElement.metaclass(metaClass);
@@ -87,12 +87,12 @@ public class DefaultMapperWriter implements MapperWriter {
     }
 
     @Override
-    public void onStartElement(RawElement element) {
+    public void onStartElement(BasicElement element) {
         stack.addLast(createElement(element));
     }
 
     @Override
-    public void onAttribute(RawAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         Id id = Optional.ofNullable(attribute.id())
                 .map(this::getOrCreateId)
                 .orElseGet(stack::getLast);
@@ -101,7 +101,7 @@ public class DefaultMapperWriter implements MapperWriter {
     }
 
     @Override
-    public void onReference(RawReference reference) {
+    public void onReference(BasicReference reference) {
         Id id = Optional.ofNullable(reference.id())
                 .map(this::getOrCreateId)
                 .orElseGet(stack::getLast);
@@ -136,21 +136,21 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
-    protected Id createElement(RawElement element, Id id) {
+    protected Id createElement(BasicElement element, Id id) {
         checkNotNull(element);
         checkNotNull(id);
 
         updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
         Optional.ofNullable(element.className()).ifPresent(c -> {
-            RawAttribute attribute = new RawAttribute(MapperConstants.FEATURE_NAME);
+            BasicAttribute attribute = new BasicAttribute(MapperConstants.FEATURE_NAME);
             attribute.value(c);
             addAttribute(id, attribute);
         });
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {
-            RawReference reference = new RawReference(MapperConstants.ROOT_FEATURE_NAME);
+            BasicReference reference = new BasicReference(MapperConstants.ROOT_FEATURE_NAME);
             reference.isMany(true);
 
             addReference(MapperConstants.ROOT_ID, reference, id);
@@ -168,7 +168,7 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @throws NullPointerException if the {@code element} is {@code null} or if it does not have an {@link Id}
      */
-    protected Id createElement(RawElement element) {
+    protected Id createElement(BasicElement element) {
         checkNotNull(element.id());
 
         Id id = createId(element.id());
@@ -186,7 +186,7 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
-    protected Id getOrCreateId(RawId identifier) {
+    protected Id getOrCreateId(BasicId identifier) {
         checkNotNull(identifier);
 
         return cache.get(identifier.value(), value -> createId(identifier));
@@ -199,7 +199,7 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @return the {@link Id}
      */
-    protected Id createId(RawId identifier) {
+    protected Id createId(BasicId identifier) {
         checkNotNull(identifier);
 
         String idValue = identifier.value();
@@ -218,7 +218,7 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param id        the identifier of the element
      * @param attribute the attribute to add
      */
-    protected void addAttribute(Id id, RawAttribute attribute) {
+    protected void addAttribute(Id id, BasicAttribute attribute) {
         checkNotNull(id);
         checkNotNull(attribute);
 
@@ -245,7 +245,7 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param reference   the reference to add
      * @param idReference the identifier of the referenced element
      */
-    protected void addReference(Id id, RawReference reference, Id idReference) {
+    protected void addReference(Id id, BasicReference reference, Id idReference) {
         checkNotNull(id);
         checkNotNull(reference);
         checkNotNull(idReference);

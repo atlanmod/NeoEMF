@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * The simple representation of an identifier of a {@link RawElement}.
+ * The simple representation of an identifier of a {@link BasicElement}.
  */
-public class RawId {
+public class BasicId {
 
     /**
      * The literal representation of this identifier.
@@ -27,7 +27,7 @@ public class RawId {
     private final boolean generated;
 
     /**
-     * Constructs a new {@code RawId} with its {@code value}.
+     * Constructs a new {@code BasicId} with its {@code value}.
      *
      * @param value     the literal representation of this identifier
      * @param generated {@code true} if this identifier has been auto-generated
@@ -35,32 +35,32 @@ public class RawId {
      * @see #original(String)
      * @see #generated(String)
      */
-    private RawId(String value, boolean generated) {
+    private BasicId(String value, boolean generated) {
         this.value = value;
         this.generated = generated;
     }
 
     /**
-     * Creates a new {@code RawId} which has a non-generated {@code value}, for example: a read value.
+     * Creates a new {@code BasicId} which has a non-generated {@code value}, for example: a read value.
      *
      * @param value the literal representation of this identifier
      *
      * @return a new identifier
      */
-    public static RawId original(String value) {
-        return new RawId(value, false);
+    public static BasicId original(String value) {
+        return new BasicId(value, false);
     }
 
     /**
-     * Creates a new {@code RawId} which has a generated {@code value}, for example: a value processed from
+     * Creates a new {@code BasicId} which has a generated {@code value}, for example: a value processed from
      * another value.
      *
      * @param value the literal representation of this identifier
      *
      * @return a new identifier
      */
-    public static RawId generated(String value) {
-        return new RawId(value, true);
+    public static BasicId generated(String value) {
+        return new BasicId(value, true);
     }
 
     /**

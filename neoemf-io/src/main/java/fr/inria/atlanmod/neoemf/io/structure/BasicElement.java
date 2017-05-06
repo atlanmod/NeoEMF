@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A identifiable {@link RawMetaclass} which can be typed.
+ * A identifiable {@link BasicMetaclass} which can be typed.
  */
-public class RawElement extends RawMetaclass {
+public class BasicElement extends BasicMetaclass {
 
     /**
      * The identifier of this classifier.
      */
-    private RawId id;
+    private BasicId id;
 
     /**
      * The name of the class of this classifier.
@@ -29,7 +29,7 @@ public class RawElement extends RawMetaclass {
     /**
      * The metaclassifier of this classifier.
      */
-    private RawMetaclass metaclass;
+    private BasicMetaclass metaclass;
 
     /**
      * Whether this classifier is the root element of a structure.
@@ -37,12 +37,12 @@ public class RawElement extends RawMetaclass {
     private boolean isRoot;
 
     /**
-     * Constructs a new {@code RawElement} with the given {@code ns} and {@code name}.
+     * Constructs a new {@code BasicElement} with the given {@code ns} and {@code name}.
      *
      * @param ns   the ns of this classifier
      * @param name the name of this classifier
      */
-    public RawElement(Namespace ns, String name) {
+    public BasicElement(BasicNamespace ns, String name) {
         super(ns, name);
         this.isRoot = false;
     }
@@ -52,7 +52,7 @@ public class RawElement extends RawMetaclass {
      *
      * @return the identifier
      */
-    public RawId id() {
+    public BasicId id() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class RawElement extends RawMetaclass {
      *
      * @param id the identifier
      */
-    public void id(RawId id) {
+    public void id(BasicId id) {
         this.id = id;
     }
 
@@ -88,7 +88,7 @@ public class RawElement extends RawMetaclass {
      *
      * @return the metaclass
      */
-    public RawMetaclass metaclass() {
+    public BasicMetaclass metaclass() {
         return metaclass;
     }
 
@@ -97,7 +97,7 @@ public class RawElement extends RawMetaclass {
      *
      * @param metaClass the metaclassifier
      */
-    public void metaclass(RawMetaclass metaClass) {
+    public void metaclass(BasicMetaclass metaClass) {
         this.metaclass = metaClass;
     }
 

@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     @Category(Tags.IOTests.class)
     public void testNamespaces() {
-        Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
+        BasicNamespace.Registry nsRegistry = BasicNamespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
         assertThat(prefixes).containsExactlyInAnyOrder("xsi", "java", "xmi");
 
@@ -109,7 +109,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         DummyElement mock;
         DummyElement mockChild;
 
-        List<RawAttribute> attributeList;
+        List<BasicAttribute> attributeList;
 
         DummyElement root = persistanceHandler.getRoot();
         assertThat(root.attributes()).isEmpty(); // Assert that 'xmi:version' and 'xmlns' don't exist
@@ -164,7 +164,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         DummyElement mock;
         DummyElement mockChild;
 
-        List<RawReference> referenceList;
+        List<BasicReference> referenceList;
 
         DummyElement root = persistanceHandler.getRoot();
         assertThat(root.references()).isEmpty();
@@ -223,7 +223,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         DummyElement mockChild;
 
         DummyElement root = persistanceHandler.getRoot();
-        Namespace ns = root.ns();
+        BasicNamespace ns = root.ns();
         assertThat(root.metaClass()).isNull();
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0

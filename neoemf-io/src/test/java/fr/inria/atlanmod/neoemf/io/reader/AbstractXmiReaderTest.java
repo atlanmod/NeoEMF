@@ -16,10 +16,10 @@ import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,7 +40,7 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
 
     @After
     public final void unregisterNamespaces() {
-        Namespace.Registry.getInstance().clean();
+        BasicNamespace.Registry.getInstance().clean();
     }
 
     protected void assertValidElement(DummyElement mock, String name, int size, String id) {
@@ -55,18 +55,18 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
         }
     }
 
-    protected void assertValidMetaClass(RawMetaclass metaClass, String name, Namespace ns) {
+    protected void assertValidMetaClass(BasicMetaclass metaClass, String name, BasicNamespace ns) {
         assertThat(metaClass.name()).isEqualTo(name);
         assertThat(metaClass.ns()).isEqualTo(ns);
     }
 
-    protected void assertValidReference(RawReference reference, String name, int index, String idReference) {
+    protected void assertValidReference(BasicReference reference, String name, int index, String idReference) {
         assertThat(reference.name()).isEqualTo(name);
         assertThat(reference.index()).isEqualTo(index);
         assertThat(reference.idReference().value()).isEqualTo(idReference);
     }
 
-    protected void assertValidAttribute(RawAttribute attribute, String name, Object value) {
+    protected void assertValidAttribute(BasicAttribute attribute, String name, Object value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
     }
