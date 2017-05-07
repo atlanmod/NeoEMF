@@ -29,7 +29,10 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlueprintsResourceSaveTest extends AbstractUnitTest implements BlueprintsTest {
+/**
+ * A test-case that checks the behavior of {@link BlueprintsOptions}.
+ */
+public class BlueprintsOptionsTest extends AbstractUnitTest implements BlueprintsTest {
 
     /**
      * The {@link Resource} used for this test-case.
@@ -54,8 +57,13 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest implements Blue
         resource.unload();
     }
 
+    /**
+     * Checks the definition of the {@link BlueprintsResourceOptions#GRAPH_TYPE} option, with the default type.
+     *
+     * @throws IOException if an I/O error occurs during the saving of the resource
+     */
     @Test
-    public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException {
+    public void testDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsOptions.noOption());
 
         Configuration configuration = getConfiguration();

@@ -15,6 +15,9 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
+/**
+ * A test-case that checks the behavior of {@link BerkeleyDbBackendIndices}.
+ */
 public class BerkeleyDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Override

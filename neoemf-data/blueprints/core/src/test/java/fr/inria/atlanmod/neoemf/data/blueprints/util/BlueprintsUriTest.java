@@ -21,8 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
+/**
+ * A test-case that checks the behavior of {@link BlueprintsURI}.
+ */
 public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest {
 
+    /**
+     * Checks the creation of a server-based {@link URI}.
+     * <p>
+     * Blueprints does not support server-based {@link URI}s, so this operation must fail.
+     */
     @Test
     public void testCreateUriFromServer() {
         Throwable thrown = catchThrowable(() -> BlueprintsURI.newBuilder().fromServer("host", 0, mock(URI.class)));

@@ -24,18 +24,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest implements BerkeleyDbTest {
 
-    @Test
+    @Override
     public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
     }
 
-    @Test
+    @Override
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
+     * <p>
+     * The mapping {@code indices} is declared explicitly.
+     */
     @Test
     public void testCreateIndicesPersistentBackend() {
         Map<String, Object> options = BerkeleyDbOptions.newBuilder()
@@ -46,6 +51,11 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
+     * <p>
+     * The mapping {@code arrays} is declared explicitly.
+     */
     @Test
     public void testCreateArraysPersistentBackend() {
         Map<String, Object> options = BerkeleyDbOptions.newBuilder()
@@ -56,6 +66,11 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
     }
 
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
+     * <p>
+     * The mapping {@code lists} is declared explicitly.
+     */
     @Test
     public void testCreateListsPersistentBackend() {
         Map<String, Object> options = BerkeleyDbOptions.newBuilder()
@@ -66,7 +81,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
     }
 
-    @Test
+    @Override
     public void testCopyBackend() {
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);

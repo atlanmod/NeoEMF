@@ -15,6 +15,9 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
+/**
+ * A test-case that checks the behavior of {@link HBaseBackendArraysStrings}.
+ */
 public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
 
     @Override

@@ -96,6 +96,25 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.TransientBackend}, specific for each implementation.
+     */
+    @Test
+    public abstract void testCreateTransientBackend();
+
+    /**
+     * Checks the creation of the default {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for each
+     * implementation.
+     */
+    @Test
+    public abstract void testCreateDefaultPersistentBackend();
+
+    /**
+     * Checks the copy of a {@link Backend} to another.
+     */
+    @Test
+    public abstract void testCopyBackend();
+
+    /**
      * Retrieves the inner {@link Store} in the given {@code store}.
      *
      * @param store the store where to look for the inner store

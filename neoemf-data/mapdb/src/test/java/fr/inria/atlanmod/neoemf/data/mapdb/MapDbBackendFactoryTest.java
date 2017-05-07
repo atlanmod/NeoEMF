@@ -22,20 +22,28 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * A test-case that checks the behavior of {@link MapDbBackendFactory}.
+ */
 public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implements MapDbTest {
 
-    @Test
+    @Override
     public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(MapDbBackend.class);
     }
 
-    @Test
+    @Override
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
+     * <p>
+     * The mapping {@code indices} is declared explicitly.
+     */
     @Test
     public void testCreateIndicesPersistentBackend() {
         Map<String, Object> options = MapDbOptions.newBuilder()
@@ -46,6 +54,11 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
+     * <p>
+     * The mapping {@code arrays} is declared explicitly.
+     */
     @Test
     public void testCreateArraysPersistentBackend() {
         Map<String, Object> options = MapDbOptions.newBuilder()
@@ -56,6 +69,11 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
     }
 
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
+     * <p>
+     * The mapping {@code lists} is declared explicitly.
+     */
     @Test
     public void testCreateListsPersistentBackend() {
         Map<String, Object> options = MapDbOptions.newBuilder()
@@ -66,7 +84,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(backend).isInstanceOf(MapDbBackendLists.class);
     }
 
-    @Test
+    @Override
     public void testCopyBackend() {
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);

@@ -24,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
+/**
+ * A test-case that checks the behavior of {@link HBaseURI}.
+ */
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
     @Ignore("Not supported because of the mini-cluster")
@@ -31,12 +34,22 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
     public void testCreateUriFromStandardUriInvalidScheme() {
     }
 
+    /**
+     * Checks the creation of a file-based {@link URI} from another {@link URI}.
+     * <p>
+     * HBase does not support file-based {@link URI}s, so this operation must fail.
+     */
     @Test
     public void testCreateUriFromUri() {
         Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromUri(mock(URI.class)));
         assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 
+    /**
+     * Checks the creation of a file-based {@link URI} from a {@link File}.
+     * <p>
+     * HBase does not support file-based {@link URI}s, so this operation must fail.
+     */
     @Test
     public void testCreateUriFromFile() {
         Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromFile(mock(File.class)));

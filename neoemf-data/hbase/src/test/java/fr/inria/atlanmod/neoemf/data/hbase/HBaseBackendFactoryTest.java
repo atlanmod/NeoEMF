@@ -17,26 +17,40 @@ import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * A test-case that checks the behavior of {@link HBaseBackendFactory}.
+ */
 public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implements HBaseTest {
 
-    @Test
+    @Override
     public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(InvalidTransientBackend.class);
     }
 
-    @Test
+    @Override
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), HBaseOptions.noOption());
         assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
     }
 
+    @Ignore("Not supported")
+    @Override
+    public void testCopyBackend() {
+    }
+
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for HBase.
+     * <p>
+     * The mapping {@code array-strings} is declared explicitly.
+     */
     @Test
     public void testCreateIndicesPersistentBackend() {
         Map<String, Object> options = HBaseOptions.newBuilder()

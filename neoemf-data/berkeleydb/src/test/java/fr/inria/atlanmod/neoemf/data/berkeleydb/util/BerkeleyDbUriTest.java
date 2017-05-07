@@ -21,8 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
+/**
+ * A test-case that checks the behavior of {@link BerkeleyDbURI}.
+ */
 public class BerkeleyDbUriTest extends AbstractUriTest implements BerkeleyDbTest {
 
+    /**
+     * Checks the creation of a server-based {@link URI}.
+     * <p>
+     * BerkeleyDB does not support server-based {@link URI}s, so this operation must fail.
+     */
     @Test
     public void testCreateUriFromServer() {
         Throwable thrown = catchThrowable(() -> BerkeleyDbURI.newBuilder().fromServer("host", 0, mock(URI.class)));

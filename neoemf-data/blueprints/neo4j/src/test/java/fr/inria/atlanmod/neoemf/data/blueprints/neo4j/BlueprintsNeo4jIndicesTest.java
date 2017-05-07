@@ -15,6 +15,9 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
+/**
+ * A test-case that checks the behavior of {@code BlueprintsBackendIndices} by using a Neo4j implementation.
+ */
 public class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest {
 
     @Override

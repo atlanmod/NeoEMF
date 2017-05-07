@@ -16,26 +16,40 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * A test-case that checks the behavior of {@link BlueprintsBackendFactory}.
+ */
 public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest implements BlueprintsTest {
 
-    @Test
+    @Override
     public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
     }
 
-    @Test
+    @Override
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
         assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
     }
 
+    @Override
+    @Ignore("Not supported")
+    public void testCopyBackend() {
+    }
+
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for Blueprints.
+     * <p>
+     * The mapping {@code indices} is declared explicitly.
+     */
     @Test
     public void testCreateIndicesPersistentBackend() {
         Map<String, Object> options = BlueprintsOptions.newBuilder()

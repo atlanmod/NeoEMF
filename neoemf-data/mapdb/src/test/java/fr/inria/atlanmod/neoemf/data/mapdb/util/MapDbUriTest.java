@@ -21,8 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
+/**
+ * A test-case that checks the behavior of {@link MapDbURI}.
+ */
 public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
 
+    /**
+     * Checks the creation of a server-based {@link URI}.
+     * <p>
+     * MapDB does not support server-based {@link URI}s, so this operation must fail.
+     */
     @Test
     public void testCreateUriFromServer() {
         Throwable thrown = catchThrowable(() -> MapDbURI.newBuilder().fromServer("host", 0, mock(URI.class)));

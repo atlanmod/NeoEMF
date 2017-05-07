@@ -15,6 +15,9 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
 
+/**
+ * A test-case that checks the behavior of {@link MapDbBackendIndices}.
+ */
 public class MapDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Override
