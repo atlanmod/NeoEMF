@@ -27,7 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * Abstract test cases for {@link BackendFactory}s that provides methods to retrieve private fields.
+ * An abstract test-cases that checks the behavior of {@link BackendFactory}s and provides methods to retrieve private
+ * fields.
  */
 public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
 

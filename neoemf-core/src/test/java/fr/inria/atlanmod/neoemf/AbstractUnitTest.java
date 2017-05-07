@@ -23,8 +23,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * An abstract {@link ContextualTest} that initializes {@link BackendFactory}
- * in the {@link BackendFactoryRegistry} and holds the temporary file.
+ * An abstract {@link ContextualTest} that initializes {@link BackendFactory} in the {@link BackendFactoryRegistry} and
+ * holds the temporary file.
  */
 public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
 

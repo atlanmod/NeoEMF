@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the specific behavior of {@link MoreArrays}.
+ * A test-case that checks the behavior of {@link MoreArrays}.
  */
 public class MoreArraysTest extends AbstractTest {
 

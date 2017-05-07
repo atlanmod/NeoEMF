@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the specific behavior of {@link CacheStats}.
+ * A test-case that checks the behavior of {@link CacheStats}.
  */
 public class CacheStatsTest extends AbstractTest {
 

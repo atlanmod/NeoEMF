@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the specific behavior of {@link Cache} with a loading {@link java.util.function.Function}.
+ * A test-case that checks the behavior of {@link Cache} with a loading {@link java.util.function.Function}.
  */
 public class LoadingCacheTest extends AbstractTest {
 

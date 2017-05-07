@@ -25,7 +25,7 @@ import java.io.ObjectOutputStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test cases about {@link FeatureKey}.
+ * A test-case that checks the behavior of {@link FeatureKey}.
  */
 public class FeatureKeyTest extends AbstractTest {
 

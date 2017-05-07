@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the specific behavior of {@link URIBuilder}.
+ * A test-case that checks the behavior of {@link URIBuilder}.
  */
 public class URIBuilderTest extends AbstractUriTest implements CoreTest {
 

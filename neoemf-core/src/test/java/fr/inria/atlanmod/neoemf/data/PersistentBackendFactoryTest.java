@@ -28,6 +28,7 @@ import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
@@ -37,7 +38,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 /**
- * Test cases about {@link BackendFactory#createStore(Backend, PersistentResource, Map)}.
+ * A test-case that checks the behavior of {@link BackendFactory#createStore(Backend, PersistentResource, Map)}.
  */
 public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest implements CoreTest {
 
@@ -411,5 +412,20 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+    }
+
+    @Override
+    @Ignore("Not supported")
+    public void testCreateTransientBackend() {
+    }
+
+    @Override
+    @Ignore("Not supported")
+    public void testCreateDefaultPersistentBackend() {
+    }
+
+    @Override
+    @Ignore("Not supported")
+    public void testCopyBackend() {
     }
 }

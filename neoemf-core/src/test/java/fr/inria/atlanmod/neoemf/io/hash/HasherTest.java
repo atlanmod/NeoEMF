@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the specific behavior of {@link Hasher}s.
+ * A test-case that checks the behavior of {@link Hasher}s.
  */
 public class HasherTest extends AbstractTest {
 

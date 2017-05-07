@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * A test case for {@link BoundedTransientBackend}.
+ * A test-case that checks the behavior of {@link BoundedTransientBackend}.
  */
 public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
 
