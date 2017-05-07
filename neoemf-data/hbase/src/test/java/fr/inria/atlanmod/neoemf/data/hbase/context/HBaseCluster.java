@@ -79,7 +79,7 @@ final class HBaseCluster {
             Runtime.getRuntime().addShutdownHook(new Thread(HBaseCluster::close));
         }
         catch (Exception e) {
-            Log.error(e, "Unable to create the Hadoop cluster. If you are testing on Windows, you need to install Cygwin (https://hbase.apache.org/cygwin.html)");
+            Log.error(e, "Unable to create the Hadoop cluster");
             throw new RuntimeException(e);
         }
     }
