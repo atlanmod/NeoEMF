@@ -97,7 +97,8 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.TransientBackend}, specific for each implementation.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.TransientBackend}, specific for each
+     * implementation.
      */
     @Test
     public abstract void testCreateTransientBackend();

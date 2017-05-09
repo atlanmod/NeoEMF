@@ -252,7 +252,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Nonnull
     @Override
     public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
-        Iterable<EObject> allInstances;
         try {
             return MoreIterables.stream(store.allInstancesOf(ClassDescriptor.from(eClass), strict))
                     .map(id -> store.resolve(id))
@@ -332,7 +331,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
             setLowerBound(0);
             setName(NAME);
-            setEType(new EClassifierImpl() {});
+            setEType(new EClassifierImpl() {
+            });
             setFeatureID(RESOURCE__CONTENTS);
         }
     }

@@ -7,7 +7,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/dependency/</directory>
-            <outputDirectory/>
+            <outputDirectory />
 
             <useDefaultExcludes>true</useDefaultExcludes>
 

@@ -36,6 +36,17 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
+    @Override
+    public void testCopyBackend() {
+        Backend transientBackend = context().factory().createTransientBackend();
+        assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
+
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
+        assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
+
+        transientBackend.copyTo(persistentBackend);
+    }
+
     /**
      * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
      * <p>
@@ -79,16 +90,5 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
-    }
-
-    @Override
-    public void testCopyBackend() {
-        Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
-
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
-        assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
-
-        transientBackend.copyTo(persistentBackend);
     }
 }

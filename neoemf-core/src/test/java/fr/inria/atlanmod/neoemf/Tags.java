@@ -28,15 +28,18 @@ public final class Tags {
     /**
      * Category marker for tests using a persistent store.
      */
-    public interface PersistentTests {}
+    public interface PersistentTests {
+    }
 
     /**
      * Category marker for tests using a transient store.
      */
-    public interface TransientTests {}
+    public interface TransientTests {
+    }
 
     /**
      * Category marker for tests concerned by import/export.
      */
-    public interface IOTests {}
+    public interface IOTests {
+    }
 }

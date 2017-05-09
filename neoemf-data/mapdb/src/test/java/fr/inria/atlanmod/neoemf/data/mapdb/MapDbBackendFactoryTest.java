@@ -39,6 +39,17 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
+    @Override
+    public void testCopyBackend() {
+        Backend transientBackend = context().factory().createTransientBackend();
+        assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
+
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
+        assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
+
+        transientBackend.copyTo(persistentBackend);
+    }
+
     /**
      * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
      * <p>
@@ -82,16 +93,5 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
         assertThat(backend).isInstanceOf(MapDbBackendLists.class);
-    }
-
-    @Override
-    public void testCopyBackend() {
-        Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
-
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
-        assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
-
-        transientBackend.copyTo(persistentBackend);
     }
 }
