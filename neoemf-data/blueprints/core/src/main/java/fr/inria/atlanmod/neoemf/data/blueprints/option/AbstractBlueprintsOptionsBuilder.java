@@ -77,7 +77,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
      */
     public B autocommit(int chunk) {
         storeOption(BlueprintsStoreOptions.AUTOCOMMIT);
-        return option(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK, chunk);
+        return option(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK, Integer.toString(chunk));
     }
 
     /**
