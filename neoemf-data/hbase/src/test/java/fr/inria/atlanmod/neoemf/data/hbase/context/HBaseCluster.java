@@ -16,8 +16,6 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 
-import java.nio.file.Files;
-
 import static java.util.Objects.nonNull;
 
 /**
@@ -63,9 +61,6 @@ final class HBaseCluster {
 
         try {
             Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
-
-            // Defines the temporary directory for testing
-            System.setProperty(HBaseTestingUtility.BASE_TEST_DIRECTORY_KEY, Files.createTempDirectory("hadoop").toString());
 
             hbase = new HBaseTestingUtility();
             hbase.startMiniCluster(1);
