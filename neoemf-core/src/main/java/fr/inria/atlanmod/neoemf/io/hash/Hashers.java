@@ -58,7 +58,7 @@ public final class Hashers {
      */
     @Nonnull
     public static Hasher md5() {
-        return bytes -> new HashCode(nativeHash(MD5, checkNotNull(bytes)));
+        return bytes -> nativeHash(MD5, bytes);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class Hashers {
      */
     @Nonnull
     public static Hasher sha1() {
-        return bytes -> new HashCode(nativeHash(SHA1, checkNotNull(bytes)));
+        return bytes -> nativeHash(SHA1, bytes);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class Hashers {
      */
     @Nonnull
     public static Hasher sha256() {
-        return bytes -> new HashCode(nativeHash(SHA256, checkNotNull(bytes)));
+        return bytes -> nativeHash(SHA256, bytes);
     }
 
     /**
@@ -91,9 +91,11 @@ public final class Hashers {
      */
     @Nonnull
     @VisibleForTesting
-    protected static byte[] nativeHash(String algorithm, byte[] bytes) {
+    protected static HashCode nativeHash(String algorithm, byte[] bytes) {
+        checkNotNull(bytes);
+
         try {
-            return MessageDigest.getInstance(algorithm).digest(bytes);
+            return new HashCode(MessageDigest.getInstance(algorithm).digest(bytes));
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

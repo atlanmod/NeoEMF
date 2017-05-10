@@ -48,14 +48,14 @@ public enum PersistentStoreOptions {
     CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator"),
 
     /**
-     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
+     * Caches {@link fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor}s.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator
      */
     CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator"),
 
     /**
-     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
+     * Caches {@link fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor}s.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator
      */
