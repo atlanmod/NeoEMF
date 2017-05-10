@@ -21,6 +21,7 @@ import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -41,7 +42,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
+abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements BerkeleyDbBackend {
 
     /**
      * The databases environment.
@@ -69,11 +70,6 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
     private final Database features;
 
     /**
-     * Whether the databases are closed.
-     */
-    private boolean isClosed;
-
-    /**
      * Creates a new {@code AbstractBerkeleyDbBackend} with the configuration of the databases.
      *
      * @param environment    the database environment
@@ -88,8 +84,6 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
         containers = environment.openDatabase(null, "eContainer", databaseConfig);
         instances = environment.openDatabase(null, "neoInstanceOf", databaseConfig);
         features = environment.openDatabase(null, "features", databaseConfig);
-
-        isClosed = false;
     }
 
     @Override
@@ -97,22 +91,6 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
 //        allDatabases().stream()
 //                .filter(db -> db.getConfig().getDeferredWrite())
 //                .forEach(Database::sync);
-    }
-
-    @Override
-    public void close() {
-        if (isClosed) {
-            return;
-        }
-
-        isClosed = true;
-
-        try {
-            allDatabases().forEach(Database::close);
-            environment.close();
-        }
-        catch (Exception ignored) {
-        }
     }
 
     @Override
@@ -128,6 +106,12 @@ abstract class AbstractBerkeleyDbBackend implements BerkeleyDbBackend {
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    @Override
+    protected void safeClose() {
+        allDatabases().forEach(Database::close);
+        environment.close();
     }
 
     @Nonnull

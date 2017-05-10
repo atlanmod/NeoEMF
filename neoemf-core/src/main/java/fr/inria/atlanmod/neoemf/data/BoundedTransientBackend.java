@@ -36,7 +36,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.
  */
 @ParametersAreNonnullByDefault
-public final class BoundedTransientBackend implements TransientBackend, ManyValueWithArrays {
+public final class BoundedTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithArrays {
 
     /**
      * A map that holds all created instances of {@code BoundedTransientBackend}.
@@ -71,11 +71,6 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
      */
     @Nonnull
     private final ConcurrentMap<String, Object> features = new ConcurrentHashMap<>();
-
-    /**
-     * Whether this back-end is closed.
-     */
-    private boolean isClosed = false;
 
     /**
      * Constructs a new {@code BoundedTransientBackend} with the given {@code owner}.
@@ -113,13 +108,7 @@ public final class BoundedTransientBackend implements TransientBackend, ManyValu
     }
 
     @Override
-    public void close() {
-        if (isClosed) {
-            return;
-        }
-
-        isClosed = true;
-
+    protected void safeClose() {
         // Clear all features associated with the owner
         features.clear();
 

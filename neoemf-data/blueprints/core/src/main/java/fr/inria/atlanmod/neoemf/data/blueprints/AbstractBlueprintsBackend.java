@@ -22,6 +22,7 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -51,7 +52,7 @@ import static java.util.Objects.isNull;
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
+abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
 
     /**
      * The property key used to define the index of an edge.
@@ -120,11 +121,6 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
     private final IdGraph<KeyIndexableGraph> graph;
 
     /**
-     * Whether the underlying database is closed.
-     */
-    private boolean isClosed;
-
-    /**
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
@@ -144,8 +140,6 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
         indexedMetaclasses = new ArrayList<>();
         metaclassIndex = Optional.ofNullable(graph.getIndex(KEY_METACLASSES, Vertex.class))
                 .orElseGet(() -> graph.createIndex(KEY_METACLASSES, Vertex.class));
-
-        isClosed = false;
     }
 
     /**
@@ -178,26 +172,7 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
             graph.commit();
         }
         else {
-            try {
-                graph.shutdown();
-            }
-            catch (Exception ignored) {
-            }
-        }
-    }
-
-    @Override
-    public void close() {
-        if (isClosed) {
-            return;
-        }
-
-        isClosed = true;
-
-        try {
             graph.shutdown();
-        }
-        catch (Exception ignored) {
         }
     }
 
@@ -218,6 +193,15 @@ abstract class AbstractBlueprintsBackend implements BlueprintsBackend {
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    @Override
+    protected void safeClose() {
+        try {
+            graph.shutdown();
+        }
+        catch (Exception ignored) {
+        }
     }
 
     @Override

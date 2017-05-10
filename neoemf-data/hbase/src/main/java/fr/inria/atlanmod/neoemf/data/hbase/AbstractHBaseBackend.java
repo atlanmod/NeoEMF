@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -40,7 +41,7 @@ import static java.util.Objects.nonNull;
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractHBaseBackend implements HBaseBackend {
+abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBackend {
 
     /**
      * The column family holding properties.
@@ -83,38 +84,17 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     protected final Table table;
 
     /**
-     * Whether this back-end is closed.
-     */
-    private boolean isClosed;
-
-    /**
      * Constructs a new {@code AbstractHBaseBackend} on the given {@code table}.
      *
      * @param table the HBase table
      */
     protected AbstractHBaseBackend(Table table) {
         this.table = checkNotNull(table);
-        this.isClosed = false;
     }
 
     @Override
     public void save() {
         // TODO Implement this method
-    }
-
-    @Override
-    public void close() {
-        if (isClosed) {
-            return;
-        }
-
-        isClosed = true;
-
-        try {
-            table.close();
-        }
-        catch (IOException ignored) {
-        }
     }
 
     @Override
@@ -125,6 +105,11 @@ abstract class AbstractHBaseBackend implements HBaseBackend {
     @Override
     public boolean isDistributed() {
         return true;
+    }
+
+    @Override
+    protected void safeClose() throws IOException {
+        table.close();
     }
 
     @Nonnull

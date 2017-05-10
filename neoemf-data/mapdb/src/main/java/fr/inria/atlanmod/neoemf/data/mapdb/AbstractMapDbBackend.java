@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -36,7 +37,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractMapDbBackend implements MapDbBackend {
+abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBackend {
 
     /**
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
@@ -102,15 +103,6 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     }
 
     @Override
-    public void close() {
-        try {
-            db.close();
-        }
-        catch (Exception ignored) {
-        }
-    }
-
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void copyTo(DataMapper target) {
         checkArgument(AbstractMapDbBackend.class.isInstance(target));
@@ -133,6 +125,11 @@ abstract class AbstractMapDbBackend implements MapDbBackend {
     @Override
     public boolean isDistributed() {
         return false;
+    }
+
+    @Override
+    protected void safeClose() {
+        db.close();
     }
 
     @Nonnull

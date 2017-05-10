@@ -31,7 +31,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend implements TransientBackend, ManyValueWithArrays {
+public class DefaultTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithArrays {
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -55,11 +55,6 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithA
     private final ConcurrentMap<FeatureKey, Object> features = new ConcurrentHashMap<>();
 
     /**
-     * Whether this back-end is closed.
-     */
-    private boolean isClosed = false;
-
-    /**
      * Casts the {@code value} as expected.
      *
      * @param value the value to cast
@@ -73,13 +68,7 @@ public class DefaultTransientBackend implements TransientBackend, ManyValueWithA
     }
 
     @Override
-    public void close() {
-        if (isClosed) {
-            return;
-        }
-
-        isClosed = true;
-
+    protected void safeClose() {
         new Thread(() -> {
             containers.clear();
             instances.clear();
