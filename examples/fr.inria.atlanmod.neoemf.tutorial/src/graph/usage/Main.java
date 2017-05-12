@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import graph.Edge;
 import graph.Graph;
@@ -32,7 +33,7 @@ public class Main {
 		resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME,
 				PersistentResourceFactory.getInstance());
 
-		Resource resource = resSet.createResource(BlueprintsURI.createFileURI(new File("models/myGraph.graphdb")));
+		Resource resource = resSet.createResource(BlueprintsURI.createFileURI(new File("databases/myGraph.graphdb")));
 		return resource;
 	}
 
@@ -42,7 +43,7 @@ public class Main {
 
 		resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME,
 				PersistentResourceFactory.getInstance());
-		Resource resource = resSet.createResource(MapDbURI.createFileURI(new File("models/model.myGraph.madb")));
+		Resource resource = resSet.createResource(MapDbURI.createFileURI(new File("databases/myGraph.mapdb")));
 
 		return resource;
 	}
@@ -82,7 +83,7 @@ public class Main {
 			graph.getVertices().add(v2);
 		}
 		resource.getContents().add(graph);
-		resource.save(null);
+		resource.save(AbstractPersistenceOptionsBuilder.noOption());
 	}
 
 	public static void main(String[] args) throws IOException {
