@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.examples;
+package fr.inria.atlanmod.neoemf.eclipse.examples;
 
 import java.io.File;
 import java.io.FileOutputStream;

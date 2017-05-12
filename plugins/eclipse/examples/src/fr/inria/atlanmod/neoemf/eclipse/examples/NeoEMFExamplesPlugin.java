@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.examples;
+package fr.inria.atlanmod.neoemf.eclipse.examples;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -10,7 +10,7 @@ public class NeoEMFExamplesPlugin extends AbstractUIPlugin {
     /**
      * The plugin id.
      */
-    public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.examples";
+    public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.examples";
 
     private static NeoEMFExamplesPlugin instance;
 

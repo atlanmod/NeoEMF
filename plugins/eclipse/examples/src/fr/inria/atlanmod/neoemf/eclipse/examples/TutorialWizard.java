@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.examples;
+package fr.inria.atlanmod.neoemf.eclipse.examples;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class TutorialWizard extends AbstractExampleWizard {
     @Override
     protected Collection<ProjectDescriptor> getProjectDescriptors() {
         final List<ProjectDescriptor> projects = new ArrayList<ProjectDescriptor>(2);
-        projects.add(new ProjectDescriptor("fr.inria.atlanmod.neoemf.examples",
+        projects.add(new ProjectDescriptor("fr.inria.atlanmod.neoemf.eclipse.examples",
                 "projects/fr.inria.atlanmod.neoemf.tutorial.zip",
                 "fr.inria.atlanmod.neoemf.tutorial"));
         return projects;

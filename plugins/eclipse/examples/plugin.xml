@@ -11,7 +11,7 @@
       <wizard
             canFinishEarly="true"
             category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
-            class="fr.inria.atlanmod.neoemf.examples.TutorialWizard"
+            class="fr.inria.atlanmod.neoemf.eclipse.examples.TutorialWizard"
             hasPages="false"
             icon="icons/full/obj16/neoemf.png"
             id="fr.inria.atlanmod.neoemf.examples.tutorial"
@@ -24,7 +24,7 @@
       <wizard
             canFinishEarly="true"
             category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
-            class="fr.inria.atlanmod.neoemf.examples.DemoWizard"
+            class="fr.inria.atlanmod.neoemf.eclipse.examples.DemoWizard"
             hasPages="false"
             icon="icons/full/obj16/neoemf.png"
             id="fr.inria.atlanmod.neoemf.examples.demo"
