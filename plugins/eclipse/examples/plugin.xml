@@ -21,6 +21,19 @@
             Creates a plug-in project containing the code used in NeoEMF Tutorial (https://github.com/atlanmod/NeoEMF/wiki/Get-Started).
          </description>
       </wizard>
+      <wizard
+            canFinishEarly="true"
+            category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
+            class="fr.inria.atlanmod.neoemf.examples.DemoWizard"
+            hasPages="false"
+            icon="icons/full/obj16/neoemf.png"
+            id="fr.inria.atlanmod.neoemf.examples.demo"
+            name="NeoEMF Demo Project"
+            project="true">
+         <description>
+            Creates a plug-in project containing example code to create and manipulate NeoEMF resources.
+         </description>
+      </wizard>
    </extension>
 
 </plugin>
