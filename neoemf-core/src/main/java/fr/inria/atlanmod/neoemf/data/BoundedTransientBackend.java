@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -23,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +33,7 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.
  */
 @ParametersAreNonnullByDefault
-public final class BoundedTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithArrays {
+public final class BoundedTransientBackend extends AbstractTransientBackend {
 
     /**
      * A map that holds all created instances of {@code BoundedTransientBackend}.
@@ -50,27 +47,27 @@ public final class BoundedTransientBackend extends AbstractBackend implements Tr
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final ConcurrentMap<Id, ContainerDescriptor> CONTAINERS = new ConcurrentHashMap<>();
+    private static final Map<Id, ContainerDescriptor> CONTAINERS = new ManyToOneMap<>();
 
     /**
      * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final ConcurrentMap<Id, ClassDescriptor> INSTANCES = new ConcurrentHashMap<>();
-
-    /**
-     * The owner of this back-end.
-     */
-    @Nonnull
-    private final Id owner;
+    private static final Map<Id, ClassDescriptor> INSTANCES = new ManyToOneMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by their name.
      */
     @Nonnull
-    private final ConcurrentMap<String, Object> features = new ConcurrentHashMap<>();
+    private final Map<String, Object> features = new HashMap<>();
+
+    /**
+     * The owner of this back-end.
+     */
+    @Nonnull
+    private final Id owner;
 
     /**
      * Constructs a new {@code BoundedTransientBackend} with the given {@code owner}.
@@ -92,19 +89,6 @@ public final class BoundedTransientBackend extends AbstractBackend implements Tr
      */
     public static Backend forId(Id owner) {
         return REGISTRY.computeIfAbsent(owner, BoundedTransientBackend::new);
-    }
-
-    /**
-     * Casts the {@code value} as expected.
-     *
-     * @param value the value to cast
-     * @param <V>   the expected type of the value
-     *
-     * @return the casted value
-     */
-    @SuppressWarnings("unchecked")
-    private static <V> V cast(Object value) {
-        return (V) value;
     }
 
     @Override
@@ -136,41 +120,14 @@ public final class BoundedTransientBackend extends AbstractBackend implements Tr
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        checkNotNull(id);
-
-        return Optional.ofNullable(CONTAINERS.get(id));
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        checkNotNull(id);
-        checkNotNull(container);
-
-        CONTAINERS.put(id, container);
-    }
-
-    @Override
-    public void unsetContainer(Id id) {
-        checkNotNull(id);
-
-        CONTAINERS.remove(id);
+    protected Map<Id, ContainerDescriptor> allContainers() {
+        return CONTAINERS;
     }
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        checkNotNull(id);
-
-        return Optional.ofNullable(INSTANCES.get(id));
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        checkNotNull(id);
-        checkNotNull(metaclass);
-
-        INSTANCES.put(id, metaclass);
+    protected Map<Id, ClassDescriptor> allInstances() {
+        return INSTANCES;
     }
 
     @Nonnull

@@ -13,14 +13,14 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,49 +31,34 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithArrays {
+public class DefaultTransientBackend extends AbstractTransientBackend {
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final ConcurrentMap<Id, ContainerDescriptor> containers = new ConcurrentHashMap<>();
+    private final Map<Id, ContainerDescriptor> containers = new ManyToOneMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final ConcurrentMap<Id, ClassDescriptor> instances = new ConcurrentHashMap<>();
+    private final Map<Id, ClassDescriptor> instances = new ManyToOneMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link FeatureKey}.
      */
     @Nonnull
-    private final ConcurrentMap<FeatureKey, Object> features = new ConcurrentHashMap<>();
-
-    /**
-     * Casts the {@code value} as expected.
-     *
-     * @param value the value to cast
-     * @param <V>   the expected type of the value
-     *
-     * @return the casted value
-     */
-    @SuppressWarnings("unchecked")
-    private static <V> V cast(Object value) {
-        return (V) value;
-    }
+    private final Map<FeatureKey, Object> features = new HashMap<>();
 
     @Override
     protected void safeClose() {
-        new Thread(() -> {
-            containers.clear();
-            instances.clear();
-            features.clear();
-        }).start();
+        containers.clear();
+        instances.clear();
+        features.clear();
     }
 
     @Override
@@ -83,41 +68,14 @@ public class DefaultTransientBackend extends AbstractBackend implements Transien
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
-        checkNotNull(id);
-
-        return Optional.ofNullable(containers.get(id));
-    }
-
-    @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
-        checkNotNull(id);
-        checkNotNull(container);
-
-        containers.put(id, container);
-    }
-
-    @Override
-    public void unsetContainer(Id id) {
-        checkNotNull(id);
-
-        containers.remove(id);
+    protected Map<Id, ContainerDescriptor> allContainers() {
+        return containers;
     }
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
-        checkNotNull(id);
-
-        return Optional.ofNullable(instances.get(id));
-    }
-
-    @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        checkNotNull(id);
-        checkNotNull(metaclass);
-
-        instances.put(id, metaclass);
+    protected Map<Id, ClassDescriptor> allInstances() {
+        return instances;
     }
 
     @Nonnull
