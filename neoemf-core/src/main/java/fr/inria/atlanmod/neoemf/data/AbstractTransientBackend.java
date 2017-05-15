@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract implementation of {@link TransientBackend} that provides the default behavior of {@link
@@ -144,6 +145,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
                     .orElseGet(generator::getAndIncrement);
         }
 
+        @Nonnegative
         @Override
         public int size() {
             return keys.size();
@@ -164,6 +166,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
             return values.containsValue(value);
         }
 
+        @Nullable
         @Override
         public V get(Object key) {
             return Optional.ofNullable(keys.get(key))
@@ -171,6 +174,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
                     .orElse(null);
         }
 
+        @Nullable
         @Override
         public V put(K key, V value) {
             V previousValue = get(key);
@@ -183,6 +187,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
             return previousValue;
         }
 
+        @Nullable
         @Override
         public V remove(Object key) {
             Optional<V> previousValue = Optional.ofNullable(get(key));
@@ -212,22 +217,85 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
             values.clear();
         }
 
+        @Nonnull
         @Override
         public Set<K> keySet() {
             return keys.keySet();
         }
 
+        @Nonnull
         @Override
         public Collection<V> values() {
             return values.values();
         }
 
+        @Nonnull
         @Override
-        public Set<Entry<K, V>> entrySet() {
+        public Set<Map.Entry<K, V>> entrySet() {
             return keys.entrySet()
                     .parallelStream()
-                    .collect(Collectors.toMap(Entry::getKey, e -> values.get(e.getValue())))
-                    .entrySet();
+                    .map(e -> new Entry(e.getKey(), e.getValue()))
+                    .collect(Collectors.toSet());
+        }
+
+        /**
+         * A map entry (key-value pair) that processes the value on-demand.
+         */
+        @ParametersAreNonnullByDefault
+        private final class Entry implements Map.Entry<K, V> {
+
+            /**
+             * The key of this entry.
+             */
+            @Nonnull
+            private final K key;
+
+            /**
+             * The identifier of the associated value.
+             */
+            @Nonnegative
+            private final int valueId;
+
+            /**
+             * The value of this entry.
+             * <p>
+             * It is loaded on-demand, during the first call to {@link #getValue()} or {@link #setValue(Object)}.
+             */
+            @Nullable
+            private transient V value;
+
+            /**
+             * Constructs a new {@code Entry} for the given {@code key}.
+             *
+             * @param key     the key of this entry
+             * @param valueId the identifier of the associated value
+             */
+            private Entry(K key, int valueId) {
+                this.key = key;
+                this.valueId = valueId;
+            }
+
+            @Nonnull
+            @Override
+            public K getKey() {
+                return key;
+            }
+
+            @Override
+            public V getValue() {
+                if (isNull(value)) {
+                    value = values.get(valueId);
+                }
+
+                return value;
+            }
+
+            @Override
+            public V setValue(V value) {
+                this.value = value;
+
+                return put(key, value);
+            }
         }
     }
 }
