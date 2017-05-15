@@ -203,7 +203,7 @@
         </module>
 
         <module name="JavadocParagraph">
-            <property name="allowNewlineParagraph" value="true" />
+            <property name="allowNewlineParagraph" value="false" />
         </module>
 
         <module name="AtclauseOrder">
