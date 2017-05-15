@@ -32,10 +32,12 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     /**
      * Casts the {@code value} as expected.
      *
-     * @param value the value to cast
+     * @param value the value to be cast
      * @param <V>   the expected type of the value
      *
-     * @return the casted value
+     * @throws ClassCastException if the {@code value} is not {@code null} and is not assignable to the type {@code V}
+     *
+     * @return the {@code value} after casting, or {@code null} if the {@code value} is {@code null}
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -62,45 +64,33 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     @Override
     public Optional<ContainerDescriptor> containerOf(Id id) {
-        checkNotNull(id);
-
         return Optional.ofNullable(allContainers().get(id));
     }
 
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
-        checkNotNull(id);
-        checkNotNull(container);
-
         allContainers().put(id, container);
     }
 
     @Override
     public void unsetContainer(Id id) {
-        checkNotNull(id);
-
         allContainers().remove(id);
     }
 
     @Nonnull
     @Override
     public Optional<ClassDescriptor> metaclassOf(Id id) {
-        checkNotNull(id);
-
         return Optional.ofNullable(allInstances().get(id));
     }
 
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
-        checkNotNull(id);
-        checkNotNull(metaclass);
-
         allInstances().put(id, metaclass);
     }
 
     /**
-     * A {@link Map} that stores keys and values in separate {@link HashMap}s in order to limitate the memory
-     * consumption.
+     * A {@link Map} that stores keys and values in two distinct {@link HashMap}s in order to limitate the memory
+     * consumption. It does not support {@code null} keys or values.
      * <p>
      * This implementation is only effective if the values are referenced by several keys.
      *
@@ -158,17 +148,23 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
         @Override
         public boolean containsKey(Object key) {
+            checkNotNull(key); // Follow Map behavior
+
             return keys.containsKey(key);
         }
 
         @Override
         public boolean containsValue(Object value) {
+            checkNotNull(value); // Follow Map behavior
+
             return values.containsValue(value);
         }
 
         @Nullable
         @Override
         public V get(Object key) {
+            checkNotNull(key);
+
             return Optional.ofNullable(keys.get(key))
                     .map(values::get)
                     .orElse(null);
@@ -177,6 +173,9 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         @Nullable
         @Override
         public V put(K key, V value) {
+            checkNotNull(key);
+            checkNotNull(value);
+
             V previousValue = get(key);
 
             int intermediateKey = keyOf(value);
@@ -190,6 +189,8 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         @Nullable
         @Override
         public V remove(Object key) {
+            checkNotNull(key);
+
             Optional<V> previousValue = Optional.ofNullable(get(key));
 
             if (previousValue.isPresent()) {
@@ -208,6 +209,8 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
         @Override
         public void putAll(Map<? extends K, ? extends V> m) {
+            checkNotNull(m);
+
             m.forEach(this::put);
         }
 
