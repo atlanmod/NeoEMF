@@ -164,8 +164,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         eClass().getEAllStructuralFeatures().forEach(f -> {
             if (source.isSet(this, f)) {
                 if (!f.isMany()) {
-                    getValueFrom(source, f, EStore.NO_INDEX).
-                            ifPresent(v -> target.set(this, f, EStore.NO_INDEX, v));
+                    getValueFrom(source, f, EStore.NO_INDEX)
+                            .ifPresent(v -> target.set(this, f, EStore.NO_INDEX, v));
                 }
                 else {
                     target.clear(this, f);

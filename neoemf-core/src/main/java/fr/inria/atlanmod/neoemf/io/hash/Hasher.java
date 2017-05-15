@@ -42,11 +42,7 @@ public interface Hasher {
      */
     @Nonnull
     default HashCode hash(int value) {
-        byte[] bytesValue = new byte[]{
-                (byte) (value >> 24),
-                (byte) (value >> 16),
-                (byte) (value >> 8),
-                (byte) value};
+        byte[] bytesValue = new byte[]{(byte) (value >> 24), (byte) (value >> 16), (byte) (value >> 8), (byte) value};
 
         return hash(bytesValue);
     }

@@ -48,167 +48,107 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
         super(store);
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void save() {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void containerFor(Id id, ContainerDescriptor container) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void unsetContainer(Id id) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void metaclassFor(Id id, ClassDescriptor metaclass) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(FeatureKey key, V value) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public <V> void unsetValue(FeatureKey key) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Nonnull
     @Override
     public Optional<Id> referenceFor(FeatureKey key, Id reference) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void unsetReference(FeatureKey key) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public <V> void addValue(ManyFeatureKey key, V value) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public <V> void removeAllValues(FeatureKey key) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void addReference(ManyFeatureKey key, Id reference) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
         throw E;
     }
 
-    /**
-     * @throws UnsupportedOperationException every time: operation not supported in read-only mode
-     */
     @Override
     public void removeAllReferences(FeatureKey key) {
         throw E;

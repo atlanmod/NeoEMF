@@ -37,31 +37,39 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
 
     /**
      * The option key to enable/disable the usage of memory mapped files.
+     * <p>
+     * If set to {@code true} Neo4j will use the operating systems memory mapping functionality for the file buffer
+     * cache windows. If set to false Neo4j will use its own buffer implementation. In this case the buffers will reside
+     * in the JVM heap which needs to be increased accordingly. The default value for this parameter is {@code true},
+     * except on Windows.
      */
     String USE_MEMORY_MAPPED_BUFFERS = "blueprints.neo4j.conf.use_memory_mapped_buffers";
 
     /**
-     * The option key to set the size of the buffer that contains string values.
+     * The option key to set the maximum amount of memory to use for the file buffer cache of the string property
+     * storage file.
      */
     String STRINGS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.strings.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains arrays.
+     * The option key to set the maximum amount of memory to use for the file buffer cache of the array property storage
+     * file.
      */
     String ARRAYS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.arrays.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains nodes.
+     * The option key to set the maximum amount of memory to use for the file buffer cache of the node storage file.
      */
     String NODES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.nodestore.db.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains properties.
+     * The option key to set the maximum amount of memory to use for the file buffer cache of the property storage file.
      */
     String PROPERTIES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains relationships.
+     * The option key to set the maximum amount of memory to use for the file buffer cache of the relationship store
+     * file.
      */
     String RELATIONSHIPS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.relationshipstore.db.mapped_memory";
 
@@ -73,22 +81,27 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     enum CacheType {
 
         /**
-         * ???
+         * Do not use a high level cache. No objects will be cached.
          */
         NONE("none"),
 
         /**
-         * ???
+         * Provides optimal utilization of the available memory. Suitable for high performance traversal. May run into
+         * GC issues under high load if the frequently accessed parts of the graph does not fit in the cache.
+         * <p>
+         * This is the default cache implementation.
          */
         SOFT("soft"),
 
         /**
-         * ???
+         * Provides short life span for cached objects. Suitable for high throughput applications where a larger portion
+         * of the graph than what can fit into memory is frequently accessed.
          */
         WEAK("weak"),
 
         /**
-         * ???
+         * This cache will cache all data in the entire graph. It will never release memory held by the cache. Provides
+         * optimal performance if your graph is small enough to fit in memory.
          */
         STRONG("strong");
 
