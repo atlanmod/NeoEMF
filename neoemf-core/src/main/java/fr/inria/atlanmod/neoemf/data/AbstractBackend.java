@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract implementation of a {@link Backend} that provides a global behavior about the closure.
+ * An abstract {@link Backend} that provides a global behavior about the closure.
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackend implements Backend {

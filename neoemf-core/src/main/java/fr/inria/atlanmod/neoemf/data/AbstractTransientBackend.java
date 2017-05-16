@@ -23,8 +23,8 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract implementation of {@link TransientBackend} that provides the default behavior of {@link
- * ContainerDescriptor} and {@link ClassDescriptor} management.
+ * An abstract {@link TransientBackend} that provides the default behavior of {@link ContainerDescriptor} and {@link
+ * ClassDescriptor} management.
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithArrays {
@@ -35,9 +35,9 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
      * @param value the value to be cast
      * @param <V>   the expected type of the value
      *
-     * @throws ClassCastException if the {@code value} is not {@code null} and is not assignable to the type {@code V}
-     *
      * @return the {@code value} after casting, or {@code null} if the {@code value} is {@code null}
+     *
+     * @throws ClassCastException if the {@code value} is not {@code null} and is not assignable to the type {@code V}
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -119,7 +119,8 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         private final Map<Integer, V> values = new HashMap<>();
 
         /**
-         * Returns the key of the given {@code value} amoung all {@link #values}.
+         * Returns the key of the given {@code value} amoung all {@link #values}. If the {@code value} does not exist,
+         * the key is created.
          *
          * @param value the value to look for
          *
@@ -148,14 +149,14 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
         @Override
         public boolean containsKey(Object key) {
-            checkNotNull(key); // Follow Map behavior
+            checkNotNull(key); // Follow the default Map behavior
 
             return keys.containsKey(key);
         }
 
         @Override
         public boolean containsValue(Object value) {
-            checkNotNull(value); // Follow Map behavior
+            checkNotNull(value); // Follow the default Map behavior
 
             return values.containsValue(value);
         }
@@ -180,7 +181,10 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
             int intermediateKey = keyOf(value);
 
+            // Update the value if necessary
             values.putIfAbsent(intermediateKey, value);
+
+            // Update the association in all cases
             keys.put(key, intermediateKey);
 
             return previousValue;
@@ -196,9 +200,9 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
             if (previousValue.isPresent()) {
                 keys.remove(key);
 
-                // Remove the value if it is no longer referenced
                 int intermediateKey = keyOf(previousValue.get());
 
+                // Remove the value if it is no longer referenced
                 if (!keys.containsValue(intermediateKey)) {
                     values.remove(intermediateKey);
                 }
@@ -286,6 +290,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
             @Override
             public V getValue() {
+                // Load the value on-demand
                 if (isNull(value)) {
                     value = values.get(valueId);
                 }
