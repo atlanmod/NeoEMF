@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -65,7 +66,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @After
     public void closeMapper() throws IOException {
-        mapper.close();
+        if (nonNull(mapper)) {
+            mapper.close();
+        }
     }
 
     /**

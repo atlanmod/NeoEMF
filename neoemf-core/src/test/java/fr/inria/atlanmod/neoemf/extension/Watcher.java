@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.extension;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 import fr.inria.atlanmod.neoemf.util.log.Logger;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
 
@@ -65,15 +66,20 @@ public class Watcher extends org.junit.rules.TestWatcher {
             if (MultipleFailureException.class.isInstance(e)) {
                 MultipleFailureException me = MultipleFailureException.class.cast(e);
 
-                LOG_TEST.error(e, "--- Several exceptions have been thrown during the test:");
+                LOG_TEST.error(e, "--- Failed: Several exceptions have been thrown during the test:");
                 me.getFailures().forEach(LOG_VOID::error);
                 LOG_VOID.error(NO_MESSAGE);
             }
             // One exception
             else {
-                LOG_TEST.error(e, "--- An exception has been thrown during the test:");
+                LOG_TEST.error(e, "--- Failed: An exception has been thrown during the test:");
             }
         }
+    }
+
+    @Override
+    protected void skipped(AssumptionViolatedException e, Description description) {
+        LOG_TEST.warn("--- Skipped: The context has not been initialized");
     }
 
     @Override

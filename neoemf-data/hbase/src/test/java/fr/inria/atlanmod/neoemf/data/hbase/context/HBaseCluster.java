@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
 /**
@@ -49,15 +50,31 @@ final class HBaseCluster {
     private static int port;
 
     /**
+     * Whether the mini-cluster has been initialized.
+     */
+    private static boolean initialized = false;
+
+    /**
+     * Checks whether the mini-cluster has been successfully initialized.
+     *
+     * @return {@code true} if the mini-cluster has been successfully initialized
+     */
+    public static boolean isInitialized() {
+        return initialized && nonNull(hbase);
+    }
+
+    /**
      * Initializes the mini-cluster.
      * <p>
      * If the mini-cluster is already initialized, then calling this method does nothing.
      */
-    private static void init() {
-        // Is already initialized?
-        if (nonNull(hbase)) {
+    public static void init() {
+        // If already initialized, then do nothing
+        if (initialized) {
             return;
         }
+
+        initialized = true;
 
         try {
             Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
@@ -74,8 +91,8 @@ final class HBaseCluster {
             Runtime.getRuntime().addShutdownHook(new Thread(HBaseCluster::close));
         }
         catch (Exception e) {
+            reset();
             Log.error(e, "Unable to create the Hadoop cluster");
-            throw new RuntimeException(e);
         }
     }
 
@@ -89,9 +106,20 @@ final class HBaseCluster {
 
             hbase.cleanupTestDir();
             hbase.cleanupDataTestDirOnTestFS();
+
+            reset();
         }
         catch (Exception ignored) {
         }
+    }
+
+    /**
+     * Resets the current configuration.
+     */
+    private static void reset() {
+        hbase = null;
+        host = null;
+        port = 0;
     }
 
     /**
@@ -100,7 +128,7 @@ final class HBaseCluster {
      * @return the host
      */
     public static String host() {
-        init();
+        checkState(isInitialized(), "The mini-cluster has not been initialized");
 
         return host;
     }
@@ -111,7 +139,7 @@ final class HBaseCluster {
      * @return the port
      */
     public static int port() {
-        init();
+        checkState(isInitialized(), "The mini-cluster has not been initialized");
 
         return port;
     }

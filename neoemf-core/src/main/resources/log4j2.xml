@@ -53,16 +53,16 @@
 
         <!-- Apache & co -->
 
-        <Logger name="org.apache" level="WARN" additivity="false">
+        <Logger name="org.apache" level="ERROR" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="org.mortbay" level="WARN" additivity="false">
+        <Logger name="org.mortbay" level="ERROR" additivity="false">
             <AppenderRef ref="ConsoleTest" />
         </Logger>
-        <Logger name="SecurityLogger" level="WARN" additivity="false">
+        <Logger name="SecurityLogger" level="ERROR" additivity="false">
             <AppenderRef ref="ConsoleTest" />
         </Logger>
-        <Logger name="BlockStateChange" level="WARN" additivity="false">
+        <Logger name="BlockStateChange" level="ERROR" additivity="false">
             <AppenderRef ref="ConsoleTest" />
         </Logger>
     </Loggers>

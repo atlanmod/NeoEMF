@@ -22,6 +22,8 @@ import org.junit.Before;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.Assume.assumeTrue;
+
 /**
  * An abstract {@link ContextualTest} that initializes {@link BackendFactory} in the {@link BackendFactoryRegistry} and
  * holds the temporary file.
@@ -43,23 +45,27 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
     }
 
     /**
-     * Registers the current {@link BackendFactory} from the current {@link
-     * Context} in the {@link BackendFactoryRegistry} and initialize the {@link #file}.
+     * Registers the current {@link BackendFactory} from the current {@link Context} in the {@link
+     * BackendFactoryRegistry} and initialize the {@link #file}.
      *
      * @throws IOException if an I/O error occurs
      */
     @Before
     public final void registerFactories() throws IOException {
+        context().init();
+        assumeTrue(context().isInitialized());
+
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
         file = workspace.newFile(context().name());
     }
 
     /**
-     * Unregisters the current {@link BackendFactory} from the
-     * {@link BackendFactoryRegistry}.
+     * Unregisters the current {@link BackendFactory} from the {@link BackendFactoryRegistry}.
      */
     @After
     public final void unregisterFactories() {
-        BackendFactoryRegistry.unregisterAll();
+        if (context().isInitialized()) {
+            BackendFactoryRegistry.unregisterAll();
+        }
     }
 }

@@ -36,6 +36,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static org.junit.Assume.assumeTrue;
+
 /**
  * A utility class for testing on different {@link Context}s.
  */
@@ -167,6 +169,9 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      */
     @Before
     public final void createWorkspace() throws IOException {
+        context.init();
+        assumeTrue(context.isInitialized());
+
         loadedResources = new ArrayList<>();
         file = workspace.newFile(context.name());
     }
@@ -176,7 +181,9 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      */
     @After
     public final void cleanWorkspace() {
-        loadedResources.forEach(PersistentResource::close);
-        loadedResources.clear();
+        if (context.isInitialized()) {
+            loadedResources.forEach(PersistentResource::close);
+            loadedResources.clear();
+        }
     }
 }

@@ -37,6 +37,16 @@ public interface HBaseContext extends Context {
     }
 
     @Override
+    default boolean isInitialized() {
+        return HBaseCluster.isInitialized();
+    }
+
+    @Override
+    default void init() {
+        HBaseCluster.init();
+    }
+
+    @Override
     default String name() {
         return "HBase";
     }

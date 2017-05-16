@@ -31,6 +31,23 @@ import java.io.IOException;
 public interface Context {
 
     /**
+     * Checks whether this context is ready for testing.
+     *
+     * @return {@code true} if the context is initialized, {@code false} otherwise.
+     */
+    default boolean isInitialized() {
+        // By default: a context is always ready
+        return true;
+    }
+
+    /**
+     * Initializes this context if necessary.
+     */
+    default void init() {
+        // By default: do nothing
+    }
+
+    /**
      * Returns the name of this context.
      *
      * @return the name
