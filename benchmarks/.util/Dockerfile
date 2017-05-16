@@ -12,9 +12,8 @@
 #
 # USAGE:
 #
-# docker build -t "neoemf-benchmarks" --build-arg branch="backend-abstraction" https://raw.githubusercontent.com/atlanmod/NeoEMF/backend-abstraction/benchmarks/.util/Dockerfile
+# docker build -t "neoemf-benchmarks" --build-arg branch="backend-abstraction" .
 # docker run -it "neoemf-benchmarks" bash
-# cd /root/neoemf/benchmarks/core/target/exec
 # java -jar benchmarks.jar [options]
 #
 
@@ -27,9 +26,10 @@ ARG branch=master
 WORKDIR /root
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
-    git \
+RUN apt-get update \
+ && apt-get install -y \
     openjdk-8-jdk \
+    git \
     maven \
  && rm -rf /var/lib/apt/lists/*
 
@@ -37,5 +37,15 @@ RUN apt-get update && apt-get install -y \
 RUN git clone -b $branch https://github.com/atlanmod/NeoEMF.git neoemf
 
 # Build project & benchmarks
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf && \
-    mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf \
+ && mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks
+
+# Copy the resulting artifacts & remove build files
+RUN cp -R neoemf/benchmarks/core/target/exec/* . \
+ && rm -rf neoemf \
+ && rm -rf .m2
+
+# Remove dependencies
+RUN apt-get purge --auto-remove -y \
+    git \
+    maven
