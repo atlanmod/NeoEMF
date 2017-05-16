@@ -137,7 +137,7 @@
 
         <javax-annotations.version>3.0.2</javax-annotations.version>
 
-        <assertj.version>3.6.2</assertj.version>
+        <assertj.version>3.7.0</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.7.22</mockito.version>
     </properties>
@@ -239,7 +239,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
@@ -379,7 +379,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20</version>
                     <configuration>
                         <!-- Property @{argLine} : created by jacoco:prepare-agent -->
                         <argLine>@{argLine} ${argLine.global}</argLine>
