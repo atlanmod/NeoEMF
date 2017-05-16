@@ -27,13 +27,15 @@ ARG branch=master
 WORKDIR /root
 
 # Install dependencies
-RUN apt-get update && apt-get install -y git openjdk-8-jdk maven && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    git \
+    openjdk-8-jdk \
+    maven \
+ && rm -rf /var/lib/apt/lists/*
 
 # Clone the project from Github
 RUN git clone -b $branch https://github.com/atlanmod/NeoEMF.git neoemf
 
-# Build project
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf
-
-# Build benchmarks
-RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks
+# Build project & benchmarks
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf && \
+    mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks
