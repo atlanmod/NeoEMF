@@ -27,7 +27,7 @@ WORKDIR /root
 
 # Install dependencies
 RUN apt-get update \
- && apt-get install -y \
+ && apt-get install --no-install-recommends -y \
     openjdk-8-jdk \
     git \
     maven \
@@ -42,8 +42,7 @@ RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf \
 
 # Copy the resulting artifacts & remove build files
 RUN cp -R neoemf/benchmarks/core/target/exec/* . \
- && rm -rf neoemf \
- && rm -rf .m2
+ && rm -rf neoemf .m2
 
 # Remove dependencies
 RUN apt-get purge --auto-remove -y \
