@@ -8,7 +8,7 @@ WORKDIR /root
 
 RUN apt-get --quiet=2 update
 
-RUN apt-get --quiet=2 install -y \
+RUN apt-get --quiet=2 --yes install \
     git \
     openjdk-8-jdk \
     maven
