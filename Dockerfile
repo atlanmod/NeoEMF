@@ -12,14 +12,17 @@
 #
 # USAGE:
 #
-# docker build -t "neoemf-benchmarks" .
-# docker run -it "neoemf-benchmarks" bash
+# docker build -t neoemf .
+# docker run -it neoemf /bin/bash
 # java -jar benchmarks.jar [options]
 #
 
 FROM debian:latest
 
-# Define the working directory
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_TERSE true
+ENV WS src
+
 WORKDIR /root
 
 # Install common dependency (required by 'add-apt-repository')
@@ -41,19 +44,19 @@ RUN apt-get update -q \
     maven \
 
 # Clean the apt cache
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy the project
-ADD . src
+ADD . $WS
 
 # Build the main project
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f src/pom.xml
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f $WS/pom.xml
 
 # Build benchmarks
-RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml
+RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f $WS/benchmarks/pom.xml
 
 # Move the resulting artifacts
-RUN mv -f src/benchmarks/core/target/exec/* . \
+RUN mv -f $WS/benchmarks/core/target/exec/* . \
 
 # Remove build files
- && rm -rf src .m2 /tmp/*
+ && rm -rf $WS .m2 /tmp/* /var/tmp/*
