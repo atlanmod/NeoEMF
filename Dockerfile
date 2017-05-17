@@ -22,10 +22,7 @@ FROM debian:latest
 # Define the working directory
 WORKDIR /root
 
-# Variables
-ENV SRC='src'
-
-# Install common dependency
+# Install common dependency (required by 'add-apt-repository')
 RUN apt-get update -q \
  && apt-get install -q --no-install-recommends -y \
     software-properties-common \
@@ -46,17 +43,17 @@ RUN apt-get update -q \
 # Clean the apt cache
  && rm -rf /var/lib/apt/lists/*
 
-# Copy the project from Github (using wget to limit space consumption)
-ADD . ${SRC}
+# Copy the project
+ADD . src
 
 # Build the main project
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f ${SRC}/pom.xml
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f src/pom.xml
 
 # Build benchmarks
-RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f ${SRC}/benchmarks/pom.xml
+RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml
 
 # Move the resulting artifacts
-RUN mv -f ${SRC}/benchmarks/core/target/exec/* . \
+RUN mv -f src/benchmarks/core/target/exec/* . \
 
 # Remove build files
- && rm -rf ${SRC} .m2 /tmp/*
+ && rm -rf src .m2 /tmp/*
