@@ -26,13 +26,13 @@ ENV WS src
 WORKDIR /root
 
 # Install common dependency (required by 'add-apt-repository')
-RUN apt-get update -q \
+RUN apt-get update -qq \
  && apt-get install -q --no-install-recommends -y \
     software-properties-common \
 
 # Add the JDK8 repository
  && add-apt-repository -y 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main' \
- && apt-get update -q \
+ && apt-get update -qq \
 
 # Auto-accept the Oracle JDK license
  && echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | /usr/bin/debconf-set-selections \
