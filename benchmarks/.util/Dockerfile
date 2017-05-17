@@ -12,43 +12,60 @@
 #
 # USAGE:
 #
-# docker build -t "neoemf-benchmarks" --build-arg branch="backend-abstraction" .
+# docker build -t "neoemf-benchmarks" [--build-arg branch="***"] .
 # docker run -it "neoemf-benchmarks" bash
 # java -jar benchmarks.jar [options]
 #
 
 FROM debian:latest
 
-# Optional arguments
-ARG branch=master
-
 # Define the working directory
 WORKDIR /root
 
-# Install JDK & dependencies
-RUN apt-get update \
- && apt-get install --no-install-recommends -y software-properties-common \
- && add-apt-repository -y "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" \
- && apt-get update \
- && echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | /usr/bin/debconf-set-selections \
- && apt-get install --no-install-recommends -y \
+# Optional arguments
+ARG branch='master'
+
+# Variables
+ENV PROJECT='NeoEMF'
+ENV SRC='src'
+
+# Install common dependency
+RUN apt-get update -q \
+ && apt-get install -q --no-install-recommends -y \
+    software-properties-common \
+    wget \
+    unzip \
+
+# Add the JDK8 repository
+ && add-apt-repository -y 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main' \
+ && apt-get update -q \
+
+# Auto-accept the Oracle JDK license
+ && echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | /usr/bin/debconf-set-selections \
+
+# Install JDK8 & build tool
+ && apt-get install -q --no-install-recommends -y \
     oracle-java8-installer \
-    git \
+    oracle-java8-set-default \
     maven \
+
+# Clean the apt cache
  && rm -rf /var/lib/apt/lists/*
 
-# Clone the project from Github
-RUN git clone -b $branch https://github.com/atlanmod/NeoEMF.git neoemf
+# Copy the project from Github (using wget to limit space consumption)
+RUN wget -nv --no-check-certificate -O ${SRC}.zip "https://github.com/atlanmod/${PROJECT}/archive/${branch}.zip" \
+ && unzip -q ${SRC}.zip \
+ && rm -rf ${SRC}.zip \
+ && mv -f ${PROJECT}-${branch} ${SRC}
 
-# Build project & benchmarks
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf/pom.xml \
- && mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks/pom.xml
+# Build the main project
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f ${SRC}/pom.xml
 
-# Copy the resulting artifacts & remove build files
-RUN cp -R neoemf/benchmarks/core/target/exec/* . \
- && rm -rf neoemf .m2
+# Build benchmarks
+RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f ${SRC}/benchmarks/pom.xml
 
-# Remove dependencies
-RUN apt-get purge --auto-remove -y \
-    git \
-    maven
+# Move the resulting artifacts
+RUN mv -f ${SRC}/benchmarks/core/target/exec/* . \
+
+# Remove build files
+ && rm -rf ${SRC} .m2 /tmp/*
