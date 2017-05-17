@@ -17,7 +17,7 @@
 # java -jar benchmarks.jar [options]
 #
 
-FROM ubuntu:latest
+FROM debian:latest
 
 # Optional arguments
 ARG branch=master
@@ -25,10 +25,14 @@ ARG branch=master
 # Define the working directory
 WORKDIR /root
 
-# Install dependencies
+# Install JDK & dependencies
 RUN apt-get update \
+ && apt-get install --no-install-recommends -y software-properties-common \
+ && add-apt-repository -y "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" \
+ && apt-get update \
+ && echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | /usr/bin/debconf-set-selections \
  && apt-get install --no-install-recommends -y \
-    openjdk-8-jdk \
+    oracle-java8-installer \
     git \
     maven \
  && rm -rf /var/lib/apt/lists/*
@@ -37,8 +41,8 @@ RUN apt-get update \
 RUN git clone -b $branch https://github.com/atlanmod/NeoEMF.git neoemf
 
 # Build project & benchmarks
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf \
- && mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f neoemf/pom.xml \
+ && mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f neoemf/benchmarks/pom.xml
 
 # Copy the resulting artifacts & remove build files
 RUN cp -R neoemf/benchmarks/core/target/exec/* . \
