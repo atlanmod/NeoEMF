@@ -12,7 +12,7 @@
 #
 # USAGE:
 #
-# docker build -t "neoemf-benchmarks" [--build-arg branch="***"] .
+# docker build -t "neoemf-benchmarks" .
 # docker run -it "neoemf-benchmarks" bash
 # java -jar benchmarks.jar [options]
 #
@@ -22,19 +22,13 @@ FROM debian:latest
 # Define the working directory
 WORKDIR /root
 
-# Optional arguments
-ARG branch='master'
-
 # Variables
-ENV PROJECT='NeoEMF'
 ENV SRC='src'
 
 # Install common dependency
 RUN apt-get update -q \
  && apt-get install -q --no-install-recommends -y \
     software-properties-common \
-    wget \
-    unzip \
 
 # Add the JDK8 repository
  && add-apt-repository -y 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main' \
@@ -53,10 +47,7 @@ RUN apt-get update -q \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy the project from Github (using wget to limit space consumption)
-RUN wget -nv --no-check-certificate -O ${SRC}.zip "https://github.com/atlanmod/${PROJECT}/archive/${branch}.zip" \
- && unzip -q ${SRC}.zip \
- && rm -rf ${SRC}.zip \
- && mv -f ${PROJECT}-${branch} ${SRC}
+ADD . ${SRC}
 
 # Build the main project
 RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f ${SRC}/pom.xml
