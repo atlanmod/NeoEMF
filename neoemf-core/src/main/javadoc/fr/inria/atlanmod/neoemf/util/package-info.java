@@ -11,6 +11,9 @@
 
 /**
  * Provides utility classes to ease URI management or containment list computation.
+ * <p>
+ * This package defines the {@link fr.inria.atlanmod.neoemf.util.PersistenceURI} class, that extends the standard EMF {@link org.eclipse.emf.common.util.URI} to enable NeoEMF specific URI creation.
+ * Note that backend-specific implementations provide their own {@link fr.inria.atlanmod.neoemf.util.PersistenceURI} implementation that allows to create a pre-formatted URI for the corresponding backend. 
  */
 
 package fr.inria.atlanmod.neoemf.util;
