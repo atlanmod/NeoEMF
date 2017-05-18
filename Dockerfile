@@ -1,0 +1,62 @@
+#
+# Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+#
+
+#
+# USAGE:
+#
+# docker build -t neoemf .
+# docker run -it neoemf /bin/bash
+# java -jar benchmarks.jar [options]
+#
+
+FROM debian:latest
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_TERSE true
+ENV WS src
+
+WORKDIR /root
+
+# Install common dependency (required by 'add-apt-repository')
+RUN apt-get update -qq \
+ && apt-get install -q --no-install-recommends -y \
+    software-properties-common \
+
+# Add the JDK8 repository
+ && add-apt-repository -y 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main' \
+ && apt-get update -qq \
+
+# Auto-accept the Oracle JDK license
+ && echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | /usr/bin/debconf-set-selections \
+
+# Install JDK8 & build tool
+ && apt-get install -q --no-install-recommends -y \
+    oracle-java8-installer \
+    oracle-java8-set-default \
+    maven \
+
+# Clean the apt cache
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Copy the project
+ADD . $WS
+
+# Build the main project
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f $WS/pom.xml
+
+# Build benchmarks
+RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f $WS/benchmarks/pom.xml
+
+# Move the resulting artifacts
+RUN mv -f $WS/benchmarks/core/target/exec/* . \
+
+# Remove build files
+ && rm -rf $WS .m2 /tmp/* /var/tmp/*
