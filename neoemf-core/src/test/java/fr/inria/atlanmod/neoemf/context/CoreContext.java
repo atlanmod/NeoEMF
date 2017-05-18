@@ -127,7 +127,7 @@ public interface CoreContext extends Context {
     }
 
     @Override
-    default Backend createMapper(File file) throws IOException {
+    default Backend createMapper(File file) {
         return new DefaultTransientBackend();
     }
 }

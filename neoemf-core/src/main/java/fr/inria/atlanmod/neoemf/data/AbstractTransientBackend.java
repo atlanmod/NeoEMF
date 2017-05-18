@@ -197,16 +197,16 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
             Optional<V> previousValue = Optional.ofNullable(get(key));
 
-            if (previousValue.isPresent()) {
+            previousValue.ifPresent(v -> {
                 keys.remove(key);
 
-                int intermediateKey = keyOf(previousValue.get());
+                int intermediateKey = keyOf(v);
 
                 // Remove the value if it is no longer referenced
                 if (!keys.containsValue(intermediateKey)) {
                     values.remove(intermediateKey);
                 }
-            }
+            });
 
             return previousValue.orElse(null);
         }

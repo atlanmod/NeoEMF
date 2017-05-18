@@ -167,7 +167,6 @@ final class PersistentEObjectAdapter {
      * @param cls        the class to look up
      * @param interfaces the {@link Set} of interfaces for the class
      */
-    @Nullable
     private static void getAllInterfaces(Class<?> cls, Set<Class<?>> interfaces) {
         while (cls != null) {
             for (Class<?> i : cls.getInterfaces()) {

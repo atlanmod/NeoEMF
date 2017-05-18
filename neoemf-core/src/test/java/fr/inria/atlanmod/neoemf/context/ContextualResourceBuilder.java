@@ -180,6 +180,7 @@ final class ContextualResourceBuilder {
      * @return a new {@link DataMapper}
      */
     public DataMapper createPersistentMapper() {
+        //noinspection ConstantConditions
         return context.factory().createStore(context.factory().createPersistentBackend(uri, allOptions()), null, allOptions());
     }
 }

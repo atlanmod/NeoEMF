@@ -132,11 +132,9 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param element the information about the new element
      * @param id      the identifier of the element
      *
-     * @return the given {@code id}
-     *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
-    protected Id createElement(BasicElement element, Id id) {
+    protected void createElement(BasicElement element, Id id) {
         checkNotNull(element);
         checkNotNull(id);
 
@@ -155,8 +153,6 @@ public class DefaultMapperWriter implements MapperWriter {
 
             addReference(MapperConstants.ROOT_ID, reference, id);
         }
-
-        return id;
     }
 
     /**

@@ -43,7 +43,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     /**
      * Current number of changes made since the last call of {@link #incremendAndSave(int)}.
      */
-    private AtomicLong changesCount = new AtomicLong();
+    private final AtomicLong changesCount = new AtomicLong();
 
     /**
      * Constructs a new {@code AutoSaveStoreDecorator} with the given {@code chunk}.

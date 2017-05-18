@@ -204,8 +204,7 @@ public class CacheTest extends AbstractTest {
 
         Map<Integer, String> result = cache.asMap();
 
-        original.entrySet().forEach(e ->
-                assertThat(result.get(e.getKey())).isEqualTo(e.getValue()));
+        original.forEach((key, value) -> assertThat(result.get(key)).isEqualTo(value));
     }
 
     @Test

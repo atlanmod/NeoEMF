@@ -302,8 +302,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
-        List<Id> indexHits;
-
         // There is no strict instance of an abstract class
         if (metaclass.isAbstract() && strict) {
             return Collections.emptyList();

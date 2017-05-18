@@ -272,6 +272,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     @Test
     @Category(Tags.IOTests.class)
     public void testReaderWithoutHandler() {
+        //noinspection ConstantConditions
         Throwable thrown = catchThrowable(() -> new XmiStAXCursorStreamReader(null).read(null));
         assertThat(thrown).isInstanceOf(NullPointerException.class);
     }

@@ -168,7 +168,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                 "EPackage %s is not registered.", ns.uri());
 
         // Gets the current EClass
-        EClass eClass = EClass.class.cast(ePackage.getEClassifier(element.name()));
+        EClass eClass = checkNotNull(EClass.class.cast(ePackage.getEClassifier(element.name())),
+                "Cannot retrieve EClass {0} from the EPackage {1}", element.name(), ePackage);
 
         // Defines the metaclass of the current element if not present
         if (isNull(element.metaclass())) {

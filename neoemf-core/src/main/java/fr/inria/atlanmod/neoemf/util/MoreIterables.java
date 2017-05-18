@@ -16,9 +16,11 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * Static utility methods related to {@link Iterable} instances.
@@ -44,8 +46,10 @@ public final class MoreIterables {
      * @return a sequential {@link Stream} of the contents of {@code iterable}
      */
     @Nonnull
-    public static <E> Stream<E> stream(Iterable<E> iterable) {
-        checkNotNull(iterable);
+    public static <E> Stream<E> stream(@Nullable Iterable<E> iterable) {
+        if (isNull(iterable)) {
+            return Stream.empty();
+        }
 
         return Collection.class.isInstance(iterable)
                 ? Collection.class.cast(iterable).stream()

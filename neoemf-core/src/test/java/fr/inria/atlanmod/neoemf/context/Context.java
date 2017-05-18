@@ -152,10 +152,9 @@ public interface Context {
      *
      * @return a new {@link DataMapper}
      *
-     * @throws IOException if an I/O error occurs
      * @see ContextualResourceBuilder
      */
-    default DataMapper createMapper(File file) throws IOException {
+    default DataMapper createMapper(File file) {
         return new ContextualResourceBuilder(this, null).file(file).createPersistentMapper();
     }
 }

@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * A test-case that checks the behavior of {@link BoundedTransientBackend}.
@@ -29,7 +28,7 @@ public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
         return new CoreContext() {
 
             @Override
-            public Backend createMapper(File file) throws IOException {
+            public Backend createMapper(File file) {
                 return BoundedTransientBackend.forId(id0);
             }
         };

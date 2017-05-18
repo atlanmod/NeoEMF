@@ -233,6 +233,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} when the element doesn't exist..
      */
+    @Test
     public void testGetInexistingMetaclass() {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.metaclassOf(id0)).isNotPresent()

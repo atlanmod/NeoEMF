@@ -40,7 +40,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
@@ -535,9 +534,9 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
 
-        Object movedValue = remove(internalObject, feature, sourceIndex);
-        add(internalObject, feature, targetIndex, movedValue);
-        return movedValue;
+        Optional<Object> movedValue = Optional.ofNullable(remove(internalObject, feature, sourceIndex));
+        movedValue.ifPresent(v -> add(internalObject, feature, targetIndex, v));
+        return movedValue.orElse(null);
     }
 
     @Override
@@ -627,8 +626,12 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
             return (T[]) stream.toArray();
         }
         else {
-            array = stream.collect(Collectors.toList()).toArray(array);
-            return array;
+            return stream.toArray(size -> {
+                if (array.length < size) {
+                    throw new IllegalArgumentException(String.format("The given array is smaller than expected (array = %d, size = %d)", array.length, size));
+                }
+                return array;
+            });
         }
     }
 
