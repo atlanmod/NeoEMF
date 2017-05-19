@@ -11,6 +11,9 @@
 
 /**
  * Provides serializers that allows to persist model-level elements into MapDB collections.
+ * <p>
+ * Serializers are used internally by the framework to efficiently convert modeling elements into MapDB records. Note that every resource stored in 
+ * MapDB uses the same serializers. Providing custom serializer options will be possible in a future release of the tool.
  */
 
 package fr.inria.atlanmod.neoemf.data.mapdb.serializer;
