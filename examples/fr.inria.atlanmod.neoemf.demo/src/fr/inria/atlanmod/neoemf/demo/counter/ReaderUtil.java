@@ -14,17 +14,23 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+/**
+ * Factorizes reading operations for {@link BlueprintsCounter},
+ * {@link HBaseCounter}, and {@link MapDBCounter}.
+ */
 public class ReaderUtil {
 
     /**
-     * @param resource the resource to compute the size of
+     * @param resource
+     *            the resource to compute the size of
      *
      * @return the number of elements in the containment tree of the Resource
      */
     public static int countElements(Resource resource) {
         int count = 0;
         Iterable<EObject> allContents = resource::getAllContents;
-        for (@SuppressWarnings("unused") EObject ignored : allContents) {
+        for (@SuppressWarnings("unused")
+        EObject ignored : allContents) {
             count++;
         }
         return count;

@@ -39,45 +39,64 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Computes an OCL query using Eclipse MDT OCL on top of
+ * {@link PersistentResource}s storing models in Blueprints, MapDB, and HBase.
+ * <p>
+ * This simple example shows how NeoEMF can be integrated with existing modeling
+ * tools.
+ */
 public class OCLProtectedMethods {
 
     public static void main(String[] args) throws IOException {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, HBasePersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
+                BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME,
+                MapDbPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME,
+                HBasePersistenceBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
 
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
 
         JavaPackage.eINSTANCE.eClass();
 
         long begin, end;
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI
+                .createFileURI(new File("models/sample.graphdb")))) {
             resource.load(Collections.emptyMap());
             begin = System.currentTimeMillis();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds",
+                    result.size(), (end - begin) / 1000);
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI
+                .createFileURI(new File("models/sample.mapdb")))) {
             resource.load(Collections.emptyMap());
             begin = System.currentTimeMillis();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds",
+                    result.size(), (end - begin) / 1000);
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI
+                .createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
             begin = System.currentTimeMillis();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds",
+                    result.size(), (end - begin) / 1000);
         }
     }
 
@@ -85,11 +104,12 @@ public class OCLProtectedMethods {
     private static List<MethodDeclaration> getProtectedMethodDeclarations(Resource resource) {
         try {
             OCL ocl = OCL.newInstance(EcoreEnvironmentFactory.INSTANCE);
-            OCLInput oclInput = new OCLInput(new FileInputStream(new File("ocl/protectedMethods.ocl")));
+            OCLInput oclInput = new OCLInput(new FileInputStream(new File(
+                    "ocl/protectedMethods.ocl")));
             List<Constraint> constraints = ocl.parse(oclInput);
-            return (List<MethodDeclaration>) ocl.createQuery(constraints.get(0)).evaluate(resource.getContents().get(0));
-        }
-        catch (Exception e) {
+            return (List<MethodDeclaration>) ocl.createQuery(constraints.get(0)).evaluate(
+                    resource.getContents().get(0));
+        } catch (Exception e) {
             NeoLogger.error(e);
             return Collections.emptyList();
         }

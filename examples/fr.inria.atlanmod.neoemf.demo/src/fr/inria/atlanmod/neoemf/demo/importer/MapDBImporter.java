@@ -31,6 +31,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Imports an existing model stored in a XMI files into a MapDB-based
+ * {@link PersistentResource}.
+ */
 public class MapDBImporter {
 
     public static void main(String[] args) throws IOException {

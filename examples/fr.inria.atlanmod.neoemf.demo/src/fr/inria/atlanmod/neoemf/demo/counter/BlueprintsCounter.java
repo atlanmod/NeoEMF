@@ -26,18 +26,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * A simple example showing how to access an existing Blueprints-based
+ * {@link PersistentResource} and traverse its content to count the number of
+ * elements it contains.
+ */
 public class BlueprintsCounter {
 
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
+                BlueprintsPersistenceBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
         long begin = System.currentTimeMillis();
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI
+                .createFileURI(new File("models/sample.graphdb")))) {
             resource.load(Collections.emptyMap());
             int size = ReaderUtil.countElements(resource);
             NeoLogger.info("Resource {0} contains {1} elements", resource.toString(), size);
