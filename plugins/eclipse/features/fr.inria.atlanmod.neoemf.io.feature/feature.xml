@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.io.feature"
         label="NeoEMF : I/O"
-        version="1.0.2.qualifier">
+        version="1.0.2">
 
     <description url="http://www.example.com/description">
         Efficient model importer/exporter
@@ -10,13 +10,13 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="1.0.2.qualifier" />
+            version="1.0.2" />
 
     <plugin
             id="fr.inria.atlanmod.neoemf.io"
             download-size="0"
             install-size="0"
-            version="1.0.2.qualifier"
+            version="1.0.2"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-v10.html">
