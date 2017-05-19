@@ -46,7 +46,7 @@ public class Main {
      * 
      * @return the created resource
      */
-    public static Resource createBlueprintsResource() {
+    public static Resource createBlueprintsResource() throws IOException {
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
                 BlueprintsPersistenceBackendFactory.getInstance());
 
