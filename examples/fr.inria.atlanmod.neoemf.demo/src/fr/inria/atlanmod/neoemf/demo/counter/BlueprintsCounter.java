@@ -26,6 +26,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * A simple example showing how to access an existing Blueprints-based {@link PersistentResource} and traverse its content
+ * to count the number of elements it contains.
+ */
 public class BlueprintsCounter {
 
     public static void main(String[] args) throws IOException {

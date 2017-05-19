@@ -42,49 +42,66 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Computes a query using the EMF generated code on top of existing
+ * {@link PersistentResource}s storing models in Blueprints, MapDB, and HBase.
+ */
 public class EMFProtectedMethod {
 
     public static void main(String[] args) throws IOException {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, HBasePersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
+                BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME,
+                MapDbPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME,
+                HBasePersistenceBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
 
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
 
         long begin, end;
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI
+                .createFileURI(new File("models/sample.graphdb")))) {
             resource.load(Collections.emptyMap());
             begin = System.currentTimeMillis();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds",
+                    result.size(), (end - begin) / 1000);
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI
+                .createFileURI(new File("models/sample.mapdb")))) {
             resource.load(Collections.emptyMap());
             begin = System.currentTimeMillis();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds",
+                    result.size(), (end - begin) / 1000);
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI
+                .createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
             begin = System.currentTimeMillis();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds",
+                    result.size(), (end - begin) / 1000);
         }
     }
 
     private static EList<MethodDeclaration> getProtectedMethodDeclarations(Resource resource) {
         EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
-        List<? extends EObject> allClasses = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+        List<? extends EObject> allClasses = getAllInstances(resource,
+                JavaPackage.eINSTANCE.getClassDeclaration());
         for (EObject cls : allClasses) {
             for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
                 if (!(method instanceof MethodDeclaration)) {
