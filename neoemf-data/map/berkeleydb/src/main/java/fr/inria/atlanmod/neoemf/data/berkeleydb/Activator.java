@@ -22,8 +22,9 @@ import org.osgi.framework.BundleActivator;
 /**
  * A {@link BundleActivator} that automatically registers a {@link BerkeleyDbPersistenceBackendFactory} with its
  * associated {@link BerkeleyDbURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
+ * <p>
+ * <b>Note:</b> This class should not be used in standard use.
  *
- * @note This class should not be used in standard use.
  * @see BerkeleyDbPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */

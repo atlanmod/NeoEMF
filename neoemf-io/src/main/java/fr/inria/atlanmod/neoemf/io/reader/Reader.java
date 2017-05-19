@@ -19,8 +19,8 @@ import java.io.InputStream;
 
 /**
  * An {@link InputNotifier} that reads data from a file.
- *
- * @note It correspond to the head of the parsing process in case of an import.
+ * <p>
+ * It correspond to the head of the parsing process in case of an import.
  */
 public interface Reader extends InputNotifier<Processor> {
 

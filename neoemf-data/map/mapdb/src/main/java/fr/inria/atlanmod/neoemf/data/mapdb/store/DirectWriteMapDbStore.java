@@ -312,7 +312,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     @Override
     public EObject eObject(Id id) {
         PersistentEObject object = null;
-        if(nonNull(id)) {
+        if (nonNull(id)) {
             EClass eClass = resolveInstanceOf(id);
             object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
             if (object.resource() != resource()) {
@@ -363,10 +363,10 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      * As for {@link #updateContainment(PersistentEObject, EReference, PersistentEObject)}, instance-of information are
      * handled in a dedicated {@link Map}, easing their access. The method checks that the {@link Map} doesn't contain
      * another type information for {@code object} and save it.
+     * <p>
+     * The type is not updated if {@code object} was previously mapped to another type.
      *
      * @param object the {@link PersistentEObject} to store the instance-of information from
-     *
-     * @note The type is not updated if {@code object} was previously mapped to another type.
      */
     protected void updateInstanceOf(PersistentEObject object) {
         ClassInfo info = backend.metaclassFor(object.id());
@@ -380,8 +380,8 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      *
      * @param featureKey the {@link FeatureKey} to look for
      *
-     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
-     * {@link Object} can be a single element or a {@link Collection}.
+     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. The returned {@link
+     * Object} can be a single element or a {@link Collection}.
      */
     protected Object getFromMap(FeatureKey featureKey) {
         return backend.valueOf(featureKey);
@@ -395,8 +395,8 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      * @param object  the {@link PersistentEObject} to look for
      * @param feature the {@link EStructuralFeature} of {@code object} to look for
      *
-     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
-     * {@link Object} can be a single element or a {@link Collection}.
+     * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. The returned {@link
+     * Object} can be a single element or a {@link Collection}.
      *
      * @see #getFromMap(FeatureKey)
      */

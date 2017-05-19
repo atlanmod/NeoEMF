@@ -17,10 +17,11 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 /**
  * A {@link PersistenceOptions} that holds MapDB specific options.
- *
- * @note Not implemented yet.
- * @future This class is not used in the current release of the tool, it will simplify option management in the near
- * future.
+ * <p>
+ * <b>Note:</b> Not implemented yet.
+ * <p>
+ * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
+ * near future.
  */
 @Experimental
 public class MapDbOptions extends AbstractPersistenceOptions {

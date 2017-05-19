@@ -47,10 +47,12 @@ import java.util.Map;
  * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
  * optional Map used in {@link DirectWriteMapDbIndicesStore} that stores {@link Collection} indices instead of a
  * serialized version of the collection itself</li> </ul>
+ * <p>
+ * This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate the database.
+ * <p>
+ * Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that provides an
+ * usable {@link DB} that can be manipulated by this wrapper.
  *
- * @note This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate the database.
- * @note Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
- * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbPersistenceBackendFactory
  * @see DirectWriteMapDbStore
  * @see DirectWriteMapDbListsStore
@@ -116,11 +118,12 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      * <p>
      * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
      * {@link Serializer}s.
+     * <p>
+     * This constructor is protected. To create a new {@code MapDbPersistenceBackend} use {@link
+     * MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
-     * @note This constructor is protected. To create a new {@code MapDbPersistenceBackend} use {@link
-     * MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see MapDbPersistenceBackendFactory
      */
     @SuppressWarnings("unchecked")

@@ -12,10 +12,11 @@
 /**
  * Provides common annotation types.
  * <p>
- * Annotations are used in NeoEMF as documentation helpers, providing information on the status of a feature. For example,
- * a class annotated with {@code @Experimental} specifies that the provided API might evolve in the next releases, and should be carefully used.
+ * Annotations are used in NeoEMF as documentation helpers, providing information on the status of a feature. For
+ * example, a class annotated with {@code @Experimental} specifies that the provided API might evolve in the next
+ * releases, and should be carefully used.
  * <p>
- * <b>Note:</b> current annotation are not processed and are only used for documentation purposes.
+ * <b>Note:</b> Current annotation are not processed and are only used for documentation purposes.
  */
 
 package fr.inria.atlanmod.neoemf.annotations;

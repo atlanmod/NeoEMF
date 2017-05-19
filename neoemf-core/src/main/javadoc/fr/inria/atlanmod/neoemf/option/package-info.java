@@ -12,29 +12,32 @@
 /**
  * Provides utility classes to provide modeling and persistence level options to NeoEMF.
  * <p>
- * NeoEMF can be customized by using specific options that are provided to the {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(java.util.Map)} and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(java.util.Map)} methods.
- * This package defines two APIs: 
- * <ul>
- * <li>{@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}: defines the generic options available for each implementation. This interface is implemented in backend-specific packages to provide backend-related options.</li>
- * <li>{@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}: a fluent API allowing to easily set NeoEMF options in client applications. Backend-specific builders are also provided to integrate backend-related options.</li>
- * </ul>
- * 
- * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following code creates a map that tells the framework to commit the pending transaction after 10000 operations, and cache the accessed features to retrieve them efficiently. Note that
- * <i>ConcreteBackendBuilder</i> corresponds to a backend-specific implementation of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}.
- * {@code
- * <pre>
- * // create the option map
+ * NeoEMF can be customized by using specific options that are provided to the {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource#save(java.util.Map)} and {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource#load(java.util.Map)} methods. This package defines two APIs:
+ * <ul> <li>{@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}: defines the generic options available for
+ * each implementation. This interface is implemented in backend-specific packages to provide backend-related
+ * options.</li> <li>{@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}: a fluent API allowing to easily
+ * set NeoEMF options in client applications. Backend-specific builders are also provided to integrate backend-related
+ * options.</li> </ul>
+ * <p>
+ * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following
+ * code creates a map that tells the framework to commit the pending transaction after 10000 operations, and cache the
+ * accessed features to retrieve them efficiently. <i>ConcreteBackendBuilder</i> corresponds to a
+ * backend-specific implementation of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}.
+ * <pre>{@code
+ * // Create the option map
  * Map<String, Object> options = ConcreteBackendBuilder.newBuilder()
- *  .autocommit(10000)
- *  .cacheFeatures()
- *  .asMap();
- * // load the resource with the specified options
+ *     .autocommit(10000)
+ *     .cacheFeatures()
+ *     .asMap();
+ *
+ * // Load the resource with the specified options
  * myResource.load(options);
- * 
- * // manipulate the resource with autocommit and feature cache enabled
+ *
+ * // Manipulate the resource with autocommit and feature cache enabled
  * myResource.getContents() [...]
- * </pre>
- * }
+ * }</pre>
  */
 
 package fr.inria.atlanmod.neoemf.option;

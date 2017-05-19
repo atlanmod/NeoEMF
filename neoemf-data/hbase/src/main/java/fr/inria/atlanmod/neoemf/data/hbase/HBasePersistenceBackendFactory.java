@@ -36,14 +36,12 @@ import javax.annotation.Nonnull;
 /**
  * A factory that creates instances of {@link HBasePersistenceBackend}.
  * <p>
- * This class only creates persistent databases that can be configured using
- * {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
- * options maps.
+ * This class only creates persistent databases that can be configured using {@link PersistentResource#save(Map)} and
+ * {@link PersistentResource#load(Map)} options maps.
  * <p>
- * Note that transient back-ends can be instantiated using this factory, but they will
- * be handed as persistent ones. This is a limitation that will be solved in next releases.
- * To avoid any consistency issue we recommend every HBase resource right after their creation,
- * ensuring the resource is using a persistent back-end.
+ * Transient back-ends can be instantiated using this factory, but they will be handed as persistent ones. This is a
+ * limitation that will be solved in next releases. To avoid any consistency issue we recommend every HBase resource
+ * right after their creation, ensuring the resource is using a persistent back-end.
  *
  * @see PersistentResource
  * @see HBasePersistenceBackend

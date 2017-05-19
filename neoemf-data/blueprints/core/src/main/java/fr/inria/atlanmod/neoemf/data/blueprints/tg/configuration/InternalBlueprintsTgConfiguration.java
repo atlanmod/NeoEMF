@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration;
 
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
 
@@ -25,18 +23,19 @@ import javax.annotation.Nonnull;
 import static java.util.Objects.isNull;
 
 /**
- * An internal class that defines Blueprints {@link TinkerGraph} default configuration
- * properties in the current NeoEMF {@link Configuration}.
+ * An internal class that defines Blueprints TinkerGraph default configuration properties in the current NeoEMF {@link
+ * Configuration}.
+ * <p>
+ * This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if TinkerGraph implementation is used
+ * to store the underlying database.
  *
- * @note This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if {@link TinkerGraph}
- * implementation is used to store the underlying database.
  * @see BlueprintsPersistenceBackendFactory
  */
 @SuppressWarnings("unused") // Called dynamically
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
     /**
-     * The property to define the directory in which to store the {@link TinkerGraph}.
+     * The property to define the directory in which to store the TinkerGraph.
      */
     private static final String DIRECTORY = "blueprints.tg.directory";
 

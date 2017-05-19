@@ -12,11 +12,13 @@
 /**
  * Provides classes related to data management specific to a Neo4j implementation, under Blueprints.
  * <p>
- * This package defines Neo4j specific options (such as database caching strategy, memory buffer sizes, etc.) that can be set in addition to the generic {@link fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions} to
- * configure precisely the behavior of a Neo4j database. 
+ * This package defines Neo4j specific options (such as database caching strategy, memory buffer sizes, etc.) that can
+ * be set in addition to the generic {@link fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions}
+ * to configure precisely the behavior of a Neo4j database.
  * <p>
- * @note this package does not provide a dedicated {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}, see {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend} to 
- * create a new Neo4j-Blueprints backend.
+ * This package does not provide a dedicated {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}, see
+ * {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend} to create a new Neo4j-Blueprints
+ * backend.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;

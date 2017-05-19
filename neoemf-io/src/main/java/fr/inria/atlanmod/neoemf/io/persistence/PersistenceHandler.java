@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.io.InputHandler;
 
 /**
  * A {@link InputHandler} that process received events, in order to persist data.
- *
- * @note It correspond to the tail of the parsing process in case of an import.
+ * <p>
+ * It correspond to the tail of the parsing process in case of an import.
  */
 public interface PersistenceHandler extends InputHandler {
 }

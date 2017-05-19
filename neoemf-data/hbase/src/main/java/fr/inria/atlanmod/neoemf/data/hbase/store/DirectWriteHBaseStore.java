@@ -68,12 +68,13 @@ import static java.util.Objects.nonNull;
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
  * PersistentEObject} is forwarded to this class, that takes care of the serialization/deserialization from/to HBase.
- *
- * @note For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead, it accesses HBase
+ * <p>
+ * For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead, it accesses HBase
  * directly using the low-level database API.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
  * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ *
  * @see PersistentEObject
  * @see HBasePersistenceBackend
  * @see AbstractDirectWriteStore
@@ -263,7 +264,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     @Override
     public EObject eObject(Id id) {
         PersistentEObject object = null;
-        if(nonNull(id)) {
+        if (nonNull(id)) {
             EClass eClass = resolveInstanceOf(id);
             object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
             if (object.resource() != resource()) {

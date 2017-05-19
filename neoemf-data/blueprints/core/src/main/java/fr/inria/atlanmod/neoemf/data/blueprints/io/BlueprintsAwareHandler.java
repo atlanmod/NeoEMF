@@ -22,9 +22,9 @@ import java.util.NoSuchElementException;
 
 /**
  * A {@link PersistenceHandler} for {@link BlueprintsPersistenceBackend}s.
- *
- * @note This handler has a key conflicts resolution feature, but it consumes much more memory than a handler without
- * conflicts resolution. Make sure you have enough memory to avoid heap space.
+ * <p>
+ * This handler has a key conflicts resolution feature, but it consumes much more memory than a handler
+ * without conflicts resolution. Make sure you have enough memory to avoid heap space.
  */
 public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
 

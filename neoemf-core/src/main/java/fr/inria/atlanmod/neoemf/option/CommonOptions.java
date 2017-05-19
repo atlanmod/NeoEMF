@@ -15,10 +15,11 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 
 /**
  * A {@link PersistenceOptions} that holds common options.
- *
- * @note Not implemented yet.
- * @future This class is not used in the current release of the tool, it will simplify option management in the near
- * future.
+ * <p>
+ * <b>Note:</b> Not implemented yet.
+ * <p>
+ * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
+ * near future.
  */
 @Experimental
 public class CommonOptions extends AbstractPersistenceOptions {

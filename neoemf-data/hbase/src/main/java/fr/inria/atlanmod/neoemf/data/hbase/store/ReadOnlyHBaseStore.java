@@ -70,8 +70,8 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
     /**
      * Checks that the provided {@code tableName} corresponds to an existing HBase table and opens it.
-     *
-     * @note Read-only mode is only available for existing databases.
+     * <p>
+     * Read-only mode is only available for existing databases.
      *
      * @param connection the connection to the HBase server
      * @param tableName  the name of the table to access on the server

@@ -55,11 +55,11 @@ public class MapDbURI extends PersistenceURI {
 
     /**
      * Constructs a new {@code MapDbURI} from the given {@code internalURI}.
+     * <p>
+     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)}, {@link
+     * #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
      *
      * @param internalURI the base {@link URI}
-     *
-     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
-     * {@link #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
      */
     protected MapDbURI(@Nonnull URI internalURI) {
         super(internalURI);
