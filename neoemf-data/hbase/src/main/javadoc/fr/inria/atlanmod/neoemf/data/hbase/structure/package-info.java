@@ -10,7 +10,10 @@
  */
 
 /**
- * Specific classes allowing to store model-level elements in HBAse efficiently.
+ * Specific classes allowing to store model-level elements in HBase efficiently.
+ * <p>
+ * This package contains implementation of the generic structure classes in fr.inria.atlanmod.neoemf.data.structure that are optimized for
+ * the HBase backend.
  */
 
 package fr.inria.atlanmod.neoemf.data.hbase.structure;
