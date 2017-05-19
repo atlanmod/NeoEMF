@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
@@ -45,7 +46,7 @@ public class Main {
      * 
      * @return the created resource
      */
-    public static Resource createBlueprintsResource() {
+    public static Resource createBlueprintsResource() throws IOException {
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
                 BlueprintsPersistenceBackendFactory.getInstance());
 
