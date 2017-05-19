@@ -11,6 +11,12 @@
 
 /**
  * Provides specific classes to map model-level operations into MapDB-level operations.
+ * <p>
+ * This package provides implementations of the {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore} interface that use a MapDB database 
+ * to store the result of modeling operations and retrieve model elements.
+ * <p>
+ * NeoEMF MapDB implementation does not provide additional <i>store decorators</i>. Note that generic decorators defined at the core level (see {@link fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator} subclasses)
+ * can be combined on top of MapDB stores to provide additional behavior, such as autocommit or feature caching.
  */
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
