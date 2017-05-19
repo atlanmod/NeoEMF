@@ -12,7 +12,7 @@
 /**
  * Provides utility classes to define specific behaviors of Blueprints data persistence.
  * <p>
- * This package defines two API extending {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions} and {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}:
+ * This package defines two APIs extending {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions} and {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}:
  * <ul>
  * <li>{@link fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions}: defines generic Blueprints options (not tailored to a specific graph implementation), such as the automatic commit of pending transaction, and the default graph backend to use. Note that Blueprints specific options can be combined with generic options defined in {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}</li>
  * <li>{@link fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder}: a fluent API allowing to easily set Blueprints specific options in client applications. Since the builder implements {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} it can be used to combine Blueprints specific and generic options.</li>
