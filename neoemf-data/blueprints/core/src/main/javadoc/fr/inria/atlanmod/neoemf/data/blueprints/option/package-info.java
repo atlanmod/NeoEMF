@@ -21,19 +21,19 @@
  * @note Options defined using the classes inside this package are usable for each Blueprints implementation. For
  * backend-specific configuration refers to the corresponding package in the backend plugin (fr.inria.atlanmod.neoemf.data.blueprints.[backend]).
  * 
- * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following code creates a map that tells the framework to use a Neo4j backend and cache the accessed features to retrieve them efficiently. Note that defining the graph backend is a Blueprints specific option, while
+ * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following code creates a map that tells the framework to use a direct write approach (meaning that modifications are directly stored in the underlying database) and cache the accessed features to retrieve them efficiently. Note that the direct write behavior is a Blueprints specific option, while
  * the caching behavior is defined at the core level.
  * {@code
  * <pre>
  * // create the option map
  * Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
- *  .graph("com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph")
+ *  .directWrite()
  *  .cacheFeatures()
  *  .asMap();
  * // load the resource with the specified options
  * myResource.load(options);
  * 
- * // manipulate the resource with a Neo4j backend and feature cache enabled
+ * // manipulate the resource with a direct write approach and feature cache enabled
  * myResource.getContents() [...]
  * </pre>
  * }
