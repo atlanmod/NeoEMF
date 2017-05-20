@@ -5,13 +5,13 @@
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
     <artifactId>benchmarks-parent</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -43,6 +43,7 @@
                 <artifactId>cglib-nodep</artifactId>
                 <version>${cglib-nodep.version}</version>
             </dependency>
+
             <!-- CDO -->
 
             <dependency>
