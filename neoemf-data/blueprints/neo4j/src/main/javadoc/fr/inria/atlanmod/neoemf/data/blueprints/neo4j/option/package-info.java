@@ -21,7 +21,7 @@
  * options, such as the database cache strategy (weak, soft, strong), the size of the internal buffers, or the usage of
  * memory mapped files. Neo4j specific options can be combined with Blueprints and generic options defined in {@link
  * fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions} and {@link
- * fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}</li> <li>{@link fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder}:
+ * fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}</li> <li>{@link fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions}:
  * a fluent API allowing to easily set Neo4j specific options in client applications. Since the builder extends {@link
  * fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions} it can be used to combine Neo4j,
  * Blueprints, and generic options.</li> </ul>

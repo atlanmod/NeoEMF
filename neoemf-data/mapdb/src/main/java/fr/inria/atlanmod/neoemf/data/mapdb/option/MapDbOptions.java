@@ -74,7 +74,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
     /**
      * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
      * <p>
-     * This mapping corresponds to an {@link Object[]} representation of multi-valued features.
+     * This mapping corresponds to an {@link Object}[] representation of multi-valued features.
      *
      * @return this builder (for chaining)
      *

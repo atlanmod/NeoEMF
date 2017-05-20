@@ -30,7 +30,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
- * {@link Object[]}.
+ * {@link Object}[].
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWithArrays extends ManyValueMapper {

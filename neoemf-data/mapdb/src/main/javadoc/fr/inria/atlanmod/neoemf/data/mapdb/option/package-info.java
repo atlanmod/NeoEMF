@@ -13,12 +13,9 @@
  * Provides utility classes to define specific behaviors of MapDB data persistence.
  * <p>
  * This package defines two APIs extending {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions} and {@link
- * fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder}: <ul> <li>{@link fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions}:
- * defines MapDB mapping options, such as explicit indice serialization vs. full collection serialization. HBase
- * specific options can be combined with generic options defined in {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}.</li>
- * <li>{@link fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder}: a fluent API allowing to easily set MapDB
+ * fr.inria.atlanmod.neoemf.option.PersistenceOptions}: <ul> <li>{@link fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions}: a fluent API allowing to easily set MapDB
  * specific mapping options in client applications. Since the builder implements {@link
- * fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} it can be used to combiner MapDB specific and generic
+ * fr.inria.atlanmod.neoemf.option.PersistenceOptions} it can be used to combiner MapDB specific and generic
  * options.</li> </ul>
  * <p>
  * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following
@@ -27,8 +24,8 @@
  * MapDB specific option, while the caching behavior is defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = MapDBOptionsBuilder.newBuilder()
- *     .directWriteIndices()
+ * Map<String, Object> options = MapDBOptions.newBuilder()
+ *     .withIndices()
  *     .cacheFeatures()
  *     .asMap();
  *

@@ -13,11 +13,8 @@
  * Provides utility classes to define specific behaviors of HBase data persistence.
  * <p>
  * This package defines two APIs extending {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions} and {@link
- * fr.inria.atlanmod.neoemf.option.PersistenceOptions}: <ul> <li>{@link fr.inria.atlanmod.neoemf.data.hbase.option.HBaseResourceOptions}:
- * defines HBase specific options, such as the access policy of the HBase store (read-write / read-only). HBase specific
- * options can be combined with generic options defined in {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}.</li>
- * <li>{@link fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions}: a fluent API allowing to easily set HBase
- * specific options in client applications. Since the builder implements {@link fr.inria.atlanmod.neoemf.option.OptionsBuilder}
+ * fr.inria.atlanmod.neoemf.option.PersistenceOptions}: <ul> <li>{@link fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions}: a fluent API allowing to easily set HBase
+ * specific options in client applications. Since the builder implements {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}
  * it can be used to combine HBase specific and generic options.</li> </ul>
  * <p>
  * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following

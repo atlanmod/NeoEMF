@@ -74,7 +74,7 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
     /**
      * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
      * <p>
-     * This mapping corresponds to an {@link Object[]} representation of multi-valued features.
+     * This mapping corresponds to an {@link Object}[] representation of multi-valued features.
      *
      * @return this builder (for chaining)
      *

@@ -58,9 +58,9 @@ public class HBaseOptions extends AbstractPersistenceOptions<HBaseOptions> {
      * <p>
      * This mapping corresponds to:
      * <ul>
-     * <li>an {@link Object[]} representation of multi-valued attributes</li>
+     * <li>an {@link Object}[] representation of multi-valued attributes</li>
      * <li>a {@link String} representation for single-valued references</li>
-     * <li>a {@link String[]} representation for multi-valued references</li>
+     * <li>a {@link String}[] representation for multi-valued references</li>
      * </ul>
      * <p>
      * <b>Note:</b> This is the default mapping.

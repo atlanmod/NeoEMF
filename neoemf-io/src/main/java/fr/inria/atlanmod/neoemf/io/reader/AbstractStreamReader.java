@@ -55,12 +55,12 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
     }
 
     /**
-     * Processes a {@link BasicNamespace} declaration.
+     * Processes a {@link fr.inria.atlanmod.neoemf.io.structure.BasicNamespace} declaration.
      *
      * @param prefix the prefix
      * @param uri    the URI associated with the {@code prefix}
      *
-     * @see BasicNamespace.Registry#register(String, String)
+     * @see fr.inria.atlanmod.neoemf.io.structure.BasicNamespace.Registry#register(String, String)
      */
     protected final void readNamespace(String prefix, String uri) {
         BasicNamespace.Registry.getInstance().register(prefix, uri);

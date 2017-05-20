@@ -13,4 +13,4 @@
  * Provides classes related to objects serialization.
  */
 
-package fr.inria.atlanmod.neoemf.io.serializer.;
+package fr.inria.atlanmod.neoemf.io.serializer;

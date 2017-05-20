@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A {@link Store} used as bridge between a {@link InternalEObject.EStore} and a {@link Store}.
+ * A {@link Store} used as bridge between a {@link org.eclipse.emf.ecore.InternalEObject.EStore} and a {@link Store}.
  */
 @Immutable
 @ParametersAreNonnullByDefault
