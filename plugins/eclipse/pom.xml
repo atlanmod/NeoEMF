@@ -26,7 +26,7 @@
     <modules>
         <module>ui</module>
         <module>features</module>
-	<module>examples</module>
+        <module>examples</module>
         <module>update</module>
     </modules>
 

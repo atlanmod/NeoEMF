@@ -45,8 +45,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Computes a query using the EMF generated code on top of existing
- * {@link PersistentResource}s storing models in Blueprints, MapDB, and HBase.
+ * Computes a query using the EMF generated code on top of existing {@link PersistentResource}s storing models in
+ * Blueprints, MapDB, and HBase.
  */
 public class EMFProtectedMethod {
 

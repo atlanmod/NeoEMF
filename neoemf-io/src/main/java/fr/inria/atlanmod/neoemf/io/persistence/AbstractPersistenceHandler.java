@@ -140,9 +140,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             factor *= 2;
         }
         long computedValue = Math.round(value * factor);
-        /*
-         * Return 1 in the worst case to avoid division by 0
-         */
+
+        // Return 1 in the worst case to avoid division by 0.
         return Math.max(computedValue, 1);
     }
 

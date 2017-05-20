@@ -46,8 +46,7 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 //import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
 /**
- * Imports an existing model stored in a XMI files into a MapDB-based
- * {@link PersistentResource}.
+ * Imports an existing model stored in a XMI files into a MapDB-based {@link PersistentResource}.
  */
 public class MapDBImporter {
 

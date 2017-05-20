@@ -32,5 +32,4 @@ public class NeoEMFExamplesPlugin extends AbstractUIPlugin {
         }
         return instance;
     }
-
 }

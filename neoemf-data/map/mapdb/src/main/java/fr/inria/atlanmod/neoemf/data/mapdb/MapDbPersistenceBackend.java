@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
@@ -44,7 +43,8 @@ import java.util.Map;
  * optional Map used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStoreWithIndices} that stores {@link Collection} indices instead of a
  * serialized version of the collection itself</li> </ul>
  * <p>
- * This class is used in {@link DirectWriteMapStore} and its subclasses to access and manipulate the database.
+ * This class is used in {@link fr.inria.atlanmod.neoemf.data.map.core.store.DirectWriteMapStore} and its subclasses to
+ * access and manipulate the database.
  * <p>
  * Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that provides an
  * usable {@link DB} that can be manipulated by this wrapper.

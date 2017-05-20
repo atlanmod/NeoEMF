@@ -10,11 +10,7 @@ import java.util.List;
  * This class is reused from the plugin <code>org.eclipse.m2m.atl.examples</code>.
  */
 public class TutorialWizard extends AbstractExampleWizard {
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.eclipse.m2m.atl.examples.AbstractExampleWizard#getProjectDescriptors()
-     */
+
     @Override
     protected Collection<ProjectDescriptor> getProjectDescriptors() {
         final List<ProjectDescriptor> projects = new ArrayList<ProjectDescriptor>(2);
@@ -23,5 +19,4 @@ public class TutorialWizard extends AbstractExampleWizard {
                 "fr.inria.atlanmod.neoemf.tutorial"));
         return projects;
     }
-
 }
