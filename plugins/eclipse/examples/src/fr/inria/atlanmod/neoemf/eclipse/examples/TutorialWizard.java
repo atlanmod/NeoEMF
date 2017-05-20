@@ -17,10 +17,13 @@ public class TutorialWizard extends AbstractExampleWizard {
      */
     @Override
     protected Collection<ProjectDescriptor> getProjectDescriptors() {
-        final List<ProjectDescriptor> projects = new ArrayList<ProjectDescriptor>(2);
-        projects.add(new ProjectDescriptor("fr.inria.atlanmod.neoemf.eclipse.examples",
+        final List<ProjectDescriptor> projects = new ArrayList<>(2);
+
+        projects.add(new ProjectDescriptor(
+                "fr.inria.atlanmod.neoemf.eclipse.examples",
                 "projects/fr.inria.atlanmod.neoemf.tutorial.zip",
                 "fr.inria.atlanmod.neoemf.tutorial"));
+
         return projects;
     }
 

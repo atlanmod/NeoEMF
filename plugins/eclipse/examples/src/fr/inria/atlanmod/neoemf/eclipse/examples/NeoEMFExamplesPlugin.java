@@ -3,7 +3,7 @@ package fr.inria.atlanmod.neoemf.eclipse.examples;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * ATL examples plugin.
+ * NeoEMF examples plugin.
  */
 public class NeoEMFExamplesPlugin extends AbstractUIPlugin {
 
@@ -23,7 +23,7 @@ public class NeoEMFExamplesPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the singleton instance of this plugin.
-     * 
+     *
      * @return the singleton instance of this plugin
      */
     public static NeoEMFExamplesPlugin getDefault() {
