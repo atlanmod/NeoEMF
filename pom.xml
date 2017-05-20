@@ -53,10 +53,6 @@
         </license>
     </licenses>
 
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
-
     <modules>
         <module>neoemf-core</module>
         <module>neoemf-data</module>
@@ -232,6 +228,27 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.3.9</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <pluginManagement>
@@ -244,7 +261,7 @@
                     <configuration>
                         <instructions>
                             <Bundle-Version>
-                                1.0.2.${maven.build.timestamp}
+                                1.0.3.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package />

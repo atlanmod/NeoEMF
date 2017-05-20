@@ -12,12 +12,12 @@
 /**
  * Provides classes related to data management specific to a HBase implementation.
  * <p>
- * This package provides {@link fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackend} and {@link
- * fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory} classes, that correspond to HBase specific
- * implementations of {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} and {@link
- * fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry}.
+ * This package provides {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend} and {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} classes, that correspond to HBase specific
+ * implementations of {@link fr.inria.atlanmod.neoemf.data.PersistentBackend} and {@link
+ * fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
  * <p>
- * The {@link fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory} has to be registered to enable {@link
+ * The {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} has to be registered to enable {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a HBase storage:
  * <pre>{@code
  * PersistenceBackendFactoryRegistry.register(HBasePersistenceBackendFactory.getInstance());

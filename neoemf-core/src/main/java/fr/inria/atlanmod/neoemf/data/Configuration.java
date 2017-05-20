@@ -37,7 +37,7 @@ public final class Configuration {
     /**
      * The header of the configuration file.
      */
-    private static final String HEADER = "NeoEMF Configuration v1.0.2";
+    private static final String HEADER = "NeoEMF Configuration v1.0.3";
 
     /**
      * The inner properties.

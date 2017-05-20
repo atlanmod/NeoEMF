@@ -13,7 +13,7 @@
  * Provides utility classes to create Blueprints specific URIs.
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI} class, that extends
- * {@link fr.inria.atlanmod.neoemf.util.PersistenceURI} to create Blueprints specific URIs. {@link
+ * {@link fr.inria.atlanmod.neoemf.util.URIBuilder} to create Blueprints specific URIs. {@link
  * fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI}s are convenience wrappers of EMF {@link
  * org.eclipse.emf.common.util.URI}s that set a dedicated protocol that is parsed by NeoEMF to create the appropriate
  * database.

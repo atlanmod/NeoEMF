@@ -13,7 +13,7 @@
  * Provides utility classes to create HBase specific URIs.
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI} class, that extends {@link
- * fr.inria.atlanmod.neoemf.util.PersistenceURI} to create HBase specific URIs. {@link
+ * fr.inria.atlanmod.neoemf.util.URIBuilder} to create HBase specific URIs. {@link
  * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI}s are convenience wrappers of EMF {@link
  * org.eclipse.emf.common.util.URI}s that set a dedicated protocol that is parsed by NeoEMF to create the appropriate
  * database.
