@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature"
         label="NeoEMF : Blueprints Core"
-        version="1.0.2.qualifier">
+        version="1.0.2">
 
     <description url="http://www.example.com/description">
         Blueprints implementation of the Core component.
@@ -10,7 +10,7 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="1.0.2.qualifier" />
+            version="1.0.2" />
 
     <requires>
         <import plugin="org.eclipse.core.runtime" />
@@ -34,7 +34,7 @@
             id="fr.inria.atlanmod.neoemf.data.blueprints.core"
             download-size="0"
             install-size="0"
-            version="1.0.2.qualifier"
+            version="1.0.2"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-v10.html">

@@ -174,8 +174,8 @@ public class XPathProcessor extends AbstractProcessor {
 
         /**
          * The root of this tree.
-         *
-         * @note It does not represent the root node path.
+         * <p>
+         * It does not represent the root node path.
          */
         private final XPathNode dummyRoot;
 

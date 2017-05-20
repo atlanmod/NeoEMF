@@ -41,6 +41,13 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Computes an OCL query using Eclipse MDT OCL on top of
+ * {@link PersistentResource}s storing models in Blueprints, MapDB, and HBase.
+ * <p>
+ * This simple example shows how NeoEMF can be integrated with existing modeling
+ * tools.
+ */
 public class OCLProtectedMethods {
 
     public static void main(String[] args) throws IOException {

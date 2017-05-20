@@ -69,12 +69,13 @@ import static java.util.Objects.nonNull;
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
  * PersistentEObject} is forwarded to this class, that takes care of the serialization/deserialization from/to HBase.
- *
- * @note For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead, it accesses HBase
+ * <p>
+ * For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead, it accesses HBase
  * directly using the low-level database API.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
  * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ *
  * @see PersistentEObject
  * @see HBasePersistenceBackend
  * @see AbstractDirectWriteStore
@@ -264,7 +265,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     @Override
     public EObject eObject(Id id) {
         PersistentEObject object = null;
-        if(nonNull(id)) {
+        if (nonNull(id)) {
             object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
             if (object.resource() != resource()) {
                 object.resource(resource());
@@ -450,7 +451,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             NeoLogger.error("Unable to get containment information for {0}", object);
         }
     }
-    
+
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -465,7 +466,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             return internalToArray(value, feature, new Object[1]);
         }
     }
-    
+
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
         checkArgument(feature instanceof EReference || feature instanceof EAttribute,
@@ -508,7 +509,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         }
         return output;
     }
-    
+
     @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         Object soughtAttribute = getFromTable(object, attribute);

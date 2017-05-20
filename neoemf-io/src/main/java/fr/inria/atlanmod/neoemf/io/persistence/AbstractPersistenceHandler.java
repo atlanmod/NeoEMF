@@ -45,15 +45,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * The default cache size.
-     *
-     * @note It is calculated according to the maximum memory dedicated to the JVM.
+     * <p>
+     * It is calculated according to the maximum memory dedicated to the JVM.
      */
     protected static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
     /**
      * The default operation between commits.
-     *
-     * @note It is calculated according to the maximum memory dedicated to the JVM.
+     * <p>
+     * It is calculated according to the maximum memory dedicated to the JVM.
      */
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
@@ -82,15 +82,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Map holding the unlinked elements, waiting until their reference is created.
-     *
-     * @note In case of conflict detection only.
+     * <p>
+     * In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
      * In-memory cache that holds conflicted {@link Id}s, identified by their literal representation.
-     *
-     * @note In case of conflict detection only.
+     * <p>
+     * In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
 
@@ -122,24 +122,28 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Adapts the given {@code value} according to the maximum memory dedicated to the JVM.
+     * <p>
+     * <b>Note:</b> The formulas can be improved, for sure.
      *
      * @param value the value to adapt
      *
      * @return the adapted value
      *
-     * @note The formulas can be improved, for sure.
      * @see #DEFAULT_CACHE_SIZE
      * @see #OPS_BETWEEN_COMMITS_DEFAULT
      */
     private static long adaptFromMemory(int value) {
-        long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
+        double maxMemoryGB = (double) Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
 
-        long factor = maxMemoryGB;
+        double factor = maxMemoryGB;
         if (maxMemoryGB > 1) {
             factor *= 2;
         }
-
-        return value * factor;
+        long computedValue = Math.round(value * factor);
+        /*
+         * Return 1 in the worst case to avoid division by 0
+         */
+        return Math.max(computedValue, 1);
     }
 
     /**

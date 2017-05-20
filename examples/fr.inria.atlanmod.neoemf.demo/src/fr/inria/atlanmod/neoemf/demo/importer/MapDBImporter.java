@@ -45,6 +45,10 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 //import org.eclipse.emf.compare.scope.IComparisonScope;
 //import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
+/**
+ * Imports an existing model stored in a XMI files into a MapDB-based
+ * {@link PersistentResource}.
+ */
 public class MapDBImporter {
 
     public static void main(String[] args) throws IOException {

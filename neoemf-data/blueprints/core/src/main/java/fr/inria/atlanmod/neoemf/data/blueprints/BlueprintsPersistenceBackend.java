@@ -61,11 +61,13 @@ import static java.util.Objects.nonNull;
  * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
  * PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
  * caches to improve access time of {@link Vertex} from  their corresponding {@link PersistentEObject}.
+ * <p>
+ * This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to access
+ * and manipulate the database.
+ * <p>
+ * Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory} that
+ * provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  *
- * @note This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to
- * access and manipulate the database.
- * @note Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory}
- * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsPersistenceBackendFactory
  * @see DirectWriteBlueprintsStore
  * @see DirectWriteBlueprintsCacheManyStore
@@ -103,12 +105,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     public static final String KEY_NAME = "name";
 
     /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
-    /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
@@ -142,17 +138,18 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * Constructs a new {@code BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}.
      * <p>
      * This constructor initialize the caches and create the metaclass index.
+     * <p>
+     * This constructor is protected. To create a new {@code BlueprintsPersistenceBackend} use {@link
+     * BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is protected. To create a new {@code BlueprintsPersistenceBackend} use {@link
-     * BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see BlueprintsPersistenceBackendFactory
      */
     protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
-        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.persistentObjectsCache = Caffeine.newBuilder().softValues().build();
+        this.verticesCache = Caffeine.newBuilder().softValues().build();
         this.indexedEClasses = new ArrayList<>();
 
         Index<Vertex> metaclasses = graph.getIndex(KEY_METACLASSES, Vertex.class);
@@ -425,7 +422,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * <a href="https://github.com/atlanmod/Mogwai">Mogwaï</a>) framework, NeoEMF consistency is not guaranteed if
      * the graph is modified manually.
      *
-     * @return the underlying Blueprints {@link IdGraph}
+     * @return the underlying Blueprints graph
      */
     public IdGraph<KeyIndexableGraph> getGraph() {
         return graph;

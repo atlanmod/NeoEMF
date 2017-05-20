@@ -57,11 +57,11 @@ public class BerkeleyDbURI extends PersistenceURI {
 
     /**
      * Constructs a new {@code BerkeleyDbURI} from the given {@code internalURI}.
+     * <p>
+     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)} or {@link
+     * #createFileURI(File)} instead.
      *
      * @param internalURI the base {@link URI}
-     *
-     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)} or
-     * {@link #createFileURI(File)} instead.
      */
     protected BerkeleyDbURI(@Nonnull URI internalURI) {
         super(internalURI);

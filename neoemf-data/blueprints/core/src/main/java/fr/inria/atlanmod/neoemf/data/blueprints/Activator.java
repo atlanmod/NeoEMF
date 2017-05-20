@@ -21,8 +21,9 @@ import org.osgi.framework.BundleActivator;
 /**
  * A {@link BundleActivator} that automatically registers a {@link BlueprintsPersistenceBackendFactory} with its
  * associated {@link BlueprintsURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
+ * <p>
+ * <b>Note:</b> This class should not be used in standard use.
  *
- * @note This class should not be used in standard use.
  * @see BlueprintsPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */

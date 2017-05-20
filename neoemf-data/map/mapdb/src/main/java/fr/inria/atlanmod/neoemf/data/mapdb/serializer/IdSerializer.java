@@ -28,8 +28,9 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link Serializer} implementation for {@link Id}s.
+ * <p>
+ * For now, this serializer only works with {@link StringId}.
  *
- * @note For now, this serializer only works with {@link StringId}.
  * @see Id
  * @see StringId
  */

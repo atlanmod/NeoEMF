@@ -21,8 +21,8 @@ import static java.util.Objects.isNull;
 
 /**
  * An {@link Handler} for {@link BlueprintsPersistenceBackend}s, <b>without</b> key conflict resolution.
- *
- * @note Unlike the {@link BlueprintsAwareHandler}, this handler does not solve key conflicts. However, they are
+ * <p>
+ * Unlike the {@link BlueprintsAwareHandler}, this handler does not solve key conflicts. However, they are
  * detected and an exception is raised to avoid the creation of an unusable back-end.
  */
 public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {

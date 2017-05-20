@@ -17,10 +17,11 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 /**
  * An abstract {@link PersistenceOptions} that holds generic options for all Blueprints based implementations.
- *
- * @note Not implemented yet.
- * @future This class is not used in the current release of the tool, it will simplify option management in the near
- * future.
+ * <p>
+ * <b>Note:</b> Not implemented yet.
+ * <p>
+ * <b>Future:</b> This class is not used in the current release of the tool, it will simplify option management in the
+ * near future.
  */
 @Experimental
 public abstract class AbstractBlueprintsOptions extends AbstractPersistenceOptions {

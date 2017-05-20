@@ -28,6 +28,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 
+/**
+ * A simple example showing how to access an existing MapDB-based
+ * {@link PersistentResource} and traverse its content to count the number of
+ * elements it contains.
+ */
 public class MapDBCounter {
 
     public static void main(String[] args) throws IOException {

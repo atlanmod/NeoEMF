@@ -6,7 +6,7 @@
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
         <artifactId>neoemf-data-map</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
 
     <artifactId>neoemf-data-berkeleydb</artifactId>

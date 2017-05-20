@@ -48,19 +48,28 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 //import org.eclipse.emf.compare.scope.IComparisonScope;
 //import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
+/**
+ * Imports an existing model stored in a XMI files into a Blueprints-based
+ * {@link PersistentResource}.
+ */
 public class BlueprintsImporter {
 
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
+                BlueprintsPersistenceBackendFactory.getInstance());
 
         ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+                .put("xmi", new XMIResourceFactoryImpl());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
+                .put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
-            Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().weakCache().autocommit().asMap();
+        try (PersistentResource persistentResource = (PersistentResource) rSet
+                .createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
+            Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().weakCache()
+                    .autocommit().asMap();
             persistentResource.save(options);
 
             Instant start = Instant.now();
