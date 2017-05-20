@@ -28,6 +28,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Imports an existing model stored in a XMI files into a Blueprints-based {@link PersistentResource} using a scalable
+ * XMI parser that bypasses the EMF API to improve performances and enable large XMI imports.
+ */
 public class EfficientBlueprintsImporter {
 
     public static void main(String[] args) throws Exception {

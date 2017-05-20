@@ -49,8 +49,7 @@ public class InvalidOptionException extends RuntimeException {
     /**
      * Constructs an {@code InvalidOptionException} with the specified detail {@code message} and {@code cause}.
      * <p>
-     * <b>Note:</b> The detail message associated with cause is not automatically incorporated into this exception's
-     * detail message.
+     * The detail message associated with cause is not automatically incorporated into this exception's detail message.
      *
      * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method)
      * @param cause   the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}

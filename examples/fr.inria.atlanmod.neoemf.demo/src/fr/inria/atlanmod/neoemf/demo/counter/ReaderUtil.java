@@ -14,6 +14,9 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+/**
+ * Factorizes reading operations for {@link BlueprintsCounter}, {@link HBaseCounter}, and {@link MapDBCounter}.
+ */
 public class ReaderUtil {
 
     /**
@@ -29,5 +32,4 @@ public class ReaderUtil {
         }
         return count;
     }
-
 }

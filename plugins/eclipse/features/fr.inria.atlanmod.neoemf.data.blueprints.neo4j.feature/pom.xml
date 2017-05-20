@@ -5,7 +5,7 @@
     <parent>
         <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
         <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
