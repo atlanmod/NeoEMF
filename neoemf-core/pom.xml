@@ -20,7 +20,7 @@
     </description>
 
     <properties>
-        <caffeine.version>2.5.0</caffeine.version>
+        <caffeine.version>2.5.2</caffeine.version>
         <cglib.version>3.2.5</cglib.version>
         <log4j.version>2.8.2</log4j.version>
     </properties>

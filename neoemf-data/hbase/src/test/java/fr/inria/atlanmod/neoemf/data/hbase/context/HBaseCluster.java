@@ -80,7 +80,7 @@ final class HBaseCluster {
             Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
 
             hbase = new HBaseTestingUtility();
-            hbase.startMiniCluster(1);
+            hbase.startMiniCluster();
 
             Configuration conf = hbase.getConnection().getConfiguration();
             host = conf.get(HOST_CONFIG);
