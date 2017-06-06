@@ -130,9 +130,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 if (nonNull(resource)) {
                     copyStore(store, newStore);
                 }
-                else {
-                    Log.warn("[{0}] Resource is unloading: no need to copy the stores.", id);
-                }
+                //else: Resource is unloading, no need to copy the stores
 
                 // Close the previous store if it's not attached to a persistent resource
                 // Otherwise the resource will close it
