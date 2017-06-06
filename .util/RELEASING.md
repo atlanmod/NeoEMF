@@ -54,7 +54,6 @@ The procedure is the same as in the main project.
 
 - Commit __(without push)__ the modifications
 - Tag the commit with name `vX.Y.Z`
-- Create a new branch named `vX.Y.Z`
 
 # Deploy a release
 
@@ -67,9 +66,7 @@ Maven must be configured to handle signature and deployment.
 The following `settings.xml` file must be filled and placed at the root of your `.m2` directory:
 
 ```xml
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+<settings>
     <servers>
         <server>
             <id>ossrh</id>
@@ -77,24 +74,12 @@ The following `settings.xml` file must be filled and placed at the root of your 
             <password>{OSS-PASSWORD}</password>
         </server>
     </servers>
-    <profiles>
-        <profile>
-            <id>deployment</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <gpg.executable>gpg2</gpg.executable>
-                <gpg.passphrase>{GPG-PASSPHRASE}</gpg.passphrase>
-            </properties>
-        </profile>
-    </profiles>
 </settings>
 ```
 
 Once is done, you can deploy your artifacts on Maven Central with the following:
 ```
-mvn clean package javadoc:jar source:jar-no-fork gpg:sign install deploy -DskipTests
+mvn clean deploy -DskipTests -P deploy-artifacts
 ```
 
 Artifacts are now staged and wait for validation and deployment on the [Nexus Repo Manager][oss-sonartype] (Note that staged artifacts, are not definitive, they can be removed/cancelled): A full description of different steps is available [here][oss-sonartype-release].
