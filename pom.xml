@@ -483,6 +483,9 @@
         <!-- A profile to deploy artifacts on OSS Sonartype -->
         <profile>
             <id>deploy-artifacts</id>
+            <properties>
+                <gpg.executable>gpg2</gpg.executable>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
