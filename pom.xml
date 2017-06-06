@@ -345,6 +345,7 @@
                         <additionalparam>-Xdoclint:none</additionalparam>
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
+                        <overview>${project.basedir}/overview.html</overview>
                         <notimestamp>true</notimestamp>
                         <nosince>true</nosince>
                         <author>false</author>
