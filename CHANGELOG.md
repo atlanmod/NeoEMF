@@ -1,4 +1,4 @@
-## *1.0.2*
+## *1.0.3*
 
 Current SNAPSHOT.
 
@@ -27,15 +27,15 @@ Current SNAPSHOT.
 - __[NEW]__ Cache implementation is now wrapped to avoid dependencies declaration in modules
 - __[NEW]__ `URI`s are now created with builders instead of static methods
 - __[NEW]__ `Hashers` now provides SHA-1 and SHA-256 hash algorithms in addition to MD5
-- __[UPD]__ `Hasher` now process `HashCode`s from `byte` arrays instead of `String`s
+- __[UPD]__ `Hasher` now process `HashCode`s from `byte[]` instead of `String`s
 - __[UPD]__ Configuration is now managed with a simple `Properties` file _(may change in the near future)_
 
-### Improve tests
+### Tests
 - __[NEW]__ All mappings have a code coverage of 100% to ensure the expected behavior of future implementations
 - __[NEW]__ All utility methods have their tests
 - __[NEW]__ HBase is now integrated in tests by using an Hadoop mini-cluster (requires Cygwin on Windows)
 - __[UPD]__ Test helpers have been merged and simplified: now only a link to `Context` is needed for multi-backend tests
-- __[UPD]__ Tests display the full stacktrace when a test fails
+- __[UPD]__ Tests display the full stacktrace when a test fails or are ignored
 
 ### Benchmarks
 - __[NEW]__ `Store`s can be configured in benchmarks, with the `s` parameter
@@ -44,13 +44,7 @@ Current SNAPSHOT.
 ### Miscellaneous
 - __[NEW]__ The direct-import becomes generic and works with all implementations
 - __[NEW]__ Some methods use `Optional` instead of a comparison to `null`
-- __[NEW]__ Add experimental EMF Compare integration (will stay experimental as long as Guava issues remain)
 - __[UPD]__ `EList` and `EMap` implementations are inner classes in `DefaultPersistentEObject`
-- __[FIX]__ Issue #53: WildCardType `?` in sample (MapDB) throws an exception when accessed in the Editor
-- __[FIX]__ Issue #54: `AbstractDirectWrite#toArray()` is not efficient
-- __[FIX]__ Issue #55: `DefaultPersistentEObject#eContainer()` is not efficient
-- __[FIX]__ Issue #56: Unnecessary backend lookups in `PersistentStore#eObject(Id)`
-- __[FIX]__ Issue #68: Creating contained objects with Epsilon does not work
 
 ### Refactoring
 - __[UPD]__ `AutoCommitStoreDecorator` become `AutoSaveStoreDecorator`
@@ -68,11 +62,26 @@ Current SNAPSHOT.
 - __[UPD]__ `cglib` : `3.2.4` to `3.2.5`
 - __[UPD]__ `log4j` : `2.7` to `2.8.1`
 - __[UPD]__ `caffeine` : `2.3.5` to `2.4.0`
-- __[DEL]__ `guava` : No more needed
-- __[DEL]__ `commons-collections4` : No more needed
+- __[DEL]__ `guava` : No longer needed
+- __[DEL]__ `commons-collections4` : No longer needed
 - __[DEL]__ `commons-configuration` : Replaced by native `Properties`
 - __[DEL]__ `commons-io` : Replaced by `nio` methods
-- __[DEL]__ `commons-lang3` : No more needed
+- __[DEL]__ `commons-lang3` : No longer needed
+
+
+## 1.0.2 _(2017-05-21)_
+
+### Miscellaneous
+- __[NEW]__ Add experimental EMF Compare integration (will stay experimental as long as Guava issues remain)
+- __[FIX]__ Issue #53: WildCardType `?` in sample (MapDB) throws an exception when accessed in the Editor
+- __[FIX]__ Issue #54: `AbstractDirectWrite#toArray()` is not efficient
+- __[FIX]__ Issue #55: `DefaultPersistentEObject#eContainer()` is not efficient
+- __[FIX]__ Issue #56: Unnecessary backend lookups in `PersistentStore#eObject(Id)`
+- __[FIX]__ Issue #68: Creating contained objects with Epsilon does not work
+
+### Dependencies
+- __[UPD]__ `guava` : `20.0` to `15.0` (Conflict with HBase)
+
 
 ## 1.0.1 _(2017-01-16)_
 
