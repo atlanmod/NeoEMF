@@ -53,7 +53,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
     @Before
     public final void registerFactories() throws IOException {
         context().init();
-        assumeTrue(context().isInitialized());
+        assumeTrue("The context has not been initialized", context().isInitialized());
 
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
         file = workspace.newFile(context().name());

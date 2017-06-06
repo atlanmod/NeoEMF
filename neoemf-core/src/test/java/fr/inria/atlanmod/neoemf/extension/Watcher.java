@@ -19,6 +19,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -43,15 +44,40 @@ public class Watcher extends org.junit.rules.TestWatcher {
      */
     private static final String NO_MESSAGE = "";
 
+    /**
+     * The message to display a running test.
+     */
+    private static final String MESSAGE_RUNNING = "--- Running";
+
+    /**
+     * The message to display a successful test.
+     */
+    private static final String MESSAGE_SUCCESS = "--- Succeeded";
+
+    /**
+     * The message to display a failed test.
+     */
+    private static final String MESSAGE_FAILURE = "--- Failed";
+
+    /**
+     * The message to display a failed test with errors.
+     */
+    private static final String MESSAGE_FAILURE_ERRORS = MESSAGE_FAILURE + " with error(s):";
+
+    /**
+     * The message to display a skipped test.
+     */
+    private static final String MESSAGE_SKIP = "--- Skipped";
+
     @Override
     protected void succeeded(Description description) {
-        LOG_TEST.info("--- Succeeded");
+        LOG_TEST.info(MESSAGE_SUCCESS);
     }
 
     @Override
     protected void failed(Throwable e, Description description) {
         if (isNull(e)) {
-            LOG_TEST.warn("--- Failed");
+            LOG_TEST.warn(MESSAGE_FAILURE);
         }
         else if (AssertionError.class.isInstance(e) && nonNull(e.getMessage())) {
             Arrays.stream(e.getMessage().split("\n"))
@@ -59,33 +85,34 @@ public class Watcher extends org.junit.rules.TestWatcher {
                     .forEach(LOG_TEST::warn);
 
             LOG_TEST.warn(NO_MESSAGE);
-            LOG_TEST.warn("--- Failed");
+            LOG_TEST.warn(MESSAGE_FAILURE);
         }
         else {
-            // Several exceptions
-            if (MultipleFailureException.class.isInstance(e)) {
-                MultipleFailureException me = MultipleFailureException.class.cast(e);
+            LOG_TEST.error(MESSAGE_FAILURE_ERRORS);
 
-                LOG_TEST.error(e, "--- Failed: Several exceptions have been thrown during the test:");
-                me.getFailures().forEach(LOG_VOID::error);
-                LOG_VOID.error(NO_MESSAGE);
-            }
-            // One exception
-            else {
-                LOG_TEST.error(e, "--- Failed: An exception has been thrown during the test:");
-            }
+            (MultipleFailureException.class.isInstance(e)
+                    ? MultipleFailureException.class.cast(e).getFailures()
+                    : Collections.singletonList(e))
+                    .forEach(LOG_VOID::error);
+
+            LOG_VOID.error(NO_MESSAGE);
         }
     }
 
     @Override
     protected void skipped(AssumptionViolatedException e, Description description) {
-        LOG_TEST.warn("--- Skipped: The context has not been initialized");
+        if (nonNull(e) && nonNull(e.getMessage())) {
+            LOG_TEST.warn(MESSAGE_SKIP + ": {0}", e.getMessage());
+        }
+        else {
+            LOG_TEST.warn(MESSAGE_SKIP);
+        }
     }
 
     @Override
     protected void starting(Description description) {
         LOG_VOID.info(NO_MESSAGE);
-        LOG_TEST.info("--- Running " + description.getMethodName());
+        LOG_TEST.info(MESSAGE_RUNNING + ": {0}", description.getMethodName());
     }
 
     @Override

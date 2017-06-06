@@ -170,7 +170,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     @Before
     public final void createWorkspace() throws IOException {
         context.init();
-        assumeTrue(context.isInitialized());
+        assumeTrue("The context has not been initialized", context.isInitialized());
 
         loadedResources = new ArrayList<>();
         file = workspace.newFile(context.name());
