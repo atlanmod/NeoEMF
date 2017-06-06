@@ -434,6 +434,9 @@
         <!-- A profile to manage Javadoc dependencies (EMF, OSGi,...) -->
         <profile>
             <id>deploy-javadoc</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
@@ -485,6 +488,7 @@
             <id>deploy-artifacts</id>
             <properties>
                 <gpg.executable>gpg2</gpg.executable>
+                <skipTests>true</skipTests>
             </properties>
             <build>
                 <plugins>
