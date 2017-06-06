@@ -87,6 +87,11 @@ class AsyncLogger implements Logger {
 
     @Override
     public void log(Level level, @Nullable Throwable e, @Nullable CharSequence message, @Nullable Object... params) {
+        if (!logger.isEnabled(level.level())) {
+            // Don't send the request if the associated level is not enabled
+            return;
+        }
+
         execute(() -> {
             try {
                 logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse(NO_MESSAGE).toString(), params), e);
