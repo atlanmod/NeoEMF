@@ -135,7 +135,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
         checkNotNull(baseGraph);
 
-        this.graph = new AutoCleanerIdGraph(baseGraph);
+        this.graph = new InternalIdGraph(baseGraph);
 
         indexedMetaclasses = new ArrayList<>();
         metaclassIndex = Optional.ofNullable(graph.getIndex(KEY_METACLASSES, Vertex.class))
@@ -364,15 +364,16 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     /**
      * An {@link IdGraph} that automatically removes unused {@link Vertex}.
      */
-    private static class AutoCleanerIdGraph extends IdGraph<KeyIndexableGraph> {
+    private static class InternalIdGraph extends IdGraph<KeyIndexableGraph> {
 
         /**
-         * Constructs a new {@code AutoCleanerIdGraph} on the specified {@code baseGraph}.
+         * Constructs a new {@code InternalIdGraph} on the specified {@code baseGraph}.
          *
          * @param baseGraph the base graph
          */
-        public AutoCleanerIdGraph(KeyIndexableGraph baseGraph) {
+        public InternalIdGraph(KeyIndexableGraph baseGraph) {
             super(baseGraph);
+            enforceUniqueIds(false);
         }
 
         @Override
@@ -409,7 +410,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
              * @param edge the base edge
              */
             public AutoCleanerIdEdge(Edge edge) {
-                super(edge, AutoCleanerIdGraph.this);
+                super(edge, InternalIdGraph.this);
             }
 
             /**
