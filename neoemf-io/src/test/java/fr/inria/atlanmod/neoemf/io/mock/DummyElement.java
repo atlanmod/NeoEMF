@@ -69,7 +69,7 @@ public class DummyElement {
      *
      * @return the element
      */
-    public static DummyElement childFrom(DummyElement root, int... indexes) {
+    public static DummyElement from(DummyElement root, int... indexes) {
         checkArgument(indexes.length > 0, "You must define at least one index");
 
         DummyElement child = root;

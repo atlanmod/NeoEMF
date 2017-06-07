@@ -253,9 +253,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             }
         }
         else if (Objects.equals(XmiConstants.HREF, name)) {
-            Log.warn(
-                    "{0} is an external reference to {1}. This feature is not supported yet.",
-                    currentElement.name(), value);
+            Log.warn("{0} is an external reference to {1}. This feature is not supported yet.", currentElement.name(), value);
             ignoreElement = true;
         }
         else if (Objects.equals(XmiConstants.NAME, name)) {

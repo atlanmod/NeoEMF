@@ -120,8 +120,8 @@ public interface BackendFactory {
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
-     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
-     *                                   for this factory
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
+     *                                   Backend} for this factory
      * @see #createStore(Backend, PersistentResource, Map)
      * @see #createPersistentBackend(URI, Map)
      */
@@ -144,8 +144,8 @@ public interface BackendFactory {
      *
      * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
      *                                   missing
-     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link Backend}
-     *                                   for this factory
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
+     *                                   Backend} for this factory
      */
     @Nonnull
     Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options);

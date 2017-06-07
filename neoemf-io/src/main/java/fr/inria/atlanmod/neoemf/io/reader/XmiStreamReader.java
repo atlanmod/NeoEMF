@@ -14,12 +14,11 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.neoemf.io.Handler;
 
 import org.codehaus.stax2.XMLInputFactory2;
-import org.codehaus.stax2.evt.XMLEventFactory2;
 
 import java.io.InputStream;
+import java.util.stream.IntStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -28,14 +27,14 @@ import javax.xml.stream.XMLStreamReader;
  * A {@link StreamReader} that uses a StAX implementation with cursors for reading and parsing XMI files.
  */
 @ParametersAreNonnullByDefault
-public class XmiStAXCursorStreamReader extends AbstractXmiStreamReader {
+public class XmiStreamReader extends AbstractXmiStreamReader {
 
     /**
-     * Constructs a new {@code XmiStAXCursorStreamReader} with the given {@code handler}.
+     * Constructs a new {@code XmiStreamReader} with the given {@code handler}.
      *
      * @param handler the handler to notify
      */
-    public XmiStAXCursorStreamReader(Handler handler) {
+    public XmiStreamReader(Handler handler) {
         super(handler);
     }
 
@@ -55,38 +54,27 @@ public class XmiStAXCursorStreamReader extends AbstractXmiStreamReader {
      * @throws XMLStreamException if there is an error with the underlying XML
      */
     private void read(XMLStreamReader reader) throws XMLStreamException {
-        XMLEventFactory eventFactory = XMLEventFactory2.newFactory();
-
         readStartDocument();
 
         while (reader.hasNext()) {
             int event = reader.next();
 
             if (event == XMLStreamReader.START_ELEMENT) {
-                int namespaceCount = reader.getNamespaceCount();
-                for (int i = 0; i < namespaceCount; i++) {
-                    readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
-                }
+                IntStream.range(0, reader.getNamespaceCount()).forEach(i ->
+                        readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
 
                 readStartElement(reader.getNamespaceURI(), reader.getLocalName());
 
-                int attributeCount = reader.getAttributeCount();
-                for (int i = 0; i < attributeCount; i++) {
-                    readAttribute(
-                            reader.getAttributePrefix(i),
-                            reader.getAttributeLocalName(i),
-                            reader.getAttributeValue(i));
-                }
+                IntStream.range(0, reader.getAttributeCount()).forEach(i ->
+                        readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i)));
 
                 flushStartElement();
             }
             else if (event == XMLStreamReader.END_ELEMENT) {
                 readEndElement();
             }
-            else if (event == XMLStreamReader.CHARACTERS) {
-                if (reader.getTextLength() > 0 && !reader.isWhiteSpace()) {
-                    readCharacters(reader.getText());
-                }
+            else if (event == XMLStreamReader.CHARACTERS && reader.getTextLength() > 0 && !reader.isWhiteSpace()) {
+                readCharacters(reader.getText());
             }
         }
 

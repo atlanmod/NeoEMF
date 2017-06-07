@@ -74,8 +74,7 @@ public final class Preconditions {
      * @param args       the arguments to be substituted into the message template
      *
      * @throws IllegalArgumentException if {@code expression} is false
-     * @throws NullPointerException     if the check fails and either {@code pattern} or {@code args} is null (don't let
-     *                                  this happen)
+     * @throws NullPointerException     if the check fails and either {@code pattern} or {@code args} is null
      */
     public static void checkArgument(boolean expression, String pattern, Object... args) {
         if (!expression) {
@@ -121,8 +120,7 @@ public final class Preconditions {
      * @param args       the arguments to be substituted into the message template
      *
      * @throws IllegalStateException if {@code expression} is false
-     * @throws NullPointerException  if the check fails and either {@code pattern} or {@code args} is null (don't let
-     *                               this happen)
+     * @throws NullPointerException  if the check fails and either {@code pattern} or {@code args} is null
      */
     public static void checkState(boolean expression, String pattern, Object... args) {
         if (!expression) {

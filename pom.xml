@@ -128,14 +128,14 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+
         <argLine /> <!-- Keep it empty -->
         <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
 
-        <osgi.version>6.0.0</osgi.version>
+        <javax-annotations.version>3.0.2</javax-annotations.version>
 
         <emf.version>2.12.0</emf.version>
-
-        <javax-annotations.version>3.0.2</javax-annotations.version>
+        <osgi.version>6.0.0</osgi.version>
 
         <assertj.version>3.8.0</assertj.version>
         <junit.version>4.12</junit.version>

@@ -74,7 +74,7 @@ public class ReaderFactory {
         processor = new XPathProcessor(processor);
         processor = new EcoreProcessor(processor);
 
-        new XmiStAXCursorStreamReader(processor).read(stream);
+        new XmiStreamReader(processor).read(stream);
     }
 
     /**

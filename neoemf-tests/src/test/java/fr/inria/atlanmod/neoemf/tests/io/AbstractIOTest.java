@@ -47,6 +47,7 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -54,6 +55,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  *
  */
+// TODO Merge with IO tests
 public abstract class AbstractIOTest extends AbstractBackendTest {
 
     /**
@@ -285,7 +287,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         if (isNull(referenceName)) {
             try {
                 EAttribute attribute = EAttribute.class.cast(eObjectReference.eClass().getEStructuralFeature("name"));
-                assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
+                assertThat(eObjectReference.eGet(attribute)).isEqualTo(checkNotNull(attribute).getDefaultValue());
             }
             catch (NullPointerException ignored) {
                 // It's not a problem if this happens
@@ -312,7 +314,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         EAttribute attribute = EAttribute.class.cast(obj.eClass().getEStructuralFeature(name));
 
         if (isNull(value)) {
-            assertThat(obj.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
+            assertThat(obj.eGet(attribute)).isEqualTo(checkNotNull(attribute).getDefaultValue());
         }
         else {
             assertThat(obj.eGet(attribute).toString()).isEqualTo(value);

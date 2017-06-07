@@ -13,10 +13,10 @@
  * Provides utility classes to define specific behaviors of MapDB data persistence.
  * <p>
  * This package defines two APIs extending {@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions} and {@link
- * fr.inria.atlanmod.neoemf.option.PersistenceOptions}: <ul> <li>{@link fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions}: a fluent API allowing to easily set MapDB
- * specific mapping options in client applications. Since the builder implements {@link
- * fr.inria.atlanmod.neoemf.option.PersistenceOptions} it can be used to combiner MapDB specific and generic
- * options.</li> </ul>
+ * fr.inria.atlanmod.neoemf.option.PersistenceOptions}: <ul> <li>{@link fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions}:
+ * a fluent API allowing to easily set MapDB specific mapping options in client applications. Since the builder
+ * implements {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} it can be used to combiner MapDB specific and
+ * generic options.</li> </ul>
  * <p>
  * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following
  * code creates a map that tells the framework to use a MapDB backend with an explicit representation of collection
