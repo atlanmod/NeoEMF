@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.util.MoreIterables;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -712,6 +713,45 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureKey, ManyFeatureKey)}.
+     */
+    @Test
+    @Ignore
+    public void testMoveValue() {
+        FeatureKey key = FeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
+
+        // Initialize values
+        mapper.addValue(key.withPosition(0), value0);
+        mapper.addValue(key.withPosition(1), value1);
+        mapper.addValue(key.withPosition(2), value2);
+
+        // Move value, and check the moved value
+        assertThat(mapper.moveValue(key.withPosition(0), key.withPosition(1))).isPresent().contains(value0);
+
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureKey, ManyFeatureKey)} when the value doesn't
+     * exist.
+     */
+    @Test
+    public void testMoveInexistingValue() {
+        ManyFeatureKey key0 = ManyFeatureKey.of(id0, "Feature0", 0);
+        ManyFeatureKey key1 = key0.withPosition(1);
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.moveValue(key0, key1)).isNotPresent()
+        )).isNull();
+    }
+
+    /**
      * Checks the behavior of {@link ManyValueMapper#containsValue(FeatureKey, Object)}.
      */
     @Test
@@ -1359,6 +1399,45 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         assertThat(catchThrowable(() ->
                 mapper.removeAllReferences(key)
+        )).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureKey, ManyFeatureKey)}.
+     */
+    @Test
+    @Ignore
+    public void testMoveReference() {
+        FeatureKey key = FeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+        mapper.addReference(key.withPosition(2), ref2);
+
+        // Move reference, and check the moved reference
+        assertThat(mapper.moveReference(key.withPosition(0), key.withPosition(1))).isPresent().contains(ref0);
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureKey, ManyFeatureKey)} when the
+     * reference doesn't exist.
+     */
+    @Test
+    public void testMoveInexistingReference() {
+        ManyFeatureKey key0 = ManyFeatureKey.of(id0, "Feature0", 0);
+        ManyFeatureKey key1 = key0.withPosition(1);
+
+        assertThat(catchThrowable(() ->
+                assertThat(mapper.moveReference(key0, key1)).isNotPresent()
         )).isNull();
     }
 

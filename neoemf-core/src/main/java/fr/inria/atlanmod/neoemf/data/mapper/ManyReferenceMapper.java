@@ -195,9 +195,9 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnull
     default Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
-        Optional<Id> movedValue = removeReference(source);
-        movedValue.ifPresent(r -> addReference(target, r));
-        return movedValue;
+        Optional<Id> movedReference = removeReference(source);
+        movedReference.ifPresent(r -> addReference(target, r));
+        return movedReference;
     }
 
     /**
