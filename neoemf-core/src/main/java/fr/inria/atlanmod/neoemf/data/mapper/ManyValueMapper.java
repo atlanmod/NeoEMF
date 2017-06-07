@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
@@ -193,6 +194,13 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     default <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        checkNotNull(source);
+        checkNotNull(target);
+
+        if (Objects.equals(source, target)) {
+            return Optional.empty();
+        }
+
         Optional<V> movedValue = removeValue(source);
         movedValue.ifPresent(v -> addValue(target, v));
         return movedValue;
