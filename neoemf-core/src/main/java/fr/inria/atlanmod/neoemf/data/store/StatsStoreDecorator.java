@@ -56,11 +56,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Override
     public void close() {
-        String storeName = "Store@" + hashCode();
-        //noinspection ConstantConditions
-        String resourceName = nonNull(resource()) ? " [" + resource().getURI() + "]" : "";
-
-        Log.debug("Statistics for {0} : {1}", String.format("%s%s", storeName, resourceName), formatAsString());
+        Log.info("Statistics for {0}: {1}", backend().getClass().getSimpleName() + "@" + backend().hashCode(), formatAsString());
 
         super.close();
     }
@@ -352,7 +348,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
         }
         else {
             return "\n" + calls.entrySet().stream()
-                    .sorted((e1, e2) -> e2.getValue() - e1.getValue())
+                    .sorted((e1, e2) -> e2.getValue() - e1.getValue()) // Descending order
                     .map(e -> e.getKey() + " = " + e.getValue())
                     .collect(Collectors.joining("\n"));
         }

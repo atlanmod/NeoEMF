@@ -72,8 +72,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         super(store);
         this.level = level;
 
-        Backend backend = backend();
-        this.log = Log.customLogger(backend.getClass().getSimpleName() + "#" + backend.hashCode());
+        this.log = Log.customLogger(backend().getClass().getSimpleName() + "@" + backend().hashCode());
     }
 
     @Nonnull
