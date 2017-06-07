@@ -46,13 +46,14 @@ public final class MoreIterables {
      * @return a sequential {@link Stream} of the contents of {@code iterable}
      */
     @Nonnull
+    @SuppressWarnings("unchecked")
     public static <E> Stream<E> stream(@Nullable Iterable<E> iterable) {
         if (isNull(iterable)) {
             return Stream.empty();
         }
 
         return Collection.class.isInstance(iterable)
-                ? Collection.class.cast(iterable).stream()
+                ? (Stream<E>) Collection.class.cast(iterable).stream()
                 : StreamSupport.stream(iterable.spliterator(), false);
     }
 
