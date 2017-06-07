@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -121,6 +122,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addReference(ManyFeatureKey, Id)
      */
+    @Nonnegative
     default int appendReference(FeatureKey key, Id reference) {
         checkNotNull(key);
 
@@ -143,6 +145,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @see #addReference(ManyFeatureKey, Id)
      * @see #appendReference(FeatureKey, Id)
      */
+    @Nonnegative
     default int appendAllReferences(FeatureKey key, List<Id> references) {
         checkNotNull(key);
         checkNotNull(references);
@@ -182,6 +185,22 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
     }
 
     /**
+     * Moves the reference of the specified {@code source} key to the {@code target} key.
+     *
+     * @param source the key identifying the multi-valued reference to move
+     * @param target the key identifying the multi-valued reference where to move the reference to
+     *
+     * @return an {@link Optional} containing the moved reference, or {@link Optional#empty()} if no reference has
+     * been moved
+     */
+    @Nonnull
+    default Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        Optional<Id> movedValue = removeReference(source);
+        movedValue.ifPresent(r -> addReference(target, r));
+        return movedValue;
+    }
+
+    /**
      * Checks whether the specified {@code key} has the given {@code reference}.
      *
      * @param key       the key identifying the multi-valued reference
@@ -192,7 +211,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        return containsValue(key, reference);
+        return indexOfReference(key, reference).isPresent();
     }
 
     /**
@@ -207,6 +226,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
+    @Nonnegative
     default OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         return indexOfValue(key, reference);
     }
@@ -223,6 +243,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
+    @Nonnegative
     default OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return lastIndexOfValue(key, reference);
     }
@@ -238,6 +259,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
+    @Nonnegative
     default OptionalInt sizeOfReference(FeatureKey key) {
         return sizeOfValue(key);
     }

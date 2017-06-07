@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -101,11 +102,13 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
         throw E;
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         throw E;
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         throw E;
@@ -124,6 +127,12 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         throw E;
     }
@@ -133,11 +142,13 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
         throw E;
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         throw E;
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         throw E;
@@ -151,6 +162,12 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
 
     @Override
     public void removeAllReferences(FeatureKey key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
         throw E;
     }
 

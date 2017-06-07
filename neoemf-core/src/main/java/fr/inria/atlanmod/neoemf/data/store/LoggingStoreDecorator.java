@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -28,6 +29,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,12 +44,12 @@ import static java.util.Objects.nonNull;
 public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     /**
-     * The {@link Logger} for this class.
+     * The {@link Logger} for the associated {@link Backend}.
      */
-    private static final Logger LOG = Log.customLogger("store.logging");
+    private final Logger log;
 
     /**
-     * The default {@link Level} for the {@link #LOG}.
+     * The default {@link Level} for the {@link #log}.
      */
     private final Level level;
 
@@ -69,6 +71,9 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     public LoggingStoreDecorator(Store store, Level level) {
         super(store);
         this.level = level;
+
+        Backend backend = backend();
+        this.log = Log.customLogger(backend.getClass().getSimpleName() + "#" + backend.hashCode());
     }
 
     @Nonnull
@@ -180,11 +185,13 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::addValue, key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         return callAndReturn(super::appendValue, key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         return callAndReturn(super::appendAllValues, key, values);
@@ -201,24 +208,33 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::removeAllValues, key);
     }
 
+    @Nonnull
+    @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        return callAndReturn(super::moveValue, source, target);
+    }
+
     @Override
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         return callAndReturn(super::containsValue, key, value);
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         return callAndReturn(super::indexOfValue, key, value);
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         return callAndReturn(super::lastIndexOfValue, key, value);
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         return callAndReturn(super::sizeOfValue, key);
@@ -252,11 +268,13 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::addReference, key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         return callAndReturn(super::appendReference, key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         return callAndReturn(super::appendAllReferences, key, references);
@@ -273,24 +291,33 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::removeAllReferences, key);
     }
 
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        return callAndReturn(super::moveReference, source, target);
+    }
+
     @Override
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         return callAndReturn(super::containsReference, key, reference);
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         return callAndReturn(super::indexOfReference, key, reference);
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return callAndReturn(super::lastIndexOfReference, key, reference);
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         return callAndReturn(super::sizeOfReference, key);
@@ -380,7 +407,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
      * @param result the result of the call
      */
     private void logSuccess(Object key, @Nullable Object value, @Nullable Object result) {
-        LOG.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + (nonNull(result) ? " = {3}" : ""), getCallingMethod(), key, value, result);
+        log.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + (nonNull(result) ? " = {3}" : ""), getCallingMethod(), key, value, result);
     }
 
     /**
@@ -391,7 +418,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
      * @param e     the exception thrown during the the call
      */
     private void logFailure(Object key, @Nullable Object value, Throwable e) {
-        LOG.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + " but failed with {3}", getCallingMethod(), key, value, e.getClass().getSimpleName());
+        log.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + " but failed with {3}", getCallingMethod(), key, value, e.getClass().getSimpleName());
     }
 
     /**

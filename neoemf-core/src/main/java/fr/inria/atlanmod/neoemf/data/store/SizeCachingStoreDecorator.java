@@ -56,6 +56,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
         super.addValue(key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         int position = super.appendValue(key, value);
@@ -63,6 +64,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
         return position;
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         int firstPosition = super.appendAllValues(key, values);
@@ -84,6 +86,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
@@ -96,6 +99,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
         super.addReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         int position = super.appendReference(key, reference);
@@ -103,6 +107,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
         return position;
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         int firstPosition = super.appendAllReferences(key, references);
@@ -124,6 +129,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public OptionalInt sizeOfReference(FeatureKey key) {

@@ -30,7 +30,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" directly with their
@@ -123,15 +122,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         unsetValue(key);
     }
 
-    @Override
-    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        return nonNull(value) && IntStream.range(0, sizeOfValue(key).orElse(0))
-                .anyMatch(i -> valueOf(key.withPosition(i))
-                        .map(v -> Objects.equals(v, value))
-                        .orElse(false));
-    }
-
     @Nonnull
+    @Nonnegative
     @Override
     default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -149,6 +141,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -166,6 +159,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
         checkNotNull(key);

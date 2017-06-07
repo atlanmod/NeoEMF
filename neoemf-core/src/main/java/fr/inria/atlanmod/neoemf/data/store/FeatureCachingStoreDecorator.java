@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -108,6 +109,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
         super.addValue(key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         int position = super.appendValue(key, value);
@@ -117,6 +119,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
         return position;
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         int firstPosition = super.appendAllValues(key, values);
@@ -169,6 +172,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
         super.addReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         int position = super.appendReference(key, reference);
@@ -178,6 +182,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
         return position;
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         int firstPosition = super.appendAllReferences(key, references);

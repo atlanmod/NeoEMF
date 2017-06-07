@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -118,12 +119,14 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
         super.addValue(key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         cache.put(key, true);
         return super.appendValue(key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         cache.put(key, true);
@@ -144,6 +147,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         OptionalInt size = super.sizeOfValue(key);
@@ -178,12 +182,14 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
         super.addReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         cache.put(key, true);
         return super.appendReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         cache.put(key, true);
@@ -204,6 +210,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         OptionalInt size = super.sizeOfReference(key);

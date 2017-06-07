@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -128,11 +129,13 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         thenIncrementAndSave(() -> super.addValue(key, value), 1);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         return thenIncrementAndSave(() -> super.appendValue(key, value), 1);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         return thenIncrementAndSave(() -> super.appendAllValues(key, values), values.size());
@@ -151,6 +154,12 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        return thenIncrementAndSave(() -> super.moveValue(source, target), 2);
+    }
+
+    @Nonnull
+    @Override
     public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
         return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
     }
@@ -160,11 +169,13 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         thenIncrementAndSave(() -> super.addReference(key, reference), 1);
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         return thenIncrementAndSave(() -> super.appendReference(key, reference), 1);
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         return thenIncrementAndSave(() -> super.appendAllReferences(key, references), references.size());
@@ -179,6 +190,12 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     @Override
     public void removeAllReferences(FeatureKey key) {
         thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        return thenIncrementAndSave(() -> super.moveReference(source, target), 2);
     }
 
     @Override

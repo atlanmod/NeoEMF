@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -124,18 +125,8 @@ public interface ManyValueWithLists extends ManyValueMapper {
         return previousValue;
     }
 
-    @Override
-    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return false;
-        }
-
-        return this.<List<V>>valueOf(key)
-                .map(values -> values.contains(value))
-                .orElse(false);
-    }
-
     @Nonnull
+    @Nonnegative
     @Override
     default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -151,6 +142,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -166,6 +158,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     default <V> OptionalInt sizeOfValue(FeatureKey key) {
         return this.<List<V>>valueOf(key)

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -154,8 +155,15 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw E;
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
+        throw E;
+    }
+
+    @Nonnegative
+    @Override
+    public <V> int appendAllValues(FeatureKey key, List<V> values) {
         throw E;
     }
 
@@ -170,24 +178,33 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw E;
     }
 
+    @Nonnull
+    @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        throw E;
+    }
+
     @Override
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         throw E;
@@ -221,8 +238,15 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw E;
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
+        throw E;
+    }
+
+    @Nonnegative
+    @Override
+    public int appendAllReferences(FeatureKey key, List<Id> references) {
         throw E;
     }
 
@@ -237,24 +261,33 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw E;
     }
 
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        throw E;
+    }
+
     @Override
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         throw E;

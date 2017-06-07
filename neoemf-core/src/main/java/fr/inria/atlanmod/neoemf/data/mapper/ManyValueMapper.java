@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -118,6 +119,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addValue(ManyFeatureKey, Object)
      */
+    @Nonnegative
     default <V> int appendValue(FeatureKey key, V value) {
         checkNotNull(key);
 
@@ -141,6 +143,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #addValue(ManyFeatureKey, Object)
      * @see #appendValue(FeatureKey, Object)
      */
+    @Nonnegative
     default <V> int appendAllValues(FeatureKey key, List<V> values) {
         checkNotNull(key);
         checkNotNull(values);
@@ -180,6 +183,22 @@ public interface ManyValueMapper extends ValueMapper {
     }
 
     /**
+     * Moves the value of the specified {@code source} key to the {@code target} key.
+     *
+     * @param source the key identifying the multi-valued attribute to move
+     * @param target the key identifying the multi-valued attribute where to move the value to
+     * @param <V>    the type of value
+     *
+     * @return an {@link Optional} containing the moved value, or {@link Optional#empty()} if no value has been moved
+     */
+    @Nonnull
+    default <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        Optional<V> movedValue = removeValue(source);
+        movedValue.ifPresent(v -> addValue(target, v));
+        return movedValue;
+    }
+
+    /**
      * Checks whether the specified {@code key} has the given {@code value}.
      *
      * @param key   the key identifying the multi-valued attribute
@@ -190,7 +209,9 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> boolean containsValue(FeatureKey key, @Nullable V value);
+    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+        return indexOfValue(key, value).isPresent();
+    }
 
     /**
      * Retrieves the first position of the {@code value} of the specified {@code key}.
@@ -205,6 +226,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
+    @Nonnegative
     <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value);
 
     /**
@@ -220,6 +242,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
+    @Nonnegative
     <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value);
 
     /**
@@ -234,5 +257,6 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
+    @Nonnegative
     <V> OptionalInt sizeOfValue(FeatureKey key);
 }

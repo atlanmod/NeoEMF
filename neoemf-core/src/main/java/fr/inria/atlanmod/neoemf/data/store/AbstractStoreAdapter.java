@@ -534,9 +534,31 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
 
-        Optional<Object> movedValue = Optional.ofNullable(remove(internalObject, feature, sourceIndex));
-        movedValue.ifPresent(v -> add(internalObject, feature, targetIndex, v));
-        return movedValue.orElse(null);
+        int size = size(internalObject, feature);
+        checkElementIndex(sourceIndex, size);
+        checkPositionIndex(targetIndex, size);
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        if (!exists(object.id())) {
+            return null;
+        }
+
+        refresh(object);
+
+        ManyFeatureKey sourceKey = ManyFeatureKey.from(object, feature, sourceIndex);
+        ManyFeatureKey targetKey = sourceKey.withPosition(targetIndex);
+
+        if (isAttribute(feature)) {
+            return this.<String>moveValue(sourceKey, targetKey)
+                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
+                    .orElse(null);
+        }
+        else {
+            return moveReference(sourceKey, targetKey)
+                    .map(this::resolve)
+                    .orElse(null);
+        }
     }
 
     @Override

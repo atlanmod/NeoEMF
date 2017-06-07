@@ -26,6 +26,7 @@ import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -136,18 +137,8 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
         return previousId;
     }
 
-    @Override
-    default boolean containsReference(FeatureKey key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return false;
-        }
-
-        return this.<String>valueOf(key)
-                .map(s -> MoreArrays.contains(arrayFromString(s), reference))
-                .orElse(false);
-    }
-
     @Nonnull
+    @Nonnegative
     @Override
     default OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
@@ -163,6 +154,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     default OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
@@ -178,6 +170,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     default OptionalInt sizeOfReference(FeatureKey key) {
         return this.<String>valueOf(key)

@@ -24,6 +24,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -168,12 +169,14 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
         super.addValue(key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendValue(FeatureKey key, V value) {
         register(key);
         return super.appendValue(key, value);
     }
 
+    @Nonnegative
     @Override
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
         register(key);
@@ -193,6 +196,14 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
         super.removeAllValues(key);
     }
 
+    @Nonnull
+    @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        register(source);
+        register(target);
+        return super.moveValue(source, target);
+    }
+
     @Override
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
         register(key);
@@ -200,6 +211,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         register(key);
@@ -207,6 +219,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         register(key);
@@ -214,6 +227,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         register(key);
@@ -253,12 +267,14 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
         super.addReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendReference(FeatureKey key, Id reference) {
         register(key);
         return super.appendReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     public int appendAllReferences(FeatureKey key, List<Id> references) {
         register(key);
@@ -278,6 +294,14 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
         super.removeAllReferences(key);
     }
 
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        register(source);
+        register(target);
+        return super.moveReference(source, target);
+    }
+
     @Override
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
         register(key);
@@ -285,6 +309,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         register(key);
@@ -292,6 +317,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         register(key);
@@ -299,6 +325,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt sizeOfReference(FeatureKey key) {
         register(key);

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -219,12 +220,14 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.addValue(key, value);
     }
 
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public <V> int appendValue(FeatureKey key, V value) {
         return next.appendValue(key, value);
     }
 
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public <V> int appendAllValues(FeatureKey key, List<V> values) {
@@ -244,6 +247,13 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.removeAllValues(key);
     }
 
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        return next.moveValue(source, target);
+    }
+
     @Override
     @OverridingMethodsMustInvokeSuper
     public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
@@ -251,6 +261,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
@@ -258,6 +269,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
@@ -265,6 +277,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
@@ -304,12 +317,14 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.addReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public int appendReference(FeatureKey key, Id reference) {
         return next.appendReference(key, reference);
     }
 
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public int appendAllReferences(FeatureKey key, List<Id> references) {
@@ -329,6 +344,13 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.removeAllReferences(key);
     }
 
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        return next.moveReference(source, target);
+    }
+
     @Override
     @OverridingMethodsMustInvokeSuper
     public boolean containsReference(FeatureKey key, @Nullable Id reference) {
@@ -336,6 +358,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
@@ -343,6 +366,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
@@ -350,6 +374,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public OptionalInt sizeOfReference(FeatureKey key) {

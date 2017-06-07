@@ -303,6 +303,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -328,6 +329,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -353,6 +355,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public <V> OptionalInt sizeOfValue(FeatureKey key) {
         checkNotNull(key);
@@ -588,6 +591,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
@@ -603,6 +607,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
             return OptionalInt.empty();
         }
 
+        // TODO Don't browse all vertices/edges
         return MoreIterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
@@ -610,6 +615,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Nonnull
+    @Nonnegative
     @Override
     public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
@@ -625,6 +631,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
             return OptionalInt.empty();
         }
 
+        // TODO Don't browse all vertices/edges
         return MoreIterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
