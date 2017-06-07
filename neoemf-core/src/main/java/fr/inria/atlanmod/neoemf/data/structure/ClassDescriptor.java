@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.structure;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -214,7 +213,7 @@ public final class ClassDescriptor implements Serializable {
                 eClass = EClass.class.cast(ePackage.getEClassifier(name));
             }
             else {
-                Log.warn("Unable to find EPackage for URI: {0}", uri);
+                throw new NullPointerException(String.format("Unable to find EPackage for URI: %s", uri));
             }
         }
         return eClass;
