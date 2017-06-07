@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -149,6 +150,25 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnull
     @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        if (Objects.equals(source.withoutPosition(), target.withoutPosition())) {
+            // TODO Adjust indices
+            int first = Math.min(source.position(), target.position());
+            int last = Math.max(source.position(), target.position()) + 1;
+
+            IntStream.range(first, last)
+                    .forEach(i -> cache.invalidate(source.withPosition(i)));
+        }
+        else {
+            // TODO Implement this case
+            throw new UnsupportedOperationException();
+        }
+
+        return super.moveValue(source, target);
+    }
+
+    @Nonnull
+    @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(ManyFeatureKey key) {
         return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(ManyFeatureKey.class.cast(k)).orElse(null))));
@@ -208,5 +228,24 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllReferences(key);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        if (Objects.equals(source.withoutPosition(), target.withoutPosition())) {
+            // TODO Adjust indices
+            int first = Math.min(source.position(), target.position());
+            int last = Math.max(source.position(), target.position()) + 1;
+
+            IntStream.range(first, last)
+                    .forEach(i -> cache.invalidate(source.withPosition(i)));
+        }
+        else {
+            // TODO Implement this case
+            throw new UnsupportedOperationException();
+        }
+
+        return super.moveReference(source, target);
     }
 }

@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.util.MoreIterables;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -716,7 +715,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureKey, ManyFeatureKey)}.
      */
     @Test
-    @Ignore
     public void testMoveValue() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
@@ -1406,7 +1404,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureKey, ManyFeatureKey)}.
      */
     @Test
-    @Ignore
     public void testMoveReference() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
