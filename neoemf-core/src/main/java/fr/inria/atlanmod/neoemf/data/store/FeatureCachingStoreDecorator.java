@@ -152,7 +152,6 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Override
     public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
         if (Objects.equals(source.withoutPosition(), target.withoutPosition())) {
-            // TODO Adjust indices
             int first = Math.min(source.position(), target.position());
             int last = Math.max(source.position(), target.position()) + 1;
 
@@ -234,7 +233,6 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Override
     public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
         if (Objects.equals(source.withoutPosition(), target.withoutPosition())) {
-            // TODO Adjust indices
             int first = Math.min(source.position(), target.position());
             int last = Math.max(source.position(), target.position()) + 1;
 

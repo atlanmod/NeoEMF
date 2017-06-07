@@ -609,7 +609,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
-    public void testRemovedValueBefore() {
+    public void testRemoveValueBefore() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -633,7 +633,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
-    public void testRemovedValueAfter() {
+    public void testRemoveValueAfter() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -715,7 +715,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureKey, ManyFeatureKey)}.
      */
     @Test
-    public void testMoveValue() {
+    public void testMoveValueBefore() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -733,6 +733,30 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value1);
         assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value0);
         assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureKey, ManyFeatureKey)}.
+     */
+    @Test
+    public void testMoveValueAfter() {
+        FeatureKey key = FeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
+
+        // Initialize values
+        mapper.addValue(key.withPosition(0), value0);
+        mapper.addValue(key.withPosition(1), value1);
+        mapper.addValue(key.withPosition(2), value2);
+
+        // Move value, and check the moved value
+        assertThat(mapper.moveValue(key.withPosition(2), key.withPosition(0))).isPresent().contains(value2);
+
+        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value1);
     }
 
     /**
@@ -1296,7 +1320,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)}.
      */
     @Test
-    public void testRemovedReferenceBefore() {
+    public void testRemoveReferenceBefore() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1320,7 +1344,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)}.
      */
     @Test
-    public void testRemovedReferenceAfter() {
+    public void testRemoveReferenceAfter() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1404,7 +1428,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureKey, ManyFeatureKey)}.
      */
     @Test
-    public void testMoveReference() {
+    public void testMoveReferenceBefore() {
         FeatureKey key = FeatureKey.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1422,6 +1446,30 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref1);
         assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref0);
         assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureKey, ManyFeatureKey)}.
+     */
+    @Test
+    public void testMoveReferenceAfter() {
+        FeatureKey key = FeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
+
+        // Initialize references
+        mapper.addReference(key.withPosition(0), ref0);
+        mapper.addReference(key.withPosition(1), ref1);
+        mapper.addReference(key.withPosition(2), ref2);
+
+        // Move reference, and check the moved reference
+        assertThat(mapper.moveReference(key.withPosition(2), key.withPosition(0))).isPresent().contains(ref2);
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref1);
     }
 
     /**
