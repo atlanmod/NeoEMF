@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
@@ -33,11 +32,6 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueMapper extends ValueMapper {
-
-    /**
-     * A value indicating that no index is specified.
-     */
-    int NO_INDEX = -1;
 
     /**
      * Retrieves the value of the specified {@code key} at a defined position.
@@ -228,14 +222,14 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to look for
      * @param <V>   the type of value
      *
-     * @return an {@link OptionalInt} containing the first position of the {@code value}, or {@link OptionalInt#empty()}
+     * @return an {@link Optional} containing the first position of the {@code value}, or {@link Optional#empty()}
      * if the {@code key} hasn't the {@code value}
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value);
+    <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value);
 
     /**
      * Retrieves the last position of the {@code value} of the specified {@code key}.
@@ -244,14 +238,14 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to look for
      * @param <V>   the type of value
      *
-     * @return an {@link OptionalInt} containing the last position of the {@code value}, or {@link OptionalInt#empty()}
+     * @return an {@link Optional} containing the last position of the {@code value}, or {@link Optional#empty()}
      * if the {@code key} hasn't the {@code value}
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value);
+    <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value);
 
     /**
      * Returns the number of value of the specified {@code key}.
@@ -259,12 +253,12 @@ public interface ManyValueMapper extends ValueMapper {
      * @param key the key identifying the multi-valued attribute
      * @param <V> the type of value
      *
-     * @return an {@link OptionalInt} containing the number of value of the {@code key}, or {@link OptionalInt#empty()}
+     * @return an {@link Optional} containing the number of value of the {@code key}, or {@link Optional#empty()}
      * if the {@code key} hasn't any value, or if {@code size == 0}.
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    <V> OptionalInt sizeOfValue(FeatureKey key);
+    <V> Optional<Integer> sizeOfValue(FeatureKey key);
 }

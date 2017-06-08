@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
@@ -228,14 +227,14 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to look for
      *
-     * @return an {@link OptionalInt} containing the first position of the {@code reference}, or {@link
-     * OptionalInt#empty()} if the {@code key} hasn't the {@code reference}
+     * @return an {@link Optional} containing the first position of the {@code reference}, or {@link Optional#empty()}
+     * if the {@code key} hasn't the {@code reference}
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    default OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         return indexOfValue(key, reference);
     }
 
@@ -245,14 +244,14 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to look for
      *
-     * @return an {@link OptionalInt} containing the last position of the {@code reference}, or {@link
-     * OptionalInt#empty()} if the {@code key} hasn't the {@code reference}
+     * @return an {@link Optional} containing the last position of the {@code reference}, or {@link Optional#empty()} if
+     * the {@code key} hasn't the {@code reference}
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    default OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return lastIndexOfValue(key, reference);
     }
 
@@ -261,14 +260,14 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an {@link OptionalInt} containing the number of reference of the {@code key}, or {@link
-     * OptionalInt#empty()} if the {@code key} hasn't any reference
+     * @return an {@link Optional} containing the number of reference of the {@code key}, or {@link Optional#empty()} if
+     * the {@code key} hasn't any reference
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    default OptionalInt sizeOfReference(FeatureKey key) {
+    default Optional<Integer> sizeOfReference(FeatureKey key) {
         return sizeOfValue(key);
     }
 }

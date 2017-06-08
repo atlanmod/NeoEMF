@@ -45,6 +45,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public ReadOnlyStoreDecorator(Store store) {
         super(store);
     }

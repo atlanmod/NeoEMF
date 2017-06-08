@@ -30,6 +30,7 @@ public class MetaclassCachingStoreDecorator extends AbstractCachingStoreDecorato
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     protected MetaclassCachingStoreDecorator(Store store) {
         super(store);
     }

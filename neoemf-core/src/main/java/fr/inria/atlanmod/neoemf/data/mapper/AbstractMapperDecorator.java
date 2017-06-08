@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -66,14 +65,14 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void save() {
-        next.save();
+    public void close() {
+        next.close();
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void close() {
-        next.close();
+    public void save() {
+        next.save();
     }
 
     @Override
@@ -264,7 +263,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         return next.indexOfValue(key, value);
     }
 
@@ -272,7 +271,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         return next.lastIndexOfValue(key, value);
     }
 
@@ -280,7 +279,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         return next.sizeOfValue(key);
     }
 
@@ -361,7 +360,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         return next.indexOfReference(key, reference);
     }
 
@@ -369,7 +368,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return next.lastIndexOfReference(key, reference);
     }
 
@@ -377,7 +376,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
         return next.sizeOfReference(key);
     }
 }

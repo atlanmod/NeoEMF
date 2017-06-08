@@ -37,6 +37,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public FeatureCachingStoreDecorator(Store store) {
         super(store);
     }

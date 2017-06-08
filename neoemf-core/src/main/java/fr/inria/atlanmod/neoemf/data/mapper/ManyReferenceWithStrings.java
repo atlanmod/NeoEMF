@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,10 +53,8 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     @Nonnull
     @Override
     default List<Id> allReferencesOf(FeatureKey key) {
-        Optional<Id[]> ids = this.<String>valueOf(key)
-                .map(this::arrayFromString);
-
-        return ids
+        return this.<String>valueOf(key)
+                .map(this::arrayFromString)
                 .map(Arrays::asList)
                 .orElseGet(Collections::emptyList);
     }
@@ -117,7 +114,8 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
         Id[] ids = arrayFromString(optionalIds.get());
 
-        Optional<Id> previousId;
+        Optional<Id> previousId = Optional.empty();
+
         if (key.position() < ids.length) {
             previousId = Optional.of(ids[key.position()]);
 
@@ -130,9 +128,6 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
                 valueFor(key.withoutPosition(), arrayToString(ids));
             }
         }
-        else {
-            previousId = Optional.empty();
-        }
 
         return previousId;
     }
@@ -140,42 +135,39 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         return this.<String>valueOf(key)
-                .map(s -> {
-                    int index = MoreArrays.indexOf(arrayFromString(s), reference);
-                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElseGet(OptionalInt::empty);
+                .map(this::arrayFromString)
+                .map(rs -> MoreArrays.indexOf(rs, reference))
+                .filter(i -> i >= 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         return this.<String>valueOf(key)
-                .map(s -> {
-                    int index = MoreArrays.lastIndexOf(arrayFromString(s), reference);
-                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElseGet(OptionalInt::empty);
+                .map(this::arrayFromString)
+                .map(rs -> MoreArrays.lastIndexOf(rs, reference))
+                .filter(i -> i >= 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default OptionalInt sizeOfReference(FeatureKey key) {
+    default Optional<Integer> sizeOfReference(FeatureKey key) {
         return this.<String>valueOf(key)
-                .map(s -> OptionalInt.of(arrayFromString(s).length))
-                .orElseGet(OptionalInt::empty);
+                .map(this::arrayFromString)
+                .map(rs -> rs.length)
+                .filter(s -> s != 0);
     }
 
     /**

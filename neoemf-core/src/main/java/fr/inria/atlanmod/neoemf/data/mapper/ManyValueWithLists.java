@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -128,42 +127,36 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         return this.<List<V>>valueOf(key)
-                .map(values -> {
-                    int index = values.indexOf(value);
-                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElseGet(OptionalInt::empty);
+                .map(values -> values.indexOf(value))
+                .filter(i -> i >= 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         return this.<List<V>>valueOf(key)
-                .map(values -> {
-                    int index = values.lastIndexOf(value);
-                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElseGet(OptionalInt::empty);
+                .map(values -> values.lastIndexOf(value))
+                .filter(i -> i >= 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt sizeOfValue(FeatureKey key) {
+    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         return this.<List<V>>valueOf(key)
-                .map(values -> OptionalInt.of(values.size()))
-                .orElseGet(OptionalInt::empty);
+                .map(List::size)
+                .filter(s -> s != 0);
     }
 
     /**

@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -34,6 +33,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public IsSetCachingStoreDecorator(Store store) {
         super(store);
     }
@@ -149,9 +149,9 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
-        OptionalInt size = super.sizeOfValue(key);
-        cache.put(key, size.isPresent() && size.getAsInt() != 0);
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+        Optional<Integer> size = super.sizeOfValue(key);
+        cache.put(key, size.isPresent() && size.get() != 0);
         return size;
     }
 
@@ -212,9 +212,9 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
-        OptionalInt size = super.sizeOfReference(key);
-        cache.put(key, size.isPresent() && size.getAsInt() != 0);
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
+        Optional<Integer> size = super.sizeOfReference(key);
+        cache.put(key, size.isPresent() && size.get() != 0);
         return size;
     }
 }

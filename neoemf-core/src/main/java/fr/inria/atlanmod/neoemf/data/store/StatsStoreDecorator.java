@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -50,6 +49,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public StatsStoreDecorator(Store store) {
         super(store);
     }
@@ -207,21 +207,21 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         return record(() -> super.indexOfValue(key, value));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         return record(() -> super.lastIndexOfValue(key, value));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         return record(() -> super.sizeOfValue(key));
     }
 
@@ -290,21 +290,21 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         return record(() -> super.indexOfReference(key, reference));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return record(() -> super.lastIndexOfReference(key, reference));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
         return record(() -> super.sizeOfReference(key));
     }
 

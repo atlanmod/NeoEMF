@@ -31,11 +31,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface DataMapper extends Closeable, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
 
     /**
-     * Saves all changes made on this mapper since the last call.
-     */
-    void save();
-
-    /**
      * Cleanly closes this mapper, clear all data in-memory and releases any system resources associated with it. All
      * modifications are saved before closing.
      * <p>
@@ -43,6 +38,11 @@ public interface DataMapper extends Closeable, ContainerMapper, ClassMapper, Val
      */
     @Override
     void close();
+
+    /**
+     * Saves all changes made on this mapper since the last call.
+     */
+    void save();
 
     /**
      * Copies all the contents from this mapper to the {@code target}.

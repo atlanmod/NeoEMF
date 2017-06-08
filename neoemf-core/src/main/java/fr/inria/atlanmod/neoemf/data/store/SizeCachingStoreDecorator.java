@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -27,13 +26,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, OptionalInt> {
+public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, Optional<Integer>> {
 
     /**
      * Constructs a new {@code SizeCachingStoreDecorator}.
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public SizeCachingStoreDecorator(Store store) {
         super(store);
     }
@@ -89,7 +89,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         return cache.get(key, super::sizeOfValue);
     }
 
@@ -132,7 +132,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
         return cache.get(key, super::sizeOfReference);
     }
 
@@ -143,6 +143,6 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
      * @param size the size
      */
     private void cacheSize(FeatureKey key, @Nonnegative int size) {
-        cache.put(key, size == 0 ? OptionalInt.empty() : OptionalInt.of(size));
+        cache.put(key, size != 0 ? Optional.of(size) : Optional.empty());
     }
 }

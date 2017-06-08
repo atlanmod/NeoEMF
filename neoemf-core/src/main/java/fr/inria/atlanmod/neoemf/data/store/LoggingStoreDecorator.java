@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.util.log.Logger;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -58,6 +57,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public LoggingStoreDecorator(Store store) {
         this(store, Level.DEBUG);
     }
@@ -68,6 +68,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
      * @param store the underlying store
      * @param level the logging level to use
      */
+    @SuppressWarnings("unused") // Called dynamically
     public LoggingStoreDecorator(Store store, Level level) {
         super(store);
         this.level = level;
@@ -221,21 +222,21 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         return callAndReturn(super::indexOfValue, key, value);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         return callAndReturn(super::lastIndexOfValue, key, value);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         return callAndReturn(super::sizeOfValue, key);
     }
 
@@ -304,21 +305,21 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         return callAndReturn(super::indexOfReference, key, reference);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         return callAndReturn(super::lastIndexOfReference, key, reference);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
         return callAndReturn(super::sizeOfReference, key);
     }
 

@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -305,9 +304,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         checkNotNull(key);
@@ -315,25 +314,25 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         Optional<Vertex> vertex = get(key.id());
 
         if (!vertex.isPresent()) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         int size = sizeOfValue(key).orElse(0);
         for (int i = 0; i < size; i++) {
             if (Objects.equals(vertex.get().<V>getProperty(formatProperty(key.name(), i)), value)) {
-                return OptionalInt.of(i);
+                return Optional.of(i);
             }
         }
 
-        return OptionalInt.empty();
+        return Optional.empty();
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         checkNotNull(key);
@@ -341,30 +340,28 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         Optional<Vertex> vertex = get(key.id());
 
         if (!vertex.isPresent()) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         int size = sizeOfValue(key).orElse(0);
         for (int i = size - 1; i > 0; i--) {
             if (Objects.equals(vertex.get().<V>getProperty(formatProperty(key.name(), i)), value)) {
-                return OptionalInt.of(i);
+                return Optional.of(i);
             }
         }
 
-        return OptionalInt.empty();
+        return Optional.empty();
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> Optional.ofNullable(v.<Integer>getProperty(formatProperty(key.name(), KEY_SIZE)))
-                        .map(OptionalInt::of)
-                        .orElseGet(OptionalInt::empty))
-                .orElseGet(OptionalInt::empty);
+                .map(v -> v.<Integer>getProperty(formatProperty(key.name(), KEY_SIZE)))
+                .filter(s -> s != 0);
     }
 
     @Override
@@ -593,9 +590,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         checkNotNull(key);
@@ -604,22 +601,23 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         Optional<Vertex> referencedVertex = get(reference);
 
         if (!vertex.isPresent() || !referencedVertex.isPresent()) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         // TODO Don't browse all vertices/edges
         return MoreIterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .min();
+                .boxed()
+                .min(Comparator.comparingInt(i -> i));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         checkNotNull(key);
@@ -628,14 +626,15 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         Optional<Vertex> referencedVertex = get(reference);
 
         if (!vertex.isPresent() || !referencedVertex.isPresent()) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         // TODO Don't browse all vertices/edges
         return MoreIterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
                 .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .max();
+                .boxed()
+                .max(Comparator.comparingInt(i -> i));
     }
 
     //endregion

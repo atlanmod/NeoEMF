@@ -225,11 +225,11 @@ public class DefaultMapperWriter implements MapperWriter {
         }
         else {
             int index = attribute.index();
-            if (index == DataMapper.NO_INDEX) {
-                mapper.appendValue(key, attribute.value());
+            if (index >= 0) {
+                mapper.addValue(key.withPosition(index), attribute.value());
             }
             else {
-                mapper.addValue(key.withPosition(index), attribute.value());
+                mapper.appendValue(key, attribute.value());
             }
         }
     }
@@ -258,11 +258,11 @@ public class DefaultMapperWriter implements MapperWriter {
         }
         else {
             int index = reference.index();
-            if (index == DataMapper.NO_INDEX) {
-                mapper.appendReference(key, idReference);
+            if (index >= 0) {
+                mapper.addReference(key.withPosition(index), idReference);
             }
             else {
-                mapper.addReference(key.withPosition(index), idReference);
+                mapper.appendReference(key, idReference);
             }
         }
     }

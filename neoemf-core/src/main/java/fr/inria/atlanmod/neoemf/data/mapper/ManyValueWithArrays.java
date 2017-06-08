@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -131,41 +130,35 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         return this.<V[]>valueOf(key)
-                .map(values -> {
-                    int index = MoreArrays.indexOf(values, value);
-                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElseGet(OptionalInt::empty);
+                .map(vs -> MoreArrays.indexOf(vs, value))
+                .filter(i -> i >= 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         return this.<V[]>valueOf(key)
-                .map(values -> {
-                    int index = MoreArrays.lastIndexOf(values, value);
-                    return index == NO_INDEX ? OptionalInt.empty() : OptionalInt.of(index);
-                })
-                .orElseGet(OptionalInt::empty);
+                .map(vs -> MoreArrays.lastIndexOf(vs, value))
+                .filter(i -> i >= 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt sizeOfValue(FeatureKey key) {
+    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         return this.<V[]>valueOf(key)
-                .map(values -> OptionalInt.of(values.length))
-                .orElseGet(OptionalInt::empty);
+                .map(vs -> vs.length)
+                .filter(s -> s != 0);
     }
 }

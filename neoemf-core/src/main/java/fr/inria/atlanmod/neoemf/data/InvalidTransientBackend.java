@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -192,21 +191,21 @@ public final class InvalidTransientBackend implements TransientBackend {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         throw E;
     }
 
@@ -275,21 +274,21 @@ public final class InvalidTransientBackend implements TransientBackend {
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
         throw E;
     }
 }

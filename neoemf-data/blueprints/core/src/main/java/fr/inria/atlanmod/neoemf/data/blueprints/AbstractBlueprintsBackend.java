@@ -191,6 +191,11 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     }
 
     @Override
+    public boolean exists(Id id) {
+        return get(id).isPresent();
+    }
+
+    @Override
     public boolean isDistributed() {
         return false;
     }
@@ -202,11 +207,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         }
         catch (Exception ignored) {
         }
-    }
-
-    @Override
-    public boolean exists(Id id) {
-        return get(id).isPresent();
     }
 
     @Nonnull

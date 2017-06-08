@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -355,7 +354,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        OptionalInt size;
+        Optional<Integer> size;
         if (isAttribute(feature)) {
             size = sizeOfValue(key);
         }
@@ -415,7 +414,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        OptionalInt index;
+        Optional<Integer> index;
         if (isAttribute(feature)) {
             index = indexOfValue(key, serialize(EAttribute.class.cast(feature), value));
         }
@@ -446,7 +445,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        OptionalInt index;
+        Optional<Integer> index;
         if (isAttribute(feature)) {
             index = lastIndexOfValue(key, serialize(EAttribute.class.cast(feature), value));
         }

@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -45,6 +44,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public LoadedObjectCounterStoreDecorator(Store store) {
         super(store);
         loadedObjects = new TreeSet<>();
@@ -213,7 +213,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         register(key);
         return super.indexOfValue(key, value);
     }
@@ -221,7 +221,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         register(key);
         return super.lastIndexOfValue(key, value);
     }
@@ -229,7 +229,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> OptionalInt sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         register(key);
         return super.sizeOfValue(key);
     }
@@ -311,7 +311,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
         register(key);
         return super.indexOfReference(key, reference);
     }
@@ -319,7 +319,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
         register(key);
         return super.lastIndexOfReference(key, reference);
     }
@@ -327,7 +327,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
     @Nonnull
     @Nonnegative
     @Override
-    public OptionalInt sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(FeatureKey key) {
         register(key);
         return super.sizeOfReference(key);
     }

@@ -26,15 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public interface Backend extends DataMapper {
 
-    @Override
-    void save();
-
-    @Override
-    void close();
-
-    @Override
-    void copyTo(DataMapper target);
-
     /**
      * Returns whether this back-end is persistent, i.e., if it is stored in a database.
      *

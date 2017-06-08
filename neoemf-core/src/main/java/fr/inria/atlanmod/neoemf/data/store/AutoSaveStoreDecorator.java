@@ -52,6 +52,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param store         the inner store
      * @param autoSaveChunk the number of modifications between saves
      */
+    @SuppressWarnings("unused") // Called dynamically
     public AutoSaveStoreDecorator(Store store, Long autoSaveChunk) {
         super(store);
         this.autoSaveChunk = autoSaveChunk;
@@ -62,8 +63,15 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the underlying store
      */
+    @SuppressWarnings("unused") // Called dynamically
     public AutoSaveStoreDecorator(Store store) {
         this(store, 50_000L);
+    }
+
+    @Override
+    public void close() {
+        save();
+        super.close();
     }
 
     @Override
@@ -73,12 +81,6 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         }
         catch (Exception ignored) {
         }
-    }
-
-    @Override
-    public void close() {
-        save();
-        super.close();
     }
 
     @Override

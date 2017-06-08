@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -125,48 +124,48 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt indexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         int size = sizeOfValue(key).orElse(0);
         for (int i = 0; i < size; i++) {
             if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
-                return OptionalInt.of(i);
+                return Optional.of(i);
             }
         }
 
-        return OptionalInt.empty();
+        return Optional.empty();
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
         if (isNull(value)) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
 
         int size = sizeOfValue(key).orElse(0);
         for (int i = size - 1; i > 0; i--) {
             if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
-                return OptionalInt.of(i);
+                return Optional.of(i);
             }
         }
 
-        return OptionalInt.empty();
+        return Optional.empty();
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> OptionalInt sizeOfValue(FeatureKey key) {
+    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         checkNotNull(key);
 
         return valueOf(key)
-                .map(v -> OptionalInt.of((int) v))
-                .orElseGet(OptionalInt::empty);
+                .map(v -> (int) v)
+                .filter(s -> s != 0);
     }
 
     /**
