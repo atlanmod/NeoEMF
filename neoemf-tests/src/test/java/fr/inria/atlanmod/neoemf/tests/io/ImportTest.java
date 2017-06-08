@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.Tags;
-import fr.inria.atlanmod.neoemf.io.util.IOResources;
+import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Ignore;
@@ -39,7 +39,7 @@ public class ImportTest extends AbstractIOTest {
         EObject o;
         EObject child;
 
-        EObject root = loadWithNeoEMF(IOResources.xmiStandard());
+        EObject root = loadWithNeoEMF(IOResourceManager.getInstance().xmiStandard());
         assertValidElement(root, "Model", 19, "fr.inria.atlanmod.kyanos.tests");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
@@ -84,7 +84,7 @@ public class ImportTest extends AbstractIOTest {
     public void testAttributes() throws IOException {
         EObject o;
 
-        EObject root = loadWithNeoEMF(IOResources.xmiStandard());
+        EObject root = loadWithNeoEMF(IOResourceManager.getInstance().xmiStandard());
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
             o = childFrom(root, 0, 0, 0, 0, 0, 0, 0);
@@ -114,7 +114,7 @@ public class ImportTest extends AbstractIOTest {
         EObject o;
         EObject child;
 
-        EObject root = loadWithNeoEMF(IOResources.xmiStandard());
+        EObject root = loadWithNeoEMF(IOResourceManager.getInstance().xmiStandard());
         assertValidReference(root, "ownedElements", 0, "Package", "fr", true, true);
         assertValidReference(root, "orphanTypes", 5, "PrimitiveTypeVoid", "void", true, true);
         {
@@ -161,8 +161,8 @@ public class ImportTest extends AbstractIOTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompare() throws IOException {
-        EObject expected = loadWithEMF(IOResources.xmiStandard());
-        EObject actual = loadWithNeoEMF(IOResources.xmiStandard());
+        EObject expected = loadWithEMF(IOResourceManager.getInstance().xmiStandard());
+        EObject actual = loadWithNeoEMF(IOResourceManager.getInstance().xmiStandard());
 
         assertEqualEObject(actual, expected);
     }
@@ -178,8 +178,8 @@ public class ImportTest extends AbstractIOTest {
     @Ignore("Incomplete implementation") // FIXME Inverse references don't exist in EMF
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
-        EObject expected = loadWithEMF(IOResources.xmiWithId());
-        EObject actual = loadWithNeoEMF(IOResources.xmiWithId());
+        EObject expected = loadWithEMF(IOResourceManager.getInstance().xmiWithId());
+        EObject actual = loadWithNeoEMF(IOResourceManager.getInstance().xmiWithId());
 
         assertEqualEObject(actual, expected);
     }

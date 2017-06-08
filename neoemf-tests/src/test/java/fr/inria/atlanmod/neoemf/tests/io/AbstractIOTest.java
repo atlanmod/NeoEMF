@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.tests.io;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
-import fr.inria.atlanmod.neoemf.io.util.IOResources;
+import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.log.Log;
@@ -46,7 +46,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  *
  */
-// TODO Merge with IO tests
 public abstract class AbstractIOTest extends AbstractBackendTest {
 
     /**
@@ -88,8 +87,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      */
     @Before
     public void init() {
-        IOResources.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        IOResources.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
+        IOResourceManager.getInstance().registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        IOResourceManager.getInstance().registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();

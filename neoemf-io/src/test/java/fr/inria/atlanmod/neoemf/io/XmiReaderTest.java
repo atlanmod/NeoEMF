@@ -17,14 +17,13 @@ import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
-import fr.inria.atlanmod.neoemf.io.util.IOResources;
+import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,8 +34,8 @@ public class XmiReaderTest extends AbstractInputTest {
     @Override
     @Before
     public void readResource() throws IOException {
-        IOResources.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        this.sample = IOResources.xmiStandard();
+        IOResourceManager.getInstance().registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        this.sample = IOResourceManager.getInstance().xmiStandard();
         super.readResource();
     }
 
@@ -260,16 +259,6 @@ public class XmiReaderTest extends AbstractInputTest {
                 assertValidMetaClass(child.metaClass(), "ImportDeclaration", ns);
             }
         }
-    }
-
-    @Test
-    @Category(Tags.IOTests.class)
-    public void testMalformedMetaClass() {
-        InputStream stream = XmiReaderTest.class.getResourceAsStream("/xmi/sampleMalformedMetaClass.xmi");
-
-        assertThat(
-                catchThrowable(() -> read(stream))
-        ).isInstanceOf(IOException.class).hasCauseInstanceOf(IllegalArgumentException.class);
     }
 
     /**

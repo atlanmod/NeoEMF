@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
-import fr.inria.atlanmod.neoemf.io.util.IOResources;
+import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +32,8 @@ public class XmiReaderWithIdTest extends AbstractInputTest {
     @Override
     @Before
     public void readResource() throws IOException {
-        IOResources.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
-        this.sample = IOResources.xmiWithId();
+        IOResourceManager.getInstance().registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
+        this.sample = IOResourceManager.getInstance().xmiWithId();
         super.readResource();
     }
 
