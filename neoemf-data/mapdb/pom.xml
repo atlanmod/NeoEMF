@@ -20,6 +20,9 @@
     </properties>
 
     <dependencies>
+
+        <!-- Database -->
+
         <dependency>
             <groupId>org.mapdb</groupId>
             <artifactId>mapdb</artifactId>
@@ -68,6 +71,9 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Database -->
+
             <dependency>
                 <groupId>org.mapdb</groupId>
                 <artifactId>mapdb</artifactId>

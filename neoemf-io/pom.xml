@@ -23,6 +23,8 @@
 
     <dependencies>
 
+        <!-- Streaming -->
+
         <dependency>
             <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
@@ -93,6 +95,9 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Streaming -->
+
             <dependency>
                 <groupId>javax.xml.stream</groupId>
                 <artifactId>stax-api</artifactId>

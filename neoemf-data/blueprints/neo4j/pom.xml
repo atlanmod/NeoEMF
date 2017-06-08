@@ -16,6 +16,9 @@
     <description>Blueprints extension using Neo4j.</description>
 
     <dependencies>
+
+        <!-- Database -->
+
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-neo4j-graph</artifactId>
@@ -66,6 +69,9 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Database -->
+
             <dependency>
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-neo4j-graph</artifactId>

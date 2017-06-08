@@ -72,7 +72,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Test: Hadoop mini-cluster -->
+        <!-- Test: Database -->
 
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -231,13 +231,12 @@
                 <version>1.1.100</version>
             </dependency>
 
-            <!-- Test: Hadoop mini-cluster -->
+            <!-- Test: Database -->
 
             <dependency>
                 <groupId>org.apache.hbase</groupId>
                 <artifactId>hbase-testing-util</artifactId>
                 <version>${hbase.version}</version>
-                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -254,7 +253,6 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-common</artifactId>
                 <version>${hadoop.version}</version>
-                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -271,7 +269,6 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-hdfs</artifactId>
                 <version>${hadoop.version}</version>
-                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -289,7 +286,6 @@
                 <artifactId>hadoop-hdfs</artifactId>
                 <version>${hadoop.version}</version>
                 <type>test-jar</type>
-                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -306,7 +302,6 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-auth</artifactId>
                 <version>${hadoop.version}</version>
-                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>

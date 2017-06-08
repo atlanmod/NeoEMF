@@ -19,6 +19,9 @@
     </description>
 
     <dependencies>
+
+        <!-- Database -->
+
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-core</artifactId>
@@ -73,6 +76,9 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Database -->
+
             <dependency>
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-core</artifactId>
