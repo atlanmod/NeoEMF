@@ -21,8 +21,6 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-
 /**
  * A {@link BasicElement} wrapper that stores all elements in different {@link List}.
  */
@@ -59,26 +57,6 @@ public class DummyElement {
         this.attributes = new ArrayList<>();
         this.references = new ArrayList<>();
         this.children = new ArrayList<>();
-    }
-
-    /**
-     * Retrieves an element from the {@code root} element with the successive {@code indexes}.
-     *
-     * @param root    the element from which to start the search
-     * @param indexes the index of the element, recursively in the children from the {@code root}
-     *
-     * @return the element
-     */
-    public static DummyElement from(DummyElement root, int... indexes) {
-        checkArgument(indexes.length > 0, "You must define at least one index");
-
-        DummyElement child = root;
-
-        for (int index : indexes) {
-            child = child.children().get(index);
-        }
-
-        return child;
     }
 
     /**

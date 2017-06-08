@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
+import fr.inria.atlanmod.neoemf.io.util.IOResources;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
@@ -24,6 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -45,7 +47,7 @@ public class ExportTest extends AbstractIOTest {
         File targetBackend = Paths.get(file() + "-copy").toFile();
 
         try (DataMapper sourceMapper = context().createMapper(sourceBackend)) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(sourceMapper));
+            ReaderFactory.fromXmi(IOResources.xmiStandard(), WriterFactory.toMapper(sourceMapper));
 
             try (DataMapper targetMapper = context().createMapper(targetBackend)) {
                 ReaderFactory.fromMapper(sourceMapper, WriterFactory.toMapper(targetMapper));
@@ -53,15 +55,17 @@ public class ExportTest extends AbstractIOTest {
         }
 
         // Comparing PersistentBackend
-        Resource sourceResource = closeAtExit(context().loadResource(null, sourceBackend));
-        Resource targetResource = closeAtExit(context().loadResource(null, targetBackend));
+        Resource sourceResource = closeAtExit(context().loadResource(sourceBackend));
+        Resource targetResource = closeAtExit(context().loadResource(targetBackend));
 
         EObject sourceModel = sourceResource.getContents().get(0);
         EObject targetModel = targetResource.getContents().get(0);
+
         assertEqualEObject(targetModel, sourceModel);
 
         // Comparing with EMF
-        sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);
+        sourceModel = loadWithEMF(IOResources.xmiStandard());
+
         assertEqualEObject(targetModel, sourceModel);
     }
 
@@ -79,10 +83,11 @@ public class ExportTest extends AbstractIOTest {
 
         Log.info("Writing to {0}", targetFile);
 
-        ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toXmi(targetFile));
+        ReaderFactory.fromXmi(IOResources.xmiStandard(), WriterFactory.toXmi(targetFile));
 
-        EObject sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);
-        EObject targetModel = loadWithEMF(targetFile).getContents().get(0);
+        EObject sourceModel = loadWithEMF(IOResources.xmiStandard());
+        EObject targetModel = loadWithEMF(new FileInputStream(targetFile));
+
         assertEqualEObject(targetModel, sourceModel);
     }
 
@@ -101,12 +106,13 @@ public class ExportTest extends AbstractIOTest {
         Log.info("Writing to {0}", targetFile);
 
         try (DataMapper mapper = context().createMapper(file())) {
-            ReaderFactory.fromXmi(getXmiStandard(), WriterFactory.toMapper(mapper));
+            ReaderFactory.fromXmi(IOResources.xmiStandard(), WriterFactory.toMapper(mapper));
             ReaderFactory.fromMapper(mapper, WriterFactory.toXmi(targetFile));
         }
 
-        EObject sourceModel = loadWithEMF(getXmiStandard()).getContents().get(0);
-        EObject targetModel = loadWithEMF(targetFile).getContents().get(0);
+        EObject sourceModel = loadWithEMF(IOResources.xmiStandard());
+        EObject targetModel = loadWithEMF(new FileInputStream(targetFile));
+
         assertEqualEObject(targetModel, sourceModel);
     }
 }

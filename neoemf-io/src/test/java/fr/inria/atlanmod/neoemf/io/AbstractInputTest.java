@@ -26,29 +26,19 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EPackage.Registry;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.annotation.Nonnull;
+
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractInputTest extends AbstractTest {
-
-    protected static final int UNKNOWN_INDEX = -1;
 
     /**
      * The root element of the read file.
@@ -61,50 +51,24 @@ public abstract class AbstractInputTest extends AbstractTest {
     protected InputStream sample;
 
     /**
-     * Returns the XMI file that uses XPath references.
+     * Retrieves an element from the {@code root} element with the successive {@code indices}.
      *
-     * @return the XMI file
-     */
-    protected static InputStream getXmiStandard() {
-        return AbstractInputTest.class.getResourceAsStream("/io/xmi/sampleStandard.xmi");
-    }
-
-    /**
-     * Returns the XMI file that uses {@code xmi:id} references.
+     * @param root    the element from which to start the search
+     * @param indices the index of the element, recursively in the children from the {@code root}
      *
-     * @return the XMI file
+     * @return the element
      */
-    protected static InputStream getXmiWithId() {
-        return AbstractInputTest.class.getResourceAsStream("/io/xmi/sampleWithId.xmi");
-    }
+    @Nonnull
+    public static DummyElement childFrom(DummyElement root, int... indices) {
+        checkArgument(indices.length > 0, "You must define at least one index");
 
-    /**
-     * Registers a EPackage in {@link Registry} according to its {@code prefix} and {@code uri}, from an Ecore file.
-     * <p>
-     * The targeted Ecore file must be present in {@code /resources/ecore}.
-     */
-    protected static void registerPackageFromEcore(String prefix, String uri) {
-        File file = new File(AbstractInputTest.class.getResource("/io/ecore/{name}.ecore".replaceAll("\\{name\\}", prefix)).getFile());
+        DummyElement child = root;
 
-        EPackage ePackage = null;
-
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
-
-        ResourceSet rs = new ResourceSetImpl();
-
-        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
-        rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
-
-        Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
-        EObject eObject = r.getContents().get(0);
-        if (EPackage.class.isInstance(eObject)) {
-            ePackage = EPackage.class.cast(eObject);
-            rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
+        for (int index : indices) {
+            child = child.children().get(index);
         }
 
-        assertThat(ePackage).isNotNull();
-
-        Registry.INSTANCE.put(uri, ePackage);
+        return checkNotNull(child);
     }
 
     /**
@@ -132,8 +96,7 @@ public abstract class AbstractInputTest extends AbstractTest {
 
     @Before
     public void readResource() throws IOException {
-        root = read(sample);
-        assertThat(root).isNotNull();
+        root = checkNotNull(read(sample));
     }
 
     @After

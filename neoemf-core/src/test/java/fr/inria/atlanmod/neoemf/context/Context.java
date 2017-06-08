@@ -131,6 +131,20 @@ public interface Context {
     }
 
     /**
+     * Loads an existing resource from the given {@code file}.
+     *
+     * @param file     the file from which to load/save data
+     *
+     * @return a new {@link PersistentResource}
+     *
+     * @throws IOException if an I/O error occurs
+     * @see ContextualResourceBuilder
+     */
+    default PersistentResource loadResource(File file) throws IOException {
+        return loadResource(null, file);
+    }
+
+    /**
      * Loads an existing resource from the given {@code ePackage} on the given {@code file}.
      *
      * @param ePackage the {@link EPackage} associated to the resource

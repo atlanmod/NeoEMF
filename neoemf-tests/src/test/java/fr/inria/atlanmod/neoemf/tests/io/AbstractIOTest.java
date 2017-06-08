@@ -14,31 +14,22 @@ package fr.inria.atlanmod.neoemf.tests.io;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
+import fr.inria.atlanmod.neoemf.io.util.IOResources;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -70,88 +61,26 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     private HashSet<EStructuralFeature> testedFeatures;
 
     /**
-     * Retrieves a child element from the {@code root} following the given {@code indexes}.
+     * Retrieves a child element from the {@code root} following the given {@code indices}.
      *
      * @param root    the element from which to start the search
-     * @param indexes the indexes of contained elements. The first index represents the index of the element from the
+     * @param indices the indices of contained elements. The first index represents the index of the element from the
      *                root element, the second represents the index of the element from the previous,...
      *
      * @return the object
      */
     @Nonnull
-    protected static EObject getChildFrom(EObject root, int... indexes) {
-        if (indexes.length == 0) {
+    protected static EObject childFrom(EObject root, int... indices) {
+        if (indices.length == 0) {
             throw new IllegalArgumentException("You must define at least one index");
         }
 
         EObject element = root;
-        for (int index : indexes) {
+        for (int index : indices) {
             element = element.eContents().get(index);
         }
-        assertThat(element).isNotNull();
-        return element;
-    }
 
-    /**
-     * Returns the test XMI file that uses XPath as references.
-     *
-     * @return the test file
-     */
-    protected static File getXmiStandard() {
-        return getResourceFile("/io/xmi/sampleStandard.xmi");
-    }
-
-    /**
-     * Returns the test XMI file that uses {@code xmi:id} as references.
-     *
-     * @return the test file
-     */
-    protected static File getXmiWithId() {
-        return getResourceFile("/io/xmi/sampleWithId.xmi");
-    }
-
-    /**
-     * Returns a test file according to the given {@code path}.
-     *
-     * @param path the resource path
-     *
-     * @return the test file
-     */
-    protected static File getResourceFile(String path) {
-        return new File(AbstractIOTest.class.getResource(path).getFile());
-    }
-
-    /**
-     * Registers a EPackage in {@link EPackage.Registry} according to its {@code prefix} and {@code uri}, from an Ecore
-     * file.
-     * <p>
-     * The targeted Ecore file must be present in {@code /resources/ecore}.
-     *
-     * @param prefix the prefix of the URI. It is used to retrieve the {@code ecore} file
-     * @param uri    the URI of the {@link EPackage}
-     */
-    protected static void registerEPackageFromEcore(String prefix, String uri) {
-        File file = getResourceFile("/io/ecore/{name}.ecore".replaceAll("\\{name\\}", prefix));
-
-        EPackage ePackage = null;
-
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
-
-        ResourceSet rs = new ResourceSetImpl();
-
-        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
-        rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
-
-        Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
-        EObject eObject = r.getContents().get(0);
-        if (EPackage.class.isInstance(eObject)) {
-            ePackage = EPackage.class.cast(eObject);
-            rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
-        }
-
-        assertThat(ePackage).isNotNull();
-
-        EPackage.Registry.INSTANCE.put(uri, ePackage);
+        return checkNotNull(element);
     }
 
     /**
@@ -159,8 +88,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      */
     @Before
     public void init() {
-        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
+        IOResources.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        IOResources.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();
@@ -247,9 +176,11 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     protected void assertValidElement(EObject obj, String metaclassName, int size, String name) {
         assertThat(obj.eClass().getName()).isEqualTo(metaclassName);
         assertThat(obj.eContents()).hasSize(size);
+
         if (isNull(name)) {
-            Throwable thrown = catchThrowable(() -> obj.eGet(obj.eClass().getEStructuralFeature("name")));
-            assertThat(thrown).isInstanceOf(NullPointerException.class);
+            assertThat(
+                    catchThrowable(() -> obj.eGet(obj.eClass().getEStructuralFeature("name")))
+            ).isInstanceOf(NullPointerException.class);
         }
         else {
             assertThat(obj.eGet(obj.eClass().getEStructuralFeature("name"))).isEqualTo(name);
@@ -286,8 +217,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
 
         if (isNull(referenceName)) {
             try {
-                EAttribute attribute = EAttribute.class.cast(eObjectReference.eClass().getEStructuralFeature("name"));
-                assertThat(eObjectReference.eGet(attribute)).isEqualTo(checkNotNull(attribute).getDefaultValue());
+                EAttribute attribute = checkNotNull(EAttribute.class.cast(eObjectReference.eClass().getEStructuralFeature("name")));
+                assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
             }
             catch (NullPointerException ignored) {
                 // It's not a problem if this happens
@@ -311,10 +242,10 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param value the expected value of the attribute
      */
     protected void assertValidAttribute(EObject obj, String name, Object value) {
-        EAttribute attribute = EAttribute.class.cast(obj.eClass().getEStructuralFeature(name));
+        EAttribute attribute = checkNotNull(EAttribute.class.cast(obj.eClass().getEStructuralFeature(name)));
 
         if (isNull(value)) {
-            assertThat(obj.eGet(attribute)).isEqualTo(checkNotNull(attribute).getDefaultValue());
+            assertThat(obj.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
         }
         else {
             assertThat(obj.eGet(attribute).toString()).isEqualTo(value);
@@ -324,34 +255,39 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     /**
      * Loads the {@code file} with standard EMF.
      *
-     * @param file the file to load
+     * @param stream the file to load
      *
      * @return the first element of the loaded content
      *
      * @throws IOException if an I/O error occur during the loading of models
      */
-    protected Resource loadWithEMF(File file) throws IOException {
+    protected EObject loadWithEMF(InputStream stream) throws IOException {
         Resource resource = new XMIResourceImpl();
-        resource.load(new FileInputStream(file), Collections.emptyMap());
-        return resource;
+        resource.load(stream, Collections.emptyMap());
+
+        return resource
+                .getContents()
+                .get(0);
     }
 
     /**
      * Loads the {@code file} with NeoEMF according to the current {@link #context() Context}.
      *
-     * @param file the file to load
+     * @param stream the file to load
      *
      * @return the first element of the loaded content
      *
      * @throws IOException if an I/O error occur during the loading of models
      */
-    protected PersistentResource loadWithNeoEMF(File file) throws IOException {
+    protected EObject loadWithNeoEMF(InputStream stream) throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
         try (DataMapper mapper = context().createMapper(file())) {
-            ReaderFactory.fromXmi(file, WriterFactory.toMapper(mapper));
+            ReaderFactory.fromXmi(stream, WriterFactory.toMapper(mapper));
         }
 
-        return closeAtExit(context().loadResource(null, file()));
+        return closeAtExit(context().loadResource(file()))
+                .getContents()
+                .get(0);
     }
 }
