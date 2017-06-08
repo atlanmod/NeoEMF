@@ -47,7 +47,7 @@ public class ExportTest extends AbstractIOTest {
         File targetBackend = Paths.get(file() + "-copy").toFile();
 
         try (DataMapper sourceMapper = context().createMapper(sourceBackend)) {
-            ReaderFactory.fromXmi(IOResourceManager.getInstance().xmiStandard(), WriterFactory.toMapper(sourceMapper));
+            ReaderFactory.fromXmi(IOResourceManager.xmiStandard(), WriterFactory.toMapper(sourceMapper));
 
             try (DataMapper targetMapper = context().createMapper(targetBackend)) {
                 ReaderFactory.fromMapper(sourceMapper, WriterFactory.toMapper(targetMapper));
@@ -64,7 +64,7 @@ public class ExportTest extends AbstractIOTest {
         assertEqualEObject(targetModel, sourceModel);
 
         // Comparing with EMF
-        sourceModel = loadWithEMF(IOResourceManager.getInstance().xmiStandard());
+        sourceModel = loadWithEMF(IOResourceManager.xmiStandard());
 
         assertEqualEObject(targetModel, sourceModel);
     }
@@ -83,9 +83,9 @@ public class ExportTest extends AbstractIOTest {
 
         Log.info("Writing to {0}", targetFile);
 
-        ReaderFactory.fromXmi(IOResourceManager.getInstance().xmiStandard(), WriterFactory.toXmi(targetFile));
+        ReaderFactory.fromXmi(IOResourceManager.xmiStandard(), WriterFactory.toXmi(targetFile));
 
-        EObject sourceModel = loadWithEMF(IOResourceManager.getInstance().xmiStandard());
+        EObject sourceModel = loadWithEMF(IOResourceManager.xmiStandard());
         EObject targetModel = loadWithEMF(new FileInputStream(targetFile));
 
         assertEqualEObject(targetModel, sourceModel);
@@ -106,11 +106,11 @@ public class ExportTest extends AbstractIOTest {
         Log.info("Writing to {0}", targetFile);
 
         try (DataMapper mapper = context().createMapper(file())) {
-            ReaderFactory.fromXmi(IOResourceManager.getInstance().xmiStandard(), WriterFactory.toMapper(mapper));
+            ReaderFactory.fromXmi(IOResourceManager.xmiStandard(), WriterFactory.toMapper(mapper));
             ReaderFactory.fromMapper(mapper, WriterFactory.toXmi(targetFile));
         }
 
-        EObject sourceModel = loadWithEMF(IOResourceManager.getInstance().xmiStandard());
+        EObject sourceModel = loadWithEMF(IOResourceManager.xmiStandard());
         EObject targetModel = loadWithEMF(new FileInputStream(targetFile));
 
         assertEqualEObject(targetModel, sourceModel);

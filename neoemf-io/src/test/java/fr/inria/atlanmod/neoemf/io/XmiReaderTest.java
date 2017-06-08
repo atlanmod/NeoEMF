@@ -34,8 +34,8 @@ public class XmiReaderTest extends AbstractInputTest {
     @Override
     @Before
     public void readResource() throws IOException {
-        IOResourceManager.getInstance().registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        this.sample = IOResourceManager.getInstance().xmiStandard();
+        IOResourceManager.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        this.sample = IOResourceManager.xmiStandard();
         super.readResource();
     }
 

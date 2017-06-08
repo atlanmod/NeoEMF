@@ -87,8 +87,8 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      */
     @Before
     public void init() {
-        IOResourceManager.getInstance().registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        IOResourceManager.getInstance().registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
+        IOResourceManager.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();

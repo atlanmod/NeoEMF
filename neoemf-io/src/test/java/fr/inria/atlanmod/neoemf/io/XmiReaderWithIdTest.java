@@ -32,8 +32,8 @@ public class XmiReaderWithIdTest extends AbstractInputTest {
     @Override
     @Before
     public void readResource() throws IOException {
-        IOResourceManager.getInstance().registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
-        this.sample = IOResourceManager.getInstance().xmiWithId();
+        IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
+        this.sample = IOResourceManager.xmiWithId();
         super.readResource();
     }
 

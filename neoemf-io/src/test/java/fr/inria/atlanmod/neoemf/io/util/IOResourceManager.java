@@ -28,19 +28,9 @@ import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 public final class IOResourceManager {
 
-    /**
-     * Constructs a new {@code IOResourceManager}.
-     */
+    @SuppressWarnings("JavaDoc")
     private IOResourceManager() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance
-     */
-    public static IOResourceManager getInstance() {
-        return Holder.INSTANCE;
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**
@@ -49,8 +39,8 @@ public final class IOResourceManager {
      * @return the XMI file
      */
     @Nonnull
-    public InputStream xmiStandard() throws IOException {
-        return urlFromResource("/xmi/sampleStandard.xmi").openStream();
+    public static InputStream xmiStandard() throws IOException {
+        return ResourceLoader.Holder.INSTANCE.getUrl("/xmi/sampleStandard.xmi").openStream();
     }
 
     /**
@@ -59,17 +49,17 @@ public final class IOResourceManager {
      * @return the XMI file
      */
     @Nonnull
-    public InputStream xmiWithId() throws IOException {
-        return urlFromResource("/xmi/sampleWithId.xmi").openStream();
+    public static InputStream xmiWithId() throws IOException {
+        return ResourceLoader.Holder.INSTANCE.getUrl("/xmi/sampleWithId.xmi").openStream();
     }
 
     /**
      * Registers a EPackage in {@link EPackage.Registry} according to its {@code prefix} and {@code uri}, from an
      * Ecore file.
      * <p>
-     * The targeted Ecore file must be present in {@code /resources/ecore}.
+     * The targeted Ecore file must be present in the {@code /resources/ecore} directory of this modules.
      */
-    public void registerPackage(String prefix, String uri) {
+    public static void registerPackage(String prefix, String uri) {
         EPackage pkg = null;
 
         Resource.Factory.Registry.INSTANCE
@@ -81,7 +71,7 @@ public final class IOResourceManager {
         final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
         rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        File file = fileFromResource("/ecore/" + prefix + ".ecore");
+        File file = ResourceLoader.Holder.INSTANCE.getFile("/ecore/" + prefix + ".ecore");
         Resource r = rs.getResource(URI.createFileURI(file.getAbsolutePath()), true);
 
         EObject eObject = r.getContents().get(0);
@@ -96,49 +86,57 @@ public final class IOResourceManager {
     }
 
     /**
-     * Retrieves the resource with the given {@code name}.
+     * A resource loader that allows to retrieve a resource from this module, but called from a different one.
      *
-     * @param name the name of the resource
-     *
-     * @return a URL
-     *
-     * @throws NullPointerException if the resource cannot be found
+     * @see Class#getResource(String)
      */
-    @Nonnull
-    private URL urlFromResource(String name) {
-        return checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
-    }
-
-    /**
-     * Retrieves the resource with the given {@code name}.
-     *
-     * @param name the name of the resource
-     *
-     * @return a file
-     *
-     * @see #urlFromResource(String)
-     * @throws NullPointerException if the resource cannot be found
-     */
-    @Nonnull
-    private File fileFromResource(String name) {
-        URL url = urlFromResource(name);
-
-        try {
-            return new File(url.toURI());
-        }
-        catch (URISyntaxException e) {
-            return new File(url.getPath());
-        }
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static final class Holder {
+    private static final class ResourceLoader {
 
         /**
-         * The instance of the outer class.
+         * Retrieves the resource with the given {@code name}.
+         *
+         * @param name the name of the resource
+         *
+         * @return a URL
+         *
+         * @throws NullPointerException if the resource cannot be found
          */
-        private static final IOResourceManager INSTANCE = new IOResourceManager();
+        @Nonnull
+        private URL getUrl(String name) {
+            return checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
+        }
+
+        /**
+         * Retrieves the resource with the given {@code name}.
+         *
+         * @param name the name of the resource
+         *
+         * @return a file
+         *
+         * @see #getUrl(String)
+         * @throws NullPointerException if the resource cannot be found
+         */
+        @Nonnull
+        private File getFile(String name) {
+            URL url = getUrl(name);
+
+            try {
+                return new File(url.toURI());
+            }
+            catch (IllegalArgumentException | URISyntaxException e) {
+                return new File(url.getPath());
+            }
+        }
+
+        /**
+         * The initialization-on-demand holder of the singleton of this class.
+         */
+        private static final class Holder {
+
+            /**
+             * The instance of the outer class.
+             */
+            private static final ResourceLoader INSTANCE = new ResourceLoader();
+        }
     }
 }
