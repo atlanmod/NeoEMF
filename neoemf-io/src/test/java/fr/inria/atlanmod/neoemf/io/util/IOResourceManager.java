@@ -11,10 +11,8 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.annotation.Nonnull;
@@ -71,8 +69,8 @@ public final class IOResourceManager {
         final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
         rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        File file = ResourceLoader.Holder.INSTANCE.getFile("/ecore/" + prefix + ".ecore");
-        Resource r = rs.getResource(URI.createFileURI(file.getAbsolutePath()), true);
+        URL url = ResourceLoader.Holder.INSTANCE.getUrl("/ecore/" + prefix + ".ecore");
+        Resource r = rs.getResource(URI.createURI(url.toString()), true);
 
         EObject eObject = r.getContents().get(0);
         if (EPackage.class.isInstance(eObject)) {
@@ -86,7 +84,7 @@ public final class IOResourceManager {
     }
 
     /**
-     * A resource loader that allows to retrieve a resource from this module, but called from a different one.
+     * A resource loader that allows to retrieve a resource from this module, even if the call comes from another one.
      *
      * @see Class#getResource(String)
      */
@@ -104,28 +102,6 @@ public final class IOResourceManager {
         @Nonnull
         private URL getUrl(String name) {
             return checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
-        }
-
-        /**
-         * Retrieves the resource with the given {@code name}.
-         *
-         * @param name the name of the resource
-         *
-         * @return a file
-         *
-         * @see #getUrl(String)
-         * @throws NullPointerException if the resource cannot be found
-         */
-        @Nonnull
-        private File getFile(String name) {
-            URL url = getUrl(name);
-
-            try {
-                return new File(url.toURI());
-            }
-            catch (IllegalArgumentException | URISyntaxException e) {
-                return new File(url.getPath());
-            }
         }
 
         /**
