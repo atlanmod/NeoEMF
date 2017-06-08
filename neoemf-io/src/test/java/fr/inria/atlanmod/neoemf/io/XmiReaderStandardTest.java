@@ -39,20 +39,6 @@ public class XmiReaderStandardTest extends AbstractInputTest {
     }
 
     /**
-     * Check that the namespaces are properly processed.
-     */
-    @Test
-    @Category(Tags.IOTests.class)
-    public void testNamespaces() {
-        BasicNamespace.Registry nsRegistry = BasicNamespace.Registry.getInstance();
-        Iterable<String> prefixes = nsRegistry.getPrefixes();
-        assertThat(prefixes).containsExactlyInAnyOrder("xsi", "java", "xmi");
-
-        assertThat(root.ns()).isNotNull();
-        assertThat(root.ns().prefix()).isEqualTo("java");
-    }
-
-    /**
      * Check that the elements and their children are properly processed.
      */
     @Test

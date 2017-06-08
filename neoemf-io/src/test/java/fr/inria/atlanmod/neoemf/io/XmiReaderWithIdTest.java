@@ -37,20 +37,6 @@ public class XmiReaderWithIdTest extends AbstractInputTest {
     }
 
     /**
-     * Check that the namespaces are properly read.
-     */
-    @Test
-    @Category(Tags.IOTests.class)
-    public void testNamespaces() {
-        BasicNamespace.Registry nsRegistry = BasicNamespace.Registry.getInstance();
-        Iterable<String> prefixes = nsRegistry.getPrefixes();
-        assertThat(prefixes).containsExactlyInAnyOrder("uml", "xmi");
-
-        assertThat(root.ns()).isNotNull();
-        assertThat(root.ns().prefix()).isEqualTo("uml");
-    }
-
-    /**
      * Check that the elements are properly processed.
      * <p>
      * All elements must have an id and a class name.
