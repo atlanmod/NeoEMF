@@ -25,9 +25,10 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,11 +45,6 @@ public abstract class AbstractInputTest extends AbstractTest {
      * The root element of the read file.
      */
     protected DummyElement root;
-
-    /**
-     * The XMI file to read.
-     */
-    protected InputStream sample;
 
     /**
      * Retrieves an element from the {@code root} element with the successive {@code indices}.
@@ -71,16 +67,14 @@ public abstract class AbstractInputTest extends AbstractTest {
         return checkNotNull(child);
     }
 
-    /**
-     * Reads the given XMI {@code file} and returns the analyzed structure.
-     *
-     * @param stream a stream containing the XMI structure to read
-     *
-     * @return the structure of the XMI file
-     *
-     * @throws IOException if an error occurred during the I/O process
-     */
-    protected static DummyElement read(InputStream stream) throws IOException {
+    @BeforeClass
+    public static void registerPackages() {
+        IOResourceManager.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
+    }
+
+    @Before
+    public void readResource() throws IOException {
         DummyWriter writer = new DummyWriter();
 
         Processor processor = new DirectWriteProcessor(writer);
@@ -89,20 +83,18 @@ public abstract class AbstractInputTest extends AbstractTest {
         processor = new EcoreProcessor(processor);
         processor = new XPathProcessor(processor);
 
-        new XmiStreamReader(processor).read(stream);
+        new XmiStreamReader(processor).read(getSample());
 
-        return writer.getRoot();
+        root = checkNotNull(writer.getRoot());
     }
 
-    @Before
-    public void readResource() throws IOException {
-        root = checkNotNull(read(sample));
-    }
-
-    @After
-    public final void unregisterNamespaces() {
-        BasicNamespace.Registry.getInstance().clean();
-    }
+    /**
+     * Returns an {@link InputStream} on the XMI file to use for this test-case.
+     *
+     * @return the stream
+     */
+    @Nonnull
+    protected abstract InputStream getSample();
 
     /**
      * Checks that the {@code element} has the given arguments.

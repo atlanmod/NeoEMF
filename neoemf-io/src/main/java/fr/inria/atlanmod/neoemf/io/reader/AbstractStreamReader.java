@@ -98,6 +98,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
         }
         finally {
             progressTimer.cancel();
+            BasicNamespace.Registry.getInstance().clean();
         }
     }
 

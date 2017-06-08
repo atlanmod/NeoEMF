@@ -18,23 +18,22 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class XmiReaderWithIdTest extends AbstractInputTest {
 
+    @Nonnull
     @Override
-    @Before
-    public void readResource() throws IOException {
-        IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
-        this.sample = IOResourceManager.xmiWithId();
-        super.readResource();
+    protected InputStream getSample() {
+        return IOResourceManager.xmiWithId();
     }
 
     /**

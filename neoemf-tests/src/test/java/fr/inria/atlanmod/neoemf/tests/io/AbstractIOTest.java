@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,14 +83,17 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         return checkNotNull(element);
     }
 
+    @BeforeClass
+    public static void registerPackages() {
+        IOResourceManager.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
+    }
+
     /**
      * Initializes the test case by registering the packages.
      */
     @Before
     public void init() {
-        IOResourceManager.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
-
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();
     }
