@@ -33,6 +33,7 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
@@ -140,11 +141,12 @@ public class DefaultMapperWriter implements MapperWriter {
 
         updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
 
-        Optional.ofNullable(element.className()).ifPresent(c -> {
-            BasicAttribute attribute = new BasicAttribute(MapperConstants.FEATURE_NAME);
-            attribute.value(c);
-            addAttribute(id, attribute);
-        });
+        Optional.ofNullable(element.className())
+                .map(c -> {
+                    BasicAttribute attribute = new BasicAttribute(MapperConstants.FEATURE_NAME);
+                    attribute.value(c);
+                    return attribute;
+                }).ifPresent(a -> addAttribute(id, a));
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {
@@ -164,6 +166,7 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @throws NullPointerException if the {@code element} is {@code null} or if it does not have an {@link Id}
      */
+    @Nonnull
     protected Id createElement(BasicElement element) {
         checkNotNull(element.id());
 
@@ -182,6 +185,7 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
+    @Nonnull
     protected Id getOrCreateId(BasicId identifier) {
         checkNotNull(identifier);
 
@@ -195,17 +199,18 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @return the {@link Id}
      */
+    @Nonnull
     protected Id createId(BasicId identifier) {
         checkNotNull(identifier);
 
-        String idValue = identifier.value();
+        String value = identifier.value();
 
         // If identifier has been generated we hash it, otherwise we use the original
         if (identifier.isGenerated()) {
-            idValue = Hashers.md5().hash(idValue).toString();
+            value = Hashers.md5().hash(value).toString();
         }
 
-        return StringId.of(idValue);
+        return StringId.of(value);
     }
 
     /**

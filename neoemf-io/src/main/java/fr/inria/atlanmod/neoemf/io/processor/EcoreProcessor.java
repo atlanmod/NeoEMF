@@ -122,10 +122,12 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                     .filter(s -> !s.isEmpty())
                     .map(s -> {
                         BasicReference newReference = new BasicReference(reference.name());
+
                         newReference.id(reference.id());
+                        newReference.idReference(BasicId.original(s));
 
                         newReference.index(eReference.isMany() && !eReference.isContainment() ? index.getAndIncrement() : -1);
-                        newReference.idReference(BasicId.original(s));
+
                         newReference.isContainment(eReference.isContainment());
                         newReference.isMany(eReference.isMany());
 

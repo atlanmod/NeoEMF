@@ -140,7 +140,9 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
     protected void readValue(FeatureKey key) {
         mapper.valueOf(key).ifPresent(value -> {
             BasicAttribute attribute = new BasicAttribute(key.name());
+
             attribute.id(BasicId.original(key.id().toString()));
+
             attribute.value(value);
 
             notifyAttribute(attribute);
@@ -158,10 +160,13 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         IntStream.range(0, size).forEach(position ->
                 mapper.valueOf(key.withPosition(0)).ifPresent(value -> {
                     BasicAttribute attribute = new BasicAttribute(key.name());
+
                     attribute.id(BasicId.original(key.id().toString()));
                     attribute.value(value);
-                    attribute.isMany(true);
+
                     attribute.index(position);
+
+                    attribute.isMany(true);
 
                     notifyAttribute(attribute);
                 }));
@@ -176,8 +181,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
     protected void readReference(FeatureKey key, boolean isContainment) {
         mapper.referenceOf(key).ifPresent(id -> {
             BasicReference reference = new BasicReference(key.name());
+
             reference.id(BasicId.original(key.id().toString()));
             reference.idReference(BasicId.original(id.toString()));
+
             reference.isContainment(isContainment);
 
             mapper.metaclassOf(id).ifPresent(m -> {
@@ -203,11 +210,14 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         IntStream.range(0, size).forEach(position ->
                 mapper.referenceOf(key.withPosition(position)).ifPresent(id -> {
                     BasicReference reference = new BasicReference(key.name());
+
                     reference.id(BasicId.original(key.id().toString()));
                     reference.idReference(BasicId.original(id.toString()));
+
+                    reference.index(position);
+
                     reference.isContainment(isContainment);
                     reference.isMany(true);
-                    reference.index(position);
 
                     mapper.metaclassOf(id).ifPresent(m -> {
                         BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
@@ -227,10 +237,8 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param next   the next identifier
      */
     protected void next(Id parent, Id next) {
-        mapper.containerOf(next).ifPresent(container -> {
-            if (Objects.equals(container.id(), parent)) {
-                readElement(next);
-            }
-        });
+        mapper.containerOf(next)
+                .filter(c -> Objects.equals(c.id(), parent))
+                .ifPresent(container -> readElement(next));
     }
 }
