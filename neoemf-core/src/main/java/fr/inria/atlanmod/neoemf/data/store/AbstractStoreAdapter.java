@@ -717,7 +717,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         Optional<EClass> instanceOf = metaclassOf(id).map(ClassDescriptor::get);
 
         if (!instanceOf.isPresent()) {
-            throw new NoSuchElementException("Element " + id + " does not have an associated EClass");
+            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id));
         }
 
         return instanceOf;

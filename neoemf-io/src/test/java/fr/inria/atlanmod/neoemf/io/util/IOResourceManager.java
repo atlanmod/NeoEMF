@@ -1,7 +1,5 @@
 package fr.inria.atlanmod.neoemf.io.util;
 
-import fr.inria.atlanmod.neoemf.util.log.Log;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -100,9 +98,7 @@ public final class IOResourceManager {
          */
         @Nonnull
         private URL getUrl(String name) {
-            URL url = checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
-            Log.info("Loading resource: {0}", url.toString());
-            return url;
+            return checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
         }
 
         /**

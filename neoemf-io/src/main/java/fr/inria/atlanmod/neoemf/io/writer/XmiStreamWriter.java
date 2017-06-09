@@ -36,7 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
  */
 @Experimental
 @ParametersAreNonnullByDefault
-public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
+public class XmiStreamWriter extends AbstractXmiStreamWriter {
 
     /**
      * The XML writer.
@@ -44,11 +44,11 @@ public class XmiStAXCursorStreamWriter extends AbstractXmiStreamWriter {
     private final XMLStreamWriter writer;
 
     /**
-     * Constructs a new {@code XmiStAXCursorStreamWriter} on the given {@code stream}.
+     * Constructs a new {@code XmiStreamWriter} on the given {@code stream}.
      *
      * @param stream the output stream to write
      */
-    public XmiStAXCursorStreamWriter(OutputStream stream) {
+    public XmiStreamWriter(OutputStream stream) {
         XMLOutputFactory factory = XMLOutputFactory2.newInstance();
         factory.setProperty(XMLOutputFactory2.IS_REPAIRING_NAMESPACES, true);
         factory.setProperty(XMLOutputFactory2.XSP_NAMESPACE_AWARE, true);

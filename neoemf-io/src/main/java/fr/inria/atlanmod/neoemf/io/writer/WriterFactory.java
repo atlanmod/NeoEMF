@@ -69,6 +69,6 @@ public class WriterFactory {
      * @throws IOException if an I/O error occurs
      */
     public static Writer toXmi(OutputStream stream) throws IOException {
-        return new XmiStAXCursorStreamWriter(stream);
+        return new XmiStreamWriter(stream);
     }
 }

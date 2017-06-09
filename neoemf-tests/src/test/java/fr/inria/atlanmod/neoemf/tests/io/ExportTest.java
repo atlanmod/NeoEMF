@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -77,8 +76,6 @@ public class ExportTest extends AbstractIOTest {
 
         final File targetFile = new File(file() + ".xmi");
 
-        Log.info("Writing to {0}", targetFile);
-
         ReaderFactory.fromXmi(new URL(IOResourceManager.xmiStandard().toString()).openStream(), WriterFactory.toXmi(targetFile));
 
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
@@ -98,8 +95,6 @@ public class ExportTest extends AbstractIOTest {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
         final File targetFile = new File(file() + ".xmi");
-
-        Log.info("Writing to {0}", targetFile);
 
         try (DataMapper mapper = context().createMapper(file())) {
             ReaderFactory.fromXmi(new URL(IOResourceManager.xmiStandard().toString()).openStream(), WriterFactory.toMapper(mapper));
