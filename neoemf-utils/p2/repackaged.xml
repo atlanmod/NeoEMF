@@ -12,6 +12,7 @@
             <useDefaultExcludes>true</useDefaultExcludes>
 
             <excludes>
+                <!-- Excludes unnecessary files -->
                 <exclude>**.profile</exclude>
                 <exclude>about_files/**</exclude>
                 <exclude>.options</exclude>
@@ -20,6 +21,7 @@
                 <exclude>profile.list</exclude>
                 <exclude>.api_description</exclude>
 
+                <!-- Excludes Eclipse components -->
                 <exclude>**/apache/**</exclude>
                 <exclude>**/eclipse/core/**</exclude>
                 <exclude>**/eclipse/equinox/**</exclude>
@@ -31,9 +33,6 @@
 
                 <!-- Excludes Guava -->
                 <exclude>**/com/**</exclude>
-
-                <!-- Exludes JSR-305 -->
-                <exclude>**/javax/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>

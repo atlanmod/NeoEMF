@@ -90,6 +90,10 @@
                             <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
+                            <excludeGroupIds>
+                                <!-- Excludes JSR-305 -->
+                                com.google.code.findbugs
+                            </excludeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
