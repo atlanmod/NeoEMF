@@ -41,7 +41,7 @@
                 <lifeline xmi:type="uml:Lifeline" xmi:id="LIFELINE2_0x1f402_12" name=""
                           represents="COLLATTR2_0x1f402_12" />
                 <fragment xmi:type="uml:CombinedFragment" xmi:id="COMBINEDFRAGMENT1_0x1f402_12"
-                          covered="LIFELINE1_0x1f402_12 LIFELINE2_0x1f402_12" interactionOperator="loop">
+                          covered="LIFELINE2_0x1f402_12" interactionOperator="loop">
                     <operand xmi:type="uml:InteractionOperand" xmi:id="OPERAND1_0x1f402_12">
                         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECSEND2_0x1f402_12"
                                   covered="LIFELINE1_0x1f402_12" event="SENDOPEREVT1_0x81_22"
