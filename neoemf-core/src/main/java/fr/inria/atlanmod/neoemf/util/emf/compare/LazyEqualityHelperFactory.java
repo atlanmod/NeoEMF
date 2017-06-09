@@ -12,17 +12,13 @@
 package fr.inria.atlanmod.neoemf.util.emf.compare;
 
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.match.DefaultEqualityHelperFactory;
-import org.eclipse.emf.compare.utils.EqualityHelper;
-import org.eclipse.emf.compare.utils.IEqualityHelper;
-import org.eclipse.emf.ecore.EObject;
+
+import javax.annotation.Nonnull;
 
 /**
- * Overrides {@link DefaultEqualityHelperFactory} methods to create {@link LazyEqualityHelper} instances instead of
- * default {@link EqualityHelper} ones.
+ * A {@link DefaultEqualityHelperFactory} that creates instances of {@link LazyEqualityHelper}.
  *
  * @see LazyEqualityHelper
  */
@@ -36,8 +32,7 @@ public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
     }
 
     /**
-     * Constructs a new {@code LazyEqualityHelperFactory} using the given
-     * {@code cacheBuilder}.
+     * Constructs a new {@code LazyEqualityHelperFactory} using the given {@code cacheBuilder}.
      *
      * @param cacheBuilder the {@link CacheBuilder} to use
      */
@@ -45,16 +40,9 @@ public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
         super(cacheBuilder);
     }
 
-    /**
-     * Returns a new lazy {@link IEqualityHelper}.
-     *
-     * @return a new lazy {@link IEqualityHelper}
-     *
-     * @see LazyEqualityHelper
-     */
+    @Nonnull
     @Override
-    public IEqualityHelper createEqualityHelper() {
-        LoadingCache<EObject, URI> cache = LazyEqualityHelper.createDefaultCache(getCacheBuilder());
-        return new LazyEqualityHelper(cache);
+    public LazyEqualityHelper createEqualityHelper() {
+        return new LazyEqualityHelper(LazyEqualityHelper.createDefaultCache(getCacheBuilder()));
     }
 }

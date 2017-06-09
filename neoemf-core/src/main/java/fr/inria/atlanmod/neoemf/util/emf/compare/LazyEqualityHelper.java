@@ -22,28 +22,32 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An {@link EqualityHelper} subclass that takes into account NeoEMF lazy-loading.
  * <p>
- * Superclass' implementation assumes {@code eGet()} methods always return the same instance. NeoEMF lazy-loading
- * doesn't ensure this, in particular when internal caches are full, and stored elements are discarded and have to be
- * fetched again from the database. This class overcomes these limitations by using
- * {@link Objects#equals(Object, Object)} instead of raw equality.
+ * Superclass' implementation assumes {@code eGet()} methods always return the same instance.
+ * NeoEMF lazy-loading doesn't ensure this, in particular when internal caches are full, and stored elements are
+ * discarded and have to be fetched again from the database.
+ * This class overcomes these limitations by using {@link Objects#equals(Object, Object)} instead of raw equality.
  * <p>
  * If this class is used with models that are not stored in NeoEMF the comparison is computed in a standard way using
  * {@code ==}.
  * <p>
- * <b>Note:</b> This implementation is slower than its parent because comparisons involving at least one
- * {@link PersistentEObject} are computed using {@code equals} which may imply some data query process to compute the
- * object identifier.
+ * <b>Note:</b> This implementation is slower than its parent because comparisons involving at least one {@link
+ * PersistentEObject} are computed using {@link Objects#equals(Object, Object)} which may imply some data query process
+ * to compute the object identifier.
  *
  * @see LazyEqualityHelperFactory
  */
 class LazyEqualityHelper extends EqualityHelper {
 
     /**
-     * Creates a new LazyEqualityHelper with the given cache.
+     * Creates a new {@code LazyEqualityHelper} with the given {@code cache}.
      *
      * @param uriCache the cache to be used for {@link EcoreUtil#getURI(EObject)} calls
      */
@@ -55,28 +59,33 @@ class LazyEqualityHelper extends EqualityHelper {
      * {@inheritDoc}
      * <p>
      * This method extends the default parent behavior by calling {@link Objects#equals(Object, Object)} if at least one
-     * of the compared element is an instance of {@link PersistentEObject}. Calling equals instead of {@code ==} allows
-     * to compare NeoEMF objects that have been potentially reloading between the <i>match</i> and <i>diff</i> phases.
+     * of the compared element is an instance of {@link PersistentEObject}.
+     * Calling equals instead of {@code ==} allows to compare NeoEMF objects that have been potentially reloading
+     * between the <i>match</i> and <i>diff</i> phases.
      * <p>
      * If the comparison doesn't involve a {@link PersistentEObject} it is computed in a standard way using {@code ==}.
      */
     @Override
     protected boolean matchingEObjects(EObject object1, EObject object2) {
-        // Cannot call super: it would take some additional time to get the match two times
-        final Match match = getMatch(object1);
-        final boolean equal;
+        Match match = getMatch(object1);
 
-        if (match != null) {
-            if (PersistentEObject.class.isInstance(object2) || PersistentEObject.class.isInstance(match.getLeft()) || PersistentEObject.class.isInstance(match.getRight()) || PersistentEObject.class.isInstance(match.getOrigin())) {
-                equal = Objects.equals(match.getLeft(), object2) || Objects.equals(match.getRight(), object2) || Objects.equals(match.getOrigin(), object2);
+        if (nonNull(match)) {
+            Stream<EObject> references = Stream.of(
+                    match.getOrigin(),
+                    match.getLeft(),
+                    match.getRight());
+
+            if (PersistentEObject.class.isInstance(object2) || references.anyMatch(PersistentEObject.class::isInstance)) {
+                return references.anyMatch(o -> Objects.equals(o, object2));
             }
             else {
-                equal = match.getLeft() == object2 || match.getRight() == object2 || match.getOrigin() == object2;
+                return references.anyMatch(o -> o == object2);
             }
         }
         else {
-            equal = getTarget().getMatch(object2) == null && object1.eClass() == object2.eClass() && matchingURIs(object1, object2);
+            return isNull(getTarget().getMatch(object2))
+                    && object1.eClass() == object2.eClass()
+                    && matchingURIs(object1, object2);
         }
-        return equal;
     }
 }
