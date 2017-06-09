@@ -18,17 +18,15 @@ import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Comparison;
-import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
 import org.eclipse.emf.compare.match.IMatchEngine;
 import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
 import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
+import org.eclipse.emf.compare.utils.UseIdentifiers;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -37,8 +35,6 @@ import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,56 +48,25 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     }
 
     /**
-     * Checks that the {@code expected} notifier is the same as the {@code actual}.
+     * Checks that the {@code actual} object is the same as the {@code expected}.
      *
-     * @param actual   the notifier to check
-     * @param expected the source notifier
+     * @param actual   the object to check
+     * @param expected the expected object
      */
-    protected void assertNotifierAreEqual(Notifier actual, Notifier expected) {
-        Log.info("Comparing models...");
+    protected void assertNotifierAreEqual(EObject actual, EObject expected) {
+        IMatchEngine.Factory factory = new LazyMatchEngineFactory(UseIdentifiers.NEVER);
 
-        IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
-        matchEngineRegistry.add(new LazyMatchEngineFactory());
+        IMatchEngine.Factory.Registry registry = new MatchEngineFactoryRegistryImpl();
+        registry.add(factory);
 
         IComparisonScope scope = new DefaultComparisonScope(expected, actual, null);
 
         Comparison comparison = EMFCompare.builder()
-                .setMatchEngineFactoryRegistry(matchEngineRegistry)
+                .setMatchEngineFactoryRegistry(registry)
                 .build()
                 .compare(scope);
 
-        List<Diff> diffs = comparison.getDifferences();
-
-        if (diffs.size() <= 0) {
-            Log.info("Models are identical");
-        }
-        else {
-            Log.warn("{0} differences have been found between the models:", diffs.size());
-
-            Log.warn("---");
-
-            Log.warn("# By difference kind:");
-            diffs.stream()
-                    .collect(Collectors.groupingBy(Diff::getKind, Collectors.counting()))
-                    .forEach((key, value) ->
-                            Log.warn("{0} = {1}",
-                                    String.format("%-9s", key.getName().charAt(0) + key.getName().substring(1).toLowerCase()),
-                                    value));
-
-            Log.warn("");
-            Log.warn("# By type:");
-            diffs.stream()
-                    .collect(Collectors.groupingBy(Diff::getClass, Collectors.counting()))
-                    .forEach((key, value) ->
-                            Log.warn("{0} = {1}",
-                                    String.format("%-9s", key.getSimpleName().replace("ChangeSpec", "")),
-                                    value));
-
-            Log.warn("---");
-
-            // Prints the complete description of the error
-            assertThat(diffs).isEmpty();
-        }
+        assertThat(comparison.getDifferences()).hasSize(0);
     }
 
     /**

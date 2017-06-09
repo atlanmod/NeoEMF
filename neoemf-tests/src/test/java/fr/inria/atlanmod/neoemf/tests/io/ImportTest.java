@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,7 +52,6 @@ public class ImportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Ignore("Incomplete implementation") // FIXME Inverse references don't exist in EMF
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
         URI uri = IOResourceManager.xmiWithId();

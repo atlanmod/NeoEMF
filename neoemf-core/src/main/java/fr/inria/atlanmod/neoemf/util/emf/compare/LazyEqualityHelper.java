@@ -71,16 +71,16 @@ class LazyEqualityHelper extends EqualityHelper {
         Match match = getMatch(object1);
 
         if (nonNull(match)) {
-            List<EObject> references = Arrays.asList(
+            List<EObject> branches = Arrays.asList(
                     match.getOrigin(),
                     match.getLeft(),
                     match.getRight());
 
-            if (PersistentEObject.class.isInstance(object2) || references.stream().anyMatch(PersistentEObject.class::isInstance)) {
-                return references.stream().anyMatch(o -> Objects.equals(o, object2));
+            if (PersistentEObject.class.isInstance(object2) || branches.stream().anyMatch(PersistentEObject.class::isInstance)) {
+                return branches.stream().anyMatch(o -> Objects.equals(o, object2));
             }
             else {
-                return references.stream().anyMatch(o -> o == object2);
+                return branches.stream().anyMatch(o -> o == object2);
             }
         }
         else {
