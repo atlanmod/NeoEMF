@@ -21,8 +21,9 @@ import org.eclipse.emf.compare.utils.EqualityHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -70,16 +71,16 @@ class LazyEqualityHelper extends EqualityHelper {
         Match match = getMatch(object1);
 
         if (nonNull(match)) {
-            Stream<EObject> references = Stream.of(
+            List<EObject> references = Arrays.asList(
                     match.getOrigin(),
                     match.getLeft(),
                     match.getRight());
 
-            if (PersistentEObject.class.isInstance(object2) || references.anyMatch(PersistentEObject.class::isInstance)) {
-                return references.anyMatch(o -> Objects.equals(o, object2));
+            if (PersistentEObject.class.isInstance(object2) || references.stream().anyMatch(PersistentEObject.class::isInstance)) {
+                return references.stream().anyMatch(o -> Objects.equals(o, object2));
             }
             else {
-                return references.anyMatch(o -> o == object2);
+                return references.stream().anyMatch(o -> o == object2);
             }
         }
         else {
