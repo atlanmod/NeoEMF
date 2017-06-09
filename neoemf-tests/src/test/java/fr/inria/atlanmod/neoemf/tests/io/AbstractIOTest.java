@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
+import org.assertj.core.api.SoftAssertions;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -99,8 +100,12 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
                 .build()
                 .compare(scope);
 
-        assertThat(comparison.getConflicts()).hasSize(0);
-        assertThat(comparison.getDifferences()).hasSize(0);
+        SoftAssertions softly = new SoftAssertions();
+        {
+            softly.assertThat(comparison.getConflicts()).isEmpty();
+            softly.assertThat(comparison.getDifferences()).isEmpty();
+        }
+        softly.assertAll();
     }
 
     /**
@@ -159,7 +164,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
                 EAttribute attribute = checkNotNull(EAttribute.class.cast(eObjectReference.eClass().getEStructuralFeature("name")));
                 assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
             }
-            catch (NullPointerException ignored) {
+            catch (NullPointerException expected) {
                 // It's not a problem if this happens
             }
         }
