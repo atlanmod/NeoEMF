@@ -116,7 +116,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             reference.isMany(eReference.isMany());
 
             EClass referenceType = eReference.getEReferenceType();
-            reference.metaclassReference(new BasicMetaclass(BasicNamespace.Registry.getInstance().getFromUri(referenceType.getEPackage().getNsURI()), referenceType.getName()));
+            reference.metaclassReference(new BasicMetaclass(
+                    BasicNamespace.Registry.getInstance().getFromUri(referenceType.getEPackage().getNsURI()),
+                    referenceType.getName()));
 
             notifyReference(reference);
         }
@@ -301,7 +303,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                 superClass = subClass;
             }
             else {
-                throw new IllegalArgumentException(String.format("%s is not a subclass of %s", subClass.getName(), superClass.getName()));
+                throw new IllegalArgumentException(
+                        String.format("%s is not a subclass of %s", subClass.getName(), superClass.getName()));
             }
         }
 
