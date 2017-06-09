@@ -26,7 +26,9 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -112,15 +114,29 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Checks that the reference is well a reference
         if (EReference.class.isInstance(feature)) {
             EReference eReference = EReference.class.cast(feature);
-            reference.isContainment(eReference.isContainment());
-            reference.isMany(eReference.isMany());
 
-            EClass referenceType = eReference.getEReferenceType();
-            reference.metaclassReference(new BasicMetaclass(
-                    BasicNamespace.Registry.getInstance().getFromUri(referenceType.getEPackage().getNsURI()),
-                    referenceType.getName()));
+            AtomicInteger index = new AtomicInteger();
 
-            notifyReference(reference);
+            Arrays.stream(reference.idReference().value().split(" "))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> {
+                        BasicReference newReference = new BasicReference(reference.name());
+                        newReference.id(reference.id());
+
+                        newReference.index(eReference.isMany() && !eReference.isContainment() ? index.getAndIncrement() : -1);
+                        newReference.idReference(BasicId.original(s));
+                        newReference.isContainment(eReference.isContainment());
+                        newReference.isMany(eReference.isMany());
+
+                        EClass referenceType = eReference.getEReferenceType();
+                        newReference.metaclassReference(new BasicMetaclass(
+                                BasicNamespace.Registry.getInstance().getFromUri(referenceType.getEPackage().getNsURI()),
+                                referenceType.getName()));
+
+                        return newReference;
+                    })
+                    .forEach(this::notifyReference);
         }
 
         // Otherwise redirect to the attribute handler

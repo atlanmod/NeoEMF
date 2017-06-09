@@ -24,14 +24,12 @@ import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,24 +45,10 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
-     * Regular expression of an attribute containing one or several references.
-     */
-    @RegEx
-    private static final String REGEX_REFERENCE = "(/{1,2}@\\w+(\\.\\d+)?[ ]?)+";
-
-    /**
      * Regular expression of a prefixed value.
      */
     @RegEx
     private static final String REGEX_PREFIXED_VALUE = "(\\w+):(\\w+)";
-
-    /**
-     * Pattern of an attribute containing one or several references (XPath reference). Multiple references must be
-     * separated by a space.
-     * <p>
-     * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
-     */
-    private static final Pattern PATTERN_REFERENCE = Pattern.compile(REGEX_REFERENCE, Pattern.UNICODE_CASE);
 
     /**
      * Pattern of a prefixed value.
@@ -192,27 +176,12 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * @return a list of {@link BasicFeature} that can be empty.
      *
      * @see #processAttributes(String, String)
-     * @see #processReferences(String, Iterable)
      */
     @Nonnull
     private List<BasicFeature> processFeatures(@Nullable String prefix, String name, String value) {
-        List<BasicFeature> features;
-
-        if (!processSpecialFeature(prefix, name, value)) {
-            List<String> references = parseReference(value);
-
-            if (!references.isEmpty()) {
-                features = processReferences(name, references);
-            }
-            else {
-                features = processAttributes(name, value);
-            }
-        }
-        else {
-            features = Collections.emptyList();
-        }
-
-        return features;
+        return !processSpecialFeature(prefix, name, value)
+                ? processAttributes(name, value)
+                : Collections.emptyList();
     }
 
     /**
@@ -265,43 +234,6 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     }
 
     /**
-     * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code value} does not
-     * match with {@link #PATTERN_REFERENCE}.
-     *
-     * @param value the value to parse
-     *
-     * @return a list of {@link String} representing XPath references, or {@code null} if the {@code value} does not
-     * match with {@link #PATTERN_REFERENCE}
-     *
-     * @see #PATTERN_REFERENCE
-     */
-    @Nonnull
-    private List<String> parseReference(String value) {
-        List<String> references;
-
-        if (!value.trim().isEmpty()) {
-            references = Arrays.stream(value.split(" "))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .collect(Collectors.toList());
-
-            boolean isReference = true;
-            for (int i = 0; i < references.size() && isReference; i++) {
-                isReference = PATTERN_REFERENCE.matcher(references.get(i)).matches();
-            }
-
-            if (!isReference) {
-                references = Collections.emptyList();
-            }
-        }
-        else {
-            references = Collections.emptyList();
-        }
-
-        return references;
-    }
-
-    /**
      * Processes an attribute.
      *
      * @param name  the name of the attribute
@@ -318,31 +250,6 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
         attribute.value(value);
 
         features.add(attribute);
-
-        return features;
-    }
-
-    /**
-     * Processes a list of {@code references} and returns a list of {@link BasicReference}.
-     *
-     * @param name       the name of the reference
-     * @param references the list that holds the identifier of referenced elements
-     *
-     * @return a list of {@link BasicReference} from the given {@code references}
-     */
-    @Nonnull
-    private List<BasicFeature> processReferences(String name, Iterable<String> references) {
-        List<BasicFeature> features = new ArrayList<>();
-
-        int index = 0;
-        for (String rawReference : references) {
-            BasicReference ref = new BasicReference(name);
-            ref.index(index);
-            ref.idReference(BasicId.generated(rawReference));
-
-            features.add(ref);
-            index++;
-        }
 
         return features;
     }

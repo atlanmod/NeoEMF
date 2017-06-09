@@ -55,9 +55,7 @@ public final class IOResourceManager {
      * <p>
      * The targeted Ecore file must be present in the {@code /resources/ecore} directory of this modules.
      */
-    public static void registerPackage(String prefix, String uri) {
-        EPackage pkg = null;
-
+    public static void registerPackage(String prefix) {
         Resource.Factory.Registry.INSTANCE
                 .getExtensionToFactoryMap()
                 .put("ecore", new EcoreResourceFactoryImpl());
@@ -71,13 +69,9 @@ public final class IOResourceManager {
 
         EObject eObject = r.getContents().get(0);
         if (EPackage.class.isInstance(eObject)) {
-            pkg = EPackage.class.cast(eObject);
-            rs.getPackageRegistry().put(pkg.getNsURI(), pkg);
+            EPackage pkg = checkNotNull(EPackage.class.cast(eObject));
+            EPackage.Registry.INSTANCE.put(pkg.getNsURI(), pkg);
         }
-
-        checkNotNull(pkg);
-
-        EPackage.Registry.INSTANCE.put(uri, pkg);
     }
 
     /**

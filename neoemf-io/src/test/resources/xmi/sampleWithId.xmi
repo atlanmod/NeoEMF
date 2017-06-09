@@ -1,78 +1,945 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uml:Model xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
-           xmi:version="2.1" xmi:type="uml:Model"
-           xmi:id="themodel" name="jbk">
-    <packagedElement xmi:type="uml:Package" xmi:id="0x81_22" name="jbk">
-        <packagedElement xmi:type="uml:Class" name="A" xmi:id="0x1f502_4" visibility="public" isAbstract="false">
-            <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1"
-                          body="This is the A class&#10;&#10;This is a good one" />
-            <ownedOperation xmi:type="uml:Operation" name="Request" xmi:id="0x1f402_2" visibility="public"
-                            isAbstract="false">
-            </ownedOperation>
-            <ownedOperation xmi:type="uml:Operation" name="handle1" xmi:id="0x1f482_2" visibility="public"
-                            isAbstract="false">
-            </ownedOperation>
-            <ownedOperation xmi:type="uml:Operation" name="handle2" xmi:id="0x1f502_2" visibility="public"
-                            isAbstract="false">
-            </ownedOperation>
-            <ownedAttribute xmi:type="uml:Property" name="attribute1" xmi:id="0x1f402_1" visibility="private">
-                <type xmi:type="uml:Class" xmi:idref="0x1f582_4" />
-            </ownedAttribute>
-        </packagedElement>
-        <packagedElement xmi:type="uml:Class" name="B" xmi:id="0x1f582_4" visibility="package" isAbstract="true">
-            <ownedOperation xmi:type="uml:Operation" name="answer" xmi:id="0x1f582_2" visibility="public"
-                            isAbstract="false">
-                <ownedParameter name="return" xmi:id="return_1" direction="return">
-                    <type xmi:type="uml:Class" xmi:idref="0x1f502_4" />
-                </ownedParameter>
-            </ownedOperation>
-        </packagedElement>
-        <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="0x1f502_77" name="a">
-            <classifier xmi:type="uml:Class" xmi:idref="0x1f502_4" />
-        </packagedElement>
-        <packagedElement xmi:type="uml:Collaboration" xmi:id="COLLABORATION_0x1f402_12" name="machine">
-            <ownedBehavior xmi:type="uml:Interaction" xmi:id="INTERACTION_0x1f402_12" name="machine">
-                <ownedConnector xmi:type="uml:Connector" xmi:id="CONNECTOR1_2_0x1f402_12">
-                    <end xmi:type="uml:ConnectorEnd" xmi:id="END1_0x1f402_12" role="COLLATTR1_0x1f402_12" />
-                    <end xmi:type="uml:ConnectorEnd" xmi:id="END2_0x1f402_12" role="COLLATTR2_0x1f402_12" />
-                </ownedConnector>
-                <lifeline xmi:type="uml:Lifeline" xmi:id="LIFELINE1_0x1f402_12" name="a"
-                          represents="COLLATTR1_0x1f402_12" />
-                <lifeline xmi:type="uml:Lifeline" xmi:id="LIFELINE2_0x1f402_12" name=""
-                          represents="COLLATTR2_0x1f402_12" />
-                <fragment xmi:type="uml:CombinedFragment" xmi:id="COMBINEDFRAGMENT1_0x1f402_12"
-                          covered="LIFELINE2_0x1f402_12" interactionOperator="loop">
-                    <operand xmi:type="uml:InteractionOperand" xmi:id="OPERAND1_0x1f402_12">
-                        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECSEND2_0x1f402_12"
-                                  covered="LIFELINE1_0x1f402_12" event="SENDOPEREVT1_0x81_22"
-                                  message="MSG2_0x1f402_12" />
-                        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECREC2_0x1f402_12"
-                                  covered="LIFELINE2_0x1f402_12" event="RECOPEREVT1_0x81_22"
-                                  message="MSG2_0x1f402_12" />
-                        <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="BEHEXECSPEC2_0x1f402_12"
-                                  covered="LIFELINE2_0x1f402_12" start="MSGOCCSPECREC2_0x1f402_12"
-                                  finish="MSGOCCSPECSEND1_0x1f402_12" />
-                        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECSEND1_0x1f402_12"
-                                  covered="LIFELINE2_0x1f402_12" event="SENDEVT1_0x81_22" message="MSG1_0x1f402_12" />
-                        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECREC1_0x1f402_12"
-                                  covered="LIFELINE1_0x1f402_12" event="RECEVT2_0x81_22" message="MSG1_0x1f402_12" />
-                    </operand>
-                </fragment>
-                <message xmi:type="uml:Message" xmi:id="MSG2_0x1f402_12" name="answer" messageSort="synchCall"
-                         sendEvent="MSGOCCSPECSEND2_0x1f402_12" receiveEvent="MSGOCCSPECREC2_0x1f402_12"
-                         connector="CONNECTOR1_2_0x1f402_12" />
-                <message xmi:type="uml:Message" xmi:id="MSG1_0x1f402_12" name="" messageSort="reply"
-                         sendEvent="MSGOCCSPECSEND1_0x1f402_12" receiveEvent="MSGOCCSPECREC1_0x1f402_12"
-                         connector="CONNECTOR1_2_0x1f402_12" />
-            </ownedBehavior>
-            <ownedAttribute xmi:type="uml:Property" xmi:id="COLLATTR1_0x1f402_12" name="a" type="0x1f502_4" />
-            <ownedAttribute xmi:type="uml:Property" xmi:id="COLLATTR2_0x1f402_12" name="" type="0x1f582_4" />
-        </packagedElement>
-    </packagedElement>
-    <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="SENDOPEREVT1_0x81_22" name="answer"
-                     operation="0x1f582_2" />
-    <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="RECOPEREVT1_0x81_22" name="answer"
-                     operation="0x1f582_2" />
-    <packagedElement xmi:type="uml:ExecutionEvent" xmi:id="RECEVT2_0x81_22" name="" />
-    <packagedElement xmi:type="uml:ExecutionEvent" xmi:id="SENDEVT1_0x81_22" name="" />
-</uml:Model>
+<java:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:java="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java" xmi:id="_PYE3oE0VEeeM143ZRH6p9g" name="fr.inria.atlanmod.kyanos.tests">
+  <ownedElements xmi:id="_PYNagE0VEeeM143ZRH6p9g" name="fr">
+    <ownedPackages xmi:id="_PYOBkE0VEeeM143ZRH6p9g" name="inria">
+      <ownedPackages xmi:id="_PYOBkU0VEeeM143ZRH6p9g" name="atlanmod">
+        <ownedPackages xmi:id="_PYOooE0VEeeM143ZRH6p9g" name="kyanos">
+          <ownedPackages xmi:id="_PYOooU0VEeeM143ZRH6p9g" name="tests">
+            <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PYOook0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="TestCreateResource">
+              <modifier xmi:id="_PYUIME0VEeeM143ZRH6p9g" visibility="public"/>
+              <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PYUvQE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                <annotations xmi:id="_PYUvQU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYVWUE0VEeeM143ZRH6p9g" type="_PZfM5E0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYVWUU0VEeeM143ZRH6p9g" visibility="public"/>
+                <type xmi:id="_PYVWUk0VEeeM143ZRH6p9g" type="_PZfz8E0VEeeM143ZRH6p9g"/>
+                <fragments xmi:id="_PYVWU00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="folder">
+                  <initializer xsi:type="java:ClassInstanceCreation" xmi:id="_PYV9YE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZfz8U0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYV9YU0VEeeM143ZRH6p9g" type="_PZfz8E0VEeeM143ZRH6p9g"/>
+                  </initializer>
+                </fragments>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PYV9Yk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="setUpBeforeClass">
+                <annotations xmi:id="_PYWkcE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYWkcU0VEeeM143ZRH6p9g" type="_PZfM400VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYWkck0VEeeM143ZRH6p9g" visibility="public" static="true"/>
+                <body xmi:id="_PYWkc00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PYWkdE0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PYWkdU0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PYXLgE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="tearDownAfterClass">
+                <annotations xmi:id="_PYXLgU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYXLgk0VEeeM143ZRH6p9g" type="_PZfM4U0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYXLg00VEeeM143ZRH6p9g" visibility="public" static="true"/>
+                <body xmi:id="_PYXLhE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PYXLhU0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PYXLhk0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PYXLh00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="setUp">
+                <annotations xmi:id="_PYXykE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYXykU0VEeeM143ZRH6p9g" type="_PZfM4k0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYXykk0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PYXyk00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PYXylE0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PYXylU0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PYXylk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="tearDown">
+                <annotations xmi:id="_PYXyl00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYXymE0VEeeM143ZRH6p9g" type="_PZfM4E0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYXymU0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PYYZoE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PYYZoU0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PYYZok0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PYYZo00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="test">
+                <annotations xmi:id="_PYYZpE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYYZpU0VEeeM143ZRH6p9g" type="_PZfM5U0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYYZpk0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PYYZp00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYZAsE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYZAsU0VEeeM143ZRH6p9g" type="_PZd-xU0VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYZnwE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="resourceSet" usageInVariableAccess="_PYegQE0VEeeM143ZRH6p9g _PYg8g00VEeeM143ZRH6p9g _PYj_0E0VEeeM143ZRH6p9g _PYwNFE0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:ClassInstanceCreation" xmi:id="_PYaO0E0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZel0E0VEeeM143ZRH6p9g">
+                        <type xmi:id="_PYaO0U0VEeeM143ZRH6p9g" type="_PZd-0E0VEeeM143ZRH6p9g"/>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PYaO0k0VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYaO000VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYaO1E0VEeeM143ZRH6p9g" type="_PZcJoE0VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYaO1U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="exampleEObject" usageInVariableAccess="_PYegRE0VEeeM143ZRH6p9g _PYhjkU0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:NullLiteral" xmi:id="_PYaO1k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g"/>
+                    </fragments>
+                    <modifier xmi:id="_PYaO100VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:Block" xmi:id="_PYbc8E0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYbc8U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PYbc8k0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PYbc800VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="uri" usageInVariableAccess="_PYd5NE0VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PYcEAE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZcJkE0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:MethodInvocation" xmi:id="_PYcEAU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZaUYE0VEeeM143ZRH6p9g">
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PYcrEE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" escapedValue="&quot;/{0}/{1}&quot;"/>
+                            <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYdSIE0VEeeM143ZRH6p9g" variable="_PZDIAE0VEeeM143ZRH6p9g">
+                              <qualifier xsi:type="java:TypeAccess" xmi:id="_PYdSIU0VEeeM143ZRH6p9g" type="_PZCg8E0VEeeM143ZRH6p9g"/>
+                            </arguments>
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PYdSIk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" escapedValue="&quot;resources/fr.inria.atlanmod.neo4emf.neo4jresolver_java.xmi&quot;"/>
+                            <expression xsi:type="java:TypeAccess" xmi:id="_PYdSI00VEeeM143ZRH6p9g" type="_PZZtYU0VEeeM143ZRH6p9g"/>
+                          </arguments>
+                          <arguments xsi:type="java:BooleanLiteral" xmi:id="_PYdSJE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" value="true"/>
+                          <expression xsi:type="java:TypeAccess" xmi:id="_PYdSJU0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PYdSJk0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYd5ME0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PYd5MU0VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PYd5Mk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="resource" usageInVariableAccess="_PYfHUU0VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PYd5M00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZd-xk0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYd5NE0VEeeM143ZRH6p9g" variable="_PYbc800VEeeM143ZRH6p9g"/>
+                          <arguments xsi:type="java:BooleanLiteral" xmi:id="_PYd5NU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" value="true"/>
+                          <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYegQE0VEeeM143ZRH6p9g" variable="_PYZnwE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PYegQU0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:ExpressionStatement" xmi:id="_PYegQk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                      <expression xsi:type="java:Assignment" xmi:id="_PYegQ00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                        <leftHandSide xsi:type="java:SingleVariableAccess" xmi:id="_PYegRE0VEeeM143ZRH6p9g" variable="_PYaO1U0VEeeM143ZRH6p9g"/>
+                        <rightHandSide xsi:type="java:MethodInvocation" xmi:id="_PYegRU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZa7hE0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:NumberLiteral" xmi:id="_PYegRk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" tokenValue="0"/>
+                          <expression xsi:type="java:MethodInvocation" xmi:id="_PYfHUE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXuk0VEeeM143ZRH6p9g">
+                            <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYfHUU0VEeeM143ZRH6p9g" variable="_PYd5Mk0VEeeM143ZRH6p9g"/>
+                          </expression>
+                        </rightHandSide>
+                      </expression>
+                    </statements>
+                  </statements>
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYfHUk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <comments xsi:type="java:LineComment" xmi:id="_PYfHU00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" content="//&#x9;&#x9;File file = Paths.get(folder.getRoot().toURI()).resolve(UUID.randomUUID().toString()).toFile();" prefixOfParent="true"/>
+                    <type xmi:id="_PYfHVE0VEeeM143ZRH6p9g" type="_PZKcwk0VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYfHVU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="file" usageInVariableAccess="_PYgVcE0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:MethodInvocation" xmi:id="_PYfHVk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZZtWk0VEeeM143ZRH6p9g">
+                        <expression xsi:type="java:MethodInvocation" xmi:id="_PYfHV00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZZtV00VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:MethodInvocation" xmi:id="_PYfHWE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZa7gE0VEeeM143ZRH6p9g">
+                            <expression xsi:type="java:MethodInvocation" xmi:id="_PYfHWU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZa7f00VEeeM143ZRH6p9g">
+                              <expression xsi:type="java:TypeAccess" xmi:id="_PYfuYE0VEeeM143ZRH6p9g" type="_PZa7fk0VEeeM143ZRH6p9g"/>
+                            </expression>
+                          </arguments>
+                          <expression xsi:type="java:MethodInvocation" xmi:id="_PYfuYU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZZtUU0VEeeM143ZRH6p9g">
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PYfuYk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" escapedValue="&quot;c:\\Tests\\&quot;"/>
+                            <expression xsi:type="java:TypeAccess" xmi:id="_PYfuY00VEeeM143ZRH6p9g" type="_PZZtUE0VEeeM143ZRH6p9g"/>
+                          </expression>
+                        </expression>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PYfuZE0VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYfuZU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYfuZk0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYfuZ00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="uri" usageInVariableAccess="_PYg8gk0VEeeM143ZRH6p9g _PYixtE0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:MethodInvocation" xmi:id="_PYfuaE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZJ1tE0VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYgVcE0VEeeM143ZRH6p9g" variable="_PYfHVU0VEeeM143ZRH6p9g"/>
+                        <expression xsi:type="java:TypeAccess" xmi:id="_PYgVcU0VEeeM143ZRH6p9g" type="_PZJ1s00VEeeM143ZRH6p9g"/>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PYgVck0VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYgVc00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYgVdE0VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYg8gE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="resource" usageInVariableAccess="_PYhjlE0VEeeM143ZRH6p9g _PYiKqE0VEeeM143ZRH6p9g _PYiKq00VEeeM143ZRH6p9g _PYixsk0VEeeM143ZRH6p9g _PYj_1U0VEeeM143ZRH6p9g _PYw0IU0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:MethodInvocation" xmi:id="_PYg8gU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZd-y00VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYg8gk0VEeeM143ZRH6p9g" variable="_PYfuZ00VEeeM143ZRH6p9g"/>
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYg8g00VEeeM143ZRH6p9g" variable="_PYZnwE0VEeeM143ZRH6p9g"/>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PYg8hE0VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYg8hU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYg8hk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZa7h00VEeeM143ZRH6p9g">
+                      <arguments xsi:type="java:MethodInvocation" xmi:id="_PYhjkE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZel1U0VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYhjkU0VEeeM143ZRH6p9g" variable="_PYaO1U0VEeeM143ZRH6p9g"/>
+                        <expression xsi:type="java:TypeAccess" xmi:id="_PYhjkk0VEeeM143ZRH6p9g" type="_PZel1E0VEeeM143ZRH6p9g"/>
+                      </arguments>
+                      <expression xsi:type="java:MethodInvocation" xmi:id="_PYhjk00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXuk0VEeeM143ZRH6p9g">
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYhjlE0VEeeM143ZRH6p9g" variable="_PYg8gE0VEeeM143ZRH6p9g"/>
+                      </expression>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYhjlU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYhjlk0VEeeM143ZRH6p9g" type="_PZgbBk0VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYhjl00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="options" usageInVariableAccess="_PYiKpE0VEeeM143ZRH6p9g _PYiKp00VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:ClassInstanceCreation" xmi:id="_PYhjmE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZaUbU0VEeeM143ZRH6p9g">
+                        <type xmi:id="_PYhjmU0VEeeM143ZRH6p9g" type="_PZhCEk0VEeeM143ZRH6p9g"/>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PYhjmk0VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYhjm00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <comments xsi:type="java:LineComment" xmi:id="_PYhjnE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" content="//&#x9;&#x9;options.put(KyanosResource.OPTIONS_GRAPH_TYPE, KyanosResource.OPTIONS_GRAPH_TYPE_DEFAULT);" prefixOfParent="true"/>
+                    <comments xsi:type="java:LineComment" xmi:id="_PYhjnU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" content="//&#x9;&#x9;options.put(&quot;blueprints.tg.file-type&quot;, com.tinkerpop.blueprints.impls.tg.TinkerGraph.FileType.GML);" prefixOfParent="true"/>
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYiKoE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZa7d00VEeeM143ZRH6p9g">
+                      <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYiKoU0VEeeM143ZRH6p9g" variable="_PZInkk0VEeeM143ZRH6p9g">
+                        <qualifier xsi:type="java:TypeAccess" xmi:id="_PYiKok0VEeeM143ZRH6p9g" type="_PZInkE0VEeeM143ZRH6p9g"/>
+                      </arguments>
+                      <arguments xsi:type="java:StringLiteral" xmi:id="_PYiKo00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" escapedValue="&quot;com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph&quot;"/>
+                      <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYiKpE0VEeeM143ZRH6p9g" variable="_PYhjl00VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYiKpU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYiKpk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXu00VEeeM143ZRH6p9g">
+                      <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYiKp00VEeeM143ZRH6p9g" variable="_PYhjl00VEeeM143ZRH6p9g"/>
+                      <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYiKqE0VEeeM143ZRH6p9g" variable="_PYg8gE0VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYiKqU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYiKqk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXvk0VEeeM143ZRH6p9g">
+                      <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYiKq00VEeeM143ZRH6p9g" variable="_PYg8gE0VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYixsE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:Assignment" xmi:id="_PYixsU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                      <leftHandSide xsi:type="java:SingleVariableAccess" xmi:id="_PYixsk0VEeeM143ZRH6p9g" variable="_PYg8gE0VEeeM143ZRH6p9g"/>
+                      <rightHandSide xsi:type="java:MethodInvocation" xmi:id="_PYixs00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZd-xk0VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYixtE0VEeeM143ZRH6p9g" variable="_PYfuZ00VEeeM143ZRH6p9g"/>
+                        <arguments xsi:type="java:BooleanLiteral" xmi:id="_PYjYwE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g"/>
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYj_0E0VEeeM143ZRH6p9g" variable="_PYZnwE0VEeeM143ZRH6p9g"/>
+                      </rightHandSide>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYj_0U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYj_0k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXv00VEeeM143ZRH6p9g">
+                      <arguments xsi:type="java:MethodInvocation" xmi:id="_PYj_000VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZaUa00VEeeM143ZRH6p9g">
+                        <expression xsi:type="java:TypeAccess" xmi:id="_PYj_1E0VEeeM143ZRH6p9g" type="_PZaUak0VEeeM143ZRH6p9g"/>
+                      </arguments>
+                      <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYj_1U0VEeeM143ZRH6p9g" variable="_PYg8gE0VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PYj_1k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PYl1AE0VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PYuX4E0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" name="dummyResource" usageInVariableAccess="_PYw0JE0VEeeM143ZRH6p9g _PYxbNE0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:MethodInvocation" xmi:id="_PYuX4U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZd-y00VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:MethodInvocation" xmi:id="_PYuX4k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZcJlU0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:MethodInvocation" xmi:id="_PYu-8E0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZZtW00VEeeM143ZRH6p9g">
+                            <expression xsi:type="java:MethodInvocation" xmi:id="_PYu-8U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZZtV00VEeeM143ZRH6p9g">
+                              <arguments xsi:type="java:StringLiteral" xmi:id="_PYvmAE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" escapedValue="&quot;dump.xmi&quot;"/>
+                              <expression xsi:type="java:MethodInvocation" xmi:id="_PYwNEE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZZtUU0VEeeM143ZRH6p9g">
+                                <arguments xsi:type="java:StringLiteral" xmi:id="_PYwNEU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" escapedValue="&quot;c:\\Tests\\&quot;"/>
+                                <expression xsi:type="java:TypeAccess" xmi:id="_PYwNEk0VEeeM143ZRH6p9g" type="_PZZtUE0VEeeM143ZRH6p9g"/>
+                              </expression>
+                            </expression>
+                          </arguments>
+                          <expression xsi:type="java:TypeAccess" xmi:id="_PYwNE00VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                        </arguments>
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYwNFE0VEeeM143ZRH6p9g" variable="_PYZnwE0VEeeM143ZRH6p9g"/>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PYwNFU0VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYwNFk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYwNF00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZa7ik0VEeeM143ZRH6p9g">
+                      <arguments xsi:type="java:MethodInvocation" xmi:id="_PYwNGE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZel2E0VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:MethodInvocation" xmi:id="_PYw0IE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXuk0VEeeM143ZRH6p9g">
+                          <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYw0IU0VEeeM143ZRH6p9g" variable="_PYg8gE0VEeeM143ZRH6p9g"/>
+                        </arguments>
+                        <expression xsi:type="java:TypeAccess" xmi:id="_PYw0Ik0VEeeM143ZRH6p9g" type="_PZel1E0VEeeM143ZRH6p9g"/>
+                      </arguments>
+                      <expression xsi:type="java:MethodInvocation" xmi:id="_PYw0I00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXuk0VEeeM143ZRH6p9g">
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYw0JE0VEeeM143ZRH6p9g" variable="_PYuX4E0VEeeM143ZRH6p9g"/>
+                      </expression>
+                    </expression>
+                  </statements>
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PYw0JU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:MethodInvocation" xmi:id="_PYw0Jk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZdXwk0VEeeM143ZRH6p9g">
+                      <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PYxbME0VEeeM143ZRH6p9g" variable="_PZX4JE0VEeeM143ZRH6p9g">
+                        <qualifier xsi:type="java:TypeAccess" xmi:id="_PYxbMU0VEeeM143ZRH6p9g" type="_PZX4Ik0VEeeM143ZRH6p9g"/>
+                      </arguments>
+                      <arguments xsi:type="java:MethodInvocation" xmi:id="_PYxbMk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" method="_PZaUa00VEeeM143ZRH6p9g">
+                        <expression xsi:type="java:TypeAccess" xmi:id="_PYxbM00VEeeM143ZRH6p9g" type="_PZaUak0VEeeM143ZRH6p9g"/>
+                      </arguments>
+                      <expression xsi:type="java:SingleVariableAccess" xmi:id="_PYxbNE0VEeeM143ZRH6p9g" variable="_PYuX4E0VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                </body>
+                <thrownExceptions xmi:id="_PYxbNU0VEeeM143ZRH6p9g" type="_PZLD0U0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PYyCQE0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+            </ownedElements>
+            <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PYyCQU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="TestXmi">
+              <modifier xmi:id="_PYyCQk0VEeeM143ZRH6p9g" visibility="public"/>
+              <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PYzQYE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                <annotations xmi:id="_PYzQYU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PYzQYk0VEeeM143ZRH6p9g" type="_PZfM5E0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PYz3cE0VEeeM143ZRH6p9g" visibility="public"/>
+                <type xmi:id="_PY0egE0VEeeM143ZRH6p9g" type="_PZfz8E0VEeeM143ZRH6p9g"/>
+                <fragments xmi:id="_PY0egU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="folder">
+                  <initializer xsi:type="java:ClassInstanceCreation" xmi:id="_PY0egk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZfz8U0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PY0eg00VEeeM143ZRH6p9g" type="_PZfz8E0VEeeM143ZRH6p9g"/>
+                  </initializer>
+                </fragments>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PY0ehE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="setUpBeforeClass">
+                <annotations xmi:id="_PY1FkE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PY1FkU0VEeeM143ZRH6p9g" type="_PZfM400VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PY1Fkk0VEeeM143ZRH6p9g" visibility="public" static="true"/>
+                <body xmi:id="_PY1Fk00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PY1FlE0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PY1FlU0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PY1soE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="tearDownAfterClass">
+                <annotations xmi:id="_PY1soU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PY1sok0VEeeM143ZRH6p9g" type="_PZfM4U0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PY1so00VEeeM143ZRH6p9g" visibility="public" static="true"/>
+                <body xmi:id="_PY2TsE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PY26wE0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PY26wU0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PY26wk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="setUp">
+                <annotations xmi:id="_PY26w00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PY26xE0VEeeM143ZRH6p9g" type="_PZfM4k0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PY26xU0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PY26xk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PY26x00VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PY26yE0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PY26yU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="tearDown">
+                <annotations xmi:id="_PY26yk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PY3h0E0VEeeM143ZRH6p9g" type="_PZfM4E0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PY3h0U0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PY3h0k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g"/>
+                <thrownExceptions xmi:id="_PY3h000VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PY4I4E0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PY4I4U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="test">
+                <annotations xmi:id="_PY4I4k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PY4I400VEeeM143ZRH6p9g" type="_PZfM5U0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PY4I5E0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PY4I5U0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                  <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PY4I5k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                    <type xmi:id="_PY4v8E0VEeeM143ZRH6p9g" type="_PZd-xU0VEeeM143ZRH6p9g"/>
+                    <fragments xmi:id="_PY6lIE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="resourceSet" usageInVariableAccess="_PY7zQE0VEeeM143ZRH6p9g _PZAEtE0VEeeM143ZRH6p9g">
+                      <initializer xsi:type="java:ClassInstanceCreation" xmi:id="_PY6lIU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZel0E0VEeeM143ZRH6p9g">
+                        <type xmi:id="_PY6lIk0VEeeM143ZRH6p9g" type="_PZd-0E0VEeeM143ZRH6p9g"/>
+                      </initializer>
+                    </fragments>
+                    <modifier xmi:id="_PY6lI00VEeeM143ZRH6p9g"/>
+                  </statements>
+                  <statements xsi:type="java:Block" xmi:id="_PY6lJE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PY6lJU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PY6lJk0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PY6lJ00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="uri" usageInVariableAccess="_PY7MPk0VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PY7MME0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZcJkE0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:MethodInvocation" xmi:id="_PY7MMU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZaUYE0VEeeM143ZRH6p9g">
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PY7MMk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" escapedValue="&quot;/{0}/{1}&quot;"/>
+                            <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PY7MM00VEeeM143ZRH6p9g" variable="_PZDIAE0VEeeM143ZRH6p9g">
+                              <qualifier xsi:type="java:TypeAccess" xmi:id="_PY7MNE0VEeeM143ZRH6p9g" type="_PZCg8E0VEeeM143ZRH6p9g"/>
+                            </arguments>
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PY7MNU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" escapedValue="&quot;resources/example.ecore&quot;"/>
+                            <expression xsi:type="java:TypeAccess" xmi:id="_PY7MNk0VEeeM143ZRH6p9g" type="_PZZtYU0VEeeM143ZRH6p9g"/>
+                          </arguments>
+                          <arguments xsi:type="java:BooleanLiteral" xmi:id="_PY7MN00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" value="true"/>
+                          <expression xsi:type="java:TypeAccess" xmi:id="_PY7MOE0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PY7MOU0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PY7MOk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PY7MO00VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PY7MPE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="resource" usageInVariableAccess="_PY8aUE0VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PY7MPU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZd-xk0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PY7MPk0VEeeM143ZRH6p9g" variable="_PY6lJ00VEeeM143ZRH6p9g"/>
+                          <arguments xsi:type="java:BooleanLiteral" xmi:id="_PY7MP00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" value="true"/>
+                          <expression xsi:type="java:SingleVariableAccess" xmi:id="_PY7zQE0VEeeM143ZRH6p9g" variable="_PY6lIE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PY7zQU0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PY7zQk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PY7zQ00VEeeM143ZRH6p9g" type="_PZcwoE0VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PY7zRE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="ePackage" usageInVariableAccess="_PY-2kk0VEeeM143ZRH6p9g _PY-2k00VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:CastExpression" xmi:id="_PY7zRU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                          <expression xsi:type="java:MethodInvocation" xmi:id="_PY7zRk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZa7hE0VEeeM143ZRH6p9g">
+                            <arguments xsi:type="java:NumberLiteral" xmi:id="_PY7zR00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" tokenValue="0"/>
+                            <expression xsi:type="java:MethodInvocation" xmi:id="_PY7zSE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZdXuk0VEeeM143ZRH6p9g">
+                              <expression xsi:type="java:SingleVariableAccess" xmi:id="_PY8aUE0VEeeM143ZRH6p9g" variable="_PY7MPE0VEeeM143ZRH6p9g"/>
+                            </expression>
+                          </expression>
+                          <type xmi:id="_PY-PgE0VEeeM143ZRH6p9g" type="_PZcwoE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PY-PgU0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:ExpressionStatement" xmi:id="_PY-Pgk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <expression xsi:type="java:MethodInvocation" xmi:id="_PY-2kE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZa7d00VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:MethodInvocation" xmi:id="_PY-2kU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZcwpU0VEeeM143ZRH6p9g">
+                          <expression xsi:type="java:SingleVariableAccess" xmi:id="_PY-2kk0VEeeM143ZRH6p9g" variable="_PY7zRE0VEeeM143ZRH6p9g"/>
+                        </arguments>
+                        <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PY-2k00VEeeM143ZRH6p9g" variable="_PY7zRE0VEeeM143ZRH6p9g"/>
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PY-2lE0VEeeM143ZRH6p9g" variable="_PZcwo00VEeeM143ZRH6p9g">
+                          <qualifier xsi:type="java:TypeAccess" xmi:id="_PY-2lU0VEeeM143ZRH6p9g" type="_PZcwoU0VEeeM143ZRH6p9g"/>
+                        </expression>
+                      </expression>
+                    </statements>
+                  </statements>
+                  <statements xsi:type="java:Block" xmi:id="_PY-2lk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PY-2l00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PY-2mE0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PY_doE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="uri" usageInVariableAccess="_PZAEsk0VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PY_doU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZcJkE0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:MethodInvocation" xmi:id="_PY_dok0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZaUYE0VEeeM143ZRH6p9g">
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PY_do00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" escapedValue="&quot;/{0}/{1}&quot;"/>
+                            <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PY_dpE0VEeeM143ZRH6p9g" variable="_PZDIAE0VEeeM143ZRH6p9g">
+                              <qualifier xsi:type="java:TypeAccess" xmi:id="_PY_dpU0VEeeM143ZRH6p9g" type="_PZCg8E0VEeeM143ZRH6p9g"/>
+                            </arguments>
+                            <arguments xsi:type="java:StringLiteral" xmi:id="_PY_dpk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" escapedValue="&quot;resources/example.xmi&quot;"/>
+                            <expression xsi:type="java:TypeAccess" xmi:id="_PY_dp00VEeeM143ZRH6p9g" type="_PZZtYU0VEeeM143ZRH6p9g"/>
+                          </arguments>
+                          <arguments xsi:type="java:BooleanLiteral" xmi:id="_PY_dqE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" value="true"/>
+                          <expression xsi:type="java:TypeAccess" xmi:id="_PY_dqU0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PY_dqk0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PY_dq00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PY_drE0VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PZAEsE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="resource" usageInVariableAccess="_PZAEvE0VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PZAEsU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZd-xk0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:SingleVariableAccess" xmi:id="_PZAEsk0VEeeM143ZRH6p9g" variable="_PY_doE0VEeeM143ZRH6p9g"/>
+                          <arguments xsi:type="java:BooleanLiteral" xmi:id="_PZAEs00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" value="true"/>
+                          <expression xsi:type="java:SingleVariableAccess" xmi:id="_PZAEtE0VEeeM143ZRH6p9g" variable="_PY6lIE0VEeeM143ZRH6p9g"/>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PZAEtU0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:VariableDeclarationStatement" xmi:id="_PZAEtk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <type xmi:id="_PZAEt00VEeeM143ZRH6p9g" type="_PZcJoE0VEeeM143ZRH6p9g"/>
+                      <fragments xmi:id="_PZAEuE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" name="eObject" usageInVariableAccess="_PZAExE0VEeeM143ZRH6p9g _PZAEw00VEeeM143ZRH6p9g">
+                        <initializer xsi:type="java:MethodInvocation" xmi:id="_PZAEuU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZa7hE0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:NumberLiteral" xmi:id="_PZAEuk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" tokenValue="0"/>
+                          <expression xsi:type="java:MethodInvocation" xmi:id="_PZAEu00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZdXuk0VEeeM143ZRH6p9g">
+                            <expression xsi:type="java:SingleVariableAccess" xmi:id="_PZAEvE0VEeeM143ZRH6p9g" variable="_PZAEsE0VEeeM143ZRH6p9g"/>
+                          </expression>
+                        </initializer>
+                      </fragments>
+                      <modifier xmi:id="_PZAEvU0VEeeM143ZRH6p9g"/>
+                    </statements>
+                    <statements xsi:type="java:ExpressionStatement" xmi:id="_PZAEvk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g">
+                      <expression xsi:type="java:MethodInvocation" xmi:id="_PZAEv00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZcJoU0VEeeM143ZRH6p9g">
+                        <arguments xsi:type="java:MethodInvocation" xmi:id="_PZAEwE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZdXsE0VEeeM143ZRH6p9g">
+                          <arguments xsi:type="java:StringLiteral" xmi:id="_PZAEwU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" escapedValue="&quot;manyStrings&quot;"/>
+                          <expression xsi:type="java:MethodInvocation" xmi:id="_PZAEwk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" method="_PZcJpE0VEeeM143ZRH6p9g">
+                            <expression xsi:type="java:SingleVariableAccess" xmi:id="_PZAEw00VEeeM143ZRH6p9g" variable="_PZAEuE0VEeeM143ZRH6p9g"/>
+                          </expression>
+                        </arguments>
+                        <expression xsi:type="java:SingleVariableAccess" xmi:id="_PZAExE0VEeeM143ZRH6p9g" variable="_PZAEuE0VEeeM143ZRH6p9g"/>
+                      </expression>
+                    </statements>
+                  </statements>
+                </body>
+                <thrownExceptions xmi:id="_PZAExU0VEeeM143ZRH6p9g" type="_PZLD0U0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PZAExk0VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+            </ownedElements>
+            <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZCg8E0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="KyanosTestsPlugin" usagesInTypeAccess="_PYdSIU0VEeeM143ZRH6p9g _PY7MNE0VEeeM143ZRH6p9g _PY_dpU0VEeeM143ZRH6p9g _PZGyZk0VEeeM143ZRH6p9g _PZIAjU0VEeeM143ZRH6p9g">
+              <modifier xmi:id="_PZCg8U0VEeeM143ZRH6p9g" visibility="public"/>
+              <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PZCg8k0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                <modifier xmi:id="_PZCg800VEeeM143ZRH6p9g" visibility="public" inheritance="final" static="true"/>
+                <type xmi:id="_PZCg9E0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+                <fragments xmi:id="_PZDIAE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="PLUGIN_ID" usageInVariableAccess="_PYdSIE0VEeeM143ZRH6p9g _PY7MM00VEeeM143ZRH6p9g _PY_dpE0VEeeM143ZRH6p9g">
+                  <initializer xsi:type="java:StringLiteral" xmi:id="_PZDIAU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" escapedValue="&quot;fr.inria.atlanmod.kyanos.tests&quot;"/>
+                </fragments>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PZDIAk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                <modifier xmi:id="_PZDIA00VEeeM143ZRH6p9g" visibility="private" static="true"/>
+                <type xmi:id="_PZDIBE0VEeeM143ZRH6p9g" type="_PZfz-U0VEeeM143ZRH6p9g"/>
+                <fragments xmi:id="_PZDIBU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="context" usageInVariableAccess="_PZFkQ00VEeeM143ZRH6p9g _PZGyZU0VEeeM143ZRH6p9g _PZIAjE0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZE9ME0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="getContext">
+                <modifier xmi:id="_PZFkQE0VEeeM143ZRH6p9g" static="true"/>
+                <body xmi:id="_PZFkQU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                  <statements xsi:type="java:ReturnStatement" xmi:id="_PZFkQk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:SingleVariableAccess" xmi:id="_PZFkQ00VEeeM143ZRH6p9g" variable="_PZDIBU0VEeeM143ZRH6p9g"/>
+                  </statements>
+                </body>
+                <returnType xmi:id="_PZGLUE0VEeeM143ZRH6p9g" type="_PZfz-U0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZGLUU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="start">
+                <comments xsi:type="java:BlockComment" xmi:id="_PZGLUk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" content="/*&#xD;&#xA;&#x9; * (non-Javadoc)&#xD;&#xA;&#x9; * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)&#xD;&#xA;&#x9; */" prefixOfParent="true"/>
+                <annotations xmi:id="_PZGLU00VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PZGyYE0VEeeM143ZRH6p9g" type="_PZZGQE0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PZGyYU0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PZGyYk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PZGyY00VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:Assignment" xmi:id="_PZGyZE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                      <leftHandSide xsi:type="java:SingleVariableAccess" xmi:id="_PZGyZU0VEeeM143ZRH6p9g" variable="_PZDIBU0VEeeM143ZRH6p9g">
+                        <qualifier xsi:type="java:TypeAccess" xmi:id="_PZGyZk0VEeeM143ZRH6p9g" type="_PZCg8E0VEeeM143ZRH6p9g"/>
+                      </leftHandSide>
+                      <rightHandSide xsi:type="java:SingleVariableAccess" xmi:id="_PZGyZ00VEeeM143ZRH6p9g" variable="_PZGyaE0VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                </body>
+                <parameters xmi:id="_PZGyaE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="bundleContext" usageInVariableAccess="_PZGyZ00VEeeM143ZRH6p9g">
+                  <modifier xmi:id="_PZIAgE0VEeeM143ZRH6p9g"/>
+                  <type xmi:id="_PZIAgU0VEeeM143ZRH6p9g" type="_PZfz-U0VEeeM143ZRH6p9g"/>
+                </parameters>
+                <thrownExceptions xmi:id="_PZIAgk0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PZIAg00VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZIAhE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="stop">
+                <comments xsi:type="java:BlockComment" xmi:id="_PZIAhU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" content="/*&#xD;&#xA;&#x9; * (non-Javadoc)&#xD;&#xA;&#x9; * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)&#xD;&#xA;&#x9; */" prefixOfParent="true"/>
+                <annotations xmi:id="_PZIAhk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                  <type xmi:id="_PZIAh00VEeeM143ZRH6p9g" type="_PZZGQE0VEeeM143ZRH6p9g"/>
+                </annotations>
+                <modifier xmi:id="_PZIAiE0VEeeM143ZRH6p9g" visibility="public"/>
+                <body xmi:id="_PZIAiU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                  <statements xsi:type="java:ExpressionStatement" xmi:id="_PZIAik0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                    <expression xsi:type="java:Assignment" xmi:id="_PZIAi00VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g">
+                      <leftHandSide xsi:type="java:SingleVariableAccess" xmi:id="_PZIAjE0VEeeM143ZRH6p9g" variable="_PZDIBU0VEeeM143ZRH6p9g">
+                        <qualifier xsi:type="java:TypeAccess" xmi:id="_PZIAjU0VEeeM143ZRH6p9g" type="_PZCg8E0VEeeM143ZRH6p9g"/>
+                      </leftHandSide>
+                      <rightHandSide xsi:type="java:NullLiteral" xmi:id="_PZIAjk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g"/>
+                    </expression>
+                  </statements>
+                </body>
+                <parameters xmi:id="_PZIAj00VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" name="bundleContext">
+                  <modifier xmi:id="_PZIAkE0VEeeM143ZRH6p9g"/>
+                  <type xmi:id="_PZIAkU0VEeeM143ZRH6p9g" type="_PZfz-U0VEeeM143ZRH6p9g"/>
+                </parameters>
+                <thrownExceptions xmi:id="_PZIAkk0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+                <returnType xmi:id="_PZIAk00VEeeM143ZRH6p9g" type="_PZgbAk0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <superInterfaces xmi:id="_PZIAlE0VEeeM143ZRH6p9g" type="_PZfz-E0VEeeM143ZRH6p9g"/>
+            </ownedElements>
+          </ownedPackages>
+          <ownedPackages xmi:id="_PZIAlU0VEeeM143ZRH6p9g" name="core" proxy="true">
+            <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZInkE0VEeeM143ZRH6p9g" name="KyanosResource" proxy="true" usagesInImports="_PZhpNk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYiKok0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PZInkU0VEeeM143ZRH6p9g" proxy="true">
+                <fragments xmi:id="_PZInkk0VEeeM143ZRH6p9g" name="OPTIONS_GRAPH_TYPE" proxy="true" usageInVariableAccess="_PYiKoU0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <superInterfaces xmi:id="_PZJ1sE0VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+              <superInterfaces xmi:id="_PZJ1sU0VEeeM143ZRH6p9g" type="_PZdXuE0VEeeM143ZRH6p9g"/>
+            </ownedElements>
+          </ownedPackages>
+          <ownedPackages xmi:id="_PZJ1sk0VEeeM143ZRH6p9g" name="util" proxy="true">
+            <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZJ1s00VEeeM143ZRH6p9g" name="KyanosURI" proxy="true" usagesInImports="_PZhpN00VEeeM143ZRH6p9g" usagesInTypeAccess="_PYgVcU0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZJ1tE0VEeeM143ZRH6p9g" name="createKyanosURI" proxy="true" usages="_PYfuaE0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZJ1tU0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZJ1tk0VEeeM143ZRH6p9g" type="_PZKcwk0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <superClass xmi:id="_PZJ1t00VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+            </ownedElements>
+          </ownedPackages>
+        </ownedPackages>
+      </ownedPackages>
+    </ownedPackages>
+  </ownedElements>
+  <ownedElements xmi:id="_PZKcwE0VEeeM143ZRH6p9g" name="java" proxy="true">
+    <ownedPackages xmi:id="_PZKcwU0VEeeM143ZRH6p9g" name="io" proxy="true">
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZKcwk0VEeeM143ZRH6p9g" name="File" proxy="true" usagesInImports="_PZhpIU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYfHVE0VEeeM143ZRH6p9g _PZJ1tk0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZKcw00VEeeM143ZRH6p9g" type="_PZLD0E0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZKcxE0VEeeM143ZRH6p9g" type="_PZQjYE0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZLD0E0VEeeM143ZRH6p9g" name="Serializable" proxy="true" usagesInTypeAccess="_PZKcw00VEeeM143ZRH6p9g _PZSYkU0VEeeM143ZRH6p9g _PZaUZ00VEeeM143ZRH6p9g _PZaUcE0VEeeM143ZRH6p9g _PZa7gU0VEeeM143ZRH6p9g _PZWC8E0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZLD0U0VEeeM143ZRH6p9g" name="IOException" proxy="true" usagesInImports="_PZhpIk0VEeeM143ZRH6p9g _PZhpOU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYxbNU0VEeeM143ZRH6p9g _PZAExU0VEeeM143ZRH6p9g">
+        <superClass xmi:id="_PZLq4E0VEeeM143ZRH6p9g" type="_PZRxgE0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZLq4U0VEeeM143ZRH6p9g" name="OutputStream" proxy="true" usagesInTypeAccess="_PZd-wU0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZMR8E0VEeeM143ZRH6p9g" type="_PZM5AU0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZM5AE0VEeeM143ZRH6p9g" type="_PZOHIE0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZM5AU0VEeeM143ZRH6p9g" name="Closeable" proxy="true" usagesInTypeAccess="_PZMR8E0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZM5Ak0VEeeM143ZRH6p9g" type="_PZX4IU0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZOHIE0VEeeM143ZRH6p9g" name="Flushable" proxy="true" usagesInTypeAccess="_PZM5AE0VEeeM143ZRH6p9g"/>
+    </ownedPackages>
+    <ownedPackages xmi:id="_PZOuME0VEeeM143ZRH6p9g" name="lang" proxy="true">
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZQjYE0VEeeM143ZRH6p9g" name="Comparable" proxy="true" usagesInTypeAccess="_PZKcxE0VEeeM143ZRH6p9g _PZa7gk0VEeeM143ZRH6p9g _PZWqAE0VEeeM143ZRH6p9g _PZZtXE0VEeeM143ZRH6p9g">
+        <typeParameters xmi:id="_PZQjYU0VEeeM143ZRH6p9g" name="T" proxy="true"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZRxgE0VEeeM143ZRH6p9g" name="Exception" proxy="true" usagesInTypeAccess="_PZLq4E0VEeeM143ZRH6p9g _PYWkdE0VEeeM143ZRH6p9g _PYXLhU0VEeeM143ZRH6p9g _PYXylE0VEeeM143ZRH6p9g _PYYZoU0VEeeM143ZRH6p9g _PY1FlE0VEeeM143ZRH6p9g _PY26wE0VEeeM143ZRH6p9g _PY26x00VEeeM143ZRH6p9g _PY3h000VEeeM143ZRH6p9g _PZIAgk0VEeeM143ZRH6p9g _PZIAkk0VEeeM143ZRH6p9g">
+        <superClass xmi:id="_PZRxgU0VEeeM143ZRH6p9g" type="_PZSYkE0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZSYkE0VEeeM143ZRH6p9g" name="Throwable" proxy="true" usagesInTypeAccess="_PZRxgU0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZSYkU0VEeeM143ZRH6p9g" type="_PZLD0E0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZS_oE0VEeeM143ZRH6p9g" name="Cloneable" proxy="true" usagesInTypeAccess="_PZaUaE0VEeeM143ZRH6p9g _PZaUb00VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZU00E0VEeeM143ZRH6p9g" name="String" proxy="true" usagesInTypeAccess="_PZcJkk0VEeeM143ZRH6p9g _PZaUYk0VEeeM143ZRH6p9g _PZZtU00VEeeM143ZRH6p9g _PZhCGU0VEeeM143ZRH6p9g _PZZtWU0VEeeM143ZRH6p9g _PZhCEE0VEeeM143ZRH6p9g _PZhCFE0VEeeM143ZRH6p9g _PZcJl00VEeeM143ZRH6p9g _PZdXsk0VEeeM143ZRH6p9g _PZCg9E0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZWC8E0VEeeM143ZRH6p9g" type="_PZLD0E0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZWqAE0VEeeM143ZRH6p9g" type="_PZQjYE0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZWqAU0VEeeM143ZRH6p9g" type="_PZWqAk0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZWqAk0VEeeM143ZRH6p9g" name="CharSequence" proxy="true" usagesInTypeAccess="_PZWqAU0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZWqA00VEeeM143ZRH6p9g" name="Object" proxy="true" usagesInTypeAccess="_PZhCF00VEeeM143ZRH6p9g _PZa7iU0VEeeM143ZRH6p9g _PZhCEU0VEeeM143ZRH6p9g _PZhCFU0VEeeM143ZRH6p9g _PZa7eU0VEeeM143ZRH6p9g _PZa7e00VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZWqBE0VEeeM143ZRH6p9g" name="Iterable" proxy="true" usagesInTypeAccess="_PZbihU0VEeeM143ZRH6p9g _PZZtXU0VEeeM143ZRH6p9g">
+        <typeParameters xmi:id="_PZX4IE0VEeeM143ZRH6p9g" name="T" proxy="true"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZX4IU0VEeeM143ZRH6p9g" name="AutoCloseable" proxy="true" usagesInTypeAccess="_PZM5Ak0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZX4Ik0VEeeM143ZRH6p9g" name="System" proxy="true" usagesInTypeAccess="_PYxbMU0VEeeM143ZRH6p9g">
+        <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PZX4I00VEeeM143ZRH6p9g" proxy="true">
+          <fragments xmi:id="_PZX4JE0VEeeM143ZRH6p9g" name="out" proxy="true" usageInVariableAccess="_PYxbME0VEeeM143ZRH6p9g"/>
+        </bodyDeclarations>
+      </ownedElements>
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZZGQE0VEeeM143ZRH6p9g" name="Override" proxy="true" usagesInTypeAccess="_PZGyYE0VEeeM143ZRH6p9g _PZIAh00VEeeM143ZRH6p9g"/>
+    </ownedPackages>
+    <ownedPackages xmi:id="_PZZGQU0VEeeM143ZRH6p9g" name="nio" proxy="true">
+      <ownedPackages xmi:id="_PZZGQk0VEeeM143ZRH6p9g" name="file" proxy="true">
+        <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZZtUE0VEeeM143ZRH6p9g" name="Paths" proxy="true" usagesInImports="_PZhpI00VEeeM143ZRH6p9g" usagesInTypeAccess="_PYfuY00VEeeM143ZRH6p9g _PYwNEk0VEeeM143ZRH6p9g">
+          <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZZtUU0VEeeM143ZRH6p9g" name="get" proxy="true" usages="_PYfuYU0VEeeM143ZRH6p9g _PYwNEE0VEeeM143ZRH6p9g">
+            <parameters xmi:id="_PZZtUk0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+              <type xmi:id="_PZZtU00VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+            </parameters>
+            <parameters xmi:id="_PZZtVE0VEeeM143ZRH6p9g" name="arg1" proxy="true">
+              <type xmi:id="_PZZtVU0VEeeM143ZRH6p9g" type="_PZhCGE0VEeeM143ZRH6p9g"/>
+            </parameters>
+          </bodyDeclarations>
+        </ownedElements>
+        <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZZtVk0VEeeM143ZRH6p9g" name="Path" proxy="true">
+          <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZZtV00VEeeM143ZRH6p9g" name="resolve" proxy="true" usages="_PYfHV00VEeeM143ZRH6p9g _PYu-8U0VEeeM143ZRH6p9g">
+            <parameters xmi:id="_PZZtWE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+              <type xmi:id="_PZZtWU0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+            </parameters>
+          </bodyDeclarations>
+          <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZZtWk0VEeeM143ZRH6p9g" name="toFile" proxy="true" usages="_PYfHVk0VEeeM143ZRH6p9g"/>
+          <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZZtW00VEeeM143ZRH6p9g" name="toString" proxy="true" usages="_PYu-8E0VEeeM143ZRH6p9g"/>
+          <superInterfaces xmi:id="_PZZtXE0VEeeM143ZRH6p9g" type="_PZQjYE0VEeeM143ZRH6p9g"/>
+          <superInterfaces xmi:id="_PZZtXU0VEeeM143ZRH6p9g" type="_PZWqBE0VEeeM143ZRH6p9g"/>
+          <superInterfaces xmi:id="_PZZtXk0VEeeM143ZRH6p9g" type="_PZZtX00VEeeM143ZRH6p9g"/>
+        </ownedElements>
+        <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZZtX00VEeeM143ZRH6p9g" name="Watchable" proxy="true" usagesInTypeAccess="_PZZtXk0VEeeM143ZRH6p9g"/>
+      </ownedPackages>
+    </ownedPackages>
+    <ownedPackages xmi:id="_PZZtYE0VEeeM143ZRH6p9g" name="text" proxy="true">
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZZtYU0VEeeM143ZRH6p9g" name="MessageFormat" proxy="true" usagesInImports="_PZhpJE0VEeeM143ZRH6p9g _PZhpOk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYdSI00VEeeM143ZRH6p9g _PY7MNk0VEeeM143ZRH6p9g _PY_dp00VEeeM143ZRH6p9g">
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZaUYE0VEeeM143ZRH6p9g" name="format" proxy="true" usages="_PYcEAU0VEeeM143ZRH6p9g _PY7MMU0VEeeM143ZRH6p9g _PY_dok0VEeeM143ZRH6p9g">
+          <parameters xmi:id="_PZaUYU0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+            <type xmi:id="_PZaUYk0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+          </parameters>
+          <parameters xmi:id="_PZaUY00VEeeM143ZRH6p9g" name="arg1" proxy="true">
+            <type xmi:id="_PZaUZE0VEeeM143ZRH6p9g" type="_PZhCFk0VEeeM143ZRH6p9g"/>
+          </parameters>
+        </bodyDeclarations>
+        <superClass xmi:id="_PZaUZU0VEeeM143ZRH6p9g" type="_PZaUZk0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZaUZk0VEeeM143ZRH6p9g" name="Format" proxy="true" usagesInTypeAccess="_PZaUZU0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZaUZ00VEeeM143ZRH6p9g" type="_PZLD0E0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZaUaE0VEeeM143ZRH6p9g" type="_PZS_oE0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+    </ownedPackages>
+    <ownedPackages xmi:id="_PZaUaU0VEeeM143ZRH6p9g" name="util" proxy="true">
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZaUak0VEeeM143ZRH6p9g" name="Collections" proxy="true" usagesInImports="_PZhpJU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYj_1E0VEeeM143ZRH6p9g _PYxbM00VEeeM143ZRH6p9g">
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZaUa00VEeeM143ZRH6p9g" name="emptyMap" proxy="true" usages="_PYj_000VEeeM143ZRH6p9g _PYxbMk0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZaUbE0VEeeM143ZRH6p9g" name="HashMap" proxy="true" usagesInImports="_PZhpJk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PZhCE00VEeeM143ZRH6p9g">
+        <bodyDeclarations xsi:type="java:ConstructorDeclaration" xmi:id="_PZaUbU0VEeeM143ZRH6p9g" name="HashMap" proxy="true" usages="_PYhjmE0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZaUbk0VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZaUb00VEeeM143ZRH6p9g" type="_PZS_oE0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZaUcE0VEeeM143ZRH6p9g" type="_PZLD0E0VEeeM143ZRH6p9g"/>
+        <typeParameters xmi:id="_PZaUcU0VEeeM143ZRH6p9g" name="K" proxy="true"/>
+        <typeParameters xmi:id="_PZa7cE0VEeeM143ZRH6p9g" name="V" proxy="true"/>
+        <superClass xmi:id="_PZa7cU0VEeeM143ZRH6p9g" type="_PZa7ck0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZa7ck0VEeeM143ZRH6p9g" name="AbstractMap" proxy="true" usagesInTypeAccess="_PZa7cU0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZa7c00VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+        <typeParameters xmi:id="_PZa7dE0VEeeM143ZRH6p9g" name="K" proxy="true"/>
+        <typeParameters xmi:id="_PZa7dU0VEeeM143ZRH6p9g" name="V" proxy="true"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZa7dk0VEeeM143ZRH6p9g" name="Map" proxy="true" usagesInImports="_PZhpJ00VEeeM143ZRH6p9g" usagesInTypeAccess="_PZa7c00VEeeM143ZRH6p9g _PZaUbk0VEeeM143ZRH6p9g _PZgbB00VEeeM143ZRH6p9g _PZdXvU0VEeeM143ZRH6p9g _PZdXwU0VEeeM143ZRH6p9g _PZd-w00VEeeM143ZRH6p9g _PZcwpE0VEeeM143ZRH6p9g">
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZa7d00VEeeM143ZRH6p9g" name="put" proxy="true" usages="_PYiKoE0VEeeM143ZRH6p9g _PY-2kE0VEeeM143ZRH6p9g">
+          <parameters xmi:id="_PZa7eE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+            <type xmi:id="_PZa7eU0VEeeM143ZRH6p9g" type="_PZWqA00VEeeM143ZRH6p9g"/>
+          </parameters>
+          <parameters xmi:id="_PZa7ek0VEeeM143ZRH6p9g" name="arg1" proxy="true">
+            <type xmi:id="_PZa7e00VEeeM143ZRH6p9g" type="_PZWqA00VEeeM143ZRH6p9g"/>
+          </parameters>
+        </bodyDeclarations>
+        <typeParameters xmi:id="_PZa7fE0VEeeM143ZRH6p9g" name="K" proxy="true"/>
+        <typeParameters xmi:id="_PZa7fU0VEeeM143ZRH6p9g" name="V" proxy="true"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZa7fk0VEeeM143ZRH6p9g" name="UUID" proxy="true" usagesInImports="_PZhpKE0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYfuYE0VEeeM143ZRH6p9g">
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZa7f00VEeeM143ZRH6p9g" name="randomUUID" proxy="true" usages="_PYfHWU0VEeeM143ZRH6p9g"/>
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZa7gE0VEeeM143ZRH6p9g" name="toString" proxy="true" usages="_PYfHWE0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZa7gU0VEeeM143ZRH6p9g" type="_PZLD0E0VEeeM143ZRH6p9g"/>
+        <superInterfaces xmi:id="_PZa7gk0VEeeM143ZRH6p9g" type="_PZQjYE0VEeeM143ZRH6p9g"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZa7g00VEeeM143ZRH6p9g" name="List" proxy="true">
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZa7hE0VEeeM143ZRH6p9g" name="get" proxy="true" usages="_PYegRU0VEeeM143ZRH6p9g _PY7zRk0VEeeM143ZRH6p9g _PZAEuU0VEeeM143ZRH6p9g">
+          <parameters xmi:id="_PZa7hU0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+            <type xmi:id="_PZa7hk0VEeeM143ZRH6p9g" type="_PZfz_E0VEeeM143ZRH6p9g"/>
+          </parameters>
+        </bodyDeclarations>
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZa7h00VEeeM143ZRH6p9g" name="add" proxy="true" usages="_PYg8hk0VEeeM143ZRH6p9g">
+          <parameters xmi:id="_PZa7iE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+            <type xmi:id="_PZa7iU0VEeeM143ZRH6p9g" type="_PZWqA00VEeeM143ZRH6p9g"/>
+          </parameters>
+        </bodyDeclarations>
+        <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZa7ik0VEeeM143ZRH6p9g" name="addAll" proxy="true" usages="_PYwNF00VEeeM143ZRH6p9g">
+          <parameters xmi:id="_PZbigE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+            <type xmi:id="_PZbigU0VEeeM143ZRH6p9g" type="_PZbihE0VEeeM143ZRH6p9g"/>
+          </parameters>
+        </bodyDeclarations>
+        <superInterfaces xmi:id="_PZbigk0VEeeM143ZRH6p9g" type="_PZbihE0VEeeM143ZRH6p9g"/>
+        <typeParameters xmi:id="_PZbig00VEeeM143ZRH6p9g" name="E" proxy="true"/>
+      </ownedElements>
+      <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZbihE0VEeeM143ZRH6p9g" name="Collection" proxy="true" usagesInTypeAccess="_PZbigk0VEeeM143ZRH6p9g _PZbigU0VEeeM143ZRH6p9g _PZel2k0VEeeM143ZRH6p9g">
+        <superInterfaces xmi:id="_PZbihU0VEeeM143ZRH6p9g" type="_PZWqBE0VEeeM143ZRH6p9g"/>
+        <typeParameters xmi:id="_PZbihk0VEeeM143ZRH6p9g" name="E" proxy="true"/>
+      </ownedElements>
+    </ownedPackages>
+  </ownedElements>
+  <ownedElements xmi:id="_PZbih00VEeeM143ZRH6p9g" name="org" proxy="true">
+    <ownedPackages xmi:id="_PZbiiE0VEeeM143ZRH6p9g" name="eclipse" proxy="true">
+      <ownedPackages xmi:id="_PZbiiU0VEeeM143ZRH6p9g" name="emf" proxy="true">
+        <ownedPackages xmi:id="_PZbiik0VEeeM143ZRH6p9g" name="common" proxy="true">
+          <ownedPackages xmi:id="_PZbii00VEeeM143ZRH6p9g" name="util" proxy="true">
+            <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZbijE0VEeeM143ZRH6p9g" name="URI" proxy="true" usagesInImports="_PZhpKU0VEeeM143ZRH6p9g _PZhpO00VEeeM143ZRH6p9g" usagesInTypeAccess="_PZJ1t00VEeeM143ZRH6p9g _PYbc8k0VEeeM143ZRH6p9g _PYdSJU0VEeeM143ZRH6p9g _PZd-yE0VEeeM143ZRH6p9g _PYfuZk0VEeeM143ZRH6p9g _PZd-zU0VEeeM143ZRH6p9g _PYwNE00VEeeM143ZRH6p9g _PY6lJk0VEeeM143ZRH6p9g _PY7MOE0VEeeM143ZRH6p9g _PY-2mE0VEeeM143ZRH6p9g _PY_dqU0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZcJkE0VEeeM143ZRH6p9g" name="createPlatformPluginURI" proxy="true" usages="_PYcEAE0VEeeM143ZRH6p9g _PY7MME0VEeeM143ZRH6p9g _PY_doU0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZcJkU0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZcJkk0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+                </parameters>
+                <parameters xmi:id="_PZcJk00VEeeM143ZRH6p9g" name="arg1" proxy="true">
+                  <type xmi:id="_PZcJlE0VEeeM143ZRH6p9g" type="_PZgbAU0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZcJlU0VEeeM143ZRH6p9g" name="createFileURI" proxy="true" usages="_PYuX4k0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZcJlk0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZcJl00VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+            </ownedElements>
+          </ownedPackages>
+          <ownedPackages xmi:id="_PZcJmE0VEeeM143ZRH6p9g" name="notify" proxy="true">
+            <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcJmU0VEeeM143ZRH6p9g" name="Notifier" proxy="true" usagesInTypeAccess="_PZcJpU0VEeeM143ZRH6p9g _PZd-xE0VEeeM143ZRH6p9g _PZd-zk0VEeeM143ZRH6p9g _PZcJnk0VEeeM143ZRH6p9g"/>
+            <ownedPackages xmi:id="_PZcJmk0VEeeM143ZRH6p9g" name="impl" proxy="true">
+              <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZcJm00VEeeM143ZRH6p9g" name="NotifierImpl" proxy="true" usagesInTypeAccess="_PZel0k0VEeeM143ZRH6p9g">
+                <superClass xmi:id="_PZcJnE0VEeeM143ZRH6p9g" type="_PZcJnU0VEeeM143ZRH6p9g"/>
+              </ownedElements>
+              <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZcJnU0VEeeM143ZRH6p9g" name="BasicNotifierImpl" proxy="true" usagesInTypeAccess="_PZcJnE0VEeeM143ZRH6p9g">
+                <superInterfaces xmi:id="_PZcJnk0VEeeM143ZRH6p9g" type="_PZcJmU0VEeeM143ZRH6p9g"/>
+              </ownedElements>
+            </ownedPackages>
+          </ownedPackages>
+        </ownedPackages>
+        <ownedPackages xmi:id="_PZcJn00VEeeM143ZRH6p9g" name="ecore" proxy="true">
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcJoE0VEeeM143ZRH6p9g" name="EObject" proxy="true" usagesInImports="_PZhpKk0VEeeM143ZRH6p9g _PZhpPE0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYaO1E0VEeeM143ZRH6p9g _PZel100VEeeM143ZRH6p9g _PZcwqk0VEeeM143ZRH6p9g _PZAEt00VEeeM143ZRH6p9g">
+            <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZcJoU0VEeeM143ZRH6p9g" name="eGet" proxy="true" usages="_PZAEv00VEeeM143ZRH6p9g">
+              <parameters xmi:id="_PZcJok0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                <type xmi:id="_PZcJo00VEeeM143ZRH6p9g" type="_PZcwq00VEeeM143ZRH6p9g"/>
+              </parameters>
+            </bodyDeclarations>
+            <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZcJpE0VEeeM143ZRH6p9g" name="eClass" proxy="true" usages="_PZAEwk0VEeeM143ZRH6p9g"/>
+            <superInterfaces xmi:id="_PZcJpU0VEeeM143ZRH6p9g" type="_PZcJmU0VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwoE0VEeeM143ZRH6p9g" name="EPackage" proxy="true" usagesInImports="_PZhpPU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PY7zQ00VEeeM143ZRH6p9g _PY-PgE0VEeeM143ZRH6p9g">
+            <bodyDeclarations xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwoU0VEeeM143ZRH6p9g" name="Registry" proxy="true" usagesInImports="_PZhpPk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PY-2lU0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:FieldDeclaration" xmi:id="_PZcwok0VEeeM143ZRH6p9g" proxy="true">
+                <fragments xmi:id="_PZcwo00VEeeM143ZRH6p9g" name="INSTANCE" proxy="true" usageInVariableAccess="_PY-2lE0VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <superInterfaces xmi:id="_PZcwpE0VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+            </bodyDeclarations>
+            <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZcwpU0VEeeM143ZRH6p9g" name="getNsURI" proxy="true" usages="_PY-2kU0VEeeM143ZRH6p9g"/>
+            <superInterfaces xmi:id="_PZcwpk0VEeeM143ZRH6p9g" type="_PZcwp00VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwp00VEeeM143ZRH6p9g" name="ENamedElement" proxy="true" usagesInTypeAccess="_PZcwpk0VEeeM143ZRH6p9g _PZcwrk0VEeeM143ZRH6p9g _PZdXtU0VEeeM143ZRH6p9g">
+            <superInterfaces xmi:id="_PZcwqE0VEeeM143ZRH6p9g" type="_PZcwqU0VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwqU0VEeeM143ZRH6p9g" name="EModelElement" proxy="true" usagesInTypeAccess="_PZcwqE0VEeeM143ZRH6p9g">
+            <superInterfaces xmi:id="_PZcwqk0VEeeM143ZRH6p9g" type="_PZcJoE0VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwq00VEeeM143ZRH6p9g" name="EStructuralFeature" proxy="true" usagesInTypeAccess="_PZcJo00VEeeM143ZRH6p9g">
+            <superInterfaces xmi:id="_PZcwrE0VEeeM143ZRH6p9g" type="_PZcwrU0VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwrU0VEeeM143ZRH6p9g" name="ETypedElement" proxy="true" usagesInTypeAccess="_PZcwrE0VEeeM143ZRH6p9g">
+            <superInterfaces xmi:id="_PZcwrk0VEeeM143ZRH6p9g" type="_PZcwp00VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZcwr00VEeeM143ZRH6p9g" name="EClass" proxy="true">
+            <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZdXsE0VEeeM143ZRH6p9g" name="getEStructuralFeature" proxy="true" usages="_PZAEwE0VEeeM143ZRH6p9g">
+              <parameters xmi:id="_PZdXsU0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                <type xmi:id="_PZdXsk0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+              </parameters>
+            </bodyDeclarations>
+            <superInterfaces xmi:id="_PZdXs00VEeeM143ZRH6p9g" type="_PZdXtE0VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZdXtE0VEeeM143ZRH6p9g" name="EClassifier" proxy="true" usagesInTypeAccess="_PZdXs00VEeeM143ZRH6p9g">
+            <superInterfaces xmi:id="_PZdXtU0VEeeM143ZRH6p9g" type="_PZcwp00VEeeM143ZRH6p9g"/>
+          </ownedElements>
+          <ownedPackages xmi:id="_PZdXtk0VEeeM143ZRH6p9g" name="resource" proxy="true">
+            <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZdXt00VEeeM143ZRH6p9g" name="Resource" proxy="true" usagesInImports="_PZhpK00VEeeM143ZRH6p9g _PZiQME0VEeeM143ZRH6p9g" usagesInTypeAccess="_PZJ1sE0VEeeM143ZRH6p9g _PZdXuU0VEeeM143ZRH6p9g _PYd5MU0VEeeM143ZRH6p9g _PYgVdE0VEeeM143ZRH6p9g _PYl1AE0VEeeM143ZRH6p9g _PY7MO00VEeeM143ZRH6p9g _PY_drE0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:InterfaceDeclaration" xmi:id="_PZdXuE0VEeeM143ZRH6p9g" name="Internal" proxy="true" usagesInTypeAccess="_PZJ1sU0VEeeM143ZRH6p9g">
+                <superInterfaces xmi:id="_PZdXuU0VEeeM143ZRH6p9g" type="_PZdXt00VEeeM143ZRH6p9g"/>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZdXuk0VEeeM143ZRH6p9g" name="getContents" proxy="true" usages="_PYfHUE0VEeeM143ZRH6p9g _PYhjk00VEeeM143ZRH6p9g _PYw0I00VEeeM143ZRH6p9g _PYw0IE0VEeeM143ZRH6p9g _PY7zSE0VEeeM143ZRH6p9g _PZAEu00VEeeM143ZRH6p9g"/>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZdXu00VEeeM143ZRH6p9g" name="save" proxy="true" usages="_PYiKpk0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZdXvE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZdXvU0VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZdXvk0VEeeM143ZRH6p9g" name="unload" proxy="true" usages="_PYiKqk0VEeeM143ZRH6p9g"/>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZdXv00VEeeM143ZRH6p9g" name="load" proxy="true" usages="_PYj_0k0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZdXwE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZdXwU0VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZdXwk0VEeeM143ZRH6p9g" name="save" proxy="true" usages="_PYw0Jk0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZd-wE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZd-wU0VEeeM143ZRH6p9g" type="_PZLq4U0VEeeM143ZRH6p9g"/>
+                </parameters>
+                <parameters xmi:id="_PZd-wk0VEeeM143ZRH6p9g" name="arg1" proxy="true">
+                  <type xmi:id="_PZd-w00VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <superInterfaces xmi:id="_PZd-xE0VEeeM143ZRH6p9g" type="_PZcJmU0VEeeM143ZRH6p9g"/>
+            </ownedElements>
+            <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZd-xU0VEeeM143ZRH6p9g" name="ResourceSet" proxy="true" usagesInImports="_PZhpLE0VEeeM143ZRH6p9g _PZiQMU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PZel0U0VEeeM143ZRH6p9g _PYZAsU0VEeeM143ZRH6p9g _PY4v8E0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZd-xk0VEeeM143ZRH6p9g" name="getResource" proxy="true" usages="_PYd5M00VEeeM143ZRH6p9g _PYixs00VEeeM143ZRH6p9g _PY7MPU0VEeeM143ZRH6p9g _PZAEsU0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZd-x00VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZd-yE0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                </parameters>
+                <parameters xmi:id="_PZd-yU0VEeeM143ZRH6p9g" name="arg1" proxy="true">
+                  <type xmi:id="_PZd-yk0VEeeM143ZRH6p9g" type="_PZgbAU0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZd-y00VEeeM143ZRH6p9g" name="createResource" proxy="true" usages="_PYg8gU0VEeeM143ZRH6p9g _PYuX4U0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZd-zE0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZd-zU0VEeeM143ZRH6p9g" type="_PZbijE0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <superInterfaces xmi:id="_PZd-zk0VEeeM143ZRH6p9g" type="_PZcJmU0VEeeM143ZRH6p9g"/>
+            </ownedElements>
+            <ownedPackages xmi:id="_PZd-z00VEeeM143ZRH6p9g" name="impl" proxy="true">
+              <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZd-0E0VEeeM143ZRH6p9g" name="ResourceSetImpl" proxy="true" usagesInImports="_PZhpLU0VEeeM143ZRH6p9g _PZiQMk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYaO0U0VEeeM143ZRH6p9g _PY6lIk0VEeeM143ZRH6p9g">
+                <bodyDeclarations xsi:type="java:ConstructorDeclaration" xmi:id="_PZel0E0VEeeM143ZRH6p9g" name="ResourceSetImpl" proxy="true" usages="_PYaO0E0VEeeM143ZRH6p9g _PY6lIU0VEeeM143ZRH6p9g"/>
+                <superInterfaces xmi:id="_PZel0U0VEeeM143ZRH6p9g" type="_PZd-xU0VEeeM143ZRH6p9g"/>
+                <superClass xmi:id="_PZel0k0VEeeM143ZRH6p9g" type="_PZcJm00VEeeM143ZRH6p9g"/>
+              </ownedElements>
+            </ownedPackages>
+          </ownedPackages>
+          <ownedPackages xmi:id="_PZel000VEeeM143ZRH6p9g" name="util" proxy="true">
+            <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZel1E0VEeeM143ZRH6p9g" name="EcoreUtil" proxy="true" usagesInImports="_PZhpLk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYhjkk0VEeeM143ZRH6p9g _PYw0Ik0VEeeM143ZRH6p9g">
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZel1U0VEeeM143ZRH6p9g" name="copy" proxy="true" usages="_PYhjkE0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZel1k0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZel100VEeeM143ZRH6p9g" type="_PZcJoE0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+              <bodyDeclarations xsi:type="java:MethodDeclaration" xmi:id="_PZel2E0VEeeM143ZRH6p9g" name="copyAll" proxy="true" usages="_PYwNGE0VEeeM143ZRH6p9g">
+                <parameters xmi:id="_PZel2U0VEeeM143ZRH6p9g" name="arg0" proxy="true">
+                  <type xmi:id="_PZel2k0VEeeM143ZRH6p9g" type="_PZbihE0VEeeM143ZRH6p9g"/>
+                </parameters>
+              </bodyDeclarations>
+            </ownedElements>
+          </ownedPackages>
+        </ownedPackages>
+      </ownedPackages>
+    </ownedPackages>
+    <ownedPackages xmi:id="_PZel200VEeeM143ZRH6p9g" name="junit" proxy="true">
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZfM4E0VEeeM143ZRH6p9g" name="After" proxy="true" usagesInImports="_PZhpL00VEeeM143ZRH6p9g _PZiQM00VEeeM143ZRH6p9g" usagesInTypeAccess="_PYXymE0VEeeM143ZRH6p9g _PY3h0E0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZfM4U0VEeeM143ZRH6p9g" name="AfterClass" proxy="true" usagesInImports="_PZhpME0VEeeM143ZRH6p9g _PZiQNE0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYXLgk0VEeeM143ZRH6p9g _PY1sok0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZfM4k0VEeeM143ZRH6p9g" name="Before" proxy="true" usagesInImports="_PZhpMU0VEeeM143ZRH6p9g _PZiQNU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYXykU0VEeeM143ZRH6p9g _PY26xE0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZfM400VEeeM143ZRH6p9g" name="BeforeClass" proxy="true" usagesInImports="_PZhpMk0VEeeM143ZRH6p9g _PZiQNk0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYWkcU0VEeeM143ZRH6p9g _PY1FkU0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZfM5E0VEeeM143ZRH6p9g" name="Rule" proxy="true" usagesInImports="_PZhpM00VEeeM143ZRH6p9g _PZiQN00VEeeM143ZRH6p9g" usagesInTypeAccess="_PYVWUE0VEeeM143ZRH6p9g _PYzQYk0VEeeM143ZRH6p9g"/>
+      <ownedElements xsi:type="java:AnnotationTypeDeclaration" xmi:id="_PZfM5U0VEeeM143ZRH6p9g" name="Test" proxy="true" usagesInImports="_PZhpNE0VEeeM143ZRH6p9g _PZiQOE0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYYZpU0VEeeM143ZRH6p9g _PY4I400VEeeM143ZRH6p9g"/>
+      <ownedPackages xmi:id="_PZfM5k0VEeeM143ZRH6p9g" name="rules" proxy="true">
+        <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZfz8E0VEeeM143ZRH6p9g" name="TemporaryFolder" proxy="true" usagesInImports="_PZhpNU0VEeeM143ZRH6p9g _PZiQOU0VEeeM143ZRH6p9g" usagesInTypeAccess="_PYVWUk0VEeeM143ZRH6p9g _PYV9YU0VEeeM143ZRH6p9g _PY0egE0VEeeM143ZRH6p9g _PY0eg00VEeeM143ZRH6p9g">
+          <bodyDeclarations xsi:type="java:ConstructorDeclaration" xmi:id="_PZfz8U0VEeeM143ZRH6p9g" name="TemporaryFolder" proxy="true" usages="_PYV9YE0VEeeM143ZRH6p9g _PY0egk0VEeeM143ZRH6p9g"/>
+          <superClass xmi:id="_PZfz8k0VEeeM143ZRH6p9g" type="_PZfz800VEeeM143ZRH6p9g"/>
+        </ownedElements>
+        <ownedElements xsi:type="java:ClassDeclaration" xmi:id="_PZfz800VEeeM143ZRH6p9g" name="ExternalResource" proxy="true" usagesInTypeAccess="_PZfz8k0VEeeM143ZRH6p9g">
+          <superInterfaces xmi:id="_PZfz9E0VEeeM143ZRH6p9g" type="_PZfz9U0VEeeM143ZRH6p9g"/>
+        </ownedElements>
+        <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZfz9U0VEeeM143ZRH6p9g" name="TestRule" proxy="true" usagesInTypeAccess="_PZfz9E0VEeeM143ZRH6p9g"/>
+      </ownedPackages>
+    </ownedPackages>
+    <ownedPackages xmi:id="_PZfz9k0VEeeM143ZRH6p9g" name="osgi" proxy="true">
+      <ownedPackages xmi:id="_PZfz900VEeeM143ZRH6p9g" name="framework" proxy="true">
+        <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZfz-E0VEeeM143ZRH6p9g" name="BundleActivator" proxy="true" usagesInImports="_PZiQO00VEeeM143ZRH6p9g" usagesInTypeAccess="_PZIAlE0VEeeM143ZRH6p9g"/>
+        <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZfz-U0VEeeM143ZRH6p9g" name="BundleContext" proxy="true" usagesInImports="_PZiQPE0VEeeM143ZRH6p9g" usagesInTypeAccess="_PZDIBE0VEeeM143ZRH6p9g _PZGLUE0VEeeM143ZRH6p9g _PZIAgU0VEeeM143ZRH6p9g _PZIAkU0VEeeM143ZRH6p9g">
+          <superInterfaces xmi:id="_PZfz-k0VEeeM143ZRH6p9g" type="_PZfz-00VEeeM143ZRH6p9g"/>
+        </ownedElements>
+        <ownedElements xsi:type="java:InterfaceDeclaration" xmi:id="_PZfz-00VEeeM143ZRH6p9g" name="BundleReference" proxy="true" usagesInTypeAccess="_PZfz-k0VEeeM143ZRH6p9g"/>
+      </ownedPackages>
+    </ownedPackages>
+  </ownedElements>
+  <orphanTypes xsi:type="java:PrimitiveTypeInt" xmi:id="_PZfz_E0VEeeM143ZRH6p9g" name="int" usagesInTypeAccess="_PZa7hk0VEeeM143ZRH6p9g"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeLong" xmi:id="_PZfz_U0VEeeM143ZRH6p9g" name="long"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeFloat" xmi:id="_PZfz_k0VEeeM143ZRH6p9g" name="float"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeDouble" xmi:id="_PZgbAE0VEeeM143ZRH6p9g" name="double"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeBoolean" xmi:id="_PZgbAU0VEeeM143ZRH6p9g" name="boolean" usagesInTypeAccess="_PZcJlE0VEeeM143ZRH6p9g _PZd-yk0VEeeM143ZRH6p9g"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeVoid" xmi:id="_PZgbAk0VEeeM143ZRH6p9g" name="void" usagesInTypeAccess="_PYWkdU0VEeeM143ZRH6p9g _PYXLhk0VEeeM143ZRH6p9g _PYXylU0VEeeM143ZRH6p9g _PYYZok0VEeeM143ZRH6p9g _PYyCQE0VEeeM143ZRH6p9g _PY1FlU0VEeeM143ZRH6p9g _PY26wU0VEeeM143ZRH6p9g _PY26yE0VEeeM143ZRH6p9g _PY4I4E0VEeeM143ZRH6p9g _PZAExk0VEeeM143ZRH6p9g _PZIAg00VEeeM143ZRH6p9g _PZIAk00VEeeM143ZRH6p9g"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeChar" xmi:id="_PZgbA00VEeeM143ZRH6p9g" name="char"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeShort" xmi:id="_PZgbBE0VEeeM143ZRH6p9g" name="short"/>
+  <orphanTypes xsi:type="java:PrimitiveTypeByte" xmi:id="_PZgbBU0VEeeM143ZRH6p9g" name="byte"/>
+  <orphanTypes xsi:type="java:ParameterizedType" xmi:id="_PZgbBk0VEeeM143ZRH6p9g" name="java.util.Map&lt;java.lang.String,java.lang.Object>" usagesInTypeAccess="_PYhjlk0VEeeM143ZRH6p9g">
+    <type xmi:id="_PZgbB00VEeeM143ZRH6p9g" type="_PZa7dk0VEeeM143ZRH6p9g"/>
+    <typeArguments xmi:id="_PZhCEE0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+    <typeArguments xmi:id="_PZhCEU0VEeeM143ZRH6p9g" type="_PZWqA00VEeeM143ZRH6p9g"/>
+  </orphanTypes>
+  <orphanTypes xsi:type="java:ParameterizedType" xmi:id="_PZhCEk0VEeeM143ZRH6p9g" name="java.util.HashMap&lt;java.lang.String,java.lang.Object>" usagesInTypeAccess="_PYhjmU0VEeeM143ZRH6p9g">
+    <type xmi:id="_PZhCE00VEeeM143ZRH6p9g" type="_PZaUbE0VEeeM143ZRH6p9g"/>
+    <typeArguments xmi:id="_PZhCFE0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+    <typeArguments xmi:id="_PZhCFU0VEeeM143ZRH6p9g" type="_PZWqA00VEeeM143ZRH6p9g"/>
+  </orphanTypes>
+  <orphanTypes xsi:type="java:ArrayType" xmi:id="_PZhCFk0VEeeM143ZRH6p9g" name="java.lang.Object[]" usagesInTypeAccess="_PZaUZE0VEeeM143ZRH6p9g" dimensions="1">
+    <elementType xmi:id="_PZhCF00VEeeM143ZRH6p9g" type="_PZWqA00VEeeM143ZRH6p9g"/>
+  </orphanTypes>
+  <orphanTypes xsi:type="java:ArrayType" xmi:id="_PZhCGE0VEeeM143ZRH6p9g" name="java.lang.String[]" usagesInTypeAccess="_PZZtVU0VEeeM143ZRH6p9g" dimensions="1">
+    <elementType xmi:id="_PZhCGU0VEeeM143ZRH6p9g" type="_PZU00E0VEeeM143ZRH6p9g"/>
+  </orphanTypes>
+  <compilationUnits xmi:id="_PZhpIE0VEeeM143ZRH6p9g" name="TestCreateResource.java" originalFilePath="C:\Eclipse\eclipse-SDK-4.3.1-win32-x86_64-Blue\eclipse\workspace\fr.inria.atlanmod.kyanos.tests\src\fr\inria\atlanmod\kyanos\tests\TestCreateResource.java" commentList="_PYfHU00VEeeM143ZRH6p9g _PYhjnE0VEeeM143ZRH6p9g _PYhjnU0VEeeM143ZRH6p9g" package="_PYOooU0VEeeM143ZRH6p9g" types="_PYOook0VEeeM143ZRH6p9g">
+    <imports xmi:id="_PZhpIU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZKcwk0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpIk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZLD0U0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpI00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZZtUE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpJE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZZtYU0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpJU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZaUak0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpJk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZaUbE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpJ00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZa7dk0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpKE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZa7fk0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpKU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZbijE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpKk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZcJoE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpK00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZdXt00VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpLE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZd-xU0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpLU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZd-0E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpLk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZel1E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpL00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfM4E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpME0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfM4U0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpMU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfM4k0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpMk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfM400VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpM00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfM5E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpNE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfM5U0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpNU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZfz8E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpNk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZInkE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpN00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpIE0VEeeM143ZRH6p9g" importedElement="_PZJ1s00VEeeM143ZRH6p9g"/>
+  </compilationUnits>
+  <compilationUnits xmi:id="_PZhpOE0VEeeM143ZRH6p9g" name="TestXmi.java" originalFilePath="C:\Eclipse\eclipse-SDK-4.3.1-win32-x86_64-Blue\eclipse\workspace\fr.inria.atlanmod.kyanos.tests\src\fr\inria\atlanmod\kyanos\tests\TestXmi.java" package="_PYOooU0VEeeM143ZRH6p9g" types="_PYyCQU0VEeeM143ZRH6p9g">
+    <imports xmi:id="_PZhpOU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZLD0U0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpOk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZZtYU0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpO00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZbijE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpPE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZcJoE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpPU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZcwoE0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZhpPk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZcwoU0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQME0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZdXt00VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQMU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZd-xU0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQMk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZd-0E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQM00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfM4E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQNE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfM4U0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQNU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfM4k0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQNk0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfM400VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQN00VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfM5E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQOE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfM5U0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQOU0VEeeM143ZRH6p9g" originalCompilationUnit="_PZhpOE0VEeeM143ZRH6p9g" importedElement="_PZfz8E0VEeeM143ZRH6p9g"/>
+  </compilationUnits>
+  <compilationUnits xmi:id="_PZiQOk0VEeeM143ZRH6p9g" name="KyanosTestsPlugin.java" originalFilePath="C:\Eclipse\eclipse-SDK-4.3.1-win32-x86_64-Blue\eclipse\workspace\fr.inria.atlanmod.kyanos.tests\src\fr\inria\atlanmod\kyanos\tests\KyanosTestsPlugin.java" commentList="_PZGLUk0VEeeM143ZRH6p9g _PZIAhU0VEeeM143ZRH6p9g" package="_PYOooU0VEeeM143ZRH6p9g" types="_PZCg8E0VEeeM143ZRH6p9g">
+    <imports xmi:id="_PZiQO00VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" importedElement="_PZfz-E0VEeeM143ZRH6p9g"/>
+    <imports xmi:id="_PZiQPE0VEeeM143ZRH6p9g" originalCompilationUnit="_PZiQOk0VEeeM143ZRH6p9g" importedElement="_PZfz-U0VEeeM143ZRH6p9g"/>
+  </compilationUnits>
+</java:Model>
