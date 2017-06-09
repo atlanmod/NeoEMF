@@ -26,7 +26,7 @@ public class XmiReaderWithIdTest extends AbstractInputTest {
     }
 
     @Override
-    protected boolean useId() {
+    protected boolean useIds() {
         return true;
     }
 }

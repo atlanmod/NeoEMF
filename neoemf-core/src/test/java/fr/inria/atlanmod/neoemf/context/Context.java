@@ -133,7 +133,7 @@ public interface Context {
     /**
      * Loads an existing resource from the given {@code file}.
      *
-     * @param file     the file from which to load/save data
+     * @param file the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
      *

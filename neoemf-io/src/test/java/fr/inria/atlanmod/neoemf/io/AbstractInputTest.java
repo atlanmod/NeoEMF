@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -131,7 +130,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     }
 
     /**
-     * Returns an {@link InputStream} on the XMI file to use for this test-case.
+     * Returns the {@link URI} of the XMI file to use for this test-case.
      *
      * @return the stream
      */
@@ -143,19 +142,19 @@ public abstract class AbstractInputTest extends AbstractTest {
      *
      * @return {@code true} if this test-case use {@code xmi:id} instead of XPath as references
      */
-    protected abstract boolean useId();
+    protected abstract boolean useIds();
 
     /**
-     * Retrieves the identifier of the given {@code path} if {@link #useId()} is {@code true}.
+     * Retrieves the identifier of the given {@code path} if {@code useIds() == true}.
      *
      * @param path the path to retrieve
      *
      * @return the identifier
      *
-     * @see #useId()
+     * @see #useIds()
      */
     protected String getId(String path) {
-        return useId() ? MAPPING.get(path) : path;
+        return checkNotNull(useIds() ? MAPPING.get(path) : path, "Undefined path: %s", path);
     }
 
     /**
