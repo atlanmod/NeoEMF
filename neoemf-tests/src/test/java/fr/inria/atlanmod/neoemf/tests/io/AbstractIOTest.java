@@ -17,25 +17,27 @@ import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
-import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.compare.Comparison;
+import org.eclipse.emf.compare.EMFCompare;
+import org.eclipse.emf.compare.match.IMatchEngine;
+import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
+import org.eclipse.emf.compare.scope.DefaultComparisonScope;
+import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
-import org.junit.Before;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.BeforeClass;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 
@@ -48,17 +50,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  *
  */
 public abstract class AbstractIOTest extends AbstractBackendTest {
-
-    /**
-     * A {@link java.util.Set} holding all tested {@link EObject}s, to avoid testing the same {@link Object} twice.
-     */
-    private HashSet<EObject> testedObjects;
-
-    /**
-     * A {@link java.util.Set} holding tested {@link EStructuralFeature}s, to avoid testing the same {@link Object}
-     * twice.
-     */
-    private HashSet<EStructuralFeature> testedFeatures;
 
     /**
      * Retrieves a child element from the {@code root} following the given {@code indices}.
@@ -85,86 +76,31 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
 
     @BeforeClass
     public static void registerPackages() {
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+
         IOResourceManager.registerPackage("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         IOResourceManager.registerPackage("uml", "http://schema.omg.org/spec/UML/2.1");
     }
 
     /**
-     * Initializes the test case by registering the packages.
-     */
-    @Before
-    public void init() {
-        testedObjects = new HashSet<>();
-        testedFeatures = new HashSet<>();
-    }
-
-    /**
-     * Checks that the {@code expected} {@link EObject} is the same as the {@code actual}.
+     * Checks that the {@code expected} notifier is the same as the {@code actual}.
      *
-     * @param actual   the NeoEMF object
-     * @param expected the EMF object
+     * @param actual   the notifier to check
+     * @param expected the source notifier
      */
-    protected void assertEqualEObject(EObject actual, EObject expected) {
-        Log.debug("Actual object     : {0}", actual);
-        Log.debug("Expected object   : {0}", expected);
+    protected void assertNotifierAreEqual(Notifier actual, Notifier expected) {
+        IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
+        matchEngineRegistry.add(new LazyMatchEngineFactory());
 
-        if (!testedObjects.contains(expected)) {
-            testedObjects.add(expected);
+        IComparisonScope scope = new DefaultComparisonScope(expected, actual, null);
 
-            Optional.ofNullable(expected).ifPresent(e -> assertThat(actual).isNotNull());
+        Comparison comparison = EMFCompare.builder()
+                .setMatchEngineFactoryRegistry(matchEngineRegistry)
+                .build()
+                .compare(scope);
 
-            assertThat(actual.eClass().getName()).isEqualTo(expected.eClass().getName());
-            assertThat(actual.eContents()).hasSameSizeAs(expected.eContents());
-
-            expected.eClass().getEAttributes()
-                    .forEach(a -> assertEqualFeature(actual, expected, a.getFeatureID()));
-
-            expected.eClass().getEReferences()
-                    .forEach(r -> assertEqualFeature(actual, expected, r.getFeatureID()));
-
-            IntStream.range(0, expected.eContents().size())
-                    .forEach(i -> assertEqualEObject(actual.eContents().get(i), expected.eContents().get(i)));
-        }
-    }
-
-    /**
-     * Asserts that the {@link EStructuralFeature} identified by {@code featureId} is the same between the
-     * {@code expected} and the {@code actual}.
-     *
-     * @param actual    the NeoEMF object
-     * @param expected  the EMF object
-     * @param featureId the identifier of the {@link EStructuralFeature} to compare
-     */
-    @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
-    private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
-        EStructuralFeature feature = expected.eClass().getEStructuralFeature(featureId);
-
-        if (!testedFeatures.contains(feature)) {
-            testedFeatures.add(feature);
-
-            Object expectedValue = expected.eGet(feature);
-            Object actualValue = actual.eGet(actual.eClass().getEStructuralFeature(featureId));
-
-            Log.debug("Actual feature    : {0}", actualValue);
-            Log.debug("Expected feature  : {0}", expectedValue);
-
-            if (EObject.class.isInstance(expectedValue)) {
-                assertEqualEObject(EObject.class.cast(actualValue), EObject.class.cast(expectedValue));
-            }
-            else if (List.class.isInstance(expectedValue)) {
-                List<EObject> expectedList = (List<EObject>) expectedValue;
-                List<EObject> actualList = (List<EObject>) actualValue;
-
-                assertThat(actualList).hasSameSizeAs(expectedList);
-
-                for (int i = 0; i < expectedList.size(); i++) {
-                    assertEqualEObject(actualList.get(i), expectedList.get(i));
-                }
-            }
-            else {
-                assertThat(actualValue).isEqualTo(expectedValue);
-            }
-        }
+        assertThat(comparison.getConflicts()).hasSize(0);
+        assertThat(comparison.getDifferences()).hasSize(0);
     }
 
     /**
@@ -176,7 +112,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param size          the expected size of the {@code obj}
      * @param name          the expected name of the {@code obj}
      */
-    protected void assertValidElement(EObject obj, String metaclassName, int size, String name) {
+    protected void assertObjectHas(EObject obj, String metaclassName, int size, String name) {
         assertThat(obj.eClass().getName()).isEqualTo(metaclassName);
         assertThat(obj.eContents()).hasSize(size);
 
@@ -202,7 +138,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param containment        if the reference must be a containment
      */
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
-    protected void assertValidReference(EObject obj, String name, int index, String referenceClassName, String referenceName, boolean many, boolean containment) {
+    protected void assertReferenceHas(EObject obj, String name, int index, String referenceClassName, String referenceName, boolean many, boolean containment) {
         EReference reference = EReference.class.cast(obj.eClass().getEStructuralFeature(name));
 
         Object objectReference = obj.eGet(reference);
@@ -244,7 +180,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param name  the name of the {@link EAttribute} to retrieve
      * @param value the expected value of the attribute
      */
-    protected void assertValidAttribute(EObject obj, String name, Object value) {
+    protected void assertAttributeHas(EObject obj, String name, Object value) {
         EAttribute attribute = checkNotNull(EAttribute.class.cast(obj.eClass().getEStructuralFeature(name)));
 
         if (isNull(value)) {
@@ -256,41 +192,34 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     }
 
     /**
-     * Loads the {@code file} with standard EMF.
+     * Loads the {@code uri} with standard EMF.
      *
-     * @param stream the file to load
+     * @param uri the URI to load
      *
-     * @return the first element of the loaded content
+     * @return the the loaded content
      *
      * @throws IOException if an I/O error occur during the loading of models
      */
-    protected EObject loadWithEMF(InputStream stream) throws IOException {
-        Resource resource = new XMIResourceImpl();
-        resource.load(stream, Collections.emptyMap());
-
-        return resource
-                .getContents()
-                .get(0);
+    protected EObject loadWithEMF(URI uri) throws IOException {
+        return new ResourceSetImpl().getResource(uri, true).getContents().get(0);
     }
 
     /**
-     * Loads the {@code file} with NeoEMF according to the current {@link #context() Context}.
+     * Loads the {@code uri} with NeoEMF according to the current {@link #context() Context}.
      *
-     * @param stream the file to load
+     * @param uri the URI to load
      *
-     * @return the first element of the loaded content
+     * @return the loaded content
      *
      * @throws IOException if an I/O error occur during the loading of models
      */
-    protected EObject loadWithNeoEMF(InputStream stream) throws IOException {
+    protected EObject loadWithNeoEMF(URI uri) throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
         try (DataMapper mapper = context().createMapper(file())) {
-            ReaderFactory.fromXmi(stream, WriterFactory.toMapper(mapper));
+            ReaderFactory.fromXmi(new URL(uri.toString()).openStream(), WriterFactory.toMapper(mapper));
         }
 
-        return closeAtExit(context().loadResource(file()))
-                .getContents()
-                .get(0);
+        return closeAtExit(context().loadResource(file())).getContents().get(0);
     }
 }

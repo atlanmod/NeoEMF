@@ -39,37 +39,37 @@ public class ImportTest extends AbstractIOTest {
         EObject o;
         EObject child;
 
-        EObject root = loadWithNeoEMF(IOResourceManager.xmiStandard());
-        assertValidElement(root, "Model", 19, "fr.inria.atlanmod.kyanos.tests");
+        final EObject root = loadWithNeoEMF(IOResourceManager.xmiStandard());
+        assertObjectHas(root, "Model", 19, "fr.inria.atlanmod.kyanos.tests");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             o = childFrom(root, 0, 0, 0, 0, 0, 0);
-            assertValidElement(o, "ClassDeclaration", 7, "TestCreateResource");
+            assertObjectHas(o, "ClassDeclaration", 7, "TestCreateResource");
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 child = childFrom(o, 0);
-                assertValidElement(child, "Modifier", 0, null);
+                assertObjectHas(child, "Modifier", 0, null);
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 child = childFrom(o, 3);
-                assertValidElement(child, "MethodDeclaration", 5, "tearDownAfterClass");
+                assertObjectHas(child, "MethodDeclaration", 5, "tearDownAfterClass");
             }
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
-            assertValidElement(o, "Package", 5, "java");
+            assertObjectHas(o, "Package", 5, "java");
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
-            assertValidElement(o, "PrimitiveTypeVoid", 0, "void");
+            assertObjectHas(o, "PrimitiveTypeVoid", 0, "void");
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
-            assertValidElement(o, "CompilationUnit", 16, "TestXmi.java");
+            assertObjectHas(o, "CompilationUnit", 16, "TestXmi.java");
             {
                 //@Model/@compilationUnits.1/@imports.2
                 child = childFrom(o, 2);
-                assertValidElement(child, "ImportDeclaration", 0, null);
+                assertObjectHas(child, "ImportDeclaration", 0, null);
             }
         }
     }
@@ -84,19 +84,19 @@ public class ImportTest extends AbstractIOTest {
     public void testAttributes() throws IOException {
         EObject o;
 
-        EObject root = loadWithNeoEMF(IOResourceManager.xmiStandard());
+        final EObject root = loadWithNeoEMF(IOResourceManager.xmiStandard());
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
             o = childFrom(root, 0, 0, 0, 0, 0, 0, 0);
-            assertValidAttribute(o, "visibility", "public");
+            assertAttributeHas(o, "visibility", "public");
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
-            assertValidAttribute(o, "proxy", "true");
+            assertAttributeHas(o, "proxy", "true");
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
-            assertValidAttribute(o, "originalFilePath", "C:\\Eclipse\\eclipse-SDK-4.3.1-win32-x86_64-Blue\\eclipse\\workspace\\fr.inria.atlanmod.kyanos.tests\\src\\fr\\inria\\atlanmod\\kyanos\\tests\\TestXmi.java");
+            assertAttributeHas(o, "originalFilePath", "C:\\Eclipse\\eclipse-SDK-4.3.1-win32-x86_64-Blue\\eclipse\\workspace\\fr.inria.atlanmod.kyanos.tests\\src\\fr\\inria\\atlanmod\\kyanos\\tests\\TestXmi.java");
         }
     }
 
@@ -114,39 +114,39 @@ public class ImportTest extends AbstractIOTest {
         EObject o;
         EObject child;
 
-        EObject root = loadWithNeoEMF(IOResourceManager.xmiStandard());
-        assertValidReference(root, "ownedElements", 0, "Package", "fr", true, true);
-        assertValidReference(root, "orphanTypes", 5, "PrimitiveTypeVoid", "void", true, true);
+        final EObject root = loadWithNeoEMF(IOResourceManager.xmiStandard());
+        assertReferenceHas(root, "ownedElements", 0, "Package", "fr", true, true);
+        assertReferenceHas(root, "orphanTypes", 5, "PrimitiveTypeVoid", "void", true, true);
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             o = childFrom(root, 0, 0, 0, 0, 0, 0);
-            assertValidReference(o, "originalCompilationUnit", 0, "CompilationUnit", "TestCreateResource.java", false, false);
-            assertValidReference(o, "bodyDeclarations", 0, "FieldDeclaration", null, true, true);
+            assertReferenceHas(o, "originalCompilationUnit", 0, "CompilationUnit", "TestCreateResource.java", false, false);
+            assertReferenceHas(o, "bodyDeclarations", 0, "FieldDeclaration", null, true, true);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 child = childFrom(o, 3);
-                assertValidReference(child, "originalCompilationUnit", 0, "CompilationUnit", "TestCreateResource.java", false, false);
-                assertValidReference(child, "modifier", 0, "Modifier", null, false, true);
+                assertReferenceHas(child, "originalCompilationUnit", 0, "CompilationUnit", "TestCreateResource.java", false, false);
+                assertReferenceHas(child, "modifier", 0, "Modifier", null, false, true);
             }
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
-            assertValidReference(o, "ownedPackages", 0, "Package", "io", true, true);
+            assertReferenceHas(o, "ownedPackages", 0, "Package", "io", true, true);
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
-            assertValidReference(o, "usagesInTypeAccess", 0, "TypeAccess", null, true, false);
-            assertValidReference(o, "usagesInTypeAccess", 9, "TypeAccess", null, true, false);
+            assertReferenceHas(o, "usagesInTypeAccess", 0, "TypeAccess", null, true, false);
+            assertReferenceHas(o, "usagesInTypeAccess", 9, "TypeAccess", null, true, false);
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
-            assertValidReference(o, "package", 0, "Package", "tests", false, false);
-            assertValidReference(o, "imports", 0, "ImportDeclaration", null, true, true);
+            assertReferenceHas(o, "package", 0, "Package", "tests", false, false);
+            assertReferenceHas(o, "imports", 0, "ImportDeclaration", null, true, true);
             {
                 //@Model/@compilationUnits.1/@imports.2
                 child = childFrom(o, 2);
-                assertValidReference(child, "originalCompilationUnit", 0, "CompilationUnit", "TestXmi.java", false, false);
-                assertValidReference(child, "importedElement", 2, "ClassDeclaration", "URI", false, false);
+                assertReferenceHas(child, "originalCompilationUnit", 0, "CompilationUnit", "TestXmi.java", false, false);
+                assertReferenceHas(child, "importedElement", 2, "ClassDeclaration", "URI", false, false);
             }
         }
     }
@@ -161,10 +161,10 @@ public class ImportTest extends AbstractIOTest {
     @Test
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompare() throws IOException {
-        EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
         EObject actual = loadWithNeoEMF(IOResourceManager.xmiStandard());
+        EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertEqualEObject(actual, expected);
+        assertNotifierAreEqual(actual, expected);
     }
 
     /**
@@ -178,9 +178,9 @@ public class ImportTest extends AbstractIOTest {
     @Ignore("Incomplete implementation") // FIXME Inverse references don't exist in EMF
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
-        EObject expected = loadWithEMF(IOResourceManager.xmiWithId());
         EObject actual = loadWithNeoEMF(IOResourceManager.xmiWithId());
+        EObject expected = loadWithEMF(IOResourceManager.xmiWithId());
 
-        assertEqualEObject(actual, expected);
+        assertNotifierAreEqual(actual, expected);
     }
 }

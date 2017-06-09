@@ -19,14 +19,14 @@ import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.util.log.Log;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Paths;
 
 /**
@@ -43,30 +43,26 @@ public class ExportTest extends AbstractIOTest {
     public void testCopyBackend() throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
-        File sourceBackend = file();
-        File targetBackend = Paths.get(file() + "-copy").toFile();
+        final File sourceBackend = file();
+        final File targetBackend = Paths.get(file() + "-copy").toFile();
 
         try (DataMapper sourceMapper = context().createMapper(sourceBackend)) {
-            ReaderFactory.fromXmi(IOResourceManager.xmiStandard(), WriterFactory.toMapper(sourceMapper));
+            ReaderFactory.fromXmi(new URL(IOResourceManager.xmiStandard().toString()).openStream(), WriterFactory.toMapper(sourceMapper));
 
             try (DataMapper targetMapper = context().createMapper(targetBackend)) {
                 ReaderFactory.fromMapper(sourceMapper, WriterFactory.toMapper(targetMapper));
             }
         }
 
+        final EObject actual = closeAtExit(context().loadResource(targetBackend)).getContents().get(0);
+
         // Comparing PersistentBackend
-        Resource sourceResource = closeAtExit(context().loadResource(sourceBackend));
-        Resource targetResource = closeAtExit(context().loadResource(targetBackend));
-
-        EObject sourceModel = sourceResource.getContents().get(0);
-        EObject targetModel = targetResource.getContents().get(0);
-
-        assertEqualEObject(targetModel, sourceModel);
+        EObject expected = closeAtExit(context().loadResource(sourceBackend)).getContents().get(0);
+        assertNotifierAreEqual(actual, expected);
 
         // Comparing with EMF
-        sourceModel = loadWithEMF(IOResourceManager.xmiStandard());
-
-        assertEqualEObject(targetModel, sourceModel);
+        expected = loadWithEMF(IOResourceManager.xmiStandard());
+        assertNotifierAreEqual(actual, expected);
     }
 
     /**
@@ -79,16 +75,16 @@ public class ExportTest extends AbstractIOTest {
     public void testCopyFile() throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
-        File targetFile = new File(file() + ".xmi");
+        final File targetFile = new File(file() + ".xmi");
 
         Log.info("Writing to {0}", targetFile);
 
-        ReaderFactory.fromXmi(IOResourceManager.xmiStandard(), WriterFactory.toXmi(targetFile));
+        ReaderFactory.fromXmi(new URL(IOResourceManager.xmiStandard().toString()).openStream(), WriterFactory.toXmi(targetFile));
 
-        EObject sourceModel = loadWithEMF(IOResourceManager.xmiStandard());
-        EObject targetModel = loadWithEMF(new FileInputStream(targetFile));
+        final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
+        EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertEqualEObject(targetModel, sourceModel);
+        assertNotifierAreEqual(actual, expected);
     }
 
     /**
@@ -101,18 +97,18 @@ public class ExportTest extends AbstractIOTest {
     public void testExportToXmi() throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
-        File targetFile = new File(file() + ".xmi");
+        final File targetFile = new File(file() + ".xmi");
 
         Log.info("Writing to {0}", targetFile);
 
         try (DataMapper mapper = context().createMapper(file())) {
-            ReaderFactory.fromXmi(IOResourceManager.xmiStandard(), WriterFactory.toMapper(mapper));
+            ReaderFactory.fromXmi(new URL(IOResourceManager.xmiStandard().toString()).openStream(), WriterFactory.toMapper(mapper));
             ReaderFactory.fromMapper(mapper, WriterFactory.toXmi(targetFile));
         }
 
-        EObject sourceModel = loadWithEMF(IOResourceManager.xmiStandard());
-        EObject targetModel = loadWithEMF(new FileInputStream(targetFile));
+        final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
+        EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertEqualEObject(targetModel, sourceModel);
+        assertNotifierAreEqual(actual, expected);
     }
 }

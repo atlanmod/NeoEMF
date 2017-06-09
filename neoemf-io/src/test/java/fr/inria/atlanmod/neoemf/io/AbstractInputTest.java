@@ -27,11 +27,13 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
+import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 
@@ -83,7 +85,7 @@ public abstract class AbstractInputTest extends AbstractTest {
         processor = new EcoreProcessor(processor);
         processor = new XPathProcessor(processor);
 
-        new XmiStreamReader(processor).read(getSample());
+        new XmiStreamReader(processor).read(new URL(getSample().toString()).openStream());
 
         root = checkNotNull(writer.getRoot());
     }
@@ -94,7 +96,7 @@ public abstract class AbstractInputTest extends AbstractTest {
      * @return the stream
      */
     @Nonnull
-    protected abstract InputStream getSample();
+    protected abstract URI getSample();
 
     /**
      * Checks that the {@code element} has the given arguments.

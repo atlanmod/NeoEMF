@@ -18,10 +18,10 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
+import org.eclipse.emf.common.util.URI;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.InputStream;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ public class XmiReaderWithIdTest extends AbstractInputTest {
 
     @Nonnull
     @Override
-    protected InputStream getSample() {
+    protected URI getSample() {
         return IOResourceManager.xmiWithId();
     }
 

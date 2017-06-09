@@ -13,8 +13,6 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
 import javax.annotation.Nonnull;
@@ -39,8 +37,8 @@ public final class IOResourceManager {
      * @return the XMI file
      */
     @Nonnull
-    public static InputStream xmiStandard() {
-        return ResourceLoader.Holder.INSTANCE.getInputStream("/xmi/sampleStandard.xmi");
+    public static URI xmiStandard() {
+        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleStandard.xmi");
     }
 
     /**
@@ -49,8 +47,8 @@ public final class IOResourceManager {
      * @return the XMI file
      */
     @Nonnull
-    public static InputStream xmiWithId() {
-        return ResourceLoader.Holder.INSTANCE.getInputStream("/xmi/sampleWithId.xmi");
+    public static URI xmiWithId() {
+        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleWithId.xmi");
     }
 
     /**
@@ -71,8 +69,7 @@ public final class IOResourceManager {
         final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
         rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        URL url = ResourceLoader.Holder.INSTANCE.getUrl("/ecore/" + prefix + ".ecore");
-        Resource r = rs.getResource(URI.createURI(url.toString()), true);
+        Resource r = rs.getResource(ResourceLoader.Holder.INSTANCE.getUri("/ecore/" + prefix + ".ecore"), true);
 
         EObject eObject = r.getContents().get(0);
         if (EPackage.class.isInstance(eObject)) {
@@ -113,18 +110,13 @@ public final class IOResourceManager {
          *
          * @param name the name of the resource
          *
-         * @return a stream of the resource file
+         * @return a URI of the resource
          *
          * @throws NullPointerException if the resource cannot be found
          */
         @Nonnull
-        private InputStream getInputStream(String name) {
-            try {
-                return getUrl(name).openConnection().getInputStream();
-            }
-            catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        private URI getUri(String name) {
+            return URI.createURI(getUrl(name).toString());
         }
 
         /**
