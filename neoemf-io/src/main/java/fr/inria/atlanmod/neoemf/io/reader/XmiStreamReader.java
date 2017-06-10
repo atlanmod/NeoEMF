@@ -12,9 +12,11 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import org.codehaus.stax2.XMLInputFactory2;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.stream.IntStream;
 
@@ -41,9 +43,9 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
     @Override
     public void run(InputStream stream) throws Exception {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
-        factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
+        factory.setProperty(XMLInputFactory2.IS_NAMESPACE_AWARE, true);
 
-        read(factory.createXMLStreamReader(stream));
+        read(factory.createXMLStreamReader(new BufferedInputStream(stream), XmlConstants.ENCODING));
     }
 
     /**
