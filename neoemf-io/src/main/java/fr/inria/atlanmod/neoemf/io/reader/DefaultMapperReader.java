@@ -138,7 +138,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param key the key identifying the attribute
      */
     protected void readValue(FeatureKey key) {
-        mapper.valueOf(key).ifPresent(value -> {
+        mapper.<String>valueOf(key).ifPresent(value -> {
             BasicAttribute attribute = new BasicAttribute(key.name());
 
             attribute.id(BasicId.original(key.id().toString()));
@@ -158,7 +158,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         int size = mapper.sizeOfValue(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->
-                mapper.valueOf(key.withPosition(0)).ifPresent(value -> {
+                mapper.<String>valueOf(key.withPosition(0)).ifPresent(value -> {
                     BasicAttribute attribute = new BasicAttribute(key.name());
 
                     attribute.id(BasicId.original(key.id().toString()));

@@ -44,12 +44,12 @@ import static java.util.Objects.nonNull;
 public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     /**
-     * Stack containing previous {@link EClass}.
+     * Stack containing previous {@link EClass}es.
      */
     private final Deque<EClass> classesStack;
 
     /**
-     * Stack containing previous identifier.
+     * Stack containing previous identifiers.
      */
     private final Deque<BasicId> idsStack;
 

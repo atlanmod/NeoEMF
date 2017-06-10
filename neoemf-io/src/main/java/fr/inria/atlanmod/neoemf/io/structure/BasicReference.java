@@ -11,9 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link BasicFeature} representing a reference, which links several {@link BasicElement}s.
  */
+@ParametersAreNonnullByDefault
 public class BasicReference extends BasicFeature {
 
     /**
@@ -52,7 +55,7 @@ public class BasicReference extends BasicFeature {
         BasicReference reference = new BasicReference(attribute.name());
         reference.id(attribute.id());
         reference.index(attribute.index());
-        reference.idReference(BasicId.original(attribute.value().toString()));
+        reference.idReference(BasicId.original(attribute.value()));
         return reference;
     }
 

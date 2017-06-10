@@ -11,9 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A identifiable {@link BasicMetaclass} which can be typed.
  */
+@ParametersAreNonnullByDefault
 public class BasicElement extends BasicMetaclass {
 
     /**
@@ -117,5 +122,25 @@ public class BasicElement extends BasicMetaclass {
      */
     public void isRoot(boolean isRoot) {
         this.isRoot = isRoot;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        BasicElement that = (BasicElement) o;
+        return Objects.equals(id, that.id);
     }
 }

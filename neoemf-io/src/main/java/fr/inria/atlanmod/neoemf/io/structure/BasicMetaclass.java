@@ -11,9 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A simple representation of a element with a {@link BasicNamespace} and a name.
  */
+@ParametersAreNonnullByDefault
 public class BasicMetaclass extends BasicNamedElement {
 
     /**
@@ -62,6 +67,26 @@ public class BasicMetaclass extends BasicNamedElement {
      */
     public void ns(BasicNamespace ns) {
         this.ns = ns;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), ns);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        BasicMetaclass that = (BasicMetaclass) o;
+        return Objects.equals(ns, that.ns);
     }
 
     @Override

@@ -11,9 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A simple element that has a name.
  */
+@ParametersAreNonnullByDefault
 public abstract class BasicNamedElement {
 
     /**
@@ -37,6 +42,23 @@ public abstract class BasicNamedElement {
      */
     public String name() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicNamedElement that = (BasicNamedElement) o;
+        return Objects.equals(name, that.name);
     }
 
     @Override

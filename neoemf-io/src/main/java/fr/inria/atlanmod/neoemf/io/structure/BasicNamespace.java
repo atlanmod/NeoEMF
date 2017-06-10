@@ -14,14 +14,17 @@ package fr.inria.atlanmod.neoemf.io.structure;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A simple representation of a namespace with a prefix and an URI.
  */
+@ParametersAreNonnullByDefault
 public class BasicNamespace {
 
     /**
@@ -75,6 +78,29 @@ public class BasicNamespace {
      */
     public String uri() {
         return uri;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(prefix, uri);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicNamespace that = (BasicNamespace) o;
+        return Objects.equals(prefix, that.prefix) &&
+                Objects.equals(uri, that.uri);
+    }
+
+    @Override
+    public String toString() {
+        return prefix + "@" + uri;
     }
 
     /**

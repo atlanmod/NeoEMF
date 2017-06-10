@@ -11,9 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * The simple representation of an identifier of a {@link BasicElement}.
  */
+@ParametersAreNonnullByDefault
 public class BasicId {
 
     /**
@@ -79,6 +84,23 @@ public class BasicId {
      */
     public boolean isGenerated() {
         return generated;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicId basicId = (BasicId) o;
+        return Objects.equals(value, basicId.value);
     }
 
     @Override

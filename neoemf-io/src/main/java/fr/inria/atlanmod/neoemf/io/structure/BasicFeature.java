@@ -11,9 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
+@ParametersAreNonnullByDefault
 public abstract class BasicFeature extends BasicNamedElement {
 
     /**
@@ -112,5 +117,25 @@ public abstract class BasicFeature extends BasicNamedElement {
      */
     public boolean isAttribute() {
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        BasicFeature that = (BasicFeature) o;
+        return Objects.equals(id, that.id);
     }
 }

@@ -11,15 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link BasicFeature} representing an attribute, with a value.
  */
+@ParametersAreNonnullByDefault
 public class BasicAttribute extends BasicFeature {
 
     /**
      * The value of this attribute.
      */
-    private Object value;
+    private String value;
 
     /**
      * Constructs a new {@code BasicAttribute} with the given {@code name}.
@@ -50,7 +53,7 @@ public class BasicAttribute extends BasicFeature {
      *
      * @return the value
      */
-    public Object value() {
+    public String value() {
         return value;
     }
 
@@ -59,7 +62,7 @@ public class BasicAttribute extends BasicFeature {
      *
      * @param value the value
      */
-    public void value(Object value) {
+    public void value(String value) {
         this.value = value;
     }
 
