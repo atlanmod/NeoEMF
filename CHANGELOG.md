@@ -45,6 +45,25 @@ Current SNAPSHOT.
 - __[NEW]__ The direct-import becomes generic and works with all implementations
 - __[NEW]__ Some methods use `Optional` instead of a comparison to `null`
 - __[UPD]__ `EList` and `EMap` implementations are inner classes in `DefaultPersistentEObject`
+- __[FIX]__ Issue #11: The `LoggingStoreDecorator` now use a dedicated `Logger` for its associated `Backend`
+- __[FIX]__ Issue #12: The stores are updated according to the EMF calls, so that the backends are always synchronized. 
+There is no longer custom processing during `set()` and `add()`
+- __[FIX]__ Issue #15: The `blueprints.***.directory` property is overwritten in all cases by the current path: If a 
+datastore already exists, then this property is updated with the new path, otherwise, the property stay unchanged.
+- __[FIX]__ Issue #27/#28: `Store`s are no longer copied when the associated `Resource` is unloading: a `Resource` 
+should not be called if it's not loaded
+- __[FIX]__ Issue #57: The `Cache<Id, PersistentEObject>` is now common for all implementations
+- __[FIX]__ Issue #58: `guava` dependencies are no longer used in the project
+- __[FIX]__ Issue #63: `BasicReference`s are first processed as `BasicAttribute`s when reading, then redirected in 
+`EcoreProcessor` which has access to its real type with the `EPackage`
+- __[FIX]__ Issue #64: If an `Id` is not found in `Backend`s, then an empty array is returned
+- __[FIX]__ Issue #70: The `LazyMatchEngine` class has been removed
+- __[FIX]__ Issue #71: `BoundedTransientBackend` are registered in a local registry to ensure that the features can be 
+retrieved even if the associated `PersistentEObject` is freed from memory
+- __[FIX]__ Issue #72: Ignore the uniqueness check of identifiers when creating a new `Vertex`
+- __[FIX]__ Issue #73: The `neoemf-data-map-core` module no longer exists
+- __[FIX]__ Issue #75: The `io` module now use the `DataMapper` structure, and not a custom implementation
+- __[FIX]__ Issue #78: Improve the `NullPointerException` message
 
 ### Refactoring
 - __[UPD]__ `AutoCommitStoreDecorator` become `AutoSaveStoreDecorator`
