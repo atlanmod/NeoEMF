@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.ocl;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
@@ -22,7 +23,6 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -67,7 +67,7 @@ public class OCLProtectedMethods {
 
         Instant start, end;
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.newBuilder().fromFile(new File("models/sample.graphdb")))) {
             resource.load(Collections.emptyMap());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
@@ -75,15 +75,15 @@ public class OCLProtectedMethods {
             Log.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.newBuilder().fromFile(new File("models/sample.mapdb")))) {
             resource.load(Collections.emptyMap());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
             Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
-        
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BerkeleyDbURI.createFileURI(new File("models/sample.berkeleydb")))) {
+
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(BerkeleyDbURI.newBuilder().fromFile(new File("models/sample.berkeleydb")))) {
             resource.load(Collections.emptyMap());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
@@ -91,7 +91,7 @@ public class OCLProtectedMethods {
             Log.info("[ProtectedMethods - BerkeleyDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
 
-//        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
+//        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.newBuilder().fromServer("localhost", 2181, URI.createURI("sample.hbase")))) {
 //            resource.load(Collections.emptyMap());
 //            start = Instant.now();
 //            List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);

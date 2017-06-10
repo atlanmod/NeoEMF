@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
+import fr.inria.atlanmod.common.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -28,9 +28,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkState;
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkState;
 import static java.util.Objects.isNull;
 
 /**

@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.Workspace;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;
@@ -22,6 +22,10 @@ import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.File;
 import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * This state provided a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
@@ -42,11 +46,13 @@ public class ReadOnlyRunnerState extends RunnerState {
 
     /**
      * Returns the current resource loaded from the datastore.
+     *
+     * @throws NullPointerException if the resource has not been initialized
      */
+    @Nonnull
     public Resource getResource() {
-        if (Objects.isNull(resource)) {
-            throw new NullPointerException();
-        }
+        checkNotNull(resource);
+
         return resource;
     }
 
@@ -54,8 +60,13 @@ public class ReadOnlyRunnerState extends RunnerState {
      * Returns the location of the current {@link Adapter}.
      *
      * @return the location of the current {@link Adapter}.
+     *
+     * @throws NullPointerException if the store file has not been initialized
      */
+    @Nonnull
     protected File getStoreLocation() {
+        checkNotNull(storeFile);
+
         return storeFile;
     }
 

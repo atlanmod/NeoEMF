@@ -90,22 +90,22 @@ public class RunnerQuery extends Runner {
     //region ASE 2015 queries.
 
     @Benchmark
-    public Integer commentsTagContentASE2015(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15CommentsTagContent(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer grabatsASE2015(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15Grabats(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer specificInvisibleMethodDeclarationsASE2015(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarations(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer thrownExceptionsASE2015(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15ThrownExceptions(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryThrownExceptions(state.getResource()).callWithResult();
     }
 

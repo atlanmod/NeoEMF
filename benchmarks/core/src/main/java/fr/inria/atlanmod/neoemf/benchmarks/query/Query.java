@@ -11,9 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
-import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.common.log.Log;
 
 import java.util.concurrent.Callable;
+
+import javax.annotation.Nullable;
 
 import static java.util.Objects.nonNull;
 
@@ -23,9 +25,11 @@ import static java.util.Objects.nonNull;
 @FunctionalInterface
 public interface Query<V> extends Callable<V> {
 
+    @Nullable
     @Override
     V call() throws Exception;
 
+    @Nullable
     default V callWithResult() throws Exception {
         V result;
 

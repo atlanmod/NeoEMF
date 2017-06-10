@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides miscellaneous utility classes, such as logging and caching features, or URIs management.
+ * Provides miscellaneous utility classes, such as URIs management or models comparison.
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.util.URIBuilder} class, that extends the standard EMF
  * {@link org.eclipse.emf.common.util.URI} to enable NeoEMF specific URI creation. Backend-specific implementations

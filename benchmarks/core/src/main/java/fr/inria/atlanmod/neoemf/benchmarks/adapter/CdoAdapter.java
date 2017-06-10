@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.cdo.eresource.CDOResource;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
@@ -50,12 +50,16 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
  * An {@link Adapter} on top of a CDO server.
  */
+@ParametersAreNonnullByDefault
 public class CdoAdapter extends AbstractAdapter {
 
     public static final String NAME = "cdo";
@@ -76,6 +80,7 @@ public class CdoAdapter extends AbstractAdapter {
         super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
 
+    @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
         server = new EmbeddedCdoServer(file.toPath());
@@ -86,6 +91,7 @@ public class CdoAdapter extends AbstractAdapter {
         return transaction.getOrCreateResource(file.getName());
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> getOptions() {
         Map<String, Object> saveOpts = new HashMap<>();
@@ -93,6 +99,7 @@ public class CdoAdapter extends AbstractAdapter {
         return saveOpts;
     }
 
+    @Nonnull
     @Override
     public Resource load(File file, CommonOptions options) throws Exception {
         initAndGetEPackage();
@@ -116,7 +123,7 @@ public class CdoAdapter extends AbstractAdapter {
             server.close();
         }
 
-        if (nonNull(resource) && resource.isLoaded()) {
+        if (resource.isLoaded()) {
             resource.unload();
         }
     }
@@ -128,8 +135,10 @@ public class CdoAdapter extends AbstractAdapter {
 
         private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
+        @Nonnull
         private final Path path;
 
+        @Nonnull
         private final String repositoryName;
 
         private IConnector connector;
@@ -189,6 +198,7 @@ public class CdoAdapter extends AbstractAdapter {
             return isNull(connector) || connector.isClosed();
         }
 
+        @Nonnull
         private CDOSession openSession() {
             CDONet4jSessionConfiguration config = CDONet4jUtil.createNet4jSessionConfiguration();
             config.setConnector(connector);
@@ -196,12 +206,14 @@ public class CdoAdapter extends AbstractAdapter {
             return config.openNet4jSession();
         }
 
+        @Nonnull
         private JdbcDataSource createDataSource(String url) {
             JdbcDataSource dataSource = new JdbcDataSource();
             dataSource.setURL(url);
             return dataSource;
         }
 
+        @Nonnull
         private IStore createStore(JdbcDataSource dataSource) {
             IMappingStrategy mappingStrategy = CDODBUtil.createHorizontalMappingStrategy(true);
             mappingStrategy.getProperties().put("qualifiedNames", "true");
@@ -213,6 +225,7 @@ public class CdoAdapter extends AbstractAdapter {
             return CDODBUtil.createStore(mappingStrategy, dbAdapter, dbConnectionProvider);
         }
 
+        @Nonnull
         private IRepository createRepository(IStore store) {
             Map<String, String> props = new HashMap<>();
             props.put(IRepository.Props.OVERRIDE_UUID, repositoryName);
@@ -221,6 +234,7 @@ public class CdoAdapter extends AbstractAdapter {
             return CDOServerUtil.createRepository(repositoryName, store, props);
         }
 
+        @Nonnull
         private IManagedContainer createContainer() {
             IManagedContainer container = ContainerUtil.createContainer();
             Net4jUtil.prepareContainer(container);

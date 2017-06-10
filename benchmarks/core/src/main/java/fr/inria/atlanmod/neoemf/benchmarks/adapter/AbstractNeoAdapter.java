@@ -19,11 +19,13 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
 
-import static java.util.Objects.nonNull;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An abstract {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.Backend}.
  */
+@ParametersAreNonnullByDefault
 abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     private static final String RESOURCE_EXTENSION = "neoemf";
@@ -34,6 +36,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
         super(name, RESOURCE_EXTENSION, storeExtension, EPACKAGE_CLASS);
     }
 
+    @Nonnull
     @Override
     public Resource load(File file, CommonOptions options) throws Exception {
         initAndGetEPackage();
@@ -46,10 +49,9 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Override
     public void unload(Resource resource) {
-        if (nonNull(resource) && resource.isLoaded()) {
+        if (resource.isLoaded()) {
             if (resource instanceof PersistentResource) {
-                PersistentResource persistentResource = (PersistentResource) resource;
-                persistentResource.close();
+                PersistentResource.class.cast(resource).close();
             }
             else {
                 resource.unload();

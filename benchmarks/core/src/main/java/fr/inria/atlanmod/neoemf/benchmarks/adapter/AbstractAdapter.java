@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.ResourceHelper;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -20,12 +20,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * The abstract implementation of an {@link Adapter.Internal}.
  */
+@ParametersAreNonnullByDefault
 abstract class AbstractAdapter implements Adapter.Internal {
 
     /**
@@ -36,17 +39,17 @@ abstract class AbstractAdapter implements Adapter.Internal {
     /**
      * The extension of the adapted resource, used to create the stores.
      */
-    protected final String resourceExtension;
+    private final String resourceExtension;
 
     /**
      * The extension of the resource, used for benchmarks.
      */
-    protected final String storeExtension;
+    private final String storeExtension;
 
     /**
      * The class of the {@link EPackage} associated to this adapter.
      */
-    protected final Class<?> packageClass;
+    private final Class<?> packageClass;
 
     /**
      * Constructs a new {@code AbstractAdatper}.
@@ -63,21 +66,25 @@ abstract class AbstractAdapter implements Adapter.Internal {
         this.packageClass = checkNotNull(packageClass);
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return name;
     }
 
+    @Nonnull
     @Override
     public String getResourceExtension() {
         return resourceExtension;
     }
 
+    @Nonnull
     @Override
     public String getStoreExtension() {
         return storeExtension;
     }
 
+    @Nonnull
     @Override
     public final EPackage initAndGetEPackage() {
         try {
@@ -90,16 +97,19 @@ abstract class AbstractAdapter implements Adapter.Internal {
         }
     }
 
+    @Nonnull
     @Override
     public File getOrCreateResource(String name) throws Exception {
         return ResourceHelper.createResource(name, this);
     }
 
+    @Nonnull
     @Override
     public File getOrCreateStore(File file) throws Exception {
         return getOrCreateStore(file, false);
     }
 
+    @Nonnull
     @Override
     public File createTempStore(File file) throws Exception {
         return getOrCreateStore(file, true);
@@ -110,6 +120,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
         resource.save(getOptions());
     }
 
+    @Nonnull
     @Override
     public File copy(File file) throws Exception {
         return ResourceHelper.copyStore(file);
@@ -123,6 +134,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
      *
      * @return the resource
      */
+    @Nonnull
     private File getOrCreateStore(File file, boolean temporary) {
         File storeFile;
 
@@ -138,7 +150,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
             throw new RuntimeException(e);
         }
 
-        if (isNull(storeFile) || !storeFile.exists()) {
+        if (!storeFile.exists()) {
             throw new IllegalArgumentException("'" + file.getName() + "' does not exist in resource directory");
         }
 

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * Represents options related to database access, managed by {@link fr.inria.atlanmod.neoemf.data.BackendFactory}.

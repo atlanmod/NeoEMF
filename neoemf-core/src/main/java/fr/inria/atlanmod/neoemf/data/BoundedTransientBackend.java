@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * A {@link TransientBackend} that is bounded to a unique {@link Id}.

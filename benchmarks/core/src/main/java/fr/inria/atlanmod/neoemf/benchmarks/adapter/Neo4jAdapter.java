@@ -15,9 +15,13 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} using Neo4j.
  */
+@ParametersAreNonnullByDefault
 public class Neo4jAdapter extends TinkerAdapter {
 
     public static final String NAME = "neo-neo4j";
@@ -29,16 +33,19 @@ public class Neo4jAdapter extends TinkerAdapter {
         super(NAME, STORE_EXTENSION);
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return NAME;
     }
 
+    @Nonnull
     @Override
     public String getStoreExtension() {
         return STORE_EXTENSION;
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> getOptions() {
         return BlueprintsNeo4jOptions.newBuilder().asMap();

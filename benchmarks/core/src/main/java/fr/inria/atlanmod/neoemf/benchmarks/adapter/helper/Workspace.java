@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter.helper;
 
-import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.common.log.Log;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -22,12 +22,16 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
  * A class that provides static methods for {@link Path} management.
  */
+@ParametersAreNonnullByDefault
 public class Workspace {
 
     /**
@@ -58,6 +62,7 @@ public class Workspace {
      *
      * @return the directory
      */
+    @Nonnull
     private static Path getBaseDirectory() {
         return createIfNecessary(BASE_DIRECTORY);
     }
@@ -67,6 +72,7 @@ public class Workspace {
      *
      * @return the directory
      */
+    @Nonnull
     public static Path getResourcesDirectory() {
         return createIfNecessary(RESOURCES_DIRECTORY);
     }
@@ -76,6 +82,7 @@ public class Workspace {
      *
      * @return the directory
      */
+    @Nonnull
     public static Path getStoreDirectory() {
         return createIfNecessary(STORES_DIRECTORY);
     }
@@ -85,6 +92,7 @@ public class Workspace {
      *
      * @return the temporary directory
      */
+    @Nonnull
     private static Path getTempDirectory() {
         if (isNull(TEMP_DIRECTORY)) {
             try {
@@ -103,6 +111,7 @@ public class Workspace {
      *
      * @return the temporary directory.
      */
+    @Nonnull
     public static Path newTempDirectory() {
         try {
             return Files.createTempDirectory(getTempDirectory(), "tmp");
@@ -128,6 +137,7 @@ public class Workspace {
      *
      * @return the {@code path}
      */
+    @Nonnull
     private static Path createIfNecessary(Path path) {
         if (!Files.exists(path)) {
             try {

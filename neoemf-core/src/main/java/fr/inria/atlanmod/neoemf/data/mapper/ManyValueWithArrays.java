@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
+import fr.inria.atlanmod.common.collect.MoreArrays;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.MoreArrays;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**

@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
 import fr.inria.atlanmod.neoemf.io.structure.BasicId;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XPathConstants;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.RegEx;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 

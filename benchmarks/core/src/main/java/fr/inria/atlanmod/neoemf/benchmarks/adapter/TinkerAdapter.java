@@ -24,9 +24,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} using TinkerGraph.
  */
+@ParametersAreNonnullByDefault
 public class TinkerAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-tinker";
@@ -42,6 +46,7 @@ public class TinkerAdapter extends AbstractNeoAdapter {
         super(name, storeExtension);
     }
 
+    @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
         BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
@@ -52,6 +57,7 @@ public class TinkerAdapter extends AbstractNeoAdapter {
         return resourceSet.createResource(uri);
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> getOptions() {
         return BlueprintsOptions.newBuilder().asMap();

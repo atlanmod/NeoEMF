@@ -24,20 +24,25 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
  */
+@ParametersAreNonnullByDefault
 public class BerkeleyDbAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-berkeleydb";
 
-    private static final String STORE_EXTENSION = "berkeleydb.resource"; // -> neoemf.mapdb.resource
+    private static final String STORE_EXTENSION = "berkeleydb.resource"; // -> neoemf.berkeleydb.resource
 
     @SuppressWarnings("unused") // Called dynamically
     public BerkeleyDbAdapter() {
         super(NAME, STORE_EXTENSION);
     }
 
+    @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
         BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
@@ -48,6 +53,7 @@ public class BerkeleyDbAdapter extends AbstractNeoAdapter {
         return resourceSet.createResource(uri);
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> getOptions() {
         return BerkeleyDbOptions.newBuilder().asMap();

@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.common.log.Logger;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
 import fr.inria.atlanmod.neoemf.io.structure.BasicId;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
-import fr.inria.atlanmod.neoemf.util.log.Log;
-import fr.inria.atlanmod.neoemf.util.log.Logger;
 
 import java.util.Objects;
 

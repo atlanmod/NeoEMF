@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
+import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
@@ -18,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.MoreIterables;
 
 import org.junit.After;
 import org.junit.Before;

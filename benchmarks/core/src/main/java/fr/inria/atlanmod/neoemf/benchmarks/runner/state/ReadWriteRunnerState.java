@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 /**
  * This state provided a ready-to-use datastore. It is preloaded and unloaded automatically from a temporary copy of the
  * default datastore, to avoid overwriting the original datastore.
@@ -22,6 +24,7 @@ import java.io.File;
 // TODO: Dynamically save in a temporary datastore
 public class ReadWriteRunnerState extends ReadOnlyRunnerState {
 
+    @Nonnull
     @Override
     protected File getStoreLocation() {
         try {

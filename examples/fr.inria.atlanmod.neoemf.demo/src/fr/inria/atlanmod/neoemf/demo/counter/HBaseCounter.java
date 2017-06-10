@@ -11,12 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.demo.counter;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -44,9 +45,9 @@ public class HBaseCounter {
 
         Instant start = Instant.now();
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", 2181, URI.createURI("sample.hbase")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.newBuilder().fromServer("localhost", 2181, URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
-            int size = ReaderUtil.countElements(resource);
+            long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 

@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleActivator;

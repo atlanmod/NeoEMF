@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.common.log.Log;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**

@@ -33,7 +33,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 
 /**
  * A factory that creates {@link BerkeleyDbBackend} instances.

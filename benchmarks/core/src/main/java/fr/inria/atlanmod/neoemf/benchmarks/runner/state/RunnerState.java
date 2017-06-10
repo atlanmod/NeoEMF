@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
@@ -20,7 +21,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.TinkerAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
@@ -189,7 +189,7 @@ public class RunnerState {
         // Logging
         Matcher levelMatcher = Pattern.compile("l\\{([a-zA-Z]+)\\}").matcher(lowerOptions);
         if (levelMatcher.find()) {
-            fr.inria.atlanmod.neoemf.util.log.Level level = fr.inria.atlanmod.neoemf.util.log.Level.valueOf(levelMatcher.group(1).toUpperCase());
+            fr.inria.atlanmod.common.log.Level level = fr.inria.atlanmod.common.log.Level.valueOf(levelMatcher.group(1).toUpperCase());
             Log.debug("Use logging with level = {0}", level.name());
             options.log(level);
         }

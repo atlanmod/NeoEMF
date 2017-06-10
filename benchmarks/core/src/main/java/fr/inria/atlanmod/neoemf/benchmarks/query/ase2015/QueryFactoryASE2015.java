@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query.ase2015;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -39,10 +39,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static java.util.Objects.nonNull;
 
+@ParametersAreNonnullByDefault
 public class QueryFactoryASE2015 extends QueryFactory {
 
+    @Nonnull
     public static Query<Integer> queryGrabats(Resource resource) {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
@@ -63,6 +68,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryThrownExceptions(Resource resource) {
         return () -> {
             List<TypeAccess> thrownExceptions = new BasicEList<>();
@@ -75,6 +81,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> querySpecificInvisibleMethodDeclarations(Resource resource) {
         return () -> {
             List<MethodDeclaration> methodDeclarations = new BasicEList<>();
@@ -94,6 +101,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryCommentsTagContent(Resource resource) {
         return () -> {
             Set<TextElement> result = new HashSet<>();
@@ -125,6 +133,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
+    @Nonnull
     @SuppressWarnings("unused")
     public static Query<Integer> queryBranchStatements(Resource resource) {
         return () -> {

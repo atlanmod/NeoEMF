@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.TimerTask;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link StreamReader} that notifies {@link Handler} and provides overall behavior for the management of

@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter.helper;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
@@ -48,14 +48,18 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
  * A class that provides static methods for {@link Resource} management.
  */
+@ParametersAreNonnullByDefault
 public final class ResourceHelper {
 
     private static final String XMI = "xmi";
@@ -102,6 +106,7 @@ public final class ResourceHelper {
      *
      * @throws IOException if an I/O error occurs during the copy
      */
+    @Nonnull
     public static File copyStore(File file) throws IOException {
         Path outputFile = Workspace.newTempDirectory().resolve(file.getName());
 
@@ -140,6 +145,7 @@ public final class ResourceHelper {
      * @throws Exception if a error occurs during the creation of the store
      * @see Workspace#newTempDirectory()
      */
+    @Nonnull
     public static File createTempStore(File resourceFile, Adapter.Internal adapter) throws Exception {
         return createStore(resourceFile, adapter, Workspace.newTempDirectory());
     }
@@ -156,6 +162,7 @@ public final class ResourceHelper {
      * @throws Exception if a error occurs during the creation of the store
      * @see Workspace#getStoreDirectory()
      */
+    @Nonnull
     public static File createStore(File resourceFile, Adapter.Internal adapter) throws Exception {
         return createStore(resourceFile, adapter, Workspace.getStoreDirectory());
     }
@@ -173,6 +180,7 @@ public final class ResourceHelper {
      *
      * @throws Exception if a error occurs during the creation of the store
      */
+    @Nonnull
     private static File createStore(File resourceFile, Adapter.Internal adapter, Path dir) throws Exception {
         checkValidResource(resourceFile.getName());
         checkArgument(resourceFile.exists(), "Resource '%s' does not exist", resourceFile);
@@ -231,6 +239,7 @@ public final class ResourceHelper {
      *
      * @throws Exception if a error occurs during the creation of the resource
      */
+    @Nonnull
     public static File createResource(String resourceFileName, Adapter.Internal adapter) throws Exception {
         if (getRegisteredResources().containsKey(resourceFileName.toLowerCase())) {
             resourceFileName = getRegisteredResources().get(resourceFileName.toLowerCase());
@@ -261,6 +270,7 @@ public final class ResourceHelper {
      *
      * @throws Exception if a error occurs during the creation of the resource
      */
+    @Nonnull
     private static File createResource(File resourceFile, Adapter.Internal adapter) throws Exception {
         String targetFileName = getNameWithoutExtension(resourceFile.getName()) + "." + adapter.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
@@ -308,6 +318,7 @@ public final class ResourceHelper {
      *
      * @return a new {@link ResourceSet}
      */
+    @Nonnull
     private static ResourceSet loadResourceSet() {
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
@@ -326,6 +337,7 @@ public final class ResourceHelper {
      *
      * @return the adapted {@code rootObject}
      */
+    @Nonnull
     private static EObject migrate(EObject rootObject, EPackage targetPackage) {
         Map<EObject, EObject> correspondences = new HashMap<>();
         EObject adaptedObject = getCorrespondingEObject(correspondences, rootObject, targetPackage);
@@ -350,6 +362,7 @@ public final class ResourceHelper {
      *
      * @see #getCorrespondingEObject(Map, EObject, EPackage)
      */
+    @Nonnull
     private static void copy(Map<EObject, EObject> correspondences, EObject sourceObject, EObject targetObject) {
         for (EStructuralFeature sourceFeature : sourceObject.eClass().getEAllStructuralFeatures()) {
             if (sourceObject.eIsSet(sourceFeature)) {
@@ -387,6 +400,7 @@ public final class ResourceHelper {
      *
      * @return the corresponding {@link EObject}
      */
+    @Nonnull
     private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondences, EObject sourceObject, EPackage targetPackage) {
         return correspondences.computeIfAbsent(sourceObject, o -> {
             EClass eClass = sourceObject.eClass();
@@ -406,6 +420,7 @@ public final class ResourceHelper {
      *
      * @throws IOException if the ZIP file cannot be found
      */
+    @Nonnull
     private static List<String> getZipResources() throws IOException {
         if (isNull(AVAILABLE_RESOURCES)) {
             AVAILABLE_RESOURCES = new ArrayList<>();
@@ -432,6 +447,7 @@ public final class ResourceHelper {
      *
      * @throws IOException if the properties file cannot be found
      */
+    @Nonnull
     private static Map<String, String> getRegisteredResources() throws IOException {
         if (isNull(REGISTERED_RESOURCES)) {
             Properties properties = new Properties();
@@ -452,6 +468,7 @@ public final class ResourceHelper {
      *
      * @throws IOException if an I/O error occurs during the extraction
      */
+    @Nonnull
     private static File extractFromZip(String filename, Path outputDir) throws IOException {
         File outputFile = null;
         boolean fileFound = false;
@@ -480,6 +497,7 @@ public final class ResourceHelper {
      *
      * @throws IOException if an I/O error occurs during the extraction
      */
+    @Nonnull
     private static File extractEntryFromZip(ZipInputStream input, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (outputFile.exists()) {
@@ -507,6 +525,7 @@ public final class ResourceHelper {
      *
      * @return the filename without its extension
      */
+    @Nonnull
     public static String getNameWithoutExtension(String file) {
         checkNotNull(file);
 

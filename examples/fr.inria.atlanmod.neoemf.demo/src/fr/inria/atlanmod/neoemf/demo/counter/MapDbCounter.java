@@ -11,12 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.demo.counter;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -44,9 +45,9 @@ public class MapDbCounter {
 
         Instant start = Instant.now();
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
+        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.newBuilder().fromFile(new File("models/sample.mapdb")))) {
             resource.load(Collections.emptyMap());
-            int size = ReaderUtil.countElements(resource);
+            long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 

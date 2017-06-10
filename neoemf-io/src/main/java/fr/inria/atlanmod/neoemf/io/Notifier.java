@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process.

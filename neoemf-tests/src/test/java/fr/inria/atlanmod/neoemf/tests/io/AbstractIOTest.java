@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
-import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
+import fr.inria.atlanmod.neoemf.util.compare.LazyMatchEngineFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Comparison;

@@ -12,8 +12,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.action;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;

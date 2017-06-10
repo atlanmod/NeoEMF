@@ -1,24 +1,25 @@
 package graph.usage;
 
-import java.io.File;
-import java.io.IOException;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import java.io.File;
+import java.io.IOException;
+
 import graph.Edge;
 import graph.Graph;
 import graph.GraphFactory;
@@ -27,92 +28,75 @@ import graph.Vertice;
 /**
  * Code from the online NeoEMF tutorial.
  * <p>
- * This class contains the tutorial code and additional examples
- * showing how to instantiate {@link PersistentResource}s relying on Neo4j,
- * MapDB, and HBase.
+ * This class contains the tutorial code and additional examples showing how to instantiate {@link PersistentResource}s
+ * relying on Neo4j, MapDB, and HBase.
  * <p>
- * <b>Note:</b> HBase resource creation is presented in this file but not
- * used to perform read/write operations, because HBase needs to be
- * installed separately and started to store a model. To enable HBase
- * storage see the HBase Configuration page on the wiki.
+ * <b>Note:</b> HBase resource creation is presented in this file but not used to perform read/write operations,
+ * because HBase needs to be installed separately and started to store a model. To enable HBase storage see the HBase
+ * Configuration page on the wiki.
  */
 public class Main {
 
-    private static ResourceSet resSet = new ResourceSetImpl();
+    private static final ResourceSet resourceSet = new ResourceSetImpl();
 
     /**
      * Creates a new {@link PersistentResource} relying on a Blueprints
      * datastore on top of a Neo4j database to perform modeling operations.
-     * 
+     *
      * @return the created resource
      */
     public static Resource createBlueprintsResource() throws IOException {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
-                BlueprintsPersistenceBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
-                .put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        Resource resource = resourceSet.createResource(BlueprintsURI.newBuilder().fromFile(new File("databases/myGraph.graphdb")));
 
-        Resource resource = resSet.createResource(BlueprintsURI.createFileURI(new File(
-                "databases/myGraph.graphdb")));
         /*
-         * Specify that Neo4j is used as the underlying blueprints backend. Note
-         * using the BlueprintsNeo4jOptionsBuilder class to create the option
-         * map automatically sets Neo4j as the graph backend.
+         * Specify that Neo4j is used as the underlying blueprints backend.
+         * Note using the BlueprintsNeo4jOptions class to create the option map automatically sets Neo4j as the graph
+         * backend.
          */
-
-        resource.save(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
+        resource.save(BlueprintsNeo4jOptions.noOption());
         return resource;
     }
 
     /**
      * Creates a new {@link PersistentResource} using the MapDB datastore to
      * perform modeling operations.
-     * 
+     *
      * @return the created resource
      */
     public static Resource createMapDBResource() {
+        BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME,
-                MapDbPersistenceBackendFactory.getInstance());
-
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
-                .put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        Resource resource = resSet.createResource(MapDbURI.createFileURI(new File(
-                "databases/myGraph.mapdb")));
-
-        return resource;
+        return resourceSet.createResource(MapDbURI.newBuilder().fromFile(new File("databases/myGraph.mapdb")));
     }
 
     /**
      * Creates a new {@link PersistentResource} using the HBase datastore
      * connected to a HBase server running on localhost:2181 to perfrom modeling
      * operations.
-     * 
+     *
      * @return the created resource
      */
     public static Resource createHBaseResource() {
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME,
-                HBasePersistenceBackendFactory.getInstance());
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap()
-                .put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
-        Resource resource = resSet.createResource(HBaseURI.createHierarchicalURI("localhost",
-                "2181", URI.createURI("myModel.hbase")));
+        BackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        return resource;
+        return resourceSet.createResource(HBaseURI.newBuilder().fromServer("localhost", 2181, URI.createURI("myModel.hbase")));
     }
 
     /**
      * Reads the content of the provided {@code resource} and print it in the
      * console.
-     * 
-     * @param resource
-     *            the resource to read
-     * @throws IOException
-     *             if an error occurs when loading the resource
+     *
+     * @param resource the resource to read
+     *
+     * @throws IOException if an error occurs when loading the resource
      */
     public static void read(Resource resource) throws IOException {
-        resource.load(AbstractPersistenceOptionsBuilder.noOption());
+        resource.load(CommonOptions.noOption());
         Graph graph = (Graph) resource.getContents().get(0);
         for (Edge each : graph.getEdges()) {
             System.out.println(each.getFrom().getLabel() + "--->" + each.getTo().getLabel());
@@ -122,11 +106,10 @@ public class Main {
     /**
      * Adds elements to the provided {@code resource} with new elements
      * representing a basic graph.
-     * 
-     * @param resource
-     *            the resource to add the element to
-     * @throws IOException
-     *             if an error occurs when saving the resource
+     *
+     * @param resource the resource to add the element to
+     *
+     * @throws IOException if an error occurs when saving the resource
      */
     public static void write(Resource resource) throws IOException {
         GraphFactory factory = GraphFactory.eINSTANCE;
@@ -145,7 +128,7 @@ public class Main {
             graph.getVertices().add(v2);
         }
         resource.getContents().add(graph);
-        resource.save(AbstractPersistenceOptionsBuilder.noOption());
+        resource.save(CommonOptions.noOption());
     }
 
     /**
@@ -155,13 +138,13 @@ public class Main {
      * used to perform read/write operations, because HBase needs to be
      * installed separately and started to store a model. To enable HBase
      * storage see the HBase Configuration page on the wiki.
-     * 
+     *
      * @param args
-     * @throws IOException
-     *             if a resource cannot be saved or loaded
+     *
+     * @throws IOException if a resource cannot be saved or loaded
      */
     public static void main(String[] args) throws IOException {
-        Resource[] resources = { createBlueprintsResource(), createMapDBResource() };
+        Resource[] resources = {createBlueprintsResource(), createMapDBResource()};
 
         for (Resource resource : resources) {
             write(resource);

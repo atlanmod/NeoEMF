@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.collect.MoreArrays;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -18,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.util.MoreArrays;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -47,10 +47,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkElementIndex;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkPositionIndex;
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkElementIndex;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 

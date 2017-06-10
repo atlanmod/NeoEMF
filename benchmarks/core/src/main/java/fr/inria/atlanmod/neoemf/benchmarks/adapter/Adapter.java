@@ -21,9 +21,13 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An adapter on top of a {@code Resource} manager.
  */
+@ParametersAreNonnullByDefault
 public interface Adapter {
 
     /**
@@ -31,6 +35,7 @@ public interface Adapter {
      *
      * @return the resource file
      */
+    @Nonnull
     File getOrCreateResource(String name) throws Exception;
 
     /**
@@ -38,6 +43,7 @@ public interface Adapter {
      *
      * @return the datastore location
      */
+    @Nonnull
     File getOrCreateStore(File file) throws Exception;
 
     /**
@@ -45,6 +51,7 @@ public interface Adapter {
      *
      * @return the datastore location
      */
+    @Nonnull
     @SuppressWarnings("UnusedReturnValue")
     File createTempStore(File file) throws Exception;
 
@@ -53,6 +60,7 @@ public interface Adapter {
      *
      * @return the loaded resource
      */
+    @Nonnull
     Resource load(File file, CommonOptions options) throws Exception;
 
     /**
@@ -70,11 +78,13 @@ public interface Adapter {
      *
      * @return the location of the new datastore
      */
+    @Nonnull
     File copy(File file) throws Exception;
 
     /**
      * An {@link Adapter} used to create {@link Resource}s.
      */
+    @ParametersAreNonnullByDefault
     interface Internal extends Adapter {
 
         /**
@@ -82,6 +92,7 @@ public interface Adapter {
          *
          * @return the name
          */
+        @Nonnull
         String getName();
 
         /**
@@ -89,6 +100,7 @@ public interface Adapter {
          *
          * @return the extension
          */
+        @Nonnull
         String getResourceExtension();
 
         /**
@@ -96,6 +108,7 @@ public interface Adapter {
          *
          * @return the extension
          */
+        @Nonnull
         String getStoreExtension();
 
         /**
@@ -103,6 +116,7 @@ public interface Adapter {
          *
          * @return the package
          */
+        @Nonnull
         EPackage initAndGetEPackage();
 
         /**
@@ -113,6 +127,7 @@ public interface Adapter {
          *
          * @return a new resource
          */
+        @Nonnull
         Resource createResource(File file, ResourceSet resourceSet);
 
         /**
@@ -120,6 +135,7 @@ public interface Adapter {
          *
          * @return the {@link Map} options
          */
+        @Nonnull
         default Map<String, Object> getOptions() {
             return Collections.emptyMap();
         }

@@ -25,7 +25,7 @@ import java.io.InputStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * The factory that creates {@link Reader} instances.

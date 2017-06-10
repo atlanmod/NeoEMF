@@ -24,9 +24,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.io.File;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
  */
+@ParametersAreNonnullByDefault
 public class MapDbAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-mapdb";
@@ -38,6 +42,7 @@ public class MapDbAdapter extends AbstractNeoAdapter {
         super(NAME, STORE_EXTENSION);
     }
 
+    @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
         BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
@@ -48,6 +53,7 @@ public class MapDbAdapter extends AbstractNeoAdapter {
         return resourceSet.createResource(uri);
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> getOptions() {
         return MapDbOptions.newBuilder().asMap();

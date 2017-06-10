@@ -204,6 +204,7 @@
                             ${project.groupId}.core
                         </Bundle-SymbolicName>
                         <Export-Package>
+                            fr.inria.atlanmod.common.*,
                             fr.inria.atlanmod.neoemf.*,
                         </Export-Package>
                         <Require-Bundle>

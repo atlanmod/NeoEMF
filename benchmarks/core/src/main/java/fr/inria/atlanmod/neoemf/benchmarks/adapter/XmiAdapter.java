@@ -21,11 +21,13 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 
-import static java.util.Objects.nonNull;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An {@link Adapter} on top a an original XMI {@link Resource}.
  */
+@ParametersAreNonnullByDefault
 public class XmiAdapter extends AbstractAdapter {
 
     public static final String NAME = "xmi";
@@ -40,6 +42,7 @@ public class XmiAdapter extends AbstractAdapter {
         super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
 
+    @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
         URI targetUri = URI.createFileURI(file.getAbsolutePath());
@@ -47,6 +50,7 @@ public class XmiAdapter extends AbstractAdapter {
         return resourceSet.createResource(targetUri);
     }
 
+    @Nonnull
     @Override
     public Resource load(File file, CommonOptions options) throws Exception {
         initAndGetEPackage();
@@ -63,7 +67,7 @@ public class XmiAdapter extends AbstractAdapter {
 
     @Override
     public void unload(Resource resource) {
-        if (nonNull(resource) && resource.isLoaded()) {
+        if (resource.isLoaded()) {
             resource.unload();
         }
     }

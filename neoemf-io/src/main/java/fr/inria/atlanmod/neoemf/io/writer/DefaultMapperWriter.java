@@ -11,13 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
+import fr.inria.atlanmod.common.io.hash.Hashers;
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.io.hash.Hashers;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
 import fr.inria.atlanmod.neoemf.io.structure.BasicId;
@@ -26,7 +27,6 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.util.cache.Cache;
 import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -36,7 +36,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.neoemf.util.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * A {@link MapperWriter} that persists data in a {@link DataMapper}, based on received events.

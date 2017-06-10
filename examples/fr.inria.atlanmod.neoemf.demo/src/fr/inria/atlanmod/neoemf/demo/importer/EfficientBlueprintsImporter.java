@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
@@ -18,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
 import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gmt.modisco.java.JavaPackage;
@@ -29,7 +29,8 @@ import java.time.Instant;
 import java.util.Map;
 
 /**
- * Imports an existing model stored in a XMI files into a Blueprints-based {@link PersistentResource} using a scalable
+ * Imports an existing model stored in a XMI files into a Blueprints-based {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
+ * using a scalable
  * XMI parser that bypasses the EMF API to improve performances and enable large XMI imports.
  */
 public class EfficientBlueprintsImporter {
@@ -40,7 +41,8 @@ public class EfficientBlueprintsImporter {
         Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder().asMap();
 
         BackendFactory factory = BlueprintsBackendFactory.getInstance();
-        try (Backend backend = factory.createPersistentBackend(BlueprintsURI.createFileURI(new File("models/sample2.graphdb")), options)) {
+
+        try (Backend backend = factory.createPersistentBackend(BlueprintsURI.newBuilder().fromFile(new File("models/sample2.graphdb")), options)) {
             Instant start = Instant.now();
 
             ReaderFactory.fromXmi(new File("models/sample.xmi"), WriterFactory.toMapper(backend));

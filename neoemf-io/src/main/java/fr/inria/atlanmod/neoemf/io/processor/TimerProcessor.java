@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.util.log.Log;
+import fr.inria.atlanmod.common.log.Log;
 
 import java.time.Duration;
 import java.time.Instant;

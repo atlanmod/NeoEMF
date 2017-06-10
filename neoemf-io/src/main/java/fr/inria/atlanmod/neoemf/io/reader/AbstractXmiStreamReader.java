@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
@@ -21,7 +22,6 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
-import fr.inria.atlanmod.neoemf.util.log.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;

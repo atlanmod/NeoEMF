@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.AbstractTest;
-import fr.inria.atlanmod.neoemf.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;

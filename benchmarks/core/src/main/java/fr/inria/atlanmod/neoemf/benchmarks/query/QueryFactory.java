@@ -38,10 +38,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static java.util.Objects.nonNull;
 
+@ParametersAreNonnullByDefault
 public class QueryFactory {
 
+    @Nonnull
     public static Query<Long> queryCountAllElements(Resource resource) {
         return () -> ((Iterable<EObject>) resource::getAllContents).spliterator().estimateSize();
     }
@@ -50,6 +55,7 @@ public class QueryFactory {
      * Returns the orphan and non Primitive Types of a Java model. This is a common query to all both standard and
      * customized methods.
      */
+    @Nonnull
     public static Query<Integer> queryOrphanNonPrimitivesTypes(Resource resource) {
         return () -> {
             List<Type> orphanTypes = new BasicEList<>();
@@ -65,6 +71,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryClassDeclarationAttributes(Resource resource) {
         return () -> {
             HashMap<String, Iterable<NamedElement>> resultMap = new HashMap<>();
@@ -79,6 +86,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryThrownExceptionsPerPackage(Resource resource) {
         return () -> {
             HashMap<String, Iterable<TypeAccess>> resultMap = new HashMap<>();
@@ -103,6 +111,7 @@ public class QueryFactory {
     /**
      * Renames all the method names with the given {@code name}.
      */
+    @Nonnull
     public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
         return () -> {
             Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
@@ -114,6 +123,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryGrabats(Resource resource) {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
@@ -134,6 +144,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryInvisibleMethodDeclarations(Resource resource) {
         return () -> {
             List<MethodDeclaration> methodDeclarations = new BasicEList<>();
@@ -158,6 +169,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryUnusedMethodsWithList(Resource resource) {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
@@ -184,6 +196,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     public static Query<Integer> queryUnusedMethodsWithLoop(Resource resource) {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
@@ -205,6 +218,7 @@ public class QueryFactory {
         };
     }
 
+    @Nonnull
     @SuppressWarnings("unchecked") // <Any>: Allows the use of generics without type check
     protected static <Any> Iterable<Any> getAllInstances(Resource resource, EClass eClass) {
         List<Any> resultList = new BasicEList<>();
@@ -219,6 +233,7 @@ public class QueryFactory {
         return resultList;
     }
 
+    @Nonnull
     private static Iterable<NamedElement> separateFields(Iterable<BodyDeclaration> bodyDeclarations) {
         List<NamedElement> fields = new BasicEList<>();
 

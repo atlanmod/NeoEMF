@@ -63,6 +63,7 @@
 
 **/.idea/
 **/*.iml
+**/*.eml
 **/*.iws
 
 ### NetBeans

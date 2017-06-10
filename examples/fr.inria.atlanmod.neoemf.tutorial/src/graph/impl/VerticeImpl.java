@@ -1,11 +1,14 @@
 /**
  */
+
 package graph.impl;
 
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
+
+import org.eclipse.emf.ecore.EClass;
+
 import graph.GraphPackage;
 import graph.Vertice;
-import org.eclipse.emf.ecore.EClass;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,57 +18,63 @@ import org.eclipse.emf.ecore.EClass;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link graph.impl.VerticeImpl#getLabel <em>Label</em>}</li>
+ * <li>{@link graph.impl.VerticeImpl#getLabel <em>Label</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class VerticeImpl extends DefaultPersistentEObject implements Vertice {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected VerticeImpl() {
-		super();
-	}
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return GraphPackage.Literals.VERTICE;
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected VerticeImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected int eStaticFeatureCount() {
-		return 0;
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return GraphPackage.Literals.VERTICE;
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getLabel() {
-		return (String)eGet(GraphPackage.Literals.VERTICE__LABEL, true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected int eStaticFeatureCount() {
+        return 0;
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setLabel(String newLabel) {
-		eSet(GraphPackage.Literals.VERTICE__LABEL, newLabel);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public String getLabel() {
+        return (String) eGet(GraphPackage.Literals.VERTICE__LABEL, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public void setLabel(String newLabel) {
+        eSet(GraphPackage.Literals.VERTICE__LABEL, newLabel);
+    }
 
 } //VerticeImpl
