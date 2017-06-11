@@ -40,8 +40,7 @@ public class RegisterMetamodelAction implements IObjectActionDelegate {
             return;
         }
 
-        Iterable<Object> selectedObjects = selection::iterator;
-        MoreIterables.stream(selectedObjects)
+        MoreIterables.<Object>stream(selection::iterator)
                 .filter(IFile.class::isInstance)
                 .map(IFile.class::cast)
                 .map(file -> file.getFullPath().toOSString())

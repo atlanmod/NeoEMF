@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
+import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.common.log.Log;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -22,7 +23,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -31,13 +31,14 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.StringTokenizer;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -61,33 +62,30 @@ public class MetamodelRegistry {
     }
 
     private static void setDataTypesInstanceClasses(Resource metamodel) {
-        Iterable<EObject> allContents = metamodel::getAllContents;
-        for (EObject eObject : allContents) {
-            if (eObject instanceof EDataType) {
-                EDataType eDataType = (EDataType) eObject;
-                String instanceClass = "";
+        MoreIterables.stream(metamodel::getAllContents)
+                .filter(EDataType.class::isInstance)
+                .map(EDataType.class::cast)
+                .forEach(type -> {
+                    Optional<String> inst = Optional.empty();
 
-                if (Objects.equals(eDataType.getName(), String.class.getSimpleName())) {
-                    instanceClass = String.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Boolean.class.getSimpleName())) {
-                    instanceClass = Boolean.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Integer.class.getSimpleName())) {
-                    instanceClass = Integer.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Float.class.getSimpleName())) {
-                    instanceClass = Float.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Double.class.getSimpleName())) {
-                    instanceClass = Double.class.getName();
-                }
+                    if (Objects.equals(type.getName(), String.class.getSimpleName())) {
+                        inst = Optional.of(String.class.getName());
+                    }
+                    else if (Objects.equals(type.getName(), Boolean.class.getSimpleName())) {
+                        inst = Optional.of(Boolean.class.getName());
+                    }
+                    else if (Objects.equals(type.getName(), Integer.class.getSimpleName())) {
+                        inst = Optional.of(Integer.class.getName());
+                    }
+                    else if (Objects.equals(type.getName(), Float.class.getSimpleName())) {
+                        inst = Optional.of(Float.class.getName());
+                    }
+                    else if (Objects.equals(type.getName(), Double.class.getSimpleName())) {
+                        inst = Optional.of(Double.class.getName());
+                    }
 
-                if (!instanceClass.trim().isEmpty()) {
-                    eDataType.setInstanceClassName(instanceClass);
-                }
-            }
-        }
+                    inst.ifPresent(type::setInstanceClassName);
+                });
     }
 
     private void initChangeListener() {
@@ -173,25 +171,17 @@ public class MetamodelRegistry {
     }
 
     private List<String> getMetamodels() {
-        List<String> metamodels = new ArrayList<>();
         String value = NeoUIPlugin.getDefault().getPreferenceStore().getString(STORE_KEY);
-        StringTokenizer st = new StringTokenizer(value, STORE_DELIMITER);
-        while (st.hasMoreTokens()) {
-            metamodels.add(st.nextToken());
-        }
-        return metamodels;
+
+        return Arrays.stream(value.split(STORE_DELIMITER))
+                .collect(Collectors.toList());
     }
 
     private void setMetamodels(List<String> metamodels) {
-        StringBuilder sb = new StringBuilder();
-        Iterator<String> iterator = metamodels.listIterator();
-        while (iterator.hasNext()) {
-            sb.append(iterator.next());
-            if (iterator.hasNext()) {
-                sb.append(STORE_DELIMITER);
-            }
-        }
-        NeoUIPlugin.getDefault().getPreferenceStore().setValue(STORE_KEY, sb.toString());
+        String value = MoreIterables.stream(metamodels::listIterator)
+                .collect(Collectors.joining(STORE_DELIMITER));
+
+        NeoUIPlugin.getDefault().getPreferenceStore().setValue(STORE_KEY, value);
     }
 
     private void registerMetamodels() {
@@ -211,8 +201,6 @@ public class MetamodelRegistry {
     }
 
     private List<EPackage> registerMetamodel(URI uri, EPackage.Registry registry) throws Exception {
-        List<EPackage> ePackages = new ArrayList<>();
-
         final Map<String, Object> extensionToFactoryMap = Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap();
         if (!extensionToFactoryMap.containsKey("*")) {
             extensionToFactoryMap.put("*", new XMIResourceFactoryImpl());
@@ -225,40 +213,35 @@ public class MetamodelRegistry {
         metamodel.load(Collections.emptyMap());
         setDataTypesInstanceClasses(metamodel);
 
-        Iterable<EObject> allContents = metamodel::getAllContents;
-        for (EObject obj : allContents) {
-            if (obj instanceof EPackage) {
-                EPackage pkg = (EPackage) obj;
+        return MoreIterables.stream(metamodel::getAllContents)
+                .filter(EPackage.class::isInstance)
+                .map(EPackage.class::cast)
+                .peek(pkg -> {
+                    if (isNull(pkg.getNsURI()) || pkg.getNsURI().trim().isEmpty()) {
+                        if (isNull(pkg.getESuperPackage())) {
+                            pkg.setNsURI(pkg.getName());
+                        }
+                        else {
+                            pkg.setNsURI(pkg.getESuperPackage().getNsURI() + "/" + pkg.getName());
+                        }
+                    }
 
-                if (isNull(pkg.getNsURI()) || pkg.getNsURI().trim().isEmpty()) {
-                    if (isNull(pkg.getESuperPackage())) {
-                        pkg.setNsURI(pkg.getName());
+                    if ((isNull(pkg.getNsPrefix()) || pkg.getNsPrefix().trim().isEmpty()) && nonNull(pkg.getESuperPackage())) {
+                        if (nonNull(pkg.getESuperPackage().getNsPrefix())) {
+                            pkg.setNsPrefix(pkg.getESuperPackage().getNsPrefix() + "." + pkg.getName());
+                        }
+                        else {
+                            pkg.setNsPrefix(pkg.getName());
+                        }
                     }
-                    else {
-                        pkg.setNsURI(pkg.getESuperPackage().getNsURI() + "/" + pkg.getName());
-                    }
-                }
 
-                if ((isNull(pkg.getNsPrefix()) || pkg.getNsPrefix().trim().isEmpty()) && nonNull(pkg.getESuperPackage())) {
-                    if (nonNull(pkg.getESuperPackage().getNsPrefix())) {
-                        pkg.setNsPrefix(pkg.getESuperPackage().getNsPrefix() + "." + pkg.getName());
-                    }
-                    else {
+                    if (isNull(pkg.getNsPrefix())) {
                         pkg.setNsPrefix(pkg.getName());
                     }
-                }
-
-                if (isNull(pkg.getNsPrefix())) {
-                    pkg.setNsPrefix(pkg.getName());
-                }
-
-                registry.put(pkg.getNsURI(), pkg);
-                metamodel.setURI(URI.createURI(pkg.getNsURI()));
-                ePackages.add(pkg);
-            }
-        }
-
-        return ePackages;
+                })
+                .peek(pkg -> registry.put(pkg.getNsURI(), pkg))
+                .peek(pkg -> metamodel.setURI(URI.createURI(pkg.getNsURI())))
+                .collect(Collectors.toList());
     }
 
     private static final class Holder {

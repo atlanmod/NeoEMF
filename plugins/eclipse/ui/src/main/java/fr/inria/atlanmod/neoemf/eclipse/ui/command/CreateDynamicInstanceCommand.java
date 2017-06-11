@@ -78,13 +78,7 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
                 .filter(EClass.class::isInstance)
                 .map(EClass.class::cast);
 
-        if (newClass.isPresent()) {
-            eClass = newClass.get();
-            setEnabled(!eClass.isAbstract());
-        }
-        else {
-            eClass = null;
-            setEnabled(false);
-        }
+        eClass = newClass.orElse(null);
+        setEnabled(newClass.isPresent() && !eClass.isAbstract());
     }
 }
