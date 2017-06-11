@@ -27,7 +27,7 @@
 
         <cdo.version>4.6.0.v20170210-0100</cdo.version>
 
-        <jmh.version>1.18</jmh.version>
+        <jmh.version>1.19</jmh.version>
     </properties>
 
     <dependencyManagement>
