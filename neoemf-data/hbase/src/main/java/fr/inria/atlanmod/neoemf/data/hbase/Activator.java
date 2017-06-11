@@ -15,13 +15,13 @@ import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.AbstractActivator;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
 
 import org.osgi.framework.BundleActivator;
 
 /**
  * A {@link BundleActivator} that automatically registers a {@link HBaseBackendFactory} with its
- * associated {@link HBaseURI} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
+ * associated {@link HBaseUri} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
  * <p>
  * <b>Note:</b> This class should not be used in standard use.
  *
@@ -38,7 +38,7 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected String scheme() {
-        return HBaseURI.SCHEME;
+        return HBaseUri.SCHEME;
     }
 
     @Override

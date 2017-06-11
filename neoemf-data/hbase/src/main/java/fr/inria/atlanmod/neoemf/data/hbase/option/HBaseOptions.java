@@ -49,7 +49,7 @@ public class HBaseOptions extends AbstractPersistenceOptions<HBaseOptions> {
      * @return a new builder
      */
     @Nonnull
-    public static HBaseOptions newBuilder() {
+    public static HBaseOptions builder() {
         return new HBaseOptions();
     }
 

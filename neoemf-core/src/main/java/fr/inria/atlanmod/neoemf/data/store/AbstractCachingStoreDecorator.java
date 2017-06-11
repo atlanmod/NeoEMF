@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -29,7 +29,7 @@ public abstract class AbstractCachingStoreDecorator<K, V> extends AbstractStoreD
     /**
      * In-memory cache that holds loaded values, identified by their {@link FeatureKey}.
      */
-    protected final Cache<K, V> cache = CacheBuilder.newBuilder()
+    protected final Cache<K, V> cache = CacheBuilder.builder()
             .maximumSize()
             .build();
 

@@ -23,9 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -35,13 +33,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -51,9 +47,9 @@ public class MigrateCommand extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        ISelectionService service = window.getSelectionService();
-        selection = service.getSelection();
+        selection = HandlerUtil.getActiveWorkbenchWindowChecked(event)
+                .getSelectionService()
+                .getSelection();
 
         new MigrateJob().schedule();
 
@@ -61,35 +57,32 @@ public class MigrateCommand extends AbstractHandler {
     }
 
     private IFile getFile() {
-        if (selection instanceof IStructuredSelection) {
-            Object element = ((IStructuredSelection) selection).getFirstElement();
-            if (element instanceof IFile) {
-                IFile file = (IFile) element;
-                if (Objects.equals("genmodel", file.getFileExtension())) {
-                    return file;
-                }
-            }
-        }
-        return null;
+        return Optional.ofNullable(selection)
+                .filter(IStructuredSelection.class::isInstance)
+                .map(IStructuredSelection.class::cast)
+                .map(IStructuredSelection::getFirstElement)
+                .filter(IFile.class::isInstance)
+                .map(IFile.class::cast)
+                .filter(selected -> Objects.equals("genmodel", selected.getFileExtension()))
+                .orElse(null);
     }
 
     private GenModel getGenModel(IFile file) {
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
-        map.put("*", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry()
+                .getExtensionToFactoryMap()
+                .put("*", new XMIResourceFactoryImpl());
 
         URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
         Resource resource = resourceSet.getResource(uri, true);
 
-        EList<EObject> contents = resource.getContents();
-        if (!contents.isEmpty()) {
-            EObject object = contents.get(0);
-            if (object instanceof GenModel) {
-                return (GenModel) object;
-            }
-        }
-        return null;
+        return Optional.ofNullable(resource.getContents())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0))
+                .filter(GenModel.class::isInstance)
+                .map(GenModel.class::cast)
+                .orElse(null);
     }
 
     private class MigrateJob extends Job {

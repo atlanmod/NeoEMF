@@ -13,4 +13,4 @@
  * Provides classes for caching.
  */
 
-package fr.inria.atlanmod.neoemf.util.cache;
+package fr.inria.atlanmod.common.cache;

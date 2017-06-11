@@ -41,7 +41,7 @@ public class CommonOptions extends AbstractPersistenceOptions<CommonOptions> {
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return newBuilder().asMap();
+        return builder().asMap();
     }
 
     /**
@@ -50,7 +50,7 @@ public class CommonOptions extends AbstractPersistenceOptions<CommonOptions> {
      * @return a new builder
      */
     @Nonnull
-    public static CommonOptions newBuilder() {
+    public static CommonOptions builder() {
         return new CommonOptions();
     }
 }

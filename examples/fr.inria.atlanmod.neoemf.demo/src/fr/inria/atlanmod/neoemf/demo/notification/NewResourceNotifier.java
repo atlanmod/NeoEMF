@@ -4,32 +4,30 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaFactory;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 import org.eclipse.gmt.modisco.java.Model;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 /**
- * This class shows how to create a new NeoEMF/Graph resource and add an
- * {@link Adapter} to its top-level element.
+ * This class shows how to create a new NeoEMF/Graph resource and add an {@link Adapter} to its top-level element.
  * <p>
- * In this example the resource is first created, and an element is added to its
- * direct content. An adapter is set to the created object and update operations
- * are performed to generate new notifications. Saving the resource does not
- * have an impact on the notification framework that works even when the
- * elements have been persisted in the database.
+ * In this example the resource is first created, and an element is added to its direct content. An adapter is set to
+ * the created object and update operations are performed to generate new notifications. Saving the resource does not
+ * have an impact on the notification framework that works even when the elements have been persisted in the database.
  */
 public class NewResourceNotifier {
 
@@ -37,13 +35,16 @@ public class NewResourceNotifier {
         JavaPackage.eINSTANCE.eClass();
         JavaFactory factory = JavaFactory.eINSTANCE;
 
-        BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.newBuilder().fromFile(new File("models/notifier_example.graphdb")))) {
-            resource.save(BlueprintsOptions.noOption());
+        URI uri = BlueprintsUri.builder().fromFile("models/notifier_example.graphdb");
+        Map<String, Object> options = BlueprintsOptions.noOption();
+
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
+            resource.save(options);
 
             // Create a new Model element with and set its name
             Model newModel = factory.createModel();

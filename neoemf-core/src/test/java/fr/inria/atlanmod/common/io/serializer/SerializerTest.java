@@ -37,9 +37,9 @@ public class SerializerTest {
 
         constructor.setAccessible(true);
 
-        Throwable thrown = catchThrowable(constructor::newInstance);
-        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
-        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+        assertThat(catchThrowable(constructor::newInstance))
+                .isInstanceOf(InvocationTargetException.class)
+                .hasCauseExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeNonSerializable() {
-        Throwable thrown = catchThrowable(() -> Serializers.forGenerics().serialize(new Object()));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> Serializers.forGenerics().serialize(new Object())))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

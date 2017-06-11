@@ -13,11 +13,12 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -47,53 +48,51 @@ public class NeoEditor extends EcoreEditor {
 
     public NeoEditor() {
         super();
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
+
+        Map<String, Object> protocolToFactory = this.editingDomain.getResourceSet()
+                .getResourceFactoryRegistry()
+                .getProtocolToFactoryMap();
+
+        protocolToFactory.put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
+        protocolToFactory.put(MapDbUri.SCHEME, PersistentResourceFactory.getInstance());
+        protocolToFactory.put(BerkeleyDbUri.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     @Override
     public void createModel() {
         URI resourceURI = EditUIUtil.getURI(getEditorInput());
+
         Resource resource = editingDomain.getResourceSet().createResource(resourceURI);
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
 
         // Create the store options depending of the backend
-        Map<String, Object> options;
         String scheme = resource.getURI().scheme();
-        if (Objects.equals(scheme, BlueprintsURI.SCHEME)) {
-            options = BlueprintsOptions.newBuilder()
-//                  .log()
-                    .asMap();
+
+        AbstractPersistenceOptions<?> optionsBuilder;
+
+        if (Objects.equals(scheme, BlueprintsUri.SCHEME)) {
+            optionsBuilder = BlueprintsOptions.builder();
         }
-        else if (Objects.equals(scheme, MapDbURI.SCHEME)) {
-            options = MapDbOptions.newBuilder()
-//                  .log()
-                    .asMap();
+        else if (Objects.equals(scheme, MapDbUri.SCHEME)) {
+            optionsBuilder = MapDbOptions.builder();
         }
-        else if (Objects.equals(scheme, BerkeleyDbURI.SCHEME)) {
-            options = BerkeleyDbOptions.newBuilder()
-//                  .log()
-                    .asMap();
+        else if (Objects.equals(scheme, BerkeleyDbUri.SCHEME)) {
+            optionsBuilder = BerkeleyDbOptions.builder();
         }
         else {
-            options = CommonOptions.noOption();
+            optionsBuilder = CommonOptions.builder();
         }
+
+        Map<String, Object> options = optionsBuilder
+//                .log()
+                .asMap();
 
         try {
             resource.load(options);
         }
         catch (IOException e) {
             Log.error(e, "Unable to create model for the editor");
-            for (Resource r : editingDomain.getResourceSet().getResources()) {
-                Log.info(resource.getURI().toString());
-                if (r instanceof PersistentResource) {
-                    ((PersistentResource) r).close();
-                }
-                else {
-                    r.unload();
-                }
-            }
+            closeAll();
         }
     }
 
@@ -109,16 +108,16 @@ public class NeoEditor extends EcoreEditor {
             Tree tree = new Tree(getContainer(), SWT.VIRTUAL | SWT.FULL_SELECTION);
 
             selectionViewer = new TreeViewer(tree);
+            {
+                selectionViewer.setContentProvider(new LazyAdapterFactoryContentProvider(adapterFactory));
+                selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+                selectionViewer.setUseHashlookup(true);
+                selectionViewer.setInput(editingDomain.getResourceSet());
+            }
             setCurrentViewer(selectionViewer);
-
-            selectionViewer.setContentProvider(new LazyAdapterFactoryContentProvider(adapterFactory));
-            selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-            selectionViewer.setUseHashlookup(true);
-            selectionViewer.setInput(editingDomain.getResourceSet());
-
             createContextMenuFor(selectionViewer);
-            int pageIndex = addPage(tree);
-            setPageText(pageIndex, EcoreEditorPlugin.INSTANCE.getString("_UI_SelectionPage_label"));
+
+            setPageText(addPage(tree), EcoreEditorPlugin.INSTANCE.getString("_UI_SelectionPage_label"));
 
             getSite().getShell().getDisplay().asyncExec(() -> setActivePage(0));
         }
@@ -159,14 +158,21 @@ public class NeoEditor extends EcoreEditor {
     public void dispose() {
         Log.info("Disposing NeoEditor");
 
-        for (Resource resource : editingDomain.getResourceSet().getResources()) {
-            if (resource instanceof PersistentResource) {
-                ((PersistentResource) resource).close();
+        closeAll();
+        super.dispose();
+    }
+
+    /**
+     * Closes all opened resources.
+     */
+    private void closeAll() {
+        for (Resource resource : getEditingDomain().getResourceSet().getResources()) {
+            if (PersistentResource.class.isInstance(resource)) {
+                PersistentResource.class.cast(resource).close();
             }
             else {
                 resource.unload();
             }
         }
-        super.dispose();
     }
 }

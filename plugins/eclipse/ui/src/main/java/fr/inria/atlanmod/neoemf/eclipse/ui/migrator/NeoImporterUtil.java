@@ -15,18 +15,16 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.codegen.ecore.genmodel.GenDelegationKind;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.WrappedException;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class NeoImporterUtil {
@@ -38,6 +36,7 @@ public abstract class NeoImporterUtil {
     private static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + NEOEMF_MODEL_PLUGIN_NAME;
 
     private NeoImporterUtil() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     public static String adjustGenModel(GenModel genModel) {
@@ -62,18 +61,20 @@ public abstract class NeoImporterUtil {
             builder.append("Set Root Extends Interface = ").append(ROOT_EXTENDS_INTERFACE).append('\n');
         }
 
-        EList<String> pluginVariables = genModel.getModelPluginVariables();
+        List<String> pluginVariables = genModel.getModelPluginVariables();
         if (!pluginVariables.contains(PLUGIN_VARIABLE_NEOEMF)) {
             pluginVariables.add(PLUGIN_VARIABLE_NEOEMF);
             builder.append("Added Model Plugin Variables = ").append(PLUGIN_VARIABLE_NEOEMF).append('\n');
         }
 
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFolder modelFolder = root.getFolder(new Path(genModel.getModelDirectory()));
-        IProject modelProject = modelFolder.getProject();
-        if (!modelProject.exists()) {
+        IProject project = ResourcesPlugin.getWorkspace()
+                .getRoot()
+                .getFolder(new Path(genModel.getModelDirectory()))
+                .getProject();
+
+        if (!project.exists()) {
             try {
-                modelProject.create(new NullProgressMonitor());
+                project.create(new NullProgressMonitor());
                 builder.append("Created target model project").append('\n');
             }
             catch (CoreException ex) {
@@ -81,9 +82,9 @@ public abstract class NeoImporterUtil {
             }
         }
 
-        if (!modelProject.isOpen()) {
+        if (!project.isOpen()) {
             try {
-                modelProject.open(new NullProgressMonitor());
+                project.open(new NullProgressMonitor());
                 builder.append("Opened target model project").append('\n');
             }
             catch (CoreException ex) {

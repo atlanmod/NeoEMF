@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 
-import org.assertj.core.api.Assertions;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * An abstract test-case that checks the behavior of {@link URIBuilder}s.
+ * An abstract test-case that checks the behavior of {@link AbstractUriBuilder}s.
  */
 public abstract class AbstractUriTest extends AbstractUnitTest {
 
@@ -61,7 +60,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
     public void testCreateUriFromStandardUriInvalidScheme() {
         URI invalidURI = URI.createURI("invalid:/test");
 
-        Throwable thrown = catchThrowable(() -> context().createUri(invalidURI));
-        Assertions.assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> context().createUri(invalidURI)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

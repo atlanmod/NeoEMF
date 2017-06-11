@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.io.hash.Hashers;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -25,8 +27,6 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicId;
 import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -58,7 +58,7 @@ public class DefaultMapperWriter implements MapperWriter {
     /**
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
-    private final Cache<String, Id> cache = CacheBuilder.newBuilder()
+    private final Cache<String, Id> cache = CacheBuilder.builder()
             .maximumSize()
             .build();
 

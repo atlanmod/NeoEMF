@@ -22,14 +22,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} using Neo4j.
  */
 @ParametersAreNonnullByDefault
-public class Neo4jAdapter extends TinkerAdapter {
+public class BlueprintsNeo4jAdapter extends BlueprintsAdapter {
 
     public static final String NAME = "neo-neo4j";
 
     private static final String STORE_EXTENSION = "neo4j.resource"; // -> neoemf.neo4j.resource
 
     @SuppressWarnings("unused") // Called dynamically
-    public Neo4jAdapter() {
+    public BlueprintsNeo4jAdapter() {
         super(NAME, STORE_EXTENSION);
     }
 
@@ -48,6 +48,6 @@ public class Neo4jAdapter extends TinkerAdapter {
     @Nonnull
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsNeo4jOptions.newBuilder().asMap();
+        return BlueprintsNeo4jOptions.builder().asMap();
     }
 }

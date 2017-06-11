@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -87,7 +87,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
         try {
             File file = new File(uri.toFileString());
 
-            File dbFile = new File(MapDbURI.newBuilder().fromUri(uri.appendSegment("neoemf.mapdb")).toFileString());
+            File dbFile = new File(MapDbUri.builder().fromUri(uri.appendSegment("neoemf.mapdb")).toFileString());
             if (!dbFile.getParentFile().exists()) {
                 try {
                     Files.createDirectories(dbFile.getParentFile().toPath());

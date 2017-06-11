@@ -35,7 +35,7 @@
  * behavior is a Blueprints specific option, while the caching behavior is defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = BlueprintsOptions.newBuilder()
+ * Map<String, Object> options = BlueprintsOptions.builder()
  *     .cacheFeatures()
  *     .asMap();
  *

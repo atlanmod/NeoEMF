@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -141,7 +141,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
          * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
          */
         @Nonnull
-        private final Cache<Id, PersistentEObject> sharedCache = CacheBuilder.newBuilder()
+        private final Cache<Id, PersistentEObject> sharedCache = CacheBuilder.builder()
                 .softValues()
                 .maximumSize()
                 .build();

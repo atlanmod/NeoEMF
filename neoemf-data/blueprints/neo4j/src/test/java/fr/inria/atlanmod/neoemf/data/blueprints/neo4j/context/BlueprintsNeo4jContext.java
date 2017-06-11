@@ -26,7 +26,7 @@ public interface BlueprintsNeo4jContext extends BlueprintsContext {
      * @return a new context.
      */
     static Context getWithIndices() {
-        return (BlueprintsNeo4jContext) () -> BlueprintsNeo4jOptions.newBuilder().withIndices();
+        return (BlueprintsNeo4jContext) () -> BlueprintsNeo4jOptions.builder().withIndices();
     }
 
     @Override

@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * <p>
  * Issue #7 reported the error for the {@code isEmpty()} method {@link Issue7Test}
  */
-public class TransientStoreListTest extends AbstractTest {
+public class TransientBackendListTest extends AbstractTest {
 
     private static final MapSampleFactory EFACTORY = MapSampleFactory.eINSTANCE;
 
@@ -104,8 +104,8 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testGet() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().get(0));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().get(0)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -146,26 +146,26 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testListIteratorInvalidIndex() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().listIterator(1));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().listIterator(1)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testMoveIndex() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().move(0, 0));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().move(0, 0)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testMoveObject() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().move(0, EFACTORY.createSampleModelContentObject()));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().move(0, EFACTORY.createSampleModelContentObject())))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testRemoveInvalidIndex() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().remove(0));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().remove(0)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -201,8 +201,8 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testSetInvalidIndex() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, EFACTORY.createSampleModelContentObject()));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().set(0, EFACTORY.createSampleModelContentObject())))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -221,8 +221,8 @@ public class TransientStoreListTest extends AbstractTest {
         collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
 
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, SampleModelContentObject.class.cast(EFACTORY.createSampleModel())));
-        assertThat(thrown).isInstanceOf(ClassCastException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().set(0, SampleModelContentObject.class.cast(EFACTORY.createSampleModel()))))
+                .isInstanceOf(ClassCastException.class);
     }
 
     @Test
@@ -241,8 +241,8 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testSubListInvalidIndexes() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().subList(0, 1));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> model.getContentObjects().subList(0, 1)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test

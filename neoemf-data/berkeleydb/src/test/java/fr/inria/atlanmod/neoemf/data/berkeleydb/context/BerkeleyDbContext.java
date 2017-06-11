@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -33,7 +33,7 @@ public interface BerkeleyDbContext extends Context {
      * @return a new context.
      */
     static Context getWithIndices() {
-        return (BerkeleyDbContext) () -> BerkeleyDbOptions.newBuilder().withIndices();
+        return (BerkeleyDbContext) () -> BerkeleyDbOptions.builder().withIndices();
     }
 
     /**
@@ -42,7 +42,7 @@ public interface BerkeleyDbContext extends Context {
      * @return a new context.
      */
     static Context getWithArrays() {
-        return (BerkeleyDbContext) () -> BerkeleyDbOptions.newBuilder().withArrays();
+        return (BerkeleyDbContext) () -> BerkeleyDbOptions.builder().withArrays();
     }
 
     /**
@@ -51,7 +51,7 @@ public interface BerkeleyDbContext extends Context {
      * @return a new context.
      */
     static Context getWithLists() {
-        return (BerkeleyDbContext) () -> BerkeleyDbOptions.newBuilder().withLists();
+        return (BerkeleyDbContext) () -> BerkeleyDbOptions.builder().withLists();
     }
 
     @Override
@@ -66,16 +66,16 @@ public interface BerkeleyDbContext extends Context {
 
     @Override
     default String uriScheme() {
-        return BerkeleyDbURI.SCHEME;
+        return BerkeleyDbUri.SCHEME;
     }
 
     @Override
     default URI createUri(URI uri) {
-        return BerkeleyDbURI.newBuilder().fromUri(uri);
+        return BerkeleyDbUri.builder().fromUri(uri);
     }
 
     @Override
     default URI createUri(File file) {
-        return BerkeleyDbURI.newBuilder().fromFile(file);
+        return BerkeleyDbUri.builder().fromFile(file);
     }
 }

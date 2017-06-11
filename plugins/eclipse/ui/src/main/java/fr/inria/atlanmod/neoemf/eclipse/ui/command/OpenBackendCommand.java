@@ -15,13 +15,14 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -31,11 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.ui.URIEditorInput;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -47,33 +44,30 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class OpenBackendCommand extends AbstractHandler {
 
     private IFolder folder;
 
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
-
+    public Void execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        ISelectionService service = window.getSelectionService();
-        ISelection selection = service.getSelection();
 
-        folder = null;
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            Object elt = structuredSelection.getFirstElement();
-            if (elt instanceof IFolder) {
-                folder = (IFolder) elt;
-            }
-        }
-        if (isNull(folder)) {
-            return null;
-        }
+        folder = Optional.ofNullable(window.getSelectionService().getSelection())
+                .filter(IStructuredSelection.class::isInstance)
+                .map(IStructuredSelection.class::cast)
+                .map(IStructuredSelection::getFirstElement)
+                .filter(IFolder.class::isInstance)
+                .map(IFolder.class::cast)
+                .orElse(null);
 
-        new CreateDynamicInstanceJob(window).schedule();
+        if (nonNull(folder)) {
+            new CreateDynamicInstanceJob(window).schedule();
+        }
 
         return null;
     }
@@ -96,31 +90,35 @@ public class OpenBackendCommand extends AbstractHandler {
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", null);
             }
 
-            Configuration configuration = Configuration.load(configurationFile.toPath());
-
-            URI uri = null;
-            String backendType = configuration.getProperty(BackendFactory.BACKEND_PROPERTY);
+            String backendType = Configuration.load(configurationFile.toPath())
+                    .getProperty(BackendFactory.BACKEND_PROPERTY);
 
             if (isNull(backendType)) {
                 Log.error("{0} does not contain {1} property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
-            else if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
-                uri = MapDbURI.newBuilder().fromFile(root.toFile());
+
+            UriBuilder uriBuilder;
+            if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
+                uriBuilder = MapDbUri.builder();
             }
             else if (Objects.equals(backendType, BlueprintsBackendFactory.NAME)) {
-                uri = BlueprintsURI.newBuilder().fromFile(root.toFile());
+                uriBuilder = BlueprintsUri.builder();
             }
             else if (Objects.equals(backendType, BerkeleyDbBackendFactory.NAME)) {
-                uri = BerkeleyDbURI.newBuilder().fromFile(root.toFile());
+                uriBuilder = BerkeleyDbUri.builder();
+            }
+            else {
+                Log.error("Unknown backend: {0}", backendType);
+                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
 
-            URIEditorInput editorInput = new URIEditorInput(uri);
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+            IWorkbenchPage page = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow()
+                    .getActivePage();
 
             try {
-                page.openEditor(editorInput, NeoEditor.EDITOR_ID);
+                page.openEditor(new URIEditorInput(uriBuilder.fromFile(root.toFile())), NeoEditor.EDITOR_ID);
             }
             catch (PartInitException e) {
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor", e);

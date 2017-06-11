@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.util.cache;
+package fr.inria.atlanmod.common.cache;
 
 import java.util.Map;
 

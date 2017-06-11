@@ -52,7 +52,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testCreateIndicesPersistentBackend() {
-        Map<String, Object> options = BlueprintsOptions.newBuilder()
+        Map<String, Object> options = BlueprintsOptions.builder()
                 .withIndices()
                 .asMap();
 

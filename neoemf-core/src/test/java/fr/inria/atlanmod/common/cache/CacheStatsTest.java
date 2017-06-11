@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.util.cache;
+package fr.inria.atlanmod.common.cache;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 
@@ -35,26 +35,26 @@ public class CacheStatsTest extends AbstractTest {
 
     @Test
     public void testConstructor() {
-        Throwable thrown0 = catchThrowable(() -> new CacheStats(0, 0, 0, 0, 0, 0));
-        assertThat(thrown0).isNull();
+        assertThat(catchThrowable(() -> new CacheStats(0, 0, 0, 0, 0, 0)))
+                .isNull();
 
-        Throwable thrown1 = catchThrowable(() -> new CacheStats(-1, 0, 0, 0, 0, 0));
-        assertThat(thrown1).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> new CacheStats(-1, 0, 0, 0, 0, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        Throwable thrown2 = catchThrowable(() -> new CacheStats(0, -1, 0, 0, 0, 0));
-        assertThat(thrown2).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> new CacheStats(0, -1, 0, 0, 0, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        Throwable thrown3 = catchThrowable(() -> new CacheStats(0, 0, -1, 0, 0, 0));
-        assertThat(thrown3).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> new CacheStats(0, 0, -1, 0, 0, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        Throwable thrown4 = catchThrowable(() -> new CacheStats(0, 0, 0, -1, 0, 0));
-        assertThat(thrown4).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> new CacheStats(0, 0, 0, -1, 0, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        Throwable thrown5 = catchThrowable(() -> new CacheStats(0, 0, 0, 0, -1, 0));
-        assertThat(thrown5).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> new CacheStats(0, 0, 0, 0, -1, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        Throwable thrown6 = catchThrowable(() -> new CacheStats(0, 0, 0, 0, 0, -1));
-        assertThat(thrown6).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> new CacheStats(0, 0, 0, 0, 0, -1)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

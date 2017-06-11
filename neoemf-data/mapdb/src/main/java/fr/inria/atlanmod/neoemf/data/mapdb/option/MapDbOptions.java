@@ -42,7 +42,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return newBuilder().asMap();
+        return builder().asMap();
     }
 
     /**
@@ -51,7 +51,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      * @return a new builder
      */
     @Nonnull
-    public static MapDbOptions newBuilder() {
+    public static MapDbOptions builder() {
         return new MapDbOptions();
     }
 

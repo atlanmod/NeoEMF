@@ -11,15 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -31,11 +28,6 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractStreamReader extends AbstractReader<InputStream> implements StreamReader {
-
-    /**
-     * The timer to log reading progress.
-     */
-    private Timer progressTimer;
 
     /**
      * Constructs a new {@code AbstractStreamReader} with the given {@code handler}.
@@ -51,7 +43,6 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      */
     protected final void readStartDocument() {
         notifyInitialize();
-        progress(0);
     }
 
     /**
@@ -70,7 +61,6 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      * Processes the end of the current document.
      */
     protected final void readEndDocument() {
-        progress(100);
         notifyComplete();
     }
 
@@ -87,9 +77,6 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
     public final void read(InputStream source) throws IOException {
         checkNotNull(source);
 
-        progressTimer = new Timer(true);
-        progressTimer.schedule(new ProgressTimer(source), 10_000, 30_000);
-
         try {
             run(new BufferedInputStream(source));
         }
@@ -97,7 +84,6 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
             throw new IOException(e);
         }
         finally {
-            progressTimer.cancel();
             BasicNamespace.Registry.getInstance().clean();
         }
     }
@@ -110,54 +96,4 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
      * @throws Exception if an error occurred during the I/O process
      */
     public abstract void run(InputStream stream) throws Exception;
-
-    /**
-     * Logs the progress of the current reading.
-     *
-     * @param percent the percentage of data read on the total size of the data
-     */
-    protected void progress(double percent) {
-        Log.info("Reading: {0}", String.format("%5s", String.format("%,.0f %%", percent)));
-
-        if (percent >= 100) {
-            progressTimer.cancel();
-        }
-    }
-
-    /**
-     * A {@link TimerTask} that logs progress.
-     */
-    private class ProgressTimer extends TimerTask {
-
-        /**
-         * The stream to watch.
-         */
-        private final InputStream stream;
-
-        /**
-         * The total size of the stream.
-         */
-        private final long total;
-
-        /**
-         * Constructs a new {@code ProgressTimer}.
-         *
-         * @param stream the stream to watch
-         *
-         * @throws IOException if an I/O error occurs
-         */
-        private ProgressTimer(InputStream stream) throws IOException {
-            this.stream = stream;
-            this.total = stream.available();
-        }
-
-        @Override
-        public void run() {
-            try {
-                progress((double) (total - stream.available()) / (double) total * 100d);
-            }
-            catch (Exception ignored) {
-            }
-        }
-    }
 }

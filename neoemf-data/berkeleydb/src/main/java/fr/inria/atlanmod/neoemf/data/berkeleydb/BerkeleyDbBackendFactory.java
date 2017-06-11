@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -124,7 +123,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         BerkeleyDbBackend backend;
 
         try {
-            File directory = new File(BerkeleyDbURI.newBuilder().fromFile(Files.createTempDirectory("neoemf").toFile()).toFileString());
+            File directory = Files.createTempDirectory("neoemf").toFile();
 
             EnvironmentConfig environmentConfig = new EnvironmentConfig()
                     .setAllowCreate(true)

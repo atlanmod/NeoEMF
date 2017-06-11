@@ -14,35 +14,45 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
+import java.util.Map;
 
+/**
+ * A simple example showing how to access an existing BerkeleyDB-based {@link PersistentResource} and traverse its
+ * content to count the number of elements it contains.
+ */
 public class BerkeleyDbCounter {
 
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbUri.SCHEME, PersistentResourceFactory.getInstance());
 
         Instant start = Instant.now();
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BerkeleyDbURI.newBuilder().fromFile(new File("models/sample.berkeleydb")))) {
-            resource.load(Collections.emptyMap());
+        URI uri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
+
+        Map<String, Object> options = BerkeleyDbOptions.noOption();
+
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
+            resource.load(options);
+
             long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -33,7 +33,7 @@ public interface MapDbContext extends Context {
      * @return a new context.
      */
     static Context getWithIndices() {
-        return (MapDbContext) () -> MapDbOptions.newBuilder().withIndices();
+        return (MapDbContext) () -> MapDbOptions.builder().withIndices();
     }
 
     /**
@@ -42,7 +42,7 @@ public interface MapDbContext extends Context {
      * @return a new context.
      */
     static Context getWithArrays() {
-        return (MapDbContext) () -> MapDbOptions.newBuilder().withArrays();
+        return (MapDbContext) () -> MapDbOptions.builder().withArrays();
     }
 
     /**
@@ -51,7 +51,7 @@ public interface MapDbContext extends Context {
      * @return a new context.
      */
     static Context getWithLists() {
-        return (MapDbContext) () -> MapDbOptions.newBuilder().withLists();
+        return (MapDbContext) () -> MapDbOptions.builder().withLists();
     }
 
     @Override
@@ -66,16 +66,16 @@ public interface MapDbContext extends Context {
 
     @Override
     default String uriScheme() {
-        return MapDbURI.SCHEME;
+        return MapDbUri.SCHEME;
     }
 
     @Override
     default URI createUri(URI uri) {
-        return MapDbURI.newBuilder().fromUri(uri);
+        return MapDbUri.builder().fromUri(uri);
     }
 
     @Override
     default URI createUri(File file) {
-        return MapDbURI.newBuilder().fromFile(file);
+        return MapDbUri.builder().fromFile(file);
     }
 }

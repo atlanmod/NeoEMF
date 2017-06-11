@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.util.URIBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -21,14 +22,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link URIBuilder} that creates MapDB specific resource {@link URI}s.
+ * A {@link UriBuilder} that creates MapDB specific resource {@link URI}s.
  *
  * @see BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-public class MapDbURI extends URIBuilder {
+public class MapDbUri extends AbstractUriBuilder {
 
     /**
      * The scheme associated to the {@link URI}.
@@ -37,25 +38,29 @@ public class MapDbURI extends URIBuilder {
     public static final String SCHEME = formatScheme(MapDbBackendFactory.getInstance());
 
     /**
-     * Constructs a new {@code MapDbURI}.
+     * Constructs a new {@code MapDbUri}.
      */
-    private MapDbURI() {
+    private MapDbUri() {
         super();
     }
 
     /**
-     * Creates a new {@code MapDbURI} with the pre-configured scheme.
+     * Creates a new {@code MapDbUri} with the pre-configured scheme.
      *
      * @return a new builder
      */
     @Nonnull
-    public static URIBuilder newBuilder() {
-        return new MapDbURI().withScheme(SCHEME);
+    public static UriBuilder builder() {
+        return new MapDbUri().withScheme(SCHEME);
     }
 
-    @Nonnull
     @Override
-    public URI fromServer(String host, int port, URI model) {
-        throw new UnsupportedOperationException("MapDbURI does not support server-based URIs");
+    protected boolean supportsFile() {
+        return true;
+    }
+
+    @Override
+    protected boolean supportsServer() {
+        return false;
     }
 }

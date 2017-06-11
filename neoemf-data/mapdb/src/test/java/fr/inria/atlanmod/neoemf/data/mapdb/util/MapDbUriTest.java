@@ -19,10 +19,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.mock;
 
 /**
- * A test-case that checks the behavior of {@link MapDbURI}.
+ * A test-case that checks the behavior of {@link MapDbUri}.
  */
 public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
 
@@ -33,7 +32,7 @@ public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
      */
     @Test
     public void testCreateUriFromServer() {
-        Throwable thrown = catchThrowable(() -> MapDbURI.newBuilder().fromServer("host", 0, mock(URI.class)));
-        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+        assertThat(catchThrowable(() -> MapDbUri.builder().fromServer("host", 0, "segments")))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 }

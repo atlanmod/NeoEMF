@@ -22,10 +22,9 @@ import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.mock;
 
 /**
- * A test-case that checks the behavior of {@link HBaseURI}.
+ * A test-case that checks the behavior of {@link HBaseUri}.
  */
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
@@ -41,8 +40,8 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
      */
     @Test
     public void testCreateUriFromUri() {
-        Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromUri(mock(URI.class)));
-        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+        assertThat(catchThrowable(() -> HBaseUri.builder().fromUri(URI.createURI("uri0"))))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 
     /**
@@ -52,7 +51,7 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
      */
     @Test
     public void testCreateUriFromFile() {
-        Throwable thrown = catchThrowable(() -> HBaseURI.newBuilder().fromFile(mock(File.class)));
-        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+        assertThat(catchThrowable(() -> HBaseUri.builder().fromFile("segments")))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 }

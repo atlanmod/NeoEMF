@@ -34,7 +34,7 @@
  * automatically sets the graph backend type to "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph".
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+ * Map<String, Object> options = BlueprintsNeo4jOptions.builder()
  *     .softCache()
  *     .cacheFeatures()
  *     .asMap();

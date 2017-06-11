@@ -12,6 +12,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.action;
 
+import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
 
@@ -39,27 +40,26 @@ public class RegisterMetamodelAction implements IObjectActionDelegate {
             return;
         }
 
-        Iterable<?> selectedObjects = selection::iterator;
-        for (Object selected : selectedObjects) {
-            if (selected instanceof IFile) {
-                IFile file = (IFile) selected;
-                String fileName = file.getFullPath().toOSString();
-
-                try {
-                    MetamodelRegistry.getInstance().addMetamodel(fileName);
-                    Log.info("Metamodel {0} successfully registered", fileName);
-                }
-                catch (Exception e) {
-                    Log.error(e, "Metamodel {0} could not be registered", fileName);
-                }
-            }
-        }
+        Iterable<Object> selectedObjects = selection::iterator;
+        MoreIterables.stream(selectedObjects)
+                .filter(IFile.class::isInstance)
+                .map(IFile.class::cast)
+                .map(file -> file.getFullPath().toOSString())
+                .forEach(fileName -> {
+                    try {
+                        MetamodelRegistry.getInstance().addMetamodel(fileName);
+                        Log.info("Metamodel {0} successfully registered", fileName);
+                    }
+                    catch (Exception e) {
+                        Log.error(e, "Metamodel {0} could not be registered", fileName);
+                    }
+                });
     }
 
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
-        if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-            this.selection = (IStructuredSelection) selection;
+        if (!selection.isEmpty() && IStructuredSelection.class.isInstance(selection)) {
+            this.selection = IStructuredSelection.class.cast(selection);
         }
     }
 }

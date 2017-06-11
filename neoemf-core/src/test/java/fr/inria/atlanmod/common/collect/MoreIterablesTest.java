@@ -36,9 +36,9 @@ public class MoreIterablesTest extends AbstractTest {
 
         constructor.setAccessible(true);
 
-        Throwable thrown = catchThrowable(constructor::newInstance);
-        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
-        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+        assertThat(catchThrowable(constructor::newInstance))
+                .isInstanceOf(InvocationTargetException.class)
+                .hasCauseExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test

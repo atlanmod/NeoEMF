@@ -57,7 +57,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      */
     @Test
     public void testCreateIndicesPersistentBackend() {
-        Map<String, Object> options = MapDbOptions.newBuilder()
+        Map<String, Object> options = MapDbOptions.builder()
                 .withIndices()
                 .asMap();
 
@@ -72,7 +72,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      */
     @Test
     public void testCreateArraysPersistentBackend() {
-        Map<String, Object> options = MapDbOptions.newBuilder()
+        Map<String, Object> options = MapDbOptions.builder()
                 .withArrays()
                 .asMap();
 
@@ -87,7 +87,7 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      */
     @Test
     public void testCreateListsPersistentBackend() {
-        Map<String, Object> options = MapDbOptions.newBuilder()
+        Map<String, Object> options = MapDbOptions.builder()
                 .withLists()
                 .asMap();
 

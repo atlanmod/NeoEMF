@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -46,7 +46,7 @@ final class PersistentEObjectAdapter {
      * has been garbage collected.
      */
     @Nonnull
-    private static final Cache<Object, PersistentEObject> CACHE = CacheBuilder.newBuilder()
+    private static final Cache<Object, PersistentEObject> CACHE = CacheBuilder.builder()
             .weakKeys()
             .build();
 

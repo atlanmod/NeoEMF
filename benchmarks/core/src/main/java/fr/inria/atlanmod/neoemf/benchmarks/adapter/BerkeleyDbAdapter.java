@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -45,10 +45,10 @@ public class BerkeleyDbAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
-        BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        BackendFactoryRegistry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbUri.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = BerkeleyDbURI.newBuilder().fromFile(file);
+        URI uri = BerkeleyDbUri.builder().fromFile(file);
 
         return resourceSet.createResource(uri);
     }
@@ -56,6 +56,6 @@ public class BerkeleyDbAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     public Map<String, Object> getOptions() {
-        return BerkeleyDbOptions.newBuilder().asMap();
+        return BerkeleyDbOptions.builder().asMap();
     }
 }

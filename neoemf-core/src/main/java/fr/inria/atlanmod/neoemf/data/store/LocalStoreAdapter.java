@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,7 +33,7 @@ public class LocalStoreAdapter extends AbstractStoreAdapter {
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     @Nonnull
-    private final Cache<Id, PersistentEObject> localCache = CacheBuilder.newBuilder()
+    private final Cache<Id, PersistentEObject> localCache = CacheBuilder.builder()
             .softValues()
             .maximumSize()
             .build();

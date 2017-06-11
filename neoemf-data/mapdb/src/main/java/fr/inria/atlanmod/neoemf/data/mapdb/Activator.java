@@ -15,13 +15,13 @@ import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.AbstractActivator;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 
 import org.osgi.framework.BundleActivator;
 
 /**
  * A {@link BundleActivator} that automatically registers a {@link MapDbBackendFactory} with its
- * associated {@link MapDbURI} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
+ * associated {@link MapDbUri} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
  * <p>
  * <b>Note:</b> This class should not be used in standard use.
  *
@@ -38,7 +38,7 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected String scheme() {
-        return MapDbURI.SCHEME;
+        return MapDbUri.SCHEME;
     }
 
     @Override

@@ -12,7 +12,12 @@
             <useDefaultExcludes>true</useDefaultExcludes>
 
             <excludes>
-                <!-- Excludes unnecessary files -->
+                <!-- Exclude signatures -->
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+
+                <!-- Exclude unnecessary files -->
                 <exclude>**.profile</exclude>
                 <exclude>about_files/**</exclude>
                 <exclude>.options</exclude>
@@ -21,17 +26,17 @@
                 <exclude>profile.list</exclude>
                 <exclude>.api_description</exclude>
 
-                <!-- Excludes Eclipse components -->
+                <!-- Exclude Eclipse components -->
                 <exclude>**/apache/**</exclude>
                 <exclude>**/eclipse/core/**</exclude>
                 <exclude>**/eclipse/equinox/**</exclude>
                 <exclude>**/osgi/**</exclude>
 
-                <!-- Excludes EMF -->
+                <!-- Exclude EMF -->
                 <exclude>**/eclipse/emf/common/**</exclude>
                 <exclude>**/eclipse/emf/ecore/**</exclude>
 
-                <!-- Excludes Guava -->
+                <!-- Exclude Guava -->
                 <exclude>**/com/**</exclude>
             </excludes>
         </fileSet>

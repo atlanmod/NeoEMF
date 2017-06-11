@@ -43,7 +43,7 @@ public class BlueprintsOptions extends AbstractBlueprintsOptions<BlueprintsOptio
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return newBuilder().asMap();
+        return builder().asMap();
     }
 
     /**
@@ -52,7 +52,7 @@ public class BlueprintsOptions extends AbstractBlueprintsOptions<BlueprintsOptio
      * @return a new builder
      */
     @Nonnull
-    public static BlueprintsOptions newBuilder() {
+    public static BlueprintsOptions builder() {
         return new BlueprintsOptions();
     }
 }

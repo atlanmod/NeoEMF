@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.util.cache;
+package fr.inria.atlanmod.common.cache;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -50,7 +50,7 @@ public interface CacheBuilder<K, V> {
      * @return a new builder
      */
     @Nonnull
-    static CacheBuilder<Object, Object> newBuilder() {
+    static CacheBuilder<Object, Object> builder() {
         return new CaffeineCacheBuilder<>();
     }
 

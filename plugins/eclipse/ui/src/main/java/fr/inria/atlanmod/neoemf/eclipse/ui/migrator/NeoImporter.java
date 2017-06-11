@@ -13,7 +13,6 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.DiagnosticException;
@@ -24,7 +23,6 @@ import org.eclipse.emf.converter.ConverterPlugin;
 import org.eclipse.emf.converter.util.ConverterUtil;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -40,9 +38,6 @@ public class NeoImporter extends ModelImporter {
 
     public static final String IMPORTER_ID = NeoImporter.class.getName();
 
-    public NeoImporter() {
-    }
-
     @Override
     public String getID() {
         return IMPORTER_ID;
@@ -55,16 +50,17 @@ public class NeoImporter extends ModelImporter {
 
         getOriginalGenModel().getForeignModel().stream()
                 .filter(value -> value.endsWith(".ecore") || value.endsWith(".emof"))
-                .forEach(value -> text.append(makeAbsolute(URI.createURI(value), genModelURI).toString()).append(' '));
+                .map(URI::createURI)
+                .forEach(v -> text.append(makeAbsolute(v, genModelURI).toString()).append(' '));
 
         if (text.length() == 0) {
             List<URI> locations = new UniqueEList<>();
-            for (GenPackage genPackage : getOriginalGenModel().getGenPackages()) {
-                URI ecoreURI = genPackage.getEcorePackage().eResource().getURI();
-                if (locations.add(ecoreURI)) {
-                    text.append(makeAbsolute(URI.createURI(ecoreURI.toString()), genModelURI).toString()).append(' ');
-                }
-            }
+
+            getOriginalGenModel().getGenPackages().stream()
+                    .map(p -> p.getEcorePackage().eResource().getURI())
+                    .filter(locations::add)
+                    .map(u -> URI.createURI(u.toString()))
+                    .forEach(u -> text.append(makeAbsolute(u, genModelURI).toString()).append(' '));
         }
 
         setModelLocation(text.toString().trim());
@@ -82,21 +78,17 @@ public class NeoImporter extends ModelImporter {
             monitor.beginTask("", 2);
             monitor.subTask(MessageFormat.format("Loading {0}", locationURIs));
 
-            ResourceSet ecoreResourceSet = createResourceSet();
-            for (URI ecoreModelLocation : locationURIs) {
-                ecoreResourceSet.getResource(ecoreModelLocation, true);
-            }
+            ResourceSet resourceSet = createResourceSet();
 
-            EcoreUtil.resolveAll(ecoreResourceSet);
+            locationURIs.forEach(u -> resourceSet.getResource(u, true));
 
-            for (Resource resource : ecoreResourceSet.getResources()) {
-                getEPackages().addAll(EcoreUtil.getObjectsByType(resource.getContents(), EcorePackage.Literals.EPACKAGE));
-            }
+            EcoreUtil.resolveAll(resourceSet);
+
+            resourceSet.getResources().forEach(r -> getEPackages().addAll(EcoreUtil.getObjectsByType(r.getContents(), EcorePackage.Literals.EPACKAGE)));
 
             BasicDiagnostic diagnosticChain = new BasicDiagnostic(ConverterPlugin.ID, ConverterUtil.ACTION_MESSAGE_NONE, "Problems were detected while validating and converting the Ecore models", null);
-            for (EPackage ePackage : getEPackages()) {
-                Diagnostician.INSTANCE.validate(ePackage, diagnosticChain);
-            }
+
+            getEPackages().forEach(p -> Diagnostician.INSTANCE.validate(p, diagnosticChain));
 
             if (diagnosticChain.getSeverity() != Diagnostic.OK) {
                 diagnostic = diagnosticChain;
@@ -108,13 +100,8 @@ public class NeoImporter extends ModelImporter {
 
     @Override
     public void addToResource(EPackage ePackage, ResourceSet resourceSet) {
-        if (nonNull(ePackage.eResource()) && nonNull(getGenModel().eResource())) {
-            URI ePackageURI = ePackage.eResource().getURI();
-            URI genModelURI = getGenModel().eResource().getURI();
-
-            if (!Objects.equals(ePackageURI.trimSegments(1), genModelURI.trimSegments(1))) {
-                ePackage.eResource().getContents().remove(ePackage);
-            }
+        if (nonNull(ePackage.eResource()) && nonNull(getGenModel().eResource()) && !Objects.equals(ePackage.eResource().getURI().trimSegments(1), getGenModel().eResource().getURI().trimSegments(1))) {
+            ePackage.eResource().getContents().remove(ePackage);
         }
 
         super.addToResource(ePackage, resourceSet);
@@ -125,10 +112,12 @@ public class NeoImporter extends ModelImporter {
         super.adjustGenModel(monitor);
 
         GenModel genModel = getGenModel();
-        URI genModelURI = createFileURI(getGenModelPath().toString());
-        for (URI uri : getModelLocationURIs()) {
-            genModel.getForeignModel().add(makeRelative(uri, genModelURI).toString());
-        }
+
+        URI genModelUri = createFileURI(getGenModelPath().toString());
+
+        getModelLocationURIs().stream()
+                .map(u -> makeRelative(u, genModelUri).toString())
+                .forEach(u -> genModel.getForeignModel().add(u));
 
         NeoImporterUtil.adjustGenModel(genModel);
     }

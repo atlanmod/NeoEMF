@@ -433,8 +433,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     @Category(Tags.IOTests.class)
     public void testReaderWithoutHandler() {
         //noinspection ConstantConditions
-        assertThat(
-                catchThrowable(() -> new XmiStreamReader(null).read(null))
-        ).isInstanceOf(NullPointerException.class);
+        assertThat(catchThrowable(() -> new XmiStreamReader(null).read(null)))
+                .isInstanceOf(NullPointerException.class);
     }
 }

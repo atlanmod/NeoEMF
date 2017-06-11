@@ -16,8 +16,8 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.Neo4jAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.TinkerAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsNeo4jAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -65,8 +65,8 @@ public class RunnerState {
             CdoAdapter.NAME,
             MapDbAdapter.NAME,
             BerkeleyDbAdapter.NAME,
-            TinkerAdapter.NAME,
-            Neo4jAdapter.NAME,
+            BlueprintsAdapter.NAME,
+            BlueprintsNeo4jAdapter.NAME,
     })
     protected String a;
 
@@ -133,8 +133,8 @@ public class RunnerState {
         map.put(CdoAdapter.NAME, CdoAdapter.class);
         map.put(MapDbAdapter.NAME, MapDbAdapter.class);
         map.put(BerkeleyDbAdapter.NAME, BerkeleyDbAdapter.class);
-        map.put(TinkerAdapter.NAME, TinkerAdapter.class);
-        map.put(Neo4jAdapter.NAME, Neo4jAdapter.class);
+        map.put(BlueprintsAdapter.NAME, BlueprintsAdapter.class);
+        map.put(BlueprintsNeo4jAdapter.NAME, BlueprintsNeo4jAdapter.class);
 
         return Collections.unmodifiableMap(map);
     }
@@ -146,7 +146,7 @@ public class RunnerState {
      */
     @Nonnull
     public CommonOptions getOptions() {
-        CommonOptions options = CommonOptions.newBuilder();
+        CommonOptions options = CommonOptions.builder();
 
         String lowerOptions = o.toLowerCase();
 

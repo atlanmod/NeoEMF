@@ -12,18 +12,18 @@
 /**
  * Provides utility classes to create HBase specific URIs.
  * <p>
- * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI} class, that extends {@link
- * fr.inria.atlanmod.neoemf.util.URIBuilder} to create HBase specific URIs. {@link
- * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI}s are convenience wrappers of EMF {@link
+ * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} class, that extends {@link
+ * fr.inria.atlanmod.neoemf.util.UriBuilder} to create HBase specific URIs. {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are convenience wrappers of EMF {@link
  * org.eclipse.emf.common.util.URI}s that set a dedicated protocol that is parsed by NeoEMF to create the appropriate
  * database.
  * <p>
- * {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI}s are created using the following code. The {@link
- * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI} allows to easily set the address and port of the remote HBase
+ * {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are created using the following code. The {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} allows to easily set the address and port of the remote HBase
  * server that contains a model.
  * <pre>{@code
  * // Create a HBase URI referencing the HBase server running on localhost:1234 and containing the resource myModel
- * URI hbaseURI = HBaseURI.createHierarchicalURI("localhost", "1234", "myModel");
+ * URI hbaseURI = HBaseUri.createHierarchicalURI("localhost", "1234", "myModel");
  *
  * // The created URI can be used as a regular EMF URI to create a NeoEMF resource
  * Resource neoEMFResource = resourceSet.createResource(hbaseURI);

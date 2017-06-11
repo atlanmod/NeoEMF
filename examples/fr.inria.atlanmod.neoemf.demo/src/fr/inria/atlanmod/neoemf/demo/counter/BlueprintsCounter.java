@@ -14,20 +14,21 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * A simple example showing how to access an existing Blueprints-based {@link PersistentResource} and traverse its
@@ -38,15 +39,20 @@ public class BlueprintsCounter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
 
         Instant start = Instant.now();
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.newBuilder().fromFile(new File("models/sample.graphdb")))) {
-            resource.load(Collections.emptyMap());
+        URI uri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
+
+        Map<String, Object> options = BlueprintsOptions.noOption();
+
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
+            resource.load(options);
+
             long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }

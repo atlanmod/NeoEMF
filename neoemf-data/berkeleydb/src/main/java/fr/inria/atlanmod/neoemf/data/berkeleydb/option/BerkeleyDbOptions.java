@@ -42,7 +42,7 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return newBuilder().asMap();
+        return builder().asMap();
     }
 
     /**
@@ -51,7 +51,7 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
      * @return a new builder
      */
     @Nonnull
-    public static BerkeleyDbOptions newBuilder() {
+    public static BerkeleyDbOptions builder() {
         return new BerkeleyDbOptions();
     }
 

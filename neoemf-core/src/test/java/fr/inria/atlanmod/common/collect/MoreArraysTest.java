@@ -34,9 +34,9 @@ public class MoreArraysTest extends AbstractTest {
 
         constructor.setAccessible(true);
 
-        Throwable thrown = catchThrowable(constructor::newInstance);
-        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
-        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+        assertThat(catchThrowable(constructor::newInstance))
+                .isInstanceOf(InvocationTargetException.class)
+                .hasCauseExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -53,12 +53,12 @@ public class MoreArraysTest extends AbstractTest {
     @Test
     public void testInvalidNewArray() {
         //noinspection ConstantConditions
-        Throwable thrown0 = catchThrowable(() -> MoreArrays.newArray(null, 0));
-        assertThat(thrown0).isExactlyInstanceOf(NullPointerException.class);
+        assertThat(catchThrowable(() -> MoreArrays.newArray(null, 0)))
+                .isExactlyInstanceOf(NullPointerException.class);
 
         //noinspection ConstantConditions
-        Throwable thrown1 = catchThrowable(() -> MoreArrays.newArray(Object.class, -1));
-        assertThat(thrown1).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> MoreArrays.newArray(Object.class, -1)))
+                .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -73,8 +73,8 @@ public class MoreArraysTest extends AbstractTest {
         assertThat(array1).containsExactly(0, 1, 2, 3, null);
 
         // newLength < length
-        Throwable thrown = catchThrowable(() -> MoreArrays.resize(array1, 2));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrowable(() -> MoreArrays.resize(array1, 2)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -121,8 +121,8 @@ public class MoreArraysTest extends AbstractTest {
         assertThat(array3).containsExactly(1, 0, 2);
 
         // index > size
-        Throwable thrown = catchThrowable(() -> MoreArrays.add(array3, 10, 10));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> MoreArrays.add(array3, 10, 10)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -149,8 +149,8 @@ public class MoreArraysTest extends AbstractTest {
         assertThat(array3).containsExactly(1, 2);
 
         // index > size
-        Throwable thrown = catchThrowable(() -> MoreArrays.remove(array3, 10));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> MoreArrays.remove(array3, 10)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test

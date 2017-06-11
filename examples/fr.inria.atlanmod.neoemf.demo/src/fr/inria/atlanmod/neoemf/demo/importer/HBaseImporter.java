@@ -15,7 +15,7 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -23,6 +23,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
@@ -40,29 +41,32 @@ public class HBaseImporter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        BackendFactoryRegistry.register(HBaseURI.SCHEME, HBaseBackendFactory.getInstance());
+        BackendFactoryRegistry.register(HBaseUri.SCHEME, HBaseBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseUri.SCHEME, PersistentResourceFactory.getInstance());
 
-        try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(HBaseURI.newBuilder().fromServer("localhost", 2181, URI.createURI("sample.hbase")))) {
-            Map<String, Object> options = HBaseOptions.noOption();
+        URI sourceUri = URI.createURI("models/sample.xmi");
+        URI targetUri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
 
-            persistentResource.save(options);
+        Map<String, Object> options = HBaseOptions.noOption();
+
+        try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
+            targetResource.save(options);
 
             Instant start = Instant.now();
 
-            Resource xmiResource = rSet.createResource(URI.createURI("models/sample.xmi"));
-            xmiResource.load(Collections.emptyMap());
+            Resource sourceResource = resourceSet.createResource(sourceUri);
+            sourceResource.load(Collections.emptyMap());
 
-            persistentResource.getContents().addAll(xmiResource.getContents());
-            persistentResource.save(options);
+            targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
+            targetResource.save(options);
 
             Instant end = Instant.now();
-            Log.info("HBase Model created in {0} seconds", Duration.between(start, end).getSeconds());
+            Log.info("Model created in {0} seconds", Duration.between(start, end).getSeconds());
 
-//            Helpers.compare(xmiResource, persistentResource);
+//            Helpers.compare(sourceResource, targetResource);
         }
     }
 }

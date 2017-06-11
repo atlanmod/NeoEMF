@@ -15,13 +15,13 @@ import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.AbstractActivator;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 
 import org.osgi.framework.BundleActivator;
 
 /**
  * A {@link BundleActivator} that automatically registers a {@link BerkeleyDbBackendFactory} with its
- * associated {@link BerkeleyDbURI} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
+ * associated {@link BerkeleyDbUri} in the global {@link BackendFactoryRegistry} when loading an OSGi bundle.
  * <p>
  * <b>Note:</b> This class should not be used in standard use.
  *
@@ -38,7 +38,7 @@ public class Activator extends AbstractActivator {
 
     @Override
     protected String scheme() {
-        return BerkeleyDbURI.SCHEME;
+        return BerkeleyDbUri.SCHEME;
     }
 
     @Override

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -27,45 +27,50 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Imports an existing model stored in a XMI files into a BerkeleyDB-based {@link PersistentResource}.
+ */
 public class BerkeleyDbImporter {
 
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbUri.SCHEME, PersistentResourceFactory.getInstance());
 
-        try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(BerkeleyDbURI.newBuilder().fromFile(new File("models/sample.berkeleydb")))) {
-            Map<String, Object> options = BerkeleyDbOptions.newBuilder()
-                    .autoSave()
-                    .cacheIsSet()
-                    .cacheSizes()
-                    .asMap();
+        URI sourceUri = URI.createURI("models/sample.xmi");
+        URI targetUri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
 
-            persistentResource.save(options);
+        Map<String, Object> options = BerkeleyDbOptions.builder()
+                .autoSave()
+                .cacheIsSet()
+                .cacheSizes()
+                .asMap();
+
+        try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
+            targetResource.save(options);
 
             Instant start = Instant.now();
 
-            Resource xmiResource = rSet.createResource(URI.createURI("models/sample.xmi"));
-            xmiResource.load(Collections.emptyMap());
+            Resource sourceResource = resourceSet.createResource(sourceUri);
+            sourceResource.load(Collections.emptyMap());
 
-            persistentResource.getContents().addAll(EcoreUtil.copyAll(xmiResource.getContents()));
-            persistentResource.save(options);
+            targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
+            targetResource.save(options);
 
             Instant end = Instant.now();
-            Log.info("MapDB Model created in {0} seconds", Duration.between(start, end).getSeconds());
+            Log.info("Model created in {0} seconds", Duration.between(start, end).getSeconds());
 
-//            Helpers.compare(xmiResource, persistentResource);
+//            Helpers.compare(sourceResource, targetResource);
         }
     }
 }

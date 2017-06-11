@@ -9,11 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
+package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.util.URIBuilder;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
+import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -21,41 +22,45 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link URIBuilder} that creates BerkeleyDB specific resource {@link URI}s.
+ * A {@link UriBuilder} that creates HBase specific resource {@link URI}s.
  *
  * @see BackendFactoryRegistry
- * @see fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory
+ * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbURI extends URIBuilder {
+public class HBaseUri extends AbstractUriBuilder {
 
     /**
      * The scheme associated to the URI.
      */
     @Nonnull
-    public static final String SCHEME = formatScheme(BerkeleyDbBackendFactory.getInstance());
+    public static final String SCHEME = formatScheme(HBaseBackendFactory.getInstance());
 
     /**
-     * Constructs a new {@code BerkeleyDbURI}.
+     * Constructs a new {@code HBaseUri}.
      */
-    private BerkeleyDbURI() {
+    private HBaseUri() {
         super();
     }
 
     /**
-     * Creates a new {@code BerkeleyDbURI} with the pre-configured scheme.
+     * Creates a new {@code HBaseUri} with the pre-configured scheme.
      *
      * @return a new builder
      */
     @Nonnull
-    public static URIBuilder newBuilder() {
-        return new BerkeleyDbURI().withScheme(SCHEME);
+    public static UriBuilder builder() {
+        return new HBaseUri().withScheme(SCHEME);
     }
 
-    @Nonnull
     @Override
-    public URI fromServer(String host, int port, URI model) {
-        throw new UnsupportedOperationException("BerkeleyDbURI does not support server-based URIs");
+    protected boolean supportsFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean supportsServer() {
+        return true;
     }
 }

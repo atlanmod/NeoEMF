@@ -22,14 +22,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -45,17 +44,16 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-
-        initializeEClass(event);
+        initializeClass(event);
 
         URI uri = eClass.eResource().getURI();
+
         IStructuredSelection selection = StructuredSelection.EMPTY;
-        if (nonNull(uri) && uri.isHierarchical()) {
-            if (uri.isRelative() || (uri = uri.deresolve(PLATFORM_RESOURCE)).isRelative()) {
-                IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
-                if (file.exists()) {
-                    selection = new StructuredSelection(file);
-                }
+
+        if (nonNull(uri) && uri.isHierarchical() && (uri.isRelative() || (uri = uri.deresolve(PLATFORM_RESOURCE)).isRelative())) {
+            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
+            if (file.exists()) {
+                selection = new StructuredSelection(file);
             }
         }
 
@@ -64,28 +62,29 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
             EPackage.Registry.INSTANCE.put(eClass.getEPackage().getNsURI(), eClass.getEPackage());
         }
 
-        DynamicModelWizard dynamicModelWizard = new DynamicModelWizard(eClass);
-        dynamicModelWizard.init(PlatformUI.getWorkbench(), selection);
+        DynamicModelWizard wizard = new DynamicModelWizard(eClass);
+        wizard.init(PlatformUI.getWorkbench(), selection);
 
-        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
-        wizardDialog.open();
+        new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard).open();
 
         return null;
     }
 
-    private void initializeEClass(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        ISelectionService service = window.getSelectionService();
-        ISelection selection = service.getSelection();
-        if (selection instanceof IStructuredSelection) {
-            Object object = ((IStructuredSelection) selection).getFirstElement();
-            if (object instanceof EClass) {
-                eClass = (EClass) object;
-                setEnabled(!eClass.isAbstract());
-                return;
-            }
+    private void initializeClass(ExecutionEvent event) throws ExecutionException {
+        Optional<EClass> newClass = Optional.ofNullable(HandlerUtil.getActiveWorkbenchWindowChecked(event).getSelectionService().getSelection())
+                .filter(IStructuredSelection.class::isInstance)
+                .map(IStructuredSelection.class::cast)
+                .map(IStructuredSelection::getFirstElement)
+                .filter(EClass.class::isInstance)
+                .map(EClass.class::cast);
+
+        if (newClass.isPresent()) {
+            eClass = newClass.get();
+            setEnabled(!eClass.isAbstract());
         }
-        eClass = null;
-        setEnabled(false);
+        else {
+            eClass = null;
+            setEnabled(false);
+        }
     }
 }

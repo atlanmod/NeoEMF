@@ -27,7 +27,7 @@
  * backend-specific implementation of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = PersistenceOptions.newBuilder()
+ * Map<String, Object> options = PersistenceOptions.builder()
  *     .autocommit(10000)
  *     .cacheFeatures()
  *     .asMap();

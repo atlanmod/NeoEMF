@@ -53,7 +53,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
      */
     @Test
     public void testCreateIndicesPersistentBackend() {
-        Map<String, Object> options = HBaseOptions.newBuilder()
+        Map<String, Object> options = HBaseOptions.builder()
                 .withArraysAndStrings()
                 .asMap();
 

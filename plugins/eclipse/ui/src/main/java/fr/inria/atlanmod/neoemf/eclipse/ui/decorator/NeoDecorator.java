@@ -14,11 +14,13 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.decorator;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+
+import java.util.Optional;
 
 public class NeoDecorator extends LabelProvider implements ILabelDecorator {
 
@@ -26,15 +28,13 @@ public class NeoDecorator extends LabelProvider implements ILabelDecorator {
 
     @Override
     public Image decorateImage(Image image, Object element) {
-        if (element instanceof IFolder) {
-            IFolder folder = (IFolder) element;
-            IFile configFile = folder.getFile(BackendFactory.CONFIG_FILE);
-            if (configFile.exists()) {
-                // In a NeoEMF Database Folder
-                return NeoUIPlugin.getImageDescriptor(ICON_PATH).createImage();
-            }
-        }
-        return null;
+        return Optional.ofNullable(element)
+                .filter(IFolder.class::isInstance)
+                .map(IFolder.class::cast)
+                .map(f -> f.getFile(BackendFactory.CONFIG_FILE))
+                .filter(IResource::exists)
+                .map(s -> NeoUIPlugin.getImageDescriptor(ICON_PATH).createImage())
+                .orElse(null);
     }
 
     @Override

@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.common.log;
 
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 
 import java.text.MessageFormat;
 
@@ -36,7 +36,7 @@ public final class Log {
      * In-memory cache that holds loaded {@link Logger}s, identified by their name.
      */
     @Nonnull
-    private static final Cache<String, Logger> LOGGERS = CacheBuilder.newBuilder()
+    private static final Cache<String, Logger> LOGGERS = CacheBuilder.builder()
             .softValues()
             .build();
 

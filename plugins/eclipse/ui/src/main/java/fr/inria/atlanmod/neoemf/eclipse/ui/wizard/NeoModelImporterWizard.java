@@ -20,9 +20,6 @@ import org.eclipse.emf.importer.ui.contribution.base.ModelImporterWizard;
 
 public class NeoModelImporterWizard extends ModelImporterWizard {
 
-    public NeoModelImporterWizard() {
-    }
-
     @Override
     protected ModelConverter createModelConverter() {
         return new NeoImporter();

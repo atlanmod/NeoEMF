@@ -23,18 +23,10 @@ public class IsNeoBackendTester extends PropertyTester {
 
     private static final String IS_NEOEMF_DB = "isNeoEMFDB";
 
-    public IsNeoBackendTester() {
-    }
-
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if (Objects.equals(IS_NEOEMF_DB, property) && receiver instanceof IFolder) {
-            boolean expected = (Boolean) expectedValue;
-            IFolder folder = (IFolder) receiver;
-            if (folder.exists(new Path(BackendFactory.CONFIG_FILE)) == expected) {
-                return true;
-            }
-        }
-        return false;
+        return Objects.equals(IS_NEOEMF_DB, property)
+                && IFolder.class.isInstance(receiver)
+                && IFolder.class.cast(receiver).exists(new Path(BackendFactory.CONFIG_FILE)) == Boolean.class.cast(expectedValue);
     }
 }

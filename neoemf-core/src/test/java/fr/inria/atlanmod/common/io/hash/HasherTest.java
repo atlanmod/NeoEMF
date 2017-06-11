@@ -36,16 +36,16 @@ public class HasherTest extends AbstractTest {
 
         constructor.setAccessible(true);
 
-        Throwable thrown = catchThrowable(constructor::newInstance);
-        assertThat(thrown).isInstanceOf(InvocationTargetException.class);
-        assertThat(thrown.getCause()).isExactlyInstanceOf(IllegalStateException.class).hasMessage("This class should not be instantiated");
+        assertThat(catchThrowable(constructor::newInstance))
+                .isInstanceOf(InvocationTargetException.class)
+                .hasCauseExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void testInvalidAlgorithm() {
-        Throwable thrown = catchThrowable(() -> Hashers.nativeHash("unknown", new byte[0]));
-        assertThat(thrown).isInstanceOf(RuntimeException.class);
-        assertThat(thrown).hasCauseInstanceOf(NoSuchAlgorithmException.class);
+        assertThat(catchThrowable(() -> Hashers.nativeHash("unknown", new byte[0])))
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseExactlyInstanceOf(NoSuchAlgorithmException.class);
     }
 
     @Test

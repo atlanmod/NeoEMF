@@ -15,7 +15,7 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -42,33 +41,36 @@ public class MapDbImporter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbUri.SCHEME, PersistentResourceFactory.getInstance());
 
-        try (PersistentResource persistentResource = (PersistentResource) rSet.createResource(MapDbURI.newBuilder().fromFile(new File("models/sample.mapdb")))) {
-            Map<String, Object> options = MapDbOptions.newBuilder()
-                    .autoSave()
-                    .cacheIsSet()
-                    .cacheSizes()
-                    .asMap();
+        URI sourceUri = URI.createURI("models/sample.xmi");
+        URI targetUri = MapDbUri.builder().fromFile("models/sample.mapdb");
 
-            persistentResource.save(options);
+        Map<String, Object> options = MapDbOptions.builder()
+                .autoSave()
+                .cacheIsSet()
+                .cacheSizes()
+                .asMap();
+
+        try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
+            targetResource.save(options);
 
             Instant start = Instant.now();
 
-            Resource xmiResource = rSet.createResource(URI.createURI("models/sample.xmi"));
-            xmiResource.load(Collections.emptyMap());
+            Resource sourceResource = resourceSet.createResource(sourceUri);
+            sourceResource.load(Collections.emptyMap());
 
-            persistentResource.getContents().addAll(EcoreUtil.copyAll(xmiResource.getContents()));
-            persistentResource.save(options);
+            targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
+            targetResource.save(options);
 
             Instant end = Instant.now();
-            Log.info("MapDB Model created in {0} seconds", Duration.between(start, end).getSeconds());
+            Log.info("Model created in {0} seconds", Duration.between(start, end).getSeconds());
 
-//            Helpers.compare(xmiResource, persistentResource);
+//            Helpers.compare(sourceResource, targetResource);
         }
     }
 }

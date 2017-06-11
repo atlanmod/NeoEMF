@@ -20,6 +20,8 @@ import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
+import fr.inria.atlanmod.common.cache.Cache;
+import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
@@ -28,8 +30,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.util.cache.Cache;
-import fr.inria.atlanmod.neoemf.util.cache.CacheBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,7 +98,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
      */
     @Nonnull
-    private final Cache<Id, Vertex> verticesCache = CacheBuilder.newBuilder()
+    private final Cache<Id, Vertex> verticesCache = CacheBuilder.builder()
             .maximumSize()
             .build();
 

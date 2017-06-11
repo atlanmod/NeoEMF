@@ -14,11 +14,8 @@ package fr.inria.atlanmod.neoemf.util;
 import fr.inria.atlanmod.common.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource.Factory.Registry;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.util.List;
@@ -34,15 +31,10 @@ import static fr.inria.atlanmod.common.Preconditions.checkState;
 import static java.util.Objects.isNull;
 
 /**
- * A builder of {@link URI} used to register {@link BackendFactory} in the {@link BackendFactoryRegistry} and configure
- * the {@code protocol to factory} map of an existing {@link ResourceSet} with a {@link PersistentResourceFactory}.
- *
- * @see BackendFactoryRegistry
- * @see ResourceSet#getResourceFactoryRegistry()
- * @see Registry#getProtocolToFactoryMap()
+ * An abstract {@link UriBuilder} that manages the assembly and the construction of {@link URI}s.
  */
 @ParametersAreNonnullByDefault
-public class URIBuilder {
+public abstract class AbstractUriBuilder implements UriBuilder {
 
     /**
      * The {@link URI} scheme corresponding to a file.
@@ -55,21 +47,22 @@ public class URIBuilder {
      */
     private String scheme;
 
-    /**
-     * Constructs a new {@code URIBuilder}.
-     */
-    protected URIBuilder() {
-    }
-
-    /**
-     * Creates a new {@code URIBuilder}.
-     *
-     * @return a new builder
-     */
     @Nonnull
     @VisibleForTesting
-    public static URIBuilder newBuilder() {
-        return new URIBuilder();
+    @SuppressWarnings("JavaDoc")
+    public static UriBuilder builder() {
+        return new AbstractUriBuilder() {
+
+            @Override
+            protected boolean supportsFile() {
+                return true;
+            }
+
+            @Override
+            protected boolean supportsServer() {
+                return true;
+            }
+        };
     }
 
     /**
@@ -81,22 +74,50 @@ public class URIBuilder {
      */
     @Nonnull
     protected static String formatScheme(BackendFactory factory) {
-        return String.format("neo-%s", checkNotNull(factory).name());
+        return "neo-" + checkNotNull(factory).name();
     }
 
     /**
-     * Defines the scheme to identify the {@link BackendFactory} to use.
+     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the file system.
      *
-     * @param scheme the scheme
+     * @param uri the base filed-based {@link URI}
      *
-     * @return this builder (for chaining)
+     * @return a new URI
      *
-     * @throws NullPointerException  if the {@code scheme} is {@code null}
-     * @throws IllegalStateException if the scheme has already been defined
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if the {@code uri} is {@code null}
      */
     @Nonnull
+    private URI fromFile(URI uri) {
+        checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        checkArgument(uri.isFile());
+
+        return fromUri(URI.createHierarchicalURI(scheme,
+                uri.authority(),
+                uri.device(),
+                uri.segments(),
+                uri.query(),
+                uri.fragment()));
+    }
+
+    /**
+     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports file-based storage.
+     *
+     * @return {@code true} if file-based {@link URI}s are supported
+     */
+    protected abstract boolean supportsFile();
+
+    /**
+     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports server-based storage.
+     *
+     * @return {@code true} if server-based {@link URI}s are supported
+     */
+    protected abstract boolean supportsServer();
+
+    @Nonnull
     @VisibleForTesting
-    public final URIBuilder withScheme(String scheme) {
+    @Override
+    public final UriBuilder withScheme(String scheme) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
         checkState(isNull(this.scheme), "The scheme has already been defined as %s", scheme);
 
@@ -105,25 +126,15 @@ public class URIBuilder {
         return this;
     }
 
-    /**
-     * Creates a new {@code URI} from the given {@code uri}.
-     * <p>
-     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
-     * URIBuilder}. Its scheme must be registered in the {@link BackendFactoryRegistry}.
-     *
-     * @param uri the base {@link URI}
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException      if the scheme of the provided {@code uri} is not registered in the {@link
-     *                                       BackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
-     */
     @Nonnull
+    @Override
     public URI fromUri(URI uri) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
         checkNotNull(uri);
+
+        if (!supportsFile()) {
+            throw new UnsupportedOperationException(String.format("%s does not support file-based URI", getClass().getSimpleName()));
+        }
 
         if (Objects.equals(scheme, uri.scheme())) {
             checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme %s", uri);
@@ -137,69 +148,44 @@ public class URIBuilder {
         throw new IllegalArgumentException(String.format("Cannot create URI with the scheme %s", uri.scheme()));
     }
 
-    /**
-     * Creates a new {@code URI} from the given {@code file} descriptor.
-     *
-     * @param file the {@link File} to build a {@link URI} from
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code file} is {@code null}
-     */
     @Nonnull
+    @Override
     public URI fromFile(File file) {
-        checkNotNull(scheme, "Cannot create URI without a valid scheme");
         checkNotNull(file);
 
-        return fromFile(URI.createFileURI(file.getAbsolutePath()));
+        return fromFile(file.getAbsolutePath());
     }
 
-    /**
-     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the file system.
-     *
-     * @param uri the base {@link URI}
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code uri} is {@code null}
-     */
     @Nonnull
-    private URI fromFile(URI uri) {
-        return fromUri(URI.createHierarchicalURI(scheme,
-                uri.authority(),
-                uri.device(),
-                uri.segments(),
-                uri.query(),
-                uri.fragment()));
+    @Override
+    public URI fromFile(String filePath) {
+        checkNotNull(filePath);
+
+        return fromFile(URI.createFileURI(filePath));
     }
 
-    /**
-     * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical
-     * {@link URI} that references the distant model resource.
-     *
-     * @param host  the address of the server (use {@code "localhost"} if the server is running locally)
-     * @param port  the port of the server
-     * @param model a {@link URI} identifying the model in the database
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if any of the parameters is {@code null}
-     * @throws IllegalArgumentException      if {@code port < 0}
-     */
     @Nonnull
+    @Override
     public URI fromServer(String host, int port, URI model) {
+        return fromServer(host, port, model.segments());
+    }
+
+    @Nonnull
+    @Override
+    public URI fromServer(String host, int port, String... segments) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
         checkNotNull(host);
-        checkNotNull(model);
+        checkNotNull(segments);
         checkArgument(port >= 0);
 
+        if (!supportsServer()) {
+            throw new UnsupportedOperationException(String.format("%s does not support server-based URIs", getClass().getSimpleName()));
+        }
+
         return URI.createHierarchicalURI(scheme,
-                String.format("%s:%d", host, port),
+                host + ':' + port,
                 null,
-                model.segments(),
+                segments,
                 null,
                 null);
     }

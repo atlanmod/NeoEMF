@@ -14,20 +14,21 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * A simple example showing how to access an existing MapDB-based {@link PersistentResource} and traverse its content to
@@ -38,15 +39,20 @@ public class MapDbCounter {
     public static void main(String[] args) throws IOException {
         JavaPackage.eINSTANCE.eClass();
 
-        BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        BackendFactoryRegistry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
 
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbUri.SCHEME, PersistentResourceFactory.getInstance());
 
         Instant start = Instant.now();
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.newBuilder().fromFile(new File("models/sample.mapdb")))) {
-            resource.load(Collections.emptyMap());
+        URI uri = MapDbUri.builder().fromFile("models/sample.mapdb");
+
+        Map<String, Object> options = MapDbOptions.noOption();
+
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
+            resource.load(options);
+
             long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }

@@ -54,7 +54,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testCreateIndicesPersistentBackend() {
-        Map<String, Object> options = BerkeleyDbOptions.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptions.builder()
                 .withIndices()
                 .asMap();
 
@@ -69,7 +69,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testCreateArraysPersistentBackend() {
-        Map<String, Object> options = BerkeleyDbOptions.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptions.builder()
                 .withArrays()
                 .asMap();
 
@@ -84,7 +84,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testCreateListsPersistentBackend() {
-        Map<String, Object> options = BerkeleyDbOptions.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptions.builder()
                 .withLists()
                 .asMap();
 

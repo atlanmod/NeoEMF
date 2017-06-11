@@ -13,11 +13,11 @@ package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -65,18 +65,18 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      * {@link BackendFactoryRegistry}.
      * <p/>
      * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource loading.
-     * This happens when an Eclipse instance is loaded with an opened NeoEMF editor (only {@link BlueprintsURI#SCHEME}
+     * This happens when an Eclipse instance is loaded with an opened NeoEMF editor (only {@link BlueprintsUri#SCHEME}
      * is accessed).
      */
     private static void registerFactories() {
-        if (!BackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
-            BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
+        if (!BackendFactoryRegistry.isRegistered(BlueprintsUri.SCHEME)) {
+            BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
         }
-        if (!BackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
-            BackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbBackendFactory.getInstance());
+        if (!BackendFactoryRegistry.isRegistered(MapDbUri.SCHEME)) {
+            BackendFactoryRegistry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
         }
-        if (!BackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
-            BackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbBackendFactory.getInstance());
+        if (!BackendFactoryRegistry.isRegistered(BerkeleyDbUri.SCHEME)) {
+            BackendFactoryRegistry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
         }
     }
 

@@ -52,7 +52,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testNoneCacheOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .noCache()
                 .asMap();
 
@@ -70,7 +70,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testWeakCacheOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .weakCache()
                 .asMap();
 
@@ -88,7 +88,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testSoftCacheOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .softCache()
                 .asMap();
 
@@ -106,7 +106,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testStrongCacheOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .strongCache()
                 .asMap();
 
@@ -124,7 +124,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testUseMemoryMappedBuffersOptionWithTrue() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .memoryMappedBuffers()
                 .asMap();
 
@@ -142,7 +142,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testUseMemoryMappedBuffersOptionWithFalse() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .memoryMappedBuffers(false)
                 .asMap();
 
@@ -161,7 +161,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testStringsMappedMemoryOptionWithPositive() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .stringsMappedBuffer(64)
                 .asMap();
 
@@ -180,12 +180,12 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testStringsMappedMemoryOptionWithNegative() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .stringsMappedBuffer(-64)
                 .asMap();
 
-        Throwable thrown = catchThrowable(() -> resource.save(options));
-        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
+        assertThat(catchThrowable(() -> resource.save(options)))
+                .isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -196,7 +196,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testStringsMappedMemoryOptionWithNull() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .stringsMappedBuffer(0)
                 .asMap();
 
@@ -215,7 +215,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testArraysMappedMemoryOptionWithPositive() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .arraysMappedBuffer(64)
                 .asMap();
 
@@ -234,12 +234,12 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testArraysMappedMemoryOptionWithNegative() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .arraysMappedBuffer(-64)
                 .asMap();
 
-        Throwable thrown = catchThrowable(() -> resource.save(options));
-        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
+        assertThat(catchThrowable(() -> resource.save(options)))
+                .isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -250,7 +250,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testArraysMappedMemoryOptionWithNull() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .arraysMappedBuffer(0)
                 .asMap();
 
@@ -269,7 +269,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testNodesMappedMemoryOptionWithPositive() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .nodesMappedBuffer(64)
                 .asMap();
 
@@ -288,12 +288,12 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testNodesMappedMemoryOptionWithNegative() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .nodesMappedBuffer(-64)
                 .asMap();
 
-        Throwable thrown = catchThrowable(() -> resource.save(options));
-        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
+        assertThat(catchThrowable(() -> resource.save(options)))
+                .isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -304,7 +304,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testNodesMappedMemoryOptionWithNull() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .nodesMappedBuffer(0)
                 .asMap();
 
@@ -323,7 +323,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testPropertiesMappedMemoryOptionWithPositive() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .propertiesMappedBuffer(64)
                 .asMap();
 
@@ -342,12 +342,12 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testPropertiesMappedMemoryOptionWithNegative() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .propertiesMappedBuffer(-64)
                 .asMap();
 
-        Throwable thrown = catchThrowable(() -> resource.save(options));
-        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
+        assertThat(catchThrowable(() -> resource.save(options)))
+                .isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -358,7 +358,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testPropertiesMappedMemoryOptionWithNull() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .propertiesMappedBuffer(0)
                 .asMap();
 
@@ -377,7 +377,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testRelationshipsMappedMemoryOptionWithPositive() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .relationshipsMappedBuffer(64)
                 .asMap();
 
@@ -396,12 +396,12 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testRelationshipsMappedMemoryOptionWithNegative() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .relationshipsMappedBuffer(-64)
                 .asMap();
 
-        Throwable thrown = catchThrowable(() -> resource.save(options));
-        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
+        assertThat(catchThrowable(() -> resource.save(options)))
+                .isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -412,7 +412,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testRelationshipsMappedMemoryOptionWithNull() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .relationshipsMappedBuffer(0)
                 .asMap();
 
@@ -431,7 +431,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testCombinationOptionsValid() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .relationshipsMappedBuffer(64)
                 .propertiesMappedBuffer(64)
                 .asMap();
@@ -452,13 +452,13 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testCombinationOptionsInvalid() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .relationshipsMappedBuffer(64)
                 .propertiesMappedBuffer(-64)
                 .asMap();
 
-        Throwable thrown = catchThrowable(() -> resource.save(options));
-        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
+        assertThat(catchThrowable(() -> resource.save(options)))
+                .isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -473,7 +473,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
      */
     @Test
     public void testAllOptions() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .softCache()
                 .memoryMappedBuffers()
                 .stringsMappedBuffer(64)

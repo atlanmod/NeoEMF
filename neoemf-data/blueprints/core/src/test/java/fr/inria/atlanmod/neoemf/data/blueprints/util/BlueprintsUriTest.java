@@ -19,10 +19,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.mock;
 
 /**
- * A test-case that checks the behavior of {@link BlueprintsURI}.
+ * A test-case that checks the behavior of {@link BlueprintsUri}.
  */
 public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest {
 
@@ -33,7 +32,7 @@ public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest
      */
     @Test
     public void testCreateUriFromServer() {
-        Throwable thrown = catchThrowable(() -> BlueprintsURI.newBuilder().fromServer("host", 0, mock(URI.class)));
-        assertThat(thrown).isExactlyInstanceOf(UnsupportedOperationException.class);
+        assertThat(catchThrowable(() -> BlueprintsUri.builder().fromServer("host", 0, "segments")))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 }

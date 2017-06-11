@@ -96,8 +96,8 @@ public class EObjectEContentsTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         fillResourceWithEmpty(resource);
 
-        Throwable thrown = catchThrowable(() -> pack.eContents().get(0));
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(catchThrowable(() -> pack.eContents().get(0)))
+                .isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**

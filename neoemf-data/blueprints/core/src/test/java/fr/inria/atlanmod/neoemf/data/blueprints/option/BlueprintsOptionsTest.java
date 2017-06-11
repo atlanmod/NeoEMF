@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -45,8 +45,8 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     @Before
     public final void initResource() {
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        resource = resourceSet.createResource(BlueprintsURI.newBuilder().fromFile(file()));
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
+        resource = resourceSet.createResource(BlueprintsUri.builder().fromFile(file()));
     }
 
     /**

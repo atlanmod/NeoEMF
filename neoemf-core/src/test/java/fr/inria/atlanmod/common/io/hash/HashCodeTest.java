@@ -45,8 +45,8 @@ public class HashCodeTest extends AbstractTest {
 
     @Test
     public void testInvalidToInt() {
-        Throwable thrown = catchThrowable(() -> new HashCode(new byte[0]).toInt());
-        assertThat(thrown).isExactlyInstanceOf(IllegalStateException.class);
+        assertThat(catchThrowable(() -> new HashCode(new byte[0]).toInt()))
+                .isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -61,8 +61,8 @@ public class HashCodeTest extends AbstractTest {
 
     @Test
     public void testInvalidToLong() {
-        Throwable thrown = catchThrowable(() -> new HashCode(new byte[0]).toLong());
-        assertThat(thrown).isExactlyInstanceOf(IllegalStateException.class);
+        assertThat(catchThrowable(() -> new HashCode(new byte[0]).toLong()))
+                .isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test

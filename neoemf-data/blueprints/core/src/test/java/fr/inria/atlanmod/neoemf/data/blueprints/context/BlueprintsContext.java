@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -33,7 +33,7 @@ public interface BlueprintsContext extends Context {
      * @return a new context.
      */
     static Context getWithIndices() {
-        return (BlueprintsContext) () -> BlueprintsOptions.newBuilder().withIndices();
+        return (BlueprintsContext) () -> BlueprintsOptions.builder().withIndices();
     }
 
     @Override
@@ -48,16 +48,16 @@ public interface BlueprintsContext extends Context {
 
     @Override
     default String uriScheme() {
-        return BlueprintsURI.SCHEME;
+        return BlueprintsUri.SCHEME;
     }
 
     @Override
     default URI createUri(URI uri) {
-        return BlueprintsURI.newBuilder().fromUri(uri);
+        return BlueprintsUri.builder().fromUri(uri);
     }
 
     @Override
     default URI createUri(File file) {
-        return BlueprintsURI.newBuilder().fromFile(file);
+        return BlueprintsUri.builder().fromFile(file);
     }
 }

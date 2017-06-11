@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -48,7 +48,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFolderMainPage;
 import org.eclipse.ui.part.ISetSelectionTarget;
 
-import java.io.File;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
@@ -99,6 +98,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.workbench = workbench;
         this.selection = selection;
+
         setDefaultPageImageDescriptor(ExtendedImageRegistry.INSTANCE.getImageDescriptor(EMFEditPlugin.INSTANCE.getImage("full/wizban/NewModel")));
     }
 
@@ -115,17 +115,20 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
     @Override
     public void addPages() {
         // Create a page, set the title, and the initial model file name.
-        //
         String title = "Dynamic Model";
         String description = NLS.bind("Create a new dynamic {0} instance", new Object[]{eClass.getName()});
 
         newFolderCreationPage = new WizardNewFolderMainPage("Whatever", selection);
-        newFolderCreationPage.setTitle(title);
-        newFolderCreationPage.setDescription(description);
-        selectGraphTypePage = new SelectBlueprintsGraphTypeWizardPage(SelectBlueprintsGraphTypeWizardPage.class.getName(), title, null);
-        selectGraphTypePage.setDescription(description);
-
+        {
+            newFolderCreationPage.setTitle(title);
+            newFolderCreationPage.setDescription(description);
+        }
         addPage(newFolderCreationPage);
+
+        selectGraphTypePage = new SelectBlueprintsGraphTypeWizardPage(SelectBlueprintsGraphTypeWizardPage.class.getName(), title, null);
+        {
+            selectGraphTypePage.setDescription(description);
+        }
         addPage(selectGraphTypePage);
     }
 
@@ -145,7 +148,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             dbFolder.delete(true, new NullProgressMonitor());
 
             // Get the URI of the model file.
-            final URI dbURI = BlueprintsURI.newBuilder().fromFile(new File(dbFolder.getRawLocation().toOSString()));
+            final URI uri = BlueprintsUri.builder().fromFile(dbFolder.getRawLocation().toOSString());
 
             // Do the work within an operation.
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
@@ -159,17 +162,15 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     try {
                         // Create a resource set
                         ResourceSet resourceSet = new ResourceSetImpl();
-                        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+                        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
                         resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true));
 
                         // Create a resource for this file.
-                        resource = resourceSet.createResource(dbURI);
+                        resource = resourceSet.createResource(uri);
 
                         // Add the initial model object to the contents.
                         EObject rootObject = createInitialModel();
-                        if (nonNull(rootObject)) {
-                            resource.getContents().add(rootObject);
-                        }
+                        resource.getContents().add(rootObject);
 
                         // Save the contents of the resource to the file system.
                         resource.save(options);
@@ -197,8 +198,9 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             getContainer().run(false, false, operation);
 
             // Select the new file resource in the current view.
-            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-            IWorkbenchPage page = workbenchWindow.getActivePage();
+            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            IWorkbenchPage page = window.getActivePage();
+
             final IWorkbenchPart activePart = page.getActivePart();
             if (activePart instanceof ISetSelectionTarget) {
                 final ISelection targetSelection = new StructuredSelection(dbFolder);
@@ -207,10 +209,10 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 
             // Open an editor on the new file.
             try {
-                page.openEditor(new URIEditorInput(dbURI), NeoEditor.EDITOR_ID);
+                page.openEditor(new URIEditorInput(uri), NeoEditor.EDITOR_ID);
             }
             catch (PartInitException exception) {
-                MessageDialog.openError(workbenchWindow.getShell(), "Open Editor", exception.getMessage());
+                MessageDialog.openError(window.getShell(), "Open Editor", exception.getMessage());
                 return false;
             }
 

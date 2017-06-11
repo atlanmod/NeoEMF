@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -31,28 +31,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} using TinkerGraph.
  */
 @ParametersAreNonnullByDefault
-public class TinkerAdapter extends AbstractNeoAdapter {
+public class BlueprintsAdapter extends AbstractNeoAdapter {
 
     public static final String NAME = "neo-tinker";
 
     private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
 
     @SuppressWarnings("unused") // Called dynamically
-    public TinkerAdapter() {
+    public BlueprintsAdapter() {
         this(NAME, STORE_EXTENSION);
     }
 
-    protected TinkerAdapter(String name, String storeExtension) {
+    protected BlueprintsAdapter(String name, String storeExtension) {
         super(name, storeExtension);
     }
 
     @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
-        BackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = BlueprintsURI.newBuilder().fromFile(file);
+        URI uri = BlueprintsUri.builder().fromFile(file);
 
         return resourceSet.createResource(uri);
     }
@@ -60,6 +60,6 @@ public class TinkerAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsOptions.newBuilder().asMap();
+        return BlueprintsOptions.builder().asMap();
     }
 }

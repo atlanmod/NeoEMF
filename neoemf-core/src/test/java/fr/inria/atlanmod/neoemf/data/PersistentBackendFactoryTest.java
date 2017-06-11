@@ -61,8 +61,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testAlreadyDefinedOption() {
-        Throwable thrown = catchThrowable(() -> CommonOptions.newBuilder().autoSave().autoSave());
-        assertThat(thrown).isExactlyInstanceOf(InvalidOptionException.class);
+        assertThat(catchThrowable(() -> CommonOptions.builder().autoSave().autoSave()))
+                .isExactlyInstanceOf(InvalidOptionException.class);
     }
 
     /**
@@ -70,7 +70,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testIsSetCachingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheIsSet()
                 .asMap();
 
@@ -89,7 +89,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testLoggingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .log()
                 .asMap();
 
@@ -108,7 +108,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testSizeCachingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheSizes()
                 .asMap();
 
@@ -127,7 +127,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testFeatureCachingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheFeatures()
                 .asMap();
 
@@ -146,7 +146,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testContainerCachingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheContainers()
                 .asMap();
 
@@ -165,7 +165,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testMetaclassCachingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheMetaclasses()
                 .asMap();
 
@@ -184,7 +184,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testStatsCachingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .recordStats()
                 .asMap();
 
@@ -203,7 +203,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testLoadedObjectCounterLoggingOption() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .countLoadedObjects()
                 .asMap();
 
@@ -224,7 +224,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     public void testAutoSaveOption() {
         final long expectedChunk = 50_000L;
 
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .autoSave()
                 .asMap();
 
@@ -248,7 +248,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     public void testAutoSaveWithChunkOption() {
         final long expectedChunk = 12_345;
 
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .autoSave(expectedChunk)
                 .asMap();
 
@@ -270,8 +270,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testAutoSaveWithNegativeChunkOption() {
-        Throwable thrown = catchThrowable(() -> CommonOptions.newBuilder().autoSave(-2));
-        assertThat(thrown).isExactlyInstanceOf(InvalidOptionException.class);
+        assertThat(catchThrowable(() -> CommonOptions.builder().autoSave(-2)))
+                .isExactlyInstanceOf(InvalidOptionException.class);
     }
 
     /**
@@ -283,7 +283,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testIsSetCachingLoggingOptions() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheIsSet()
                 .log()
                 .asMap();
@@ -310,7 +310,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheIsSet()
                 .cacheSizes()
                 .asMap();
@@ -337,7 +337,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testSizeCachingFeatureCachingOptions() {
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheSizes()
                 .cacheFeatures()
                 .asMap();
@@ -369,7 +369,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     public void testAllOptions() {
         long expectedChunk = 12_345;
 
-        Map<String, Object> options = CommonOptions.newBuilder()
+        Map<String, Object> options = CommonOptions.builder()
                 .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()

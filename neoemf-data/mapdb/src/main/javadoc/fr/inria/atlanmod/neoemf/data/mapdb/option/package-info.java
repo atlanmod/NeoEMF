@@ -24,7 +24,7 @@
  * MapDB specific option, while the caching behavior is defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = MapDBOptions.newBuilder()
+ * Map<String, Object> options = MapDBOptions.builder()
  *     .withIndices()
  *     .cacheFeatures()
  *     .asMap();

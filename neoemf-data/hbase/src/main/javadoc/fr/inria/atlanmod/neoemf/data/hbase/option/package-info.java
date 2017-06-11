@@ -24,7 +24,7 @@
  * is defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = HBaseOptions.newBuilder()
+ * Map<String, Object> options = HBaseOptions.builder()
  *     .readOnly()
  *     .cacheFeatures()
  *     .asMap();

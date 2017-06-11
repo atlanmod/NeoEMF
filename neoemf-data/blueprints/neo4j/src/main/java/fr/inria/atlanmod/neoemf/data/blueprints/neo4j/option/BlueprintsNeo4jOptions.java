@@ -50,7 +50,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      */
     @Nonnull
     public static Map<String, Object> noOption() {
-        return newBuilder().asMap();
+        return builder().asMap();
     }
 
     /**
@@ -59,7 +59,7 @@ public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<Blueprints
      * @return a new builder
      */
     @Nonnull
-    public static BlueprintsNeo4jOptions newBuilder() {
+    public static BlueprintsNeo4jOptions builder() {
         return new BlueprintsNeo4jOptions();
     }
 

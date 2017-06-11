@@ -126,14 +126,10 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Nonnull
     @Override
     public String getURIFragment(EObject eObject) {
-        if (this == eObject.eResource()) {
-            // Try to adapt as a PersistentEObject and return the ID
-            PersistentEObject object = PersistentEObject.from(eObject);
-            if (nonNull(object)) {
-                return object.id().toString();
-            }
-        }
-        return URI_UNKNOWN;
+        return Optional.ofNullable(PersistentEObject.from(eObject))
+                .filter(o -> this == o.eResource())
+                .map(o -> o.id().toString())
+                .orElse(URI_UNKNOWN);
     }
 
     @Override

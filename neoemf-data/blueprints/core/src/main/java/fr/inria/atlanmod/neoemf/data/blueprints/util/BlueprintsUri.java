@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.util.URIBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -21,14 +22,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link URIBuilder} that creates Blueprints specific resource {@link URI}s.
+ * A {@link UriBuilder} that creates Blueprints specific resource {@link URI}s.
  *
  * @see BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsURI extends URIBuilder {
+public class BlueprintsUri extends AbstractUriBuilder {
 
     /**
      * The scheme associated to the URI.
@@ -37,25 +38,29 @@ public class BlueprintsURI extends URIBuilder {
     public static final String SCHEME = formatScheme(BlueprintsBackendFactory.getInstance());
 
     /**
-     * Constructs a new {@code BlueprintsURI}.
+     * Constructs a new {@code BlueprintsUri}.
      */
-    private BlueprintsURI() {
+    private BlueprintsUri() {
         super();
     }
 
     /**
-     * Creates a new {@code BlueprintsURI} with the pre-configured scheme.
+     * Creates a new {@code BlueprintsUri} with the pre-configured scheme.
      *
      * @return a new builder
      */
     @Nonnull
-    public static URIBuilder newBuilder() {
-        return new BlueprintsURI().withScheme(SCHEME);
+    public static UriBuilder builder() {
+        return new BlueprintsUri().withScheme(SCHEME);
     }
 
-    @Nonnull
     @Override
-    public URI fromServer(String host, int port, URI model) {
-        throw new UnsupportedOperationException("BlueprintsURI does not support server-based URIs");
+    protected boolean supportsFile() {
+        return true;
+    }
+
+    @Override
+    protected boolean supportsServer() {
+        return false;
     }
 }
