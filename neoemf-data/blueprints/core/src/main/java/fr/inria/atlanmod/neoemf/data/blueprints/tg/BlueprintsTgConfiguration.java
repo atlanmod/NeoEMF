@@ -61,11 +61,8 @@ public final class BlueprintsTgConfiguration implements BlueprintsConfiguration 
 
     @Override
     public void putDefaultConfiguration(Configuration configuration, Path directory) {
-        configuration.setProperty(DIRECTORY, directory.toString());
-
-        if (!configuration.containsKey(FILE_TYPE)) {
-            configuration.setProperty(FILE_TYPE, "GRAPHML");
-        }
+        configuration.put(DIRECTORY, directory.toString());
+        configuration.putIfAbsent(FILE_TYPE, "GRAPHML");
     }
 
     /**

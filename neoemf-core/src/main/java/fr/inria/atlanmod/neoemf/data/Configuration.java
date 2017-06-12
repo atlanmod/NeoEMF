@@ -116,10 +116,10 @@ public final class Configuration {
      *
      * @return {@code true} if the configuration contains a value for this key, {@code false} otherwise
      */
-    public boolean containsKey(String key) {
+    public boolean contains(String key) {
         checkNotNull(key);
 
-        return properties.containsKey(key) && nonNull(getProperty(key));
+        return properties.containsKey(key) && nonNull(get(key));
     }
 
     /**
@@ -130,7 +130,7 @@ public final class Configuration {
      * @return the value to which this configuration maps the specified {@code key}, or {@code null} if the
      * configuration contains no mapping for this {@code key}
      */
-    public String getProperty(String key) {
+    public String get(String key) {
         checkNotNull(key);
 
         return properties.getProperty(key);
@@ -142,7 +142,7 @@ public final class Configuration {
      * @param key   the key of the property to change
      * @param value the value
      */
-    public void setProperty(String key, String value) {
+    public void put(String key, String value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -150,11 +150,26 @@ public final class Configuration {
     }
 
     /**
+     * Defines a property if the {@code key} is not already defined.
+     *
+     * @param key   the key of the property to change
+     * @param value the value
+     */
+    public void putIfAbsent(String key, String value) {
+        checkNotNull(key);
+        checkNotNull(value);
+
+        if (!contains(key)) {
+            put(key, value);
+        }
+    }
+
+    /**
      * Removes a property.
      *
      * @param key the key of the property to remove
      */
-    public void removeProperty(String key) {
+    public void remove(String key) {
         checkNotNull(key);
 
         properties.remove(key);
@@ -169,6 +184,6 @@ public final class Configuration {
     public Map<String, String> asMap() {
         return properties.keySet().stream()
                 .map(Object::toString)
-                .collect(Collectors.toMap(k -> k, this::getProperty));
+                .collect(Collectors.toMap(k -> k, this::get));
     }
 }

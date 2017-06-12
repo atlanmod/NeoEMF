@@ -67,7 +67,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
         resource.save(BlueprintsOptions.noOption());
 
         Configuration configuration = getConfiguration();
-        assertThat(configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        assertThat(configuration.get(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         assertConfigurationHasSize(configuration, 3);
     }
 
@@ -100,7 +100,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
      * @param value         the expected value
      */
     protected void assertConfigurationHasEntry(Configuration configuration, String key, String value) {
-        assertThat(configuration.containsKey(key)).isTrue();
-        assertThat(configuration.getProperty(key)).isEqualTo(value);
+        assertThat(configuration.contains(key)).isTrue();
+        assertThat(configuration.get(key)).isEqualTo(value);
     }
 }

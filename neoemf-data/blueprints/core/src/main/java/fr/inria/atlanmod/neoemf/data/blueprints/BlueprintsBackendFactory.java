@@ -161,12 +161,12 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         Configuration configuration = Configuration.load(path);
 
         // Initialize value if the configuration file has just been created
-        if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            configuration.setProperty(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        if (!configuration.contains(BlueprintsResourceOptions.GRAPH_TYPE)) {
+            configuration.putIfAbsent(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         }
         else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
             // The file already exists, verify that the problem options are not conflicting.
-            String savedGraphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE);
+            String savedGraphType = configuration.get(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
                 throw new InvalidDataStoreException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
@@ -176,14 +176,14 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         // Copy the Blueprints options to the configuration
         options.entrySet().stream()
                 .filter(e -> e.getKey().startsWith("blueprints."))
-                .forEach(e -> configuration.setProperty(e.getKey(), e.getValue().toString()));
+                .forEach(e -> configuration.put(e.getKey(), e.getValue().toString()));
 
         // Check we have a valid graph graphType, it is needed to get the graph name
-        if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
+        if (!configuration.contains(BlueprintsResourceOptions.GRAPH_TYPE)) {
             throw new InvalidDataStoreException(String.format("Graph is undefined for %s", directory));
         }
 
-        String graphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE);
+        String graphType = configuration.get(BlueprintsResourceOptions.GRAPH_TYPE);
 
         configurationFor(graphType).putDefaultConfiguration(configuration, directory);
 

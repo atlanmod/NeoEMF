@@ -56,7 +56,7 @@ public final class BlueprintsNeo4jConfiguration implements BlueprintsConfigurati
 
     @Override
     public void putDefaultConfiguration(Configuration configuration, Path directory) {
-        configuration.setProperty(DIRECTORY, directory.toString());
+        configuration.put(DIRECTORY, directory.toString());
     }
 
     /**

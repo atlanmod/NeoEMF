@@ -171,17 +171,16 @@ public abstract class AbstractBackendFactory implements BackendFactory {
         Path path = baseDirectory.resolve(CONFIG_FILE);
         Configuration configuration = Configuration.load(path);
 
-        if (!configuration.containsKey(BACKEND_PROPERTY)) {
-            configuration.setProperty(BACKEND_PROPERTY, name());
-        }
+        configuration.putIfAbsent(BACKEND_PROPERTY, name());
+        configuration.putIfAbsent(FACTORY_PROPERTY, getClass().getName());
 
-        if (configuration.containsKey(PersistentResourceOptions.MAPPING)) {
-            String savedMapping = configuration.getProperty(PersistentResourceOptions.MAPPING);
+        if (configuration.contains(PersistentResourceOptions.MAPPING)) {
+            String savedMapping = configuration.get(PersistentResourceOptions.MAPPING);
             checkState(Objects.equals(mapping, savedMapping),
                     "The back-end is mapped with %s (but actual is %s)", savedMapping, mapping);
         }
         else {
-            configuration.setProperty(PersistentResourceOptions.MAPPING, mapping);
+            configuration.put(PersistentResourceOptions.MAPPING, mapping);
         }
 
         configuration.save();

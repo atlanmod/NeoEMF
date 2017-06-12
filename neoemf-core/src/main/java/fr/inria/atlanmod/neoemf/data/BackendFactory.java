@@ -38,12 +38,18 @@ public interface BackendFactory {
     /**
      * The name of the configuration file of a back-end persistence.
      */
+    // TODO Replace the file name to something like "neoemf.properties"
     String CONFIG_FILE = "neoconfig.properties";
 
     /**
-     * The "back-end" property in the configuration file.
+     * The property to define the {@link Backend} in the configuration file.
      */
     String BACKEND_PROPERTY = "backend";
+
+    /**
+     * The property to define the {@link BackendFactory} in the configuration file.
+     */
+    String FACTORY_PROPERTY = "factory";
 
     /**
      * Returns the literal description of the created {@link Backend}.
