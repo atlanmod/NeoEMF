@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
@@ -22,6 +21,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -32,15 +32,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.ui.URIEditorInput;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -49,15 +51,21 @@ import java.util.Optional;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * A {@link org.eclipse.core.commands.IHandler} that opens an existing {@link fr.inria.atlanmod.neoemf.data.Backend}.
+ */
 public class OpenBackendCommand extends AbstractHandler {
 
-    private IFolder folder;
+    /**
+     * The current root directory.
+     */
+    private IFolder currentDirectory;
 
     @Override
     public Void execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 
-        folder = Optional.ofNullable(window.getSelectionService().getSelection())
+        currentDirectory = Optional.ofNullable(window.getSelectionService().getSelection())
                 .filter(IStructuredSelection.class::isInstance)
                 .map(IStructuredSelection.class::cast)
                 .map(IStructuredSelection::getFirstElement)
@@ -65,62 +73,81 @@ public class OpenBackendCommand extends AbstractHandler {
                 .map(IFolder.class::cast)
                 .orElse(null);
 
-        if (nonNull(folder)) {
-            new CreateDynamicInstanceJob(window).schedule();
+        if (nonNull(currentDirectory)) {
+            new OpenBackendJob(window.getShell().getDisplay()).schedule();
         }
 
         return null;
     }
 
-    private class CreateDynamicInstanceJob extends UIJob {
+    /**
+     * Retrieves the {@link UriBuilder} to use from the NeoEMF configuration in the given {@code directory}.
+     *
+     * @param directory the directory where to find the configuration
+     *
+     * @return the {@link UriBuilder}
+     *
+     * @throws IOException            if the {@code directory} does not have configuration file
+     * @throws InvalidOptionException if the information stored in the configuration does not permit to retrieve the
+     *                                {@link UriBuilder}
+     */
+    private UriBuilder getUriBuilder(Path directory) throws IOException {
+        Path configFile = directory.resolve(BackendFactory.CONFIG_FILE);
 
-        public CreateDynamicInstanceJob(IWorkbenchWindow window) {
-            super(window.getShell().getDisplay(), "Create Dynamic Instance");
+        if (Files.notExists(configFile)) {
+            throw new FileNotFoundException(
+                    String.format("Unable to find %s file", BackendFactory.CONFIG_FILE));
+        }
+
+        String backendType = Configuration.load(directory.resolve(BackendFactory.CONFIG_FILE).toFile().toPath())
+                .getProperty(BackendFactory.BACKEND_PROPERTY);
+
+        if (isNull(backendType)) {
+            throw new InvalidOptionException(
+                    String.format("%s does not contain %s property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY));
+        }
+
+        if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
+            return MapDbUri.builder();
+        }
+        else if (Objects.equals(backendType, BlueprintsBackendFactory.NAME)) {
+            return BlueprintsUri.builder();
+        }
+        else if (Objects.equals(backendType, BerkeleyDbBackendFactory.NAME)) {
+            return BerkeleyDbUri.builder();
+        }
+
+        throw new InvalidOptionException(String.format("Unknown backend: %s", backendType));
+    }
+
+    /**
+     * A {@link org.eclipse.core.runtime.jobs.Job} that opens the {@link NeoEditor} on an existing {@link
+     * fr.inria.atlanmod.neoemf.data.Backend}.
+     */
+    private class OpenBackendJob extends UIJob {
+
+        /**
+         * Constructs a new {@code OpenBackendJob} with the given {@code display}.
+         *
+         * @param display the display to execute the asyncExec in
+         */
+        public OpenBackendJob(Display display) {
+            super(display, "Create Dynamic Instance");
         }
 
         @Override
         public IStatus runInUIThread(IProgressMonitor monitor) {
-            Path root = Paths.get(folder.getRawLocation().toOSString());
-            File configurationFile = root.resolve(BackendFactory.CONFIG_FILE).toFile();
-
-            Log.info("Running at: {0}", configurationFile.toString());
-
-            if (!configurationFile.exists()) {
-                Log.error("Unable to find {0} file", BackendFactory.CONFIG_FILE);
-                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", null);
-            }
-
-            String backendType = Configuration.load(configurationFile.toPath())
-                    .getProperty(BackendFactory.BACKEND_PROPERTY);
-
-            if (isNull(backendType)) {
-                Log.error("{0} does not contain {1} property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY);
-                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
-            }
-
-            UriBuilder uriBuilder;
-            if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
-                uriBuilder = MapDbUri.builder();
-            }
-            else if (Objects.equals(backendType, BlueprintsBackendFactory.NAME)) {
-                uriBuilder = BlueprintsUri.builder();
-            }
-            else if (Objects.equals(backendType, BerkeleyDbBackendFactory.NAME)) {
-                uriBuilder = BerkeleyDbUri.builder();
-            }
-            else {
-                Log.error("Unknown backend: {0}", backendType);
-                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
-            }
-
-            IWorkbenchPage page = PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow()
-                    .getActivePage();
+            Path root = Paths.get(currentDirectory.getRawLocation().toOSString());
 
             try {
-                page.openEditor(new URIEditorInput(uriBuilder.fromFile(root.toFile())), NeoEditor.EDITOR_ID);
+                URI uri = getUriBuilder(root).fromFile(root.toFile());
+
+                PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow()
+                        .getActivePage()
+                        .openEditor(new URIEditorInput(uri), NeoEditor.EDITOR_ID);
             }
-            catch (PartInitException e) {
+            catch (Exception e) {
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor", e);
             }
 

@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporter;
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporterUtil;
+import fr.inria.atlanmod.neoemf.eclipse.ui.GenModels;
+import fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -36,18 +36,25 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
+/**
+ * A {@link org.eclipse.core.commands.IHandler} that migrates a model to another.
+ */
 public class MigrateCommand extends AbstractHandler {
 
-    private ISelection selection;
+    /**
+     * The current selection.
+     */
+    private ISelection currentFile;
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        selection = HandlerUtil.getActiveWorkbenchWindowChecked(event)
+        currentFile = HandlerUtil.getActiveWorkbenchWindowChecked(event)
                 .getSelectionService()
                 .getSelection();
 
@@ -56,18 +63,31 @@ public class MigrateCommand extends AbstractHandler {
         return null;
     }
 
-    private IFile getFile() {
-        return Optional.ofNullable(selection)
+    /**
+     * Retrieves the current {@link IFile} from the {@link #currentFile}.
+     *
+     * @return an {@link Optional} containing the file, or {@link Optional#empty()} if the selection does not
+     * represents a file
+     */
+    private Optional<IFile> currentFile() {
+        return Optional.ofNullable(currentFile)
                 .filter(IStructuredSelection.class::isInstance)
                 .map(IStructuredSelection.class::cast)
                 .map(IStructuredSelection::getFirstElement)
                 .filter(IFile.class::isInstance)
                 .map(IFile.class::cast)
-                .filter(selected -> Objects.equals("genmodel", selected.getFileExtension()))
-                .orElse(null);
+                .filter(selected -> Objects.equals("genmodel", selected.getFileExtension()));
     }
 
-    private GenModel getGenModel(IFile file) {
+    /**
+     * Retrieves the {@link GenModel} from the specified {@code file}.
+     *
+     * @param file the genmodel file
+     *
+     * @return an {@link Optional} containing the {@link GenModel}, or {@link Optional#empty()} if the {@code file}
+     * does not contains a generator model
+     */
+    private Optional<GenModel> genModelFrom(IFile file) {
         ResourceSet resourceSet = new ResourceSetImpl();
 
         resourceSet.getResourceFactoryRegistry()
@@ -81,12 +101,17 @@ public class MigrateCommand extends AbstractHandler {
                 .filter(c -> !c.isEmpty())
                 .map(c -> c.get(0))
                 .filter(GenModel.class::isInstance)
-                .map(GenModel.class::cast)
-                .orElse(null);
+                .map(GenModel.class::cast);
     }
 
+    /**
+     * A {@link Job} that migrates a model to another.
+     */
     private class MigrateJob extends Job {
 
+        /**
+         * Constructs a new {@code MigrateJob}.
+         */
         public MigrateJob() {
             super("Migrating EMF model");
         }
@@ -94,53 +119,52 @@ public class MigrateCommand extends AbstractHandler {
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             try {
-                IFile file = getFile();
-                if (isNull(file)) {
-                    showMessage("The selected element is not a *.genmodel file.", true);
-                }
-                else {
-                    GenModel genModel = getGenModel(file);
-                    if (isNull(genModel)) {
-                        showMessage("The selected file does not contain a generator model.", true);
-                    }
-                    else {
-                        String msg = NeoImporterUtil.adjustGenModel(genModel);
-                        if (isNull(msg)) {
-                            showMessage("The selected generator model was already migrated.", false);
+                Optional<IFile> file = currentFile();
+                if (file.isPresent()) {
+                    Optional<GenModel> genModel = genModelFrom(file.get());
+                    if (genModel.isPresent()) {
+                        String msg = GenModels.adjust(genModel.get());
+                        if (nonNull(msg)) {
+                            genModel.get().eResource().save(Collections.emptyMap());
+                            showMessage("The selected generator model has been migrated:\n" + msg, false);
                         }
                         else {
-                            genModel.eResource().save(null);
-                            showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
+                            showMessage("The selected generator model was already migrated.", false);
                         }
                     }
+                    else {
+                        showMessage("The selected file does not contain a generator model.", true);
+                    }
+                }
+                else {
+                    showMessage("The selected element is not a *.genmodel file.", true);
                 }
             }
-            catch (Exception ex) {
-                return new Status(IStatus.ERROR, NeoImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
+            catch (Exception e) {
+                return new Status(IStatus.ERROR, NeoModelImporter.IMPORTER_ID, "Problem while migrating EMF model", e);
             }
 
             return Status.OK_STATUS;
         }
 
-        private void showMessage(final String msg, final boolean error) {
-            try {
-                final Display display = PlatformUI.getWorkbench().getDisplay();
-                display.syncExec(() -> {
-                    try {
-                        final Shell shell = new Shell(display);
-                        if (error) {
-                            MessageDialog.openError(shell, "NeoEMF Migrator", msg);
-                        }
-                        else {
-                            MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
-                        }
-                    }
-                    catch (RuntimeException ignore) {
-                    }
-                });
-            }
-            catch (RuntimeException ignore) {
-            }
+        /**
+         * Displays a {@code message}.
+         *
+         * @param msg   the message to display
+         * @param error {@code true} if the message is an error
+         */
+        private void showMessage(String msg, boolean error) {
+            Display display = PlatformUI.getWorkbench().getDisplay();
+
+            display.syncExec(() -> {
+                Shell shell = new Shell(display);
+                if (error) {
+                    MessageDialog.openError(shell, "NeoEMF Migrator", msg);
+                }
+                else {
+                    MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
+                }
+            });
         }
     }
 }

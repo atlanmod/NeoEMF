@@ -61,10 +61,11 @@ public class NeoUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Registers all instances of {@link fr.inria.atlanmod.neoemf.data.BackendFactory} in the
-     * {@link BackendFactoryRegistry}.
+     * Registers all instances of {@link fr.inria.atlanmod.neoemf.data.BackendFactory} in the {@link
+     * BackendFactoryRegistry}.
      * <p/>
-     * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource loading.
+     * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource
+     * loading.
      * This happens when an Eclipse instance is loaded with an opened NeoEMF editor (only {@link BlueprintsUri#SCHEME}
      * is accessed).
      */

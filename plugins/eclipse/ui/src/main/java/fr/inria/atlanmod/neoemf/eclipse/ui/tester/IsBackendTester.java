@@ -19,13 +19,14 @@ import org.eclipse.core.runtime.Path;
 
 import java.util.Objects;
 
-public class IsNeoBackendTester extends PropertyTester {
-
-    private static final String IS_NEOEMF_DB = "isNeoEMFDB";
+/**
+ * A {@link PropertyTester} that checks if a directory represents a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+ */
+public class IsBackendTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        return Objects.equals(IS_NEOEMF_DB, property)
+        return Objects.equals("isNeoEMFDB", property)
                 && IFolder.class.isInstance(receiver)
                 && IFolder.class.cast(receiver).exists(new Path(BackendFactory.CONFIG_FILE)) == Boolean.class.cast(expectedValue);
     }

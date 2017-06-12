@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporter;
+import fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter;
 
 import org.eclipse.emf.converter.ModelConverter;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterDetailPage;
@@ -22,7 +22,7 @@ public class NeoModelImporterWizard extends ModelImporterWizard {
 
     @Override
     protected ModelConverter createModelConverter() {
-        return new NeoImporter();
+        return new NeoModelImporter();
     }
 
     @Override

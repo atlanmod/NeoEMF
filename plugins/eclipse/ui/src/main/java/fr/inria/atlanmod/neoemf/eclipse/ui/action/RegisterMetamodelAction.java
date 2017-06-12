@@ -13,52 +13,48 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.action;
 
 import fr.inria.atlanmod.common.collect.MoreIterables;
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IActionDelegate;
+
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
-public class RegisterMetamodelAction implements IObjectActionDelegate {
+/**
+ * A {@link IActionDelegate} that registers metamodels.
+ */
+public class RegisterMetamodelAction implements IActionDelegate {
 
-    private IStructuredSelection selection;
-
-    @Override
-    public void setActivePart(IAction action, IWorkbenchPart workbenchPart) {
-        // Do nothing
-    }
+    /**
+     * The current selection.
+     */
+    private IStructuredSelection currentSelection;
 
     @Override
     public void run(IAction action) {
-        if (isNull(selection)) {
+        if (isNull(currentSelection)) {
             return;
         }
 
-        MoreIterables.<Object>stream(selection::iterator)
+        // Register all
+        MoreIterables.<Object>stream(currentSelection::iterator)
                 .filter(IFile.class::isInstance)
                 .map(IFile.class::cast)
                 .map(file -> file.getFullPath().toOSString())
-                .forEach(fileName -> {
-                    try {
-                        MetamodelRegistry.getInstance().addMetamodel(fileName);
-                        Log.info("Metamodel {0} successfully registered", fileName);
-                    }
-                    catch (Exception e) {
-                        Log.error(e, "Metamodel {0} could not be registered", fileName);
-                    }
-                });
+                .forEach(fileName -> MetamodelRegistry.getInstance().addMetamodel(fileName));
     }
 
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
-        if (!selection.isEmpty() && IStructuredSelection.class.isInstance(selection)) {
-            this.selection = IStructuredSelection.class.cast(selection);
-        }
+        this.currentSelection = Optional.ofNullable(selection)
+                .filter(s -> !s.isEmpty())
+                .filter(IStructuredSelection.class::isInstance)
+                .map(IStructuredSelection.class::cast)
+                .orElse(null);
     }
 }

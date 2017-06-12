@@ -23,12 +23,17 @@ import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
 import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
+import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -41,15 +46,26 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 
+/**
+ * An {@link EcoreEditor} that allows modifications on a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+ */
 public class NeoEditor extends EcoreEditor {
 
+    /**
+     * The identifier of the {@code NeoEditor}.
+     */
     public static final String EDITOR_ID = NeoEditor.class.getName();
 
+    /**
+     * Constructs a new {@code NeoEditor}.
+     */
     public NeoEditor() {
         super();
 
-        Map<String, Object> protocolToFactory = this.editingDomain.getResourceSet()
+        Map<String, Object> protocolToFactory = getEditingDomain().getResourceSet()
                 .getResourceFactoryRegistry()
                 .getProtocolToFactoryMap();
 
@@ -62,8 +78,8 @@ public class NeoEditor extends EcoreEditor {
     public void createModel() {
         URI resourceURI = EditUIUtil.getURI(getEditorInput());
 
-        Resource resource = editingDomain.getResourceSet().createResource(resourceURI);
-        editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
+        Resource resource = getEditingDomain().getResourceSet().createResource(resourceURI);
+        getEditingDomain().getResourceSet().eAdapters().add(problemIndicationAdapter);
 
         // Create the store options depending of the backend
         String scheme = resource.getURI().scheme();
@@ -140,7 +156,7 @@ public class NeoEditor extends EcoreEditor {
 
         Instant end = Instant.now();
 
-        Log.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
+        Log.info("NeoEMF editor opened in {0}", Duration.between(begin, end));
     }
 
     @Override
@@ -148,6 +164,7 @@ public class NeoEditor extends EcoreEditor {
         try {
             super.setSelection(selection);
         }
+        // FIXME See issue #52
         catch (NoSuchMethodError e) {
             Log.warn("Captured a NoSuchMethod error when changing the selection." +
                     "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
@@ -156,7 +173,7 @@ public class NeoEditor extends EcoreEditor {
 
     @Override
     public void dispose() {
-        Log.info("Disposing NeoEditor");
+        Log.info("Disposing NeoEMF editor");
 
         closeAll();
         super.dispose();
@@ -173,6 +190,84 @@ public class NeoEditor extends EcoreEditor {
             else {
                 resource.unload();
             }
+        }
+    }
+
+    /**
+     *
+     */
+    private static class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider implements ILazyTreeContentProvider {
+
+        /**
+         * Constructs a new {@code LazyAdapterFactoryContentProvider} on the {@code factory}.
+         *
+         * @param factory the delegated factory
+         */
+        public LazyAdapterFactoryContentProvider(AdapterFactory factory) {
+            super(factory);
+        }
+
+        @Override
+        public void updateElement(Object parent, int index) {
+            childOf(parent, index).ifPresent(c -> {
+                TreeViewer treeViewer = TreeViewer.class.cast(viewer);
+                treeViewer.replace(parent, index, c);
+                sizeOf(c).ifPresent(s -> treeViewer.setChildCount(c, s));
+            });
+        }
+
+        @Override
+        public void updateChildCount(Object element, int currentChildCount) {
+            sizeOf(element).ifPresent(s -> TreeViewer.class.cast(viewer).setChildCount(element, s));
+        }
+
+        /**
+         * Returns the size of the given {@code element}.
+         *
+         * @param element the object to calculate the size
+         *
+         * @return an {@link OptionalInt} containing the size, of {@link OptionalInt#empty()} if the {@code element} is
+         * not supported
+         */
+        private OptionalInt sizeOf(Object element) {
+            if (ResourceSet.class.isInstance(element)) {
+                return OptionalInt.of(ResourceSet.class.cast(element).getResources().size());
+            }
+
+            if (Resource.class.isInstance(element)) {
+                return OptionalInt.of(Resource.class.cast(element).getContents().size());
+            }
+
+            if (EObject.class.isInstance(element)) {
+                return OptionalInt.of(EObject.class.cast(element).eContents().size());
+            }
+
+            return OptionalInt.empty();
+        }
+
+        /**
+         * Retrieves the child from the {@code parent} object at the given {@code index}.
+         *
+         * @param parent the parent of the child to look for
+         * @param index  the index of the child to look for in its {@code parent}
+         *
+         * @return an {@link Optional} containing the child, or {@link Optional#empty()} if the child cannot be
+         * retrieved
+         */
+        private Optional<Object> childOf(Object parent, int index) {
+            if (ResourceSet.class.isInstance(parent)) {
+                return Optional.of(ResourceSet.class.cast(parent).getResources().get(index));
+            }
+
+            if (Resource.class.isInstance(parent)) {
+                return Optional.of(Resource.class.cast(parent).getContents().get(index));
+            }
+
+            if (EObject.class.isInstance(parent)) {
+                return Optional.of(EObject.class.cast(parent).eContents().get(index));
+            }
+
+            return Optional.empty();
         }
     }
 }

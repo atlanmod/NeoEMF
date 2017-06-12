@@ -10,7 +10,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - Adapted to NeoEMF models
  */
 
-package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
+package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -27,23 +27,33 @@ import org.eclipse.emf.common.util.WrappedException;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class NeoImporterUtil {
+/**
+ * Static utility methods related to {@link GenModel}s.
+ */
+public final class GenModels {
 
     private static final String ROOT_EXTENDS_CLASS = DefaultPersistentEObject.class.getName();
+
     private static final String NEOEMF_MODEL_PLUGIN_NAME = "fr.inria.atlanmod.neoemf.core";
+
     private static final String ROOT_EXTENDS_INTERFACE = PersistentEObject.class.getName();
 
     private static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + NEOEMF_MODEL_PLUGIN_NAME;
 
-    private NeoImporterUtil() {
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException every time
+     */
+    private GenModels() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 
-    public static String adjustGenModel(GenModel genModel) {
-        return adjustGenModel(genModel, GenDelegationKind.REFLECTIVE_LITERAL);
+    public static String adjust(GenModel genModel) {
+        return adjust(genModel, GenDelegationKind.REFLECTIVE_LITERAL);
     }
 
-    private static String adjustGenModel(GenModel genModel, GenDelegationKind featureDelegation) {
+    private static String adjust(GenModel genModel, GenDelegationKind featureDelegation) {
         StringBuilder builder = new StringBuilder();
 
         if (genModel.getFeatureDelegation() != featureDelegation) {

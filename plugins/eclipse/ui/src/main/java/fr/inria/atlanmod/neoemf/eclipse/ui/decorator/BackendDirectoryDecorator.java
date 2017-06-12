@@ -22,8 +22,14 @@ import org.eclipse.swt.graphics.Image;
 
 import java.util.Optional;
 
-public class NeoDecorator extends LabelProvider implements ILabelDecorator {
+/**
+ * A {@link ILabelDecorator} that decorates {@link fr.inria.atlanmod.neoemf.data.Backend} directories with an icon.
+ */
+public class BackendDirectoryDecorator extends LabelProvider implements ILabelDecorator {
 
+    /**
+     * The NeoEMF icon path.
+     */
     private static final String ICON_PATH = "icons/full/obj16/neoemf.png";
 
     @Override

@@ -112,7 +112,7 @@
     <extension
             point="org.eclipse.core.expressions.propertyTesters">
         <propertyTester
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsNeoBackendTester"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsBackendTester"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
                 namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
                 properties="isNeoEMFDB"
@@ -123,7 +123,7 @@
             point="org.eclipse.ui.decorators">
         <decorator
                 adaptable="true"
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.NeoDecorator"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.BackendDirectoryDecorator"
                 id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
                 label="NeoEMF Database Folder Decorator"
                 objectClass="org.eclipse.core.resources.IFolder"

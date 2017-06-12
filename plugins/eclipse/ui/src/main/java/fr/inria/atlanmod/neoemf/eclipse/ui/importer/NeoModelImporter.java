@@ -10,7 +10,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - Adapted to NeoEMF models
  */
 
-package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
+package fr.inria.atlanmod.neoemf.eclipse.ui.importer;
+
+import fr.inria.atlanmod.neoemf.eclipse.ui.GenModels;
 
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.common.util.BasicDiagnostic;
@@ -34,9 +36,15 @@ import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 
-public class NeoImporter extends ModelImporter {
+/**
+ *
+ */
+public class NeoModelImporter extends ModelImporter {
 
-    public static final String IMPORTER_ID = NeoImporter.class.getName();
+    /**
+     *
+     */
+    public static final String IMPORTER_ID = NeoModelImporter.class.getName();
 
     @Override
     public String getID() {
@@ -119,6 +127,6 @@ public class NeoImporter extends ModelImporter {
                 .map(u -> makeRelative(u, genModelUri).toString())
                 .forEach(u -> genModel.getForeignModel().add(u));
 
-        NeoImporterUtil.adjustGenModel(genModel);
+        GenModels.adjust(genModel);
     }
 }
