@@ -62,5 +62,5 @@ RUN mv -f src/benchmarks/core/target/exec/* . \
 # Remove build files
  && rm -rf src .m2 /tmp/* /var/tmp/*
 
-CMD --help
+CMD -help
 ENTRYPOINT java -jar benchmarks.jar
