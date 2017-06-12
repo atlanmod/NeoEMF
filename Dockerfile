@@ -13,8 +13,7 @@
 # USAGE:
 #
 # docker build -t neoemf .
-# docker run -it neoemf /bin/bash
-# java -jar benchmarks.jar [options]
+# docker run neoemf [options]
 #
 
 FROM debian:latest
@@ -63,5 +62,5 @@ RUN mv -f src/benchmarks/core/target/exec/* . \
 # Remove build files
  && rm -rf src .m2 /tmp/* /var/tmp/*
 
-CMD -help
-ENTRYPOINT java -jar benchmarks.jar
+CMD ["-help"]
+ENTRYPOINT ["java", "-jar", "benchmarks.jar"]
