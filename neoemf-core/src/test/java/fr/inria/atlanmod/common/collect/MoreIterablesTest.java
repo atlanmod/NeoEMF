@@ -56,13 +56,13 @@ public class MoreIterablesTest extends AbstractTest {
     @Test
     public void testIsNotEmptyWithIterator() {
         Iterable<Integer> iterable0 = () -> Collections.<Integer>emptyList().iterator();
-        assertThat(MoreIterables.isNotEmpty(iterable0)).isFalse();
+        assertThat(MoreIterables.notEmpty(iterable0)).isFalse();
 
         Iterable<Integer> iterable1 = () -> Collections.singletonList(0).iterator();
-        assertThat(MoreIterables.isNotEmpty(iterable1)).isTrue();
+        assertThat(MoreIterables.notEmpty(iterable1)).isTrue();
 
         Iterable<Integer> iterable2 = () -> Arrays.asList(0, 1).iterator();
-        assertThat(MoreIterables.isNotEmpty(iterable2)).isTrue();
+        assertThat(MoreIterables.notEmpty(iterable2)).isTrue();
     }
 
     @Test
@@ -80,12 +80,12 @@ public class MoreIterablesTest extends AbstractTest {
     @Test
     public void testIsNotEmptyWithList() {
         Iterable<Integer> iterable0 = Collections.emptyList();
-        assertThat(MoreIterables.isNotEmpty(iterable0)).isFalse();
+        assertThat(MoreIterables.notEmpty(iterable0)).isFalse();
 
         Iterable<Integer> iterable1 = Collections.singletonList(0);
-        assertThat(MoreIterables.isNotEmpty(iterable1)).isTrue();
+        assertThat(MoreIterables.notEmpty(iterable1)).isTrue();
 
         Iterable<Integer> iterable2 = Arrays.asList(0, 1);
-        assertThat(MoreIterables.isNotEmpty(iterable2)).isTrue();
+        assertThat(MoreIterables.notEmpty(iterable2)).isTrue();
     }
 }

@@ -27,6 +27,8 @@ import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -84,18 +86,17 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
 
         try {
-            File file = new File(uri.toFileString());
+            Path baseDirectory = Paths.get(uri.toFileString());
 
-            File directory = new File(uri.toFileString());
-            if (!directory.exists()) {
-                Files.createDirectories(directory.toPath());
+            if (Files.notExists(baseDirectory)) {
+                Files.createDirectories(baseDirectory);
             }
 
             EnvironmentConfig environmentConfig = new EnvironmentConfig()
                     .setAllowCreate(!readOnly)
                     .setReadOnly(readOnly);
 
-            Environment environment = new Environment(directory, environmentConfig);
+            Environment environment = new Environment(baseDirectory.toFile(), environmentConfig);
 
             DatabaseConfig databaseConfig = new DatabaseConfig()
                     .setAllowCreate(!readOnly)
@@ -108,7 +109,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
                     new ConstructorParameter(environment, Environment.class),
                     new ConstructorParameter(databaseConfig, DatabaseConfig.class));
 
-            processGlobalConfiguration(file, mapping);
+            processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
             throw new InvalidDataStoreException(e);

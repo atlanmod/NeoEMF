@@ -166,7 +166,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> MoreIterables.isNotEmpty(v.getVertices(Direction.OUT, key.name())))
+                .map(v -> MoreIterables.notEmpty(v.getVertices(Direction.OUT, key.name())))
                 .orElse(false);
     }
 
@@ -482,7 +482,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
         Vertex vertex = getOrCreate(key.id());
 
-        boolean alreadyExists = MoreIterables.isNotEmpty(vertex.query()
+        boolean alreadyExists = MoreIterables.notEmpty(vertex.query()
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .has(KEY_POSITION, key.position())

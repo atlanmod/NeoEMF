@@ -19,11 +19,9 @@ import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -164,13 +162,13 @@ public abstract class AbstractBackendFactory implements BackendFactory {
      * The configuration is stored as a properties file beside a database in order to identify a {@link
      * PersistentBackend}.
      *
-     * @param directory the directory where the configuration must be stored
-     * @param mapping   the used mapping
+     * @param baseDirectory the directory where the configuration must be stored
+     * @param mapping       the used mapping
      *
-     * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}
+     * @throws InvalidDataStoreException if the configuration cannot be created in the {@code baseDirectory}
      */
-    protected final void processGlobalConfiguration(File directory, String mapping) {
-        Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
+    protected final void processGlobalConfiguration(Path baseDirectory, String mapping) {
+        Path path = baseDirectory.resolve(CONFIG_FILE);
         Configuration configuration = Configuration.load(path);
 
         if (!configuration.containsKey(BACKEND_PROPERTY)) {

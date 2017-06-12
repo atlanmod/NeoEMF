@@ -79,7 +79,7 @@ public final class MoreIterables {
      *
      * @return {@code true} if the iterable contains at least one element
      */
-    public static <E> boolean isNotEmpty(Iterable<E> iterable) {
+    public static <E> boolean notEmpty(Iterable<E> iterable) {
         return !isEmpty(iterable);
     }
 }

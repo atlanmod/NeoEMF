@@ -31,7 +31,6 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,9 +106,9 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
 
         try {
-            File file = new File(uri.toFileString());
+            Path baseDirectory = Paths.get(uri.toFileString());
 
-            Configuration configuration = getOrCreateBlueprintsConfiguration(file, options);
+            Configuration configuration = getOrCreateBlueprintsConfiguration(baseDirectory, options);
 
             Graph graph = GraphFactory.open(configuration.asMap());
             if (!graph.getFeatures().supportsKeyIndices) {
@@ -126,7 +125,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             backend = newInstanceOf(mapping,
                     new ConstructorParameter(graph, KeyIndexableGraph.class));
 
-            processGlobalConfiguration(file, mapping);
+            processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
             throw new InvalidDataStoreException(e);
@@ -157,8 +156,8 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
      *                                   {@code options} are missing or invalid.
      */
-    private Configuration getOrCreateBlueprintsConfiguration(File directory, Map<String, Object> options) {
-        Path path = Paths.get(directory.getAbsolutePath()).resolve(BLUEPRINTS_CONFIG_FILE);
+    private Configuration getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
+        Path path = directory.resolve(BLUEPRINTS_CONFIG_FILE);
         Configuration configuration = Configuration.load(path);
 
         // Initialize value if the configuration file has just been created
@@ -181,7 +180,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         // Check we have a valid graph graphType, it is needed to get the graph name
         if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            throw new InvalidDataStoreException(String.format("Graph is undefined for %s", directory.getAbsolutePath()));
+            throw new InvalidDataStoreException(String.format("Graph is undefined for %s", directory));
         }
 
         String graphType = configuration.getProperty(BlueprintsResourceOptions.GRAPH_TYPE);

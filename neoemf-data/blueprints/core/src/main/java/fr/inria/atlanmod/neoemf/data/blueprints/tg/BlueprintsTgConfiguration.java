@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -60,8 +60,8 @@ public final class BlueprintsTgConfiguration implements BlueprintsConfiguration 
     }
 
     @Override
-    public void putDefaultConfiguration(Configuration configuration, File directory) {
-        configuration.setProperty(DIRECTORY, directory.getAbsolutePath());
+    public void putDefaultConfiguration(Configuration configuration, Path directory) {
+        configuration.setProperty(DIRECTORY, directory.toString());
 
         if (!configuration.containsKey(FILE_TYPE)) {
             configuration.setProperty(FILE_TYPE, "GRAPHML");

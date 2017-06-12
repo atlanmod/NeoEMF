@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -24,9 +23,9 @@ import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -84,19 +83,13 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
         boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
 
         try {
-            File file = new File(uri.toFileString());
+            Path baseDirectory = Paths.get(uri.toFileString());
 
-            File dbFile = new File(uri.appendSegment("neoemf.mapdb").toFileString());
-            if (!dbFile.getParentFile().exists()) {
-                try {
-                    Files.createDirectories(dbFile.getParentFile().toPath());
-                }
-                catch (IOException e) {
-                    Log.error(e);
-                }
+            if (Files.notExists(baseDirectory)) {
+                Files.createDirectories(baseDirectory);
             }
 
-            DBMaker.Maker dbMaker = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported();
+            DBMaker.Maker dbMaker = DBMaker.fileDB(baseDirectory.resolve("data").toFile()).fileMmapEnableIfSupported();
 
             if (readOnly) {
                 dbMaker.readOnly();
@@ -108,7 +101,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
             backend = newInstanceOf(mapping,
                     new ConstructorParameter(db, DB.class));
 
-            processGlobalConfiguration(file, mapping);
+            processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
             throw new InvalidDataStoreException(e);

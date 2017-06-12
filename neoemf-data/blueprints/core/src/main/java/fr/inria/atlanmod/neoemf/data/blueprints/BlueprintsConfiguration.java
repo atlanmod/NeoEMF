@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -35,7 +35,7 @@ public interface BlueprintsConfiguration {
      * Adds specific properties about the Blueprints database in the given {@code configuration}.
      *
      * @param configuration the {@link Configuration} that holds the resource properties
-     * @param directory     the {@link File} that contains the Blueprints database
+     * @param directory     the path that contains the Blueprints database
      */
-    void putDefaultConfiguration(Configuration configuration, File directory);
+    void putDefaultConfiguration(Configuration configuration, Path directory);
 }
