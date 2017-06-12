@@ -119,7 +119,7 @@
 ### Others
 
 **/*.log
-**/java-gen
+**/java-gen/
 
 .gitignore
 CHANGELOG.md
@@ -132,3 +132,6 @@ LICENCE
 .util
 examples
 plugins
+
+### Docker
+!Dockerfile

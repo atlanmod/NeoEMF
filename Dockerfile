@@ -21,7 +21,8 @@ FROM debian:latest
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_TERSE true
-ENV WS src
+
+ENV NEOEMF_HOME ws
 
 WORKDIR /root
 
@@ -47,16 +48,19 @@ RUN apt-get update -qq \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy the project
-ADD . $WS
+ADD . src
 
 # Build the main project
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f $WS/pom.xml
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f src/pom.xml
 
 # Build benchmarks
-RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f $WS/benchmarks/pom.xml
+RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml
 
 # Move the resulting artifacts
-RUN mv -f $WS/benchmarks/core/target/exec/* . \
+RUN mv -f src/benchmarks/core/target/exec/* . \
 
 # Remove build files
- && rm -rf $WS .m2 /tmp/* /var/tmp/*
+ && rm -rf src .m2 /tmp/* /var/tmp/*
+
+CMD --help
+ENTRYPOINT java -jar benchmarks.jar

@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,9 +36,14 @@ import static java.util.Objects.nonNull;
 public class Workspace {
 
     /**
+     * The environment variable key of the NeoEMF home directory.
+     */
+    private static final String HOME_KEY = "NEOEMF_HOME";
+
+    /**
      * The base directory of benchmarks.
      */
-    private static final Path BASE_DIRECTORY = Paths.get(System.getProperty("user.home")).resolve(".neoemf").resolve("benchmarks");
+    private static final Path BASE_DIRECTORY = getHome();
 
     /**
      * The directory where to store the original {@link org.eclipse.emf.ecore.resource.Resource}s.
@@ -55,6 +61,25 @@ public class Workspace {
     private static Path TEMP_DIRECTORY;
 
     private Workspace() {
+    }
+
+    /**
+     * Retrieves the base directory benchmarks.
+     * <p>
+     * This path can be defined with the {@code NEOEMF_HOME} environment variable.
+     * If this environment variable is not defined, then {@code ${user.home}/.neoemf} is used.
+     *
+     * @return the directory
+     */
+    @Nonnull
+    private static Path getHome() {
+        return Optional.ofNullable(Paths.get(System.getenv(HOME_KEY)))
+                .orElseGet(() -> {
+                    Path h = Paths.get(System.getProperty("user.home")).resolve(".neoemf");
+                    Log.warn("NEOEMF_HOME is not defined. Using {0} instead", h);
+                    return h;
+                })
+                .resolve("benchmarks");
     }
 
     /**
