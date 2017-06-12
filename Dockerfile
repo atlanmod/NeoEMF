@@ -22,7 +22,8 @@ FROM debian:latest
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_TERSE true
 
-ENV NEOEMF_HOME ws
+# The default base directory for storing models
+ENV NEOEMF_HOME /root/ws
 
 WORKDIR /root
 

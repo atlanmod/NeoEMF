@@ -40,6 +40,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
@@ -69,7 +70,11 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
     private static final Set<AbstractStoreAdapter> ADAPTERS = new HashSet<>();
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        Runtime.getRuntime().addShutdownHook(((ThreadFactory) r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+        }).newThread(() -> {
             Iterator<AbstractStoreAdapter> allAdapters = ADAPTERS.iterator();
             while (allAdapters.hasNext()) {
                 allAdapters.next().safeClose();
