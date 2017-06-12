@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -86,6 +87,27 @@ public interface Adapter {
      */
     @ParametersAreNonnullByDefault
     interface Internal extends Adapter {
+
+        /**
+         * Checks that this {@code Adapter} supports the creation of {@link DataMapper}s.
+         *
+         * @return {@code true} if this {@code Adapter} supports the creation of {@link DataMapper}s
+         */
+        default boolean supportsMapper() {
+            return false;
+        }
+
+        /**
+         * Creates a new {@link DataMapper} in the given {@code file}.
+         *
+         * @return a new {@link DataMapper}
+         *
+         * @throws UnsupportedOperationException if this {@code Adapter} does not support {@link DataMapper} creation
+         * @see #supportsMapper()
+         */
+        default DataMapper createMapper(File file) {
+            throw new UnsupportedOperationException("This adapter does not support DataMapper creation");
+        }
 
         /**
          * Returns the name of this adapter.

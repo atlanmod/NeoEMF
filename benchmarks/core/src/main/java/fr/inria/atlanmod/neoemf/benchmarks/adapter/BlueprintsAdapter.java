@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
@@ -44,6 +45,12 @@ public class BlueprintsAdapter extends AbstractNeoAdapter {
 
     protected BlueprintsAdapter(String name, String storeExtension) {
         super(name, storeExtension);
+    }
+
+    @Nonnull
+    @Override
+    protected BackendFactory getFactory() {
+        return BlueprintsBackendFactory.getInstance();
     }
 
     @Nonnull

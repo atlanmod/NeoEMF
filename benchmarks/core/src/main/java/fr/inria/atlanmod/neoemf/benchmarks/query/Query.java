@@ -39,7 +39,7 @@ public interface Query<V> extends Callable<V> {
 
         Log.info("End query");
 
-        if (nonNull(result) && !Void.class.isInstance(result)) {
+        if (nonNull(result) && Number.class.isInstance(result)) {
             Log.info("Query returns: {0}", result);
         }
 

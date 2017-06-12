@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.ResourceHelper;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -88,9 +87,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
     @Override
     public final EPackage initAndGetEPackage() {
         try {
-            EPackage ePackage = (EPackage) packageClass.getMethod("init").invoke(null);
-            Log.info("Loading EPackage with URI: {0}", ePackage.getNsURI());
-            return ePackage;
+            return (EPackage) packageClass.getMethod("init").invoke(null);
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);

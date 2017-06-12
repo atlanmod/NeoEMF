@@ -11,13 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,6 +38,29 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     protected AbstractNeoAdapter(String name, String storeExtension) {
         super(name, RESOURCE_EXTENSION, storeExtension, EPACKAGE_CLASS);
+    }
+
+    /**
+     * Returns the {@link BackendFactory} associated to this {@code Adapter}.
+     *
+     * @return a factory
+     */
+    @Nonnull
+    protected abstract BackendFactory getFactory();
+
+    @Override
+    public boolean supportsMapper() {
+        return true;
+    }
+
+    @Override
+    public DataMapper createMapper(File file) {
+        Map<String, Object> options = CommonOptions.builder()
+                .withOptions(getOptions())
+                .autoSave()
+                .asMap();
+
+        return getFactory().createPersistentStore(URI.createFileURI(file.getAbsolutePath()), options);
     }
 
     @Nonnull

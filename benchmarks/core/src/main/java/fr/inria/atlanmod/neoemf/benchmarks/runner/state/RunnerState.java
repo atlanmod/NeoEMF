@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsNeo4jAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsNeo4jAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -187,7 +187,7 @@ public class RunnerState {
         }
 
         // Logging
-        Matcher levelMatcher = Pattern.compile("l\\{([a-zA-Z]+)\\}").matcher(lowerOptions);
+        Matcher levelMatcher = Pattern.compile("l\\{([a-zA-Z]+)\\}", Pattern.CASE_INSENSITIVE).matcher(lowerOptions);
         if (levelMatcher.find()) {
             fr.inria.atlanmod.common.log.Level level = fr.inria.atlanmod.common.log.Level.valueOf(levelMatcher.group(1).toUpperCase());
             Log.debug("Use logging with level = {0}", level.name());
@@ -199,7 +199,7 @@ public class RunnerState {
         }
 
         // Auto-saving
-        Matcher chuckMatcher = Pattern.compile("a\\{(-?[0-9]+)\\}").matcher(lowerOptions);
+        Matcher chuckMatcher = Pattern.compile("a\\{(-?[0-9]+)\\}", Pattern.CASE_INSENSITIVE).matcher(lowerOptions);
         if (chuckMatcher.find()) {
             long chunk = Long.parseLong(chuckMatcher.group(1));
             Log.debug("Use auto-saving with chunk = {0,number,#}", chunk);

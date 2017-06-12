@@ -61,6 +61,11 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-core</artifactId>
         </dependency>
 

@@ -77,7 +77,7 @@ public class Workspace {
                 .map(s -> Paths.get(s))
                 .orElseGet(() -> {
                     Path h = Paths.get(System.getProperty("user.home")).resolve(".neoemf");
-                    Log.warn("NEOEMF_HOME is not defined. Using {0} instead", h);
+                    Log.info("NEOEMF_HOME is not defined. Using {0} instead.", h);
                     return h;
                 })
                 .resolve("benchmarks");

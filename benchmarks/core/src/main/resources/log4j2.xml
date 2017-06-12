@@ -1,30 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
-
-        <!-- The default console appender -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
                     pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %d{ABSOLUTE} - %msg%n%ex{full}" />
         </Console>
-
-        <!-- The default file appender -->
-        <!--
-        <RollingFile name="RollingFile" fileName="logs/neoemf.log"
-                     filePattern="logs/neoemf-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout
-                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %d{ABSOLUTE} - %msg%n%ex{full}" />
-            <Policies>
-                <OnStartupTriggeringPolicy />
-                <TimeBasedTriggeringPolicy />
-            </Policies>
-        </RollingFile>
-        -->
     </Appenders>
     <Loggers>
         <Root level="DEBUG">
             <AppenderRef ref="Console" level="WARN" />
-            <!--<AppenderRef ref="RollingFile" />-->
         </Root>
     </Loggers>
 </Configuration>

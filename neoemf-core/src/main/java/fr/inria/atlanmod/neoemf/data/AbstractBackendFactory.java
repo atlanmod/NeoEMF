@@ -138,7 +138,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
 
     @Nonnull
     @Override
-    public final Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options) {
+    public final Store createStore(Backend backend, @Nullable PersistentResource resource, Map<String, Object> options) {
         checkNotNull(options);
 
         Store store = new DirectWriteStore(backend, resource);

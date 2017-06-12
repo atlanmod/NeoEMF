@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -131,6 +132,30 @@ public interface BackendFactory {
     }
 
     /**
+     * Creates a {@link Store} on a persistent backend, created with the {@link #createPersistentBackend(URI, Map)}
+     * method, according to the given {@code options}. The created store will be detached from any {@link
+     * PersistentResource}.
+     * <p>
+     * The returned {@link Store} may be a succession of several {@link Store}.
+     *
+     * @param uri     the URI of the resource to store and access
+     * @param options the options that defines the behaviour of the back-end and stores
+     *
+     * @return a new store
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
+     *                                   missing
+     * @throws IllegalArgumentException  if the given {@code backend} is not an instance of the targeted {@link
+     *                                   Backend} for this factory
+     * @see #createStore(Backend, PersistentResource, Map)
+     * @see #createPersistentBackend(URI, Map)
+     */
+    @Nonnull
+    default Store createPersistentStore(URI uri, Map<String, Object> options) {
+        return createStore(createPersistentBackend(uri, options), null, options);
+    }
+
+    /**
      * Creates a {@link Store} between the given {@code resource} and the given {@code backend} according to the given
      * {@code options}.
      * <p>
@@ -148,5 +173,5 @@ public interface BackendFactory {
      *                                   Backend} for this factory
      */
     @Nonnull
-    Store createStore(Backend backend, PersistentResource resource, Map<String, Object> options);
+    Store createStore(Backend backend, @Nullable PersistentResource resource, Map<String, Object> options);
 }

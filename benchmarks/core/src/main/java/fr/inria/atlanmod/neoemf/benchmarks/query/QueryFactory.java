@@ -76,7 +76,7 @@ public class QueryFactory {
         return () -> {
             HashMap<String, Iterable<NamedElement>> resultMap = new HashMap<>();
 
-            Iterable<ClassDeclaration> classDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
             for (ClassDeclaration cd : classDeclarations) {
                 Iterable<NamedElement> declarations = separateFields(cd.getBodyDeclarations());
                 resultMap.put(cd.getName(), declarations);
@@ -91,7 +91,7 @@ public class QueryFactory {
         return () -> {
             HashMap<String, Iterable<TypeAccess>> resultMap = new HashMap<>();
 
-            Iterable<Package> packages = getAllInstances(resource, JavaPackage.eINSTANCE.getPackage());
+            Iterable<Package> packages = allInstancesOf(resource, JavaPackage.eINSTANCE.getPackage());
             for (Package pack : packages) {
                 List<TypeAccess> thrownExceptions = new BasicEList<>();
 
@@ -114,7 +114,7 @@ public class QueryFactory {
     @Nonnull
     public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
         return () -> {
-            Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            Iterable<MethodDeclaration> methodDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (MethodDeclaration m : methodDeclarations) {
                 m.setName(name);
             }
@@ -128,7 +128,7 @@ public class QueryFactory {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
 
-            Iterable<TypeDeclaration> typeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
+            Iterable<TypeDeclaration> typeDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
             for (TypeDeclaration owner : typeDeclarations) {
                 for (BodyDeclaration method : owner.getBodyDeclarations()) {
                     if (method instanceof MethodDeclaration) {
@@ -149,7 +149,7 @@ public class QueryFactory {
         return () -> {
             List<MethodDeclaration> methodDeclarations = new BasicEList<>();
 
-            Iterable<ClassDeclaration> classDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
             for (ClassDeclaration clazz : classDeclarations) {
                 for (BodyDeclaration method : clazz.getBodyDeclarations()) {
                     if (method instanceof MethodDeclaration && nonNull(method.getModifier())) {
@@ -176,12 +176,12 @@ public class QueryFactory {
 
             Set<AbstractMethodDeclaration> hasBeenInvoked = new HashSet<>();
 
-            Iterable<MethodInvocation> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
+            Iterable<MethodInvocation> methodInvocations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodInvocation());
             for (MethodInvocation method : methodInvocations) {
                 hasBeenInvoked.add(method.getMethod());
             }
 
-            Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            Iterable<MethodDeclaration> methodDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (MethodDeclaration method : methodDeclarations) {
                 if (nonNull(method.getModifier())) {
                     if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
@@ -201,9 +201,9 @@ public class QueryFactory {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
 
-            Iterable<MethodInvocation> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
+            Iterable<MethodInvocation> methodInvocations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodInvocation());
 
-            Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            Iterable<MethodDeclaration> methodDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (MethodDeclaration method : methodDeclarations) {
                 if (nonNull(method.getModifier())) {
                     if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
@@ -220,7 +220,7 @@ public class QueryFactory {
 
     @Nonnull
     @SuppressWarnings("unchecked") // <Any>: Allows the use of generics without type check
-    protected static <Any> Iterable<Any> getAllInstances(Resource resource, EClass eClass) {
+    protected static <Any> Iterable<Any> allInstancesOf(Resource resource, EClass eClass) {
         List<Any> resultList = new BasicEList<>();
 
         Iterable<EObject> allContents = resource::getAllContents;

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
@@ -40,6 +41,12 @@ public class BerkeleyDbAdapter extends AbstractNeoAdapter {
     @SuppressWarnings("unused") // Called dynamically
     public BerkeleyDbAdapter() {
         super(NAME, STORE_EXTENSION);
+    }
+
+    @Nonnull
+    @Override
+    protected BackendFactory getFactory() {
+        return BerkeleyDbBackendFactory.getInstance();
     }
 
     @Nonnull

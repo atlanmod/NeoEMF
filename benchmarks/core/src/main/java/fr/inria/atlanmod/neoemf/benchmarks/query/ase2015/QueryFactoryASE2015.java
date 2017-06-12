@@ -52,7 +52,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
 
-            Iterable<TypeDeclaration> typeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
+            Iterable<TypeDeclaration> typeDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
             for (TypeDeclaration type : typeDeclarations) {
                 for (BodyDeclaration body : type.getBodyDeclarations()) {
                     if ((body instanceof MethodDeclaration)) {
@@ -73,7 +73,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         return () -> {
             List<TypeAccess> thrownExceptions = new BasicEList<>();
 
-            Iterable<ClassDeclaration> classDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
             for (ClassDeclaration cd : classDeclarations) {
                 appendThrownExceptions(cd, thrownExceptions);
             }

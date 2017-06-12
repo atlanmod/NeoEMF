@@ -13,6 +13,9 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter.helper;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
+import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
@@ -29,9 +32,12 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +52,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.Nonnull;
@@ -69,6 +76,11 @@ public final class ResourceHelper {
      * The name of the default ZIP file.
      */
     private static final String ZIP_FILENAME = "resources.zip";
+
+    /**
+     * Defines whether the store creation must use the NeoEMF importer if available.
+     */
+    public static boolean useImporter = true;
 
     /**
      * A {@link Map} that holds all available resources in {@link #ZIP_FILENAME}.
@@ -147,7 +159,14 @@ public final class ResourceHelper {
      */
     @Nonnull
     public static File createTempStore(File resourceFile, Adapter.Internal adapter) throws Exception {
-        return createStore(resourceFile, adapter, Workspace.newTempDirectory());
+        Path dir = Workspace.newTempDirectory();
+
+        if (useImporter && adapter.supportsMapper()) {
+            return createStoreDirect(resourceFile, adapter, dir);
+        }
+        else {
+            return createStore(resourceFile, adapter, dir);
+        }
     }
 
     /**
@@ -164,8 +183,87 @@ public final class ResourceHelper {
      */
     @Nonnull
     public static File createStore(File resourceFile, Adapter.Internal adapter) throws Exception {
-        return createStore(resourceFile, adapter, Workspace.getStoreDirectory());
+        Path dir = Workspace.getStoreDirectory();
+
+        if (useImporter && adapter.supportsMapper()) {
+            return createStoreDirect(resourceFile, adapter, dir);
+        }
+        else {
+            return createStore(resourceFile, adapter, dir);
+        }
     }
+
+    //region NeoEMF
+
+    /**
+     * Creates a new {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} from the given {@code resourceFile},
+     * and stores it to the given {@code targetAdapter}, located in {@code dir}.
+     * <p>
+     * This method uses the direct importer from the `neoemf-io` module.
+     *
+     * @param resourceFile the resource resourceFile
+     * @param adapter      the adapter where to store the resource
+     * @param dir          the location of the adapter
+     *
+     * @return the created resourceFile
+     *
+     * @throws Exception if a error occurs during the creation of the store
+     */
+    @Nonnull
+    private static File createStoreDirect(File resourceFile, Adapter.Internal adapter, Path dir) throws Exception {
+        Log.info("Creating store with NeoEMF importer");
+
+        checkValidResource(resourceFile.getName());
+        checkArgument(resourceFile.exists(), "Resource '%s' does not exist", resourceFile);
+
+        String targetFileName = getNameWithoutExtension(resourceFile.getAbsolutePath()) + "." + adapter.getStoreExtension();
+        File targetFile = dir.resolve(targetFileName).toFile();
+
+        if (targetFile.exists()) {
+            Log.info("Already existing resource: {0}", targetFile);
+            return targetFile;
+        }
+
+        adapter.initAndGetEPackage();
+
+        InputStream resourceStream;
+        if (!resourceFile.getName().endsWith(ZXMI)) {
+            resourceStream = new FileInputStream(resourceFile);
+        }
+        else {
+            ZipFile zipFile = new ZipFile(resourceFile);
+            resourceStream = zipFile.getInputStream(zipFile.getEntry("ResourceContents"));
+        }
+
+        Log.info("Importing resource content...");
+
+        try (DataMapper mapper = adapter.createMapper(targetFile)) {
+            ReaderFactory.fromXmi(resourceStream, WriterFactory.toMapper(mapper));
+        }
+
+        return targetFile;
+    }
+
+    //endregion
+
+    //region Standard EMF
+
+    /**
+     * Creates a new pre-configured {@link ResourceSet} able to handle registered extensions.
+     *
+     * @return a new {@link ResourceSet}
+     */
+    @Nonnull
+    private static ResourceSet loadResourceSet() {
+        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
+
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(XMI, new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(ZXMI, new XMIResourceFactoryImpl());
+
+        return resourceSet;
+    }
+
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
@@ -182,6 +280,8 @@ public final class ResourceHelper {
      */
     @Nonnull
     private static File createStore(File resourceFile, Adapter.Internal adapter, Path dir) throws Exception {
+        Log.info("Creating store with standard EMF");
+
         checkValidResource(resourceFile.getName());
         checkArgument(resourceFile.exists(), "Resource '%s' does not exist", resourceFile);
 
@@ -195,12 +295,12 @@ public final class ResourceHelper {
 
         ResourceSet resourceSet = loadResourceSet();
 
+        Log.info("Loading resource from: {0}", resourceFile);
+
         URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
         Resource sourceResource = resourceSet.createResource(sourceUri);
 
         adapter.initAndGetEPackage();
-
-        Log.info("Loading resource from: {0}", sourceUri);
 
         Map<String, Object> loadOpts = new HashMap<>();
         if (Objects.equals(ZXMI, sourceUri.fileExtension())) {
@@ -208,12 +308,12 @@ public final class ResourceHelper {
         }
         sourceResource.load(loadOpts);
 
-        Log.info("Copying resource content");
+        Log.info("Copying resource content...");
 
         EObject targetRoot = EcoreUtil.copy(sourceResource.getContents().get(0));
         sourceResource.unload();
 
-        Log.info("Migrating resource content");
+        Log.info("Migrating resource content...");
 
         Resource targetResource = adapter.createResource(targetFile, resourceSet);
         adapter.save(targetResource);
@@ -257,8 +357,13 @@ public final class ResourceHelper {
 
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
-        return createResource(sourceFile, adapter);
+
+        return adaptResource(sourceFile, adapter);
     }
+
+    //endregion
+
+    //region EMF migration
 
     /**
      * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code targetAdapter}.
@@ -271,7 +376,9 @@ public final class ResourceHelper {
      * @throws Exception if a error occurs during the creation of the resource
      */
     @Nonnull
-    private static File createResource(File resourceFile, Adapter.Internal adapter) throws Exception {
+    private static File adaptResource(File resourceFile, Adapter.Internal adapter) throws Exception {
+        Log.info("Adapting resource to URI {0}", adapter.initAndGetEPackage().getNsURI());
+
         String targetFileName = getNameWithoutExtension(resourceFile.getName()) + "." + adapter.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
@@ -282,18 +389,17 @@ public final class ResourceHelper {
 
         ResourceSet resourceSet = loadResourceSet();
 
+        Log.info("Loading resource from: {0}", resourceFile);
+
         URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
-
-        Log.info("Loading resource from: {0}", sourceUri);
-
         Resource sourceResource = resourceSet.getResource(sourceUri, true);
 
-        Log.info("Copying resource content");
+        Log.info("Copying resource content...");
 
-        EObject targetRoot = migrate(sourceResource.getContents().get(0), adapter.initAndGetEPackage());
+        EObject targetRoot = adaptObject(sourceResource.getContents().get(0), adapter.initAndGetEPackage());
         sourceResource.unload();
 
-        Log.info("Migrating resource content");
+        Log.info("Migrating resource content...");
 
         URI targetUri = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetUri);
@@ -304,29 +410,12 @@ public final class ResourceHelper {
 
         Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, true);
+        saveOpts.put(XMIResource.OPTION_ENCODING, StandardCharsets.UTF_8.name());
         targetResource.save(saveOpts);
 
         targetResource.unload();
 
         return targetFile;
-    }
-
-    //region EMF migration
-
-    /**
-     * Creates a new pre-configured {@link ResourceSet} able to handle registered extensions.
-     *
-     * @return a new {@link ResourceSet}
-     */
-    @Nonnull
-    private static ResourceSet loadResourceSet() {
-        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(XMI, new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(ZXMI, new XMIResourceFactoryImpl());
-
-        return resourceSet;
     }
 
     /**
@@ -338,16 +427,16 @@ public final class ResourceHelper {
      * @return the adapted {@code rootObject}
      */
     @Nonnull
-    private static EObject migrate(EObject rootObject, EPackage targetPackage) {
+    private static EObject adaptObject(EObject rootObject, EPackage targetPackage) {
         Map<EObject, EObject> correspondences = new HashMap<>();
-        EObject adaptedObject = getCorrespondingEObject(correspondences, rootObject, targetPackage);
-        copy(correspondences, rootObject, adaptedObject);
+        EObject adaptedObject = getCorrespondingObject(correspondences, rootObject, targetPackage);
+        copyObject(correspondences, rootObject, adaptedObject);
 
         Iterable<EObject> allContents = () -> EcoreUtil.getAllContents(rootObject, true);
 
         for (EObject sourceEObject : allContents) {
-            EObject targetEObject = getCorrespondingEObject(correspondences, sourceEObject, targetPackage);
-            copy(correspondences, sourceEObject, targetEObject);
+            EObject targetEObject = getCorrespondingObject(correspondences, sourceEObject, targetPackage);
+            copyObject(correspondences, sourceEObject, targetEObject);
         }
 
         return adaptedObject;
@@ -360,10 +449,9 @@ public final class ResourceHelper {
      * @param sourceObject    the source {@link EObject}
      * @param targetObject    the corresponding {@link EObject}
      *
-     * @see #getCorrespondingEObject(Map, EObject, EPackage)
+     * @see #getCorrespondingObject(Map, EObject, EPackage)
      */
-    @Nonnull
-    private static void copy(Map<EObject, EObject> correspondences, EObject sourceObject, EObject targetObject) {
+    private static void copyObject(Map<EObject, EObject> correspondences, EObject sourceObject, EObject targetObject) {
         for (EStructuralFeature sourceFeature : sourceObject.eClass().getEAllStructuralFeatures()) {
             if (sourceObject.eIsSet(sourceFeature)) {
                 EStructuralFeature targetFeature = targetObject.eClass().getEStructuralFeature(sourceFeature.getName());
@@ -372,7 +460,7 @@ public final class ResourceHelper {
                 }
                 else { // EReference
                     if (!sourceFeature.isMany()) {
-                        targetObject.eSet(targetFeature, getCorrespondingEObject(correspondences, (EObject) sourceObject.eGet(targetFeature), targetObject.eClass().getEPackage()));
+                        targetObject.eSet(targetFeature, getCorrespondingObject(correspondences, (EObject) sourceObject.eGet(targetFeature), targetObject.eClass().getEPackage()));
                     }
                     else {
                         List<EObject> targetList = new BasicEList<>();
@@ -380,7 +468,7 @@ public final class ResourceHelper {
                         @SuppressWarnings({"unchecked"})
                         Iterable<EObject> sourceList = (Iterable<EObject>) sourceObject.eGet(sourceFeature);
                         for (EObject aSourceList : sourceList) {
-                            targetList.add(getCorrespondingEObject(correspondences, aSourceList, targetObject.eClass().getEPackage()));
+                            targetList.add(getCorrespondingObject(correspondences, aSourceList, targetObject.eClass().getEPackage()));
                         }
                         targetObject.eSet(targetFeature, targetList);
                     }
@@ -401,7 +489,7 @@ public final class ResourceHelper {
      * @return the corresponding {@link EObject}
      */
     @Nonnull
-    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondences, EObject sourceObject, EPackage targetPackage) {
+    private static EObject getCorrespondingObject(Map<EObject, EObject> correspondences, EObject sourceObject, EPackage targetPackage) {
         return correspondences.computeIfAbsent(sourceObject, o -> {
             EClass eClass = sourceObject.eClass();
             EClass targetClass = (EClass) targetPackage.getEClassifier(eClass.getName());

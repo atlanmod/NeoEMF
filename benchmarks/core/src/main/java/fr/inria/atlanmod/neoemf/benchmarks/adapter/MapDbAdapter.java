@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
@@ -40,6 +41,12 @@ public class MapDbAdapter extends AbstractNeoAdapter {
     @SuppressWarnings("unused") // Called dynamically
     public MapDbAdapter() {
         super(NAME, STORE_EXTENSION);
+    }
+
+    @Nonnull
+    @Override
+    protected BackendFactory getFactory() {
+        return MapDbBackendFactory.getInstance();
     }
 
     @Nonnull
