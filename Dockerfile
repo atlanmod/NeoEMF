@@ -13,7 +13,8 @@
 # USAGE:
 #
 # docker build -t neoemf .
-# docker run neoemf [options]
+# docker run -v {LOCAL_DIR}:/root/ws neoemf [parameters] init
+# docker run -v {LOCAL_DIR}:/root/ws neoemf [parameters] [options]
 #
 
 FROM debian:latest
