@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -86,17 +87,6 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         super(store);
 
         ADAPTERS.add(this);
-    }
-
-    /**
-     * Checks whether the {@code feature} is an {@link EAttribute}.
-     *
-     * @param feature the feature for which to check the type
-     *
-     * @return {@code true} if the {@code feature} is an {@link EAttribute}, {@code false} is it is a {@link EReference}
-     */
-    private static boolean isAttribute(EStructuralFeature feature) {
-        return EAttribute.class.isInstance(feature);
     }
 
     /**
@@ -180,7 +170,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             Optional<String> value;
             if (!feature.isMany()) {
                 value = valueOf(key);
@@ -190,7 +180,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
             }
 
             return value
-                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
+                    .map(v -> deserialize(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -229,17 +219,17 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             Optional<String> previousValue;
             if (!feature.isMany()) {
-                previousValue = valueFor(key, serialize(EAttribute.class.cast(feature), value));
+                previousValue = valueFor(key, serialize(EObjects.asAttribute(feature), value));
             }
             else {
-                previousValue = valueFor(key.withPosition(index), serialize(EAttribute.class.cast(feature), value));
+                previousValue = valueFor(key.withPosition(index), serialize(EObjects.asAttribute(feature), value));
             }
 
             return previousValue
-                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
+                    .map(v -> deserialize(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -275,7 +265,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
                 return hasValue(key);
             }
@@ -308,7 +298,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
                 unsetValue(key);
             }
@@ -355,7 +345,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         FeatureKey key = FeatureKey.from(object, feature);
 
         Optional<Integer> size;
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             size = sizeOfValue(key);
         }
         else {
@@ -385,8 +375,8 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
-            return containsValue(key, serialize(EAttribute.class.cast(feature), value));
+        if (EObjects.isAttribute(feature)) {
+            return containsValue(key, serialize(EObjects.asAttribute(feature), value));
         }
         else {
             return containsReference(key, PersistentEObject.from(value).id());
@@ -415,8 +405,8 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         FeatureKey key = FeatureKey.from(object, feature);
 
         Optional<Integer> index;
-        if (isAttribute(feature)) {
-            index = indexOfValue(key, serialize(EAttribute.class.cast(feature), value));
+        if (EObjects.isAttribute(feature)) {
+            index = indexOfValue(key, serialize(EObjects.asAttribute(feature), value));
         }
         else {
             index = indexOfReference(key, PersistentEObject.from(value).id());
@@ -446,8 +436,8 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         FeatureKey key = FeatureKey.from(object, feature);
 
         Optional<Integer> index;
-        if (isAttribute(feature)) {
-            index = lastIndexOfValue(key, serialize(EAttribute.class.cast(feature), value));
+        if (EObjects.isAttribute(feature)) {
+            index = lastIndexOfValue(key, serialize(EObjects.asAttribute(feature), value));
         }
         else {
             index = lastIndexOfReference(key, PersistentEObject.from(value).id());
@@ -472,12 +462,12 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
-                appendValue(key, serialize(EAttribute.class.cast(feature), value));
+                appendValue(key, serialize(EObjects.asAttribute(feature), value));
             }
             else {
-                addValue(key.withPosition(index), serialize(EAttribute.class.cast(feature), value));
+                addValue(key.withPosition(index), serialize(EObjects.asAttribute(feature), value));
             }
         }
         else {
@@ -513,9 +503,9 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         ManyFeatureKey key = ManyFeatureKey.from(object, feature, index);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             return this.<String>removeValue(key)
-                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
+                    .map(v -> deserialize(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -548,9 +538,9 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         ManyFeatureKey sourceKey = ManyFeatureKey.from(object, feature, sourceIndex);
         ManyFeatureKey targetKey = sourceKey.withPosition(targetIndex);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             return this.<String>moveValue(sourceKey, targetKey)
-                    .map(v -> deserialize(EAttribute.class.cast(feature), v))
+                    .map(v -> deserialize(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -577,7 +567,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         FeatureKey key = FeatureKey.from(object, feature);
 
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             removeAllValues(key);
         }
         else {
@@ -612,7 +602,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         FeatureKey key = FeatureKey.from(internalObject, feature);
 
         Stream<Object> stream;
-        if (isAttribute(feature)) {
+        if (EObjects.isAttribute(feature)) {
             List<String> allValues;
 
             if (feature.isMany()) {
@@ -625,7 +615,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
             }
 
             stream = allValues.stream()
-                    .map(v -> deserialize(EAttribute.class.cast(feature), v));
+                    .map(v -> deserialize(EObjects.asAttribute(feature), v));
         }
         else {
             List<Id> allReferences;
@@ -682,7 +672,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         return containerOf(object.id())
                 .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
-                .map(EReference.class::cast)
+                .map(EObjects::asReference)
                 .orElse(null);
     }
 

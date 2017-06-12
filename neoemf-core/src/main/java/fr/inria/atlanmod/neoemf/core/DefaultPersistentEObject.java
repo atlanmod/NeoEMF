@@ -18,11 +18,11 @@ import fr.inria.atlanmod.neoemf.data.store.SharedStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EClassImpl;
@@ -192,7 +192,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Optional<Object> getValueFrom(StoreAdapter store, EStructuralFeature feature, int index) {
         Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
 
-        if (value.isPresent() && EReference.class.isInstance(feature) && EReference.class.cast(feature).isContainment()) {
+        if (value.isPresent() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
             PersistentEObject object = PersistentEObject.from(value.get());
             object.resource(resource);
             return Optional.of(object);

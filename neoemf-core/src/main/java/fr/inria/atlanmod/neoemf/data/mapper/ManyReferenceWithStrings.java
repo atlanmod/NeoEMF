@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -178,7 +177,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
      * @return the converted multi-valued reference
      */
     default String arrayToString(Id[] references) {
-        return Stream.of(checkNotNull(references))
+        return Arrays.stream(checkNotNull(references))
                 .map(id -> isNull(id) ? "" : id.toString())
                 .collect(Collectors.joining(","));
     }
@@ -191,7 +190,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
      * @return an array containing all references
      */
     default Id[] arrayFromString(String references) {
-        return Stream.of(checkNotNull(references).split(","))
+        return Arrays.stream(checkNotNull(references).split(","))
                 .map(r -> r.isEmpty() ? null : StringId.of(r))
                 .toArray(Id[]::new);
     }

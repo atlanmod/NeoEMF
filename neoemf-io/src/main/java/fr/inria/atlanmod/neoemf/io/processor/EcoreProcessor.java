@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicId;
 import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -93,15 +94,15 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EStructuralFeature feature = eClass.getEStructuralFeature(attribute.name());
 
         // Checks that the attribute is well a attribute
-        if (EAttribute.class.isInstance(feature)) {
-            EAttribute eAttribute = EAttribute.class.cast(feature);
+        if (EObjects.isAttribute(feature)) {
+            EAttribute eAttribute = EObjects.asAttribute(feature);
             attribute.isMany(eAttribute.isMany());
 
             notifyAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
-        else if (EReference.class.isInstance(feature)) {
+        else if (EObjects.isReference(feature)) {
             onReference(BasicReference.from(attribute));
         }
     }
@@ -112,8 +113,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EStructuralFeature feature = eClass.getEStructuralFeature(reference.name());
 
         // Checks that the reference is well a reference
-        if (EReference.class.isInstance(feature)) {
-            EReference eReference = EReference.class.cast(feature);
+        if (EObjects.isReference(feature)) {
+            EReference eReference = EObjects.asReference(feature);
 
             AtomicInteger index = new AtomicInteger();
 
@@ -142,7 +143,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
 
         // Otherwise redirect to the attribute handler
-        else if (EAttribute.class.isInstance(feature)) {
+        else if (EObjects.isAttribute(feature)) {
             onAttribute(BasicAttribute.from(reference));
         }
     }
@@ -238,11 +239,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Gets the structural feature from the parent, according the its local name (the attr/ref name)
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
 
-        if (EAttribute.class.isInstance(feature)) {
-            processElementAsAttribute(element, EAttribute.class.cast(feature));
+        if (EObjects.isAttribute(feature)) {
+            processElementAsAttribute(element, EObjects.asAttribute(feature));
         }
-        else if (EReference.class.isInstance(feature)) {
-            processElementAsReference(element, ns, EReference.class.cast(feature), ePackage);
+        else if (EObjects.isReference(feature)) {
+            processElementAsReference(element, ns, EObjects.asReference(feature), ePackage);
         }
     }
 

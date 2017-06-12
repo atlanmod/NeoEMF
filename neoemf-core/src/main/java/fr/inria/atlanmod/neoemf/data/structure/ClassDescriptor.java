@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
@@ -176,7 +177,7 @@ public final class ClassDescriptor implements Serializable {
     @Nonnull
     public Optional<ClassDescriptor> inheritFrom() {
         return get().getESuperTypes()
-                .stream()
+                .parallelStream()
                 .filter(c -> !c.isInterface())
                 .map(ClassDescriptor::from)
                 .findAny();
@@ -185,19 +186,45 @@ public final class ClassDescriptor implements Serializable {
     /**
      * Retrieves all subclasses of this {@code ClassDescriptor}.
      *
-     * @return a {@link Set} containing the representation of all non-abstract subclasses that inherit, directly and
-     * indirectly, from this {@code ClassDescriptor}
+     * @return a immutable {@link Set} containing the representation of all non-abstract subclasses that inherit,
+     * directly and indirectly, from this {@code ClassDescriptor}
      */
     @Nonnull
     public Set<ClassDescriptor> inheritedBy() {
         return get().getEPackage().getEClassifiers()
-                .stream()
+                .parallelStream()
                 .filter(EClass.class::isInstance)
                 .map(EClass.class::cast)
                 .filter(c -> get().isSuperTypeOf(c))
                 .filter(c -> !c.isAbstract())
                 .filter(c -> !c.isInterface())
                 .map(ClassDescriptor::from)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieves all attributes of this {@code ClassDescriptor}.
+     *
+     * @return an immutable {@link Set} containing the name of all attributes of this {@code ClassDescriptor}
+     */
+    @Nonnull
+    public Set<String> allAttributes() {
+        return get().getEAllAttributes()
+                .parallelStream()
+                .map(ENamedElement::getName)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieves all attributes of this {@code ClassDescriptor}.
+     *
+     * @return an immutable {@link Set} containing the name of all attributes of this {@code ClassDescriptor}
+     */
+    @Nonnull
+    public Set<String> allReferences() {
+        return get().getEAllReferences()
+                .parallelStream()
+                .map(ENamedElement::getName)
                 .collect(Collectors.toSet());
     }
 
