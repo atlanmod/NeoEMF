@@ -67,7 +67,7 @@ public class DefaultMapperWriter implements MapperWriter {
      *
      * @param mapper the mapper where to write data
      */
-    protected DefaultMapperWriter(DataMapper mapper) {
+    public DefaultMapperWriter(DataMapper mapper) {
         this.mapper = checkNotNull(mapper);
 
         Log.debug("{0} created", getClass().getSimpleName());

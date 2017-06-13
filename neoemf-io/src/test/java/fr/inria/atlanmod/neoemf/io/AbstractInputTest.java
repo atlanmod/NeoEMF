@@ -15,12 +15,6 @@ import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
-import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.TimerProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
@@ -35,6 +29,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -118,13 +113,13 @@ public abstract class AbstractInputTest extends AbstractTest {
     public void readResource() throws IOException {
         DummyWriter writer = new DummyWriter();
 
-        Processor processor = new DirectWriteProcessor(writer);
-        processor = new CounterProcessor(processor);
-        processor = new TimerProcessor(processor);
-        processor = new XPathProcessor(processor);
-        processor = new EcoreProcessor(processor);
-
-        new XmiStreamReader(processor).read(new URL(getSample().toString()).openStream());
+        try (InputStream in = new URL(getSample().toString()).openStream()) {
+            Migrator.fromXmi(in)
+                    .to(writer)
+                    .withCounter()
+                    .withTimer()
+                    .migrate();
+        }
 
         root = checkNotNull(writer.getRoot());
     }

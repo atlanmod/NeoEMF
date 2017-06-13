@@ -12,13 +12,12 @@
 package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
-import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.io.Migrator;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -39,17 +38,22 @@ public class EfficientBlueprintsImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        Map<String, Object> options = BlueprintsNeo4jOptions.builder().asMap();
+        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
+                .autoSave()
+                .noCache() // Can slow down the import that is write-only
+                .asMap();
 
         BackendFactory factory = BlueprintsBackendFactory.getInstance();
 
         File sourceFile = new File("models/sample.xmi");
         URI targetUri = BlueprintsUri.builder().fromFile("models/sample2.graphdb");
 
-        try (Backend backend = factory.createPersistentBackend(targetUri, options)) {
+        try (DataMapper mapper = factory.createPersistentStore(targetUri, options)) {
             Instant start = Instant.now();
 
-            ReaderFactory.fromXmi(sourceFile, WriterFactory.toMapper(backend));
+            Migrator.fromXmi(sourceFile)
+                    .toMapper(mapper)
+                    .migrate();
 
             Instant end = Instant.now();
             Log.info("Import done in {0} seconds", Duration.between(start, end).getSeconds());

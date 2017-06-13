@@ -25,11 +25,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class AbstractReader<T> extends AbstractNotifier<Handler> implements Reader<T> {
 
     /**
-     * Constructs a new {@code AbstractReader} with the given {@code handlers}.
+     * Constructs a new {@code AbstractReader} with the given {@code handler}.
      *
-     * @param handlers the handlers to notify
+     * @param handler the handler to notify
      */
-    public AbstractReader(Handler... handlers) {
-        super(handlers);
+    public AbstractReader(Handler handler) {
+        super(handler);
     }
 }

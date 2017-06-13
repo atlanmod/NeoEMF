@@ -14,8 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter.helper;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
-import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
+import fr.inria.atlanmod.neoemf.io.Migrator;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
@@ -32,10 +31,8 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
@@ -45,6 +42,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +50,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.Nonnull;
@@ -226,19 +223,12 @@ public final class ResourceHelper {
 
         adapter.initAndGetEPackage();
 
-        InputStream resourceStream;
-        if (!resourceFile.getName().endsWith(ZXMI)) {
-            resourceStream = new FileInputStream(resourceFile);
-        }
-        else {
-            ZipFile zipFile = new ZipFile(resourceFile);
-            resourceStream = zipFile.getInputStream(zipFile.getEntry("ResourceContents"));
-        }
-
         Log.info("Importing resource content...");
 
         try (DataMapper mapper = adapter.createMapper(targetFile)) {
-            ReaderFactory.fromXmi(resourceStream, WriterFactory.toMapper(mapper));
+            Migrator.fromXmi(resourceFile)
+                    .toMapper(mapper)
+                    .migrate();
         }
 
         return targetFile;
@@ -310,7 +300,7 @@ public final class ResourceHelper {
 
         Log.info("Copying resource content...");
 
-        EObject targetRoot = EcoreUtil.copy(sourceResource.getContents().get(0));
+        Collection<EObject> targetRoot = EcoreUtil.copyAll(sourceResource.getContents());
         sourceResource.unload();
 
         Log.info("Migrating resource content...");
@@ -318,7 +308,7 @@ public final class ResourceHelper {
         Resource targetResource = adapter.createResource(targetFile, resourceSet);
         adapter.save(targetResource);
 
-        targetResource.getContents().add(targetRoot);
+        targetResource.getContents().addAll(targetRoot);
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
         adapter.save(targetResource);

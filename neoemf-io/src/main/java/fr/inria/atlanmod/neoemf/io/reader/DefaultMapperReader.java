@@ -44,12 +44,12 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
     private DataMapper mapper;
 
     /**
-     * Constructs a new {@code DefaultMapperReader} with the given {@code handlers}.
+     * Constructs a new {@code DefaultMapperReader} with the given {@code handler}.
      *
-     * @param handlers the handlers to notify
+     * @param handler the handler to notify
      */
-    public DefaultMapperReader(Handler... handlers) {
-        super(handlers);
+    public DefaultMapperReader(Handler handler) {
+        super(handler);
     }
 
     @Override

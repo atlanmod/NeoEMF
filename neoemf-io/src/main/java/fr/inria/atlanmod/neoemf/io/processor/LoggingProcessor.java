@@ -39,12 +39,12 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     private BasicId currentId;
 
     /**
-     * Constructs a new {@code LoggingProcessor} with the given {@code processors}.
+     * Constructs a new {@code LoggingProcessor} with the given {@code processor}.
      *
-     * @param processors the processors to notify
+     * @param processor the processor to notify
      */
-    public LoggingProcessor(Processor... processors) {
-        super(processors);
+    public LoggingProcessor(Processor processor) {
+        super(processor);
     }
 
     @Override

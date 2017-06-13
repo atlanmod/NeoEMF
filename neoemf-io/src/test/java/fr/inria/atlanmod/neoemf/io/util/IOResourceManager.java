@@ -50,6 +50,26 @@ public final class IOResourceManager {
     }
 
     /**
+     * Returns the compressed XMI file that uses XPath references.
+     *
+     * @return the XMI file
+     */
+    @Nonnull
+    public static URI zxmiStandard() {
+        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleStandard.zxmi");
+    }
+
+    /**
+     * Returns the compressed XMI file that uses {@code xmi:id} references.
+     *
+     * @return the XMI file
+     */
+    @Nonnull
+    public static URI zxmiWithId() {
+        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleWithId.zxmi");
+    }
+
+    /**
      * Registers a EPackage in {@link EPackage.Registry} according to its {@code prefix} and {@code uri}, from an
      * Ecore file.
      * <p>

@@ -13,9 +13,8 @@ package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.io.reader.ReaderFactory;
+import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
-import fr.inria.atlanmod.neoemf.io.writer.WriterFactory;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;
 import fr.inria.atlanmod.neoemf.util.compare.LazyMatchEngineFactory;
 
@@ -30,11 +29,15 @@ import org.eclipse.emf.compare.utils.UseIdentifiers;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.BeforeClass;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,6 +46,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     @BeforeClass
     public static void registerPackages() {
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
         IOResourceManager.registerPackage("java");
     }
@@ -79,7 +83,15 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     protected EObject loadWithEMF(URI uri) throws IOException {
-        return new ResourceSetImpl().getResource(uri, true).getContents().get(0);
+        Map<String, Object> options = new HashMap<>();
+        if (uri.fileExtension().endsWith("zxmi")) {
+            options.put(XMIResource.OPTION_ZIP, true);
+        }
+
+        Resource resource = new ResourceSetImpl().createResource(uri);
+        resource.load(options);
+
+        return resource.getContents().get(0);
     }
 
     /**
@@ -94,8 +106,10 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
     protected EObject loadWithNeoEMF(URI uri) throws IOException {
         BackendFactoryRegistry.register(context().uriScheme(), context().factory());
 
-        try (DataMapper mapper = context().createMapper(file())) {
-            ReaderFactory.fromXmi(new URL(uri.toString()).openStream(), WriterFactory.toMapper(mapper));
+        try (DataMapper mapper = context().createMapper(file()); InputStream in = new URL(uri.toString()).openStream()) {
+            Migrator.fromXmi(in)
+                    .toMapper(mapper)
+                    .migrate();
         }
 
         return closeAtExit(context().loadResource(file())).getContents().get(0);

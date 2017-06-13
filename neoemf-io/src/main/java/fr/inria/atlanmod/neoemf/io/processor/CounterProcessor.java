@@ -44,12 +44,12 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
     private long referenceCount;
 
     /**
-     * Constructs a new {@code CounterProcessor} with the given {@code processors}.
+     * Constructs a new {@code CounterProcessor} with the given {@code processor}.
      *
-     * @param processors the processors to notify
+     * @param processor the processor to notify
      */
-    public CounterProcessor(Processor... processors) {
-        super(processors);
+    public CounterProcessor(Processor processor) {
+        super(processor);
         this.elementCount = 0;
         this.attributeCount = 0;
         this.referenceCount = 0;

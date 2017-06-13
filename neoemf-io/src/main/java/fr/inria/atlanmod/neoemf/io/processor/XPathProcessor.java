@@ -72,12 +72,12 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
     private boolean hasIds;
 
     /**
-     * Constructs a new {@code XPathProcessor} with the given {@code processors}.
+     * Constructs a new {@code XPathProcessor} with the given {@code processor}.
      *
-     * @param processors the processors to notify
+     * @param processor the processor to notify
      */
-    public XPathProcessor(Processor... processors) {
-        super(processors);
+    public XPathProcessor(Processor processor) {
+        super(processor);
         this.paths = new XPathTree();
         this.hasIds = false;
     }

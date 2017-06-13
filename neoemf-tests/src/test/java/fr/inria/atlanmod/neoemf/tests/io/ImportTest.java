@@ -45,6 +45,24 @@ public class ImportTest extends AbstractIOTest {
     }
 
     /**
+     * Compares a compressed model read with standard EMF and another read with NeoEMF.
+     * <p>
+     * The models use XPath as references.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
+     */
+    @Test
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
+    public void testCompareStandardCompressed() throws IOException {
+        URI uri = IOResourceManager.zxmiStandard();
+
+        EObject actual = loadWithNeoEMF(uri);
+        EObject expected = loadWithEMF(uri);
+
+        assertNotifierAreEqual(actual, expected);
+    }
+
+    /**
      * Compares a model read with standard EMF and another read with NeoEMF.
      * <p>
      * The models use {@code xmi:id} as references.
@@ -55,6 +73,24 @@ public class ImportTest extends AbstractIOTest {
     @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
         URI uri = IOResourceManager.xmiWithId();
+
+        EObject actual = loadWithNeoEMF(uri);
+        EObject expected = loadWithEMF(uri);
+
+        assertNotifierAreEqual(actual, expected);
+    }
+
+    /**
+     * Compares a model read with standard EMF and another read with NeoEMF.
+     * <p>
+     * The models use {@code xmi:id} as references.
+     *
+     * @throws IOException if an I/O error occur during the loading of models
+     */
+    @Test
+    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
+    public void testCompareWithIdCompressed() throws IOException {
+        URI uri = IOResourceManager.zxmiWithId();
 
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
