@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.Workspace;
+import fr.inria.atlanmod.neoemf.benchmarks.Workspace;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;

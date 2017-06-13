@@ -11,7 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.helper.ResourceHelper;
+import fr.inria.atlanmod.neoemf.benchmarks.resource.ResourceCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.resource.ResourceManager;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -97,7 +98,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
     @Nonnull
     @Override
     public File getOrCreateResource(String name) throws Exception {
-        return ResourceHelper.createResource(name, this);
+        return ResourceManager.createResource(name, this);
     }
 
     @Nonnull
@@ -120,7 +121,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
     @Nonnull
     @Override
     public File copy(File file) throws Exception {
-        return ResourceHelper.copyStore(file);
+        return ResourceCreator.copyStore(file);
     }
 
     /**
@@ -137,10 +138,10 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
         try {
             if (temporary) {
-                storeFile = ResourceHelper.createTempStore(file, this);
+                storeFile = ResourceCreator.createTempStore(file, this);
             }
             else {
-                storeFile = ResourceHelper.createStore(file, this);
+                storeFile = ResourceCreator.createStore(file, this);
             }
         }
         catch (Exception e) {
