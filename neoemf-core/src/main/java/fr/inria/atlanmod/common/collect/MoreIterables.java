@@ -38,8 +38,7 @@ public final class MoreIterables {
     }
 
     /**
-     * Returns a sequential {@link Stream} of the contents of {@code iterable}, delegating to {@link Collection#stream}
-     * if possible.
+     * Returns a sequential {@link Stream} of the contents of {@code iterable}.
      *
      * @param iterable the iterable
      *
@@ -52,9 +51,24 @@ public final class MoreIterables {
             return Stream.empty();
         }
 
-        return Collection.class.isInstance(iterable)
-                ? (Stream<E>) Collection.class.cast(iterable).stream()
-                : StreamSupport.stream(iterable.spliterator(), false);
+        return StreamSupport.stream(iterable.spliterator(), false);
+    }
+
+    /**
+     * Returns a parallel {@link Stream} of the contents of {@code iterable}.
+     *
+     * @param iterable the iterable
+     *
+     * @return a parallel {@link Stream} of the contents of {@code iterable}
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static <E> Stream<E> parallelStream(@Nullable Iterable<E> iterable) {
+        if (isNull(iterable)) {
+            return Stream.empty();
+        }
+
+        return StreamSupport.stream(iterable.spliterator(), true);
     }
 
     /**
