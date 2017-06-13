@@ -99,8 +99,7 @@ public class OpenBackendCommand extends AbstractHandler {
                     String.format("Unable to find %s file", BackendFactory.CONFIG_FILE));
         }
 
-        String backendType = Configuration.load(directory.resolve(BackendFactory.CONFIG_FILE).toFile().toPath())
-                .getProperty(BackendFactory.BACKEND_PROPERTY);
+        String backendType = Configuration.load(directory.resolve(BackendFactory.CONFIG_FILE)).get(BackendFactory.BACKEND_PROPERTY);
 
         if (isNull(backendType)) {
             throw new InvalidOptionException(
