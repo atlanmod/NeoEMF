@@ -63,10 +63,10 @@ public class RunnerState {
     @Param({
             XmiAdapter.NAME,
             CdoAdapter.NAME,
-            MapDbAdapter.NAME,
-            BerkeleyDbAdapter.NAME,
             BlueprintsAdapter.NAME,
             BlueprintsNeo4jAdapter.NAME,
+            BerkeleyDbAdapter.NAME,
+            MapDbAdapter.NAME,
     })
     protected String a;
 
