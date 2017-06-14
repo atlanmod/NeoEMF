@@ -96,4 +96,17 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
     public MapDbOptions withLists() {
         return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendLists");
     }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
+     * <p>
+     * This mapping corresponds to a {@link java.util.SortedMap} representation of multi-valued features.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithMaps
+     */
+    public MapDbOptions withMaps() {
+        return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendMaps");
+    }
 }

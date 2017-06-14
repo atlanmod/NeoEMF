@@ -163,8 +163,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
         checkNotNull(key);
 
-        return valueOf(key)
-                .map(v -> (int) v)
+        return this.<Integer>valueOf(key)
                 .filter(s -> s != 0);
     }
 

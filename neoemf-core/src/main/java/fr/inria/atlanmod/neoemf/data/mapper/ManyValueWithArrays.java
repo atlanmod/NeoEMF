@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
@@ -107,7 +105,8 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
         V[] values = optionalValues.get();
 
-        Optional<V> previousValue;
+        Optional<V> previousValue = Optional.empty();
+
         if (key.position() < values.length) {
             previousValue = Optional.of(values[key.position()]);
 
@@ -120,45 +119,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
                 valueFor(key.withoutPosition(), values);
             }
         }
-        else {
-            previousValue = Optional.empty();
-        }
 
         return previousValue;
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        return this.<V[]>valueOf(key)
-                .map(vs -> MoreArrays.indexOf(vs, value))
-                .filter(i -> i >= 0);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        return this.<V[]>valueOf(key)
-                .map(vs -> MoreArrays.lastIndexOf(vs, value))
-                .filter(i -> i >= 0);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
-        return this.<V[]>valueOf(key)
-                .map(vs -> vs.length)
-                .filter(s -> s != 0);
     }
 }

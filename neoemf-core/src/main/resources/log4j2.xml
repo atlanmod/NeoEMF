@@ -20,25 +20,14 @@
                     pattern="%msg%n" />
         </Console>
 
-        <!-- The default file appender -->
-        <!--
-        <RollingFile name="RollingFile" fileName="logs/neoemf.log"
-                     filePattern="logs/neoemf-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout
-                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %d{ABSOLUTE} - %msg%n%ex{full}" />
-            <Policies>
-                <OnStartupTriggeringPolicy />
-                <TimeBasedTriggeringPolicy />
-            </Policies>
-            <DefaultRolloverStrategy max="10"/>
-        </RollingFile>
-        -->
     </Appenders>
 
     <Loggers>
+
+        <!-- Global -->
+
         <Root level="DEBUG">
             <AppenderRef ref="Console" level="INFO" />
-            <!--<AppenderRef ref="RollingFile" />-->
         </Root>
 
         <!-- Logger for testing -->
@@ -51,19 +40,23 @@
             <AppenderRef ref="ConsoleVoid" />
         </Logger>
 
-        <!-- Apache & co -->
+        <!-- Apache & Hadoop/HBase -->
 
         <Logger name="org.apache" level="ERROR" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
+
         <Logger name="org.mortbay" level="ERROR" additivity="false">
-            <AppenderRef ref="ConsoleTest" />
+            <AppenderRef ref="Console" />
         </Logger>
+
         <Logger name="SecurityLogger" level="ERROR" additivity="false">
-            <AppenderRef ref="ConsoleTest" />
+            <AppenderRef ref="Console" />
         </Logger>
+
         <Logger name="BlockStateChange" level="ERROR" additivity="false">
-            <AppenderRef ref="ConsoleTest" />
+            <AppenderRef ref="Console" />
         </Logger>
+
     </Loggers>
 </Configuration>

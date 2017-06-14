@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
@@ -229,7 +230,14 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value);
+    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(allValuesOf(key).indexOf(value))
+                .filter(i -> i >= 0);
+    }
 
     /**
      * Retrieves the last position of the {@code value} of the specified {@code key}.
@@ -245,7 +253,14 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value);
+    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
+        if (isNull(value)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(allValuesOf(key).lastIndexOf(value))
+                .filter(i -> i >= 0);
+    }
 
     /**
      * Returns the number of value of the specified {@code key}.
@@ -260,5 +275,8 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    <V> Optional<Integer> sizeOfValue(FeatureKey key);
+    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+        return Optional.of(allValuesOf(key).size())
+                .filter(s -> s != 0);
+    }
 }

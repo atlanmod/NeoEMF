@@ -96,4 +96,17 @@ public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOpti
     public BerkeleyDbOptions withLists() {
         return withMapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendLists");
     }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
+     * <p>
+     * This mapping corresponds to a {@link java.util.SortedMap} representation of multi-valued features.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithMaps
+     */
+    public BerkeleyDbOptions withMaps() {
+        return withMapping("fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendMaps");
+    }
 }
