@@ -72,11 +72,6 @@
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jul</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-1.2-api</artifactId>
         </dependency>
 
@@ -173,13 +168,6 @@
             <dependency> <!-- Bridge for Apache Commons Logging -->
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-jcl</artifactId>
-                <version>${log4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency> <!-- Bridge for Java Logging -->
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-jul</artifactId>
                 <version>${log4j.version}</version>
                 <scope>runtime</scope>
             </dependency>
