@@ -94,9 +94,11 @@ class AsyncLogger implements Logger {
 
         execute(() -> {
             try {
+                // FIXME Parameters can change before logging them
                 logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse(NO_MESSAGE).toString(), params), e);
             }
-            catch (Exception ignored) {
+            catch (Exception fe) {
+                logger.error(fe); // Format exception
             }
         });
     }
