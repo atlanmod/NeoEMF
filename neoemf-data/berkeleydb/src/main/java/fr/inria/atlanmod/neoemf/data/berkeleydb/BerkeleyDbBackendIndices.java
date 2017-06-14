@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,7 +87,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(manyFeatures, key);
+        return get(manyFeatures, key, Serializers.forManyFeatureKeys(), Serializers.forObjects());
     }
 
     @Override
@@ -94,10 +95,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value);
+            put(manyFeatures, key, value, Serializers.forManyFeatureKeys(), Serializers.forObjects());
         }
         else {
-            delete(manyFeatures, key);
+            delete(manyFeatures, key, Serializers.forManyFeatureKeys());
         }
     }
 }

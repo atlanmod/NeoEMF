@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.common.io.serializer.Serializers;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
@@ -20,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -203,7 +203,14 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
         return resultFrom(key.id())
                 .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
-                        .map(value -> Optional.of(Serializers.<V>forGenerics().deserialize(value)))
+                        .map(value -> {
+                            try {
+                                return Optional.of(Serializers.<V>forObjects().deserialize(value));
+                            }
+                            catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
                         .orElseGet(Optional::empty))
                 .orElseGet(Optional::empty);
     }
@@ -218,7 +225,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
         try {
             Put put = new Put(Bytes.toBytes(key.id().toString()))
-                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forGenerics().serialize(value));
+                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forObjects().serialize(value));
 
             table.put(put);
         }

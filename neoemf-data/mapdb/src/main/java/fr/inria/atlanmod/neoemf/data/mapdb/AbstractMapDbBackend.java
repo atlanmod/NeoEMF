@@ -19,16 +19,20 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import org.mapdb.DB;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
@@ -43,20 +47,20 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final ConcurrentMap<Id, ContainerDescriptor> containers;
+    private final Map<Id, ContainerDescriptor> containers;
 
     /**
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final ConcurrentMap<Id, ClassDescriptor> instances;
+    private final Map<Id, ClassDescriptor> instances;
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
      * associated {@link FeatureKey}.
      */
     @Nonnull
-    private final ConcurrentMap<FeatureKey, Object> features;
+    private final Map<FeatureKey, Object> features;
 
     /**
      * The MapDB database.
@@ -67,13 +71,13 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     /**
      * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code db}.
      * <p>
-     * This constructor initialize the different {@link ConcurrentMap}s from the MapDB engine and set their respective
+     * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
      * {@link Serializer}s.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
      * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
-     * @param db the {@link DB} used to creates the used {@link ConcurrentMap}s and manage the database
+     * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
      * @see MapDbBackendFactory
      */
@@ -81,19 +85,19 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     protected AbstractMapDbBackend(DB db) {
         this.db = checkNotNull(db);
 
-        containers = db.hashMap("eContainer")
-                .keySerializer(Serializer.JAVA)
-                .valueSerializer(Serializer.JAVA)
+        this.containers = db.hashMap("containers")
+                .keySerializer(new SerializerDecorator<>(Serializers.forIds()))
+                .valueSerializer(new SerializerDecorator<>(Serializers.forContainers()))
                 .createOrOpen();
 
-        instances = db.hashMap("neoInstanceOf")
-                .keySerializer(Serializer.JAVA)
-                .valueSerializer(Serializer.JAVA)
+        this.instances = db.hashMap("instances")
+                .keySerializer(new SerializerDecorator<>(Serializers.forIds()))
+                .valueSerializer(new SerializerDecorator<>(Serializers.forMetaclasses()))
                 .createOrOpen();
 
-        features = db.hashMap("features")
-                .keySerializer(Serializer.JAVA)
-                .valueSerializer(Serializer.JAVA)
+        this.features = db.hashMap("features/single")
+                .keySerializer(new SerializerDecorator<>(Serializers.forFeatureKeys()))
+                .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
 
@@ -239,5 +243,39 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      */
     protected <K> void delete(Map<K, ?> database, K key) {
         database.remove(key);
+    }
+
+    /**
+     * A {@link Serializer} that delegates its processing to an internal {@link fr.inria.atlanmod.neoemf.io.serializer.Serializer}.
+     *
+     * @param <T> the type of the (de)serialized value
+     */
+    @Immutable
+    @ParametersAreNonnullByDefault
+    static final class SerializerDecorator<T> implements Serializer<T> {
+
+        @Nonnull
+        private final fr.inria.atlanmod.neoemf.io.serializer.Serializer<T> delegate;
+
+        /**
+         * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
+         *
+         * @param delegate the serializer where to delegate the serialization process
+         */
+        public SerializerDecorator(fr.inria.atlanmod.neoemf.io.serializer.Serializer<T> delegate) {
+            checkNotNull(delegate);
+
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void serialize(DataOutput2 out, T value) throws IOException {
+            delegate.serialize(value, out);
+        }
+
+        @Override
+        public T deserialize(DataInput2 in, int available) throws IOException {
+            return delegate.deserialize(in);
+        }
     }
 }

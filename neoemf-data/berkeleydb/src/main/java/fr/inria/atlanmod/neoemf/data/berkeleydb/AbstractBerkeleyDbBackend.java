@@ -19,7 +19,6 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
-import fr.inria.atlanmod.common.io.serializer.Serializers;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -27,7 +26,10 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -119,7 +121,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(containers, id);
+        return get(containers, id, Serializers.forIds(), Serializers.forContainers());
     }
 
     @Override
@@ -127,14 +129,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(id);
         checkNotNull(container);
 
-        put(containers, id, container);
+        put(containers, id, container, Serializers.forIds(), Serializers.forContainers());
     }
 
     @Override
     public void unsetContainer(Id id) {
         checkNotNull(id);
 
-        delete(containers, id);
+        delete(containers, id, Serializers.forIds());
     }
 
     @Nonnull
@@ -142,7 +144,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return get(instances, id);
+        return get(instances, id, Serializers.forIds(), Serializers.forMetaclasses());
     }
 
     @Override
@@ -150,7 +152,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(id);
         checkNotNull(metaclass);
 
-        put(instances, id, metaclass);
+        put(instances, id, metaclass, Serializers.forIds(), Serializers.forMetaclasses());
     }
 
     @Nonnull
@@ -158,7 +160,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public <V> Optional<V> valueOf(FeatureKey key) {
         checkNotNull(key);
 
-        return get(features, key);
+        return get(features, key, Serializers.forFeatureKeys(), Serializers.forObjects());
     }
 
     @Nonnull
@@ -168,7 +170,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
-        put(features, key, value);
+        put(features, key, value, Serializers.forFeatureKeys(), Serializers.forObjects());
         return previousValue;
     }
 
@@ -176,7 +178,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public void unsetValue(FeatureKey key) {
         checkNotNull(key);
 
-        delete(features, key);
+        delete(features, key, Serializers.forFeatureKeys());
     }
 
     /**
@@ -199,56 +201,76 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     /**
      * Retrieves a value from the {@code database} according to the given {@code key}.
      *
-     * @param database the database where to looking for
-     * @param key      the key of the element to retrieve
-     * @param <K>      the type of the key
-     * @param <V>      the type of the value
+     * @param database        the database where to looking for
+     * @param key             the key of the element to retrieve
+     * @param keySerializer   the serializer to serialize the {@code key}
+     * @param valueSerializer the serializer to deserialize the read value
+     * @param <K>             the type of the key
+     * @param <V>             the type of the value
      *
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
     @Nonnull
-    protected <K, V> Optional<V> get(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forGenerics().serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry();
+    protected <K, V> Optional<V> get(Database database, K key, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        try {
+            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
+            DatabaseEntry dbValue = new DatabaseEntry();
 
-        Optional<V> value;
-        if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            value = Optional.of(Serializers.<V>forGenerics().deserialize(dbValue.getData()));
+            Optional<V> value;
+            if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                value = Optional.of(valueSerializer.deserialize(dbValue.getData()));
+            }
+            else {
+                value = Optional.empty();
+            }
+            return value;
         }
-        else {
-            value = Optional.empty();
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return value;
     }
 
     /**
      * Saves a {@code value} identified by the {@code key} in the {@code database}.
      *
-     * @param database the database where to save the value
-     * @param key      the key of the element to save
-     * @param value    the value to save
-     * @param <K>      the type of the key
-     * @param <V>      the type of the value
+     * @param database        the database where to save the value
+     * @param key             the key of the element to save
+     * @param value           the value to save
+     * @param keySerializer   the serializer to serialize the {@code key}
+     * @param valueSerializer the serializer to serialize the {@code value}
+     * @param <K>             the type of the key
+     * @param <V>             the type of the value
      */
-    protected <K, V> void put(Database database, K key, V value) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forGenerics().serialize(key));
-        DatabaseEntry dbValue = new DatabaseEntry(Serializers.<V>forGenerics().serialize(value));
+    protected <K, V> void put(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        try {
+            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
+            DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
 
-        database.put(null, dbKey, dbValue);
+            database.put(null, dbKey, dbValue);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Removes a value from the {@code database} according to its {@code key}.
      *
-     * @param database the database where to remove the value
-     * @param key      the key of the element to remove
-     * @param <K>      the type of the key
+     * @param database      the database where to remove the value
+     * @param key           the key of the element to remove
+     * @param keySerializer the serializer to serialize the {@code key}
+     * @param <K>           the type of the key
      */
-    protected <K> void delete(Database database, K key) {
-        DatabaseEntry dbKey = new DatabaseEntry(Serializers.<K>forGenerics().serialize(key));
+    protected <K> void delete(Database database, K key, Serializer<K> keySerializer) {
+        try {
+            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
 
-        database.delete(null, dbKey);
+            database.delete(null, dbKey);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

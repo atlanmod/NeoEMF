@@ -16,12 +16,13 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import org.mapdb.DB;
 import org.mapdb.Serializer;
 
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,19 +45,18 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
      * identified by the associated {@link ManyFeatureKey}.
      */
     @Nonnull
-    private final ConcurrentMap<ManyFeatureKey, Object> manyFeatures;
+    private final Map<ManyFeatureKey, Object> manyFeatures;
 
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
      * <p>
-     * This constructor initialize the different {@link java.util.concurrent.ConcurrentMap}s from the MapDB engine and
-     * set their respective {@link Serializer}s.
+     * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
+     * {@link Serializer}s.
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@link MapDbBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
+     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
-     * @param db the {@link DB} used to creates the used {@link java.util.concurrent.ConcurrentMap}s and manage the
-     *           database
+     * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
      * @see MapDbBackendFactory
      */
@@ -64,9 +64,9 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
     protected MapDbBackendIndices(DB db) {
         super(db);
 
-        manyFeatures = db.hashMap("multivaluedFeatures")
-                .keySerializer(Serializer.JAVA)
-                .valueSerializer(Serializer.JAVA)
+        this.manyFeatures = db.hashMap("features/many")
+                .keySerializer(new SerializerDecorator<>(Serializers.forManyFeatureKeys()))
+                .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
 
