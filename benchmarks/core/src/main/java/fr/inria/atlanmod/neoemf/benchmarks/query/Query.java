@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import fr.inria.atlanmod.common.log.Log;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nullable;
 
 import static java.util.Objects.nonNull;
@@ -23,11 +21,10 @@ import static java.util.Objects.nonNull;
  * @param <V> the result type of method {@code call}
  */
 @FunctionalInterface
-public interface Query<V> extends Callable<V> {
+public interface Query<V> {
 
     @Nullable
-    @Override
-    V call() throws Exception;
+    V call();
 
     @Nullable
     default V callWithResult() throws Exception {

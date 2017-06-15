@@ -35,6 +35,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
 
+    /**
+     * Constructs a new {@code BlueprintsAdapter}.
+     *
+     * @param storeExtension the extension of the resource, used for benchmarks
+     */
     protected BlueprintsAdapter(String storeExtension) {
         super(storeExtension);
     }
@@ -62,6 +67,9 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
     @ParametersAreNonnullByDefault
     public static class Tinker extends BlueprintsAdapter {
 
+        /**
+         * Constructs a new {@code BlueprintsAdapter.Tinker}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public Tinker() {
             super("tinker");
@@ -81,6 +89,9 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
     @ParametersAreNonnullByDefault
     public static class Neo4j extends BlueprintsAdapter {
 
+        /**
+         * Constructs a new {@code BlueprintsAdapter.Neo4j}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public Neo4j() {
             super("neo4j");

@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
@@ -32,14 +33,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 abstract class AbstractNeoAdapter extends AbstractAdapter {
 
+    /**
+     * The class of the {@link EPackage} associated to this adapter
+     */
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
 
+    /**
+     * Constructs a new {@code AbstractNeoAdapter}.
+     *
+     * @param storeExtension the extension of the resource, used for benchmarks
+     */
     protected AbstractNeoAdapter(String storeExtension) {
         super("neoemf", storeExtension + ".resource", EPACKAGE_CLASS);
     }
 
     /**
-     * Returns the {@link BackendFactory} associated to this {@code Adapter}.
+     * Returns the {@link BackendFactory} associated to this adapter.
      *
      * @return a factory
      */

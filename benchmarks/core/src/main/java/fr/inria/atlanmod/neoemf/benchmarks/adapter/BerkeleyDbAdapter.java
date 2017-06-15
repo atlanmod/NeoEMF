@@ -34,6 +34,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
 
+    /**
+     * Constructs a new {@code BerkeleyDbAdapter}.
+     *
+     * @param storeExtension the extension of the resource, used for benchmarks
+     */
     protected BerkeleyDbAdapter(String storeExtension) {
         super("berkeleydb." + storeExtension);
     }
@@ -66,6 +71,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithIndices extends BerkeleyDbAdapter {
 
+        /**
+         * Constructs a new {@code BerkeleyDbAdapter.WithIndices}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithIndices() {
             super("indices");
@@ -85,6 +93,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithArrays extends BerkeleyDbAdapter {
 
+        /**
+         * Constructs a new {@code BerkeleyDbAdapter.WithArrays}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithArrays() {
             super("arrays");
@@ -104,6 +115,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithLists extends BerkeleyDbAdapter {
 
+        /**
+         * Constructs a new {@code BerkeleyDbAdapter.WithLists}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithLists() {
             super("lists");
@@ -123,6 +137,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithMaps extends BerkeleyDbAdapter {
 
+        /**
+         * Constructs a new {@code BerkeleyDbAdapter.WithMaps}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithMaps() {
             super("maps");

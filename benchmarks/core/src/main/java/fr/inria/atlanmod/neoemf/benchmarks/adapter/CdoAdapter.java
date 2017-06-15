@@ -27,6 +27,7 @@ import org.eclipse.emf.cdo.server.net4j.CDONet4jServerUtil;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.spi.server.ISessionProtocol;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -62,6 +63,9 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public class CdoAdapter extends AbstractAdapter {
 
+    /**
+     * The class of the {@link EPackage} associated to this adapter
+     */
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
 
     private EmbeddedCdoServer server;
@@ -70,6 +74,9 @@ public class CdoAdapter extends AbstractAdapter {
 
     private CDOTransaction transaction;
 
+    /**
+     * Constructs a new {@code CdoAdapter}.
+     */
     @SuppressWarnings("unused") // Called dynamically
     public CdoAdapter() {
         super("cdo", "resource", EPACKAGE_CLASS);

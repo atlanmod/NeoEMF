@@ -34,6 +34,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class MapDbAdapter extends AbstractNeoAdapter {
 
+    /**
+     * Constructs a new {@code MapDbAdapter}.
+     *
+     * @param storeExtension the extension of the resource, used for benchmarks
+     */
     protected MapDbAdapter(String storeExtension) {
         super("mapdb." + storeExtension);
     }
@@ -60,6 +65,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithIndices extends MapDbAdapter {
 
+        /**
+         * Constructs a new {@code MapDbAdapter.WithIndices}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithIndices() {
             super("indices");
@@ -79,6 +87,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithArrays extends MapDbAdapter {
 
+        /**
+         * Constructs a new {@code MapDbAdapter.WithArrays}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithArrays() {
             super("arrays");
@@ -98,6 +109,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithLists extends MapDbAdapter {
 
+        /**
+         * Constructs a new {@code MapDbAdapter.WithLists}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithLists() {
             super("lists");
@@ -117,6 +131,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
      */
     public static final class WithMaps extends MapDbAdapter {
 
+        /**
+         * Constructs a new {@code MapDbAdapter.WithMaps}.
+         */
         @SuppressWarnings("unused") // Called dynamically
         public WithMaps() {
             super("maps");
