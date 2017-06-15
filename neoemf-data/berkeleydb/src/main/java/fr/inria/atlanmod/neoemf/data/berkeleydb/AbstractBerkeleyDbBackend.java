@@ -98,7 +98,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Override
     public void save() {
-//        allDatabases().stream()
+//        activeDatabases().stream()
 //                .filter(db -> db.getConfig().getDeferredWrite())
 //                .forEach(Database::sync);
     }
@@ -120,7 +120,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Override
     protected void safeClose() {
-        allDatabases().forEach(Database::close);
+        activeDatabases().forEach(Database::close);
         environment.close();
     }
 
@@ -190,7 +190,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     }
 
     /**
-     * Returns all loaded databases.
+     * Returns all actives databases.
      *
      * @return a list of {@link Database}
      *
@@ -198,7 +198,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @see #save()
      */
     @Nonnull
-    protected List<Database> allDatabases() {
+    protected List<Database> activeDatabases() {
         List<Database> databases = new ArrayList<>();
         databases.add(containers);
         databases.add(instances);

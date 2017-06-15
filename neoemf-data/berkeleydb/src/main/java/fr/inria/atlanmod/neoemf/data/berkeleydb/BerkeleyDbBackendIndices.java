@@ -75,8 +75,8 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
 
     @Nonnull
     @Override
-    protected List<Database> allDatabases() {
-        List<Database> databases = super.allDatabases();
+    protected List<Database> activeDatabases() {
+        List<Database> databases = super.activeDatabases();
         databases.add(manyFeatures);
         return databases;
     }
