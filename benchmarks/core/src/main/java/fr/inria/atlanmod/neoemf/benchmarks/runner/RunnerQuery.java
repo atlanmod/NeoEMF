@@ -77,10 +77,10 @@ public class RunnerQuery extends Runner {
     //region Read/Write queries.
 
     @Benchmark
-    public Void renameAllMethods(ReadWriteRunnerState state) throws Exception {
+    public Integer renameAllMethods(ReadWriteRunnerState state) throws Exception {
         String name = UUID.randomUUID().toString();
         Resource resource = state.getResource();
-        Void result = QueryFactory.queryRenameAllMethods(resource, name).callWithResult();
+        Integer result = QueryFactory.queryRenameAllMethods(resource, name).callWithResult();
         state.getAdapter().save(resource);
         return result;
     }

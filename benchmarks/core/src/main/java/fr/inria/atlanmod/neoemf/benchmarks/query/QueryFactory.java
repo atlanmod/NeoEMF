@@ -112,14 +112,17 @@ public class QueryFactory {
      * Renames all the method names with the given {@code name}.
      */
     @Nonnull
-    public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
+    public static Query<Integer> queryRenameAllMethods(Resource resource, String name) {
         return () -> {
+            int count = 0;
+
             Iterable<MethodDeclaration> methodDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (MethodDeclaration m : methodDeclarations) {
                 m.setName(name);
+                count++;
             }
 
-            return null;
+            return count;
         };
     }
 
