@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
+import fr.inria.atlanmod.common.io.hash.Hasher;
 import fr.inria.atlanmod.common.io.hash.Hashers;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -56,6 +57,11 @@ public class DefaultMapperWriter implements MapperWriter {
     protected final Deque<Id> stack = new ArrayDeque<>();
 
     /**
+     * The {@link Hasher} to use for creating {@link Id} from {@link String}.
+     */
+    private final Hasher hasher;
+
+    /**
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
     private final Cache<String, Id> cache = CacheBuilder.builder()
@@ -69,6 +75,8 @@ public class DefaultMapperWriter implements MapperWriter {
      */
     public DefaultMapperWriter(DataMapper mapper) {
         this.mapper = checkNotNull(mapper);
+
+        this.hasher = Hashers.md5();
 
         Log.debug("{0} created", getClass().getSimpleName());
     }
@@ -207,7 +215,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
         // If identifier has been generated we hash it, otherwise we use the original
         if (identifier.isGenerated()) {
-            value = Hashers.md5().hash(value).toString();
+            value = hasher.hash(value).toString();
         }
 
         return StringId.of(value);
