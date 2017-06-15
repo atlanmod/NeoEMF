@@ -25,7 +25,7 @@ import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.AbstractBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -52,7 +52,7 @@ import static java.util.Objects.isNull;
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
+abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend implements BlueprintsBackend {
 
     /**
      * The property key used to define the index of an edge.

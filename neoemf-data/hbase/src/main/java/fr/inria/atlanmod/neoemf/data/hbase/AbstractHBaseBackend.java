@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.AbstractBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -43,7 +43,7 @@ import static java.util.Objects.nonNull;
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBackend {
+abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements HBaseBackend {
 
     /**
      * The column family holding properties.

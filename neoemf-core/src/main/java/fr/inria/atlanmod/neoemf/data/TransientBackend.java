@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Backend} that stores all elements in an in-memory key/value store.
+ * A {@link Backend} that stores all elements in an in-memory store.
  */
 @ParametersAreNonnullByDefault
 public interface TransientBackend extends Backend {

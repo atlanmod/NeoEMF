@@ -21,7 +21,7 @@ import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.AbstractBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
@@ -45,7 +45,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements BerkeleyDbBackend {
+abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend {
 
     /**
      * The {@link SerializerFactory} to use for creating the {@link Serializer} instances.

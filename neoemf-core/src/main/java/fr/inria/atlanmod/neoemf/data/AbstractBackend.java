@@ -15,12 +15,6 @@ public abstract class AbstractBackend implements Backend {
      */
     private boolean isClosed;
 
-    /**
-     * Constructs a new {@code AbstractBackend}.
-     */
-    protected AbstractBackend() {
-    }
-
     @Override
     public final void close() {
         if (isClosed) {

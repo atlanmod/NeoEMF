@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.AbstractBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -42,7 +42,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBackend {
+abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend {
 
     /**
      * The {@link SerializerFactory} to use for creating the {@link fr.inria.atlanmod.neoemf.io.serializer.Serializer}
