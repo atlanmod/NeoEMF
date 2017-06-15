@@ -18,8 +18,8 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -173,7 +173,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             Optional<String> value;
@@ -222,7 +222,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             Optional<String> previousValue;
@@ -268,7 +268,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
@@ -301,7 +301,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
@@ -347,7 +347,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         Optional<Integer> size;
         if (EObjects.isAttribute(feature)) {
@@ -378,7 +378,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             return containsValue(key, serialize(EObjects.asAttribute(feature), value));
@@ -407,7 +407,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
@@ -438,7 +438,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
@@ -465,7 +465,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
@@ -570,7 +570,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             removeAllValues(key);
@@ -604,7 +604,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         refresh(object);
 
-        FeatureKey key = FeatureKey.from(internalObject, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(internalObject, feature);
 
         Stream<Object> stream;
         if (EObjects.isAttribute(feature)) {

@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.common.collect.MoreArrays;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +51,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
 
     @Nonnull
     @Override
-    default List<Id> allReferencesOf(FeatureKey key) {
+    default List<Id> allReferencesOf(SingleFeatureKey key) {
         return this.<String>valueOf(key)
                 .map(this::arrayFromString)
                 .map(Arrays::asList)
@@ -134,7 +134,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
             return Optional.empty();
         }
@@ -148,7 +148,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
             return Optional.empty();
         }
@@ -162,7 +162,7 @@ public interface ManyReferenceWithStrings extends ManyReferenceMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfReference(FeatureKey key) {
+    default Optional<Integer> sizeOfReference(SingleFeatureKey key) {
         return this.<String>valueOf(key)
                 .map(this::arrayFromString)
                 .map(rs -> rs.length)

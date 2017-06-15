@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,9 +34,9 @@ import static java.util.Objects.isNull;
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" directly with their
  * position.
  * <p>
- * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to store. Using this
- * approach avoid to deserialize entire {@link java.util.Collection}s to retrieve a single element, which can be an
- * important bottleneck in terms of execution time and memory consumption if the underlying model contains very large
+ * Indices are persisted with dedicated {@link SingleFeatureKey}s containing the index of the element to store. Using
+ * this approach avoid to deserialize entire {@link java.util.Collection}s to retrieve a single element, which can be
+ * an important bottleneck in terms of execution time and memory consumption if the underlying model contains very large
  * {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault
@@ -44,7 +44,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(SingleFeatureKey key) {
         return IntStream.range(0, sizeOfValue(key).orElse(0))
                 .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
                 .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     }
 
     @Override
-    default <V> void removeAllValues(FeatureKey key) {
+    default <V> void removeAllValues(SingleFeatureKey key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> safeValueFor(key.withPosition(i), null));
 
@@ -124,7 +124,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -142,7 +142,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -160,7 +160,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    default <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         checkNotNull(key);
 
         return this.<Integer>valueOf(key)
@@ -176,7 +176,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @throws NullPointerException     if the {@code key} is {@code null}
      * @throws IllegalArgumentException if {@code size < 0}
      */
-    default <V> void sizeForValue(FeatureKey key, @Nonnegative int size) {
+    default <V> void sizeForValue(SingleFeatureKey key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
 
@@ -194,7 +194,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * This method behaves like: {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued
      * feature already exists, in order to replace it. If {@code value == null}, the key is removed.
      * <p>
-     * <b>Note:</b> This method is used by the default {@link #valueFor(FeatureKey, Object)}, {@link
+     * <b>Note:</b> This method is used by the default {@link #valueFor(SingleFeatureKey, Object)}, {@link
      * #addValue(ManyFeatureKey, Object)} and {@link #removeValue(ManyFeatureKey)} methods. If you intend to use them,
      * you have to override it.
      *

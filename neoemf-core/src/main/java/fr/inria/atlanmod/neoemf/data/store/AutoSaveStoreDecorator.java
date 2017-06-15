@@ -15,8 +15,8 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
@@ -100,23 +100,23 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         thenIncrementAndSave(() -> super.unsetValue(key), 1);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         thenIncrementAndSave(() -> super.unsetReference(key), 1);
     }
 
@@ -133,13 +133,13 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureKey key, V value) {
         return thenIncrementAndSave(() -> super.appendValue(key, value), 1);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         return thenIncrementAndSave(() -> super.appendAllValues(key, values), values.size());
     }
 
@@ -150,7 +150,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         thenIncrementAndSave(() -> super.removeAllValues(key), sizeOfValue(key).orElse(0));
     }
 
@@ -173,13 +173,13 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public int appendReference(FeatureKey key, Id reference) {
+    public int appendReference(SingleFeatureKey key, Id reference) {
         return thenIncrementAndSave(() -> super.appendReference(key, reference), 1);
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         return thenIncrementAndSave(() -> super.appendAllReferences(key, references), references.size());
     }
 
@@ -190,7 +190,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
     }
 

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
@@ -58,7 +58,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         notifyInitialize();
 
-        FeatureKey rootKey = FeatureKey.of(MapperConstants.ROOT_ID, MapperConstants.ROOT_FEATURE_NAME);
+        SingleFeatureKey rootKey = SingleFeatureKey.of(MapperConstants.ROOT_ID, MapperConstants.ROOT_FEATURE_NAME);
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();
@@ -99,7 +99,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
-        String name = mapper.valueOf(FeatureKey.of(id, MapperConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
+        String name = mapper.valueOf(SingleFeatureKey.of(id, MapperConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
         element.className(name);
 
         notifyStartElement(element);
@@ -108,7 +108,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         realMetaclass.getEAllAttributes().stream()
                 .filter(attribute -> !Objects.equals(MapperConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
                 .forEach(attribute -> {
-                    FeatureKey key = FeatureKey.of(id, attribute.getName());
+                    SingleFeatureKey key = SingleFeatureKey.of(id, attribute.getName());
                     if (!attribute.isMany()) {
                         readValue(key);
                     }
@@ -120,7 +120,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         // Process all references
         realMetaclass.getEAllReferences()
                 .forEach(reference -> {
-                    FeatureKey key = FeatureKey.of(id, reference.getName());
+                    SingleFeatureKey key = SingleFeatureKey.of(id, reference.getName());
                     if (!reference.isMany()) {
                         readReference(key, reference.isContainment());
                     }
@@ -137,7 +137,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key the key identifying the attribute
      */
-    protected void readValue(FeatureKey key) {
+    protected void readValue(SingleFeatureKey key) {
         mapper.<String>valueOf(key).ifPresent(value -> {
             BasicAttribute attribute = new BasicAttribute(key.name());
 
@@ -154,7 +154,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key the key identifying the attributes
      */
-    protected void readAllValues(FeatureKey key) {
+    protected void readAllValues(SingleFeatureKey key) {
         int size = mapper.sizeOfValue(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->
@@ -178,7 +178,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param key           the key identifying the reference
      * @param isContainment {@code true} if the reference is a containment
      */
-    protected void readReference(FeatureKey key, boolean isContainment) {
+    protected void readReference(SingleFeatureKey key, boolean isContainment) {
         mapper.referenceOf(key).ifPresent(id -> {
             BasicReference reference = new BasicReference(key.name());
 
@@ -204,7 +204,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param key           the key identifying the reference
      * @param isContainment {@code true} if the reference is a containment
      */
-    protected void readAllReferences(FeatureKey key, boolean isContainment) {
+    protected void readAllReferences(SingleFeatureKey key, boolean isContainment) {
         int size = mapper.sizeOfReference(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->

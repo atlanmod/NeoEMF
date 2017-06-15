@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.common.collect.MoreArrays;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +45,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(SingleFeatureKey key) {
         V[] values = this.<V[]>valueOf(key)
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 

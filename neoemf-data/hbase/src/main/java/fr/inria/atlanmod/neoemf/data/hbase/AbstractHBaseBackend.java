@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import org.apache.hadoop.hbase.client.Delete;
@@ -198,14 +198,14 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         checkNotNull(key);
 
         return resultFrom(key.id())
                 .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
                         .map(value -> {
                             try {
-                                return Optional.of(Serializers.<V>forObjects().deserialize(value));
+                                return Optional.of(Serializers.<V>forObject().deserialize(value));
                             }
                             catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -217,7 +217,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -225,7 +225,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
         try {
             Put put = new Put(Bytes.toBytes(key.id().toString()))
-                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forObjects().serialize(value));
+                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forObject().serialize(value));
 
             table.put(put);
         }
@@ -237,7 +237,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     }
 
     @Override
-    public void unsetValue(FeatureKey key) {
+    public void unsetValue(SingleFeatureKey key) {
         checkNotNull(key);
 
         try {

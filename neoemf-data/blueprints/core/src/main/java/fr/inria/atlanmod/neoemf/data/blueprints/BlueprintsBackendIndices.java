@@ -22,8 +22,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,14 +73,14 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         return get(key.id())
                 .map(v -> v.<V>getProperty(key.name()));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
@@ -89,13 +89,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         get(key.id())
                 .ifPresent(v -> v.<V>removeProperty(key.name()));
     }
 
     @Override
-    public <V> boolean hasValue(FeatureKey key) {
+    public <V> boolean hasValue(SingleFeatureKey key) {
         return get(key.id())
                 .map(v -> Optional.ofNullable(v.<V>getProperty(key.name())).isPresent())
                 .orElse(false);
@@ -107,7 +107,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -124,7 +124,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         checkNotNull(key);
         checkNotNull(reference);
 
@@ -146,7 +146,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -162,7 +162,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasReference(SingleFeatureKey key) {
         checkNotNull(key);
 
         return get(key.id())
@@ -185,7 +185,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(SingleFeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -216,7 +216,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         return previousValue;
     }
 
-    public <V> boolean hasAnyValue(FeatureKey key) {
+    public <V> boolean hasAnyValue(SingleFeatureKey key) {
         checkNotNull(key);
 
         return get(key.id())
@@ -239,7 +239,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
             }
         }
 
-        sizeForValue(key, size + 1);
+        sizeForValue(key.withoutPosition(), size + 1);
 
         vertex.<V>setProperty(formatProperty(key.name(), key.position()), value);
     }
@@ -254,7 +254,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
             return Optional.empty();
         }
 
-        int size = sizeOfValue(key).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
         if (size == 0) {
             return Optional.empty();
         }
@@ -267,13 +267,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
         vertex.get().<V>removeProperty(formatProperty(key.name(), size - 1));
 
-        sizeForValue(key, size - 1);
+        sizeForValue(key.withoutPosition(), size - 1);
 
         return previousValue;
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -289,7 +289,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+    public <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return false;
         }
@@ -304,7 +304,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -330,7 +330,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -356,7 +356,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         checkNotNull(key);
 
         return get(key.id())
@@ -365,7 +365,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public <V> void sizeForValue(FeatureKey key, @Nonnegative int size) {
+    public <V> void sizeForValue(SingleFeatureKey key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
 
@@ -411,7 +411,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(SingleFeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -467,7 +467,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public boolean hasAnyReference(FeatureKey key) {
+    public boolean hasAnyReference(SingleFeatureKey key) {
         checkNotNull(key);
 
         return hasReference(key);
@@ -478,7 +478,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         checkNotNull(key);
         checkNotNull(reference);
 
-        int size = sizeOfValue(key).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
 
         Vertex vertex = getOrCreate(key.id());
 
@@ -503,7 +503,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         Edge edge = vertex.addEdge(key.name(), getOrCreate(reference));
         edge.<Integer>setProperty(KEY_POSITION, key.position());
 
-        sizeForValue(key, size + 1);
+        sizeForValue(key.withoutPosition(), size + 1);
     }
 
     @Nonnull
@@ -516,7 +516,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
             return Optional.empty();
         }
 
-        int size = sizeOfValue(key).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
         if (size == 0) {
             return Optional.empty();
         }
@@ -543,13 +543,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
             }
         }
 
-        sizeForValue(key, size - 1);
+        sizeForValue(key.withoutPosition(), size - 1);
 
         return previousId;
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -568,7 +568,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
+    public boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
             return false;
         }
@@ -590,7 +590,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
             return Optional.empty();
         }
@@ -615,7 +615,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         if (isNull(reference)) {
             return Optional.empty();
         }

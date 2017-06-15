@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ import static java.util.Objects.nonNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
- * {@link SortedMap}s. The implementation used is specified by the {@link #getOrCreateMap(FeatureKey)} method.
+ * {@link SortedMap}s. The implementation used is specified by the {@link #getOrCreateMap(SingleFeatureKey)} method.
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWithMaps extends ManyValueMapper {
@@ -50,7 +50,7 @@ public interface ManyValueWithMaps extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(SingleFeatureKey key) {
         return this.<SortedMap<Integer, V>>valueOf(key)
                 .map(m -> IntStream.range(0, m.isEmpty() ? 0 : m.lastKey() + 1)
                         .mapToObj(m::get)
@@ -141,7 +141,7 @@ public interface ManyValueWithMaps extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    default <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         return this.<SortedMap<Integer, V>>valueOf(key)
                 .filter(m -> !m.isEmpty())
                 .map(m -> m.lastKey() + 1)
@@ -156,7 +156,7 @@ public interface ManyValueWithMaps extends ManyValueMapper {
      *
      * @return a new {@link Map}
      */
-    default <V> SortedMap<Integer, V> getOrCreateMap(FeatureKey key) {
+    default <V> SortedMap<Integer, V> getOrCreateMap(SingleFeatureKey key) {
         return new TreeMap<>();
     }
 }

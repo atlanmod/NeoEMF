@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,45 +84,45 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         throw E;
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         throw E;
     }
 
     @Override
-    public <V> boolean hasValue(FeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
+    public <V> boolean hasValue(SingleFeatureKey key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         throw E;
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         throw E;
     }
 
     @Override
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasReference(SingleFeatureKey key) {
         throw E;
     }
 
@@ -134,7 +134,7 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(SingleFeatureKey key) {
         throw E;
     }
 
@@ -145,7 +145,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public <V> boolean hasAnyValue(FeatureKey key) {
+    public <V> boolean hasAnyValue(SingleFeatureKey key) {
         throw E;
     }
 
@@ -156,13 +156,13 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnegative
     @Override
-    public <V> int appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureKey key, V value) {
         throw E;
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         throw E;
     }
 
@@ -173,7 +173,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         throw E;
     }
 
@@ -184,28 +184,28 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+    public <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         throw E;
     }
 
@@ -217,7 +217,7 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(SingleFeatureKey key) {
         throw E;
     }
 
@@ -228,7 +228,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public boolean hasAnyReference(FeatureKey key) {
+    public boolean hasAnyReference(SingleFeatureKey key) {
         throw E;
     }
 
@@ -239,13 +239,13 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnegative
     @Override
-    public int appendReference(FeatureKey key, Id reference) {
+    public int appendReference(SingleFeatureKey key, Id reference) {
         throw E;
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         throw E;
     }
 
@@ -256,7 +256,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         throw E;
     }
 
@@ -267,28 +267,28 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
+    public boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(SingleFeatureKey key) {
         throw E;
     }
 }

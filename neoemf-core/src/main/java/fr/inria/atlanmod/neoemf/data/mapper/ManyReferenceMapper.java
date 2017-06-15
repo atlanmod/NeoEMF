@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,7 +32,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * An object capable of mapping multi-valued references represented as a set of key/value pair.
  * <p>
  * By default, the references are processed as values with {@link ManyValueMapper}, except for composed methods such as
- * {@link #appendReference(FeatureKey, Id)} and {@link #appendAllReferences(FeatureKey, List)}.
+ * {@link #appendReference(SingleFeatureKey, Id)} and {@link #appendAllReferences(SingleFeatureKey, List)}.
  */
 @ParametersAreNonnullByDefault
 public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
@@ -62,7 +62,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default List<Id> allReferencesOf(FeatureKey key) {
+    default List<Id> allReferencesOf(SingleFeatureKey key) {
         return allValuesOf(key);
     }
 
@@ -78,7 +78,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NoSuchElementException if the {@code key} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
      * @see #addReference(ManyFeatureKey, Id)
-     * @see #appendReference(FeatureKey, Id)
+     * @see #appendReference(SingleFeatureKey, Id)
      */
     @Nonnull
     default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
@@ -94,7 +94,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default boolean hasAnyReference(FeatureKey key) {
+    default boolean hasAnyReference(SingleFeatureKey key) {
         return hasAnyValue(key);
     }
 
@@ -123,7 +123,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @see #addReference(ManyFeatureKey, Id)
      */
     @Nonnegative
-    default int appendReference(FeatureKey key, Id reference) {
+    default int appendReference(SingleFeatureKey key, Id reference) {
         checkNotNull(key);
 
         int position = sizeOfReference(key).orElse(0);
@@ -143,10 +143,10 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addReference(ManyFeatureKey, Id)
-     * @see #appendReference(FeatureKey, Id)
+     * @see #appendReference(SingleFeatureKey, Id)
      */
     @Nonnegative
-    default int appendAllReferences(FeatureKey key, List<Id> references) {
+    default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         checkNotNull(key);
         checkNotNull(references);
 
@@ -180,7 +180,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default void removeAllReferences(FeatureKey key) {
+    default void removeAllReferences(SingleFeatureKey key) {
         removeAllValues(key);
     }
 
@@ -217,7 +217,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default boolean containsReference(FeatureKey key, @Nullable Id reference) {
+    default boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
         return indexOfReference(key, reference).isPresent();
     }
 
@@ -234,7 +234,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         return indexOfValue(key, reference);
     }
 
@@ -251,7 +251,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    default Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         return lastIndexOfValue(key, reference);
     }
 
@@ -267,7 +267,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default Optional<Integer> sizeOfReference(FeatureKey key) {
+    default Optional<Integer> sizeOfReference(SingleFeatureKey key) {
         return sizeOfValue(key);
     }
 }

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,10 +49,10 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the associated {@link FeatureKey}.
+     * identified by the associated {@link SingleFeatureKey}.
      */
     @Nonnull
-    private final Map<FeatureKey, Object> features = new HashMap<>();
+    private final Map<SingleFeatureKey, Object> features = new HashMap<>();
 
     @Override
     protected void safeClose() {
@@ -80,7 +80,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         checkNotNull(key);
 
         return Optional.ofNullable(cast(features.get(key)));
@@ -88,7 +88,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -96,7 +96,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         checkNotNull(key);
 
         features.remove(key);

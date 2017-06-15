@@ -70,7 +70,7 @@ final class ObjectSerializer<T> implements Serializer<T> {
      * <p>
      * <b>Note:</b> The {@code value} <b>must</b> implement {@link Serializable}.
      *
-     * @param t      the object to serialize
+     * @param t   the object to serialize
      * @param out the output out
      *
      * @throws IOException if an I/O error occurs during the serialization

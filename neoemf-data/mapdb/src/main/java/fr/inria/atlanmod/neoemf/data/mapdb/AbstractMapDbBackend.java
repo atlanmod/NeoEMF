@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import org.mapdb.DB;
@@ -57,10 +57,10 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     /**
      * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
-     * associated {@link FeatureKey}.
+     * associated {@link SingleFeatureKey}.
      */
     @Nonnull
-    private final Map<FeatureKey, Object> features;
+    private final Map<SingleFeatureKey, Object> features;
 
     /**
      * The MapDB database.
@@ -86,17 +86,17 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
         this.db = checkNotNull(db);
 
         this.containers = db.hashMap("containers")
-                .keySerializer(new SerializerDecorator<>(Serializers.forIds()))
-                .valueSerializer(new SerializerDecorator<>(Serializers.forContainers()))
+                .keySerializer(new SerializerDecorator<>(Serializers.forId()))
+                .valueSerializer(new SerializerDecorator<>(Serializers.forContainerDescriptor()))
                 .createOrOpen();
 
         this.instances = db.hashMap("instances")
-                .keySerializer(new SerializerDecorator<>(Serializers.forIds()))
-                .valueSerializer(new SerializerDecorator<>(Serializers.forMetaclasses()))
+                .keySerializer(new SerializerDecorator<>(Serializers.forId()))
+                .valueSerializer(new SerializerDecorator<>(Serializers.forClassDescriptor()))
                 .createOrOpen();
 
         this.features = db.hashMap("features/single")
-                .keySerializer(new SerializerDecorator<>(Serializers.forFeatureKeys()))
+                .keySerializer(new SerializerDecorator<>(Serializers.forSingleFeatureKey()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
@@ -177,7 +177,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         checkNotNull(key);
 
         return get(features, key);
@@ -185,7 +185,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -193,7 +193,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     }
 
     @Override
-    public void unsetValue(FeatureKey key) {
+    public void unsetValue(SingleFeatureKey key) {
         checkNotNull(key);
 
         delete(features, key);

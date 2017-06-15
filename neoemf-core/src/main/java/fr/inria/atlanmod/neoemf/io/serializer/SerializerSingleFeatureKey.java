@@ -1,7 +1,7 @@
 package fr.inria.atlanmod.neoemf.io.serializer;
 
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -11,21 +11,21 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Serializer} for {@link FeatureKey}s.
+ * A {@link Serializer} for {@link SingleFeatureKey}s.
  */
 @ParametersAreNonnullByDefault
-final class FeatureKeySerializer implements Serializer<FeatureKey> {
+final class SerializerSingleFeatureKey implements Serializer<SingleFeatureKey> {
 
     @Override
-    public void serialize(FeatureKey key, DataOutput out) throws IOException {
+    public void serialize(SingleFeatureKey key, DataOutput out) throws IOException {
         out.writeUTF(key.id().toString());
         out.writeUTF(key.name());
     }
 
     @Nonnull
     @Override
-    public FeatureKey deserialize(DataInput in) throws IOException {
-        return FeatureKey.of(
+    public SingleFeatureKey deserialize(DataInput in) throws IOException {
+        return SingleFeatureKey.of(
                 StringId.of(in.readUTF()),
                 in.readUTF()
         );

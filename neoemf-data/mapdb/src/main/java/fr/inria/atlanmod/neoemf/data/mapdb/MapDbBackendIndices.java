@@ -65,7 +65,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
         super(db);
 
         this.manyFeatures = db.hashMap("features/many")
-                .keySerializer(new SerializerDecorator<>(Serializers.forManyFeatureKeys()))
+                .keySerializer(new SerializerDecorator<>(Serializers.forManyFeatureKey()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }

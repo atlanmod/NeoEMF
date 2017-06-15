@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ public interface ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueOf(FeatureKey key);
+    <V> Optional<V> valueOf(SingleFeatureKey key);
 
     /**
      * Defines the {@code value} of the specified {@code key}.
@@ -51,7 +51,7 @@ public interface ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueFor(FeatureKey key, V value);
+    <V> Optional<V> valueFor(SingleFeatureKey key, V value);
 
     /**
      * Unsets the value of the specified {@code key}.
@@ -61,7 +61,7 @@ public interface ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> void unsetValue(FeatureKey key);
+    <V> void unsetValue(SingleFeatureKey key);
 
     /**
      * Checks whether the specified {@code key} has a defined value.
@@ -73,7 +73,7 @@ public interface ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    default <V> boolean hasValue(FeatureKey key) {
+    default <V> boolean hasValue(SingleFeatureKey key) {
         return valueOf(key).isPresent();
     }
 }

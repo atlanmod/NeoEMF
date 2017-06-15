@@ -125,16 +125,16 @@ public class ManyFeatureKey extends FeatureKey {
     }
 
     /**
-     * Creates a new {@link FeatureKey} with the {@link Id} and the name of this {@code ManyFeatureKey}, without
+     * Creates a new {@link SingleFeatureKey} with the {@link Id} and the name of this {@code ManyFeatureKey}, without
      * its position.
      *
-     * @return a new {@link FeatureKey}
+     * @return a new {@link SingleFeatureKey}
      *
-     * @see FeatureKey#of(Id, String)
+     * @see SingleFeatureKey#of(Id, String)
      */
     @Nonnull
-    public FeatureKey withoutPosition() {
-        return FeatureKey.of(id, name);
+    public SingleFeatureKey withoutPosition() {
+        return SingleFeatureKey.of(id, name);
     }
 
     @Override

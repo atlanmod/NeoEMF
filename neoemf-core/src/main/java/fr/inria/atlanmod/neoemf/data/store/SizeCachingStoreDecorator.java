@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, Optional<Integer>> {
+public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<SingleFeatureKey, Optional<Integer>> {
 
     /**
      * Constructs a new {@code SizeCachingStoreDecorator}.
@@ -39,13 +39,13 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         cacheSize(key, 0);
         super.unsetValue(key);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         cacheSize(key, 0);
         super.unsetReference(key);
     }
@@ -58,7 +58,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
 
     @Nonnegative
     @Override
-    public <V> int appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureKey key, V value) {
         int position = super.appendValue(key, value);
         cacheSize(key, position + 1);
         return position;
@@ -66,7 +66,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         int firstPosition = super.appendAllValues(key, values);
         cacheSize(key, firstPosition + values.size());
         return firstPosition;
@@ -80,7 +80,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         cacheSize(key, 0);
         super.removeAllValues(key);
     }
@@ -89,7 +89,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         return cache.get(key, super::sizeOfValue);
     }
 
@@ -101,7 +101,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
 
     @Nonnegative
     @Override
-    public int appendReference(FeatureKey key, Id reference) {
+    public int appendReference(SingleFeatureKey key, Id reference) {
         int position = super.appendReference(key, reference);
         cacheSize(key, position + 1);
         return position;
@@ -109,7 +109,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
 
     @Nonnegative
     @Override
-    public int appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         int firstPosition = super.appendAllReferences(key, references);
         cacheSize(key, firstPosition + references.size());
         return firstPosition;
@@ -123,7 +123,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         cacheSize(key, 0);
         super.removeAllReferences(key);
     }
@@ -132,7 +132,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
     @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Optional<Integer> sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(SingleFeatureKey key) {
         return cache.get(key, super::sizeOfReference);
     }
 
@@ -142,7 +142,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Fea
      * @param key  the key to define the size
      * @param size the size
      */
-    private void cacheSize(FeatureKey key, @Nonnegative int size) {
+    private void cacheSize(SingleFeatureKey key, @Nonnegative int size) {
         cache.put(key, size != 0 ? Optional.of(size) : Optional.empty());
     }
 }

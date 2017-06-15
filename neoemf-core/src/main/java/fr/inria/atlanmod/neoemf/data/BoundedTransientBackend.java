@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -132,7 +132,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         checkOwner(key.id());
 
         return Optional.ofNullable(cast(features.get(key.name())));
@@ -140,7 +140,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         checkOwner(key.id());
         checkNotNull(value);
 
@@ -148,7 +148,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         checkOwner(key.id());
 
         features.remove(key.name());

@@ -15,8 +15,8 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.HashMap;
 import java.util.List;
@@ -100,45 +100,45 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         return record(() -> super.valueOf(key));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         return record(() -> super.valueFor(key, value));
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         record(() -> super.unsetValue(key));
     }
 
     @Override
-    public <V> boolean hasValue(FeatureKey key) {
+    public <V> boolean hasValue(SingleFeatureKey key) {
         return record(() -> super.hasValue(key));
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
         return record(() -> super.referenceOf(key));
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         return record(() -> super.referenceFor(key, reference));
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         record(() -> super.unsetReference(key));
     }
 
     @Override
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasReference(SingleFeatureKey key) {
         return record(() -> super.hasReference(key));
     }
 
@@ -150,7 +150,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(FeatureKey key) {
+    public <V> List<V> allValuesOf(SingleFeatureKey key) {
         return record(() -> super.allValuesOf(key));
     }
 
@@ -161,7 +161,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public <V> boolean hasAnyValue(FeatureKey key) {
+    public <V> boolean hasAnyValue(SingleFeatureKey key) {
         return record(() -> super.hasAnyValue(key));
     }
 
@@ -172,13 +172,13 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureKey key, V value) {
         return record(() -> super.appendValue(key, value));
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         return record(() -> super.appendAllValues(key, values));
     }
 
@@ -189,7 +189,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         record(() -> super.removeAllValues(key));
     }
 
@@ -200,28 +200,28 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+    public <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
         return record(() -> super.containsValue(key, value));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
         return record(() -> super.indexOfValue(key, value));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
         return record(() -> super.lastIndexOfValue(key, value));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         return record(() -> super.sizeOfValue(key));
     }
 
@@ -233,7 +233,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(FeatureKey key) {
+    public List<Id> allReferencesOf(SingleFeatureKey key) {
         return record(() -> super.allReferencesOf(key));
     }
 
@@ -244,7 +244,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public boolean hasAnyReference(FeatureKey key) {
+    public boolean hasAnyReference(SingleFeatureKey key) {
         return record(() -> super.hasAnyReference(key));
     }
 
@@ -255,13 +255,13 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public int appendReference(FeatureKey key, Id reference) {
+    public int appendReference(SingleFeatureKey key, Id reference) {
         return record(() -> super.appendReference(key, reference));
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         return record(() -> super.appendAllReferences(key, references));
     }
 
@@ -272,7 +272,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         record(() -> super.removeAllReferences(key));
     }
 
@@ -283,28 +283,28 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     }
 
     @Override
-    public boolean containsReference(FeatureKey key, @Nullable Id reference) {
+    public boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
         return record(() -> super.containsReference(key, reference));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> indexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         return record(() -> super.indexOfReference(key, reference));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> lastIndexOfReference(FeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
         return record(() -> super.lastIndexOfReference(key, reference));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(SingleFeatureKey key) {
         return record(() -> super.sizeOfReference(key));
     }
 

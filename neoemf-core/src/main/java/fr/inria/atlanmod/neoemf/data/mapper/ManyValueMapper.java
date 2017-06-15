@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -57,7 +57,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> List<V> allValuesOf(FeatureKey key);
+    <V> List<V> allValuesOf(SingleFeatureKey key);
 
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
@@ -72,7 +72,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NoSuchElementException if the {@code key} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
      * @see #addValue(ManyFeatureKey, Object)
-     * @see #appendValue(FeatureKey, Object)
+     * @see #appendValue(SingleFeatureKey, Object)
      */
     @Nonnull
     <V> Optional<V> valueFor(ManyFeatureKey key, V value);
@@ -87,7 +87,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> boolean hasAnyValue(FeatureKey key) {
+    default <V> boolean hasAnyValue(SingleFeatureKey key) {
         return hasValue(key);
     }
 
@@ -116,7 +116,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #addValue(ManyFeatureKey, Object)
      */
     @Nonnegative
-    default <V> int appendValue(FeatureKey key, V value) {
+    default <V> int appendValue(SingleFeatureKey key, V value) {
         checkNotNull(key);
 
         int position = sizeOfValue(key).orElse(0);
@@ -137,10 +137,10 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      * @see #addValue(ManyFeatureKey, Object)
-     * @see #appendValue(FeatureKey, Object)
+     * @see #appendValue(SingleFeatureKey, Object)
      */
     @Nonnegative
-    default <V> int appendAllValues(FeatureKey key, List<V> values) {
+    default <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         checkNotNull(key);
         checkNotNull(values);
 
@@ -174,7 +174,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void removeAllValues(FeatureKey key) {
+    default <V> void removeAllValues(SingleFeatureKey key) {
         unsetValue(key);
     }
 
@@ -212,7 +212,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> boolean containsValue(FeatureKey key, @Nullable V value) {
+    default <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
         return indexOfValue(key, value).isPresent();
     }
 
@@ -230,7 +230,7 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default <V> Optional<Integer> indexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -253,7 +253,7 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default <V> Optional<Integer> lastIndexOfValue(FeatureKey key, @Nullable V value) {
+    default <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -275,7 +275,7 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    default <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         return Optional.of(allValuesOf(key).size())
                 .filter(s -> s != 0);
     }

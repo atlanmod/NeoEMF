@@ -87,7 +87,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(manyFeatures, key, Serializers.forManyFeatureKeys(), Serializers.forObjects());
+        return get(manyFeatures, key, Serializers.forManyFeatureKey(), Serializers.forObject());
     }
 
     @Override
@@ -95,10 +95,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value, Serializers.forManyFeatureKeys(), Serializers.forObjects());
+            put(manyFeatures, key, value, Serializers.forManyFeatureKey(), Serializers.forObject());
         }
         else {
-            delete(manyFeatures, key, Serializers.forManyFeatureKeys());
+            delete(manyFeatures, key, Serializers.forManyFeatureKey());
         }
     }
 }

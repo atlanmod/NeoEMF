@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.junit.Test;
 
@@ -97,7 +97,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeObject() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forObjects();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forObject();
 
         ClassDescriptor object = ClassDescriptor.of("name0", "uri0");
         ClassDescriptor result = process(object, serializer);
@@ -107,7 +107,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeObjectWithStream() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forObjects();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forObject();
 
         ClassDescriptor object = ClassDescriptor.of("name0", "uri0");
         ClassDescriptor result = processWithStream(object, serializer);
@@ -117,7 +117,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeId() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<Id> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forIds();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<Id> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forId();
 
         Id object = StringId.of("id0");
         Id result = process(object, serializer);
@@ -127,7 +127,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeIdWithStream() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<Id> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forIds();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<Id> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forId();
 
         Id object = StringId.of("id0");
         Id result = processWithStream(object, serializer);
@@ -137,7 +137,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeContainer() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ContainerDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forContainers();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ContainerDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forContainerDescriptor();
 
         ContainerDescriptor object = ContainerDescriptor.of(StringId.of("id0"), "name0");
         ContainerDescriptor result = process(object, serializer);
@@ -147,7 +147,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeContainerWithStream() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ContainerDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forContainers();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ContainerDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forContainerDescriptor();
 
         ContainerDescriptor object = ContainerDescriptor.of(StringId.of("id0"), "name0");
         ContainerDescriptor result = processWithStream(object, serializer);
@@ -157,7 +157,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeClass() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forMetaclasses();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forClassDescriptor();
 
         ClassDescriptor object = ClassDescriptor.of("name0", "uri0");
         ClassDescriptor result = process(object, serializer);
@@ -167,7 +167,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeClassWithStream() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forMetaclasses();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ClassDescriptor> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forClassDescriptor();
 
         ClassDescriptor object = ClassDescriptor.of("name0", "uri0");
         ClassDescriptor result = processWithStream(object, serializer);
@@ -177,27 +177,27 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeFeatureKey() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<FeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forFeatureKeys();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<SingleFeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forSingleFeatureKey();
 
-        FeatureKey object = FeatureKey.of(StringId.of("id0"), "name0");
-        FeatureKey result = process(object, serializer);
+        SingleFeatureKey object = SingleFeatureKey.of(StringId.of("id0"), "name0");
+        SingleFeatureKey result = process(object, serializer);
 
         assertThat(result).isEqualTo(result);
     }
 
     @Test
     public void testSerializeDeserializeFeatureKeyWithStream() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<FeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forFeatureKeys();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<SingleFeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forSingleFeatureKey();
 
-        FeatureKey object = FeatureKey.of(StringId.of("id0"), "name0");
-        FeatureKey result = processWithStream(object, serializer);
+        SingleFeatureKey object = SingleFeatureKey.of(StringId.of("id0"), "name0");
+        SingleFeatureKey result = processWithStream(object, serializer);
 
         assertThat(result).isEqualTo(result);
     }
 
     @Test
     public void testSerializeDeserializeManyFeatureKey() throws IOException {
-        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ManyFeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forManyFeatureKeys();
+        fr.inria.atlanmod.neoemf.io.serializer.Serializer<ManyFeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forManyFeatureKey();
 
         ManyFeatureKey object = ManyFeatureKey.of(StringId.of("id0"), "name0", 0);
         ManyFeatureKey result = process(object, serializer);
@@ -207,7 +207,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeDeserializeManyFeatureKeyWithStream() throws IOException {
-        Serializer<ManyFeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forManyFeatureKeys();
+        Serializer<ManyFeatureKey> serializer = fr.inria.atlanmod.neoemf.io.serializer.Serializers.forManyFeatureKey();
 
         ManyFeatureKey object = ManyFeatureKey.of(StringId.of("id0"), "name0", 0);
         ManyFeatureKey result = processWithStream(object, serializer);
@@ -217,7 +217,7 @@ public class SerializerTest {
 
     @Test
     public void testSerializeNonSerializable() {
-        assertThat(catchThrowable(() -> fr.inria.atlanmod.neoemf.io.serializer.Serializers.forObjects().serialize(new Object())))
+        assertThat(catchThrowable(() -> fr.inria.atlanmod.neoemf.io.serializer.Serializers.forObject().serialize(new Object())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

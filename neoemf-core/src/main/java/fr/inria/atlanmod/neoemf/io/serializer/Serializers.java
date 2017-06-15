@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.io.serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * The factory that creates {@link Serializer} instances.
  */
 @ParametersAreNonnullByDefault
-public final class Serializers<T> {
+public final class Serializers {
 
     /**
      * The unique instance of {@link ObjectSerializer}.
@@ -47,9 +47,9 @@ public final class Serializers<T> {
     private static final Serializer<ClassDescriptor> METACLASS = new ClassDescriptorSerializer();
 
     /**
-     * The unique instance of {@link FeatureKeySerializer}.
+     * The unique instance of {@link SerializerSingleFeatureKey}.
      */
-    private static final Serializer<FeatureKey> FEATURE_KEY = new FeatureKeySerializer();
+    private static final Serializer<SingleFeatureKey> SINGLE_FEATURE_KEY = new SerializerSingleFeatureKey();
 
     /**
      * The unique instance of {@link ManyFeatureKeySerializer}.
@@ -66,7 +66,7 @@ public final class Serializers<T> {
     }
 
     /**
-     * Gets the {@link Serializer} for any {@link Object}, using Java serialization.
+     * Gets the {@link Serializer} for any {@link Object}.
      *
      * @param <T> the type of (de)serialized objects
      *
@@ -74,7 +74,7 @@ public final class Serializers<T> {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <T> Serializer<T> forObjects() {
+    public static <T> Serializer<T> forObject() {
         return (Serializer<T>) OBJECT;
     }
 
@@ -84,7 +84,7 @@ public final class Serializers<T> {
      * @return a serializer
      */
     @Nonnull
-    public static Serializer<Id> forIds() {
+    public static Serializer<Id> forId() {
         return ID;
     }
 
@@ -94,7 +94,7 @@ public final class Serializers<T> {
      * @return a serializer
      */
     @Nonnull
-    public static Serializer<ContainerDescriptor> forContainers() {
+    public static Serializer<ContainerDescriptor> forContainerDescriptor() {
         return CONTAINER;
     }
 
@@ -104,27 +104,27 @@ public final class Serializers<T> {
      * @return a serializer
      */
     @Nonnull
-    public static Serializer<ClassDescriptor> forMetaclasses() {
+    public static Serializer<ClassDescriptor> forClassDescriptor() {
         return METACLASS;
     }
 
     /**
-     * Gets the {@link Serializer} for {@link FeatureKey}s.
+     * Gets the {@link Serializer} for {@link SingleFeatureKey}s.
      *
      * @return a serializer
      */
     @Nonnull
-    public static Serializer<FeatureKey> forFeatureKeys() {
-        return FEATURE_KEY;
+    public static Serializer<SingleFeatureKey> forSingleFeatureKey() {
+        return SINGLE_FEATURE_KEY;
     }
 
     /**
-     * Gets the {@link ManyFeatureKey} for {@link FeatureKey}s.
+     * Gets the {@link Serializer} for {@link ManyFeatureKey}s.
      *
      * @return a serializer
      */
     @Nonnull
-    public static Serializer<ManyFeatureKey> forManyFeatureKeys() {
+    public static Serializer<ManyFeatureKey> forManyFeatureKey() {
         return MANY_FEATURE_KEY;
     }
 }

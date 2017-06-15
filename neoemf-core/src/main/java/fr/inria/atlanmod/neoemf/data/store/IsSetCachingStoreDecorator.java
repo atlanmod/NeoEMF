@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the presence of a value.
  */
 @ParametersAreNonnullByDefault
-public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<FeatureKey, Boolean> {
+public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<SingleFeatureKey, Boolean> {
 
     /**
      * Constructs a new {@code IsSetCachingStoreDecorator}.
@@ -40,7 +40,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(FeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
         Optional<V> value = super.valueOf(key);
         cache.put(key, value.isPresent());
         return value;
@@ -48,26 +48,26 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         cache.put(key, true);
         return super.valueFor(key, value);
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         cache.put(key, false);
         super.unsetValue(key);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> boolean hasValue(FeatureKey key) {
+    public <V> boolean hasValue(SingleFeatureKey key) {
         return cache.get(key, super::hasValue);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(FeatureKey key) {
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
         Optional<Id> value = super.referenceOf(key);
         cache.put(key, value.isPresent());
         return value;
@@ -75,20 +75,20 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         cache.put(key, true);
         return super.referenceFor(key, reference);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         cache.put(key, false);
         super.unsetReference(key);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public boolean hasReference(FeatureKey key) {
+    public boolean hasReference(SingleFeatureKey key) {
         return cache.get(key, super::hasReference);
     }
 
@@ -109,7 +109,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> boolean hasAnyValue(FeatureKey key) {
+    public <V> boolean hasAnyValue(SingleFeatureKey key) {
         return cache.get(key, super::hasAnyValue);
     }
 
@@ -121,14 +121,14 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Nonnegative
     @Override
-    public <V> int appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureKey key, V value) {
         cache.put(key, true);
         return super.appendValue(key, value);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         cache.put(key, true);
         return super.appendAllValues(key, values);
     }
@@ -141,7 +141,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         cache.invalidate(key);
         super.removeAllValues(key);
     }
@@ -149,7 +149,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(FeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
         Optional<Integer> size = super.sizeOfValue(key);
         cache.put(key, size.isPresent() && size.get() != 0);
         return size;
@@ -172,7 +172,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public boolean hasAnyReference(FeatureKey key) {
+    public boolean hasAnyReference(SingleFeatureKey key) {
         return cache.get(key, super::hasAnyReference);
     }
 
@@ -184,14 +184,14 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
 
     @Nonnegative
     @Override
-    public int appendReference(FeatureKey key, Id reference) {
+    public int appendReference(SingleFeatureKey key, Id reference) {
         cache.put(key, true);
         return super.appendReference(key, reference);
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         cache.put(key, true);
         return super.appendAllReferences(key, references);
     }
@@ -204,7 +204,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         cache.invalidate(key);
         super.removeAllReferences(key);
     }
@@ -212,7 +212,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Fe
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(FeatureKey key) {
+    public Optional<Integer> sizeOfReference(SingleFeatureKey key) {
         Optional<Integer> size = super.sizeOfReference(key);
         cache.put(key, size.isPresent() && size.get() != 0);
         return size;

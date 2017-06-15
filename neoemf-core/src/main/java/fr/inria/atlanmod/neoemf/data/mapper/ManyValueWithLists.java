@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
- * {@link List}s. The implementation used is specified by the {@link #getOrCreateList(FeatureKey)} method.
+ * {@link List}s. The implementation used is specified by the {@link #getOrCreateList(SingleFeatureKey)} method.
  * <p>
  * Using a {@link List}-based implementation allows to benefit from the rich Java {@link java.util.Collection} API, with
  * the cost of a small memory overhead compared to raw arrays.
@@ -48,7 +48,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(FeatureKey key) {
+    default <V> List<V> allValuesOf(SingleFeatureKey key) {
         return this.<List<V>>valueOf(key)
                 .orElseGet(Collections::emptyList);
     }
@@ -131,7 +131,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
      *
      * @return a new {@link List}
      */
-    default <V> List<V> getOrCreateList(FeatureKey key) {
+    default <V> List<V> getOrCreateList(SingleFeatureKey key) {
         return new ArrayList<>();
     }
 }

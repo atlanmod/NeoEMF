@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Optional;
 
@@ -31,14 +31,14 @@ public interface ReferenceWithString extends ReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(FeatureKey key) {
+    default Optional<Id> referenceOf(SingleFeatureKey key) {
         return this.<String>valueOf(key)
                 .map(this::fromString);
     }
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    default Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         return this.valueFor(key, toString(reference))
                 .map(this::fromString);
     }

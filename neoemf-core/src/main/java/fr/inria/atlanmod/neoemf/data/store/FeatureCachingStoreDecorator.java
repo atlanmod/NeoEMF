@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -45,20 +46,20 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Nonnull
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public <V> Optional<V> valueOf(FeatureKey key) {
-        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(k).orElse(null)));
+    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(SingleFeatureKey.class.cast(k)).orElse(null)));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(FeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         cache.put(key, value);
 
         return super.valueFor(key, value);
     }
 
     @Override
-    public <V> void unsetValue(FeatureKey key) {
+    public <V> void unsetValue(SingleFeatureKey key) {
         cache.invalidate(key);
 
         super.unsetValue(key);
@@ -67,20 +68,20 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     @Nonnull
     @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public Optional<Id> referenceOf(FeatureKey key) {
-        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(k).orElse(null))));
+    public Optional<Id> referenceOf(SingleFeatureKey key) {
+        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(SingleFeatureKey.class.cast(k)).orElse(null))));
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(FeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
         cache.put(key, reference);
 
         return super.referenceFor(key, reference);
     }
 
     @Override
-    public void unsetReference(FeatureKey key) {
+    public void unsetReference(SingleFeatureKey key) {
         cache.invalidate(key);
 
         super.unsetReference(key);
@@ -113,7 +114,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public <V> int appendValue(FeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureKey key, V value) {
         int position = super.appendValue(key, value);
 
         cache.put(key.withPosition(position), value);
@@ -123,7 +124,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(FeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
         int firstPosition = super.appendAllValues(key, values);
 
         IntStream.range(0, values.size())
@@ -142,7 +143,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     }
 
     @Override
-    public <V> void removeAllValues(FeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureKey key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
@@ -194,7 +195,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public int appendReference(FeatureKey key, Id reference) {
+    public int appendReference(SingleFeatureKey key, Id reference) {
         int position = super.appendReference(key, reference);
 
         cache.put(key.withPosition(position), reference);
@@ -204,7 +205,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public int appendAllReferences(FeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         int firstPosition = super.appendAllReferences(key, references);
 
         IntStream.range(0, references.size())
@@ -223,7 +224,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
     }
 
     @Override
-    public void removeAllReferences(FeatureKey key) {
+    public void removeAllReferences(SingleFeatureKey key) {
         IntStream.range(0, sizeOfReference(key).orElse(0))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
