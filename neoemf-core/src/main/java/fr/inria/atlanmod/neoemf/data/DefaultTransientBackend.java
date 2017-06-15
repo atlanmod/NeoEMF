@@ -19,8 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,10 +26,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
- * A {@link TransientBackend} that stores all elements in {@link ConcurrentHashMap}s.
+ * A {@link TransientBackend} that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend extends AbstractTransientBackend {
+public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeatureKey> {
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -80,25 +78,15 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
-        checkNotNull(key);
-
-        return Optional.ofNullable(cast(features.get(key)));
+    protected Map<SingleFeatureKey, Object> allFeatures() {
+        return features;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
-
-        return Optional.ofNullable(cast(features.put(key, value)));
-    }
-
-    @Override
-    public <V> void unsetValue(SingleFeatureKey key) {
+    protected SingleFeatureKey transform(SingleFeatureKey key) {
         checkNotNull(key);
 
-        features.remove(key);
+        return key;
     }
 }

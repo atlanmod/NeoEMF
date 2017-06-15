@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,17 +29,19 @@ import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
- * A {@link TransientBackend} that is bounded to a unique {@link Id}.
+ * A {@link TransientBackend}, bounded to a unique {@link Id}, that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public final class BoundedTransientBackend extends AbstractTransientBackend {
+public final class BoundedTransientBackend extends AbstractTransientBackend<String> {
 
     /**
-     * A map that holds all created instances of {@code BoundedTransientBackend}.
+     * A map that holds all features associated to their owner {@link Id}.
+     *
+     * @see #features
+     * @see #forId(Id)
      */
     @Nonnull
-    // TODO Attach the registry to a resource to avoid conflicts
-    private static final Map<Id, Backend> REGISTRY = new HashMap<>();
+    private static final Map<Id, Map<String, Object>> FEATURES_REGISTRY = new HashMap<>();
 
     /**
      * A shared in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -61,7 +62,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
      * identified by their name.
      */
     @Nonnull
-    private final Map<String, Object> features = new HashMap<>();
+    private final Map<String, Object> features;
 
     /**
      * The owner of this back-end.
@@ -72,10 +73,12 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
     /**
      * Constructs a new {@code BoundedTransientBackend} with the given {@code owner}.
      *
-     * @param owner the identifier of the owner of this back-end
+     * @param owner    the identifier of the owner of this back-end
+     * @param features the map used for stroring the features of this backend
      */
-    private BoundedTransientBackend(Id owner) {
+    private BoundedTransientBackend(Id owner, Map<String, Object> features) {
         this.owner = owner;
+        this.features = features;
 
         Log.debug("BoundedTransientBackend created for {0}", owner);
     }
@@ -85,27 +88,24 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
      *
      * @param owner the identifier of the owner of this back-end
      *
-     * @return a {@code BoundedTransientBackend}
+     * @return a backend, bounded to the {@code owner}
      */
     public static Backend forId(Id owner) {
-        return REGISTRY.computeIfAbsent(owner, BoundedTransientBackend::new);
+        return new BoundedTransientBackend(owner, FEATURES_REGISTRY.computeIfAbsent(owner, (o) -> new HashMap<>()));
     }
 
     @Override
     protected void safeClose() {
-        // Clear all features associated with the owner
-        features.clear();
-
         // Remove the container from the owner if present (accessible only by the owner)
         CONTAINERS.remove(owner);
 
-        // Unregister the current back-end
-        REGISTRY.remove(owner);
+        // Unregister the current back-end and clear all features associated with the owner
+        FEATURES_REGISTRY.remove(owner).clear();
 
         Log.debug("BoundedTransientBackend closed for {0}", owner);
 
         // Cleans all shared in-memory maps: they will no longer be used
-        if (REGISTRY.isEmpty()) {
+        if (FEATURES_REGISTRY.isEmpty()) {
             Log.debug("Cleaning BoundedTransientBackend");
 
             CONTAINERS.clear();
@@ -132,36 +132,16 @@ public final class BoundedTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
-        checkOwner(key.id());
-
-        return Optional.ofNullable(cast(features.get(key.name())));
+    protected Map<String, Object> allFeatures() {
+        return features;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
-        checkOwner(key.id());
-        checkNotNull(value);
+    protected String transform(SingleFeatureKey key) {
+        checkArgument(Objects.equals(owner, checkNotNull(key.id())),
+                "%s is not the owner of this back-end (%s)", key.id(), owner);
 
-        return Optional.ofNullable(cast(features.put(key.name(), value)));
-    }
-
-    @Override
-    public <V> void unsetValue(SingleFeatureKey key) {
-        checkOwner(key.id());
-
-        features.remove(key.name());
-    }
-
-    /**
-     * Checks that the {@code id} is the same as the owner of that store.
-     *
-     * @param id the identifier to check the ownership
-     *
-     * @throws IllegalArgumentException if the {@code id} is not {@link #owner}
-     */
-    private void checkOwner(Id id) {
-        checkArgument(Objects.equals(owner, checkNotNull(id)), "%s is not the owner of this back-end (%s)", id, owner);
+        return key.name();
     }
 }
