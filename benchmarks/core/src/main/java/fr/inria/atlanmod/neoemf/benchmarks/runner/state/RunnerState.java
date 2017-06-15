@@ -15,7 +15,6 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsNeo4jAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
@@ -29,53 +28,83 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.RegEx;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.common.Preconditions.checkState;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Adapter} and the preloaded
- * resource file. The datastore is not loaded.
+ * resource file.
+ * <p>
+ * <p>Note:</p> It does not load the datastores.
  */
 @State(Scope.Thread)
 public class RunnerState {
 
     /**
-     * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
-     * <p>
-     * By default, all registered resources are used.
+     * A map that holds all existing {@link Adapter} instances, identified by their name.
      */
-    @Param({"set1", "set2", "set3", "set4", "set5"})
+    private static final Map<String, Class<? extends Adapter>> ADAPTERS = new HashMap<>();
+
+    static {
+        ADAPTERS.put("xmi", XmiAdapter.class);
+        ADAPTERS.put("cdo", CdoAdapter.class);
+        ADAPTERS.put("mapdb-i", MapDbAdapter.WithIndices.class);
+        ADAPTERS.put("mapdb-a", MapDbAdapter.WithArrays.class);
+        ADAPTERS.put("mapdb-l", MapDbAdapter.WithLists.class);
+        ADAPTERS.put("mapdb-m", MapDbAdapter.WithMaps.class);
+        ADAPTERS.put("berkeleydb-i", BerkeleyDbAdapter.WithIndices.class);
+        ADAPTERS.put("berkeleydb-a", BerkeleyDbAdapter.WithArrays.class);
+        ADAPTERS.put("berkeleydb-l", BerkeleyDbAdapter.WithLists.class);
+        ADAPTERS.put("berkeleydb-m", BerkeleyDbAdapter.WithMaps.class);
+        ADAPTERS.put("tinker", BlueprintsAdapter.Tinker.class);
+        ADAPTERS.put("neo4j", BlueprintsAdapter.Neo4j.class);
+    }
+
+    /**
+     * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
+     */
+    @Param({
+            "set1",
+            "set2",
+            "set3",
+//            "set4",
+//            "set5"
+    })
     protected String r;
 
     /**
      * The name of the current {@link Adapter}.
-     * <p>
-     * By default, all registered {@link Adapter}s are used.
      */
     @Param({
-            XmiAdapter.NAME,
-            CdoAdapter.NAME,
-            BlueprintsAdapter.NAME,
-            BlueprintsNeo4jAdapter.NAME,
-            BerkeleyDbAdapter.NAME,
-            MapDbAdapter.NAME,
+            "xmi",
+            "cdo",
+//            "tinker",
+            "neo4j",
+            "berkeleydb-i",
+//            "berkeleydb-a",
+//            "berkeleydb-l",
+//            "berkeleydb-m",
+            "mapdb-i",
+//            "mapdb-a",
+//            "mapdb-l",
+//            "mapdb-m",
     })
     protected String a;
 
     /**
      * The name of the current {@link fr.inria.atlanmod.neoemf.data.store.Store}s.
-     * <p>
-     * By default, no store is used.
      */
-    @Param("a")
+    @Param("AMC")
     protected String o;
 
     /**
@@ -94,9 +123,9 @@ public class RunnerState {
     @Nonnull
     public Adapter getAdapter() throws Exception {
         if (isNull(adapter)) {
-            Map<String, Class<? extends Adapter>> allAdapters = allAdapters();
-            checkArgument(allAdapters.containsKey(a), "No adapter named '%s' is registered", a);
-            adapter = allAdapters.get(a).newInstance();
+            Class<? extends Adapter> instance = ADAPTERS.get(a);
+            checkState(nonNull(instance), "No adapter named '%s' is registered", a);
+            adapter = ADAPTERS.get(a).newInstance();
         }
         return adapter;
     }
@@ -121,95 +150,145 @@ public class RunnerState {
     }
 
     /**
-     * Returns all existing {@link Adapter} instances.
-     *
-     * @return an immutable map
-     */
-    @Nonnull
-    private Map<String, Class<? extends Adapter>> allAdapters() {
-        Map<String, Class<? extends Adapter>> map = new HashMap<>();
-
-        map.put(XmiAdapter.NAME, XmiAdapter.class);
-        map.put(CdoAdapter.NAME, CdoAdapter.class);
-        map.put(MapDbAdapter.NAME, MapDbAdapter.class);
-        map.put(BerkeleyDbAdapter.NAME, BerkeleyDbAdapter.class);
-        map.put(BlueprintsAdapter.NAME, BlueprintsAdapter.class);
-        map.put(BlueprintsNeo4jAdapter.NAME, BlueprintsNeo4jAdapter.class);
-
-        return Collections.unmodifiableMap(map);
-    }
-
-    /**
      * Returns all existing {@link PersistentStoreOptions} instances.
      *
      * @return an immutable map
      */
     @Nonnull
     public CommonOptions getOptions() {
-        CommonOptions options = CommonOptions.builder();
+        return Options.parse(o);
+    }
 
-        String lowerOptions = o.toLowerCase();
+    /**
+     * A class that handles options that can be used as benchmarks parameters.
+     */
+    @ParametersAreNonnullByDefault
+    private final static class Options {
 
-        // Cache features
-        if (lowerOptions.contains("f")) {
-            Log.debug("Use feature caching");
-            options.cacheFeatures();
-        }
+        /**
+         * The regex of a number argument, as {@code {0189}}.
+         */
+        @RegEx
+        private static final String ARG_NUMBER = "\\{(-?[0-9]+)\\}";
 
-        // Cache presence
-        if (lowerOptions.contains("p")) {
-            Log.debug("Use presence caching");
-            options.cacheIsSet();
-        }
+        /**
+         * The regex of a text argument, as {@code {ABYZ}}.
+         */
+        @RegEx
+        private static final String ARG_TEXT = "\\{([A-Z]+)\\}";
 
-        // Cache sizes
-        if (lowerOptions.contains("s")) {
-            Log.debug("Use size caching");
-            options.cacheSizes();
-        }
+        /**
+         * The option for caching features.
+         */
+        private static final String CACHE_FEATURES = "F";
 
-        // Cache metaclasses
-        if (lowerOptions.contains("m")) {
-            Log.debug("Use metaclass caching");
-            options.cacheMetaclasses();
-        }
+        /**
+         * The option for presence caching.
+         */
+        private static final String CACHE_IS_SET = "P";
 
-        // Cache containers
-        if (lowerOptions.contains("c")) {
-            Log.debug("Use container caching");
-            options.cacheContainers();
-        }
+        /**
+         * The option for size caching.
+         */
+        private static final String CACHE_SIZES = "S";
 
-        // Stats recording
-        if (lowerOptions.contains("r")) {
-            Log.debug("Use statistics recording");
-            options.recordStats();
-        }
+        /**
+         * The option for metaclass caching.
+         */
+        private static final String CACHE_METACLASSES = "M";
 
-        // Logging
-        Matcher levelMatcher = Pattern.compile("l\\{([a-zA-Z]+)\\}", Pattern.CASE_INSENSITIVE).matcher(lowerOptions);
-        if (levelMatcher.find()) {
-            fr.inria.atlanmod.common.log.Level level = fr.inria.atlanmod.common.log.Level.valueOf(levelMatcher.group(1).toUpperCase());
-            Log.debug("Use logging with level = {0}", level.name());
-            options.log(level);
-        }
-        else if (lowerOptions.contains("l")) {
-            Log.debug("Use logging with default level");
-            options.log();
-        }
+        /**
+         * The option for container caching.
+         */
+        private static final String CACHE_CONTAINERS = "C";
 
-        // Auto-saving
-        Matcher chuckMatcher = Pattern.compile("a\\{(-?[0-9]+)\\}", Pattern.CASE_INSENSITIVE).matcher(lowerOptions);
-        if (chuckMatcher.find()) {
-            long chunk = Long.parseLong(chuckMatcher.group(1));
-            Log.debug("Use auto-saving with chunk = {0,number,#}", chunk);
-            options.autoSave(chunk);
-        }
-        else { // Defined by default
-            Log.debug("Use auto-saving with default chunk");
-            options.autoSave();
-        }
+        /**
+         * The option for recording stats.
+         */
+        private static final String RECORD_STATS = "R";
 
-        return options;
+        /**
+         * The option for logging database calls.
+         */
+        private static final String LOG = "L";
+
+        /**
+         * The pattern for logging database calls, at a specified level.
+         */
+        private static final Pattern LOG_LEVEL = Pattern.compile(LOG + ARG_TEXT, Pattern.CASE_INSENSITIVE);
+
+        /**
+         * The option for auto-saving.
+         */
+        private static final String AUTO_SAVE = "A";
+
+        /**
+         * The pattern for auto-saving, with a specified chunk.
+         */
+        private static final Pattern AUTO_SAVE_CHUCK = Pattern.compile(AUTO_SAVE + ARG_NUMBER, Pattern.CASE_INSENSITIVE);
+
+        /**
+         * Parses the given {@code text} and returns the associated {@link CommonOptions}.
+         *
+         * @param text the text containg the options to define
+         *
+         * @return a {@link CommonOptions}
+         */
+        @Nonnull
+        public static CommonOptions parse(String text) {
+            CommonOptions options = CommonOptions.builder();
+
+            String upperText = text.toUpperCase();
+
+            // Cache features
+            if (upperText.contains(Options.CACHE_FEATURES)) {
+                options.cacheFeatures();
+            }
+
+            // Cache presence
+            if (upperText.contains(Options.CACHE_IS_SET)) {
+                options.cacheIsSet();
+            }
+
+            // Cache sizes
+            if (upperText.contains(Options.CACHE_SIZES)) {
+                options.cacheSizes();
+            }
+
+            // Cache metaclasses (Defined by default)
+//            if (upperText.contains(Options.CACHE_METACLASSES)) {
+                options.cacheMetaclasses();
+//            }
+
+            // Cache containers (Defined by default)
+//            if (upperText.contains(Options.CACHE_CONTAINERS)) {
+                options.cacheContainers();
+//            }
+
+            // Stats recording
+            if (upperText.contains(Options.RECORD_STATS)) {
+                options.recordStats();
+            }
+
+            // Logging
+            Matcher levelMatcher = Options.LOG_LEVEL.matcher(upperText);
+            if (levelMatcher.find()) {
+                options.log(fr.inria.atlanmod.common.log.Level.valueOf(levelMatcher.group(1)));
+            }
+            else if (upperText.contains(Options.LOG)) {
+                options.log();
+            }
+
+            // Auto-saving
+            Matcher chuckMatcher = Options.AUTO_SAVE_CHUCK.matcher(upperText);
+            if (chuckMatcher.find()) {
+                options.autoSave(Long.parseLong(chuckMatcher.group(1)));
+            }
+            else { // (Defined by default)
+                options.autoSave();
+            }
+
+            return options;
+        }
     }
 }

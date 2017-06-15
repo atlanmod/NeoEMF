@@ -32,11 +32,6 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 abstract class AbstractAdapter implements Adapter.Internal {
 
     /**
-     * The name of this adapter.
-     */
-    protected final String name;
-
-    /**
      * The extension of the adapted resource, used to create the stores.
      */
     private final String resourceExtension;
@@ -54,22 +49,14 @@ abstract class AbstractAdapter implements Adapter.Internal {
     /**
      * Constructs a new {@code AbstractAdatper}.
      *
-     * @param name              the name of this adapter
      * @param resourceExtension the extension of the adapted resource, used to create the stores
      * @param storeExtension    the extension of the resource, used for benchmarks
      * @param packageClass      the class of the {@link EPackage} associated to this adapter
      */
-    protected AbstractAdapter(String name, String resourceExtension, String storeExtension, Class<?> packageClass) {
-        this.name = checkNotNull(name);
+    protected AbstractAdapter(String resourceExtension, String storeExtension, Class<?> packageClass) {
         this.resourceExtension = checkNotNull(resourceExtension);
         this.storeExtension = checkNotNull(storeExtension);
         this.packageClass = checkNotNull(packageClass);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Nonnull

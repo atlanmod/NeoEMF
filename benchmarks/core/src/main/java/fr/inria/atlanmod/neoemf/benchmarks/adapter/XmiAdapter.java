@@ -30,16 +30,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class XmiAdapter extends AbstractAdapter {
 
-    public static final String NAME = "xmi";
-
-    private static final String RESOURCE_EXTENSION = "xmi";
-    private static final String STORE_EXTENSION = "xmi";  // -> xmi.xmi
-
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
 
     @SuppressWarnings("unused") // Called dynamically
     public XmiAdapter() {
-        super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
+        super("xmi", "xmi", EPACKAGE_CLASS);
     }
 
     @Nonnull

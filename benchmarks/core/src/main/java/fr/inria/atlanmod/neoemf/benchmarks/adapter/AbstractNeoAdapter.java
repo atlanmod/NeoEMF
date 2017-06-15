@@ -32,12 +32,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 abstract class AbstractNeoAdapter extends AbstractAdapter {
 
-    private static final String RESOURCE_EXTENSION = "neoemf";
-
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
 
-    protected AbstractNeoAdapter(String name, String storeExtension) {
-        super(name, RESOURCE_EXTENSION, storeExtension, EPACKAGE_CLASS);
+    protected AbstractNeoAdapter(String storeExtension) {
+        super("neoemf", storeExtension + ".resource", EPACKAGE_CLASS);
     }
 
     /**

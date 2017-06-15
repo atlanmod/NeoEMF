@@ -32,6 +32,7 @@ public class RunnerCreation extends Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
     }

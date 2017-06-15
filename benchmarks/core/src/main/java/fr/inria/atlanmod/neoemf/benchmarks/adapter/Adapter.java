@@ -110,14 +110,6 @@ public interface Adapter {
         }
 
         /**
-         * Returns the name of this adapter.
-         *
-         * @return the name
-         */
-        @Nonnull
-        String getName();
-
-        /**
          * Returns the extension of the adapted {@link Resource}, used to create the stores.
          *
          * @return the extension

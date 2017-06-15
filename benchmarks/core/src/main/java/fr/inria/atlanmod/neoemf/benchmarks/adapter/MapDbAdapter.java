@@ -32,15 +32,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
  */
 @ParametersAreNonnullByDefault
-public class MapDbAdapter extends AbstractNeoAdapter {
+public abstract class MapDbAdapter extends AbstractNeoAdapter {
 
-    public static final String NAME = "neo-mapdb";
-
-    private static final String STORE_EXTENSION = "mapdb.resource"; // -> neoemf.mapdb.resource
-
-    @SuppressWarnings("unused") // Called dynamically
-    public MapDbAdapter() {
-        super(NAME, STORE_EXTENSION);
+    protected MapDbAdapter(String storeExtension) {
+        super("mapdb." + storeExtension);
     }
 
     @Nonnull
@@ -60,9 +55,79 @@ public class MapDbAdapter extends AbstractNeoAdapter {
         return resourceSet.createResource(uri);
     }
 
-    @Nonnull
-    @Override
-    public Map<String, Object> getOptions() {
-        return MapDbOptions.builder().asMap();
+    /**
+     * A {@link MapDbAdapter} with a mapping with indices.
+     */
+    public static final class WithIndices extends MapDbAdapter {
+
+        @SuppressWarnings("unused") // Called dynamically
+        public WithIndices() {
+            super("indices");
+        }
+
+        @Nonnull
+        @Override
+        public Map<String, Object> getOptions() {
+            return MapDbOptions.builder()
+                    .withIndices()
+                    .asMap();
+        }
+    }
+
+    /**
+     * A {@link MapDbAdapter} with a mapping with arrays.
+     */
+    public static final class WithArrays extends MapDbAdapter {
+
+        @SuppressWarnings("unused") // Called dynamically
+        public WithArrays() {
+            super("arrays");
+        }
+
+        @Nonnull
+        @Override
+        public Map<String, Object> getOptions() {
+            return MapDbOptions.builder()
+                    .withArrays()
+                    .asMap();
+        }
+    }
+
+    /**
+     * A {@link MapDbAdapter} with a mapping with lists.
+     */
+    public static final class WithLists extends MapDbAdapter {
+
+        @SuppressWarnings("unused") // Called dynamically
+        public WithLists() {
+            super("lists");
+        }
+
+        @Nonnull
+        @Override
+        public Map<String, Object> getOptions() {
+            return MapDbOptions.builder()
+                    .withLists()
+                    .asMap();
+        }
+    }
+
+    /**
+     * A {@link MapDbAdapter} with a mapping with maps.
+     */
+    public static final class WithMaps extends MapDbAdapter {
+
+        @SuppressWarnings("unused") // Called dynamically
+        public WithMaps() {
+            super("maps");
+        }
+
+        @Nonnull
+        @Override
+        public Map<String, Object> getOptions() {
+            return MapDbOptions.builder()
+                    .withMaps()
+                    .asMap();
+        }
     }
 }

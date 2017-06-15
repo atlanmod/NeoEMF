@@ -62,11 +62,6 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public class CdoAdapter extends AbstractAdapter {
 
-    public static final String NAME = "cdo";
-
-    private static final String RESOURCE_EXTENSION = "cdo";
-    private static final String STORE_EXTENSION = "resource"; // -> cdo.resource
-
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
 
     private EmbeddedCdoServer server;
@@ -77,7 +72,7 @@ public class CdoAdapter extends AbstractAdapter {
 
     @SuppressWarnings("unused") // Called dynamically
     public CdoAdapter() {
-        super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
+        super("cdo", "resource", EPACKAGE_CLASS);
     }
 
     @Nonnull

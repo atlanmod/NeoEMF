@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -29,22 +30,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} using TinkerGraph.
+ * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsAdapter extends AbstractNeoAdapter {
+public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
 
-    public static final String NAME = "neo-tinker";
-
-    private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
-
-    @SuppressWarnings("unused") // Called dynamically
-    public BlueprintsAdapter() {
-        this(NAME, STORE_EXTENSION);
-    }
-
-    protected BlueprintsAdapter(String name, String storeExtension) {
-        super(name, storeExtension);
+    protected BlueprintsAdapter(String storeExtension) {
+        super(storeExtension);
     }
 
     @Nonnull
@@ -64,9 +56,41 @@ public class BlueprintsAdapter extends AbstractNeoAdapter {
         return resourceSet.createResource(uri);
     }
 
-    @Nonnull
-    @Override
-    public Map<String, Object> getOptions() {
-        return BlueprintsOptions.builder().asMap();
+    /**
+     * An {@link BlueprintsAdapter} using TinkerGraph.
+     */
+    @ParametersAreNonnullByDefault
+    public static class Tinker extends BlueprintsAdapter {
+
+        @SuppressWarnings("unused") // Called dynamically
+        public Tinker() {
+            super("tinker");
+        }
+
+        @Nonnull
+        @Override
+        public Map<String, Object> getOptions() {
+            return BlueprintsOptions.builder()
+                    .asMap();
+        }
+    }
+
+    /**
+     * An {@link BlueprintsAdapter} using Neo4j.
+     */
+    @ParametersAreNonnullByDefault
+    public static class Neo4j extends BlueprintsAdapter {
+
+        @SuppressWarnings("unused") // Called dynamically
+        public Neo4j() {
+            super("neo4j");
+        }
+
+        @Nonnull
+        @Override
+        public Map<String, Object> getOptions() {
+            return BlueprintsNeo4jOptions.builder()
+                    .asMap();
+        }
     }
 }

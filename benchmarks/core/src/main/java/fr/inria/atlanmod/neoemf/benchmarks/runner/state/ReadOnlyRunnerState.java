@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
- * This state provided a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
+ * This state provides a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
  * <p/>
  * It is used for simple queries.
  */
