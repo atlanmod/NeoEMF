@@ -14,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Serializer} for {@link SingleFeatureKey}s.
  */
 @ParametersAreNonnullByDefault
-final class SerializerSingleFeatureKey implements Serializer<SingleFeatureKey> {
+final class SingleFeatureKeySerializer implements Serializer<SingleFeatureKey> {
 
     @Override
     public void serialize(SingleFeatureKey key, DataOutput out) throws IOException {

@@ -16,7 +16,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * A {@link Serializer} for any object, using Java serialization.
@@ -28,8 +27,6 @@ final class ObjectSerializer<T> implements Serializer<T> {
 
     @Override
     public void serialize(T t, @WillNotClose DataOutput out) throws IOException {
-        checkNotNull(t);
-        checkNotNull(out);
         checkArgument(Serializable.class.isInstance(t),
                 "Serializer requires a Serializable payload but received an object of type " + t.getClass().getName());
 
@@ -50,8 +47,6 @@ final class ObjectSerializer<T> implements Serializer<T> {
     @Override
     @SuppressWarnings("unchecked")
     public T deserialize(@WillNotClose DataInput in) throws IOException {
-        checkNotNull(in);
-
         if (ObjectInput.class.isInstance(in)) {
             return deserialize(ObjectInput.class.cast(in));
         }

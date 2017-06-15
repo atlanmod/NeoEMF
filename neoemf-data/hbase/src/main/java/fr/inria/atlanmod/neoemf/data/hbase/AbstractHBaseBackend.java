@@ -19,7 +19,9 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
-import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
+import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
+import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.io.serializer.SerializerFactory;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -79,6 +81,11 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     private static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
 
     /**
+     * The {@link SerializerFactory} to use for creating the {@link Serializer} instances.
+     */
+    protected final SerializerFactory serializerFactory;
+
+    /**
      * The HBase table used to access the model.
      */
     protected final Table table;
@@ -89,7 +96,11 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
      * @param table the HBase table
      */
     protected AbstractHBaseBackend(Table table) {
-        this.table = checkNotNull(table);
+        checkNotNull(table);
+
+        this.serializerFactory = JavaSerializerFactory.getInstance();
+
+        this.table = table;
     }
 
     @Override
@@ -205,7 +216,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
                         .map(value -> {
                             try {
-                                return Optional.of(Serializers.<V>forObject().deserialize(value));
+                                return Optional.of(serializerFactory.<V>forAny().deserialize(value));
                             }
                             catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -225,7 +236,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
         try {
             Put put = new Put(Bytes.toBytes(key.id().toString()))
-                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), Serializers.<V>forObject().serialize(value));
+                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), serializerFactory.<V>forAny().serialize(value));
 
             table.put(put);
         }

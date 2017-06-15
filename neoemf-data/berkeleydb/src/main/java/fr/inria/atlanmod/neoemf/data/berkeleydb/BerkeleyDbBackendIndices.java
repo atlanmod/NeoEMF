@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +61,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     protected BerkeleyDbBackendIndices(Environment environment, DatabaseConfig databaseConfig) {
         super(environment, databaseConfig);
 
-        this.manyFeatures = environment.openDatabase(null, "multivaluedFeatures", databaseConfig);
+        this.manyFeatures = environment.openDatabase(null, "features/many", databaseConfig);
     }
 
     @Override
@@ -87,7 +86,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(manyFeatures, key, Serializers.forManyFeatureKey(), Serializers.forObject());
+        return get(manyFeatures, key, serializerFactory.forManyFeatureKey(), serializerFactory.forAny());
     }
 
     @Override
@@ -95,10 +94,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value, Serializers.forManyFeatureKey(), Serializers.forObject());
+            put(manyFeatures, key, value, serializerFactory.forManyFeatureKey(), serializerFactory.forAny());
         }
         else {
-            delete(manyFeatures, key, Serializers.forManyFeatureKey());
+            delete(manyFeatures, key, serializerFactory.forManyFeatureKey());
         }
     }
 }

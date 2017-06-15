@@ -26,8 +26,9 @@ import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
 import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
+import fr.inria.atlanmod.neoemf.io.serializer.SerializerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +46,11 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements BerkeleyDbBackend {
+
+    /**
+     * The {@link SerializerFactory} to use for creating the {@link Serializer} instances.
+     */
+    protected final SerializerFactory serializerFactory;
 
     /**
      * The databases environment.
@@ -81,11 +87,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(environment);
         checkNotNull(databaseConfig);
 
+        this.serializerFactory = JavaSerializerFactory.getInstance();
+
         this.environment = environment;
 
-        containers = environment.openDatabase(null, "eContainer", databaseConfig);
-        instances = environment.openDatabase(null, "neoInstanceOf", databaseConfig);
-        features = environment.openDatabase(null, "features", databaseConfig);
+        this.containers = environment.openDatabase(null, "containers", databaseConfig);
+        this.instances = environment.openDatabase(null, "instances", databaseConfig);
+        this.features = environment.openDatabase(null, "features/single", databaseConfig);
     }
 
     @Override
@@ -121,7 +129,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Optional<ContainerDescriptor> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(containers, id, Serializers.forId(), Serializers.forContainerDescriptor());
+        return get(containers, id, serializerFactory.forId(), serializerFactory.forContainer());
     }
 
     @Override
@@ -129,14 +137,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(id);
         checkNotNull(container);
 
-        put(containers, id, container, Serializers.forId(), Serializers.forContainerDescriptor());
+        put(containers, id, container, serializerFactory.forId(), serializerFactory.forContainer());
     }
 
     @Override
     public void unsetContainer(Id id) {
         checkNotNull(id);
 
-        delete(containers, id, Serializers.forId());
+        delete(containers, id, serializerFactory.forId());
     }
 
     @Nonnull
@@ -144,7 +152,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Optional<ClassDescriptor> metaclassOf(Id id) {
         checkNotNull(id);
 
-        return get(instances, id, Serializers.forId(), Serializers.forClassDescriptor());
+        return get(instances, id, serializerFactory.forId(), serializerFactory.forClass());
     }
 
     @Override
@@ -152,7 +160,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(id);
         checkNotNull(metaclass);
 
-        put(instances, id, metaclass, Serializers.forId(), Serializers.forClassDescriptor());
+        put(instances, id, metaclass, serializerFactory.forId(), serializerFactory.forClass());
     }
 
     @Nonnull
@@ -160,7 +168,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public <V> Optional<V> valueOf(SingleFeatureKey key) {
         checkNotNull(key);
 
-        return get(features, key, Serializers.forSingleFeatureKey(), Serializers.forObject());
+        return get(features, key, serializerFactory.forSingleFeatureKey(), serializerFactory.forAny());
     }
 
     @Nonnull
@@ -170,7 +178,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
-        put(features, key, value, Serializers.forSingleFeatureKey(), Serializers.forObject());
+        put(features, key, value, serializerFactory.forSingleFeatureKey(), serializerFactory.forAny());
         return previousValue;
     }
 
@@ -178,7 +186,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public void unsetValue(SingleFeatureKey key) {
         checkNotNull(key);
 
-        delete(features, key, Serializers.forSingleFeatureKey());
+        delete(features, key, serializerFactory.forSingleFeatureKey());
     }
 
     /**
@@ -217,13 +225,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
             DatabaseEntry dbValue = new DatabaseEntry();
 
-            Optional<V> value;
+            Optional<V> value = Optional.empty();
+
             if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 value = Optional.of(valueSerializer.deserialize(dbValue.getData()));
             }
-            else {
-                value = Optional.empty();
-            }
+
             return value;
         }
         catch (IOException e) {

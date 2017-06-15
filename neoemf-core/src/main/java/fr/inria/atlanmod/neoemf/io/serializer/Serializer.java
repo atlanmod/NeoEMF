@@ -24,8 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-
 /**
  * An object that is responsible of {@link Object} to {@code byte[]} encoding and decoding.
  *
@@ -47,8 +45,6 @@ public interface Serializer<T> {
      */
     @Nonnull
     default byte[] serialize(T t) throws IOException {
-        checkNotNull(t);
-
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream out = new ObjectOutputStream(baos)) {
             serialize(t, out);
             out.flush();

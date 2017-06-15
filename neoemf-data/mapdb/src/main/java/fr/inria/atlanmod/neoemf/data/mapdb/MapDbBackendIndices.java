@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.io.serializer.Serializers;
 
 import org.mapdb.DB;
 import org.mapdb.Serializer;
@@ -65,7 +64,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
         super(db);
 
         this.manyFeatures = db.hashMap("features/many")
-                .keySerializer(new SerializerDecorator<>(Serializers.forManyFeatureKey()))
+                .keySerializer(new SerializerDecorator<>(serializerFactory.forManyFeatureKey()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
