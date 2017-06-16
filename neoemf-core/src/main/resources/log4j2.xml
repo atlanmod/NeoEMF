@@ -26,8 +26,8 @@
 
         <!-- Global -->
 
-        <Root level="DEBUG">
-            <AppenderRef ref="Console" level="INFO" />
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
         </Root>
 
         <!-- Logger for testing -->
