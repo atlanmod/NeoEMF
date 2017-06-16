@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public interface Adapter {
      * @return the resource file
      */
     @Nonnull
-    File getOrCreateResource(String name) throws Exception;
+    File getOrCreateResource(String name) throws IOException;
 
     /**
      * Creates a datastore from the given {@code file} in the default location.
@@ -45,7 +46,7 @@ public interface Adapter {
      * @return the datastore location
      */
     @Nonnull
-    File getOrCreateStore(File file) throws Exception;
+    File getOrCreateStore(File file) throws IOException;
 
     /**
      * Creates a datastore from the given {@code file} in a temporary location.
@@ -54,7 +55,7 @@ public interface Adapter {
      */
     @Nonnull
     @SuppressWarnings("UnusedReturnValue")
-    File createTempStore(File file) throws Exception;
+    File createTempStore(File file) throws IOException;
 
     /**
      * Loads a resource file from the given {@code file}.
@@ -62,17 +63,17 @@ public interface Adapter {
      * @return the loaded resource
      */
     @Nonnull
-    Resource load(File file, CommonOptions options) throws Exception;
+    Resource load(File file, CommonOptions options) throws IOException;
 
     /**
      * Saves the given {@code resource}.
      */
-    void save(Resource resource) throws Exception;
+    void save(Resource resource) throws IOException;
 
     /**
      * Unloads the given {@code resource}.
      */
-    void unload(Resource resource) throws Exception;
+    void unload(Resource resource);
 
     /**
      * Copies a datastore from the {@code file} to a temporary location.
@@ -80,7 +81,7 @@ public interface Adapter {
      * @return the location of the new datastore
      */
     @Nonnull
-    File copy(File file) throws Exception;
+    File copy(File file) throws IOException;
 
     /**
      * An {@link Adapter} used to create {@link Resource}s.

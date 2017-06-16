@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,7 +55,7 @@ public class XmiAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, CommonOptions options) throws Exception {
+    public Resource load(File file, CommonOptions options) throws IOException {
         initAndGetEPackage();
 
         ResourceSet resourceSet = new ResourceSetImpl();

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -72,7 +73,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, CommonOptions options) throws Exception {
+    public Resource load(File file, CommonOptions options) throws IOException {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());

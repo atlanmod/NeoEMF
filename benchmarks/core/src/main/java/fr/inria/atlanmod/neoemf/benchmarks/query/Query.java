@@ -27,7 +27,7 @@ public interface Query<V> {
     V call();
 
     @Nullable
-    default V callWithResult() throws Exception {
+    default V callWithResult() {
         V result;
 
         Log.info("Start query");

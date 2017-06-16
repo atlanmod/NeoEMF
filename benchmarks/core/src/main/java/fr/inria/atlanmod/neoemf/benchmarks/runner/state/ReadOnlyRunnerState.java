@@ -21,6 +21,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -76,7 +77,7 @@ public class ReadOnlyRunnerState extends RunnerState {
      * This method is automatically called when setup the iteration level.
      */
     @Setup(Level.Iteration)
-    public void loadResource() throws Exception {
+    public void loadResource() throws IOException {
         Log.info("Initializing the datastore");
         storeFile = getAdapter().getOrCreateStore(getResourceFile());
 
@@ -90,7 +91,7 @@ public class ReadOnlyRunnerState extends RunnerState {
      * This method is automatically called when tear down the iteration level.
      */
     @TearDown(Level.Iteration)
-    public void unloadResource() throws Exception {
+    public void unloadResource() {
         Log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {
             getAdapter().unload(resource);

@@ -75,10 +75,10 @@ public final class ResourceManager {
      *
      * @return the created file
      *
-     * @throws Exception if a error occurs during the creation of the resource
+     * @throws IOException if a error occurs during the creation of the resource
      */
     @Nonnull
-    public static File createResource(String resourceFileName, Adapter.Internal adapter) throws Exception {
+    public static File createResource(String resourceFileName, Adapter.Internal adapter) throws IOException {
         if (getRegisteredResources().containsKey(resourceFileName.toLowerCase())) {
             resourceFileName = getRegisteredResources().get(resourceFileName.toLowerCase());
         }
@@ -258,10 +258,10 @@ public final class ResourceManager {
          *
          * @return the created file
          *
-         * @throws Exception if a error occurs during the creation of the resource
+         * @throws IOException if a error occurs during the creation of the resource
          */
         @Nonnull
-        public static File migrate(File resourceFile, Adapter.Internal adapter) throws Exception {
+        public static File migrate(File resourceFile, Adapter.Internal adapter) throws IOException {
             Log.info("Adapting resource to URI {0}", adapter.initAndGetEPackage().getNsURI());
 
             String targetFileName = getNameWithoutExtension(resourceFile.getName()) + "." + adapter.getResourceExtension() + ".zxmi";

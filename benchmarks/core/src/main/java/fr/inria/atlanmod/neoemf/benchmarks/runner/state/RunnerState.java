@@ -28,6 +28,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -121,20 +122,26 @@ public class RunnerState {
      * Returns the current adapter.
      */
     @Nonnull
-    public Adapter getAdapter() throws Exception {
-        if (isNull(adapter)) {
-            Class<? extends Adapter> instance = ADAPTERS.get(a);
-            checkState(nonNull(instance), "No adapter named '%s' is registered", a);
-            adapter = ADAPTERS.get(a).newInstance();
+    public Adapter getAdapter() {
+        try {
+            if (isNull(adapter)) {
+                Class<? extends Adapter> instance = ADAPTERS.get(a);
+                checkState(nonNull(instance), "No adapter named '%s' is registered", a);
+                adapter = ADAPTERS.get(a).newInstance();
+            }
+            return adapter;
         }
-        return adapter;
+        catch (InstantiationException | IllegalAccessException e) {
+            Log.error(e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Returns the current resource file.
      */
     @Nonnull
-    public File getResourceFile() throws Exception {
+    public File getResourceFile() {
         return resourceFile;
     }
 
@@ -144,7 +151,7 @@ public class RunnerState {
      * This method is automatically called when setup the trial level.
      */
     @Setup(Level.Trial)
-    public void initResource() throws Exception {
+    public void initResource() throws IOException {
         Log.info("Initializing the resource");
         resourceFile = getAdapter().getOrCreateResource(r);
     }

@@ -21,6 +21,7 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,7 +43,7 @@ public class RunnerCreation extends Runner {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void create(RunnerState state) throws Exception {
+    public void create(RunnerState state) throws IOException {
         state.getAdapter().createTempStore(state.getResourceFile());
     }
 }

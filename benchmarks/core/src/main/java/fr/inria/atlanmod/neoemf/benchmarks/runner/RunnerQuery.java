@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Benchmark;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -29,7 +30,7 @@ public class RunnerQuery extends Runner {
     //region Simple queries.
 
     @Benchmark
-    public Long traverse(ReadOnlyRunnerState state) throws Exception {
+    public Long traverse(ReadOnlyRunnerState state) {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithResult();
     }
 
@@ -38,37 +39,37 @@ public class RunnerQuery extends Runner {
     //region Read-only queries.
 
     @Benchmark
-    public Integer classDeclarationAttributes(ReadOnlyRunnerState state) throws Exception {
+    public Integer classDeclarationAttributes(ReadOnlyRunnerState state) {
         return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer grabats(ReadOnlyRunnerState state) throws Exception {
+    public Integer grabats(ReadOnlyRunnerState state) {
         return QueryFactory.queryGrabats(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer invisibleMethodDeclarations(ReadOnlyRunnerState state) throws Exception {
+    public Integer invisibleMethodDeclarations(ReadOnlyRunnerState state) {
         return QueryFactory.queryInvisibleMethodDeclarations(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer orphanNonPrimitiveTypes(ReadOnlyRunnerState state) throws Exception {
+    public Integer orphanNonPrimitiveTypes(ReadOnlyRunnerState state) {
         return QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer thrownExceptionsPerPackage(ReadOnlyRunnerState state) throws Exception {
+    public Integer thrownExceptionsPerPackage(ReadOnlyRunnerState state) {
         return QueryFactory.queryThrownExceptionsPerPackage(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer unusedMethodsWithList(ReadOnlyRunnerState state) throws Exception {
+    public Integer unusedMethodsWithList(ReadOnlyRunnerState state) {
         return QueryFactory.queryUnusedMethodsWithList(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer unusedMethodsWithLoop(ReadOnlyRunnerState state) throws Exception {
+    public Integer unusedMethodsWithLoop(ReadOnlyRunnerState state) {
         return QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithResult();
     }
 
@@ -77,7 +78,7 @@ public class RunnerQuery extends Runner {
     //region Read/Write queries.
 
     @Benchmark
-    public Integer renameAllMethods(ReadWriteRunnerState state) throws Exception {
+    public Integer renameAllMethods(ReadWriteRunnerState state) throws IOException {
         String name = UUID.randomUUID().toString();
         Resource resource = state.getResource();
         Integer result = QueryFactory.queryRenameAllMethods(resource, name).callWithResult();
@@ -90,22 +91,22 @@ public class RunnerQuery extends Runner {
     //region ASE 2015 queries.
 
     @Benchmark
-    public Integer ase15CommentsTagContent(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15CommentsTagContent(ReadOnlyRunnerState state) {
         return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer ase15Grabats(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15Grabats(ReadOnlyRunnerState state) {
         return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) {
         return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarations(state.getResource()).callWithResult();
     }
 
     @Benchmark
-    public Integer ase15ThrownExceptions(ReadOnlyRunnerState state) throws Exception {
+    public Integer ase15ThrownExceptions(ReadOnlyRunnerState state) {
         return QueryFactoryASE2015.queryThrownExceptions(state.getResource()).callWithResult();
     }
 

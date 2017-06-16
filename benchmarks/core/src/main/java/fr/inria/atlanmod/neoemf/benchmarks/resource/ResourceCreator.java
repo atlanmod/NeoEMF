@@ -105,11 +105,11 @@ public final class ResourceCreator {
      *
      * @return the created resourceFile
      *
-     * @throws Exception if a error occurs during the creation of the store
+     * @throws IOException if a error occurs during the creation of the store
      * @see Workspace#newTempDirectory()
      */
     @Nonnull
-    public static File createTempStore(File resourceFile, Adapter.Internal adapter) throws Exception {
+    public static File createTempStore(File resourceFile, Adapter.Internal adapter) throws IOException {
         Path dir = Workspace.newTempDirectory();
 
         if (useImporter && adapter.supportsMapper()) {
@@ -129,11 +129,11 @@ public final class ResourceCreator {
      *
      * @return the created resourceFile
      *
-     * @throws Exception if a error occurs during the creation of the store
+     * @throws IOException if a error occurs during the creation of the store
      * @see Workspace#getStoreDirectory()
      */
     @Nonnull
-    public static File createStore(File resourceFile, Adapter.Internal adapter) throws Exception {
+    public static File createStore(File resourceFile, Adapter.Internal adapter) throws IOException {
         Path dir = Workspace.getStoreDirectory();
 
         if (useImporter && adapter.supportsMapper()) {
@@ -158,10 +158,10 @@ public final class ResourceCreator {
      *
      * @return the created resourceFile
      *
-     * @throws Exception if a error occurs during the creation of the store
+     * @throws IOException if a error occurs during the creation of the store
      */
     @Nonnull
-    private static File createStoreDirect(File resourceFile, Adapter.Internal adapter, Path dir) throws Exception {
+    private static File createStoreDirect(File resourceFile, Adapter.Internal adapter, Path dir) throws IOException {
         Log.info("Creating store with NeoEMF importer");
 
         ResourceManager.checkValidResource(resourceFile.getName());
@@ -203,10 +203,10 @@ public final class ResourceCreator {
      *
      * @return the created resourceFile
      *
-     * @throws Exception if a error occurs during the creation of the store
+     * @throws IOException if a error occurs during the creation of the store
      */
     @Nonnull
-    private static File createStore(File resourceFile, Adapter.Internal adapter, Path dir) throws Exception {
+    private static File createStore(File resourceFile, Adapter.Internal adapter, Path dir) throws IOException {
         Log.info("Creating store with standard EMF");
 
         ResourceManager.checkValidResource(resourceFile.getName());

@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.Nonnull;
@@ -84,30 +85,30 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Nonnull
     @Override
-    public File getOrCreateResource(String name) throws Exception {
+    public File getOrCreateResource(String name) throws IOException {
         return ResourceManager.createResource(name, this);
     }
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file) throws Exception {
+    public File getOrCreateStore(File file) throws IOException {
         return getOrCreateStore(file, false);
     }
 
     @Nonnull
     @Override
-    public File createTempStore(File file) throws Exception {
+    public File createTempStore(File file) throws IOException {
         return getOrCreateStore(file, true);
     }
 
     @Override
-    public void save(Resource resource) throws Exception {
+    public void save(Resource resource) throws IOException {
         resource.save(getOptions());
     }
 
     @Nonnull
     @Override
-    public File copy(File file) throws Exception {
+    public File copy(File file) throws IOException {
         return ResourceCreator.copyStore(file);
     }
 

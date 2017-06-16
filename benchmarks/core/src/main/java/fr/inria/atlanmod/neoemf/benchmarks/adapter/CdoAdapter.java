@@ -47,6 +47,7 @@ import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,7 +104,7 @@ public class CdoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, CommonOptions options) throws Exception {
+    public Resource load(File file, CommonOptions options) throws IOException {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
