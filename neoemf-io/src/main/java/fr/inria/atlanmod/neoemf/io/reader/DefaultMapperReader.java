@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
@@ -90,7 +89,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         // Retrieve the name of the element
         // If root it's the name of the metaclass, otherwise the name of the containing feature
-        String elementName = isRoot ? metaclass.name() : mapper.containerOf(id).map(ContainerDescriptor::name).orElse(null);
+        String elementName = isRoot ? metaclass.name() : mapper.containerOf(id).map(SingleFeatureKey::name).orElse(null);
 
         // Create the element
         BasicElement element = new BasicElement(ns, elementName);

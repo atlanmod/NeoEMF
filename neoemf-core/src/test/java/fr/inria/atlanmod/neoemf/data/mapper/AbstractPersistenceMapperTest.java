@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
@@ -95,13 +94,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} and {@link ContainerMapper#containerFor(Id,
-     * ContainerDescriptor)}.
+     * SingleFeatureKey)}.
      */
     @Test
     public void testGetSetSameContainer() {
         Id containerId0 = StringId.of("ContainerId0");
 
-        ContainerDescriptor container = ContainerDescriptor.of(containerId0, "Container0");
+        SingleFeatureKey container = SingleFeatureKey.of(containerId0, "Container0");
 
         Id id1 = StringId.of("Id1");
 
@@ -118,14 +117,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} and {@link ContainerMapper#containerFor(Id,
-     * ContainerDescriptor)}.
+     * SingleFeatureKey)}.
      */
     @Test
     public void testGetSetDifferentContainer() {
         Id containerId0 = StringId.of("ContainerId0");
 
-        ContainerDescriptor container0 = ContainerDescriptor.of(containerId0, "Container0");
-        ContainerDescriptor container1 = ContainerDescriptor.of(containerId0, "Container1");
+        SingleFeatureKey container0 = SingleFeatureKey.of(containerId0, "Container0");
+        SingleFeatureKey container1 = SingleFeatureKey.of(containerId0, "Container1");
 
         Id id1 = StringId.of("Id1");
 
@@ -145,13 +144,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ContainerMapper#containerFor(Id, ContainerDescriptor)} with a {@code null} value.
+     * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureKey)} with a {@code null} value.
      */
     @Test
     public void testUnsetContainer() {
         Id containerId0 = StringId.of("ContainerId0");
 
-        ContainerDescriptor container0 = ContainerDescriptor.of(containerId0, "Container0");
+        SingleFeatureKey container0 = SingleFeatureKey.of(containerId0, "Container0");
 
         // Define the containers
         mapper.containerFor(id0, container0);
@@ -175,7 +174,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ContainerMapper#containerFor(Id, ContainerDescriptor)} with a {@code null} value.
+     * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureKey)} with a {@code null} value.
      */
     @Test
     public void testSetNullContainer() {

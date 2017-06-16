@@ -15,7 +15,6 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend<Stri
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, ContainerDescriptor> CONTAINERS = new ManyToOneMap<>();
+    private static final Map<Id, SingleFeatureKey> CONTAINERS = new ManyToOneMap<>();
 
     /**
      * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -120,7 +119,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend<Stri
 
     @Nonnull
     @Override
-    protected Map<Id, ContainerDescriptor> allContainers() {
+    protected Map<Id, SingleFeatureKey> allContainers() {
         return CONTAINERS;
     }
 

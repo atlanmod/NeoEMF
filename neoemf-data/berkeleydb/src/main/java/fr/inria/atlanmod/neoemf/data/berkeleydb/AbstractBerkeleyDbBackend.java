@@ -24,7 +24,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
 import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
@@ -126,18 +125,18 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(containers, id, serializerFactory.forId(), serializerFactory.forContainer());
+        return get(containers, id, serializerFactory.forId(), serializerFactory.forSingleFeatureKey());
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         checkNotNull(id);
         checkNotNull(container);
 
-        put(containers, id, container, serializerFactory.forId(), serializerFactory.forContainer());
+        put(containers, id, container, serializerFactory.forId(), serializerFactory.forSingleFeatureKey());
     }
 
     @Override

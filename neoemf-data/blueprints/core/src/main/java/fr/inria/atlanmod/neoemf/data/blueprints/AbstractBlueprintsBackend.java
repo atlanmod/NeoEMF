@@ -29,7 +29,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -211,7 +211,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         checkNotNull(id);
 
         Optional<Vertex> containmentVertex = get(id);
@@ -223,18 +223,18 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
         Optional<Edge> containerEdge = MoreIterables.stream(containerEdges).findAny();
 
-        Optional<ContainerDescriptor> container = Optional.empty();
+        Optional<SingleFeatureKey> container = Optional.empty();
         if (containerEdge.isPresent()) {
             String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
             Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
-            container = Optional.of(ContainerDescriptor.of(StringId.from(containerVertex.getId()), featureName));
+            container = Optional.of(SingleFeatureKey.of(StringId.from(containerVertex.getId()), featureName));
         }
 
         return container;
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         checkNotNull(id);
         checkNotNull(container);
 

@@ -3,7 +3,6 @@ package fr.inria.atlanmod.neoemf.io.serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
@@ -111,26 +110,6 @@ public abstract class AbstractSerializerTest {
 
         Id object = StringId.of("id0");
         Id result = processWithStream(object, serializer);
-
-        assertThat(result).isEqualTo(result);
-    }
-
-    @Test
-    public void testSerializeDeserializeContainer() throws IOException {
-        Serializer<ContainerDescriptor> serializer = factory().forContainer();
-
-        ContainerDescriptor object = ContainerDescriptor.of(StringId.of("id0"), "name0");
-        ContainerDescriptor result = process(object, serializer);
-
-        assertThat(result).isEqualTo(result);
-    }
-
-    @Test
-    public void testSerializeDeserializeContainerWithStream() throws IOException {
-        Serializer<ContainerDescriptor> serializer = factory().forContainer();
-
-        ContainerDescriptor object = ContainerDescriptor.of(StringId.of("id0"), "name0");
-        ContainerDescriptor result = processWithStream(object, serializer);
 
         assertThat(result).isEqualTo(result);
     }

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.serializer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
@@ -35,11 +34,6 @@ public final class JavaSerializerFactory implements SerializerFactory {
      * The instance of {@link IdSerializer}.
      */
     private final Serializer<Id> idSerializer = new IdSerializer();
-
-    /**
-     * The instance of {@link ContainerDescriptorSerializer}.
-     */
-    private final Serializer<ContainerDescriptor> containerDescriptorSerializer = new ContainerDescriptorSerializer();
 
     /**
      * The instance of {@link ClassDescriptorSerializer}.
@@ -83,12 +77,6 @@ public final class JavaSerializerFactory implements SerializerFactory {
     @Override
     public Serializer<Id> forId() {
         return idSerializer;
-    }
-
-    @Nonnull
-    @Override
-    public Serializer<ContainerDescriptor> forContainer() {
-        return containerDescriptorSerializer;
     }
 
     @Nonnull

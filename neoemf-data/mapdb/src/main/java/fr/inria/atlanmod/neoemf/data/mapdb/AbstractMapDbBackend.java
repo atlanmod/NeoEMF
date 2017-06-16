@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
 import fr.inria.atlanmod.neoemf.io.serializer.SerializerFactory;
@@ -60,7 +59,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
      * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ContainerDescriptor> containers;
+    private final Map<Id, SingleFeatureKey> containers;
 
     /**
      * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
@@ -98,7 +97,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
         this.containers = db.hashMap("containers")
                 .keySerializer(new SerializerDecorator<>(serializerFactory.forId()))
-                .valueSerializer(new SerializerDecorator<>(serializerFactory.forContainer()))
+                .valueSerializer(new SerializerDecorator<>(serializerFactory.forSingleFeatureKey()))
                 .createOrOpen();
 
         this.instances = db.hashMap("instances")
@@ -149,14 +148,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         checkNotNull(id);
 
         return get(containers, id);
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         checkNotNull(id);
         checkNotNull(container);
 

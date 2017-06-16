@@ -3,7 +3,6 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Collection;
@@ -24,8 +23,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract {@link TransientBackend} that provides the default behavior of {@link ContainerDescriptor} and {@link
- * ClassDescriptor} management.
+ * An abstract {@link TransientBackend} that provides the default behavior of containers and metaclasses management.
  *
  * @param <K> the type of keys to use to identify features
  */
@@ -54,7 +52,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, ContainerDescriptor> allContainers();
+    protected abstract Map<Id, SingleFeatureKey> allContainers();
 
     /**
      * Returns the map that holds all instances.
@@ -89,12 +87,12 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         return Optional.ofNullable(allContainers().get(id));
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         allContainers().put(id, container);
     }
 

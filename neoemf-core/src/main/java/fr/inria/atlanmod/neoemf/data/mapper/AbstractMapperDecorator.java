@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
@@ -90,13 +89,13 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         return next.containerOf(id);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         next.containerFor(id, container);
     }
 

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Optional;
 
@@ -20,38 +20,38 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object capable of mapping {@link ContainerDescriptor}.
+ * An object capable of mapping containers.
  *
- * @see ContainerDescriptor
+ * @see SingleFeatureKey
  */
 @ParametersAreNonnullByDefault
 public interface ContainerMapper {
 
     /**
-     * Retrieves the {@link ContainerDescriptor} for the specified {@code id}.
+     * Retrieves the container for the specified {@code id}.
      *
      * @param id the {@link Id} of the contained element
      *
-     * @return an {@link Optional} containing the {@link ContainerDescriptor}, or {@link Optional#empty()} if the {@code
+     * @return an {@link Optional} containing the container, or {@link Optional#empty()} if the {@code
      * id} has no defined container.
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<ContainerDescriptor> containerOf(Id id);
+    Optional<SingleFeatureKey> containerOf(Id id);
 
     /**
-     * Stores the {@link ContainerDescriptor} for the specified {@code id}.
+     * Stores the {@code container} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the contained element
-     * @param container the {@link ContainerDescriptor} containing element's container information to store
+     * @param container the containing element's container information to store
      *
      * @throws NullPointerException if the {@code id} is {@code null}
      */
-    void containerFor(Id id, ContainerDescriptor container);
+    void containerFor(Id id, SingleFeatureKey container);
 
     /**
-     * Removes the {@link ContainerDescriptor} of the specified {@code id}.
+     * Removes the container of the specified {@code id}.
      * <p>
      * The container must be completely removed, so that a call to {@link #containerOf(Id)} returns
      * {@link Optional#empty()}.

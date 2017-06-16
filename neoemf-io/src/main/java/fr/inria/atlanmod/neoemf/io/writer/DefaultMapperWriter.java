@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
@@ -293,9 +292,9 @@ public class DefaultMapperWriter implements MapperWriter {
         checkNotNull(name);
         checkNotNull(idContainment);
 
-        Optional<ContainerDescriptor> container = mapper.containerOf(idContainment);
+        Optional<SingleFeatureKey> container = mapper.containerOf(idContainment);
         if (!container.isPresent() || !Objects.equals(container.get().id(), idContainer)) {
-            mapper.containerFor(idContainment, ContainerDescriptor.of(idContainer, name));
+            mapper.containerFor(idContainment, SingleFeatureKey.of(idContainer, name));
         }
     }
 

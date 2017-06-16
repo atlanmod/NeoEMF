@@ -14,7 +14,7 @@
  * <p>
  * This package define a set of abstraction that can be used by {@link fr.inria.atlanmod.neoemf.data.store.Store}
  * subclasses as an intermediate layer between the backend level and the model level. For example, the {@link
- * fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor} class can be used to represent a containment link
+ * fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey} class can be used to represent a containment link
  * between two elements. These abstract structures are useful to manipulate the model at a low-level without knowing the
  * concrete model-to-backend mapping used.
  */

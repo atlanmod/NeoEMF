@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
+import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Optional;
 
@@ -20,10 +20,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} wrapper that caches {@link ContainerDescriptor}s.
+ * A {@link Store} wrapper that caches containers.
  */
 @ParametersAreNonnullByDefault
-public class ContainerCachingStoreDecorator extends AbstractCachingStoreDecorator<Id, Optional<ContainerDescriptor>> {
+public class ContainerCachingStoreDecorator extends AbstractCachingStoreDecorator<Id, Optional<SingleFeatureKey>> {
 
     /**
      * Constructs a new {@code ContainerCachingStoreDecorator} on the given {@code store}.
@@ -38,12 +38,12 @@ public class ContainerCachingStoreDecorator extends AbstractCachingStoreDecorato
     @Nonnull
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         return cache.get(id, super::containerOf);
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         cache.put(id, Optional.of(container));
         super.containerFor(id, container);
     }

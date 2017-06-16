@@ -2,7 +2,6 @@ package fr.inria.atlanmod.neoemf.io.serializer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
@@ -30,14 +29,6 @@ public interface SerializerFactory {
      */
     @Nonnull
     Serializer<Id> forId();
-
-    /**
-     * Gets the {@link Serializer} for {@link ContainerDescriptor}s.
-     *
-     * @return a serializer
-     */
-    @Nonnull
-    Serializer<ContainerDescriptor> forContainer();
 
     /**
      * Gets the {@link Serializer} for {@link ClassDescriptor}s.

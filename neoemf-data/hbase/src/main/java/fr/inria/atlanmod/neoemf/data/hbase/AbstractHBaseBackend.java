@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
 import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
@@ -125,7 +124,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<ContainerDescriptor> containerOf(Id id) {
+    public Optional<SingleFeatureKey> containerOf(Id id) {
         checkNotNull(id);
 
         return resultFrom(id)
@@ -133,15 +132,15 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return Optional.of(ContainerDescriptor.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
+                        return Optional.of(SingleFeatureKey.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
                     }
-                    return Optional.<ContainerDescriptor>empty();
+                    return Optional.<SingleFeatureKey>empty();
                 })
                 .orElseGet(Optional::empty);
     }
 
     @Override
-    public void containerFor(Id id, ContainerDescriptor container) {
+    public void containerFor(Id id, SingleFeatureKey container) {
         checkNotNull(id);
         checkNotNull(container);
 

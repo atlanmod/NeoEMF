@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object capable of mapping {@link ClassDescriptor}.
+ * An object capable of mapping metaclasses.
  *
  * @see ClassDescriptor
  */
@@ -28,11 +28,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface ClassMapper {
 
     /**
-     * Retrieves the {@link ClassDescriptor} for the specified {@code id}.
+     * Retrieves the metaclass for the specified {@code id}.
      *
      * @param id the {@link Id} of the element
      *
-     * @return an {@link Optional} containing the {@link ClassDescriptor}, or {@link Optional#empty()} if the {@code id}
+     * @return an {@link Optional} containing the metaclass, or {@link Optional#empty()} if the {@code id}
      * has no defined metaclass.
      *
      * @throws NullPointerException if any parameter is {@code null}
@@ -41,10 +41,10 @@ public interface ClassMapper {
     Optional<ClassDescriptor> metaclassOf(Id id);
 
     /**
-     * Stores the {@link ClassDescriptor} for the specified {@code id}.
+     * Stores the {@code metaclass} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the element
-     * @param metaclass the {@link ClassDescriptor} containing element's metaclass information to store
+     * @param metaclass the containing element's metaclass information to store
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
@@ -69,7 +69,7 @@ public interface ClassMapper {
      * @param metaclass the metaclass to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return a {@link Iterable} containing the instances of the {@link ClassDescriptor}
+     * @return a {@link Iterable} containing the instances of the {@code metaclass}
      *
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */

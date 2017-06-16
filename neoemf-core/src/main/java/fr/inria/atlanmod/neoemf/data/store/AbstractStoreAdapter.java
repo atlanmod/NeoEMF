@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.util.EObjects;
@@ -686,10 +685,10 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         updateInstanceOf(object);
         updateInstanceOf(container);
 
-        Optional<ContainerDescriptor> containerDesc = containerOf(object.id());
+        Optional<SingleFeatureKey> containerDesc = containerOf(object.id());
 
         if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
-            containerFor(object.id(), ContainerDescriptor.from(container, containerReference));
+            containerFor(object.id(), SingleFeatureKey.from(container, containerReference));
         }
     }
 
