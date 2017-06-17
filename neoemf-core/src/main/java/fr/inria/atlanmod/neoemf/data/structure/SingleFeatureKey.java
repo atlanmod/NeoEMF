@@ -26,7 +26,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class SingleFeatureKey extends FeatureKey {
+public class SingleFeatureKey extends AbstractFeatureKey {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -2197099155190693261L;
@@ -92,6 +92,11 @@ public class SingleFeatureKey extends FeatureKey {
     @Nonnull
     public static SingleFeatureKey of(Id id, String name) {
         return new SingleFeatureKey(id, name);
+    }
+
+    @Override
+    public boolean isMany() {
+        return false;
     }
 
     @Override

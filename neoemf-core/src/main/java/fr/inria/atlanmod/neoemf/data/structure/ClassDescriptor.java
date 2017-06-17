@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
@@ -25,19 +24,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A simple representation of a {@link EClass}.
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public final class ClassDescriptor implements Serializable {
+public class ClassDescriptor implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
@@ -57,6 +56,7 @@ public final class ClassDescriptor implements Serializable {
     /**
      * The represented {@link EClass}.
      */
+    @Nullable
     private transient EClass eClass;
 
     /**
@@ -66,7 +66,7 @@ public final class ClassDescriptor implements Serializable {
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
-    private ClassDescriptor(String name, String uri) {
+    protected ClassDescriptor(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
@@ -203,45 +203,17 @@ public final class ClassDescriptor implements Serializable {
     }
 
     /**
-     * Retrieves all attributes of this {@code ClassDescriptor}.
-     *
-     * @return an immutable {@link Set} containing the name of all attributes of this {@code ClassDescriptor}
-     */
-    @Nonnull
-    public Set<String> allAttributes() {
-        return get().getEAllAttributes()
-                .parallelStream()
-                .map(ENamedElement::getName)
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Retrieves all attributes of this {@code ClassDescriptor}.
-     *
-     * @return an immutable {@link Set} containing the name of all attributes of this {@code ClassDescriptor}
-     */
-    @Nonnull
-    public Set<String> allReferences() {
-        return get().getEAllReferences()
-                .parallelStream()
-                .map(ENamedElement::getName)
-                .collect(Collectors.toSet());
-    }
-
-    /**
      * Retrieves the {@link EClass} corresponding to this {@code ClassDescriptor}.
      *
      * @return a class, or {@code null} if it cannot be found
      */
     public EClass get() {
         if (isNull(eClass)) {
-            EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
-            if (nonNull(ePackage)) {
-                eClass = EClass.class.cast(ePackage.getEClassifier(name));
-            }
-            else {
-                throw new NullPointerException(String.format("Unable to find EPackage for URI: %s", uri));
-            }
+            eClass = Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))
+                    .map(p -> p.getEClassifier(name))
+                    .map(EClass.class::cast)
+                    .<NullPointerException>orElseThrow(() ->
+                            new NullPointerException(String.format("Unable to find EPackage for URI: %s", uri)));
         }
         return eClass;
     }

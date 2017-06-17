@@ -17,14 +17,10 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
-
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 
 /**
  * A simple representation of a multi-valued {@link EStructuralFeature} of a {@link PersistentEObject}. The
@@ -32,16 +28,10 @@ import static fr.inria.atlanmod.common.Preconditions.checkArgument;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class ManyFeatureKey extends FeatureKey {
+public class ManyFeatureKey extends AbstractFeatureKey {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 7159493156068733506L;
-
-    /**
-     * The position of this key.
-     */
-    @Nonnegative
-    protected final int position;
 
     /**
      * Constructs a new {@code ManyFeatureKey} with the given {@code id} and the given {@code name}, which are
@@ -53,9 +43,7 @@ public class ManyFeatureKey extends FeatureKey {
      * @param position the position of the {@link EStructuralFeature}
      */
     protected ManyFeatureKey(Id id, String name, @Nonnegative int position) {
-        super(id, name);
-        checkArgument(position >= 0, "Position must be >= 0");
-        this.position = position;
+        super(id, name, position);
     }
 
     /**
@@ -115,16 +103,6 @@ public class ManyFeatureKey extends FeatureKey {
     }
 
     /**
-     * Returns the position of the {@link EStructuralFeature}.
-     *
-     * @return the position of the feature
-     */
-    @Nonnegative
-    public int position() {
-        return position;
-    }
-
-    /**
      * Creates a new {@link SingleFeatureKey} with the {@link Id} and the name of this {@code ManyFeatureKey}, without
      * its position.
      *
@@ -138,41 +116,8 @@ public class ManyFeatureKey extends FeatureKey {
     }
 
     @Override
-    public int compareTo(FeatureKey o) {
-        if (this == o) {
-            return 0;
-        }
-
-        if (!ManyFeatureKey.class.isInstance(o)) {
-            return 1;
-        }
-
-        int comparison;
-        return (comparison = super.compareTo(o)) == 0
-                ? Integer.compare(position, ManyFeatureKey.class.cast(o).position)
-                : comparison;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), position);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!ManyFeatureKey.class.isInstance(o)) {
-            return false;
-        }
-
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        ManyFeatureKey that = ManyFeatureKey.class.cast(o);
-        return position == that.position;
+    public boolean isMany() {
+        return true;
     }
 
     @Override

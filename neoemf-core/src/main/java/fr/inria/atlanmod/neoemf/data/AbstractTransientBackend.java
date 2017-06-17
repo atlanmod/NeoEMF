@@ -137,7 +137,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
     }
 
     /**
-     * A {@link Map} that stores keys and values in two distinct {@link HashMap}s in order to limitate the memory
+     * A {@link Map} that stores keys and values in two distinct {@link Map}s in order to limitate the memory
      * consumption. It does not support {@code null} keys or values.
      * <p>
      * This implementation is only effective if the values are referenced by several keys.
