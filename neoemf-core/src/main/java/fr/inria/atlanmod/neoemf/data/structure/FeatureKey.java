@@ -84,14 +84,11 @@ public abstract class FeatureKey implements Comparable<FeatureKey>, Serializable
         if (this == o) {
             return 0;
         }
-        int comparison = id.compareTo(o.id);
 
-        if (comparison == 0) {
-            return name.compareTo(o.name);
-        }
-        else {
-            return comparison;
-        }
+        int comparison;
+        return (comparison = id.compareTo(o.id)) == 0
+                ? name.compareTo(o.name)
+                : comparison;
     }
 
     @Override

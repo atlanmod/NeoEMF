@@ -139,19 +139,18 @@ public class ManyFeatureKey extends FeatureKey {
 
     @Override
     public int compareTo(FeatureKey o) {
+        if (this == o) {
+            return 0;
+        }
+
         if (!ManyFeatureKey.class.isInstance(o)) {
             return 1;
         }
 
-        int comparison = super.compareTo(o);
-
-        if (comparison == 0) {
-            ManyFeatureKey that = ManyFeatureKey.class.cast(o);
-            return (position > that.position) ? 1 : (position < that.position) ? -1 : 0;
-        }
-        else {
-            return comparison;
-        }
+        int comparison;
+        return (comparison = super.compareTo(o)) == 0
+                ? Integer.compare(position, ManyFeatureKey.class.cast(o).position)
+                : comparison;
     }
 
     @Override
