@@ -177,7 +177,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         return record(() -> super.appendAllValues(key, values));
     }
 

@@ -140,7 +140,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #appendValue(SingleFeatureKey, Object)
      */
     @Nonnegative
-    default <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         checkNotNull(key);
         checkNotNull(values);
 

@@ -178,7 +178,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         register(key);
         return super.appendAllValues(key, values);
     }

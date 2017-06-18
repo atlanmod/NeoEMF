@@ -66,7 +66,7 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Sin
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         int firstPosition = super.appendAllValues(key, values);
         cacheSize(key, firstPosition + values.size());
         return firstPosition;

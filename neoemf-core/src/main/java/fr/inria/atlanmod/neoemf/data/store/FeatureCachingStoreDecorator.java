@@ -124,7 +124,7 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         int firstPosition = super.appendAllValues(key, values);
 
         IntStream.range(0, values.size())

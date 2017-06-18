@@ -54,14 +54,4 @@ public abstract class AbstractStoreDecorator extends AbstractMapperDecorator<Sto
     public Backend backend() {
         return next().backend();
     }
-
-    @Override
-    public boolean isAutoSave() {
-        return next().isAutoSave();
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return next().isReadOnly();
-    }
 }

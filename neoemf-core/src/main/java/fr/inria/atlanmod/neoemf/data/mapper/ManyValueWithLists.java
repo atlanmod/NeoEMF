@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,7 +52,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Override
     default <V> List<V> allValuesOf(SingleFeatureKey key) {
         return this.<List<V>>valueOf(key)
-                .orElseGet(Collections::emptyList);
+                .orElseGet(Collections::<V>emptyList);
     }
 
     @Nonnull
@@ -77,8 +79,10 @@ public interface ManyValueWithLists extends ManyValueMapper {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElseGet(() -> getOrCreateList(key.withoutPosition()));
 
-        while (key.position() > values.size()) {
-            values.add(null);
+        if (key.position() > values.size()) {
+            values.addAll(IntStream.range(values.size(), key.position() + 1)
+                    .mapToObj(i -> (V) null)
+                    .collect(Collectors.toList()));
         }
 
         if (key.position() < values.size() && isNull(values.get(key.position()))) {
@@ -96,13 +100,12 @@ public interface ManyValueWithLists extends ManyValueMapper {
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
         checkNotNull(key);
 
-        Optional<List<V>> optionalValues = valueOf(key.withoutPosition());
+        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+                .orElse(null);
 
-        if (!optionalValues.isPresent()) {
+        if (isNull(values)) {
             return Optional.empty();
         }
-
-        List<V> values = optionalValues.get();
 
         Optional<V> previousValue = Optional.empty();
 

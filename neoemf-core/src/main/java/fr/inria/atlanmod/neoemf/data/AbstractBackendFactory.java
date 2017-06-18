@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.LocalStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
@@ -153,7 +152,7 @@ public abstract class AbstractBackendFactory implements BackendFactory {
             store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
         }
 
-        return LocalStoreAdapter.adapt(store);
+        return store;
     }
 
     /**

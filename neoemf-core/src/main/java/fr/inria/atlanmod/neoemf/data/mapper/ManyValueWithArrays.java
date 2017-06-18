@@ -97,13 +97,12 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
         checkNotNull(key);
 
-        Optional<V[]> optionalValues = valueOf(key.withoutPosition());
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
+                .orElse(null);
 
-        if (!optionalValues.isPresent()) {
+        if (isNull(values)) {
             return Optional.empty();
         }
-
-        V[] values = optionalValues.get();
 
         Optional<V> previousValue = Optional.empty();
 

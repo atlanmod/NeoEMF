@@ -128,7 +128,7 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Si
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         cache.put(key, true);
         return super.appendAllValues(key, values);
     }

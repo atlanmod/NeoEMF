@@ -35,7 +35,6 @@ public class LocalStoreAdapter extends AbstractStoreAdapter {
     @Nonnull
     private final Cache<Id, PersistentEObject> localCache = CacheBuilder.builder()
             .softValues()
-            .maximumSize()
             .build();
 
     /**

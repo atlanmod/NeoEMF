@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.LocalStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
@@ -50,9 +49,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         Map<String, Object> options = CommonOptions.noOption();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
@@ -75,9 +71,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -94,9 +87,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -113,9 +103,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -132,9 +119,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -151,9 +135,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(ContainerCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -170,9 +151,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(MetaclassCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -189,9 +167,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(StatsStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -208,9 +183,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -229,9 +201,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
         long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
@@ -253,9 +222,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
 
         long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
@@ -289,9 +255,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -316,9 +279,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -343,9 +303,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getInnerStore(store);
@@ -381,9 +338,6 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = context().factory().createStore(mock(Backend.class), mock(PersistentResource.class), options);
-        assertThat(store).isExactlyInstanceOf(LocalStoreAdapter.class);
-
-        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(StatsStoreDecorator.class);
 
         store = getInnerStore(store);

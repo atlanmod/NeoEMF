@@ -232,8 +232,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void close() {
         store.close();
 
-        store = LocalStoreAdapter.adapt(factory.createTransientStore(this));
-
         isLoaded = false;
 
         Log.info("PersistentResource closed:  {0}", uri);

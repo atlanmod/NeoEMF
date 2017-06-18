@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.Resolver;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -98,7 +97,7 @@ public interface StoreAdapter extends InternalEObject.EStore, Store, Resolver<Id
     EReference getContainingFeature(InternalEObject internalObject);
 
     @Override
-    default EObject create(EClass eClass) {
+    default PersistentEObject create(EClass eClass) {
         throw new IllegalStateException("EStore#create() should not be called");
     }
 

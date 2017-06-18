@@ -35,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
 
     /**
-     * The message of the exceptions thrown when calling methods.
+     * The exceptions thrown when calling methods.
      */
     private static final RuntimeException E = new UnsupportedOperationException("Operation forbidden in read-only mode");
 
@@ -110,7 +110,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         throw E;
     }
 
@@ -169,10 +169,5 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
     @Override
     public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
         throw E;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return true;
     }
 }

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -43,41 +42,10 @@ public interface Store extends DataMapper {
     void resource(@Nullable Resource.Internal resource);
 
     /**
-     * Checks whether this store is attached to a {@link PersistentResource}.
-     *
-     * @return {@code true} if this store is attached, {@code false} otherwise
-     */
-    default boolean isPersistent() {
-        return PersistentResource.class.isInstance(resource());
-    }
-
-    /**
      * Returns the back-end where data are stored.
      *
      * @return the back-end
      */
     @Nonnull
     Backend backend();
-
-    /**
-     * Checks whether this store supports auto-save.
-     *
-     * @return {@code true} if this store supports auto-save, {@code false} otherwise
-     *
-     * @see AutoSaveStoreDecorator
-     */
-    default boolean isAutoSave() {
-        return false;
-    }
-
-    /**
-     * Checks whether this store is read-only.
-     *
-     * @return {@code true} if this store is read-only, {@code false} otherwise
-     *
-     * @see ReadOnlyStoreDecorator
-     */
-    default boolean isReadOnly() {
-        return false;
-    }
 }

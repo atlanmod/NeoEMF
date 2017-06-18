@@ -113,7 +113,9 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Override
     public void save() {
-        db.commit();
+        if (!db.isClosed()) {
+            db.commit();
+        }
     }
 
     @Override

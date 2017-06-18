@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
@@ -138,7 +139,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         return thenIncrementAndSave(() -> super.appendAllValues(key, values), values.size());
     }
 
@@ -199,11 +200,6 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         return thenIncrementAndSave(() -> super.moveReference(source, target), 2);
     }
 
-    @Override
-    public boolean isAutoSave() {
-        return true;
-    }
-
     /**
      * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when
      * {@code count % chunk == 0}.
@@ -244,7 +240,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      */
     private void incremendAndSave(int count) {
         if (changesCount.addAndGet(count) >= autoSaveChunk) {
-            if (isPersistent()) {
+            if (PersistentResource.class.isInstance(resource())) {
                 //noinspection ConstantConditions
                 Log.debug("PersistentResource saved:   {0} (auto-save after {1} changes)", resource().getURI(), changesCount);
             }

@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} that translates model-level operations into datastore calls.
  */
 @ParametersAreNonnullByDefault
-public final class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
+public class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
 
     /**
      * The resource to store and access.

@@ -89,7 +89,7 @@ public final class BoundedTransientBackend extends AbstractTransientBackend<Stri
      *
      * @return a backend, bounded to the {@code owner}
      */
-    public static Backend forId(Id owner) {
+    public static TransientBackend forId(Id owner) {
         return new BoundedTransientBackend(owner, FEATURES_REGISTRY.computeIfAbsent(owner, (o) -> new HashMap<>()));
     }
 

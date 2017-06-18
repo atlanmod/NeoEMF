@@ -13,16 +13,15 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.TransientBackend;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Nonnegative;
@@ -31,11 +30,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-
 /**
- * A {@link StoreAdapter} that caches statically the rebuilt {@link PersistentEObject}s. Its content is shared among all
- * the dependencies that use it.
+ * A {@link StoreAdapter} that caches statically the rebuilt {@link PersistentEObject}s. Its content is shared among
+ * all the dependencies that use it.
  * <p>
  * This adapter is used in a fully-transient context, when {@link PersistentEObject}s are not attached to a
  * {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}.
@@ -44,17 +41,14 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
+// TODO Share a store chain (share caching,...)
 public class SharedStoreAdapter extends AbstractStoreAdapter {
-
-    /**
-     * A map that holds all created instances of {@link CacheHolder}, identified by a resource hashcode.
-     */
-    private static final Map<Integer, CacheHolder> HOLDERS = new HashMap<>();
 
     /**
      * The cache holder associated with the resource of the underlying store.
      */
-    private CacheHolder holder;
+    @Nonnull
+    private SharedHolder holder;
 
     /**
      * Constructs a new {@code SharedStoreAdapter} on the given {@code store}.
@@ -64,41 +58,26 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     protected SharedStoreAdapter(Store store) {
         super(store);
 
-        refreshHolder(store.resource());
-        holder.dependencies.getAndIncrement();
+        this.holder = SharedHolder.forResource(store.resource());
     }
 
     /**
-     * Adapts the given {@code store} as a {@code SharedStoreAdapter}.
+     * Adapts the given {@code backend} into a {@code SharedStoreAdapter}.
      *
-     * @param store the store to adapt
+     * @param backend the backend to adapt
      *
-     * @return the adapted {@code store}
+     * @return the adapted {@code backend}
      */
-    public static StoreAdapter adapt(Store store) {
-        if (StoreAdapter.class.isInstance(store) && !SharedStoreAdapter.class.isInstance(store)) {
-            throw new IllegalArgumentException(String.format("Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getSimpleName()));
-        }
-
-        //noinspection ConstantConditions
-        return SharedStoreAdapter.class.isInstance(checkNotNull(store))
-                ? SharedStoreAdapter.class.cast(store)
-                : new SharedStoreAdapter(store);
+    public static StoreAdapter adapt(TransientBackend backend, @Nullable Resource.Internal resource) {
+        return new SharedStoreAdapter(new DirectWriteStore(backend, resource));
     }
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
-        refreshHolder(resource);
-        super.resource(resource);
-    }
+        this.holder.close();
 
-    /**
-     * Refreshes the holder of this store.
-     *
-     * @param resource the resource identifying the holder to use
-     */
-    private void refreshHolder(@Nullable Resource resource) {
-        holder = HOLDERS.computeIfAbsent(Objects.hashCode(resource), CacheHolder::new);
+        this.holder = SharedHolder.forResource(resource);
+        super.resource(resource);
     }
 
     @Nonnull
@@ -109,10 +88,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
 
     @Override
     public void close() {
-        // Cleans the shared cache: it will no longer be used
-        if (holder.dependencies.decrementAndGet() <= 0) {
-            HOLDERS.remove(holder.id).close();
-        }
+        holder.close();
 
         super.close();
     }
@@ -122,12 +98,13 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
      */
     @Immutable
     @ParametersAreNonnullByDefault
-    private static final class CacheHolder implements Closeable {
+    private static final class SharedHolder implements Closeable {
 
         /**
-         * The name of the resource associated with the {@link #sharedCache} to avoid conflicts.
+         * A map that holds all created instances of {@link SharedHolder}, identified by their associated resource.
          */
-        private final int id;
+        @Nonnull
+        private static final Map<Resource, SharedHolder> REGISTRY = new HashMap<>();
 
         /**
          * The number of dependencies that use this store.
@@ -143,24 +120,41 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
         @Nonnull
         private final Cache<Id, PersistentEObject> sharedCache = CacheBuilder.builder()
                 .softValues()
-                .maximumSize()
                 .build();
 
         /**
-         * Constructs a new {@code CacheHolder} for the given {@code resource}.
-         *
-         * @param id the hashcode of the associated resource
+         * The resource associated to this holder.
          */
-        private CacheHolder(int id) {
-            this.id = id;
+        @Nullable
+        private final Resource resource;
+
+        /**
+         * Constructs a new {@code SharedHolder} for the given {@code resource}.
+         */
+        private SharedHolder(@Nullable Resource resource) {
+            this.resource = resource;
+        }
+
+        /**
+         * Gets of creates the holder associated to the specified {@code resource}.
+         *
+         * @param resource the resource identifying the holder to use
+         */
+        @Nonnull
+        public static SharedHolder forResource(@Nullable Resource resource) {
+            SharedHolder holder = REGISTRY.computeIfAbsent(resource, SharedHolder::new);
+            holder.dependencies.incrementAndGet();
+            return holder;
         }
 
         @Override
         public void close() {
-            Log.debug("Cleaning SharedStoreAdapter {0}", id);
+            if (dependencies.decrementAndGet() == 0L) {
+                REGISTRY.remove(resource);
 
-            sharedCache.invalidateAll();
-            sharedCache.cleanUp();
+                sharedCache.invalidateAll();
+                sharedCache.cleanUp();
+            }
         }
     }
 }

@@ -64,9 +64,7 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
                 .map(this::<V>unmapValues)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        Optional<V> previousValue = Optional.of(values.get(key.position()));
-
-        values.set(key.position(), value);
+        Optional<V> previousValue = Optional.of(values.set(key.position(), value));
 
         valueFor(key.withoutPosition(), values);
 

@@ -39,7 +39,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     /**
      * The inner mapper.
      */
-    private final M next;
+    private M next;
 
     /**
      * Constructs a new {@code AbstractStoreDecorator} on the given {@code mapper}.
@@ -58,8 +58,17 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
      * @return the inner mapper
      */
     @Nonnull
-    protected M next() {
+    protected final M next() {
         return next;
+    }
+
+    /**
+     * Defines the inner mapper.
+     *
+     * @param mapper the inner mapper
+     */
+    protected final void next(M mapper) {
+        this.next = mapper;
     }
 
     @Override
@@ -228,7 +237,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         return next.appendAllValues(key, values);
     }
 

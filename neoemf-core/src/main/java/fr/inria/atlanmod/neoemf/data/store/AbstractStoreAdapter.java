@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
@@ -134,6 +135,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
     public void close() {
         if (ADAPTERS.remove(this)) {
             safeClose();
+            next(new ClosedStore());
         }
     }
 
@@ -753,12 +755,14 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id);
 
-        PersistentEObject object = cache().get(id, k -> resolveInstanceOf(k)
-                .map(c -> PersistenceFactory.getInstance().create(c, k))
-                .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
+        PersistentEObject object = cache().get(id, k ->
+                resolveInstanceOf(k)
+                        .map(c -> PersistenceFactory.getInstance().create(c, k))
+                        .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
-        if (nonNull(resource())) {
-            object.resource(resource());
+        Resource.Internal resource = resource();
+        if (nonNull(resource)) {
+            object.resource(resource);
         }
 
         return object;

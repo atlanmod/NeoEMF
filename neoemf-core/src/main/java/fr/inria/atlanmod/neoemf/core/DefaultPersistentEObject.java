@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.SharedStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
@@ -23,6 +22,7 @@ import fr.inria.atlanmod.neoemf.util.EObjects;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EClassImpl;
@@ -31,7 +31,6 @@ import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.emf.ecore.util.EcoreEMap;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 import java.util.List;
 import java.util.Objects;
@@ -134,7 +133,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
                 // Close the previous store if it's not attached to a persistent resource
                 // Otherwise the resource will close it
-                if (!store.isPersistent()) {
+                if (!PersistentResource.class.isInstance(store.resource())) {
                     store.close();
                 }
             }
@@ -230,10 +229,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
-        PersistentEObject container = PersistentEObject.from(newContainer);
-
         if (nonNull(newContainer)) {
-            eStore().updateContainment(this, eContainmentFeature(this, newContainer, newContainerFeatureID), container);
+            PersistentEObject container = PersistentEObject.from(newContainer);
+            EReference containmentFeature = eContainmentFeature(this, container, newContainerFeatureID);
+
+            eStore().updateContainment(this, containmentFeature, container);
             resource(container.resource());
         }
         else {
@@ -303,7 +303,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void dynamicUnset(int dynamicFeatureId) {
-        eStore().unset(this, eDynamicFeature(dynamicFeatureId));
+        EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
+
+        eStore().unset(this, feature);
     }
 
     /**
@@ -315,8 +317,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nonnull
     private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
-        if (isNull(store) || store.isPersistent()) {
-            return SharedStoreAdapter.adapt(new DirectWriteStore(BoundedTransientBackend.forId(id), resource));
+        if (isNull(store) || PersistentResource.class.isInstance(store.resource())) {
+            return SharedStoreAdapter.adapt(BoundedTransientBackend.forId(id), resource);
         }
         else {
             store.resource(resource);
@@ -350,7 +352,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param <E> the type of elements in this list
      */
-    private static class DelegatedContentsList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
+    private static class DelegatedContentsList<E> extends EContentsEList<E> {
 
         /**
          * The instance of an empty {@code DelegatedContentsList}.
@@ -361,16 +363,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * The owner of this list.
          */
         private final PersistentEObject owner;
-
-        /**
-         * Constructs a new {@code DelegatedContentsList} with the given {@code owner}.
-         *
-         * @param owner the owner of this list
-         */
-        protected DelegatedContentsList(PersistentEObject owner) {
-            super(owner);
-            this.owner = owner;
-        }
 
         /**
          * Constructs a new {@code DelegatedContentsList} with the given {@code owner} and {@code features}.
@@ -424,12 +416,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             for (EStructuralFeature feature : eStructuralFeatures) {
                 int localFeatureSize;
 
-                if (!feature.isMany()) {
-                    localFeatureSize = owner.eStore().isSet(owner, feature) ? 1 : 0;
-                }
-                else {
-                    localFeatureSize = owner.eStore().size(owner, feature);
-                }
+                localFeatureSize = feature.isMany()
+                        ? owner.eStore().size(owner, feature)
+                        : owner.eStore().isSet(owner, feature) ? 1 : 0;
 
                 featureSize += localFeatureSize;
 
@@ -558,26 +547,25 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         public DelegatedStoreMap(EStructuralFeature feature) {
             super(EClass.class.cast(feature.getEType()), Entry.class, null);
 
-            this.delegateEList = new EntriesList(DefaultPersistentEObject.this, feature);
+            this.delegateEList = new EntryList(feature);
             this.size = delegateEList.size();
         }
 
         /**
          * A {@link List} that holds entries of this map.
          */
-        private class EntriesList extends EStoreEObjectImpl.BasicEStoreEList<Entry<K, V>> {
+        private class EntryList extends EStoreEObjectImpl.BasicEStoreEList<Entry<K, V>> {
 
             @SuppressWarnings("JavaDoc")
             private static final long serialVersionUID = 3373155561238654363L;
 
             /**
-             * Constructs a new {@code EntriesList} with the given {@code feature}.
+             * Constructs a new {@code EntryList} with the given {@code feature}.
              *
-             * @param owner   the owner of this list
              * @param feature the feature associated with this list
              */
-            public EntriesList(PersistentEObject owner, EStructuralFeature feature) {
-                super(owner, feature);
+            public EntryList(EStructuralFeature feature) {
+                super(DefaultPersistentEObject.this, feature);
             }
 
             @Override

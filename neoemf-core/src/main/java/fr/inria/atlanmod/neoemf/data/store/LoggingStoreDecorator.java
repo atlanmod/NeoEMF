@@ -192,7 +192,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
         return callAndReturn(super::appendAllValues, key, values);
     }
 
