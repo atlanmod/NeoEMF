@@ -20,29 +20,30 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link ReferenceMapper} that provides a default behavior to use {@link T} instead of {@link Id} for
- * references. This behavior is specified by the {@link #mapReference(Id)} and {@link #unmapReference(T)} methods.
+ * A {@link ReferenceMapper} that provides a default behavior to use {@link R} instead of {@link Id} for
+ * references. This behavior is specified by the {@link #referenceMapping()} method.
  */
 @ParametersAreNonnullByDefault
-public interface ReferenceWith<T> extends ReferenceMapper {
+public interface ReferenceWith<R> extends ReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(SingleFeatureKey key) {
-        return this.<T>valueOf(key)
-                .map(this::unmapReference);
+        MappingFunction<Id, R> func = referenceMapping();
+
+        return this.<R>valueOf(key)
+                .map(func::unmap);
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
-        return this.<T>valueFor(key, mapReference(reference))
-                .map(this::unmapReference);
+        MappingFunction<Id, R> func = referenceMapping();
+
+        return this.<R>valueFor(key, func.map(reference))
+                .map(func::unmap);
     }
 
     @Nonnull
-    T mapReference(Id value);
-
-    @Nonnull
-    Id unmapReference(T value);
+    MappingFunction<Id, R> referenceMapping();
 }

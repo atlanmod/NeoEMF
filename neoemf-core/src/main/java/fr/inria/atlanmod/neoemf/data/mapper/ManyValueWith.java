@@ -32,7 +32,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to use {@link VS} instead of a set of {@link Object} for
- * multi-valued attributes.
+ * multi-valued attributes. This behavior is specified by the {@link #manyValuesMapping()} method.
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWith<VS> extends ManyValueMapper {
@@ -40,8 +40,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(ManyFeatureKey key) {
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         return this.<VS>valueOf(key.withoutPosition())
-                .map(this::<V>unmapValues)
+                .map(func::<V>unmap)
                 .filter(values -> key.position() < values.size())
                 .map(values -> values.get(key.position()));
     }
@@ -49,8 +51,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> List<V> allValuesOf(SingleFeatureKey key) {
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         return this.<VS>valueOf(key)
-                .map(this::<V>unmapValues)
+                .map(func::<V>unmap)
                 .orElseGet(Collections::<V>emptyList);
     }
 
@@ -60,8 +64,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
         checkNotNull(key);
         checkNotNull(value);
 
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         List<V> values = this.<VS>valueOf(key.withoutPosition())
-                .map(this::<V>unmapValues)
+                .map(func::<V>unmap)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values.set(key.position(), value));
@@ -76,8 +82,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
         checkNotNull(key);
         checkNotNull(value);
 
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         List<V> values = this.<VS>valueOf(key.withoutPosition())
-                .map(this::<V>unmapValues)
+                .map(func::<V>unmap)
                 .orElseGet(ArrayList::new);
 
         if (key.position() > values.size()) {
@@ -93,7 +101,7 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
             values.add(key.position(), value);
         }
 
-        valueFor(key.withoutPosition(), mapValues(values));
+        valueFor(key.withoutPosition(), func.map(values));
     }
 
     @Nonnull
@@ -101,8 +109,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
     default <V> Optional<V> removeValue(ManyFeatureKey key) {
         checkNotNull(key);
 
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         List<V> values = this.<VS>valueOf(key.withoutPosition())
-                .map(this::<V>unmapValues)
+                .map(func::<V>unmap)
                 .orElse(null);
 
         if (isNull(values)) {
@@ -133,8 +143,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
             return Optional.empty();
         }
 
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         return this.<VS>valueOf(key)
-                .map(this::unmapValues)
+                .map(func::unmap)
                 .map(rs -> rs.indexOf(value))
                 .filter(i -> i >= 0);
     }
@@ -147,8 +159,10 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
             return Optional.empty();
         }
 
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         return this.<VS>valueOf(key)
-                .map(this::<V>unmapValues)
+                .map(func::<V>unmap)
                 .map(rs -> rs.lastIndexOf(value))
                 .filter(i -> i >= 0);
     }
@@ -157,15 +171,13 @@ public interface ManyValueWith<VS> extends ManyValueMapper {
     @Nonnegative
     @Override
     default <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
+        MappingFunction<List<V>, VS> func = manyValuesMapping();
+
         return this.<VS>valueOf(key)
-                .map(this::unmapValues)
+                .map(func::unmap)
                 .map(List::size)
                 .filter(s -> s != 0);
     }
 
-    @Nonnull
-    <V> VS mapValues(List<V> values);
-
-    @Nonnull
-    <V> List<V> unmapValues(VS values);
+    <V> MappingFunction<List<V>, VS> manyValuesMapping();
 }

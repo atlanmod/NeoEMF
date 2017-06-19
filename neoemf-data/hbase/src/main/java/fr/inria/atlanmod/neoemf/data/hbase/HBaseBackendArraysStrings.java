@@ -41,6 +41,16 @@ import static java.util.Objects.isNull;
 class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ManyValueWithArrays, ReferenceWith<String>, ManyReferenceWith<String> {
 
     /**
+     * An empty string.
+     */
+    private static final String EMPTY = "";
+
+    /**
+     * The delimiter used for separate multi-valued references.
+     */
+    private static final String MANY_DELIMITER = ",";
+
+    /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
      * <p>
      * <b>Note:</b> This constructor is protected. To create a new {@link HBaseBackend} use {@link
@@ -54,29 +64,41 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ManyValu
 
     @Nonnull
     @Override
-    public String mapReference(Id value) {
-        return value.toString();
+    public MappingFunction<Id, String> referenceMapping() {
+        return new MappingFunction<Id, String>() {
+            @Nonnull
+            @Override
+            public String map(Id i) {
+                return i.toString();
+            }
+
+            @Nonnull
+            @Override
+            public Id unmap(String o) {
+                return StringId.of(o);
+            }
+        };
     }
 
     @Nonnull
     @Override
-    public Id unmapReference(String value) {
-        return StringId.of(value);
-    }
+    public MappingFunction<List<Id>, String> manyReferencesMapping() {
+        return new MappingFunction<List<Id>, String>() {
+            @Nonnull
+            @Override
+            public String map(List<Id> i) {
+                return checkNotNull(i).stream()
+                        .map(id -> isNull(id) ? EMPTY : id.toString())
+                        .collect(Collectors.joining(MANY_DELIMITER));
+            }
 
-    @Nonnull
-    @Override
-    public String mapReferences(List<Id> references) {
-        return checkNotNull(references).stream()
-                .map(id -> isNull(id) ? "" : id.toString())
-                .collect(Collectors.joining(","));
-    }
-
-    @Nonnull
-    @Override
-    public List<Id> unmapReferences(String references) {
-        return Arrays.stream(checkNotNull(references).split(","))
-                .map(r -> r.isEmpty() ? null : StringId.of(r))
-                .collect(Collectors.toList());
+            @Nonnull
+            @Override
+            public List<Id> unmap(String o) {
+                return Arrays.stream(checkNotNull(o).split(MANY_DELIMITER))
+                        .map(r -> r.isEmpty() ? null : StringId.of(r))
+                        .collect(Collectors.toList());
+            }
+        };
     }
 }
