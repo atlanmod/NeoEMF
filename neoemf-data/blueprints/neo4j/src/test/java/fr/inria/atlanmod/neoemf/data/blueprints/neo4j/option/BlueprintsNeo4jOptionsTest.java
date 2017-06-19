@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.data.Configuration;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 
@@ -185,7 +185,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
                 .asMap();
 
         assertThat(catchThrowable(() -> resource.save(options)))
-                .isInstanceOf(InvalidDataStoreException.class);
+                .isInstanceOf(InvalidBackendException.class);
     }
 
     /**
@@ -239,7 +239,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
                 .asMap();
 
         assertThat(catchThrowable(() -> resource.save(options)))
-                .isInstanceOf(InvalidDataStoreException.class);
+                .isInstanceOf(InvalidBackendException.class);
     }
 
     /**
@@ -293,7 +293,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
                 .asMap();
 
         assertThat(catchThrowable(() -> resource.save(options)))
-                .isInstanceOf(InvalidDataStoreException.class);
+                .isInstanceOf(InvalidBackendException.class);
     }
 
     /**
@@ -347,7 +347,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
                 .asMap();
 
         assertThat(catchThrowable(() -> resource.save(options)))
-                .isInstanceOf(InvalidDataStoreException.class);
+                .isInstanceOf(InvalidBackendException.class);
     }
 
     /**
@@ -401,7 +401,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
                 .asMap();
 
         assertThat(catchThrowable(() -> resource.save(options)))
-                .isInstanceOf(InvalidDataStoreException.class);
+                .isInstanceOf(InvalidBackendException.class);
     }
 
     /**
@@ -458,7 +458,7 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
                 .asMap();
 
         assertThat(catchThrowable(() -> resource.save(options)))
-                .isInstanceOf(InvalidDataStoreException.class);
+                .isInstanceOf(InvalidBackendException.class);
     }
 
     /**

@@ -78,29 +78,6 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     }
 
     /**
-     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the file system.
-     *
-     * @param uri the base filed-based {@link URI}
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code uri} is {@code null}
-     */
-    @Nonnull
-    private URI fromFile(URI uri) {
-        checkNotNull(scheme, "Cannot create URI without a valid scheme");
-        checkArgument(uri.isFile());
-
-        return fromUri(URI.createHierarchicalURI(scheme,
-                uri.authority(),
-                uri.device(),
-                uri.segments(),
-                uri.query(),
-                uri.fragment()));
-    }
-
-    /**
      * Checks that the {@link BackendFactory} associated to the created {@link URI} supports file-based storage.
      *
      * @return {@code true} if file-based {@link URI}s are supported
@@ -119,7 +96,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Override
     public final UriBuilder withScheme(String scheme) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
-        checkState(isNull(this.scheme), "The scheme has already been defined as %s", scheme);
+        checkState(isNull(this.scheme), "The scheme has already been defined (%s)", scheme);
 
         this.scheme = scheme;
 
@@ -137,8 +114,8 @@ public abstract class AbstractUriBuilder implements UriBuilder {
         }
 
         if (Objects.equals(scheme, uri.scheme())) {
-            checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme %s", uri);
-            return new FileBasedUri(uri);
+            checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme (%s)", uri.scheme());
+            return new FileUri(uri);
         }
 
         if (Objects.equals(FILE_SCHEME, uri.scheme())) {
@@ -191,11 +168,34 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     }
 
     /**
+     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the file system.
+     *
+     * @param uri the base filed-based {@link URI}
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if the {@code uri} is {@code null}
+     */
+    @Nonnull
+    private URI fromFile(URI uri) {
+        checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        checkArgument(uri.isFile(), "Expecting a file-based URI: {0}", uri.toString());
+
+        return fromUri(URI.createHierarchicalURI(scheme,
+                uri.authority(),
+                uri.device(),
+                uri.segments(),
+                uri.query(),
+                uri.fragment()));
+    }
+
+    /**
      * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
      * {@link URI}. All methods are delegated to the internal {@link URI}.
      */
     @ParametersAreNonnullByDefault
-    private static class FileBasedUri extends URI {
+    private static class FileUri extends URI {
 
         /**
          * The base {@link URI}.
@@ -204,11 +204,11 @@ public abstract class AbstractUriBuilder implements UriBuilder {
         private final URI baseUri;
 
         /**
-         * Constructs a new {@code FileBasedUri} from the given {@code baseUri}.
+         * Constructs a new {@code FileUri} from the given {@code baseUri}.
          *
          * @param baseUri the base {@link URI}
          */
-        private FileBasedUri(URI baseUri) {
+        private FileUri(URI baseUri) {
             super(baseUri.hashCode());
             this.baseUri = baseUri;
         }

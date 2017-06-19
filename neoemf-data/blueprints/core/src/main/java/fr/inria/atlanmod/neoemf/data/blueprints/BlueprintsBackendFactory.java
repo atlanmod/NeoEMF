@@ -21,16 +21,19 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.Configuration;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -98,12 +101,12 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         BlueprintsBackend backend;
 
         checkArgument(uri.isFile(), "BlueprintsBackendFactory only supports file-based URIs");
 
-        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
@@ -112,7 +115,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
             Graph graph = GraphFactory.open(configuration.asMap());
             if (!graph.getFeatures().supportsKeyIndices) {
-                throw new InvalidDataStoreException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
+                throw new InvalidBackendException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
             }
 
             configuration.save();
@@ -128,7 +131,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
-            throw new InvalidDataStoreException(e);
+            throw new InvalidBackendException(e);
         }
 
         return backend;
@@ -141,7 +144,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             return new BlueprintsBackendIndices(new TinkerGraph());
         }
         catch (Exception e) {
-            throw new InvalidDataStoreException(e);
+            throw new InvalidBackendException(e);
         }
     }
 
@@ -153,12 +156,20 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
      *
      * @return the created configuration
      *
-     * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
-     *                                   {@code options} are missing or invalid.
+     * @throws InvalidBackendException if the configuration cannot be created in the {@code directory}, or if some
+     *                                 {@code options} are missing or invalid.
      */
     private Configuration getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
         Path path = directory.resolve(BLUEPRINTS_CONFIG_FILE);
-        Configuration configuration = Configuration.load(path);
+
+        Configuration configuration;
+
+        try {
+            configuration = Configuration.load(path);
+        }
+        catch (IOException e) {
+            throw new InvalidBackendException(e);
+        }
 
         // Initialize value if the configuration file has just been created
         if (!configuration.contains(BlueprintsResourceOptions.GRAPH_TYPE)) {
@@ -169,7 +180,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             String savedGraphType = configuration.get(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
-                throw new InvalidDataStoreException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
+                throw new InvalidBackendException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
             }
         }
 
@@ -180,7 +191,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         // Check we have a valid graph graphType, it is needed to get the graph name
         if (!configuration.contains(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            throw new InvalidDataStoreException(String.format("Graph is undefined for %s", directory));
+            throw new InvalidBackendException(String.format("Graph is undefined for %s", directory));
         }
 
         String graphType = configuration.get(BlueprintsResourceOptions.GRAPH_TYPE);

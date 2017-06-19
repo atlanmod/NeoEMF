@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
@@ -70,7 +71,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreateTransientStore() {
         Backend backend = context().factory().createTransientBackend();
 
-        Store store = context().factory().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
+        Store store = StoreFactory.getInstance().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -83,7 +84,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreatePersistentStore() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), context().optionsBuilder().asMap());
 
-        Store store = context().factory().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
+        Store store = StoreFactory.getInstance().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);

@@ -70,23 +70,18 @@ public final class Configuration {
      * @return a new configuration
      */
     @Nonnull
-    public static Configuration load(Path file) {
+    public static Configuration load(Path file) throws IOException {
         checkNotNull(file);
 
-        try {
-            Properties properties = new Properties();
+        Properties properties = new Properties();
 
-            if (Files.exists(file)) {
-                try (Reader reader = Files.newBufferedReader(file)) {
-                    properties.load(reader);
-                }
+        if (Files.exists(file)) {
+            try (Reader reader = Files.newBufferedReader(file)) {
+                properties.load(reader);
             }
+        }
 
-            return new Configuration(properties, file);
-        }
-        catch (IOException e) {
-            throw new InvalidDataStoreException(e);
-        }
+        return new Configuration(properties, file);
     }
 
     /**

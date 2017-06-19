@@ -14,8 +14,10 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -75,12 +77,12 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         MapDbBackend backend;
 
         checkArgument(uri.isFile(), "MapDbBackendFactory only supports file-based URIs");
 
-        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
@@ -104,7 +106,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
             processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
-            throw new InvalidDataStoreException(e);
+            throw new InvalidBackendException(e);
         }
 
         return backend;
@@ -118,7 +120,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
             return new MapDbBackendIndices(db);
         }
         catch (Exception e) {
-            throw new InvalidDataStoreException(e);
+            throw new InvalidBackendException(e);
         }
     }
 

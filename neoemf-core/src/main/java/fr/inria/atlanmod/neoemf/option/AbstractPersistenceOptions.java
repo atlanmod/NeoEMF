@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.common.log.Level;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,13 +37,13 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOptions<B>> implements PersistenceOptions {
 
     /**
-     * Map that holds all defined key/value options in this builder.
+     * Map that holds all defined key/value options.
      */
     @Nonnull
     private final Map<String, Object> options;
 
     /**
-     * List that holds all defined store options in this builder.
+     * List that holds all defined store options.
      */
     @Nonnull
     private final Set<PersistentStoreOptions> stores;
@@ -66,7 +67,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
     }
 
     /**
-     * Returns this instance, casted as a {@code <B>}.
+     * Returns this instance, casted as a {@link B}.
      *
      * @return this instance
      */
@@ -142,11 +143,42 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
      *
      * @return this builder (for chaining)
      *
+     * @throws NullPointerException   if the {@code mapping} is {@code null}
+     * @throws InvalidOptionException if the {@code mapping} does not represent a {@link DataMapper} instance, or if
+     *                                the associated class cannot be found
+     */
+    @Nonnull
+    public B withMapping(String mapping) {
+        Class<?> mappingClass;
+
+        try {
+            mappingClass = Class.forName(mapping);
+        }
+        catch (ClassNotFoundException e) {
+            throw new InvalidOptionException(e);
+        }
+
+        if (!DataMapper.class.isAssignableFrom(mappingClass)) {
+            throw new InvalidOptionException(
+                    String.format("The %s must be assignable to %s", mapping, DataMapper.class.getName()));
+        }
+
+        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping));
+    }
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}. If the mapping has
+     * already been defined, then it will be erased by the new.
+     *
+     * @param mapping the class of the mapping to use
+     *
+     * @return this builder (for chaining)
+     *
      * @throws NullPointerException if the {@code mapping} is {@code null}
      */
     @Nonnull
-    protected B withMapping(String mapping) {
-        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping));
+    public B withMapping(Class<? extends DataMapper> mapping) {
+        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping).getName());
     }
 
     /**

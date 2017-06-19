@@ -79,7 +79,13 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     protected Configuration getConfiguration() {
         Path configurationFile = file().toPath().resolve("config.properties");
         assertThat(configurationFile).exists();
-        return Configuration.load(configurationFile);
+
+        try {
+            return Configuration.load(configurationFile);
+        }
+        catch (IOException e) {
+            throw new IllegalStateException(e); // Should not happen
+        }
     }
 
     /**

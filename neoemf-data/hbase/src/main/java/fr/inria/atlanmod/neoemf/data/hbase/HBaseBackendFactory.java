@@ -12,10 +12,11 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
+import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -90,12 +91,12 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
         HBaseBackend backend;
 
         checkArgument(uri.isHierarchical(), "HBaseBackendFactory only supports hierarchical URIs");
 
-        boolean readOnly = storesFrom(options).contains(PersistentStoreOptions.READ_ONLY);
+        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Configuration configuration = HBaseConfiguration.create();
@@ -128,7 +129,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                     new ConstructorParameter(table, Table.class));
         }
         catch (Exception e) {
-            throw new InvalidDataStoreException(e);
+            throw new InvalidBackendException(e);
         }
 
         return backend;

@@ -11,8 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -181,6 +183,7 @@ final class ContextualResourceBuilder {
      */
     public DataMapper createPersistentMapper() {
         //noinspection ConstantConditions
-        return context.factory().createStore(context.factory().createPersistentBackend(uri, allOptions()), null, allOptions());
+        Backend backend = context.factory().createPersistentBackend(uri, allOptions());
+        return StoreFactory.getInstance().createStore(backend, null, allOptions());
     }
 }

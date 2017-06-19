@@ -17,12 +17,15 @@ import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.LocalStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -112,7 +115,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
 
-        store = LocalStoreAdapter.adapt(factory.createTransientStore(this));
+        Backend backend = factory.createTransientBackend();
+        Store baseStore = StoreFactory.getInstance().createStore(backend, this, CommonOptions.noOption());
+        store = LocalStoreAdapter.adapt(baseStore);
 
         Log.info("PersistentResource created: {0}", uri);
     }
@@ -177,7 +182,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         checkOptions(options);
 
         if (!isLoaded || !isPersistent()) {
-            StoreAdapter newStore = LocalStoreAdapter.adapt(factory.createPersistentStore(this, options));
+            Backend backend = factory.createPersistentBackend(uri, options);
+            Store baseStore = StoreFactory.getInstance().createStore(backend, this, options);
+            StoreAdapter newStore = LocalStoreAdapter.adapt(baseStore);
 
             // Direct copy to the backend
             store.copyTo(newStore.backend());
@@ -212,7 +219,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
                     store.close();
 
-                    store = LocalStoreAdapter.adapt(factory.createPersistentStore(this, options));
+                    Backend backend = factory.createPersistentBackend(uri, options);
+                    Store baseStore = StoreFactory.getInstance().createStore(backend, this, options);
+                    store = LocalStoreAdapter.adapt(baseStore);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
