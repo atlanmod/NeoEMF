@@ -244,6 +244,30 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         vertex.<V>setProperty(formatProperty(key.name(), key.position()), value);
     }
 
+    @Override
+    public <V> int appendValue(SingleFeatureKey key, V value) {
+        checkNotNull(key);
+
+        int position = sizeOfValue(key).orElse(0);
+
+        addValue(key.withPosition(position), value);
+
+        return position;
+    }
+
+    @Override
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+        checkNotNull(key);
+        checkNotNull(values);
+
+        int firstPosition = sizeOfValue(key).orElse(0);
+
+        IntStream.range(0, values.size())
+                .forEach(i -> addValue(key.withPosition(firstPosition + i), values.get(i)));
+
+        return firstPosition;
+    }
+
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureKey key) {
@@ -288,6 +312,21 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         sizeForValue(key, 0);
     }
 
+    @Nonnull
+    @Override
+    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
+        checkNotNull(source);
+        checkNotNull(target);
+
+        if (Objects.equals(source, target)) {
+            return Optional.empty();
+        }
+
+        Optional<V> movedValue = removeValue(source);
+        movedValue.ifPresent(v -> addValue(target, v));
+        return movedValue;
+    }
+
     @Override
     public <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
         if (isNull(value)) {
@@ -326,6 +365,10 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
 
         return Optional.empty();
     }
+
+    //endregion
+
+    //region Multi-valued references
 
     @Nonnull
     @Nonnegative
@@ -506,6 +549,30 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
         sizeForValue(key.withoutPosition(), size + 1);
     }
 
+    @Override
+    public int appendReference(SingleFeatureKey key, Id reference) {
+        checkNotNull(key);
+
+        int position = sizeOfReference(key).orElse(0);
+
+        addReference(key.withPosition(position), reference);
+
+        return position;
+    }
+
+    @Override
+    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+        checkNotNull(key);
+        checkNotNull(references);
+
+        int firstPosition = sizeOfReference(key).orElse(0);
+
+        IntStream.range(0, references.size())
+                .forEach(i -> addReference(key.withPosition(firstPosition + i), references.get(i)));
+
+        return firstPosition;
+    }
+
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureKey key) {
@@ -565,6 +632,21 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend implements Many
                 .forEach(Element::remove);
 
         sizeForValue(key, 0);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        checkNotNull(source);
+        checkNotNull(target);
+
+        if (Objects.equals(source, target)) {
+            return Optional.empty();
+        }
+
+        Optional<Id> movedReference = removeReference(source);
+        movedReference.ifPresent(v -> addReference(target, v));
+        return movedReference;
     }
 
     @Override

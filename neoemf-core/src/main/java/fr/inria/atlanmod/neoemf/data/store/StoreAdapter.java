@@ -20,6 +20,9 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,11 +38,11 @@ public interface StoreAdapter extends InternalEObject.EStore, Store, Resolver<Id
 
     @Nullable
     @Override
-    Object get(InternalEObject internalObject, EStructuralFeature feature, int index);
+    Object get(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index);
 
     @Nullable
     @Override
-    Object set(InternalEObject internalObject, EStructuralFeature feature, int index, @Nullable Object value);
+    Object set(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index, @Nullable Object value);
 
     @Override
     boolean isSet(InternalEObject internalObject, EStructuralFeature feature);
@@ -100,6 +103,65 @@ public interface StoreAdapter extends InternalEObject.EStore, Store, Resolver<Id
     default PersistentEObject create(EClass eClass) {
         throw new IllegalStateException("EStore#create() should not be called");
     }
+
+    /**
+     * Returns all values in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean) content} of the
+     * object's feature.
+     *
+     * @param internalObject the object in question
+     * @param feature        a feature of the object
+     *
+     * @return all values in the content of the object's feature
+     */
+    @Nonnull
+    List<Object> getAll(InternalEObject internalObject, EStructuralFeature feature);
+
+    /**
+     * Sets the {@code values} in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean) content} of
+     * the
+     * object's feature.
+     * <p>
+     * If the object's feature already have values, then they will be replaced by {@code values}.
+     *
+     * @param internalObject the object in question
+     * @param feature        a feature of the object
+     * @param values         the new values
+     */
+    void setAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values);
+
+    /**
+     * Adds the {@code values} from the {@code index} in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature,
+     * boolean) content} of the object's feature.
+     *
+     * @param internalObject the object in question
+     * @param feature        a {@link org.eclipse.emf.ecore.ETypedElement#isMany() many-valued} feature of the object
+     * @param index          the first index from which to start the addition within the content. If negative, then
+     *                       the addition will begin from the end of the existing content
+     * @param values         the value to add
+     *
+     * @return the first index
+     */
+    int addAll(InternalEObject internalObject, EStructuralFeature feature, int index, Collection<?> values);
+
+    /**
+     * Removes the {@code values} in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean) content}
+     * of the object's feature.
+     *
+     * @param internalObject the object in question
+     * @param feature        a {@link org.eclipse.emf.ecore.ETypedElement#isMany() many-valued} feature of the object
+     * @param values         the values to remove
+     */
+    void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values);
+
+    /**
+     * Retains only the {@code values} in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean)
+     * content} of the object's feature.
+     *
+     * @param internalObject the object in question
+     * @param feature        a {@link org.eclipse.emf.ecore.ETypedElement#isMany() many-valued} feature of the object
+     * @param values         the values to retain
+     */
+    void retainAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values);
 
     /**
      * Creates or updates the containment link between {@code object} and {@code container}, and deletes any previous

@@ -76,7 +76,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(value);
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
+                .orElseGet(() -> MoreArrays.newArray(Object.class, key.position() + 1));
 
         if (key.position() > values.length) {
             values = MoreArrays.resize(values, key.position() + 1);
@@ -90,6 +90,23 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         }
 
         valueFor(key.withoutPosition(), values);
+    }
+
+    @Override
+    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+        checkNotNull(key);
+        checkNotNull(values);
+
+        int firstPosition = sizeOfValue(key).orElse(0);
+
+        V[] vs = this.<V[]>valueOf(key)
+                .orElseGet(() -> MoreArrays.newArray(Object.class, values.size()));
+
+        MoreArrays.addAll(vs, values);
+
+        valueFor(key, vs);
+
+        return firstPosition;
     }
 
     @Nonnull

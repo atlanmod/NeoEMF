@@ -261,7 +261,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
-            Log.info("The store does not support advanced allInstancesOf() computation: using standard EMF API instead");
+            Log.debug(e.getMessage() + ": using standard EMF API instead");
 
             return MoreIterables.stream(this::getAllContents)
                     .filter(eClass::isInstance)
@@ -438,7 +438,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
 
         @Override
-        @SuppressWarnings("unchecked") // Unchecked cast: 'org.eclipse.emf.ecore.EObject' to 'E'
+        @SuppressWarnings("unchecked")
         protected E delegateRemove(int index) {
             E previousValue = super.delegateRemove(index);
 

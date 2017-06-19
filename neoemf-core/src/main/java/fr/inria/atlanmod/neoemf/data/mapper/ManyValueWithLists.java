@@ -95,6 +95,23 @@ public interface ManyValueWithLists extends ManyValueMapper {
         valueFor(key.withoutPosition(), values);
     }
 
+    @Override
+    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+        checkNotNull(key);
+        checkNotNull(values);
+
+        int firstPosition = sizeOfValue(key).orElse(0);
+
+        List<V> vs = this.<List<V>>valueOf(key)
+                .orElseGet(() -> getOrCreateList(key));
+
+        vs.addAll(values);
+
+        valueFor(key, vs);
+
+        return firstPosition;
+    }
+
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureKey key) {

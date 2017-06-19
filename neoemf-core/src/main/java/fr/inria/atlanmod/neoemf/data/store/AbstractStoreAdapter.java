@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.common.cache.Cache;
-import fr.inria.atlanmod.common.collect.MoreArrays;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -31,7 +30,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,7 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadFactory;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -158,7 +157,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
     @Nullable
     @Override
-    public final Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+    public final Object get(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -206,7 +205,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
     @Nullable
     @Override
-    public final Object set(InternalEObject internalObject, EStructuralFeature feature, int index, @Nullable Object value) {
+    public final Object set(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index, @Nullable Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
 
@@ -452,7 +451,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
     }
 
     @Override
-    public final void add(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index, Object value) {
+    public final void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         checkNotNull(internalObject);
         checkNotNull(feature);
         checkNotNull(value);
@@ -597,64 +596,14 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
         checkNotNull(internalObject);
         checkNotNull(feature);
 
-        PersistentEObject object = PersistentEObject.from(internalObject);
+        List<T> values = (List<T>) getAll(internalObject, feature);
 
-        if (!exists(object.id())) {
-            return nonNull(array) ? array : MoreArrays.newArray(Object.class, 0);
-        }
-
-        refresh(object);
-
-        SingleFeatureKey key = SingleFeatureKey.from(internalObject, feature);
-
-        Stream<Object> stream;
-        if (EObjects.isAttribute(feature)) {
-            List<String> allValues;
-
-            if (feature.isMany()) {
-                allValues = allValuesOf(key);
-            }
-            else {
-                allValues = this.<String>valueOf(key)
-                        .map(Collections::singletonList)
-                        .orElseGet(Collections::emptyList);
-            }
-
-            stream = allValues.stream()
-                    .map(v -> deserialize(EObjects.asAttribute(feature), v));
-        }
-        else {
-            List<Id> allReferences;
-
-            if (feature.isMany()) {
-                allReferences = allReferencesOf(key);
-            }
-            else {
-                allReferences = referenceOf(key)
-                        .map(Collections::singletonList)
-                        .orElseGet(Collections::emptyList);
-            }
-
-            stream = allReferences.stream()
-                    .map(this::resolve);
-        }
-
-        if (isNull(array)) {
-            return (T[]) stream.toArray();
-        }
-        else {
-            return stream.toArray(size -> {
-                if (array.length < size) {
-                    throw new IllegalArgumentException(String.format("The given array is smaller than expected (array = %d, size = %d)", array.length, size));
-                }
-                return array;
-            });
-        }
+        return (T[]) (isNull(array) ? values.toArray() : values.toArray(array));
     }
 
     @Override
     public final int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        return Arrays.hashCode(toArray(internalObject, feature));
+        return getAll(internalObject, feature).hashCode();
     }
 
     @Nullable
@@ -680,6 +629,127 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
                 .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
                 .map(EObjects::asReference)
                 .orElse(null);
+    }
+
+    @Nonnull
+    @Override
+    public List<Object> getAll(InternalEObject internalObject, EStructuralFeature feature) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+
+        if (!exists(object.id())) {
+            return Collections.emptyList();
+        }
+
+        refresh(object);
+
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
+
+        if (EObjects.isAttribute(feature)) {
+            List<String> value;
+            if (!feature.isMany()) {
+                value = this.<String>valueOf(key)
+                        .map(Collections::singletonList)
+                        .orElseGet(Collections::emptyList);
+            }
+            else {
+                value = allValuesOf(key);
+            }
+
+            EAttribute attribute = EObjects.asAttribute(feature);
+
+            return value.stream()
+                    .map(v -> deserialize(attribute, v))
+                    .collect(Collectors.toList());
+        }
+        else {
+            List<Id> reference;
+            if (!feature.isMany()) {
+                reference = referenceOf(key)
+                        .map(Collections::singletonList)
+                        .orElseGet(Collections::emptyList);
+            }
+            else {
+                reference = allReferencesOf(key);
+            }
+
+            return reference.stream()
+                    .map(this::resolve)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    // TODO Implement this method
+    public void setAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+        checkNotNull(values);
+
+        checkArgument(feature.isMany(), "Cannot compute setAll() of a single-valued feature");
+
+        unset(internalObject, feature);
+
+        addAll(internalObject, feature, NO_INDEX, values);
+    }
+
+    @Override
+    // TODO Implement this method
+    public int addAll(InternalEObject internalObject, EStructuralFeature feature, int index, Collection<?> values) {
+        checkNotNull(internalObject);
+        checkNotNull(feature);
+        checkNotNull(values);
+
+        checkArgument(feature.isMany(), "Cannot compute addAll() of a single-valued feature");
+
+        if (index == NO_INDEX) {
+            PersistentEObject object = PersistentEObject.from(internalObject);
+            updateInstanceOf(object);
+
+            SingleFeatureKey key = SingleFeatureKey.from(object, feature);
+
+            if (EObjects.isAttribute(feature)) {
+                EAttribute attribute = EObjects.asAttribute(feature);
+
+                List<String> vs = values.stream()
+                        .map(v -> serialize(attribute, v))
+                        .collect(Collectors.toList());
+
+                return appendAllValues(key, vs);
+            }
+            else {
+                List<Id> rs = values.stream()
+                        .map(PersistentEObject::from)
+                        .peek(this::updateInstanceOf)
+                        .map(PersistentEObject::id)
+                        .collect(Collectors.toList());
+
+                return appendAllReferences(key, rs);
+            }
+        }
+        else {
+            Iterator<?> iterator = values.iterator();
+
+            int i = 0;
+            while (iterator.hasNext()) {
+                add(internalObject, feature, index + i, iterator.next());
+                i++;
+            }
+
+            return index;
+        }
+    }
+
+    @Override
+    public void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void retainAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override

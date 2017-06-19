@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -81,6 +82,11 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
     }
 
     @Override
+    default boolean hasAnyReference(SingleFeatureKey key) {
+        return hasReference(key);
+    }
+
+    @Override
     default void addReference(ManyFeatureKey key, Id reference) {
         checkNotNull(key);
         checkNotNull(reference);
@@ -105,6 +111,37 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
         }
 
         valueFor(key.withoutPosition(), func.map(ids));
+    }
+
+    @Override
+    default int appendReference(SingleFeatureKey key, Id reference) {
+        checkNotNull(key);
+
+        int position = sizeOfReference(key).orElse(0);
+
+        addReference(key.withPosition(position), reference);
+
+        return position;
+    }
+
+    @Override
+    default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+        checkNotNull(key);
+        checkNotNull(references);
+
+        int firstPosition = sizeOfValue(key).orElse(0);
+
+        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+
+        List<Id> ids = this.<RS>valueOf(key)
+                .map(func::unmap)
+                .orElseGet(ArrayList::new);
+
+        ids.addAll(references);
+
+        valueFor(key, func.map(ids));
+
+        return firstPosition;
     }
 
     @Nonnull
@@ -136,6 +173,31 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
         }
 
         return previousId;
+    }
+
+    @Override
+    default void removeAllReferences(SingleFeatureKey key) {
+        unsetReference(key);
+    }
+
+    @Nonnull
+    @Override
+    default Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
+        checkNotNull(source);
+        checkNotNull(target);
+
+        if (Objects.equals(source, target)) {
+            return Optional.empty();
+        }
+
+        Optional<Id> movedReference = removeReference(source);
+        movedReference.ifPresent(v -> addReference(target, v));
+        return movedReference;
+    }
+
+    @Override
+    default boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
+        return indexOfReference(key, reference).isPresent();
     }
 
     @Nonnull

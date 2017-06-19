@@ -44,6 +44,16 @@ public interface ReferenceWith<R> extends ReferenceMapper {
                 .map(func::unmap);
     }
 
+    @Override
+    default void unsetReference(SingleFeatureKey key) {
+        unsetValue(key);
+    }
+
+    @Override
+    default boolean hasReference(SingleFeatureKey key) {
+        return referenceOf(key).isPresent();
+    }
+
     @Nonnull
     MappingFunction<Id, R> referenceMapping();
 }

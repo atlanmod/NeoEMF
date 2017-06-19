@@ -17,16 +17,12 @@ import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
  * An object capable of mapping multi-valued references represented as a set of key/value pair.
@@ -124,13 +120,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnegative
     default int appendReference(SingleFeatureKey key, Id reference) {
-        checkNotNull(key);
-
-        int position = sizeOfReference(key).orElse(0);
-
-        addReference(key.withPosition(position), reference);
-
-        return position;
+        return appendValue(key, reference);
     }
 
     /**
@@ -147,15 +137,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnegative
     default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        checkNotNull(key);
-        checkNotNull(references);
-
-        int firstPosition = sizeOfReference(key).orElse(0);
-
-        IntStream.range(0, references.size())
-                .forEach(i -> addReference(key.withPosition(firstPosition + i), references.get(i)));
-
-        return firstPosition;
+        return appendAllValues(key, references);
     }
 
     /**
@@ -195,16 +177,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnull
     default Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
-        checkNotNull(source);
-        checkNotNull(target);
-
-        if (Objects.equals(source, target)) {
-            return Optional.empty();
-        }
-
-        Optional<Id> movedReference = removeReference(source);
-        movedReference.ifPresent(r -> addReference(target, r));
-        return movedReference;
+        return moveValue(source, target);
     }
 
     /**

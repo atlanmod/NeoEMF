@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.common.collect;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
@@ -133,6 +135,35 @@ public final class MoreArrays {
         }
 
         return newArray;
+    }
+
+    /**
+     * Adds all {@code elements} at the end of the {@code array}.
+     *
+     * @param array    the array to add the element to
+     * @param elements the objects to add
+     * @param <T>      the component type of the array
+     *
+     * @return a new array containing the existing elements and the new elements
+     *
+     * @throws NullPointerException if any argument is {@code null}
+     */
+    public static <T> T[] addAll(T[] array, Collection<? extends T> elements) {
+        checkNotNull(array);
+        checkNotNull(elements);
+
+        T[] joinedArray = newArray(array.getClass().getComponentType(), array.length + elements.size());
+        System.arraycopy(array, 0, joinedArray, 0, array.length);
+
+        Iterator<? extends T> iter = elements.iterator();
+
+        int i = 0;
+        while (iter.hasNext()) {
+            joinedArray[array.length + i] = iter.next();
+            i++;
+        }
+
+        return joinedArray;
     }
 
     /**
