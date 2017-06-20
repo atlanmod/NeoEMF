@@ -131,6 +131,11 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         thenIncrementAndSave(() -> super.addValue(key, value), 1);
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        thenIncrementAndSave(() -> super.addAllValues(key, collection), collection.size());
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -139,8 +144,8 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
-        return thenIncrementAndSave(() -> super.appendAllValues(key, values), values.size());
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+        return thenIncrementAndSave(() -> super.appendAllValues(key, collection), collection.size());
     }
 
     @Nonnull
@@ -171,6 +176,11 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
         thenIncrementAndSave(() -> super.addReference(key, reference), 1);
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        thenIncrementAndSave(() -> super.addAllReferences(key, collection), collection.size());
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -179,8 +189,8 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        return thenIncrementAndSave(() -> super.appendAllReferences(key, references), references.size());
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        return thenIncrementAndSave(() -> super.appendAllReferences(key, collection), collection.size());
     }
 
     @Nonnull

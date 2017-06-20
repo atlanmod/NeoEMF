@@ -169,6 +169,11 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
         record(() -> super.addValue(key, value));
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        record(() -> super.addAllValues(key, collection));
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -177,8 +182,8 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
-        return record(() -> super.appendAllValues(key, values));
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+        return record(() -> super.appendAllValues(key, collection));
     }
 
     @Nonnull
@@ -252,6 +257,11 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
         record(() -> super.addReference(key, reference));
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        record(() -> super.addAllReferences(key, collection));
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -260,8 +270,8 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        return record(() -> super.appendAllReferences(key, references));
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        return record(() -> super.appendAllReferences(key, collection));
     }
 
     @Nonnull

@@ -119,6 +119,12 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Si
         super.addValue(key, value);
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        cache.put(key.withoutPosition(), true);
+        super.addAllValues(key, collection);
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -128,9 +134,9 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Si
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
         cache.put(key, true);
-        return super.appendAllValues(key, values);
+        return super.appendAllValues(key, collection);
     }
 
     @Nonnull
@@ -182,6 +188,12 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Si
         super.addReference(key, reference);
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        cache.put(key.withoutPosition(), true);
+        super.addAllReferences(key, collection);
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -191,9 +203,9 @@ public class IsSetCachingStoreDecorator extends AbstractCachingStoreDecorator<Si
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
         cache.put(key, true);
-        return super.appendAllReferences(key, references);
+        return super.appendAllReferences(key, collection);
     }
 
     @Nonnull

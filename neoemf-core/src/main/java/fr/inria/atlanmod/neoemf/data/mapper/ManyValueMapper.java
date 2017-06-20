@@ -104,6 +104,28 @@ public interface ManyValueMapper extends ValueMapper {
     <V> void addValue(ManyFeatureKey key, V value);
 
     /**
+     * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
+     * If {@code key#position > size} then it creates {@code null} elements to respect the position.
+     *
+     * @param key        the key identifying the multi-valued attribute
+     * @param collection the values to add
+     * @param <V>        the type of value
+     */
+    default <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        checkNotNull(key);
+        checkNotNull(collection);
+
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int firstPosition = key.position();
+
+        IntStream.range(0, collection.size())
+                .forEach(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
+    }
+
+    /**
      * Adds the {@code value} to the specified {@code key} at the last position.
      *
      * @param key   the key identifying the multi-valued attribute
@@ -118,6 +140,7 @@ public interface ManyValueMapper extends ValueMapper {
     @Nonnegative
     default <V> int appendValue(SingleFeatureKey key, V value) {
         checkNotNull(key);
+        checkNotNull(value);
 
         int position = sizeOfValue(key).orElse(0);
 
@@ -127,11 +150,11 @@ public interface ManyValueMapper extends ValueMapper {
     }
 
     /**
-     * Adds all {@code values} to the specified {@code key} from the last position.
+     * Adds all the {@code collection} to the specified {@code key} from the last position.
      *
-     * @param key    the key identifying the multi-valued attribute
-     * @param values the values to add
-     * @param <V>    the type of values
+     * @param key        the key identifying the multi-valued attribute
+     * @param collection the values to add
+     * @param <V>        the type of collection
      *
      * @return the position to which the first value was added
      *
@@ -140,14 +163,13 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #appendValue(SingleFeatureKey, Object)
      */
     @Nonnegative
-    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
         checkNotNull(key);
-        checkNotNull(values);
+        checkNotNull(collection);
 
         int firstPosition = sizeOfValue(key).orElse(0);
 
-        IntStream.range(0, values.size())
-                .forEach(i -> addValue(key.withPosition(firstPosition + i), values.get(i)));
+        addAllValues(key.withPosition(firstPosition), collection);
 
         return firstPosition;
     }

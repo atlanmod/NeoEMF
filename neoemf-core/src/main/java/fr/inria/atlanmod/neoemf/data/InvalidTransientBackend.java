@@ -154,6 +154,11 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw E;
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        throw E;
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -162,7 +167,7 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
         throw E;
     }
 
@@ -237,6 +242,11 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw E;
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        throw E;
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -245,7 +255,7 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
         throw E;
     }
 

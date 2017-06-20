@@ -704,41 +704,40 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
 
         checkArgument(feature.isMany(), "Cannot compute addAll() of a single-valued feature");
 
-        if (index == NO_INDEX) {
-            PersistentEObject object = PersistentEObject.from(internalObject);
-            updateInstanceOf(object);
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        updateInstanceOf(object);
 
-            SingleFeatureKey key = SingleFeatureKey.from(object, feature);
+        SingleFeatureKey key = SingleFeatureKey.from(object, feature);
 
-            if (EObjects.isAttribute(feature)) {
-                EAttribute attribute = EObjects.asAttribute(feature);
+        if (EObjects.isAttribute(feature)) {
+            EAttribute attribute = EObjects.asAttribute(feature);
 
-                List<String> vs = values.stream()
-                        .map(v -> serialize(attribute, v))
-                        .collect(Collectors.toList());
+            List<String> vs = values.stream()
+                    .map(v -> serialize(attribute, v))
+                    .collect(Collectors.toList());
 
+            if (index == NO_INDEX) {
                 return appendAllValues(key, vs);
             }
             else {
-                List<Id> rs = values.stream()
-                        .map(PersistentEObject::from)
-                        .peek(this::updateInstanceOf)
-                        .map(PersistentEObject::id)
-                        .collect(Collectors.toList());
-
-                return appendAllReferences(key, rs);
+                addAllValues(key.withPosition(index), vs);
+                return index;
             }
         }
         else {
-            Iterator<?> iterator = values.iterator();
+            List<Id> rs = values.stream()
+                    .map(PersistentEObject::from)
+                    .peek(this::updateInstanceOf)
+                    .map(PersistentEObject::id)
+                    .collect(Collectors.toList());
 
-            int i = 0;
-            while (iterator.hasNext()) {
-                add(internalObject, feature, index + i, iterator.next());
-                i++;
+            if (index == NO_INDEX) {
+                return appendAllReferences(key, rs);
             }
-
-            return index;
+            else {
+                addAllReferences(key.withPosition(index), rs);
+                return index;
+            }
         }
     }
 

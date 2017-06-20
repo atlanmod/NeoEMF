@@ -110,23 +110,31 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     }
 
     @Override
-    default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+    default void addAllReferences(ManyFeatureKey key, List<Id> collection) {
         checkNotNull(key);
-        checkNotNull(references);
+        checkNotNull(collection);
 
-        int firstPosition = sizeOfReference(key).orElse(0);
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int firstPosition = key.position();
 
         MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        List<Id> ids = this.<M>valueOf(key)
+        List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
-        ids.addAll(references);
+        if (firstPosition > ids.size()) {
+            ids.addAll(IntStream.range(ids.size(), firstPosition + 1)
+                    .mapToObj(i -> (Id) null)
+                    .collect(Collectors.toList()));
+        }
 
-        valueFor(key, func.map(ids));
+        ids.addAll(firstPosition, collection);
 
-        return firstPosition;
+        valueFor(key.withoutPosition(), func.map(ids));
     }
 
     @Nonnull

@@ -56,6 +56,12 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Sin
         super.addValue(key, value);
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).orElse(0) + collection.size());
+        super.addAllValues(key, collection);
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -66,9 +72,9 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Sin
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
-        int firstPosition = super.appendAllValues(key, values);
-        cacheSize(key, firstPosition + values.size());
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+        int firstPosition = super.appendAllValues(key, collection);
+        cacheSize(key, firstPosition + collection.size());
         return firstPosition;
     }
 
@@ -99,6 +105,12 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Sin
         super.addReference(key, reference);
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).orElse(0) + collection.size());
+        super.addAllReferences(key, collection);
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -109,9 +121,9 @@ public class SizeCachingStoreDecorator extends AbstractCachingStoreDecorator<Sin
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        int firstPosition = super.appendAllReferences(key, references);
-        cacheSize(key, firstPosition + references.size());
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        int firstPosition = super.appendAllReferences(key, collection);
+        cacheSize(key, firstPosition + collection.size());
         return firstPosition;
     }
 

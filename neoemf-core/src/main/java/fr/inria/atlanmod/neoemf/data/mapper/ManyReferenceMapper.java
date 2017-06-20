@@ -102,6 +102,27 @@ public interface ManyReferenceMapper extends ReferenceMapper {
     void addReference(ManyFeatureKey key, Id reference);
 
     /**
+     * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
+     * If {@code key#position > size} then it creates {@code null} elements to respect the position.
+     *
+     * @param key        the key identifying the multi-valued attribute
+     * @param collection the values to add
+     */
+    default void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        checkNotNull(key);
+        checkNotNull(collection);
+
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int firstPosition = key.position();
+
+        IntStream.range(0, collection.size())
+                .forEach(i -> addReference(key.withPosition(firstPosition + i), collection.get(i)));
+    }
+
+    /**
      * Adds the {@code reference} to the specified {@code key} at the last position.
      *
      * @param key       the key identifying the multi-valued reference
@@ -124,10 +145,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
     }
 
     /**
-     * Adds all {@code references} to the specified {@code key} from the last position.
+     * Adds all the {@code collection} to the specified {@code key} from the last position.
      *
      * @param key        the key identifying the multi-valued reference
-     * @param references the references to add
+     * @param collection the references to add
      *
      * @return the position to which the first reference was added
      *
@@ -136,14 +157,13 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @see #appendReference(SingleFeatureKey, Id)
      */
     @Nonnegative
-    default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+    default int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
         checkNotNull(key);
-        checkNotNull(references);
+        checkNotNull(collection);
 
         int firstPosition = sizeOfReference(key).orElse(0);
 
-        IntStream.range(0, references.size())
-                .forEach(i -> addReference(key.withPosition(firstPosition + i), references.get(i)));
+        addAllReferences(key.withPosition(firstPosition), collection);
 
         return firstPosition;
     }

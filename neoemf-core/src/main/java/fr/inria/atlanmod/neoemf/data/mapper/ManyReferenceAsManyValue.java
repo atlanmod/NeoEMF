@@ -59,6 +59,11 @@ public interface ManyReferenceAsManyValue extends ManyValueMapper, ManyReference
         addValue(key, reference);
     }
 
+    @Override
+    default void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        addAllValues(key, collection);
+    }
+
     @Nonnegative
     @Override
     default int appendReference(SingleFeatureKey key, Id reference) {
@@ -67,8 +72,8 @@ public interface ManyReferenceAsManyValue extends ManyValueMapper, ManyReference
 
     @Nonnegative
     @Override
-    default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        return appendAllValues(key, references);
+    default int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        return appendAllValues(key, collection);
     }
 
     @Nonnull

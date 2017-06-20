@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -106,10 +108,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the containers
         mapper.containerFor(id0, container);
-        assertThat(mapper.containerOf(id0)).isPresent().contains(container);
+        assertThat(mapper.containerOf(id0)).contains(container);
 
         mapper.containerFor(id1, container);
-        assertThat(mapper.containerOf(id1)).isPresent().contains(container);
+        assertThat(mapper.containerOf(id1)).contains(container);
 
         mapper.unsetContainer(id0);
         mapper.unsetContainer(id1);
@@ -130,14 +132,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the containers
         mapper.containerFor(id0, container0);
-        assertThat(mapper.containerOf(id0)).isPresent().contains(container0);
+        assertThat(mapper.containerOf(id0)).contains(container0);
 
         mapper.containerFor(id1, container1);
-        assertThat(mapper.containerOf(id1)).isPresent().contains(container1);
+        assertThat(mapper.containerOf(id1)).contains(container1);
 
         // Replace the existing container
         mapper.containerFor(id0, container1);
-        assertThat(mapper.containerOf(id0)).isPresent().contains(container1);
+        assertThat(mapper.containerOf(id0)).contains(container1);
 
         mapper.unsetContainer(id0);
         mapper.unsetContainer(id1);
@@ -154,7 +156,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the containers
         mapper.containerFor(id0, container0);
-        assertThat(mapper.containerOf(id0)).isPresent().contains(container0);
+        assertThat(mapper.containerOf(id0)).contains(container0);
 
         // Replace the existing container
         mapper.unsetContainer(id0);
@@ -200,10 +202,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the metaclasses
         mapper.metaclassFor(id0, metaclass);
-        assertThat(mapper.metaclassOf(id0)).isPresent().contains(metaclass);
+        assertThat(mapper.metaclassOf(id0)).contains(metaclass);
 
         mapper.metaclassFor(id1, metaclass);
-        assertThat(mapper.metaclassOf(id1)).isPresent().contains(metaclass);
+        assertThat(mapper.metaclassOf(id1)).contains(metaclass);
     }
 
     /**
@@ -219,14 +221,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define the metaclasses
         mapper.metaclassFor(id0, metaclass0);
-        assertThat(mapper.metaclassOf(id0)).isPresent().contains(metaclass0);
+        assertThat(mapper.metaclassOf(id0)).contains(metaclass0);
 
         mapper.metaclassFor(id1, metaclass1);
-        assertThat(mapper.metaclassOf(id1)).isPresent().contains(metaclass1);
+        assertThat(mapper.metaclassOf(id1)).contains(metaclass1);
 
         // Replace the existing metaclass
         mapper.metaclassFor(id1, metaclass0);
-        assertThat(mapper.metaclassOf(id1)).isPresent().contains(metaclass0);
+        assertThat(mapper.metaclassOf(id1)).contains(metaclass0);
     }
 
     /**
@@ -267,11 +269,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define values
         mapper.valueFor(key, value0);
-        assertThat(mapper.valueOf(key)).isPresent().contains(value0);
+        assertThat(mapper.valueOf(key)).contains(value0);
 
         // Replace the existing value
-        assertThat(mapper.valueFor(key, value1)).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key)).isPresent().contains(value1);
+        assertThat(mapper.valueFor(key, value1)).contains(value0);
+        assertThat(mapper.valueOf(key)).contains(value1);
     }
 
     /**
@@ -366,11 +368,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
 
         // Replace the existing values
-        assertThat(mapper.valueFor(key.withPosition(0), value2)).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value2);
+        assertThat(mapper.valueFor(key.withPosition(0), value2)).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value2);
 
-        assertThat(mapper.valueFor(key.withPosition(1), value3)).isPresent().contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value3);
+        assertThat(mapper.valueFor(key.withPosition(1), value3)).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value3);
     }
 
     /**
@@ -507,9 +509,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(2), value2);
 
         // Check all values
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
     }
 
     /**
@@ -533,9 +535,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(1), value1);
 
         // Check all values
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
     }
 
     /**
@@ -561,12 +563,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         String value0 = "Value0";
         String value1 = "Value1";
 
-        // Append values
-        mapper.appendValue(key, value0);
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
+        int index;
 
-        mapper.appendValue(key, value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value1);
+        // Append values
+        index = mapper.appendValue(key, value0);
+        assertThat(index).isEqualTo(0);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+
+        index =mapper.appendValue(key, value1);
+        assertThat(index).isEqualTo(1);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
     }
 
     /**
@@ -583,6 +589,217 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} when the feature
+     * is not defined yet.
+     */
+    @Test
+    public void testAddAllValuesFromStart() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+
+        mapper.addAllValues(key.withPosition(0), Arrays.asList(value0, value1));
+
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} when the feature
+     * is not defined yet.
+     */
+    @Test
+    public void testAddAllValuesWithOffset() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+
+        mapper.addAllValues(key.withPosition(1), Arrays.asList(value0, value1));
+
+        assertThat(mapper.valueOf(key.withPosition(0))).isNotPresent();
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} when the feature
+     * already has values.
+     */
+    @Test
+    public void testAddAllValuesFromMiddle() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
+        String value3 = "Value3";
+
+        // Append values
+        mapper.appendValue(key, value0);
+        mapper.appendValue(key, value1);
+
+        mapper.addAllValues(key.withPosition(1), Arrays.asList(value2, value3));
+
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value3);
+        assertThat(mapper.valueOf(key.withPosition(3))).contains(value1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} when the feature
+     * already has values.
+     */
+    @Test
+    public void testAddAllValuesFromEnd() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
+
+        mapper.appendValue(key, value0);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+
+        mapper.addAllValues(key.withPosition(1), Arrays.asList(value1, value2));
+
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} with an empty
+     * collection.
+     */
+    @Test
+    public void testAddAllValuesEmpty() {
+        ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
+
+        mapper.addAllValues(key, Collections.emptyList());
+
+        assertThat(mapper.sizeOfValue(key.withoutPosition())).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} with a collection
+     * that contains {@code null}.
+     */
+    @Test
+    public void testAddAllValuesContainsNull() {
+        ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
+
+        String value0 = "Value0";
+
+        assertThat(catchThrowable(() ->
+                mapper.addAllValues(key, Arrays.asList(value0, null))
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureKey, List)} with a
+     * {@code null} collection.
+     */
+    @Test
+    public void testAddAllNullValues() {
+        ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                mapper.addAllValues(key, null)
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureKey, List)} when the feature is not
+     * defined yet.
+     */
+    @Test
+    public void testAppendAllValuesFromStart() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+
+        int index;
+
+        index = mapper.appendAllValues(key, Arrays.asList(value0, value1));
+        assertThat(index).isEqualTo(0);
+
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureKey, List)} when the feature already
+     * has values.
+     */
+    @Test
+    public void testAppendAllValuesFromEnd() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+        String value1 = "Value1";
+        String value2 = "Value2";
+
+        int index;
+
+        index = mapper.appendValue(key, value0);
+        assertThat(index).isEqualTo(0);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+
+        index = mapper.appendAllValues(key, Arrays.asList(value1, value2));
+        assertThat(index).isEqualTo(1);
+
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureKey, List)} with an empty collection.
+     */
+    @Test
+    public void testAppendAllValuesEmpty() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        mapper.appendAllValues(key, Collections.emptyList());
+
+        assertThat(mapper.sizeOfValue(key)).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureKey, List)} with a collection that
+     * contains {@code null}.
+     */
+    @Test
+    public void testAppendAllValuesContainsNull() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        String value0 = "Value0";
+
+        assertThat(catchThrowable(() ->
+                mapper.appendAllValues(key, Arrays.asList(value0, null))
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureKey, List)} with a {@code null}
+     * collection.
+     */
+    @Test
+    public void testAppendAllNullValues() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                mapper.appendAllValues(key, null)
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureKey)}.
      */
     @Test
@@ -592,12 +809,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         // Initialize values
         mapper.addValue(key.withPosition(0), "aaa");
         mapper.addValue(key.withPosition(1), "bbb");
-        assertThat(mapper.sizeOfValue(key)).isPresent().hasValue(2);
+        assertThat(mapper.sizeOfValue(key)).contains(2);
         assertThat(mapper.hasAnyValue(key)).isTrue();
 
         // Remove values
         mapper.removeValue(key.withPosition(0));
-        assertThat(mapper.sizeOfValue(key)).isPresent().hasValue(1);
+        assertThat(mapper.sizeOfValue(key)).contains(1);
         assertThat(mapper.hasAnyValue(key)).isTrue();
 
         mapper.removeValue(key.withPosition(0));
@@ -622,10 +839,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(2), value2);
 
         // Remove value, and check the removed value
-        assertThat(mapper.removeValue(key.withPosition(0))).isPresent().contains(value0);
+        assertThat(mapper.removeValue(key.withPosition(0))).contains(value0);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value2);
         assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
     }
 
@@ -646,10 +863,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(2), value2);
 
         // Remove value, and check the removed value
-        assertThat(mapper.removeValue(key.withPosition(1))).isPresent().contains(value1);
+        assertThat(mapper.removeValue(key.withPosition(1))).contains(value1);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value2);
         assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
     }
 
@@ -684,7 +901,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Check the values
         assertThat(mapper.hasAnyValue(key)).isTrue();
-        assertThat(mapper.sizeOfValue(key)).isPresent().hasValue(3);
+        assertThat(mapper.sizeOfValue(key)).contains(3);
 
         // Remove all values
         mapper.removeAllValues(key);
@@ -730,12 +947,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(3), value3);
 
         // Move value, and check the moved value
-        assertThat(mapper.moveValue(key.withPosition(0), key.withPosition(1))).isPresent().contains(value0);
+        assertThat(mapper.moveValue(key.withPosition(0), key.withPosition(1))).contains(value0);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(3))).isPresent().contains(value3);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(3))).contains(value3);
     }
 
     /**
@@ -757,12 +974,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(3), value3);
 
         // Move value, and check the moved value
-        assertThat(mapper.moveValue(key.withPosition(2), key.withPosition(0))).isPresent().contains(value2);
+        assertThat(mapper.moveValue(key.withPosition(2), key.withPosition(0))).contains(value2);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).isPresent().contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(1))).isPresent().contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(2))).isPresent().contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(3))).isPresent().contains(value3);
+        assertThat(mapper.valueOf(key.withPosition(0))).contains(value2);
+        assertThat(mapper.valueOf(key.withPosition(1))).contains(value0);
+        assertThat(mapper.valueOf(key.withPosition(2))).contains(value1);
+        assertThat(mapper.valueOf(key.withPosition(3))).contains(value3);
     }
 
     /**
@@ -846,13 +1063,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(4), "ccc");
 
         // Check first index
-        assertThat(mapper.indexOfValue(key, value0)).isPresent().hasValue(0);
+        assertThat(mapper.indexOfValue(key, value0)).contains(0);
 
         // Remove the first value
-        assertThat(mapper.removeValue(key.withPosition(0))).isPresent().contains(value0);
+        assertThat(mapper.removeValue(key.withPosition(0))).contains(value0);
 
         // Check first index
-        assertThat(mapper.indexOfValue(key, value0)).isPresent().hasValue(3 - 1);
+        assertThat(mapper.indexOfValue(key, value0)).contains(3 - 1);
     }
 
     /**
@@ -898,13 +1115,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(key.withPosition(4), value0);
 
         // Check last index
-        assertThat(mapper.lastIndexOfValue(key, value0)).isPresent().hasValue(4);
+        assertThat(mapper.lastIndexOfValue(key, value0)).contains(4);
 
         // Remove the last value
-        assertThat(mapper.removeValue(key.withPosition(4))).isPresent().contains(value0);
+        assertThat(mapper.removeValue(key.withPosition(4))).contains(value0);
 
         // Check last index
-        assertThat(mapper.lastIndexOfValue(key, value0)).isPresent().hasValue(1);
+        assertThat(mapper.lastIndexOfValue(key, value0)).contains(1);
     }
 
     /**
@@ -947,13 +1164,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendValue(key, "ccc");
 
         // Check the size
-        assertThat(mapper.sizeOfValue(key)).isPresent().hasValue(3);
+        assertThat(mapper.sizeOfValue(key)).contains(3);
 
         // Remove a value
         mapper.removeValue(key.withPosition(1));
 
         // Check the size
-        assertThat(mapper.sizeOfValue(key)).isPresent().hasValue(2);
+        assertThat(mapper.sizeOfValue(key)).contains(2);
     }
 
     /**
@@ -985,11 +1202,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Define references
         mapper.referenceFor(key, ref0);
-        assertThat(mapper.referenceOf(key)).isPresent().contains(ref0);
+        assertThat(mapper.referenceOf(key)).contains(ref0);
 
         // Replace the existing reference
-        assertThat(mapper.referenceFor(key, ref1)).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key)).isPresent().contains(ref1);
+        assertThat(mapper.referenceFor(key, ref1)).contains(ref0);
+        assertThat(mapper.referenceOf(key)).contains(ref1);
     }
 
     /**
@@ -1084,11 +1301,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(1), ref1);
 
         // Replace the existing references
-        assertThat(mapper.referenceFor(key.withPosition(0), ref2)).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref2);
+        assertThat(mapper.referenceFor(key.withPosition(0), ref2)).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref2);
 
-        assertThat(mapper.referenceFor(key.withPosition(1), ref3)).isPresent().contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref3);
+        assertThat(mapper.referenceFor(key.withPosition(1), ref3)).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref3);
     }
 
     /**
@@ -1229,9 +1446,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(2), ref2);
 
         // Check all references
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
     }
 
     /**
@@ -1255,9 +1472,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(1), ref1);
 
         // Check all references
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
     }
 
     /**
@@ -1284,12 +1501,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Id ref0 = StringId.of("Ref0");
         Id ref1 = StringId.of("Ref1");
 
-        // Append references
-        mapper.appendReference(key, ref0);
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
+        int index;
 
-        mapper.appendReference(key, ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref1);
+        // Append references
+        index = mapper.appendReference(key, ref0);
+        assertThat(index).isEqualTo(0);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+
+        index = mapper.appendReference(key, ref1);
+        assertThat(index).isEqualTo(1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
     }
 
     /**
@@ -1307,6 +1528,218 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} when the feature
+     * is not defined yet.
+     */
+    @Test
+    public void testAddAllReferencesFromStart() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+
+        mapper.addAllReferences(key.withPosition(0), Arrays.asList(ref0, ref1));
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} when the feature
+     * is not defined yet.
+     */
+    @Test
+    public void testAddAllReferencesWithOffset() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+
+        mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref0, ref1));
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).isNotPresent();
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} when the feature
+     * already has values.
+     */
+    @Test
+    public void testAddAllReferencesFromMiddle() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
+        Id ref3 = StringId.of("Ref3");
+
+        // Append references
+        mapper.appendReference(key, ref0);
+        mapper.appendReference(key, ref1);
+
+        mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref2, ref3));
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref3);
+        assertThat(mapper.referenceOf(key.withPosition(3))).contains(ref1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} when the feature
+     * already has values.
+     */
+    @Test
+    public void testAddAllReferencesFromEnd() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
+
+         mapper.appendReference(key, ref0);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+
+         mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref1, ref2));
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} with an empty
+     * collection.
+     */
+    @Test
+    public void testAddAllReferencesEmpty() {
+        ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
+
+        mapper.addAllReferences(key, Collections.emptyList());
+
+        assertThat(mapper.sizeOfReference(key.withoutPosition())).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} with a collection
+     * that contains {@code null}.
+     */
+    @Test
+    public void testAddAllReferencesContainsNull() {
+        ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
+
+        Id ref0 = StringId.of("Ref0");
+
+        assertThat(catchThrowable(() ->
+                mapper.addAllReferences(key, Arrays.asList(ref0, null))
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureKey, List)} with a
+     * {@code null} collection.
+     */
+    @Test
+    public void testAddAllNullReferences() {
+        ManyFeatureKey key = ManyFeatureKey.of(id0, "Feature0", 0);
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                mapper.addAllReferences(key, null)
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureKey, List)} when the feature
+     * is not defined yet.
+     */
+    @Test
+    public void testAppendAllReferencesFromStart() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+
+        int index;
+
+        index = mapper.appendAllReferences(key, Arrays.asList(ref0, ref1));
+        assertThat(index).isEqualTo(0);
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureKey, List)} when the feature
+     * already has values.
+     */
+    @Test
+    public void testAppendAllReferencesFromEnd() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+        Id ref1 = StringId.of("Ref1");
+        Id ref2 = StringId.of("Ref2");
+
+        int index;
+
+        index = mapper.appendReference(key, ref0);
+        assertThat(index).isEqualTo(0);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+
+        index = mapper.appendAllReferences(key, Arrays.asList(ref1, ref2));
+        assertThat(index).isEqualTo(1);
+
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureKey, List)} with an empty
+     * collection.
+     */
+    @Test
+    public void testAppendAllReferencesEmpty() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        mapper.appendAllReferences(key, Collections.emptyList());
+
+        assertThat(mapper.sizeOfReference(key)).isNotPresent();
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureKey, List)} with a collection
+     * that contains {@code null}.
+     */
+    @Test
+    public void testAppendAllReferencesContainsNull() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        Id ref0 = StringId.of("Ref0");
+
+        assertThat(catchThrowable(() ->
+                mapper.appendAllReferences(key, Arrays.asList(ref0, null))
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureKey, List)} with a
+     * {@code null} collection.
+     */
+    @Test
+    public void testAppendAllNullReferences() {
+        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
+
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                mapper.appendAllReferences(key, null)
+        )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
      * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureKey)}.
      */
     @Test
@@ -1316,12 +1749,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         // Initialize references
         mapper.addReference(key.withPosition(0), StringId.of("aaa"));
         mapper.addReference(key.withPosition(1), StringId.of("bbb"));
-        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(2);
+        assertThat(mapper.sizeOfReference(key)).contains(2);
         assertThat(mapper.hasAnyReference(key)).isTrue();
 
         // Remove references
         mapper.removeReference(key.withPosition(0));
-        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(1);
+        assertThat(mapper.sizeOfReference(key)).contains(1);
         assertThat(mapper.hasAnyReference(key)).isTrue();
 
         mapper.removeReference(key.withPosition(0));
@@ -1346,10 +1779,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(2), ref2);
 
         // Remove reference, and check the removed reference
-        assertThat(mapper.removeReference(key.withPosition(0))).isPresent().contains(ref0);
+        assertThat(mapper.removeReference(key.withPosition(0))).contains(ref0);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref2);
         assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
     }
 
@@ -1370,10 +1803,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(2), ref2);
 
         // Remove reference, and check the removed reference
-        assertThat(mapper.removeReference(key.withPosition(1))).isPresent().contains(ref1);
+        assertThat(mapper.removeReference(key.withPosition(1))).contains(ref1);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref2);
         assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
     }
 
@@ -1409,7 +1842,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         // Check the references
         assertThat(mapper.hasAnyReference(key)).isTrue();
-        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(3);
+        assertThat(mapper.sizeOfReference(key)).contains(3);
 
         // Remove all references
         mapper.removeAllReferences(key);
@@ -1457,12 +1890,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(3), ref3);
 
         // Move reference, and check the moved reference
-        assertThat(mapper.moveReference(key.withPosition(0), key.withPosition(1))).isPresent().contains(ref0);
+        assertThat(mapper.moveReference(key.withPosition(0), key.withPosition(1))).contains(ref0);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(3))).isPresent().contains(ref3);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(3))).contains(ref3);
     }
 
     /**
@@ -1484,12 +1917,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(3), ref3);
 
         // Move reference, and check the moved reference
-        assertThat(mapper.moveReference(key.withPosition(2), key.withPosition(0))).isPresent().contains(ref2);
+        assertThat(mapper.moveReference(key.withPosition(2), key.withPosition(0))).contains(ref2);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).isPresent().contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isPresent().contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(2))).isPresent().contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(3))).isPresent().contains(ref3);
+        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref2);
+        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref0);
+        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref1);
+        assertThat(mapper.referenceOf(key.withPosition(3))).contains(ref3);
     }
 
     /**
@@ -1574,13 +2007,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(4), StringId.of("ccc"));
 
         // Check first index
-        assertThat(mapper.indexOfReference(key, ref0)).isPresent().hasValue(0);
+        assertThat(mapper.indexOfReference(key, ref0)).contains(0);
 
         // Remove the first reference
-        assertThat(mapper.removeReference(key.withPosition(0))).isPresent().contains(ref0);
+        assertThat(mapper.removeReference(key.withPosition(0))).contains(ref0);
 
         // Check first index
-        assertThat(mapper.indexOfReference(key, ref0)).isPresent().hasValue(3 - 1);
+        assertThat(mapper.indexOfReference(key, ref0)).contains(3 - 1);
     }
 
     /**
@@ -1628,13 +2061,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(key.withPosition(4), ref0);
 
         // Check last index
-        assertThat(mapper.lastIndexOfReference(key, ref0)).isPresent().hasValue(4);
+        assertThat(mapper.lastIndexOfReference(key, ref0)).contains(4);
 
         // Remove the last reference
-        assertThat(mapper.removeReference(key.withPosition(4))).isPresent().contains(ref0);
+        assertThat(mapper.removeReference(key.withPosition(4))).contains(ref0);
 
         // Check last index
-        assertThat(mapper.lastIndexOfReference(key, ref0)).isPresent().hasValue(1);
+        assertThat(mapper.lastIndexOfReference(key, ref0)).contains(1);
     }
 
     /**
@@ -1677,13 +2110,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendReference(key, StringId.of("ccc"));
 
         // Check the size
-        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(3);
+        assertThat(mapper.sizeOfReference(key)).contains(3);
 
         // Remove a reference
         mapper.removeReference(key.withPosition(1));
 
         // Check the size
-        assertThat(mapper.sizeOfReference(key)).isPresent().hasValue(2);
+        assertThat(mapper.sizeOfReference(key)).contains(2);
     }
 
     /**

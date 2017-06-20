@@ -112,6 +112,19 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
         super.addValue(key, value);
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        int firstPosition = key.position();
+
+        IntStream.range(0, collection.size())
+                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+
+        IntStream.range(firstPosition + collection.size(), sizeOfValue(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
+
+        super.addAllValues(key, collection);
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -124,11 +137,11 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
-        int firstPosition = super.appendAllValues(key, values);
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+        int firstPosition = super.appendAllValues(key, collection);
 
-        IntStream.range(0, values.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), values.get(i)));
+        IntStream.range(0, collection.size())
+                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
         return firstPosition;
     }
@@ -193,6 +206,19 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
         super.addReference(key, reference);
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        int firstPosition = key.position();
+
+        IntStream.range(0, collection.size())
+                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+
+        IntStream.range(firstPosition + collection.size(), sizeOfReference(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
+                .forEach(i -> cache.invalidate(key.withPosition(i)));
+
+        super.addAllReferences(key, collection);
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -205,11 +231,11 @@ public class FeatureCachingStoreDecorator extends AbstractCachingStoreDecorator<
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        int firstPosition = super.appendAllReferences(key, references);
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        int firstPosition = super.appendAllReferences(key, collection);
 
-        IntStream.range(0, references.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), references.get(i)));
+        IntStream.range(0, collection.size())
+                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
         return firstPosition;
     }

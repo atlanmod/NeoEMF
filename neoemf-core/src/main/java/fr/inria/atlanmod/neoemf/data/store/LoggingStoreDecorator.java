@@ -184,6 +184,11 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::addValue, key, value);
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        call(super::addAllValues, key, collection);
+    }
+
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
@@ -192,8 +197,8 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
-        return callAndReturn(super::appendAllValues, key, values);
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+        return callAndReturn(super::appendAllValues, key, collection);
     }
 
     @Nonnull
@@ -267,6 +272,11 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
         call(super::addReference, key, reference);
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        call(super::addAllReferences, key, collection);
+    }
+
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
@@ -275,8 +285,8 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        return callAndReturn(super::appendAllReferences, key, references);
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        return callAndReturn(super::appendAllReferences, key, collection);
     }
 
     @Nonnull

@@ -107,23 +107,31 @@ public interface ManyValueWith<M> extends ManyValueMapper {
     }
 
     @Override
-    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+    default <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
         checkNotNull(key);
-        checkNotNull(values);
+        checkNotNull(collection);
 
-        int firstPosition = sizeOfValue(key).orElse(0);
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int firstPosition = key.position();
 
         MappingFunction<List<V>, M> func = manyValuesMapping();
 
-        List<V> vs = this.<M>valueOf(key)
+        List<V> values = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
-        vs.addAll(values);
+        if (firstPosition > values.size()) {
+            values.addAll(IntStream.range(values.size(), firstPosition + 1)
+                    .mapToObj(i -> (V) null)
+                    .collect(Collectors.toList()));
+        }
 
-        valueFor(key, func.map(vs));
+        values.addAll(firstPosition, collection);
 
-        return firstPosition;
+        valueFor(key.withoutPosition(), func.map(values));
     }
 
     @Nonnull

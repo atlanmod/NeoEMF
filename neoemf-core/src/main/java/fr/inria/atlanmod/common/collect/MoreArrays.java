@@ -148,22 +148,27 @@ public final class MoreArrays {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    public static <T> T[] addAll(T[] array, Collection<? extends T> elements) {
+    public static <T> T[] addAll(T[] array, int index, Collection<? extends T> elements) {
         checkNotNull(array);
         checkNotNull(elements);
 
-        T[] joinedArray = newArray(array.getClass().getComponentType(), array.length + elements.size());
-        System.arraycopy(array, 0, joinedArray, 0, array.length);
+        T[] newArray = newArray(array.getClass().getComponentType(), array.length + elements.size());
+        System.arraycopy(array, 0, newArray, 0, index);
 
         Iterator<? extends T> iter = elements.iterator();
 
         int i = 0;
         while (iter.hasNext()) {
-            joinedArray[array.length + i] = iter.next();
+            newArray[index + i] = iter.next();
             i++;
         }
 
-        return joinedArray;
+        if (index < array.length) {
+            System.arraycopy(array, index, newArray, index + elements.size(), array.length - index);
+        }
+
+
+        return newArray;
     }
 
     /**

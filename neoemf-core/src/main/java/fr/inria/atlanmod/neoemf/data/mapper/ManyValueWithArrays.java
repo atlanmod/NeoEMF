@@ -93,20 +93,26 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     }
 
     @Override
-    default <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+    default <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
         checkNotNull(key);
-        checkNotNull(values);
+        checkNotNull(collection);
 
-        int firstPosition = sizeOfValue(key).orElse(0);
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
 
-        V[] vs = this.<V[]>valueOf(key)
-                .orElseGet(() -> MoreArrays.newArray(Object.class, values.size()));
+        int firstPosition = key.position();
 
-        MoreArrays.addAll(vs, values);
+        V[] values = this.<V[]>valueOf(key.withoutPosition())
+                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
-        valueFor(key, vs);
+        if (firstPosition > values.length) {
+            values = MoreArrays.resize(values, firstPosition + 1);
+        }
 
-        return firstPosition;
+        values = MoreArrays.addAll(values, firstPosition, collection);
+
+        valueFor(key.withoutPosition(), values);
     }
 
     @Nonnull

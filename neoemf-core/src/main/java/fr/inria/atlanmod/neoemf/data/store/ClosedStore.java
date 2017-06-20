@@ -161,12 +161,17 @@ public final class ClosedStore implements Store {
     }
 
     @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        throw E;
+    }
+
+    @Override
     public <V> int appendValue(SingleFeatureKey key, V value) {
         throw E;
     }
 
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
         throw E;
     }
 
@@ -261,12 +266,17 @@ public final class ClosedStore implements Store {
     }
 
     @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        throw E;
+    }
+
+    @Override
     public int appendReference(SingleFeatureKey key, Id reference) {
         throw E;
     }
 
     @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
         throw E;
     }
 

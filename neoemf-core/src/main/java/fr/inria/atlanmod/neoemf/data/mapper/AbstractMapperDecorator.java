@@ -227,6 +227,11 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.addValue(key, value);
     }
 
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        next.addAllValues(key, collection);
+    }
+
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -237,8 +242,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> values) {
-        return next.appendAllValues(key, values);
+    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+        return next.appendAllValues(key, collection);
     }
 
     @Nonnull
@@ -324,6 +329,11 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.addReference(key, reference);
     }
 
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        next.addAllReferences(key, collection);
+    }
+
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -334,8 +344,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        return next.appendAllReferences(key, references);
+    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
+        return next.appendAllReferences(key, collection);
     }
 
     @Nonnull
