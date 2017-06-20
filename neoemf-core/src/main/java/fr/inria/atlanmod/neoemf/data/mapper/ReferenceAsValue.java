@@ -20,30 +20,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link ReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
- * references. This behavior is specified by the {@link #referenceMapping()} method.
- *
- * @param <M> the type of the reference after mapping
+ * An {@link ReferenceMapper} that processes the references as values with {@link ValueMapper}.
+ * <p>
+ * All calls are redirected to their equivalent in {@link ValueMapper}.
  */
 @ParametersAreNonnullByDefault
-public interface ReferenceWith<M> extends ValueMapper, ReferenceMapper {
+public interface ReferenceAsValue extends ValueMapper, ReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(SingleFeatureKey key) {
-        MappingFunction<Id, M> func = referenceMapping();
-
-        return this.<M>valueOf(key)
-                .map(func::unmap);
+        return valueOf(key);
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
-        MappingFunction<Id, M> func = referenceMapping();
-
-        return this.<M>valueFor(key, func.map(reference))
-                .map(func::unmap);
+        return valueFor(key, reference);
     }
 
     @Override
@@ -53,9 +46,6 @@ public interface ReferenceWith<M> extends ValueMapper, ReferenceMapper {
 
     @Override
     default boolean hasReference(SingleFeatureKey key) {
-        return referenceOf(key).isPresent();
+        return hasValue(key);
     }
-
-    @Nonnull
-    MappingFunction<Id, M> referenceMapping();
 }

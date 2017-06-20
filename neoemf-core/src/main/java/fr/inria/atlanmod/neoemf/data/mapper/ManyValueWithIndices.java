@@ -193,10 +193,6 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * <p>
      * This method behaves like: {@link #valueFor(ManyFeatureKey, Object)}, without checking whether the multi-valued
      * feature already exists, in order to replace it. If {@code value == null}, the key is removed.
-     * <p>
-     * <b>Note:</b> This method is used by the default {@link #valueFor(SingleFeatureKey, Object)}, {@link
-     * #addValue(ManyFeatureKey, Object)} and {@link #removeValue(ManyFeatureKey)} methods. If you intend to use them,
-     * you have to override it.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to set
@@ -204,7 +200,5 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
-        throw new IllegalStateException("ManyValueWithIndices#safeValueFor() should be overwritten");
-    }
+    <V> void safeValueFor(ManyFeatureKey key, @Nullable V value);
 }

@@ -15,8 +15,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceWith;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWith;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapper.MappingFunction;
 import fr.inria.atlanmod.neoemf.data.mapper.ReferenceWith;
 
 import org.apache.hadoop.hbase.client.Table;
@@ -32,23 +32,51 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link HBaseBackend} that use a {@link ManyValueWith} mapping for storing attributes and
+ * A {@link HBaseBackend} that use a {@link ManyValueWithArrays} mapping for storing attributes and
  * {@link ReferenceWith}/{@link ManyReferenceWith} mappings for storing references.
  *
  * @see HBaseBackendFactory
  */
 @ParametersAreNonnullByDefault
-class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ManyValueWithArrays, ReferenceWith<String>, ManyReferenceWith<String> {
+class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ReferenceWith<String>, ManyValueWithArrays, ManyReferenceWith<String> {
 
     /**
-     * An empty string.
+     * The mapping used to convert single-valued references.
      */
-    private static final String EMPTY = "";
+    private static final MappingFunction<Id, String> SINGLE_MAPPING = new MappingFunction<Id, String>() {
+        @Nonnull
+        @Override
+        public String map(Id i) {
+            return i.toString();
+        }
+
+        @Nonnull
+        @Override
+        public Id unmap(String o) {
+            return StringId.of(o);
+        }
+    };
 
     /**
-     * The delimiter used for separate multi-valued references.
+     * The mapping used to convert multi-valued references.
      */
-    private static final String MANY_DELIMITER = ",";
+    private static final MappingFunction<List<Id>, String> MANY_MAPPING = new MappingFunction<List<Id>, String>() {
+        @Nonnull
+        @Override
+        public String map(List<Id> i) {
+            return checkNotNull(i).stream()
+                    .map(id -> isNull(id) ? "" : id.toString())
+                    .collect(Collectors.joining(","));
+        }
+
+        @Nonnull
+        @Override
+        public List<Id> unmap(String o) {
+            return Arrays.stream(checkNotNull(o).split(","))
+                    .map(r -> r.isEmpty() ? null : StringId.of(r))
+                    .collect(Collectors.toList());
+        }
+    };
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
@@ -65,40 +93,12 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ManyValu
     @Nonnull
     @Override
     public MappingFunction<Id, String> referenceMapping() {
-        return new MappingFunction<Id, String>() {
-            @Nonnull
-            @Override
-            public String map(Id i) {
-                return i.toString();
-            }
-
-            @Nonnull
-            @Override
-            public Id unmap(String o) {
-                return StringId.of(o);
-            }
-        };
+        return SINGLE_MAPPING;
     }
 
     @Nonnull
     @Override
     public MappingFunction<List<Id>, String> manyReferencesMapping() {
-        return new MappingFunction<List<Id>, String>() {
-            @Nonnull
-            @Override
-            public String map(List<Id> i) {
-                return checkNotNull(i).stream()
-                        .map(id -> isNull(id) ? EMPTY : id.toString())
-                        .collect(Collectors.joining(MANY_DELIMITER));
-            }
-
-            @Nonnull
-            @Override
-            public List<Id> unmap(String o) {
-                return Arrays.stream(checkNotNull(o).split(MANY_DELIMITER))
-                        .map(r -> r.isEmpty() ? null : StringId.of(r))
-                        .collect(Collectors.toList());
-            }
-        };
+        return MANY_MAPPING;
     }
 }

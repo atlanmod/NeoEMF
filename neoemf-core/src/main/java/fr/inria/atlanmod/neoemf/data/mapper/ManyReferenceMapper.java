@@ -17,21 +17,23 @@ import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
+
 /**
  * An object capable of mapping multi-valued references represented as a set of key/value pair.
- * <p>
- * By default, the references are processed as values with {@link ManyValueMapper}, except for composed methods such as
- * {@link #appendReference(SingleFeatureKey, Id)} and {@link #appendAllReferences(SingleFeatureKey, List)}.
  */
 @ParametersAreNonnullByDefault
-public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
+public interface ManyReferenceMapper extends ReferenceMapper {
 
     /**
      * Retrieves the reference of the specified {@code key} at a defined position.
@@ -44,9 +46,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceOf(ManyFeatureKey key) {
-        return valueOf(key);
-    }
+    Optional<Id> referenceOf(ManyFeatureKey key);
 
     /**
      * Retrieves all references of the specified {@code key}.
@@ -58,9 +58,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default List<Id> allReferencesOf(SingleFeatureKey key) {
-        return allValuesOf(key);
-    }
+    List<Id> allReferencesOf(SingleFeatureKey key);
 
     /**
      * Defines the {@code reference} of the specified {@code key} at a defined position.
@@ -77,9 +75,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @see #appendReference(SingleFeatureKey, Id)
      */
     @Nonnull
-    default Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        return valueFor(key, reference);
-    }
+    Optional<Id> referenceFor(ManyFeatureKey key, Id reference);
 
     /**
      * Checks whether the specified {@code key} has at least one defined reference.
@@ -91,7 +87,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default boolean hasAnyReference(SingleFeatureKey key) {
-        return hasAnyValue(key);
+        return hasReference(key);
     }
 
     /**
@@ -103,9 +99,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    default void addReference(ManyFeatureKey key, Id reference) {
-        addValue(key, reference);
-    }
+    void addReference(ManyFeatureKey key, Id reference);
 
     /**
      * Adds the {@code reference} to the specified {@code key} at the last position.
@@ -120,7 +114,13 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnegative
     default int appendReference(SingleFeatureKey key, Id reference) {
-        return appendValue(key, reference);
+        checkNotNull(key);
+
+        int position = sizeOfReference(key).orElse(0);
+
+        addReference(key.withPosition(position), reference);
+
+        return position;
     }
 
     /**
@@ -137,7 +137,15 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnegative
     default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
-        return appendAllValues(key, references);
+        checkNotNull(key);
+        checkNotNull(references);
+
+        int firstPosition = sizeOfReference(key).orElse(0);
+
+        IntStream.range(0, references.size())
+                .forEach(i -> addReference(key.withPosition(firstPosition + i), references.get(i)));
+
+        return firstPosition;
     }
 
     /**
@@ -151,9 +159,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    default Optional<Id> removeReference(ManyFeatureKey key) {
-        return removeValue(key);
-    }
+    Optional<Id> removeReference(ManyFeatureKey key);
 
     /**
      * Removes all references of the specified {@code key}.
@@ -163,7 +169,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default void removeAllReferences(SingleFeatureKey key) {
-        removeAllValues(key);
+        unsetReference(key);
     }
 
     /**
@@ -177,7 +183,16 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
      */
     @Nonnull
     default Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
-        return moveValue(source, target);
+        checkNotNull(source);
+        checkNotNull(target);
+
+        if (Objects.equals(source, target)) {
+            return Optional.empty();
+        }
+
+        Optional<Id> movedValue = removeReference(source);
+        movedValue.ifPresent(v -> addReference(target, v));
+        return movedValue;
     }
 
     /**
@@ -208,7 +223,13 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
     @Nonnull
     @Nonnegative
     default Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
-        return indexOfValue(key, reference);
+        if (isNull(reference)) {
+            return Optional.empty();
+        }
+
+        // TODO Don't browse all values
+        return Optional.of(allReferencesOf(key).indexOf(reference))
+                .filter(i -> i >= 0);
     }
 
     /**
@@ -225,7 +246,13 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
     @Nonnull
     @Nonnegative
     default Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
-        return lastIndexOfValue(key, reference);
+        if (isNull(reference)) {
+            return Optional.empty();
+        }
+
+        // TODO Don't browse all values
+        return Optional.of(allReferencesOf(key).lastIndexOf(reference))
+                .filter(i -> i >= 0);
     }
 
     /**
@@ -241,6 +268,7 @@ public interface ManyReferenceMapper extends ReferenceMapper, ManyValueMapper {
     @Nonnull
     @Nonnegative
     default Optional<Integer> sizeOfReference(SingleFeatureKey key) {
-        return sizeOfValue(key);
+        return Optional.of(allReferencesOf(key).size())
+                .filter(s -> s != 0);
     }
 }

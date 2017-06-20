@@ -92,8 +92,8 @@ public interface ManyValueMapper extends ValueMapper {
     }
 
     /**
-     * Adds the {@code value} to the specified {@code key} at a defined position. If {@code key#position > size} then it
-     * creates {@code null} elements to respect the position.
+     * Adds the {@code value} to the specified {@code key} at a defined position. If {@code key#position > size} then
+     * it creates {@code null} elements to respect the position.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to add

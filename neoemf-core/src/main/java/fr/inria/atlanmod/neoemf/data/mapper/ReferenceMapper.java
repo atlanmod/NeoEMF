@@ -21,11 +21,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An object capable of mapping single-valued references represented as a set of key/value pair.
- * <p>
- * By default, the references are processed as values with {@link ValueMapper}.
  */
 @ParametersAreNonnullByDefault
-public interface ReferenceMapper extends ValueMapper {
+public interface ReferenceMapper {
 
     /**
      * Retrieves the reference of the specified {@code key}.
@@ -38,9 +36,7 @@ public interface ReferenceMapper extends ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceOf(SingleFeatureKey key) {
-        return valueOf(key);
-    }
+    Optional<Id> referenceOf(SingleFeatureKey key);
 
     /**
      * Defines the reference of the specified {@code key}.
@@ -54,9 +50,7 @@ public interface ReferenceMapper extends ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    default Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
-        return valueFor(key, reference);
-    }
+    Optional<Id> referenceFor(SingleFeatureKey key, Id reference);
 
     /**
      * Unsets the reference of the specified {@code key}.
@@ -65,9 +59,7 @@ public interface ReferenceMapper extends ValueMapper {
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    default void unsetReference(SingleFeatureKey key) {
-        unsetValue(key);
-    }
+    void unsetReference(SingleFeatureKey key);
 
     /**
      * Checks whether the specified {@code key} has a defined reference.
@@ -79,6 +71,6 @@ public interface ReferenceMapper extends ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     default boolean hasReference(SingleFeatureKey key) {
-        return hasValue(key);
+        return referenceOf(key).isPresent();
     }
 }

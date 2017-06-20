@@ -76,34 +76,4 @@ public interface ValueMapper {
     default <V> boolean hasValue(SingleFeatureKey key) {
         return valueOf(key).isPresent();
     }
-
-    /**
-     * An object that converts primitives values.
-     *
-     * @param <I> the type of the input value
-     * @param <O> the type of the ouput value
-     */
-    @ParametersAreNonnullByDefault
-    interface MappingFunction<I, O> {
-
-        /**
-         * Maps the input value.
-         *
-         * @param i the input value to map
-         *
-         * @return the mapped value
-         */
-        @Nonnull
-        O map(I i);
-
-        /**
-         * Unmaps the output value.
-         *
-         * @param o the output value to unmap
-         *
-         * @return the unmapped value
-         */
-        @Nonnull
-        I unmap(O o);
-    }
 }

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
@@ -82,29 +81,36 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      */
     protected void readElement(Id id, boolean isRoot) {
         // Retrieve the metaclass and namespace
-        ClassDescriptor metaclass = mapper.metaclassOf(id).<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
-        EClass realMetaclass = metaclass.get();
+        EClass metaclass = mapper.metaclassOf(id)
+                .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new)
+                .get();
 
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().register(realMetaclass.getEPackage().getNsPrefix(), realMetaclass.getEPackage().getNsURI());
+        BasicNamespace ns = BasicNamespace.Registry.getInstance()
+                .register(metaclass.getEPackage().getNsPrefix(), metaclass.getEPackage().getNsURI());
 
         // Retrieve the name of the element
         // If root it's the name of the metaclass, otherwise the name of the containing feature
-        String elementName = isRoot ? metaclass.name() : mapper.containerOf(id).map(SingleFeatureKey::name).orElse(null);
+        String elementName = isRoot
+                ? metaclass.getName()
+                : mapper.containerOf(id).map(SingleFeatureKey::name).orElse(null);
 
         // Create the element
         BasicElement element = new BasicElement(ns, elementName);
         element.id(BasicId.original(id.toString()));
-        element.metaclass(new BasicMetaclass(ns, metaclass.name()));
+        element.metaclass(new BasicMetaclass(ns, metaclass.getName()));
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
-        String name = mapper.valueOf(SingleFeatureKey.of(id, MapperConstants.FEATURE_NAME)).map(Object::toString).orElse(null);
+        String name = mapper.valueOf(SingleFeatureKey.of(id, MapperConstants.FEATURE_NAME))
+                .map(Object::toString)
+                .orElse(null);
+
         element.className(name);
 
         notifyStartElement(element);
 
         // Process all attributes
-        realMetaclass.getEAllAttributes().stream()
+        metaclass.getEAllAttributes().stream()
                 .filter(attribute -> !Objects.equals(MapperConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
                 .forEach(attribute -> {
                     SingleFeatureKey key = SingleFeatureKey.of(id, attribute.getName());
@@ -117,7 +123,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
                 });
 
         // Process all references
-        realMetaclass.getEAllReferences()
+        metaclass.getEAllReferences()
                 .forEach(reference -> {
                     SingleFeatureKey key = SingleFeatureKey.of(id, reference.getName());
                     if (!reference.isMany()) {

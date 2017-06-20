@@ -147,6 +147,7 @@ public final class Migrator<T> {
      * @throws IOException if an I/O error occurs during the creation
      */
     @Nonnull
+    @SuppressWarnings("unchecked") // checked generic array creation for varargs parameter
     public static Migrator<InputStream> fromXmi(InputStream stream) throws IOException {
         return new Migrator<>(XmiStreamReader.class, getInputStream(stream), XPathProcessor.class, EcoreProcessor.class);
     }
@@ -159,6 +160,7 @@ public final class Migrator<T> {
      * @return a new migrator
      */
     @Nonnull
+    @SuppressWarnings("unchecked") // checked generic array creation for varargs parameter
     public static Migrator<DataMapper> fromMapper(DataMapper mapper) {
         return new Migrator<>(DefaultMapperReader.class, mapper);
     }

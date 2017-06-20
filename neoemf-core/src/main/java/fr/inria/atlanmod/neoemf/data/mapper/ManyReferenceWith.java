@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,18 +32,20 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link ManyReferenceMapper} that provides a default behavior to use {@link RS} instead of a set of {@link Id} for
+ * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of a set of {@link Id} for
  * multi-valued references. This behavior is specified by the {@link #manyReferencesMapping()} method.
+ *
+ * @param <M> the type of the multi-valued reference after mapping
  */
 @ParametersAreNonnullByDefault
-public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
+public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(ManyFeatureKey key) {
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        return this.<RS>valueOf(key.withoutPosition())
+        return this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .filter(ids -> key.position() < ids.size())
                 .map(ids -> ids.get(key.position()));
@@ -53,9 +54,9 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
     @Nonnull
     @Override
     default List<Id> allReferencesOf(SingleFeatureKey key) {
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        return this.<RS>valueOf(key)
+        return this.<M>valueOf(key)
                 .map(func::unmap)
                 .orElseGet(Collections::emptyList);
     }
@@ -66,9 +67,9 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
         checkNotNull(key);
         checkNotNull(reference);
 
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        List<Id> ids = this.<RS>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -82,18 +83,13 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
     }
 
     @Override
-    default boolean hasAnyReference(SingleFeatureKey key) {
-        return hasReference(key);
-    }
-
-    @Override
     default void addReference(ManyFeatureKey key, Id reference) {
         checkNotNull(key);
         checkNotNull(reference);
 
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        List<Id> ids = this.<RS>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
@@ -114,26 +110,15 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
     }
 
     @Override
-    default int appendReference(SingleFeatureKey key, Id reference) {
-        checkNotNull(key);
-
-        int position = sizeOfReference(key).orElse(0);
-
-        addReference(key.withPosition(position), reference);
-
-        return position;
-    }
-
-    @Override
     default int appendAllReferences(SingleFeatureKey key, List<Id> references) {
         checkNotNull(key);
         checkNotNull(references);
 
-        int firstPosition = sizeOfValue(key).orElse(0);
+        int firstPosition = sizeOfReference(key).orElse(0);
 
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        List<Id> ids = this.<RS>valueOf(key)
+        List<Id> ids = this.<M>valueOf(key)
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
@@ -149,9 +134,9 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
     default Optional<Id> removeReference(ManyFeatureKey key) {
         checkNotNull(key);
 
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        List<Id> ids = this.<RS>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .orElse(null);
 
@@ -175,31 +160,6 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
         return previousId;
     }
 
-    @Override
-    default void removeAllReferences(SingleFeatureKey key) {
-        unsetReference(key);
-    }
-
-    @Nonnull
-    @Override
-    default Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
-        checkNotNull(source);
-        checkNotNull(target);
-
-        if (Objects.equals(source, target)) {
-            return Optional.empty();
-        }
-
-        Optional<Id> movedReference = removeReference(source);
-        movedReference.ifPresent(v -> addReference(target, v));
-        return movedReference;
-    }
-
-    @Override
-    default boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
-        return indexOfReference(key, reference).isPresent();
-    }
-
     @Nonnull
     @Nonnegative
     @Override
@@ -208,9 +168,9 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
             return Optional.empty();
         }
 
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        return this.<RS>valueOf(key)
+        return this.<M>valueOf(key)
                 .map(func::unmap)
                 .map(ids -> ids.indexOf(reference))
                 .filter(i -> i >= 0);
@@ -224,9 +184,9 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
             return Optional.empty();
         }
 
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        return this.<RS>valueOf(key)
+        return this.<M>valueOf(key)
                 .map(func::unmap)
                 .map(ids -> ids.lastIndexOf(reference))
                 .filter(i -> i >= 0);
@@ -236,14 +196,14 @@ public interface ManyReferenceWith<RS> extends ManyReferenceMapper {
     @Nonnegative
     @Override
     default Optional<Integer> sizeOfReference(SingleFeatureKey key) {
-        MappingFunction<List<Id>, RS> func = manyReferencesMapping();
+        MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
-        return this.<RS>valueOf(key)
+        return this.<M>valueOf(key)
                 .map(func::unmap)
                 .map(List::size)
                 .filter(s -> s != 0);
     }
 
     @Nonnull
-    MappingFunction<List<Id>, RS> manyReferencesMapping();
+    MappingFunction<List<Id>, M> manyReferencesMapping();
 }

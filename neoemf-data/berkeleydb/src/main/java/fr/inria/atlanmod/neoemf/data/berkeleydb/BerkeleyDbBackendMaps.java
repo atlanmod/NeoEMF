@@ -15,7 +15,9 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithMaps;
+import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-class BerkeleyDbBackendMaps extends AbstractBerkeleyDbBackend implements ManyValueWithMaps {
+class BerkeleyDbBackendMaps extends AbstractBerkeleyDbBackend implements ReferenceAsValue, ManyValueWithMaps, ManyReferenceAsManyValue {
 
     /**
      * Constructs a new {@code BerkeleyDbBackendLists} wrapping the provided {@code environment}.

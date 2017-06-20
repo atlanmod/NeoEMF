@@ -1,7 +1,9 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
 import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
@@ -28,7 +30,7 @@ import static java.util.Objects.isNull;
  * @param <K> the type of keys to use to identify features
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractTransientBackend<K> extends AbstractBackend implements TransientBackend, ManyValueWithArrays {
+public abstract class AbstractTransientBackend<K> extends AbstractBackend implements TransientBackend, ReferenceAsValue, ManyValueWithArrays, ManyReferenceAsManyValue {
 
     /**
      * Casts the {@code value} as expected.
