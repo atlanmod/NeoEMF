@@ -112,6 +112,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
         checkNotNull(key);
         checkNotNull(collection);
 
+        if (collection.isEmpty()) {
+            return;
+        }
+
         if (collection.contains(null)) {
             throw new NullPointerException();
         }

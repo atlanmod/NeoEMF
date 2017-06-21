@@ -111,6 +111,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
         checkNotNull(key);
         checkNotNull(collection);
 
+        if (collection.isEmpty()) {
+            return;
+        }
+
         if (collection.contains(null)) {
             throw new NullPointerException();
         }

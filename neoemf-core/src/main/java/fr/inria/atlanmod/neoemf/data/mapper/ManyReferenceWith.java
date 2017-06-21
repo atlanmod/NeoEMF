@@ -114,6 +114,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
         checkNotNull(key);
         checkNotNull(collection);
 
+        if (collection.isEmpty()) {
+            return;
+        }
+
         if (collection.contains(null)) {
             throw new NullPointerException();
         }
