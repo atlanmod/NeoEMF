@@ -88,7 +88,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default <V> boolean hasAnyValue(SingleFeatureKey key) {
-        return hasValue(key);
+        return sizeOfValue(key).isPresent();
     }
 
     /**

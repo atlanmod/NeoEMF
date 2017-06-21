@@ -87,7 +87,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default boolean hasAnyReference(SingleFeatureKey key) {
-        return hasReference(key);
+        return sizeOfReference(key).isPresent();
     }
 
     /**
