@@ -212,9 +212,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     public <V> boolean hasAnyValue(SingleFeatureKey key) {
         checkNotNull(key);
 
-        return get(key.id())
-                .map(v -> sizeOfValue(key))
-                .isPresent();
+        return sizeOfValue(key).isPresent();
     }
 
     @Override
