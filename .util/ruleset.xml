@@ -19,9 +19,7 @@
     <rule ref="rulesets/java/braces.xml" />
 
     <rule ref="rulesets/java/codesize.xml">
-        <properties>
-            <property name="maxmethods" value="30" />
-        </properties>
+        <exclude name="TooManyMethods" />
     </rule>
 
     <rule ref="rulesets/java/finalizers.xml" />
@@ -31,9 +29,6 @@
     <rule ref="rulesets/java/migrating.xml" />
 
     <rule ref="rulesets/java/naming.xml">
-        <properties>
-            <property name="minimum" value="30" />
-        </properties>
         <exclude name="ShortClassName" />
         <exclude name="ShortMethodName" />
         <exclude name="ShortVariable" />

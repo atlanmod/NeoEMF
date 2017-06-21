@@ -1,6 +1,5 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.InvalidStoreException;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperFactory;
@@ -25,7 +24,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * A factory that creates instances of {@link Store}.
  */
 @ParametersAreNonnullByDefault
-public class StoreFactory extends AbstractMapperFactory {
+public final class StoreFactory extends AbstractMapperFactory {
 
     /**
      * Constructs a new {@code StoreFactory}.
@@ -102,14 +101,15 @@ public class StoreFactory extends AbstractMapperFactory {
             for (PersistentStoreOptions opt : getStores(options).stream().sorted().collect(Collectors.toList())) {
                 List<ConstructorParameter> parameters = opt.parameters().stream()
                         .filter(options::containsKey)
-                        .map(key -> new AbstractBackendFactory.ConstructorParameter(options.get(key)))
+                        .map(options::get)
+                        .map(ConstructorParameter::new)
                         .collect(Collectors.toList());
 
                 parameters.add(0,
-                        new AbstractBackendFactory.ConstructorParameter(store, Store.class));
+                        new ConstructorParameter(store, Store.class));
 
 
-                store = newInstanceOf(opt.className(), parameters.toArray(new AbstractBackendFactory.ConstructorParameter[parameters.size()]));
+                store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
             }
         }
         catch (Exception e) {

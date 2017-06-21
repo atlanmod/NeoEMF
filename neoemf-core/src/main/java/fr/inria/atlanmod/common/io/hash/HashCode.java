@@ -95,7 +95,7 @@ public final class HashCode implements Serializable {
     public long toLong() {
         checkState(bytes.length >= 8, "HashCode#toLong() requires at least 8 bytes (it only has %s bytes).", bytes.length);
 
-        long value = (bytes[0] & 0xFF);
+        long value = bytes[0] & 0xFF;
         for (int i = 1; i < Math.min(bytes.length, 8); i++) {
             value |= (bytes[i] & 0xFFL) << (i * 8);
         }
@@ -104,16 +104,16 @@ public final class HashCode implements Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         if (bits() >= 32) {
             return toInt();
         }
 
         byte[] bytes = toBytes();
 
-        int value = (bytes[0] & 0xFF);
+        int value = bytes[0] & 0xFF;
         for (int i = 1; i < bytes.length; i++) {
-            value |= ((bytes[i] & 0xFF) << (i * 8));
+            value |= (bytes[i] & 0xFF) << i * 8;
         }
         return value;
     }
