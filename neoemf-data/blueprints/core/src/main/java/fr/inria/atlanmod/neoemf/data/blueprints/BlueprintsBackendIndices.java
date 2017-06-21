@@ -26,6 +26,7 @@ import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -234,13 +235,51 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
         if (key.position() >= size || nonNull(vertex.<V>getProperty(formatProperty(key.name(), key.position())))) {
             for (int i = size; i > key.position(); i--) {
-                vertex.<V>setProperty(formatProperty(key.name(), i), vertex.<V>getProperty(formatProperty(key.name(), i - 1)));
+                V movedValue = vertex.getProperty(formatProperty(key.name(), i - 1));
+                vertex.<V>setProperty(formatProperty(key.name(), i), movedValue);
             }
         }
 
-        sizeForValue(key.withoutPosition(), size + 1);
-
         vertex.<V>setProperty(formatProperty(key.name(), key.position()), value);
+
+        sizeForValue(key.withoutPosition(), size + 1);
+    }
+
+    @Override
+    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+        checkNotNull(key);
+        checkNotNull(collection);
+
+        if (collection.isEmpty()) {
+            return;
+        }
+
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+
+        Vertex vertex = getOrCreate(key.id());
+
+        if (key.position() >= size || nonNull(vertex.<V>getProperty(formatProperty(key.name(), key.position())))) {
+            for (int i = size + collection.size(); i > key.position(); i--) {
+                V movedValue = vertex.getProperty(formatProperty(key.name(), i - collection.size()));
+                if (nonNull(movedValue)) {
+                    vertex.<V>setProperty(formatProperty(key.name(), i), movedValue);
+                }
+            }
+        }
+
+        Iterator<? extends V> iter = collection.iterator();
+
+        int i = 0;
+        while (iter.hasNext()) {
+            vertex.<V>setProperty(formatProperty(key.name(), key.position() + i), iter.next());
+            i++;
+        }
+
+        sizeForValue(key.withoutPosition(), size + collection.size());
     }
 
     @Nonnull
@@ -495,6 +534,53 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         edge.<Integer>setProperty(KEY_POSITION, key.position());
 
         sizeForReference(key.withoutPosition(), size + 1);
+    }
+
+    @Override
+    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+        checkNotNull(key);
+        checkNotNull(collection);
+
+        if (collection.isEmpty()) {
+            return;
+        }
+
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int size = sizeOfReference(key.withoutPosition()).orElse(0);
+
+        Vertex vertex = getOrCreate(key.id());
+
+        boolean alreadyExists = MoreIterables.notEmpty(vertex.query()
+                .labels(key.name())
+                .direction(Direction.OUT)
+                .has(KEY_POSITION, key.position())
+                .edges());
+
+        if (key.position() >= size || alreadyExists) {
+            if (key.position() != size) {
+                Iterable<Edge> edges = vertex.query()
+                        .labels(key.name())
+                        .direction(Direction.OUT)
+                        .interval(KEY_POSITION, key.position(), size + collection.size())
+                        .edges();
+
+                edges.forEach(e -> e.<Integer>setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + collection.size()));
+            }
+        }
+
+        Iterator<Id> iter = collection.iterator();
+
+        int i = 0;
+        while (iter.hasNext()) {
+            Edge edge = vertex.addEdge(key.name(), getOrCreate(iter.next()));
+            edge.<Integer>setProperty(KEY_POSITION, key.position() + i);
+            i++;
+        }
+
+        sizeForReference(key.withoutPosition(), size + collection.size());
     }
 
     @Nonnull
