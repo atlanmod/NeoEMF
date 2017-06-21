@@ -74,7 +74,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureKey key) {
-        return get(key.id()).map(v -> v.getProperty(key.name()));
+        return get(key.id()).map(v -> v.<V>getProperty(key.name()));
     }
 
     @Nonnull
@@ -84,14 +84,14 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
         Vertex vertex = getOrCreate(key.id());
 
-        Optional<V> previousValue = vertex.getProperty(key.name());
-        vertex.setProperty(key.name(), value);
+        Optional<V> previousValue = Optional.ofNullable(vertex.<V>getProperty(key.name()));
+        vertex.<V>setProperty(key.name(), value);
         return previousValue;
     }
 
     @Override
     public <V> void unsetValue(SingleFeatureKey key) {
-        get(key.id()).ifPresent(v -> v.removeProperty(key.name()));
+        get(key.id()).ifPresent(v -> v.<V>removeProperty(key.name()));
     }
 
     //endregion
@@ -173,7 +173,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(key.id()).map(v -> v.getProperty(formatProperty(key.name(), key.position())));
+        return get(key.id()).map(v -> v.<V>getProperty(formatProperty(key.name(), key.position())));
     }
 
     @Nonnull
@@ -228,7 +228,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
         if (key.position() >= size || nonNull(vertex.<V>getProperty(formatProperty(key.name(), key.position())))) {
             for (int i = size; i > key.position(); i--) {
-                V movedValue = vertex.getProperty(formatProperty(key.name(), i - 1));
+                V movedValue = vertex.<V>getProperty(formatProperty(key.name(), i - 1));
                 vertex.<V>setProperty(formatProperty(key.name(), i), movedValue);
             }
         }
@@ -257,7 +257,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
         if (key.position() >= size || nonNull(vertex.<V>getProperty(formatProperty(key.name(), key.position())))) {
             for (int i = size + collection.size(); i > key.position(); i--) {
-                V movedValue = vertex.getProperty(formatProperty(key.name(), i - collection.size()));
+                V movedValue = vertex.<V>getProperty(formatProperty(key.name(), i - collection.size()));
                 if (nonNull(movedValue)) {
                     vertex.<V>setProperty(formatProperty(key.name(), i), movedValue);
                 }
