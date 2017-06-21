@@ -18,7 +18,12 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * An abstract {@link FeatureKey}.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractFeatureKey implements FeatureKey {
+public abstract class AbstractFeatureKey implements FeatureKey {
+
+    /**
+     * The position that indicates that this feature has no position.
+     */
+    private static final int NO_POSITION = -1;
 
     /**
      * The identifier of the object.
@@ -39,17 +44,27 @@ abstract class AbstractFeatureKey implements FeatureKey {
     protected final int position;
 
     /**
-     * Constructs a new {@code AbstractFeatureKey} with the given {@code id} and the given {@code name}, which are used
-     * as
-     * a simple representation of a feature of an object.
+     * Constructs a new {@code AbstractFeatureKey} with the given {@code id} and the given {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      */
     protected AbstractFeatureKey(Id id, String name) {
-        this(id, name, -1);
+        this(id, name, NO_POSITION);
     }
 
+    /**
+     * Constructs a new {@code ManyFeatureKey} with the given {@code id} and the given {@code name}, which are
+     * used as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with
+     * the {@code position}.
+     *
+     * @param id       the identifier of the {@link PersistentEObject}
+     * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param position the position of the {@link EStructuralFeature}
+     *
+     * @throws NullPointerException     if any argument is {@code null}
+     * @throws IllegalArgumentException if the {@code position} is negative, if {@code isMany() == true}
+     */
     protected AbstractFeatureKey(Id id, String name, int position) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
@@ -78,14 +93,16 @@ abstract class AbstractFeatureKey implements FeatureKey {
     }
 
     /**
-     * Creates a new {@link ManyFeatureKey} with the {@link Id} and the name of this {@code AbstractFeatureKey}, and
-     * adding the given {@code position}.
+     * Creates a new {@link ManyFeatureKey} with the {@link Id} and the name of this {@code FeatureKey}, and adding
+     * the given {@code position}.
      *
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@link ManyFeatureKey}
      *
      * @see ManyFeatureKey#of(Id, String, int)
+     *
+     * @throws IllegalArgumentException if the {@code position} is negative
      */
     @Nonnull
     public ManyFeatureKey withPosition(@Nonnegative int position) {

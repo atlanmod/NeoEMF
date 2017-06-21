@@ -62,6 +62,9 @@ public class ManyFeatureKey extends AbstractFeatureKey {
      * @see #from(PersistentEObject, EStructuralFeature, int)
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
+     *
+     * @throws NullPointerException     if any argument is {@code null}
+     * @throws IllegalArgumentException if the {@code position} is negative
      */
     public static ManyFeatureKey from(InternalEObject object, EStructuralFeature feature, @Nonnegative int position) {
         return from(PersistentEObject.from(object), feature, position);
@@ -82,6 +85,9 @@ public class ManyFeatureKey extends AbstractFeatureKey {
      * @see #of(Id, String, int)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
+     *
+     * @throws NullPointerException     if any argument is {@code null}
+     * @throws IllegalArgumentException if the {@code position} is negative
      */
     public static ManyFeatureKey from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
         return of(object.id(), feature.getName(), position);
@@ -97,6 +103,9 @@ public class ManyFeatureKey extends AbstractFeatureKey {
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code ManyFeatureKey}
+     *
+     * @throws NullPointerException     if any argument is {@code null}
+     * @throws IllegalArgumentException if the {@code position} is negative
      */
     public static ManyFeatureKey of(Id id, String name, @Nonnegative int position) {
         return new ManyFeatureKey(id, name, position);

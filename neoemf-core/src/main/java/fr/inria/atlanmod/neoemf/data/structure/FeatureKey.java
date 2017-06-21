@@ -30,9 +30,7 @@ public interface FeatureKey extends Comparable<FeatureKey>, Serializable {
     String name();
 
     /**
-     * Returns the position of this feature.
-     * <p>
-     * If {@code isMany() == false}, then returns {@code -1}.
+     * Returns the position of this feature. If {@code isMany() == false}, then returns {@code -1}.
      *
      * @return the position
      */
@@ -40,7 +38,7 @@ public interface FeatureKey extends Comparable<FeatureKey>, Serializable {
     int position();
 
     /**
-     * Checks if the feature is multi-valued.
+     * Checks if this feature is multi-valued.
      *
      * @return {@code true} if this feature is multi-valued
      */

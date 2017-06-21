@@ -93,7 +93,8 @@ public class ClassDescriptor implements Serializable {
      * @return a new {@code ClassDescriptor}
      *
      * @see #from(EClass)
-     * @see #of(String, String)
+     *
+     * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
     public static ClassDescriptor from(PersistentEObject object) {
@@ -109,7 +110,7 @@ public class ClassDescriptor implements Serializable {
      *
      * @return a new {@code ClassDescriptor}
      *
-     * @see #of(String, String)
+     * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
     public static ClassDescriptor from(EClass eClass) {
@@ -124,6 +125,8 @@ public class ClassDescriptor implements Serializable {
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      *
      * @return a new {@code ClassDescriptor}
+     *
+     * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
     public static ClassDescriptor of(String name, String uri) {
