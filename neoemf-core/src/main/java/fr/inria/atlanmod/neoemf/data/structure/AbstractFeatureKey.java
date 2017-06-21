@@ -100,9 +100,8 @@ public abstract class AbstractFeatureKey implements FeatureKey {
      *
      * @return a new {@link ManyFeatureKey}
      *
-     * @see ManyFeatureKey#of(Id, String, int)
-     *
      * @throws IllegalArgumentException if the {@code position} is negative
+     * @see ManyFeatureKey#of(Id, String, int)
      */
     @Nonnull
     public ManyFeatureKey withPosition(@Nonnegative int position) {

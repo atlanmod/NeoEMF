@@ -92,9 +92,8 @@ public class ClassDescriptor implements Serializable {
      *
      * @return a new {@code ClassDescriptor}
      *
-     * @see #from(EClass)
-     *
      * @throws NullPointerException if any argument is {@code null}
+     * @see #from(EClass)
      */
     @Nonnull
     public static ClassDescriptor from(PersistentEObject object) {

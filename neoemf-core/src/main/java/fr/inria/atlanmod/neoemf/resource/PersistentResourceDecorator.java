@@ -113,6 +113,18 @@ public class PersistentResourceDecorator implements PersistentResource {
 
     @Override
     @OverridingMethodsMustInvokeSuper
+    public void save(Map<?, ?> options) throws IOException {
+        resource.save(options);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void load(Map<?, ?> options) throws IOException {
+        resource.load(options);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
     public void save(OutputStream outputStream, Map<?, ?> options) throws IOException {
         resource.save(outputStream, options);
     }
@@ -175,18 +187,6 @@ public class PersistentResourceDecorator implements PersistentResource {
     @OverridingMethodsMustInvokeSuper
     public EList<Diagnostic> getWarnings() {
         return resource.getWarnings();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void save(Map<?, ?> options) throws IOException {
-        resource.save(options);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void load(Map<?, ?> options) throws IOException {
-        resource.load(options);
     }
 
     @Override

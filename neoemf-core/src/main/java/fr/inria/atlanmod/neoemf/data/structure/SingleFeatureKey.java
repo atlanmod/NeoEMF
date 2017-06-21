@@ -52,11 +52,10 @@ public class SingleFeatureKey extends AbstractFeatureKey {
      *
      * @return a new {@code SingleFeatureKey}
      *
+     * @throws NullPointerException if any argument is {@code null}
      * @see #from(PersistentEObject, EStructuralFeature)
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
-     *
-     * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
     public static SingleFeatureKey from(InternalEObject object, EStructuralFeature feature) {
@@ -73,11 +72,10 @@ public class SingleFeatureKey extends AbstractFeatureKey {
      *
      * @return a new {@code SingleFeatureKey}
      *
+     * @throws NullPointerException if any argument is {@code null}
      * @see #of(Id, String)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
-     *
-     * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
     public static SingleFeatureKey from(PersistentEObject object, EStructuralFeature feature) {

@@ -96,7 +96,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     }
 
     @Override
-        default <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+    default <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
         checkNotNull(key);
         checkNotNull(collection);
 

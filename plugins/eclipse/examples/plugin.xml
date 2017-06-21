@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="fr.inria.atlanmod.neoemf.examples.category"
-            name="NeoEMF"
-            parentCategory="org.eclipse.ui.Examples">
-      </category>
-      <wizard
-            canFinishEarly="true"
-            category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
-            class="fr.inria.atlanmod.neoemf.eclipse.examples.TutorialWizard"
-            hasPages="false"
-            icon="icons/full/obj16/neoemf.png"
-            id="fr.inria.atlanmod.neoemf.examples.tutorial"
-            name="NeoEMF Tutorial Project"
-            project="true">
-         <description>
-            Creates a plug-in project containing the code used in NeoEMF Tutorial (https://github.com/atlanmod/NeoEMF/wiki/Get-Started).
-         </description>
-      </wizard>
-      <wizard
-            canFinishEarly="true"
-            category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
-            class="fr.inria.atlanmod.neoemf.eclipse.examples.DemoWizard"
-            hasPages="false"
-            icon="icons/full/obj16/neoemf.png"
-            id="fr.inria.atlanmod.neoemf.examples.demo"
-            name="NeoEMF Demo Project"
-            project="true">
-         <description>
-            Creates a plug-in project containing example code to create and manipulate NeoEMF resources.
-         </description>
-      </wizard>
-   </extension>
-
+    <extension
+            point="org.eclipse.ui.newWizards">
+        <category
+                id="fr.inria.atlanmod.neoemf.examples.category"
+                name="NeoEMF"
+                parentCategory="org.eclipse.ui.Examples">
+        </category>
+        <wizard
+                canFinishEarly="true"
+                category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
+                class="fr.inria.atlanmod.neoemf.eclipse.examples.TutorialWizard"
+                hasPages="false"
+                icon="icons/full/obj16/neoemf.png"
+                id="fr.inria.atlanmod.neoemf.examples.tutorial"
+                name="NeoEMF Tutorial Project"
+                project="true">
+            <description>
+                Creates a plug-in project containing the code used in NeoEMF Tutorial
+                (https://github.com/atlanmod/NeoEMF/wiki/Get-Started).
+            </description>
+        </wizard>
+        <wizard
+                canFinishEarly="true"
+                category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.examples.category"
+                class="fr.inria.atlanmod.neoemf.eclipse.examples.DemoWizard"
+                hasPages="false"
+                icon="icons/full/obj16/neoemf.png"
+                id="fr.inria.atlanmod.neoemf.examples.demo"
+                name="NeoEMF Demo Project"
+                project="true">
+            <description>
+                Creates a plug-in project containing example code to create and manipulate NeoEMF resources.
+            </description>
+        </wizard>
+    </extension>
 </plugin>

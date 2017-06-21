@@ -570,7 +570,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(index).isEqualTo(0);
         assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
 
-        index =mapper.appendValue(key, value1);
+        index = mapper.appendValue(key, value1);
         assertThat(index).isEqualTo(1);
         assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
     }
@@ -1599,10 +1599,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Id ref1 = StringId.of("Ref1");
         Id ref2 = StringId.of("Ref2");
 
-         mapper.appendReference(key, ref0);
+        mapper.appendReference(key, ref0);
         assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
 
-         mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref1, ref2));
+        mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref1, ref2));
 
         assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
         assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
