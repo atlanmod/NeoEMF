@@ -62,13 +62,16 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     public PersistentEObject create(EClass eClass, Id id) {
         PersistentEObject newObject;
 
-        if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
+        if (eClass.getEPackage().getClass() == EPackageImpl.class) {
             newObject = new DefaultPersistentEObject(id);
-            newObject.eSetClass(eClass);
         }
         else {
             newObject = PersistentEObject.from(EcoreUtil.create(eClass));
             newObject.id(id);
+        }
+
+        if (!Objects.equals(newObject.eClass(), eClass)) {
+            newObject.eSetClass(eClass);
         }
 
         return newObject;

@@ -275,27 +275,27 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Defines the container of this object.
-     * <p>
-     * If any argument is {@code null}, then the container of this object will be removed, and this object will be
-     * detached from its resource.
+     * Defines the container of this object, and attaches it to the resource of its {@code newContainer}.
      *
      * @param newContainer          the new container of this object
      * @param newContainmentFeature the reference used to link the container to this object
      */
-    private void eBasicSetContainer(@Nullable PersistentEObject newContainer, @Nullable EReference newContainmentFeature) {
-        if (nonNull(newContainer) && nonNull(newContainmentFeature)) {
-            eStore().updateContainment(this, newContainmentFeature, newContainer);
-            resource(newContainer.resource());
-        }
-        else {
-            eStore().removeContainment(this);
-            resource(null);
-        }
+    private void setContainer(PersistentEObject newContainer, EReference newContainmentFeature) {
+        eStore().updateContainment(this, newContainmentFeature, newContainer);
+        resource(newContainer.resource());
     }
 
     /**
-     * @see #eBasicSetContainer(PersistentEObject, EReference)
+     * Removes the container of this object, and detaches it from its resource.
+     */
+    private void removeContainer() {
+        eStore().removeContainment(this);
+        resource(null);
+    }
+
+    /**
+     * @see #setContainer(PersistentEObject, EReference)
+     * @see #removeContainer()
      */
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
@@ -303,10 +303,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             PersistentEObject container = PersistentEObject.from(newContainer);
             EReference containmentFeature = eContainmentFeature(this, container, newContainerFeatureID);
 
-            eBasicSetContainer(container, containmentFeature);
+            setContainer(container, containmentFeature);
         }
         else {
-            eBasicSetContainer(null, null);
+            removeContainer();
         }
     }
 

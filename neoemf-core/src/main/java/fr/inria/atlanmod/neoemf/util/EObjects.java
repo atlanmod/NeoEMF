@@ -8,9 +8,11 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Static utility methods related to {@link EObject}s.
@@ -33,8 +35,6 @@ public final class EObjects {
      * @param feature the feature to test
      *
      * @return {@code true} if the {@code feature} represents an attribute
-     *
-     * @throws NullPointerException if the {@code feature} is {@code null}
      */
     public static boolean isAttribute(EStructuralFeature feature) {
         return are(EAttribute.class, feature);
@@ -46,8 +46,6 @@ public final class EObjects {
      * @param feature the feature to test
      *
      * @return {@code true} if the {@code feature} represents an reference
-     *
-     * @throws NullPointerException if the {@code feature} is {@code null}
      */
     public static boolean isReference(EStructuralFeature feature) {
         return are(EReference.class, feature);
@@ -94,8 +92,10 @@ public final class EObjects {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    private static <T extends EObject> boolean are(Class<T> cls, Object... objects) {
-        return Arrays.stream(checkNotNull(objects)).allMatch(cls::isInstance);
+    private static <T extends EObject> boolean are(Class<T> cls, @Nullable Object... objects) {
+        return nonNull(objects)
+                && Arrays.stream(objects).allMatch(cls::isInstance);
+
     }
 
     /**
