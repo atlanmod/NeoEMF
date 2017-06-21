@@ -402,6 +402,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .filter(s -> s != 0);
     }
 
+    /**
+     * Defines the number of value of the specified {@code key}.
+     *
+     * @param key  the key identifying the multi-valued attribute
+     * @param size the number of value
+     * @param <V>  the type of value
+     */
     protected <V> void sizeForValue(SingleFeatureKey key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
@@ -720,6 +727,12 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         return sizeOfValue(key);
     }
 
+    /**
+     * Defines the number of reference of the specified {@code key}.
+     *
+     * @param key  the key identifying the multi-valued attribute
+     * @param size the number of reference
+     */
     protected void sizeForReference(SingleFeatureKey key, @Nonnegative int size) {
         sizeForValue(key, size);
     }
