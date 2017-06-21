@@ -74,8 +74,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureKey key) {
-        return get(key.id())
-                .map(v -> v.<V>getProperty(key.name()));
+        return get(key.id()).map(v -> v.getProperty(key.name()));
     }
 
     @Nonnull
@@ -83,22 +82,16 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
         checkNotNull(value);
 
-        Optional<V> previousValue = valueOf(key);
-        getOrCreate(key.id()).<V>setProperty(key.name(), value);
+        Vertex vertex = getOrCreate(key.id());
+
+        Optional<V> previousValue = vertex.getProperty(key.name());
+        vertex.setProperty(key.name(), value);
         return previousValue;
     }
 
     @Override
     public <V> void unsetValue(SingleFeatureKey key) {
-        get(key.id())
-                .ifPresent(v -> v.<V>removeProperty(key.name()));
-    }
-
-    @Override
-    public <V> boolean hasValue(SingleFeatureKey key) {
-        return get(key.id())
-                .map(v -> Optional.ofNullable(v.<V>getProperty(key.name())).isPresent())
-                .orElse(false);
+        get(key.id()).ifPresent(v -> v.removeProperty(key.name()));
     }
 
     //endregion
@@ -166,7 +159,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> MoreIterables.notEmpty(v.getVertices(Direction.OUT, key.name())))
+                .map(v -> v.getVertices(Direction.OUT, key.name()))
+                .map(MoreIterables::notEmpty)
                 .orElse(false);
     }
 
@@ -179,8 +173,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     public <V> Optional<V> valueOf(ManyFeatureKey key) {
         checkNotNull(key);
 
-        return get(key.id())
-                .map(v -> v.<V>getProperty(formatProperty(key.name(), key.position())));
+        return get(key.id()).map(v -> v.getProperty(formatProperty(key.name(), key.position())));
     }
 
     @Nonnull
@@ -220,8 +213,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> sizeOfValue(key).isPresent())
-                .orElse(false);
+                .map(v -> sizeOfValue(key))
+                .isPresent();
     }
 
     @Override
@@ -446,6 +439,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .has(KEY_POSITION, key.position())
+                .limit(1)
                 .vertices();
 
         return MoreIterables.stream(referencedVertices)
