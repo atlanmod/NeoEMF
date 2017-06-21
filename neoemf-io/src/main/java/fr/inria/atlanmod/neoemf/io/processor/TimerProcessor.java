@@ -27,7 +27,7 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
     /**
      * The start instant.
      */
-    private final Stopwatch stopwatch;
+    private final Stopwatch stopwatch = new Stopwatch();
 
     /**
      * Constructs a new {@code TimerProcessor} with the given {@code processor}.
@@ -36,7 +36,6 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
      */
     public TimerProcessor(Processor processor) {
         super(processor);
-        stopwatch = new Stopwatch();
     }
 
     @Override
@@ -57,6 +56,7 @@ public class TimerProcessor extends AbstractProcessor<Processor> {
     /**
      * An object that measures elapsed time.
      */
+    @ParametersAreNonnullByDefault
     private static class Stopwatch {
 
         /**

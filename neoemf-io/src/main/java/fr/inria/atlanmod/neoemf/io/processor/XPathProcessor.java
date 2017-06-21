@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
 import fr.inria.atlanmod.neoemf.io.structure.BasicId;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
@@ -22,6 +23,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +40,7 @@ import static java.util.Objects.nonNull;
  * A {@link Processor} that analyses XML elements in order to create and to process XPath references.
  */
 @ParametersAreNonnullByDefault
-public class XPathProcessor extends AbstractProcessor<Processor> {
+public class XPathProcessor extends AbstractProcessor<Handler> {
 
     /**
      * Regular expression for detecting nodes which have no index in their path.
@@ -56,7 +58,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
     /**
      * The XPath structure.
      */
-    private final XPathTree paths;
+    private final XPathTree paths = new XPathTree();
 
     /**
      * The start of an XPath expression in this {@link XPathProcessor}.
@@ -69,17 +71,15 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
      * Defines whether the processed document already contains identifiers. In this case, XPath processing is
      * unnecessary and this processor simply notifies the underlying processor.
      */
-    private boolean hasIds;
+    private boolean hasIds = false;
 
     /**
-     * Constructs a new {@code XPathProcessor} with the given {@code processor}.
+     * Constructs a new {@code XPathProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public XPathProcessor(Processor processor) {
-        super(processor);
-        this.paths = new XPathTree();
-        this.hasIds = false;
+    public XPathProcessor(Handler handler) {
+        super(handler);
     }
 
     @Override
@@ -152,6 +152,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
      *
      * @return the formatted XPath
      */
+    @Nonnull
     private String formatPath(String path) {
         // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
         String modifiedReference = path.replaceFirst(XPathConstants.START_EXPR, expressionStart);
@@ -177,6 +178,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
      * only the nodes representing the current XPath are hold. This allows to treat an XPath without keeping all the
      * elements in memory.
      */
+    @ParametersAreNonnullByDefault
     private static class XPathTree {
 
         /**
@@ -184,20 +186,14 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
          * <p>
          * It does not represent the root node path.
          */
-        private final XPathNode dummyRoot;
+        @Nonnull
+        private final XPathNode root = new XPathNode("");
 
         /**
-         * A queue holding the current XPath.
+         * A LIFO that holds the current XPath.
          */
-        private final Deque<XPathNode> currentPath;
-
-        /**
-         * Constructs a new {@code XPathTree}.
-         */
-        public XPathTree() {
-            this.dummyRoot = new XPathNode("ROOT");
-            this.currentPath = new ArrayDeque<>();
-        }
+        @Nonnull
+        private final Deque<XPathNode> currentPath = new ArrayDeque<>();
 
         /**
          * Gets the XPath of the current element.
@@ -206,6 +202,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
          *
          * @return a string representing the XPath of the element
          */
+        @Nonnull
         public String path(String name) {
             checkNotNull(name);
 
@@ -233,7 +230,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
         @Nonnegative
         public int createOrIncrement(String name) {
             // Get the current Node or the root Node if no element exists
-            XPathNode node = currentPath.isEmpty() ? dummyRoot : currentPath.getLast();
+            XPathNode node = currentPath.isEmpty() ? root : currentPath.getLast();
 
             if (node.hasChild(name)) {
                 // Try to get and increment the node if it exists
@@ -263,7 +260,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
          * @return an approximate size
          */
         public long size() {
-            return dummyRoot.size();
+            return root.size();
         }
 
         /**
@@ -271,20 +268,26 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
          * <p>
          * A node is a segment of an XPath, for example {@code .../@name.index/...}.
          */
+        @ParametersAreNonnullByDefault
         private static class XPathNode {
 
             /**
              * The name of this node.
              */
+            @Nonnull
             private final String name;
+
             /**
              * A map that holds all children of this node, identified by their name.
              */
-            private final Map<String, XPathNode> children;
+            @Nonnull
+            private final Map<String, XPathNode> children = new HashMap<>();
+
             /**
              * The index of this node.
              */
-            private int index;
+            @Nonnull
+            private final AtomicInteger index = new AtomicInteger();
 
             /**
              * Constructs a new {@code XPathNode} with the given {@code name}.
@@ -292,9 +295,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              * @param name the name of this node
              */
             public XPathNode(String name) {
-                this.name = name;
-                this.index = 0;
-                this.children = new HashMap<>();
+                this.name = checkNotNull(name);
             }
 
             /**
@@ -302,6 +303,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              *
              * @return the name
              */
+            @Nonnull
             public String name() {
                 return name;
             }
@@ -311,15 +313,16 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              *
              * @return the index
              */
+            @Nonnegative
             public int index() {
-                return index;
+                return index.get();
             }
 
             /**
              * Increments the index of this node.
              */
             public void incrementIndex() {
-                index++;
+                index.incrementAndGet();
             }
 
             /**
@@ -332,7 +335,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              * @throws NoSuchElementException if no child has the given {@code name}
              */
             @Nonnull
-            public XPathNode child(@Nonnull String id) {
+            public XPathNode child(String id) {
                 XPathNode child = children.get(id);
                 if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + id + "' in the element '" + this.name + "'");
@@ -348,7 +351,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              * @return the given {@code child} (for chaining)
              */
             @Nonnull
-            public XPathNode child(@Nonnull XPathNode child) {
+            public XPathNode child(XPathNode child) {
                 children.put(child.name(), child);
                 return child;
             }
@@ -367,7 +370,7 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              *
              * @return {@code true} if a child node has the specified {@code name}
              */
-            public boolean hasChild(@Nonnull String name) {
+            public boolean hasChild(String name) {
                 return nonNull(children.get(name));
             }
 
@@ -379,7 +382,9 @@ public class XPathProcessor extends AbstractProcessor<Processor> {
              */
             @Nonnegative
             public long size() {
-                return children.size() + children.values().stream().mapToLong(XPathNode::size).sum();
+                return children.size() + children.values().stream()
+                        .mapToLong(XPathNode::size)
+                        .sum();
             }
         }
     }

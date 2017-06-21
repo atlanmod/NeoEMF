@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
 import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -29,19 +31,19 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
      * The current number of element.
      */
     @Nonnegative
-    private long elementCount;
+    private AtomicLong elementCount = new AtomicLong();
 
     /**
      * The current number of attribute.
      */
     @Nonnegative
-    private long attributeCount;
+    private AtomicLong attributeCount = new AtomicLong();
 
     /**
      * The current number of reference.
      */
     @Nonnegative
-    private long referenceCount;
+    private AtomicLong referenceCount = new AtomicLong();
 
     /**
      * Constructs a new {@code CounterProcessor} with the given {@code processor}.
@@ -50,37 +52,34 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
      */
     public CounterProcessor(Processor processor) {
         super(processor);
-        this.elementCount = 0;
-        this.attributeCount = 0;
-        this.referenceCount = 0;
     }
 
     @Override
     public void onStartElement(BasicElement element) {
-        elementCount++;
+        elementCount.incrementAndGet();
 
         notifyStartElement(element);
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        attributeCount++;
+        attributeCount.incrementAndGet();
 
         notifyAttribute(attribute);
     }
 
     @Override
     public void onReference(BasicReference reference) {
-        referenceCount++;
+        referenceCount.incrementAndGet();
 
         notifyReference(reference);
     }
 
     @Override
     public void onComplete() {
-        Log.info("Elements   : {0}", elementCount);
-        Log.info("Attributes : {0}", attributeCount);
-        Log.info("References : {0}", referenceCount);
+        Log.info("Elements   : {0,number,#}", elementCount);
+        Log.info("Attributes : {0,number,#}", attributeCount);
+        Log.info("References : {0,number,#}", referenceCount);
 
         notifyComplete();
     }

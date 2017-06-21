@@ -16,11 +16,9 @@ import fr.inria.atlanmod.common.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.LoggingProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.TimerProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
@@ -39,9 +37,6 @@ import java.io.PushbackInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -50,13 +45,11 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * The builder that creates {@link Reader} and {@link Writer} instances.
@@ -92,7 +85,7 @@ public final class Migrator<T> {
      * Essential processors must be placed at the end of this queue, while the rest must be placed at the beginning.
      */
     @Nonnull
-    private final Deque<Class<? extends Processor>> processorClasses = new ArrayDeque<>();
+    private final Set<Class<? extends Processor>> processorClasses = new HashSet<>();
 
     /**
      * The set that holds all {@link Writer} to use.
@@ -105,16 +98,10 @@ public final class Migrator<T> {
      *
      * @param readerClass      the class of the {@link Reader} to use
      * @param source           the source to read
-     * @param processorClasses the classes of all essential {@link Processor}s to use
      */
-    @SafeVarargs
-    private Migrator(Class<? extends Reader<T>> readerClass, T source, @Nullable Class<? extends Processor>... processorClasses) {
+    private Migrator(Class<? extends Reader<T>> readerClass, T source) {
         this.readerClass = readerClass;
         this.source = source;
-
-        if (nonNull(processorClasses)) {
-            Arrays.stream(processorClasses).forEach(this.processorClasses::addLast);
-        }
     }
 
     //region Readers
@@ -147,9 +134,8 @@ public final class Migrator<T> {
      * @throws IOException if an I/O error occurs during the creation
      */
     @Nonnull
-    @SuppressWarnings("unchecked") // checked generic array creation for varargs parameter
     public static Migrator<InputStream> fromXmi(InputStream stream) throws IOException {
-        return new Migrator<>(XmiStreamReader.class, getInputStream(stream), XPathProcessor.class, EcoreProcessor.class);
+        return new Migrator<>(XmiStreamReader.class, getInputStream(stream));
     }
 
     /**
@@ -160,7 +146,6 @@ public final class Migrator<T> {
      * @return a new migrator
      */
     @Nonnull
-    @SuppressWarnings("unchecked") // checked generic array creation for varargs parameter
     public static Migrator<DataMapper> fromMapper(DataMapper mapper) {
         return new Migrator<>(DefaultMapperReader.class, mapper);
     }
@@ -289,7 +274,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     private Migrator<T> with(Class<? extends Processor> processor) {
-        processorClasses.addFirst(processor);
+        processorClasses.add(processor);
         return this;
     }
 

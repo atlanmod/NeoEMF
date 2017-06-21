@@ -15,7 +15,6 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
-import fr.inria.atlanmod.neoemf.io.structure.BasicFeature;
 import fr.inria.atlanmod.neoemf.io.structure.BasicId;
 import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
@@ -23,10 +22,10 @@ import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Deque;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +47,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * Regular expression of a prefixed value.
      */
     @RegEx
+    @Nonnull
     private static final String REGEX_PREFIXED_VALUE = "(\\w+):(\\w+)";
 
     /**
@@ -55,6 +55,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * <p>
      * Example of recognized strings : {@code "&lt;prefix&gt;:&lt;name&gt;"}
      */
+    @Nonnull
     private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile(REGEX_PREFIXED_VALUE);
 
     /**
@@ -65,6 +66,11 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     private boolean ignoreElement = false;
 
     /**
+     * A LIFO that holds the current {@link BasicId} chain. It contains the current identifier and the previous.
+     */
+    private Deque<BasicId> previousIds = new ArrayDeque<>();
+
+    /**
      * The current element.
      */
     private BasicElement currentElement;
@@ -72,12 +78,8 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     /**
      * A collection that holds all attributes of the {@link #currentElement}.
      */
-    private Collection<BasicFeature> currentAttributes;
-
-    /**
-     * A collection that holds all references of the {@link #currentElement}.
-     */
-    private Collection<BasicFeature> currentReferences;
+    @Nonnull
+    private Collection<BasicAttribute> currentAttributes = new ArrayList<>();
 
     /**
      * Constructs a new {@code AbstractXmiStreamReader} with the given {@code handler}.
@@ -99,8 +101,6 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      */
     protected void readStartElement(String uri, String name) {
         currentElement = new BasicElement(BasicNamespace.Registry.getInstance().getFromUri(uri), name);
-        currentAttributes = new ArrayList<>();
-        currentReferences = new ArrayList<>();
     }
 
     /**
@@ -112,21 +112,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      */
     protected void readAttribute(@Nullable String prefix, String name, String value) {
         if (!ignoreElement) {
-            List<BasicFeature> features = processFeatures(prefix, name, value);
-
-            if (ignoreElement) {
-                // No need to go further
-                return;
-            }
-
-            if (!features.isEmpty()) {
-                if (features.get(0).isAttribute()) {
-                    currentAttributes.addAll(features);
-                }
-                else {
-                    currentReferences.addAll(features);
-                }
-            }
+            processAttribute(prefix, name, value);
         }
     }
 
@@ -137,21 +123,15 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
         if (!ignoreElement) {
             // Notifies the current element
             notifyStartElement(currentElement);
+            previousIds.addLast(currentElement.id());
 
-            // Notifies the features
-            currentAttributes.stream()
-                    .map(BasicAttribute.class::cast)
-                    .forEach(this::notifyAttribute);
-
-            currentReferences.stream()
-                    .map(BasicReference.class::cast)
-                    .forEach(this::notifyReference);
-
-            // Reset the current element/features
-            currentElement = null;
-            currentAttributes = null;
-            currentReferences = null;
+            // Notifies the attributes
+            currentAttributes.forEach(this::notifyAttribute);
         }
+
+        // Reset the current element and its attribute
+        currentElement = null;
+        currentAttributes.clear();
     }
 
     /**
@@ -161,31 +141,32 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
         if (!ignoreElement) {
             notifyEndElement();
         }
-        else {
-            ignoreElement = false;
+
+        ignoreElement = false;
+        previousIds.removeLast();
+    }
+
+    /**
+     * Processes an attribute.
+     *
+     * @param prefix the prefix of the attribute
+     * @param name   the name of the attribute
+     * @param value  the value of the attribute
+     *
+     * @see #isSpecialAttribute(String, String, String)
+     */
+    private void processAttribute(@Nullable String prefix, String name, String value) {
+        if (!isSpecialAttribute(prefix, name, value)) {
+            BasicAttribute attribute = new BasicAttribute(name);
+            attribute.index(0);
+            attribute.value(value);
+
+            currentAttributes.add(attribute);
         }
     }
 
     /**
-     * Processes a feature, which can be an attribute or a reference.
-     *
-     * @param prefix the prefix of the feature
-     * @param name   the name of the feature
-     * @param value  the value of the feature
-     *
-     * @return a list of {@link BasicFeature} that can be empty.
-     *
-     * @see #processAttributes(String, String)
-     */
-    @Nonnull
-    private List<BasicFeature> processFeatures(@Nullable String prefix, String name, String value) {
-        return !processSpecialFeature(prefix, name, value)
-                ? processAttributes(name, value)
-                : Collections.emptyList();
-    }
-
-    /**
-     * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
+     * Processes a special attribute as 'xsi:type', 'xmi:id' or 'xmi:idref'.
      *
      * @param prefix the prefix of the feature
      * @param name   the name of the feature
@@ -193,65 +174,51 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      *
      * @return {@code true} if the given feature is a special feature
      */
-    private boolean processSpecialFeature(@Nullable String prefix, String name, String value) {
-        boolean isSpecialFeature = false;
+    private boolean isSpecialAttribute(@Nullable String prefix, String name, String value) {
+        if (Objects.equals(XmiConstants.NAME, name)) { // The instance of the current element
+            currentElement.className(value);
 
-        // A special feature always has a prefix
+            return true;
+        }
+
+        if (Objects.equals(XmiConstants.HREF, name)) { // A link to an external resource
+            Log.warn("{0} is an external reference to {1}. This feature is not supported yet.", currentElement.name(), value);
+
+            ignoreElement = true;
+            return true;
+        }
+
         if (nonNull(prefix) && !prefix.isEmpty()) {
             final String prefixedValue = XmlConstants.format(prefix, name);
 
-            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) {
-                processMetaClass(value);
-                isSpecialFeature = true;
-            }
-            else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) {
-                currentElement.id(BasicId.original(value));
-                isSpecialFeature = true;
-            }
-            else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) {
-                // It's not a feature of the current element, but a reference of the previous
+            if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // A reference of the previous element
                 BasicReference reference = new BasicReference(currentElement.name());
+                reference.id(previousIds.getLast());
                 reference.idReference(BasicId.original(value));
                 notifyReference(reference);
+
                 ignoreElement = true;
-                isSpecialFeature = true;
+                return true;
             }
-            else if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) {
-                Log.debug("XMI version : " + value);
-                isSpecialFeature = true;
+
+            if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // The identifier of the current element
+                currentElement.id(BasicId.original(value));
+
+                return true;
+            }
+
+            if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) { // The version of the read XMI file
+                return true;
+            }
+
+            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) { // The metaclass of the current element
+                processMetaClass(value);
+
+                return true;
             }
         }
-        else if (Objects.equals(XmiConstants.HREF, name)) {
-            Log.warn("{0} is an external reference to {1}. This feature is not supported yet.", currentElement.name(), value);
-            ignoreElement = true;
-        }
-        else if (Objects.equals(XmiConstants.NAME, name)) {
-            currentElement.className(value);
-            isSpecialFeature = true;
-        }
 
-        return isSpecialFeature;
-    }
-
-    /**
-     * Processes an attribute.
-     *
-     * @param name  the name of the attribute
-     * @param value the value of the attribute
-     *
-     * @return a singleton list of {@link BasicFeature} containing the processed attribute.
-     */
-    @Nonnull
-    private List<BasicFeature> processAttributes(String name, String value) {
-        List<BasicFeature> features = new ArrayList<>();
-
-        BasicAttribute attribute = new BasicAttribute(name);
-        attribute.index(0);
-        attribute.value(value);
-
-        features.add(attribute);
-
-        return features;
+        return false;
     }
 
     /**
@@ -268,8 +235,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromPrefix(m.group(1));
             String name = m.group(2);
 
-            BasicMetaclass metaClass = new BasicMetaclass(ns, name);
-            currentElement.metaclass(metaClass);
+            currentElement.metaclass(new BasicMetaclass(ns, name));
         }
         else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);

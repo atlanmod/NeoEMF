@@ -13,7 +13,6 @@ package fr.inria.atlanmod.common.collect;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Objects;
 
 import javax.annotation.Nonnegative;
@@ -155,11 +154,9 @@ public final class MoreArrays {
         T[] newArray = newArray(array.getClass().getComponentType(), array.length + elements.size());
         System.arraycopy(array, 0, newArray, 0, index);
 
-        Iterator<? extends T> iter = elements.iterator();
-
         int i = 0;
-        while (iter.hasNext()) {
-            newArray[index + i] = iter.next();
+        for (T e : elements) {
+            newArray[index + i] = e;
             i++;
         }
 

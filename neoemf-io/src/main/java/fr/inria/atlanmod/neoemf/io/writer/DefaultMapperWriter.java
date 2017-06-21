@@ -47,22 +47,25 @@ public class DefaultMapperWriter implements MapperWriter {
     /**
      * The mapper where to write data.
      */
-    protected final DataMapper mapper;
+    @Nonnull
+    private final DataMapper mapper;
 
     /**
-     * Queue that holds the current {@link Id} chain. It contains the current element and its parent and is updated
-     * after each addition/deletion of an element.
+     * A LIFO that holds the current {@link Id} chain. It contains the current identifier and the previous.
      */
-    protected final Deque<Id> stack = new ArrayDeque<>();
+    @Nonnull
+    private final Deque<Id> previousIds = new ArrayDeque<>();
 
     /**
      * The {@link Hasher} to use for creating {@link Id} from {@link String}.
      */
-    private final Hasher hasher;
+    @Nonnull
+    private final Hasher hasher = Hashers.md5();
 
     /**
      * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
+    @Nonnull
     private final Cache<String, Id> cache = CacheBuilder.builder()
             .maximumSize()
             .build();
@@ -74,8 +77,6 @@ public class DefaultMapperWriter implements MapperWriter {
      */
     public DefaultMapperWriter(DataMapper mapper) {
         this.mapper = checkNotNull(mapper);
-
-        this.hasher = Hashers.md5();
 
         Log.debug("{0} created", getClass().getSimpleName());
     }
@@ -96,14 +97,14 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onStartElement(BasicElement element) {
-        stack.addLast(createElement(element));
+        previousIds.addLast(createElement(element));
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
         Id id = Optional.ofNullable(attribute.id())
                 .map(this::getOrCreateId)
-                .orElseGet(stack::getLast);
+                .orElseGet(previousIds::getLast);
 
         addAttribute(id, attribute);
     }
@@ -112,7 +113,7 @@ public class DefaultMapperWriter implements MapperWriter {
     public void onReference(BasicReference reference) {
         Id id = Optional.ofNullable(reference.id())
                 .map(this::getOrCreateId)
-                .orElseGet(stack::getLast);
+                .orElseGet(previousIds::getLast);
 
         Id idReference = getOrCreateId(reference.idReference());
 
@@ -126,7 +127,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onEndElement() {
-        stack.removeLast();
+        previousIds.removeLast();
     }
 
     @Override

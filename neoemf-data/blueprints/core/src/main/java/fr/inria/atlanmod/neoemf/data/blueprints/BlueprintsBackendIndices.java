@@ -26,7 +26,6 @@ import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -256,11 +255,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             }
         }
 
-        Iterator<? extends V> iter = collection.iterator();
-
         int i = 0;
-        while (iter.hasNext()) {
-            vertex.<V>setProperty(formatProperty(key.name(), key.position() + i), iter.next());
+        for (V value : collection) {
+            vertex.<V>setProperty(formatProperty(key.name(), key.position() + i), value);
             i++;
         }
 
@@ -564,11 +561,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             }
         }
 
-        Iterator<Id> iter = collection.iterator();
-
         int i = 0;
-        while (iter.hasNext()) {
-            Edge edge = vertex.addEdge(key.name(), getOrCreate(iter.next()));
+        for (Id reference : collection) {
+            Edge edge = vertex.addEdge(key.name(), getOrCreate(reference));
             edge.<Integer>setProperty(KEY_POSITION, key.position() + i);
             i++;
         }

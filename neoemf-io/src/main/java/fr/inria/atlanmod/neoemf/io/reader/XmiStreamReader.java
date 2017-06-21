@@ -12,9 +12,12 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.XMLStreamReader2;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -37,7 +40,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      * @param handler the handler to notify
      */
     public XmiStreamReader(Handler handler) {
-        super(handler);
+        super(new EcoreProcessor(new XPathProcessor((handler))));
     }
 
     @Override
@@ -45,7 +48,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
         factory.setProperty(XMLInputFactory2.IS_NAMESPACE_AWARE, true);
 
-        read(factory.createXMLStreamReader(new BufferedInputStream(stream), XmlConstants.ENCODING));
+        read((XMLStreamReader2) factory.createXMLStreamReader(new BufferedInputStream(stream), XmlConstants.ENCODING));
     }
 
     /**
@@ -55,7 +58,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      *
      * @throws XMLStreamException if there is an error with the underlying XML
      */
-    private void read(XMLStreamReader reader) throws XMLStreamException {
+    private void read(XMLStreamReader2 reader) throws XMLStreamException {
         readStartDocument();
 
         while (reader.hasNext()) {
@@ -75,8 +78,11 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
             else if (event == XMLStreamReader.END_ELEMENT) {
                 readEndElement();
             }
-            else if (event == XMLStreamReader.CHARACTERS && reader.getTextLength() > 0 && !reader.isWhiteSpace()) {
-                readCharacters(reader.getText());
+            else if (event == XMLStreamReader.CHARACTERS) {
+                String text = reader.getText().trim();
+                if (!text.isEmpty()) {
+                    readCharacters(text);
+                }
             }
         }
 
