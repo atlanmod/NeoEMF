@@ -32,13 +32,20 @@ import java.util.Objects;
  */
 public final class GenModels {
 
-    private static final String ROOT_EXTENDS_CLASS = DefaultPersistentEObject.class.getName();
-
-    private static final String NEOEMF_MODEL_PLUGIN_NAME = "fr.inria.atlanmod.neoemf.core";
-
+    /**
+     * The base interface of {@link org.eclipse.emf.ecore.EObject} to use with NeoEMF.
+     */
     private static final String ROOT_EXTENDS_INTERFACE = PersistentEObject.class.getName();
 
-    private static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + NEOEMF_MODEL_PLUGIN_NAME;
+    /**
+     * The base class of {@link org.eclipse.emf.ecore.EObject} to use with NeoEMF.
+     */
+    private static final String ROOT_EXTENDS_CLASS = DefaultPersistentEObject.class.getName();
+
+    /**
+     * ???
+     */
+    private static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + "fr.inria.atlanmod.neoemf.core";
 
     /**
      * This class should not be instantiated.
@@ -49,29 +56,44 @@ public final class GenModels {
         throw new IllegalStateException("This class should not be instantiated");
     }
 
-    public static String adjust(GenModel genModel) {
-        return adjust(genModel, GenDelegationKind.REFLECTIVE_LITERAL);
+    /**
+     * Adjusts the {@code model} to be compatible with NeoEMF.
+     *
+     * @param model the model to adjust
+     *
+     * @return a string representing the different steps of the adjustment
+     */
+    public static String adjust(GenModel model) {
+        return adjust(model, GenDelegationKind.REFLECTIVE_LITERAL);
     }
 
-    private static String adjust(GenModel genModel, GenDelegationKind featureDelegation) {
+    /**
+     * Adjusts the {@code model} to be compatible with NeoEMF.
+     *
+     * @param model             the model to adjust
+     * @param featureDelegation the kind of feature delegation to use
+     *
+     * @return a string representing the different steps of the adjustment
+     */
+    private static String adjust(GenModel model, GenDelegationKind featureDelegation) {
         StringBuilder builder = new StringBuilder();
 
-        if (genModel.getFeatureDelegation() != featureDelegation) {
-            genModel.setFeatureDelegation(featureDelegation);
+        if (model.getFeatureDelegation() != featureDelegation) {
+            model.setFeatureDelegation(featureDelegation);
             builder.append("Set Feature Delegation = ").append(featureDelegation).append('\n');
         }
 
-        if (!Objects.equals(ROOT_EXTENDS_CLASS, genModel.getRootExtendsClass())) {
-            genModel.setRootExtendsClass(ROOT_EXTENDS_CLASS);
+        if (!Objects.equals(ROOT_EXTENDS_CLASS, model.getRootExtendsClass())) {
+            model.setRootExtendsClass(ROOT_EXTENDS_CLASS);
             builder.append("Set Root Extends Class = ").append(ROOT_EXTENDS_CLASS).append('\n');
         }
 
-        if (!Objects.equals(ROOT_EXTENDS_INTERFACE, genModel.getRootExtendsInterface())) {
-            genModel.setRootExtendsInterface(ROOT_EXTENDS_INTERFACE);
+        if (!Objects.equals(ROOT_EXTENDS_INTERFACE, model.getRootExtendsInterface())) {
+            model.setRootExtendsInterface(ROOT_EXTENDS_INTERFACE);
             builder.append("Set Root Extends Interface = ").append(ROOT_EXTENDS_INTERFACE).append('\n');
         }
 
-        List<String> pluginVariables = genModel.getModelPluginVariables();
+        List<String> pluginVariables = model.getModelPluginVariables();
         if (!pluginVariables.contains(PLUGIN_VARIABLE_NEOEMF)) {
             pluginVariables.add(PLUGIN_VARIABLE_NEOEMF);
             builder.append("Added Model Plugin Variables = ").append(PLUGIN_VARIABLE_NEOEMF).append('\n');
@@ -79,7 +101,7 @@ public final class GenModels {
 
         IProject project = ResourcesPlugin.getWorkspace()
                 .getRoot()
-                .getFolder(new Path(genModel.getModelDirectory()))
+                .getFolder(new Path(model.getModelDirectory()))
                 .getProject();
 
         if (!project.exists()) {
@@ -102,6 +124,8 @@ public final class GenModels {
             }
         }
 
-        return builder.length() == 0 ? null : builder.toString();
+        return builder.length() == 0
+                ? null
+                : builder.toString();
     }
 }
