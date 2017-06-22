@@ -86,14 +86,15 @@ public class BasicNamespace {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!BasicNamespace.class.isInstance(o)) {
             return false;
         }
-        BasicNamespace that = (BasicNamespace) o;
+
+        BasicNamespace that = BasicNamespace.class.cast(o);
         return Objects.equals(prefix, that.prefix) &&
                 Objects.equals(uri, that.uri);
     }
@@ -184,6 +185,14 @@ public class BasicNamespace {
          * @return the new {@link BasicNamespace}
          */
         public BasicNamespace register(String prefix, String uri) {
+            if (namespacesByPrefix.containsKey(prefix)) {
+                BasicNamespace ns = namespacesByPrefix.get(prefix);
+
+                if (Objects.equals(ns.uri(), uri)) {
+                    return ns;
+                }
+            }
+
             BasicNamespace ns = new BasicNamespace(prefix, uri);
             namespacesByPrefix.put(prefix, ns);
             namespacesByUri.put(uri, ns);

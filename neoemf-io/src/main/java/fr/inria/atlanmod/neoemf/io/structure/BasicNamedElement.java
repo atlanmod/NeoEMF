@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.structure;
 
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -50,14 +51,15 @@ public abstract class BasicNamedElement {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!BasicNamedElement.class.isInstance(o)) {
             return false;
         }
-        BasicNamedElement that = (BasicNamedElement) o;
+
+        BasicNamedElement that = BasicNamedElement.class.cast(o);
         return Objects.equals(name, that.name);
     }
 

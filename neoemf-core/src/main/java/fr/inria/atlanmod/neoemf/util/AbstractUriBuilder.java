@@ -495,6 +495,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
             if (URI.class.isInstance(o)) {
                 return Objects.equals(this.toString(), o.toString());
             }
+
             return super.equals(o);
         }
 

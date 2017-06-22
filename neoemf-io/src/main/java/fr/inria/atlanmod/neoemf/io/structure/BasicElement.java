@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.structure;
 
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -130,17 +131,18 @@ public class BasicElement extends BasicMetaclass {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!BasicElement.class.isInstance(o)) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
-        BasicElement that = (BasicElement) o;
+
+        BasicElement that = BasicElement.class.cast(o);
         return Objects.equals(id, that.id);
     }
 }

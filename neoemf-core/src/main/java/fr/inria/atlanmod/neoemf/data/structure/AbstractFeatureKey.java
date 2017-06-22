@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
@@ -137,15 +138,15 @@ public abstract class AbstractFeatureKey implements FeatureKey {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!AbstractFeatureKey.class.isInstance(o)) {
             return false;
         }
 
-        AbstractFeatureKey that = (AbstractFeatureKey) o;
+        AbstractFeatureKey that = AbstractFeatureKey.class.cast(o);
         return isMany() == that.isMany()
                 && position == that.position
                 && Objects.equals(id, that.id)
