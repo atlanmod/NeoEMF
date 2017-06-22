@@ -204,18 +204,18 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             sb.append(eProxyURI());
             if (nonNull(eDynamicClass())) {
                 sb.append(" eClass: ");
-                sb.append(eDynamicClass());
+                sb.append(eDynamicClass().getClass().getCanonicalName());
             }
             sb.append(')');
         }
         else if (nonNull(eDynamicClass())) {
             sb.append(" (eClass: ");
-            sb.append(eDynamicClass());
+            sb.append(eDynamicClass().getClass().getCanonicalName());
             sb.append(')');
         }
         else if (nonNull(eStaticClass())) {
             sb.append(" (eClass: ");
-            sb.append(eStaticClass());
+            sb.append(eStaticClass().getClass().getCanonicalName());
             sb.append(')');
         }
         return sb.toString();
