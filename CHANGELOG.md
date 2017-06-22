@@ -1,8 +1,18 @@
-## *1.0.2*
+## *1.0.3*
 
 Current SNAPSHOT.
+
+-__[FIX]__ Issue #80: 
+`DefaultPersistentEObject.toString()` throws a `StackOverflowError` on `EClass`
+instances 
+
+## 1.0.2 _(2017-06-06)_
+
+### New Features
 - __[NEW]__ Add experimental EMF Compare integration (will stay experimental as
   long as Guava issues remain)
+
+### Bug Fixes
 - __[FIX]__ Issue #53: WildCardType '?' in sample (mapdb) throws an exception
   when accessed in the Editor
 - __[FIX]__ Issue #54: AbstractDirectWrite.toArray is not efficient
