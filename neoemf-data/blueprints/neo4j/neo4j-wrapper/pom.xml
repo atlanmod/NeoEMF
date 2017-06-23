@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>neoemf-data-blueprints-neo4j-wrapper</artifactId>
-    <version>1.9.6</version>
 
     <packaging>bundle</packaging>
 
