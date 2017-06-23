@@ -165,6 +165,8 @@ public final class MetamodelRegistry {
     private Set<String> load() {
         String value = NeoUIPlugin.getDefault().getPreferenceStore().getString(STORE_KEY);
 
+        Log.debug("Loaded from preferences: {0}", value);
+
         return Arrays.stream(value.split(STORE_DELIMITER))
                 .filter(Objects::nonNull)
                 .filter(s -> !s.isEmpty())
@@ -183,6 +185,8 @@ public final class MetamodelRegistry {
                 .filter(Objects::nonNull)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.joining(STORE_DELIMITER));
+
+        Log.debug("Saved into preferences:  {0}", value);
 
         NeoUIPlugin.getDefault().getPreferenceStore().setValue(STORE_KEY, value);
     }

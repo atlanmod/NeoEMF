@@ -88,7 +88,7 @@ public class NeoEditor extends EcoreEditor {
         }
 
         Map<String, Object> options = optionsBuilder
-//                .log()
+//                .log(Level.INFO)
                 .asMap();
 
         try {
