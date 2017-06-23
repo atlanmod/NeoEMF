@@ -12,19 +12,19 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.BundleContext;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class NeoUIPlugin extends AbstractUIPlugin {
 
@@ -61,19 +61,25 @@ public class NeoUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Registers all instances of {@link fr.inria.atlanmod.neoemf.data.BackendFactory} in the {@link
-     * BackendFactoryRegistry}.
-     * <p/>
-     * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource
-     * loading. This happens when an Eclipse instance is loaded with an opened NeoEMF editor.
+     * Retrieves the {@link URL}s of the bundles within the given {@code context}.
+     *
+     * @param context the OSGi context to explore
+     *
+     * @return an array of {@link URL}
      */
-    // FIXME Registration must be dynamic with `BackendFactoryRegistry.getInstance().registerAll()`
-    private static void staticRegisterAll() {
-        BackendFactoryRegistry registry = BackendFactoryRegistry.getInstance();
-
-        registry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
-        registry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
-        registry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
+    private static URL[] getUrls(BundleContext context) {
+        return Arrays.stream(context.getBundles())
+                .filter(b -> b.getSymbolicName().startsWith("fr.inria.atlanmod.neoemf"))
+                .map(b -> {
+                    try {
+                        return FileLocator.getBundleFile(b).toURI().toURL();
+                    }
+                    catch (IOException ignored) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(URL[]::new);
     }
 
     @Override
@@ -82,7 +88,8 @@ public class NeoUIPlugin extends AbstractUIPlugin {
 
         getLog().addLogListener(LOG_LISTENER);
 
-        staticRegisterAll();
+        // Initialize the backend registry (force)
+        BackendFactoryRegistry.getInstance().registerAll(getUrls(context));
 
         // Initialize the metamodel registry
         MetamodelRegistry.getInstance().registerAll();

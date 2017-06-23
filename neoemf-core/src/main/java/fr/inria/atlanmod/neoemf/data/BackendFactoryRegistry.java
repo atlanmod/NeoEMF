@@ -27,8 +27,10 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * The registry that holds registered {@link URI} schemes with their associated {@link BackendFactory}.
@@ -63,10 +66,14 @@ public final class BackendFactoryRegistry {
     private final Map<String, BackendFactory> factories = new ConcurrentHashMap<>();
 
     /**
-     * Constructs a new {@code BackendFactoryRegistry} and initializes it with {@link #registerAll()}.
+     * Whether this registry has been initialized at least once.
+     */
+    boolean initialized = false;
+
+    /**
+     * Constructs a new {@code BackendFactoryRegistry} and initializes it with {@link #registerAll(URL[])}.
      */
     private BackendFactoryRegistry() {
-        registerAll();
     }
 
     /**
@@ -135,20 +142,25 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Retrieves all classes annotated with {@link FactoryBinding} which are also assignable from the given
+     * Retrieves all classes annotated with the {@code annotation} which are also assignable from the given
      * {@code instance}.
      *
-     * @param instance the instance of the expected classes
+     * @param annotation the expected annotation
+     * @param instance   the instance of the expected classes
+     * @param urls       URLs to extend the standard classpath
      *
-     * @return a set of bounded classes
+     * @return a set of annotated classes
      */
     @Nonnull
-    private static Set<Class<?>> getBoundedClasses(Class<?> instance) {
-        return new Reflections(new ConfigurationBuilder()
+    private static Set<Class<?>> getAnnotatedClasses(Class<? extends Annotation> annotation, Class<?> instance, @Nullable URL... urls) {
+        ConfigurationBuilder config = new ConfigurationBuilder()
                 .addUrls(ClasspathHelper.forJavaClassPath())
                 .addUrls(ClasspathHelper.forManifest())
-                .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner()))
-                .getTypesAnnotatedWith(FactoryBinding.class).stream()
+                .addUrls(nonNull(urls) ? urls : new URL[0])
+                .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner());
+
+        return new Reflections(config)
+                .getTypesAnnotatedWith(annotation).stream()
                 .filter(instance::isAssignableFrom)
                 .collect(Collectors.toSet());
     }
@@ -161,6 +173,10 @@ public final class BackendFactoryRegistry {
     @Nonnull
     @VisibleForTesting
     public Map<String, BackendFactory> getFactories() {
+        if (!initialized) {
+            registerAll();
+        }
+
         return Collections.unmodifiableMap(factories);
     }
 
@@ -178,8 +194,7 @@ public final class BackendFactoryRegistry {
     public BackendFactory getFactoryProvider(String scheme) {
         checkNotNull(scheme);
 
-        // Refresh the registry if necessary
-        if (!factories.containsKey(scheme)) {
+        if (!initialized && !factories.containsKey(scheme)) {
             registerAll();
         }
 
@@ -201,8 +216,7 @@ public final class BackendFactoryRegistry {
             return false;
         }
 
-        // Refresh the registry if necessary
-        if (!factories.containsKey(scheme)) {
+        if (!initialized && !factories.containsKey(scheme)) {
             registerAll();
         }
 
@@ -236,11 +250,13 @@ public final class BackendFactoryRegistry {
      * annotation.
      * <p>
      * This method scan the full Java classpath to retrieve the annotated element.
+     *
+     * @param urls URLs to extend the standard classpath
      */
-    public void registerAll() {
+    public void registerAll(@Nullable URL... urls) {
         Log.debug("Registering all factories");
 
-        Set<Class<?>> boundedClasses = getBoundedClasses(UriBuilder.class);
+        Set<Class<?>> boundedClasses = getAnnotatedClasses(FactoryBinding.class, UriBuilder.class, urls);
 
         if (boundedClasses.isEmpty()) {
             Log.warn("No factory has been found in the classpath");
@@ -254,6 +270,8 @@ public final class BackendFactoryRegistry {
             Log.info("Registering \"{0}\" with {1}", scheme, factory.getClass().getName());
             register(scheme, factory);
         }
+
+        initialized = true;
     }
 
     /**
@@ -263,6 +281,7 @@ public final class BackendFactoryRegistry {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
+    @VisibleForTesting
     public void unregister(String scheme) {
         checkNotNull(scheme);
 
@@ -281,6 +300,8 @@ public final class BackendFactoryRegistry {
         Log.debug("Unregistering all factories");
 
         factories.keySet().forEach(this::unregister);
+
+        initialized = false;
     }
 
     /**
