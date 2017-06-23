@@ -104,6 +104,7 @@
                             blueprints-neo4j-graph
                         </Embed-Dependency>
                         <Require-Bundle>
+                            ${project.groupId}.core;visibility:=reexport,
                             ${project.groupId}.data.blueprints.core
                         </Require-Bundle>
                     </instructions>
