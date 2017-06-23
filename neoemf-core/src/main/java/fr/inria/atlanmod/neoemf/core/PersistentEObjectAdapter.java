@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -184,12 +185,25 @@ final class PersistentEObjectAdapter {
      */
     private static class PersistentEObjectInterceptor implements MethodInterceptor {
 
+        /**
+         * The name of the {@link PersistentEObject#id()} and {@link PersistentEObject#id(Id)} methods.
+         */
+        private static final String METHOD_ID = "id";
+
         @Override
+        @SuppressWarnings("StatementWithEmptyBody")
+        // TODO Dynamically transform 'obj' as a PersistentEObject or its implementation.
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-            /*
-             * TODO Dynamically transform 'obj' as a PersistentEObject or its implementation.
-             * For now, it only works if the given 'obj' is natively a PersistentEObject.
-             */
+
+            if (Objects.equals(method.getName(), METHOD_ID)) {
+                if (args.length == 0) { // id() # Getter
+                    // Do nothing
+                }
+                else if (args.length == 1 && Id.class.isInstance(args[0])) { // id() # Setter
+                    // Do nothing
+                }
+            }
+
             // 'invokeSuper()' calls the method itself, not the super method
             return methodProxy.invokeSuper(obj, args);
         }
