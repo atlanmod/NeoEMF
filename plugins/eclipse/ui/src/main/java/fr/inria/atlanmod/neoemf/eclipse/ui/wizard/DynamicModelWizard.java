@@ -49,7 +49,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -138,7 +137,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
     public void addPages() {
         // Create a page, set the title, and the initial model file name.
         String title = "Dynamic Model";
-        String description = NLS.bind("Create a new dynamic {0} instance", new Object[]{eClass.getName()});
+        String description = String.format("Create a new dynamic %s instance", eClass.getName());
 
         newFolderCreationPage = new WizardNewFolderMainPage("Whatever", selection);
         {

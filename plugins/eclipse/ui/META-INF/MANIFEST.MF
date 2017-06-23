@@ -38,7 +38,6 @@ Import-Package: org.eclipse.emf.common,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.swt,
- org.eclipse.osgi.util,
  org.osgi.framework,
  org.eclipse.jface
 Export-Package: fr.inria.atlanmod.neoemf.eclipse.ui.*
