@@ -12,15 +12,12 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
@@ -43,11 +40,6 @@ final class ContextualResourceBuilder {
     private final Context context;
 
     /**
-     * The {@link ResourceSet} used to create the resource.
-     */
-    private ResourceSet resourceSet;
-
-    /**
      * The {@link URI} of the resource.
      */
     private URI uri;
@@ -68,13 +60,9 @@ final class ContextualResourceBuilder {
     public ContextualResourceBuilder(Context context, @Nullable EPackage ePackage) {
         this.context = checkNotNull(context);
 
-        BackendFactoryRegistry.unregisterAll();
-        BackendFactoryRegistry.register(context.uriScheme(), context.factory());
-
         initBuilder();
 
-        Optional.ofNullable(ePackage)
-                .ifPresent(p -> EPackage.Registry.INSTANCE.put(p.getNsURI(), p));
+        Optional.ofNullable(ePackage).ifPresent(p -> EPackage.Registry.INSTANCE.put(p.getNsURI(), p));
     }
 
     /**
@@ -83,11 +71,6 @@ final class ContextualResourceBuilder {
     private void initBuilder() {
         isPersistent = false;
         uri = null;
-
-        resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry()
-                .getProtocolToFactoryMap()
-                .put(context.uriScheme(), PersistentResourceFactory.getInstance());
     }
 
     /**
@@ -150,7 +133,7 @@ final class ContextualResourceBuilder {
      * @throws IOException if an I/O error occurs
      */
     public PersistentResource createResource() throws IOException {
-        PersistentResource resource = PersistentResource.class.cast(resourceSet.createResource(uri));
+        PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         if (isPersistent) {
             resource.save(allOptions());
         }
@@ -168,7 +151,7 @@ final class ContextualResourceBuilder {
      * @throws IOException if an I/O error occurs
      */
     public PersistentResource loadResource() throws IOException {
-        PersistentResource resource = PersistentResource.class.cast(resourceSet.createResource(uri));
+        PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         resource.load(allOptions());
 
         initBuilder();

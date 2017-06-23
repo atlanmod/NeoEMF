@@ -11,12 +11,8 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
-import org.junit.After;
 import org.junit.Before;
 
 import java.io.File;
@@ -25,7 +21,7 @@ import java.io.IOException;
 import static org.junit.Assume.assumeTrue;
 
 /**
- * An abstract {@link ContextualTest} that initializes {@link BackendFactory} in the {@link BackendFactoryRegistry} and
+ * An abstract {@link ContextualTest} that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and
  * holds the temporary file.
  */
 public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
@@ -45,27 +41,15 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
     }
 
     /**
-     * Registers the current {@link BackendFactory} from the current {@link Context} in the {@link
-     * BackendFactoryRegistry} and initialize the {@link #file}.
+     * Initialize the current context and the {@link #file}.
      *
      * @throws IOException if an I/O error occurs
      */
     @Before
-    public final void registerFactories() throws IOException {
+    public final void initContext() throws IOException {
         context().init();
         assumeTrue("The context has not been initialized", context().isInitialized());
 
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
         file = workspace.newFile(context().name());
-    }
-
-    /**
-     * Unregisters the current {@link BackendFactory} from the {@link BackendFactoryRegistry}.
-     */
-    @After
-    public final void unregisterFactories() {
-        if (context().isInitialized()) {
-            BackendFactoryRegistry.unregisterAll();
-        }
     }
 }

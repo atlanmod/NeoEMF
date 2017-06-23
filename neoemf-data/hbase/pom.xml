@@ -270,9 +270,6 @@
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>
-                        <Bundle-Activator>
-                            fr.inria.atlanmod.neoemf.data.hbase.Activator
-                        </Bundle-Activator>
                         <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
                 </configuration>

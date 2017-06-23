@@ -1,16 +1,11 @@
 package graph.usage;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -36,8 +31,6 @@ import graph.Vertice;
  */
 public class Main {
 
-    private static final ResourceSet resourceSet = new ResourceSetImpl();
-
     /**
      * Creates a new {@link PersistentResource} relying on a Blueprints datastore on top of a Neo4j database to perform
      * modeling operations.
@@ -45,10 +38,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createBlueprintsResource() throws IOException {
-        BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
-
-        Resource resource = resourceSet.createResource(BlueprintsUri.builder().fromFile("databases/myGraph.graphdb"));
+        Resource resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile("databases/myGraph.graphdb"));
 
         /*
          * Specify that Neo4j is used as the underlying blueprints backend.
@@ -65,10 +55,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createMapDBResource() {
-        BackendFactoryRegistry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbUri.SCHEME, PersistentResourceFactory.getInstance());
-
-        return resourceSet.createResource(MapDbUri.builder().fromFile("databases/myGraph.mapdb"));
+        return new ResourceSetImpl().createResource(MapDbUri.builder().fromFile("databases/myGraph.mapdb"));
     }
 
     /**
@@ -79,10 +66,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createHBaseResource() {
-        BackendFactoryRegistry.register(HBaseUri.SCHEME, HBaseBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseUri.SCHEME, PersistentResourceFactory.getInstance());
-
-        return resourceSet.createResource(HBaseUri.builder().fromServer("localhost", 2181, "myModel.hbase"));
+        return new ResourceSetImpl().createResource(HBaseUri.builder().fromServer("localhost", 2181, "myModel.hbase"));
     }
 
     /**

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -29,6 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
+@FactoryBinding(BerkeleyDbBackendFactory.class)
 public class BerkeleyDbUri extends AbstractUriBuilder {
 
     /**
@@ -41,7 +43,7 @@ public class BerkeleyDbUri extends AbstractUriBuilder {
      * Constructs a new {@code BerkeleyDbUri}.
      */
     private BerkeleyDbUri() {
-        super();
+        super(SCHEME);
     }
 
     /**
@@ -51,7 +53,7 @@ public class BerkeleyDbUri extends AbstractUriBuilder {
      */
     @Nonnull
     public static UriBuilder builder() {
-        return new BerkeleyDbUri().withScheme(SCHEME);
+        return new BerkeleyDbUri();
     }
 
     @Override

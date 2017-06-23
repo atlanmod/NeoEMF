@@ -60,8 +60,6 @@ public final class MetamodelRegistry {
      * Constructs a new {@code Registry}.
      */
     private MetamodelRegistry() {
-        registerMetamodels();
-
         ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> {
             if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
                 return;
@@ -72,19 +70,18 @@ public final class MetamodelRegistry {
             try {
                 event.getDelta().accept(changed::add);
 
-                Set<String> metamodels = loadMetamodels();
+                Set<String> metamodels = load();
                 changed.forEach(delta -> {
                     String metamodel = delta.getResource().getFullPath().toOSString();
 
                     if (metamodels.contains(metamodel)) {
                         if (delta.getKind() == IResourceDelta.REMOVED) {
-                            removeMetamodel(metamodel);
+                            unregister(metamodel);
 
-                            Optional.ofNullable(delta.getMovedToPath())
-                                    .ifPresent(p -> addMetamodel(p.toOSString()));
+                            Optional.ofNullable(delta.getMovedToPath()).ifPresent(p -> register(p.toOSString()));
                         }
                         else {
-                            addMetamodel(metamodel);
+                            register(metamodel);
                         }
                     }
                 });
@@ -135,31 +132,26 @@ public final class MetamodelRegistry {
     /**
      * Adds all metamodels associated to the given {@code file}.
      *
-     * @param file the file to add
+     * @param file the file to register
      *
-     * @see #registerMetamodel(String)
+     * @see #register(String, boolean)
      */
-    public void addMetamodel(String file) {
-        registerMetamodel(file);
-
-        Set<String> metamodels = loadMetamodels();
-        if (metamodels.add(file)) {
-            saveMetamodels(metamodels);
-        }
+    public void register(String file) {
+        register(file, true);
     }
 
     /**
      * Removes all metamodels associated to the given {@code file}.
      *
-     * @param file the file to remove
+     * @param file the file to unregister
      */
-    public void removeMetamodel(String file) {
+    public void unregister(String file) {
         Optional.ofNullable(managedMetamodels.remove(file))
                 .ifPresent(ps -> ps.forEach(p -> EPackage.Registry.INSTANCE.remove(p.getNsURI())));
 
-        Set<String> metamodels = loadMetamodels();
+        Set<String> metamodels = load();
         if (metamodels.remove(file)) {
-            saveMetamodels(metamodels);
+            save(metamodels);
         }
     }
 
@@ -168,12 +160,14 @@ public final class MetamodelRegistry {
      *
      * @return the previously saved metamodels
      *
-     * @see #saveMetamodels(Set)
+     * @see #save(Set)
      */
-    private Set<String> loadMetamodels() {
+    private Set<String> load() {
         String value = NeoUIPlugin.getDefault().getPreferenceStore().getString(STORE_KEY);
 
         return Arrays.stream(value.split(STORE_DELIMITER))
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
     }
 
@@ -182,10 +176,12 @@ public final class MetamodelRegistry {
      *
      * @param metamodels the metamodels to save
      *
-     * @see #loadMetamodels()
+     * @see #load()
      */
-    private void saveMetamodels(Set<String> metamodels) {
+    private void save(Set<String> metamodels) {
         String value = metamodels.stream()
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.joining(STORE_DELIMITER));
 
         NeoUIPlugin.getDefault().getPreferenceStore().setValue(STORE_KEY, value);
@@ -194,29 +190,44 @@ public final class MetamodelRegistry {
     /**
      * Register all previously saved metamodels.
      *
-     * @see #loadMetamodels()
-     * @see #registerMetamodel(String)
+     * @see #load()
+     * @see #register(String)
      */
-    private void registerMetamodels() {
-        loadMetamodels().forEach(this::registerMetamodel);
+    public void registerAll() {
+        load().forEach(this::register);
     }
 
     /**
      * Register a metamodel from the given {@code file} to the {@link EPackage.Registry#INSTANCE}.
      *
      * @param file the file of the resource to register
+     * @param save {@code true} if the metamodel have to be saved after loading
      *
-     * @see #registerMetamodel(URI, EPackage.Registry)
+     * @see #register(URI, EPackage.Registry)
      */
-    private void registerMetamodel(String file) {
+    private void register(String file, boolean save) {
+        if (isNull(file) || file.isEmpty()) {
+            return;
+        }
+
         try {
             URI uri = URI.createPlatformResourceURI(file, true);
-            managedMetamodels.put(file, registerMetamodel(uri, EPackage.Registry.INSTANCE));
+            managedMetamodels.put(file, register(uri, EPackage.Registry.INSTANCE));
 
-            Log.info("Metamodel {0} successfully registered", file);
+            Log.info("EPackages successfully registered: {0}", file);
         }
-        catch (IOException e) {
-            Log.error(e, "Metamodel {0} could not be registered", file);
+        catch (Exception e) {
+            Log.warn("EPackages could not be registered: {0}", file);
+
+            // Clean the registry: the resource probably no longer exist
+            unregister(file);
+        }
+
+        if (save) {
+            Set<String> metamodels = load();
+            if (metamodels.add(file)) {
+                save(metamodels);
+            }
         }
     }
 
@@ -228,7 +239,7 @@ public final class MetamodelRegistry {
      *
      * @return a immutable set of all registered metamodels
      */
-    private Set<EPackage> registerMetamodel(URI uri, EPackage.Registry registry) throws IOException {
+    private Set<EPackage> register(URI uri, EPackage.Registry registry) throws IOException {
         Resource.Factory.Registry.INSTANCE
                 .getExtensionToFactoryMap()
                 .put("*", new XMIResourceFactoryImpl());

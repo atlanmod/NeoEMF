@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
@@ -53,9 +52,6 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
-        BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
-
         URI uri = BlueprintsUri.builder().fromFile(file);
 
         return resourceSet.createResource(uri);

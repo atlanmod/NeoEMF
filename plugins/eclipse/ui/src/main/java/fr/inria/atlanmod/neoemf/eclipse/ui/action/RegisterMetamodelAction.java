@@ -46,7 +46,7 @@ public class RegisterMetamodelAction implements IActionDelegate {
                 .filter(IFile.class::isInstance)
                 .map(IFile.class::cast)
                 .map(file -> file.getFullPath().toOSString())
-                .forEach(fileName -> MetamodelRegistry.getInstance().addMetamodel(fileName));
+                .forEach(fileName -> MetamodelRegistry.getInstance().register(fileName));
     }
 
     @Override

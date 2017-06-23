@@ -51,7 +51,7 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
      */
     @Test
     public void testCreateUriFromFile() {
-        assertThat(catchThrowable(() -> HBaseUri.builder().fromFile("segments")))
+        assertThat(catchThrowable(() -> HBaseUri.builder().fromFile("file0")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 }

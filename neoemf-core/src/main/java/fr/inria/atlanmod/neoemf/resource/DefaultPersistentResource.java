@@ -113,7 +113,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         rootObject = new RootObject(this);
 
-        factory = BackendFactoryRegistry.getFactoryProvider(uri.scheme());
+        factory = BackendFactoryRegistry.getInstance().getFactoryProvider(uri.scheme());
 
         Backend backend = factory.createTransientBackend();
         Store baseStore = StoreFactory.getInstance().createStore(backend, this, CommonOptions.noOption());

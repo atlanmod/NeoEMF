@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
@@ -52,9 +51,6 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
-        BackendFactoryRegistry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbUri.SCHEME, PersistentResourceFactory.getInstance());
-
         URI uri = MapDbUri.builder().fromFile(file);
 
         return resourceSet.createResource(uri);

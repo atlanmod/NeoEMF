@@ -27,8 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.common.Preconditions.checkState;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link UriBuilder} that manages the assembly and the construction of {@link URI}s.
@@ -45,13 +43,23 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     /**
      * The scheme to identify the {@link BackendFactory} to use.
      */
+    @Nonnull
     private String scheme;
+
+    /**
+     * Constructs a new {@code AbstractUriBuilder} with the given {@code scheme}.
+     *
+     * @param scheme the scheme to identify the {@link BackendFactory} to use
+     */
+    protected AbstractUriBuilder(String scheme) {
+        this.scheme = checkNotNull(scheme, "Cannot create URI without a valid scheme");
+    }
 
     @Nonnull
     @VisibleForTesting
     @SuppressWarnings("JavaDoc")
-    public static UriBuilder builder() {
-        return new AbstractUriBuilder() {
+    public static UriBuilder builder(String scheme) {
+        return new AbstractUriBuilder(scheme) {
 
             @Override
             protected boolean supportsFile() {
@@ -92,18 +100,6 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     protected abstract boolean supportsServer();
 
     @Nonnull
-    @VisibleForTesting
-    @Override
-    public final UriBuilder withScheme(String scheme) {
-        checkNotNull(scheme, "Cannot create URI without a valid scheme");
-        checkState(isNull(this.scheme), "The scheme has already been defined (%s)", scheme);
-
-        this.scheme = scheme;
-
-        return this;
-    }
-
-    @Nonnull
     @Override
     public URI fromUri(URI uri) {
         checkNotNull(scheme, "Cannot create URI without a valid scheme");
@@ -114,7 +110,9 @@ public abstract class AbstractUriBuilder implements UriBuilder {
         }
 
         if (Objects.equals(scheme, uri.scheme())) {
-            checkArgument(BackendFactoryRegistry.isRegistered(uri.scheme()), "Unregistered scheme (%s)", uri.scheme());
+            checkArgument(BackendFactoryRegistry.getInstance().isRegistered(uri.scheme()),
+                    "Unregistered scheme (%s)", uri.scheme());
+
             return new FileUri(uri);
         }
 
@@ -127,18 +125,18 @@ public abstract class AbstractUriBuilder implements UriBuilder {
 
     @Nonnull
     @Override
-    public URI fromFile(File file) {
-        checkNotNull(file);
+    public URI fromFile(String filePath) {
+        checkNotNull(filePath);
 
-        return fromFile(file.getAbsolutePath());
+        return fromFile(new File(filePath));
     }
 
     @Nonnull
     @Override
-    public URI fromFile(String filePath) {
-        checkNotNull(filePath);
+    public URI fromFile(File file) {
+        checkNotNull(file);
 
-        return fromFile(URI.createFileURI(filePath));
+        return fromFile(URI.createFileURI(file.getAbsolutePath()));
     }
 
     @Nonnull

@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
@@ -104,8 +103,6 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     protected EObject loadWithNeoEMF(URI uri) throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
-
         try (DataMapper mapper = context().createMapper(file()); InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in)
                     .toMapper(mapper)

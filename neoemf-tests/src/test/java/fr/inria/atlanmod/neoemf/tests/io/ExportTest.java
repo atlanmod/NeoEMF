@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
@@ -40,8 +39,6 @@ public class ExportTest extends AbstractIOTest {
      */
     @Test
     public void testCopyBackend() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
-
         final File sourceBackend = file();
         final File targetBackend = Paths.get(file() + "-copy").toFile();
 
@@ -76,8 +73,6 @@ public class ExportTest extends AbstractIOTest {
     @Test
     @Ignore("Incomplete implementation") // FIXME Some elements are missing
     public void testExportToXmi() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
-
         final File targetFile = new File(file() + ".xmi");
 
         try (DataMapper mapper = context().createMapper(file()); InputStream in = new URL(IOResourceManager.xmiStandard().toString()).openStream()) {
@@ -104,8 +99,6 @@ public class ExportTest extends AbstractIOTest {
     @Test
     @Ignore("Incomplete implementation") // FIXME Some elements are missing
     public void testExportToZXmi() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
-
         final File targetFile = new File(file() + ".zxmi");
 
         try (DataMapper mapper = context().createMapper(file()); InputStream in = new URL(IOResourceManager.xmiStandard().toString()).openStream()) {
@@ -132,8 +125,6 @@ public class ExportTest extends AbstractIOTest {
     @Test
     @Ignore("Incomplete implementation") // FIXME Some attributes cannot be written
     public void testCopyXmi() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
-
         final File targetFile = new File(file() + ".xmi");
 
         try (InputStream in = new URL(IOResourceManager.xmiStandard().toString()).openStream()) {
@@ -156,8 +147,6 @@ public class ExportTest extends AbstractIOTest {
     @Test
     @Ignore("Incomplete implementation") // FIXME Some attributes cannot be written
     public void testCopyZXmi() throws IOException {
-        BackendFactoryRegistry.register(context().uriScheme(), context().factory());
-
         final File targetFile = new File(file() + ".zxmi");
 
         try (InputStream in = new URL(IOResourceManager.xmiStandard().toString()).openStream()) {

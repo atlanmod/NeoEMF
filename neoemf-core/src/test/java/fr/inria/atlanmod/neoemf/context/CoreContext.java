@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
@@ -42,8 +43,13 @@ public interface CoreContext extends Context {
      * @return the instance of this class.
      */
     static Context get() {
-        return new CoreContext() {
+        Context c = new CoreContext() {
         };
+
+        // Register the custom URI scheme
+        BackendFactoryRegistry.getInstance().register(c.uriScheme(), c.factory());
+
+        return c;
     }
 
     @Override
@@ -79,7 +85,7 @@ public interface CoreContext extends Context {
      */
     @Override
     default URI createUri(URI uri) {
-        return AbstractUriBuilder.builder().withScheme(uriScheme()).fromUri(uri);
+        return AbstractUriBuilder.builder(uriScheme()).fromUri(uri);
     }
 
     /**
@@ -87,7 +93,7 @@ public interface CoreContext extends Context {
      */
     @Override
     default URI createUri(File file) {
-        return AbstractUriBuilder.builder().withScheme(uriScheme()).fromFile(file);
+        return AbstractUriBuilder.builder(uriScheme()).fromFile(file);
     }
 
     /**

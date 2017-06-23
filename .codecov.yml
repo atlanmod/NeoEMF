@@ -15,12 +15,8 @@ coverage:
     project: true
 
   ignore:
-  # Ignore OSGi activators
-    - "**/Activator.java"
-    - "**/AbstractActivator.java"
-
   # Ignore tests
     - "**/tests/.*"
 
   # Ignore logging
-    - "**/util/log/.*"
+    - "**/log/.*"

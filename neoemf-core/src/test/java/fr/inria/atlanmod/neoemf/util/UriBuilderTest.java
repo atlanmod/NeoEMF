@@ -31,36 +31,36 @@ public class UriBuilderTest extends AbstractUriTest implements CoreTest {
     @Test
     public void testCreateUriWithoutScheme() {
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder().withScheme(null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateUriFromUriWithNull() {
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder().withScheme(SCHEME).fromUri(null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromUri(null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateUriFromFileWithNull() {
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder().withScheme(SCHEME).fromFile((File) null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromFile((File) null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateUriFromServerWithNull() {
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder().withScheme(SCHEME).fromServer(null, 0, URI.createURI("uri0"))))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer(null, 0, URI.createURI("uri0"))))
                 .isInstanceOf(NullPointerException.class);
 
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder().withScheme(SCHEME).fromServer("localhost", -1, URI.createURI("uri0"))))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer("localhost", -1, URI.createURI("uri0"))))
                 .isInstanceOf(IllegalArgumentException.class);
 
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder().withScheme(SCHEME).fromServer("localhost", 0, (URI) null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer("localhost", 0, (URI) null)))
                 .isInstanceOf(NullPointerException.class);
     }
 }

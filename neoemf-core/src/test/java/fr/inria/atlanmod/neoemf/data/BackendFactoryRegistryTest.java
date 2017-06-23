@@ -25,6 +25,11 @@ import static org.mockito.Mockito.mock;
 public class BackendFactoryRegistryTest extends AbstractTest {
 
     /**
+     * The instance of the registry.
+     */
+    private static final BackendFactoryRegistry REGISTRY = BackendFactoryRegistry.getInstance();
+
+    /**
      * The fake URI scheme of the first {@link BackendFactory}.
      */
     private static final String MOCK_1 = "mock1";
@@ -49,7 +54,7 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      */
     @Before
     public void unregisterFactories() {
-        BackendFactoryRegistry.unregisterAll();
+        REGISTRY.unregisterAll();
     }
 
     /**
@@ -57,10 +62,10 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      */
     @Test
     public void testSingleAdd() {
-        BackendFactoryRegistry.register(MOCK_1, factory1);
-        assertThat(BackendFactoryRegistry.getFactories()).hasSize(1);
+        REGISTRY.register(MOCK_1, factory1);
+        assertThat(REGISTRY.getFactories()).hasSize(1);
 
-        BackendFactory registeredFactory = BackendFactoryRegistry.getFactoryProvider(MOCK_1);
+        BackendFactory registeredFactory = REGISTRY.getFactoryProvider(MOCK_1);
         assertThat(registeredFactory).isNotNull().isSameAs(factory1);
     }
 
@@ -69,14 +74,14 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      */
     @Test
     public void testMultipleAdd() {
-        BackendFactoryRegistry.register(MOCK_1, factory1);
-        BackendFactoryRegistry.register(MOCK_2, factory2);
-        assertThat(BackendFactoryRegistry.getFactories()).hasSize(2);
+        REGISTRY.register(MOCK_1, factory1);
+        REGISTRY.register(MOCK_2, factory2);
+        assertThat(REGISTRY.getFactories()).hasSize(2);
 
-        BackendFactory registeredFactory1 = BackendFactoryRegistry.getFactoryProvider(MOCK_1);
+        BackendFactory registeredFactory1 = REGISTRY.getFactoryProvider(MOCK_1);
         assertThat(registeredFactory1).isNotNull().isSameAs(factory1);
 
-        BackendFactory registeredFactory2 = BackendFactoryRegistry.getFactoryProvider(MOCK_2);
+        BackendFactory registeredFactory2 = REGISTRY.getFactoryProvider(MOCK_2);
         assertThat(registeredFactory2).isNotNull().isSameAs(factory2);
     }
 }

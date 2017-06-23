@@ -135,7 +135,6 @@
         <javax-annotations.version>3.0.2</javax-annotations.version>
 
         <emf.version>2.12.0</emf.version>
-        <osgi.version>6.0.0</osgi.version>
 
         <assertj.version>3.8.0</assertj.version>
         <junit.version>4.12</junit.version>
@@ -274,7 +273,7 @@
                                 scope=compile|runtime;
                                 type=!pom;
                                 artifactId=!jsr305;
-                                groupId=!${project.groupId}|org.eclipse.emf|org.osgi
+                                groupId=!${project.groupId}|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
@@ -349,10 +348,6 @@
                         <notimestamp>true</notimestamp>
                         <nosince>true</nosince>
                         <author>false</author>
-                        <sourceFileExcludes><!-- Exclude bundle activators -->
-                            <sourceFileExclude>**/AbstractActivator.java</sourceFileExclude>
-                            <sourceFileExclude>**/Activator.java</sourceFileExclude>
-                        </sourceFileExcludes>
                         <groups>
                             <group>
                                 <title>Core</title>
@@ -432,7 +427,7 @@
     </build>
 
     <profiles>
-        <!-- A profile to manage Javadoc dependencies (EMF, OSGi,...) -->
+        <!-- A profile to manage Javadoc dependencies (EMF,...) -->
         <profile>
             <id>deploy-javadoc</id>
             <properties>
@@ -449,11 +444,6 @@
                     <artifactId>org.eclipse.emf.ecore</artifactId>
                     <version>${emf.version}</version>
                 </dependency>
-                <dependency>
-                    <groupId>org.osgi</groupId>
-                    <artifactId>org.osgi.core</artifactId>
-                    <version>${osgi.version}</version>
-                </dependency>
             </dependencies>
             <build>
                 <pluginManagement>
@@ -466,16 +456,13 @@
                                 <includeDependencySources>true</includeDependencySources>
                                 <dependencySourceIncludes>
                                     <dependencySourceInclude>org.eclipse.emf:*</dependencySourceInclude>
-                                    <dependencySourceInclude>org.osgi:*</dependencySourceInclude>
                                 </dependencySourceIncludes>
                                 <excludePackageNames>
                                     fr.inria.atlanmod.neoemf.tests*;
                                     org.eclipse.emf*;
-                                    org.osgi*;
                                 </excludePackageNames>
                                 <detectLinks>true</detectLinks>
                                 <links>
-                                    <link>https://osgi.org/javadoc/r6/core/</link>
                                     <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
                                 </links>
                             </configuration>

@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -185,7 +184,6 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     try {
                         // Create a resource set
                         ResourceSet resourceSet = new ResourceSetImpl();
-                        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
                         resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true));
 
                         // Create a resource for this file.

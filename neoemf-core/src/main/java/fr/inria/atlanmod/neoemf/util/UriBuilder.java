@@ -1,7 +1,5 @@
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.common.annotations.VisibleForTesting;
-
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
@@ -20,20 +18,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface UriBuilder {
-
-    /**
-     * Defines the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use.
-     *
-     * @param scheme the scheme
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws NullPointerException  if the {@code scheme} is {@code null}
-     * @throws IllegalStateException if the scheme has already been defined
-     */
-    @Nonnull
-    @VisibleForTesting
-    UriBuilder withScheme(String scheme);
 
     /**
      * Creates a new {@code URI} from the given {@code uri}.
@@ -56,19 +40,6 @@ public interface UriBuilder {
     /**
      * Creates a new {@code URI} from the given {@code file} descriptor.
      *
-     * @param file the {@link File} to build a {@link URI} from
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code file} is {@code null}
-     */
-    @Nonnull
-    URI fromFile(File file);
-
-    /**
-     * Creates a new {@code URI} from the given {@code file} descriptor.
-     *
      * @param filePath the path of the {@link File} to build a {@link URI} from
      *
      * @return a new URI
@@ -78,6 +49,19 @@ public interface UriBuilder {
      */
     @Nonnull
     URI fromFile(String filePath);
+
+    /**
+     * Creates a new {@code URI} from the given {@code file} descriptor.
+     *
+     * @param file the {@link File} to build a {@link URI} from
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if the {@code file} is {@code null}
+     */
+    @Nonnull
+    URI fromFile(File file);
 
     /**
      * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical

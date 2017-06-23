@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -29,6 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
+@FactoryBinding(MapDbBackendFactory.class)
 public class MapDbUri extends AbstractUriBuilder {
 
     /**
@@ -41,7 +43,7 @@ public class MapDbUri extends AbstractUriBuilder {
      * Constructs a new {@code MapDbUri}.
      */
     private MapDbUri() {
-        super();
+        super(SCHEME);
     }
 
     /**
@@ -51,7 +53,7 @@ public class MapDbUri extends AbstractUriBuilder {
      */
     @Nonnull
     public static UriBuilder builder() {
-        return new MapDbUri().withScheme(SCHEME);
+        return new MapDbUri();
     }
 
     @Override

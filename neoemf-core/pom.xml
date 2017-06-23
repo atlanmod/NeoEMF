@@ -21,7 +21,10 @@
 
     <properties>
         <caffeine.version>2.5.2</caffeine.version>
+
         <cglib.version>3.2.5</cglib.version>
+        <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility -->
+
         <log4j.version>2.8.2</log4j.version>
     </properties>
 
@@ -34,18 +37,16 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
-        <!-- Proxy -->
+        <!-- Reflection -->
 
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
         </dependency>
 
-        <!-- Common -->
-
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
         </dependency>
 
         <!-- Logging -->
@@ -126,7 +127,7 @@
                 <version>${caffeine.version}</version>
             </dependency>
 
-            <!-- Proxy -->
+            <!-- Reflection -->
 
             <dependency>
                 <groupId>cglib</groupId>
@@ -134,13 +135,16 @@
                 <version>${cglib.version}</version>
             </dependency>
 
-            <!-- Common -->
-
             <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.core</artifactId>
-                <version>${osgi.version}</version>
-                <optional>true</optional>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+                <exclusions>
+                    <exclusion> <!-- Should be optional -->
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Logging -->
@@ -195,6 +199,9 @@
                             fr.inria.atlanmod.common.*,
                             fr.inria.atlanmod.neoemf.*,
                         </Export-Package>
+                        <DynamicImport-Package>
+                            ${project.groupId}.data.*
+                        </DynamicImport-Package>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional,

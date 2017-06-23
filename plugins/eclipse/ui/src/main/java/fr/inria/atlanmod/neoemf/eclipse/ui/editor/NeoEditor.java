@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.URI;
@@ -59,24 +59,12 @@ public class NeoEditor extends EcoreEditor {
      */
     public static final String EDITOR_ID = NeoEditor.class.getName();
 
-    /**
-     * Constructs a new {@code NeoEditor}.
-     */
-    public NeoEditor() {
-        super();
-
-        Map<String, Object> protocolToFactory = getEditingDomain().getResourceSet()
-                .getResourceFactoryRegistry()
-                .getProtocolToFactoryMap();
-
-        protocolToFactory.put(BlueprintsUri.SCHEME, PersistentResourceFactory.getInstance());
-        protocolToFactory.put(MapDbUri.SCHEME, PersistentResourceFactory.getInstance());
-        protocolToFactory.put(BerkeleyDbUri.SCHEME, PersistentResourceFactory.getInstance());
-    }
-
     @Override
     public void createModel() {
         URI resourceURI = EditUIUtil.getURI(getEditorInput());
+
+        // FIXME This only works for file-based URIs
+        resourceURI = AbstractUriBuilder.builder(resourceURI.scheme()).fromUri(resourceURI);
 
         Resource resource = getEditingDomain().getResourceSet().createResource(resourceURI);
         getEditingDomain().getResourceSet().eAdapters().add(problemIndicationAdapter);
@@ -166,8 +154,9 @@ public class NeoEditor extends EcoreEditor {
         }
         // FIXME See issue #52
         catch (NoSuchMethodError e) {
-            Log.warn("Captured a NoSuchMethod error when changing the selection." +
-                    "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
+            Log.warn("Captured a {0} when changing the selection. " +
+                    "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.",
+                    e.getClass().getSimpleName());
         }
     }
 

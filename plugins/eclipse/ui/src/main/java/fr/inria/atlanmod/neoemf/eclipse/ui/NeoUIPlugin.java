@@ -33,7 +33,7 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      */
     public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui";
 
-    private static final ILogListener logListener = (status, listener) -> {
+    private static final ILogListener LOG_LISTENER = (status, listener) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
@@ -65,33 +65,33 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      * BackendFactoryRegistry}.
      * <p/>
      * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource
-     * loading.
-     * This happens when an Eclipse instance is loaded with an opened NeoEMF editor (only {@link BlueprintsUri#SCHEME}
-     * is accessed).
+     * loading. This happens when an Eclipse instance is loaded with an opened NeoEMF editor.
      */
-    private static void registerFactories() {
-        if (!BackendFactoryRegistry.isRegistered(BlueprintsUri.SCHEME)) {
-            BackendFactoryRegistry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
-        }
-        if (!BackendFactoryRegistry.isRegistered(MapDbUri.SCHEME)) {
-            BackendFactoryRegistry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
-        }
-        if (!BackendFactoryRegistry.isRegistered(BerkeleyDbUri.SCHEME)) {
-            BackendFactoryRegistry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
-        }
+    // FIXME Registration must be dynamic with `BackendFactoryRegistry.getInstance().registerAll()`
+    private static void staticRegisterAll() {
+        BackendFactoryRegistry registry = BackendFactoryRegistry.getInstance();
+
+        registry.register(BlueprintsUri.SCHEME, BlueprintsBackendFactory.getInstance());
+        registry.register(MapDbUri.SCHEME, MapDbBackendFactory.getInstance());
+        registry.register(BerkeleyDbUri.SCHEME, BerkeleyDbBackendFactory.getInstance());
     }
 
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        getLog().addLogListener(logListener);
-        registerFactories();
-        MetamodelRegistry.getInstance();
+
+        getLog().addLogListener(LOG_LISTENER);
+
+        staticRegisterAll();
+
+        // Initialize the metamodel registry
+        MetamodelRegistry.getInstance().registerAll();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        getLog().removeLogListener(logListener);
+        getLog().removeLogListener(LOG_LISTENER);
+
         super.stop(context);
     }
 }

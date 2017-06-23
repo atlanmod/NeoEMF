@@ -12,11 +12,13 @@
 package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 
 import org.eclipse.emf.common.util.URI;
@@ -30,8 +32,7 @@ import java.util.Map;
 
 /**
  * Imports an existing model stored in a XMI files into a Blueprints-based {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
- * using a scalable
- * XMI parser that bypasses the EMF API to improve performances and enable large XMI imports.
+ * using a scalable XMI parser that bypasses the EMF API to improve performances and enable large XMI imports.
  */
 public class EfficientBlueprintsImporter {
 
@@ -48,7 +49,7 @@ public class EfficientBlueprintsImporter {
         File sourceFile = new File("models/sample.xmi");
         URI targetUri = BlueprintsUri.builder().fromFile("models/sample2.graphdb");
 
-        try (DataMapper mapper = factory.createPersistentStore(targetUri, options)) {
+        try (Backend backend = factory.createPersistentBackend(targetUri, options); DataMapper mapper = StoreFactory.getInstance().createStore(backend, null, options)) {
             Instant start = Instant.now();
 
             Migrator.fromXmi(sourceFile)

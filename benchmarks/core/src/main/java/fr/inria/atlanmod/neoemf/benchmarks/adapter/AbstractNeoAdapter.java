@@ -11,8 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -68,7 +70,8 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
                 .autoSave()
                 .asMap();
 
-        return getFactory().createPersistentStore(URI.createFileURI(file.getAbsolutePath()), options);
+        Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), options);
+        return StoreFactory.getInstance().createStore(backend, null, options);
     }
 
     @Nonnull
