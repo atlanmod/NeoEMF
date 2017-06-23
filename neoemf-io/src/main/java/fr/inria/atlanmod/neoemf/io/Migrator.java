@@ -96,8 +96,8 @@ public final class Migrator<T> {
     /**
      * Constructs a new {@code Migrator} with the given arguments.
      *
-     * @param readerClass      the class of the {@link Reader} to use
-     * @param source           the source to read
+     * @param readerClass the class of the {@link Reader} to use
+     * @param source      the source to read
      */
     private Migrator(Class<? extends Reader<T>> readerClass, T source) {
         this.readerClass = readerClass;

@@ -55,7 +55,7 @@ public class StringIdTest {
     @Test
     public void testToLong() throws Exception {
         assertThat(catchThrowable(() ->
-            StringId.generate().toLong()
+                StringId.generate().toLong()
         )).isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 

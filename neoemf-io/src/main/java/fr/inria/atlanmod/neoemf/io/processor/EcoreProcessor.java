@@ -122,7 +122,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
 
             AtomicInteger index = new AtomicInteger();
 
-            BasicId id =  reference.id();
+            BasicId id = reference.id();
             String name = reference.name();
             boolean isMany = eReference.isMany();
             boolean isContainment = eReference.isContainment();

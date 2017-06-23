@@ -74,7 +74,7 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
             thread.setDaemon(true);
             return thread;
         }).newThread(() -> {
-            for (Iterator<AbstractStoreAdapter> adapters = ADAPTERS.iterator(); adapters.hasNext();) {
+            for (Iterator<AbstractStoreAdapter> adapters = ADAPTERS.iterator(); adapters.hasNext(); ) {
                 adapters.next().safeClose();
                 adapters.remove();
             }
