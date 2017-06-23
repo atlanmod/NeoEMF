@@ -66,6 +66,126 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
         return Collections.unmodifiableMap(options);
     }
 
+    @Nonnull
+    @Override
+    public B withOption(String key, Object value) {
+        options.put(checkNotNull(key), checkNotNull(value));
+
+        return me();
+    }
+
+    @Nonnull
+    @Override
+    public B withOptions(Map<String, Object> options) {
+        checkNotNull(options).forEach(this::withOption);
+
+        return me();
+    }
+
+    @Nonnull
+    @Override
+    public B withMapping(String mapping) {
+        Class<?> mappingClass;
+
+        try {
+            mappingClass = Class.forName(mapping);
+        }
+        catch (ClassNotFoundException e) {
+            throw new InvalidOptionException(e);
+        }
+
+        if (!DataMapper.class.isAssignableFrom(mappingClass)) {
+            throw new InvalidOptionException(
+                    String.format("The %s must be assignable to %s", mapping, DataMapper.class.getName()));
+        }
+
+        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping));
+    }
+
+    @Nonnull
+    @Override
+    public B withMapping(Class<? extends DataMapper> mapping) {
+        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping).getName());
+    }
+
+    @Nonnull
+    @Override
+    public B cacheFeatures() {
+        return withStore(PersistentStoreOptions.CACHE_STRUCTURAL_FEATURE);
+    }
+
+    @Nonnull
+    @Override
+    public B cacheIsSet() {
+        return withStore(PersistentStoreOptions.CACHE_IS_SET);
+    }
+
+    @Nonnull
+    @Override
+    public B cacheContainers() {
+        return withStore(PersistentStoreOptions.CACHE_CONTAINER);
+    }
+
+    @Nonnull
+    @Override
+    public B cacheMetaclasses() {
+        return withStore(PersistentStoreOptions.CACHE_METACLASS);
+    }
+
+    @Nonnull
+    @Override
+    public B cacheSizes() {
+        return withStore(PersistentStoreOptions.CACHE_SIZE);
+    }
+
+    @Nonnull
+    @Override
+    public B countLoadedObjects() {
+        return withStore(PersistentStoreOptions.COUNT_LOADED_OBJECT);
+    }
+
+    @Nonnull
+    @Override
+    public B readOnly() {
+        return withStore(PersistentStoreOptions.READ_ONLY);
+    }
+
+    @Nonnull
+    @Override
+    public B autoSave(@Nonnegative long chunk) {
+        if (chunk < 0) {
+            throw new InvalidOptionException(String.format("The auto-save chuck cannot be lower than 0 (but it was %d)", chunk));
+        }
+
+        withStore(PersistentStoreOptions.AUTO_SAVE);
+        return withOption(PersistentResourceOptions.AUTO_SAVE_CHUNK, chunk);
+    }
+
+    @Nonnull
+    @Override
+    public B autoSave() {
+        return withStore(PersistentStoreOptions.AUTO_SAVE);
+    }
+
+    @Nonnull
+    @Override
+    public B log() {
+        return withStore(PersistentStoreOptions.LOG);
+    }
+
+    @Nonnull
+    @Override
+    public B log(Level level) {
+        withStore(PersistentStoreOptions.LOG);
+        return withOption(PersistentResourceOptions.LOG_LEVEL, checkNotNull(level));
+    }
+
+    @Nonnull
+    @Override
+    public B recordStats() {
+        return withStore(PersistentStoreOptions.STATS);
+    }
+
     /**
      * Returns this instance, casted as a {@link B}.
      *
@@ -74,42 +194,6 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
     @SuppressWarnings("unchecked")
     private B me() {
         return (B) this;
-    }
-
-    /**
-     * Adds a key/value in the created options. A custom configuration, which is not part of NeoEMF, can be added.
-     *
-     * @param key   the key to add
-     * @param value the value of the {@code key}
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws NullPointerException if any parameter is {@code null}
-     */
-    @Nonnull
-    public B withOption(String key, Object value) {
-        options.put(checkNotNull(key), checkNotNull(value));
-
-        return me();
-    }
-
-    /**
-     * Adds all key/value pairs of the {@code options} in the created options. A custom configuration, which is not part
-     * of NeoEMF, can be added.
-     * <p>
-     * <b>Note:</b> In case of key conflicts, the value of the specified {@code options} will be used.
-     *
-     * @param options the options to add
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws NullPointerException if the {@code options} is {@code null}
-     */
-    @Nonnull
-    public B withOptions(Map<String, Object> options) {
-        checkNotNull(options).forEach(this::withOption);
-
-        return me();
     }
 
     /**
@@ -133,209 +217,5 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
         stores.add(store);
 
         return me();
-    }
-
-    /**
-     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}. If the mapping has
-     * already been defined, then it will be erased by the new.
-     *
-     * @param mapping the class name of the mapping to use
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws NullPointerException   if the {@code mapping} is {@code null}
-     * @throws InvalidOptionException if the {@code mapping} does not represent a {@link DataMapper} instance, or if
-     *                                the associated class cannot be found
-     */
-    @Nonnull
-    public B withMapping(String mapping) {
-        Class<?> mappingClass;
-
-        try {
-            mappingClass = Class.forName(mapping);
-        }
-        catch (ClassNotFoundException e) {
-            throw new InvalidOptionException(e);
-        }
-
-        if (!DataMapper.class.isAssignableFrom(mappingClass)) {
-            throw new InvalidOptionException(
-                    String.format("The %s must be assignable to %s", mapping, DataMapper.class.getName()));
-        }
-
-        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping));
-    }
-
-    /**
-     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}. If the mapping has
-     * already been defined, then it will be erased by the new.
-     *
-     * @param mapping the class of the mapping to use
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws NullPointerException if the {@code mapping} is {@code null}
-     */
-    @Nonnull
-    public B withMapping(Class<? extends DataMapper> mapping) {
-        return withOption(PersistentResourceOptions.MAPPING, checkNotNull(mapping).getName());
-    }
-
-    /**
-     * Adds the {@code cache-features} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
-     */
-    @Nonnull
-    public B cacheFeatures() {
-        return withStore(PersistentStoreOptions.CACHE_STRUCTURAL_FEATURE);
-    }
-
-    /**
-     * Adds the {@code cache-is-set} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
-     */
-    @Nonnull
-    public B cacheIsSet() {
-        return withStore(PersistentStoreOptions.CACHE_IS_SET);
-    }
-
-    /**
-     * Adds the {@code cache-containers} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator
-     */
-    @Nonnull
-    public B cacheContainers() {
-        return withStore(PersistentStoreOptions.CACHE_CONTAINER);
-    }
-
-    /**
-     * Adds the {@code cache-metaclasses} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator
-     */
-    @Nonnull
-    public B cacheMetaclasses() {
-        return withStore(PersistentStoreOptions.CACHE_METACLASS);
-    }
-
-    /**
-     * Adds the {@code cache-sizes} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
-     */
-    @Nonnull
-    public B cacheSizes() {
-        return withStore(PersistentStoreOptions.CACHE_SIZE);
-    }
-
-    /**
-     * Adds the {@code count-loaded-objects} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
-     */
-    @Nonnull
-    public B countLoadedObjects() {
-        return withStore(PersistentStoreOptions.COUNT_LOADED_OBJECT);
-    }
-
-    /**
-     * Adds the {@code read-only} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
-     */
-    @Nonnull
-    public B readOnly() {
-        return withStore(PersistentStoreOptions.READ_ONLY);
-    }
-
-    /**
-     * Adds the {@code autoSave} feature with the given {@code chunk} size in the created options.
-     * <p>
-     * <b>WARNING:</b> When {@code chunk} is zero, the store will be saved at each call.
-     *
-     * @param chunk the number of database operations between each save
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws InvalidOptionException if the {@code chunk} is {@code &lt; 0}
-     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
-     */
-    @Nonnull
-    public B autoSave(@Nonnegative long chunk) {
-        if (chunk < 0) {
-            throw new InvalidOptionException(String.format("The auto-save chuck cannot be lower than 0 (but it was %d)", chunk));
-        }
-
-        withStore(PersistentStoreOptions.AUTO_SAVE);
-        return withOption(PersistentResourceOptions.AUTO_SAVE_CHUNK, chunk);
-    }
-
-    /**
-     * Adds the {@code autoSave} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
-     */
-    @Nonnull
-    public B autoSave() {
-        return withStore(PersistentStoreOptions.AUTO_SAVE);
-    }
-
-    /**
-     * Adds the {@code log} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
-     */
-    @Nonnull
-    public B log() {
-        return withStore(PersistentStoreOptions.LOG);
-    }
-
-    /**
-     * Adds the {@code log} feature in the created options.
-     *
-     * @param level the logging {@link Level} to use
-     *
-     * @return this builder (for chaining)
-     *
-     * @throws NullPointerException if the {@code level} is {@code null}
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
-     */
-    @Nonnull
-    public B log(Level level) {
-        withStore(PersistentStoreOptions.LOG);
-        return withOption(PersistentResourceOptions.LOG_LEVEL, checkNotNull(level));
-    }
-
-    /**
-     * Adds the {@code stats} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator
-     */
-    @Nonnull
-    public B recordStats() {
-        return withStore(PersistentStoreOptions.STATS);
     }
 }

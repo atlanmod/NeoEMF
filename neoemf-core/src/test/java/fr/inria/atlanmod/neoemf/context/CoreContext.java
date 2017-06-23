@@ -17,8 +17,8 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 
@@ -71,7 +71,7 @@ public interface CoreContext extends Context {
     }
 
     @Override
-    default AbstractPersistenceOptions<?> optionsBuilder() {
+    default PersistenceOptions optionsBuilder() {
         return CommonOptions.builder();
     }
 

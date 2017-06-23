@@ -11,8 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.common.log.Level;
+import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+
 import java.util.Map;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,7 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
-@FunctionalInterface
 @ParametersAreNonnullByDefault
 public interface PersistenceOptions {
 
@@ -34,4 +37,188 @@ public interface PersistenceOptions {
      */
     @Nonnull
     Map<String, Object> asMap();
+
+    /**
+     * Adds a key/value in the created options. A custom configuration, which is not part of NeoEMF, can be added.
+     *
+     * @param key   the key to add
+     * @param value the value of the {@code key}
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException if any parameter is {@code null}
+     */
+    @Nonnull
+    PersistenceOptions withOption(String key, Object value);
+
+    /**
+     * Adds all key/value pairs of the {@code options} in the created options. A custom configuration, which is not part
+     * of NeoEMF, can be added.
+     * <p>
+     * <b>Note:</b> In case of key conflicts, the value of the specified {@code options} will be used.
+     *
+     * @param options the options to add
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException if the {@code options} is {@code null}
+     */
+    @Nonnull
+    PersistenceOptions withOptions(Map<String, Object> options);
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}. If the mapping has
+     * already been defined, then it will be erased by the new.
+     *
+     * @param mapping the class name of the mapping to use
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException   if the {@code mapping} is {@code null}
+     * @throws InvalidOptionException if the {@code mapping} does not represent a {@link DataMapper} instance, or if
+     *                                the associated class cannot be found
+     */
+    @Nonnull
+    PersistenceOptions withMapping(String mapping);
+
+    /**
+     * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}. If the mapping has
+     * already been defined, then it will be erased by the new.
+     *
+     * @param mapping the class of the mapping to use
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException if the {@code mapping} is {@code null}
+     */
+    @Nonnull
+    PersistenceOptions withMapping(Class<? extends DataMapper> mapping);
+
+    /**
+     * Adds the {@code cache-features} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions cacheFeatures();
+
+    /**
+     * Adds the {@code cache-is-set} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions cacheIsSet();
+
+    /**
+     * Adds the {@code cache-containers} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions cacheContainers();
+
+    /**
+     * Adds the {@code cache-metaclasses} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions cacheMetaclasses();
+
+    /**
+     * Adds the {@code cache-sizes} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions cacheSizes();
+
+    /**
+     * Adds the {@code count-loaded-objects} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions countLoadedObjects();
+
+    /**
+     * Adds the {@code read-only} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions readOnly();
+
+    /**
+     * Adds the {@code autoSave} feature with the given {@code chunk} size in the created options.
+     * <p>
+     * <b>WARNING:</b> When {@code chunk} is zero, the store will be saved at each call.
+     *
+     * @param chunk the number of database operations between each save
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws InvalidOptionException if the {@code chunk} is {@code &lt; 0}
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions autoSave(@Nonnegative long chunk);
+
+    /**
+     * Adds the {@code autoSave} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions autoSave();
+
+    /**
+     * Adds the {@code log} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions log();
+
+    /**
+     * Adds the {@code log} feature in the created options.
+     *
+     * @param level the logging {@link Level} to use
+     *
+     * @return this builder (for chaining)
+     *
+     * @throws NullPointerException if the {@code level} is {@code null}
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions log(Level level);
+
+    /**
+     * Adds the {@code stats} feature in the created options.
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator
+     */
+    @Nonnull
+    PersistenceOptions recordStats();
 }

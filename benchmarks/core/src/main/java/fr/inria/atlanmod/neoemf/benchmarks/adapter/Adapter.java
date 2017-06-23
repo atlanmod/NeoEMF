@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -63,7 +63,7 @@ public interface Adapter {
      * @return the loaded resource
      */
     @Nonnull
-    Resource load(File file, CommonOptions options) throws IOException;
+    Resource load(File file, PersistenceOptions options) throws IOException;
 
     /**
      * Saves the given {@code resource}.

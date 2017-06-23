@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 import org.openjdk.jmh.annotations.Level;
@@ -162,7 +163,7 @@ public class RunnerState {
      * @return an immutable map
      */
     @Nonnull
-    public CommonOptions getOptions() {
+    public PersistenceOptions getOptions() {
         return Options.parse(o);
     }
 
@@ -235,15 +236,15 @@ public class RunnerState {
         private static final Pattern AUTO_SAVE_CHUCK = Pattern.compile(AUTO_SAVE + ARG_NUMBER, Pattern.CASE_INSENSITIVE);
 
         /**
-         * Parses the given {@code text} and returns the associated {@link CommonOptions}.
+         * Parses the given {@code text} and returns the associated {@link PersistenceOptions}.
          *
          * @param text the text containg the options to define
          *
-         * @return a {@link CommonOptions}
+         * @return a {@link PersistenceOptions}
          */
         @Nonnull
-        public static CommonOptions parse(String text) {
-            CommonOptions options = CommonOptions.builder();
+        public static PersistenceOptions parse(String text) {
+            PersistenceOptions options = CommonOptions.builder();
 
             String upperText = text.toUpperCase();
 

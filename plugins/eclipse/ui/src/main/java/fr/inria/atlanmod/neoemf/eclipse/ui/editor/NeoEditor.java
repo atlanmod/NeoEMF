@@ -18,8 +18,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 
@@ -72,7 +72,7 @@ public class NeoEditor extends EcoreEditor {
         // Create the store options depending of the backend
         String scheme = resource.getURI().scheme();
 
-        AbstractPersistenceOptions<?> optionsBuilder;
+        PersistenceOptions optionsBuilder;
 
         if (Objects.equals(scheme, BlueprintsUri.SCHEME)) {
             optionsBuilder = BlueprintsOptions.builder();

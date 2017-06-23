@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -76,7 +77,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, CommonOptions options) throws IOException {
+    public Resource load(File file, PersistenceOptions options) throws IOException {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());

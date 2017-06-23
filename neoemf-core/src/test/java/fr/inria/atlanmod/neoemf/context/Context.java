@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -68,7 +67,7 @@ public interface Context {
      *
      * @see PersistenceOptions
      */
-    AbstractPersistenceOptions<?> optionsBuilder();
+    PersistenceOptions optionsBuilder();
 
     /**
      * Returns the {@link URI} scheme used by this context.

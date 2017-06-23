@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.cdo.eresource.CDOResource;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
@@ -104,7 +104,7 @@ public class CdoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, CommonOptions options) throws IOException {
+    public Resource load(File file, PersistenceOptions options) throws IOException {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
