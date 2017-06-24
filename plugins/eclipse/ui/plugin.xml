@@ -15,7 +15,7 @@
     <extension
             point="org.eclipse.emf.importer.modelImporterDescriptors">
         <modelImporterDescriptor
-                description="Create the Ecore model based on other Ecore or EMOF models"
+                description="Create the Ecore model, based on other Ecore or EMOF models"
                 extensions="ecore,emof"
                 icon="icons/full/obj16/model.gif"
                 id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
@@ -125,7 +125,7 @@
                 adaptable="true"
                 class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.BackendDirectoryDecorator"
                 id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
-                label="NeoEMF Database Folder Decorator"
+                label="NeoEMF Database Decorator"
                 objectClass="org.eclipse.core.resources.IFolder"
                 state="true">
         </decorator>
