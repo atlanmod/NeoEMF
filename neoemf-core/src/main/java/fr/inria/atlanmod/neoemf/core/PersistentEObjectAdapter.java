@@ -23,7 +23,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -32,6 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * The factory that adapts {@link Object}s in a specific {@link Class}.
@@ -183,29 +183,42 @@ final class PersistentEObjectAdapter {
      * A proxy that handles method calls from an {@link Object}. It dynamically transforms {@link Object}s as
      * {@link PersistentEObject}s.
      */
+    @ParametersAreNonnullByDefault
     private static class PersistentEObjectInterceptor implements MethodInterceptor {
 
         /**
-         * The name of the {@link PersistentEObject#id()} and {@link PersistentEObject#id(Id)} methods.
+         * The {@link PersistentEObject} associated to this proxy.
          */
-        private static final String METHOD_ID = "id";
+        private PersistentEObject persistentObject;
 
         @Override
-        @SuppressWarnings("StatementWithEmptyBody")
-        // TODO Dynamically transform 'obj' as a PersistentEObject or its implementation.
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-
-            if (Objects.equals(method.getName(), METHOD_ID)) {
-                if (args.length == 0) { // id() # Getter
-                    // Do nothing
-                }
-                else if (args.length == 1 && Id.class.isInstance(args[0])) { // id() # Setter
-                    // Do nothing
-                }
+            try {
+                // Note: 'invokeSuper()' calls the method itself, not the super method
+                return methodProxy.invokeSuper(obj, args);
             }
+            catch (Throwable e) {
+                // Resolve object for a call to a non-static method
+                if (isNull(persistentObject) && nonNull(obj)) {
+                    persistentObject = resolve(InternalEObject.class.cast(obj));
+                }
 
-            // 'invokeSuper()' calls the method itself, not the super method
-            return methodProxy.invokeSuper(obj, args);
+                return method.invoke(persistentObject, args);
+            }
+        }
+
+        /**
+         * Resolves the {@link PersistentEObject} represented by the {@code proxy}.
+         *
+         * @param proxy the proxy object to resolve
+         *
+         * @return the resolved object
+         *
+         * @throws UnsupportedOperationException if the proxy cannot be resolved
+         */
+        @Nonnull
+        private PersistentEObject resolve(InternalEObject proxy) {
+            throw new UnsupportedOperationException("Dynamic EMF is not supported yet");
         }
     }
 }
