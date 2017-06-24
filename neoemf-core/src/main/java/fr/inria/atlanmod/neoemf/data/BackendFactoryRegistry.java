@@ -171,8 +171,8 @@ public final class BackendFactoryRegistry {
         }
 
         for (Class<? extends UriBuilder> cls : boundedClasses) {
-            BackendFactory factory = Reflect.staticNewInstance(cls.getAnnotation(BackendFactoryBinding.class).value(), "getInstance");
-            String scheme = Reflect.staticFieldValue(cls, "SCHEME");
+            BackendFactory factory = Reflect.newStaticInstance(cls.getAnnotation(BackendFactoryBinding.class).value(), "getInstance");
+            String scheme = Reflect.getStaticFieldValue(cls, "SCHEME");
 
             register(scheme, factory);
             Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);

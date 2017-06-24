@@ -80,14 +80,13 @@ public final class StoreFactory extends AbstractMapperFactory {
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *
-     * @param backend  the back-end where to store data
-     * @param options  the options that defines the behaviour of the store
+     * @param backend the back-end where to store data
+     * @param options the options that defines the behaviour of the store
      *
      * @return a new store
      *
      * @throws NullPointerException  if the {@code store} or the {@code options} are {@code null}
      * @throws InvalidStoreException if an error occurs during the creation of the store
-     *
      * @see #createStore(Backend, Resource.Internal, Map)
      */
     @Nonnull

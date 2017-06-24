@@ -39,8 +39,8 @@ public interface PersistenceOptions {
      */
     @Nonnull
     static PersistenceOptions forName(String name) {
-        Class<? extends PersistenceOptions> cls =  Reflect.forName(PersistenceOptions.class, name);
-        return Reflect.staticNewInstance(cls, "builder");
+        Class<? extends PersistenceOptions> cls = Reflect.forName(PersistenceOptions.class, name);
+        return Reflect.newStaticInstance(cls, "builder");
     }
 
     /**
@@ -53,8 +53,8 @@ public interface PersistenceOptions {
      */
     @Nonnull
     static PersistenceOptions forScheme(String scheme) {
-        Class<? extends PersistenceOptions> cls =  Reflect.forScheme(PersistenceOptions.class, scheme);
-        return Reflect.staticNewInstance(cls, "builder");
+        Class<? extends PersistenceOptions> cls = Reflect.forScheme(PersistenceOptions.class, scheme);
+        return Reflect.newStaticInstance(cls, "builder");
     }
 
     /**

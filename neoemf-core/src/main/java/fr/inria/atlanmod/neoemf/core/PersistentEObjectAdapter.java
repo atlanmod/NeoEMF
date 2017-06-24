@@ -151,14 +151,14 @@ final class PersistentEObjectAdapter {
      * its hierarchy up. Then each superclass is considered in the same way. Later duplicates are ignored, so the order
      * is maintained.
      *
-     * @param cls the class to look up
+     * @param type the class to look up
      *
      * @return a {@link Set} of interfaces in order
      */
     @Nonnull
-    private static Set<Class<?>> getAllInterfaces(Class<?> cls) {
+    private static Set<Class<?>> getAllInterfaces(Class<?> type) {
         Set<Class<?>> interfaces = new LinkedHashSet<>();
-        getAllInterfaces(cls, interfaces);
+        getAllInterfaces(type, interfaces);
         return interfaces;
     }
 

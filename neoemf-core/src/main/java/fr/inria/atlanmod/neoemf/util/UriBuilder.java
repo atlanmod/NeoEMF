@@ -30,7 +30,7 @@ public interface UriBuilder {
     @Nonnull
     static UriBuilder forName(String name) {
         Class<? extends UriBuilder> cls = Reflect.forName(UriBuilder.class, name);
-        return Reflect.staticNewInstance(cls, "builder");
+        return Reflect.newStaticInstance(cls, "builder");
     }
 
     /**
@@ -42,8 +42,8 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forScheme(String scheme) {
-        Class<? extends UriBuilder> cls =  Reflect.forScheme(UriBuilder.class, scheme);
-        return Reflect.staticNewInstance(cls, "builder");
+        Class<? extends UriBuilder> cls = Reflect.forScheme(UriBuilder.class, scheme);
+        return Reflect.newStaticInstance(cls, "builder");
     }
 
     /**
