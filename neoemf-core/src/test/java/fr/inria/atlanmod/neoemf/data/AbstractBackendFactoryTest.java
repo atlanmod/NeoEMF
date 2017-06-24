@@ -17,14 +17,12 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 /**
  * An abstract test-cases that checks the behavior of {@link BackendFactory}s and provides methods to retrieve private
@@ -71,7 +69,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreateTransientStore() {
         Backend backend = context().factory().createTransientBackend();
 
-        Store store = StoreFactory.getInstance().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
+        Store store = StoreFactory.getInstance().createStore(backend, context().optionsBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -84,7 +82,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreatePersistentStore() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), context().optionsBuilder().asMap());
 
-        Store store = StoreFactory.getInstance().createStore(backend, mock(PersistentResource.class), context().optionsBuilder().asMap());
+        Store store = StoreFactory.getInstance().createStore(backend, context().optionsBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);

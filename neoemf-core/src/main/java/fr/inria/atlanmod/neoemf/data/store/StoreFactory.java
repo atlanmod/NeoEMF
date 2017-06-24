@@ -8,10 +8,10 @@ import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -46,14 +46,14 @@ public final class StoreFactory extends AbstractMapperFactory {
      *
      * @param options the options containing the stores declaration
      *
-     * @return a list of stores declaration
+     * @return a collection of stores declaration
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    private static Set<PersistentStoreOptions> getStores(Map<String, Object> options) {
+    private static Collection<PersistentStoreOptions> getStores(Map<String, Object> options) {
         try {
             if (options.containsKey(PersistentResourceOptions.STORES)) {
-                return Set.class.cast(options.get(PersistentResourceOptions.STORES));
+                return Collection.class.cast(options.get(PersistentResourceOptions.STORES));
             }
         }
         catch (ClassCastException ignored) {
@@ -72,6 +72,27 @@ public final class StoreFactory extends AbstractMapperFactory {
      */
     public static boolean isDefined(Map<String, Object> options, PersistentStoreOptions storeOption) {
         return getStores(options).contains(storeOption);
+    }
+
+    /**
+     * Creates a new {@link Store} on top of the {@code backend} according to the specified {@code options}. The
+     * newly created store will be detached from any resource.
+     * <p>
+     * The returned {@link Store} may be a succession of several {@link Store}.
+     *
+     * @param backend  the back-end where to store data
+     * @param options  the options that defines the behaviour of the store
+     *
+     * @return a new store
+     *
+     * @throws NullPointerException  if the {@code store} or the {@code options} are {@code null}
+     * @throws InvalidStoreException if an error occurs during the creation of the store
+     *
+     * @see #createStore(Backend, Resource.Internal, Map)
+     */
+    @Nonnull
+    public Store createStore(Backend backend, Map<String, Object> options) {
+        return createStore(backend, null, options);
     }
 
     /**
@@ -95,6 +116,7 @@ public final class StoreFactory extends AbstractMapperFactory {
         checkNotNull(backend);
         checkNotNull(options);
 
+        // The tail of the store chain
         Store store = new DirectWriteStore(backend, resource);
 
         try {
@@ -105,11 +127,11 @@ public final class StoreFactory extends AbstractMapperFactory {
                         .map(ConstructorParameter::new)
                         .collect(Collectors.toList());
 
-                parameters.add(0,
-                        new ConstructorParameter(store, Store.class));
+                // Each store has a store as first argument
+                parameters.add(0, new ConstructorParameter(store, Store.class));
 
-
-                store = newInstanceOf(opt.className(), parameters.toArray(new ConstructorParameter[parameters.size()]));
+                ConstructorParameter[] parametersArray = parameters.toArray(new ConstructorParameter[parameters.size()]);
+                store = newInstanceOf(opt.className(), parametersArray);
             }
         }
         catch (Exception e) {

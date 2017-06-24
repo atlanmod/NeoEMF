@@ -165,8 +165,7 @@ final class ContextualResourceBuilder {
      * @return a new {@link DataMapper}
      */
     public DataMapper createPersistentMapper() {
-        //noinspection ConstantConditions
         Backend backend = context.factory().createPersistentBackend(uri, allOptions());
-        return StoreFactory.getInstance().createStore(backend, null, allOptions());
+        return StoreFactory.getInstance().createStore(backend, allOptions());
     }
 }
