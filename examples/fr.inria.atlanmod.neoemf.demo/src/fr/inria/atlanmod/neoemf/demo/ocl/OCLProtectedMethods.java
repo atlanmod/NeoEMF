@@ -12,9 +12,11 @@
 package fr.inria.atlanmod.neoemf.demo.ocl;
 
 import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -52,7 +54,7 @@ public class OCLProtectedMethods {
         Instant start, end;
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BlueprintsUri.builder().fromFile("models/sample.graphdb"))) {
-            resource.load(Collections.emptyMap());
+            resource.load(BlueprintsNeo4jOptions.noOption());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
@@ -60,7 +62,7 @@ public class OCLProtectedMethods {
         }
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(MapDbUri.builder().fromFile("models/sample.mapdb"))) {
-            resource.load(Collections.emptyMap());
+            resource.load(MapDbOptions.noOption());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
@@ -68,7 +70,7 @@ public class OCLProtectedMethods {
         }
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb"))) {
-            resource.load(Collections.emptyMap());
+            resource.load(BerkeleyDbOptions.noOption());
             start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             end = Instant.now();
@@ -76,7 +78,7 @@ public class OCLProtectedMethods {
         }
 
 //        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase"))) {
-//            resource.load(Collections.emptyMap());
+//            resource.load(HBaseOptions.noOption());
 //            start = Instant.now();
 //            List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
 //            end = Instant.now();
