@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.common.log.Level;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.util.Reflect;
 
 import java.util.Map;
 
@@ -27,6 +28,34 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface PersistenceOptions {
+
+    /**
+     * Retrieves the instance of {@code PersistenceOptions} that is associated to a
+     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
+     *
+     * @param name the name of the factory
+     *
+     * @return a new instance of {@code PersistenceOptions}
+     */
+    @Nonnull
+    static PersistenceOptions forName(String name) {
+        Class<? extends PersistenceOptions> cls =  Reflect.forName(PersistenceOptions.class, name);
+        return Reflect.staticNewInstance(cls, "builder");
+    }
+
+    /**
+     * Retrieves the instance of {@code PersistenceOptions} that is associated to a
+     * {@link fr.inria.atlanmod.neoemf.util.UriBuilder} which use the given {@code scheme}.
+     *
+     * @param scheme the scheme of the builder
+     *
+     * @return a new instance of {@code PersistenceOptions}
+     */
+    @Nonnull
+    static PersistenceOptions forScheme(String scheme) {
+        Class<? extends PersistenceOptions> cls =  Reflect.forScheme(PersistenceOptions.class, scheme);
+        return Reflect.staticNewInstance(cls, "builder");
+    }
 
     /**
      * Returns an immutable {@link Map} containing all defined options.

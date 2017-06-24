@@ -27,6 +27,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * The creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
  * option maps.
+ * <p>
+ * For reflection reasons, each instance of {@code BackendFactory} <b>must</b> have a static field {@code NAME},
+ * representing the name of the created {@link Backend} instances.
  *
  * @see fr.inria.atlanmod.neoemf.option.PersistenceOptions
  */
@@ -42,11 +45,13 @@ public interface BackendFactory {
     /**
      * The property to define the {@link Backend} in the configuration file.
      */
+    // TODO Replace by a fully-qualified name, like "neoemf.backend.type"
     String BACKEND_PROPERTY = "backend";
 
     /**
      * The property to define the {@link BackendFactory} in the configuration file.
      */
+    // TODO Replace by a fully-qualified name, like "neoemf.backend.factory"
     String FACTORY_PROPERTY = "factory";
 
     /**

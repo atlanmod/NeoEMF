@@ -20,6 +20,33 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface UriBuilder {
 
     /**
+     * Retrieves the instance of {@code UriBuilder} that is associated to a
+     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
+     *
+     * @param name the name of the factory
+     *
+     * @return a new instance of {@code UriBuilder}
+     */
+    @Nonnull
+    static UriBuilder forName(String name) {
+        Class<? extends UriBuilder> cls = Reflect.forName(UriBuilder.class, name);
+        return Reflect.staticNewInstance(cls, "builder");
+    }
+
+    /**
+     * Retrieves the instance of {@code UriBuilder} that uses the given {@code scheme}.
+     *
+     * @param scheme the scheme of the builder
+     *
+     * @return a new instance of {@code UriBuilder}
+     */
+    @Nonnull
+    static UriBuilder forScheme(String scheme) {
+        Class<? extends UriBuilder> cls =  Reflect.forScheme(UriBuilder.class, scheme);
+        return Reflect.staticNewInstance(cls, "builder");
+    }
+
+    /**
      * Creates a new {@code URI} from the given {@code uri}.
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link

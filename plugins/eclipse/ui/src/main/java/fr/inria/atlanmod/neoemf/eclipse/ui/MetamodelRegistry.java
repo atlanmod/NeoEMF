@@ -216,12 +216,13 @@ public final class MetamodelRegistry {
 
         try {
             URI uri = URI.createPlatformResourceURI(file, true);
-            managedMetamodels.put(file, register(uri, EPackage.Registry.INSTANCE));
+            Set<EPackage> packages = register(uri, EPackage.Registry.INSTANCE);
+            managedMetamodels.put(file, packages);
 
-            Log.info("EPackages successfully registered: {0}", file);
+            Log.info("{0,number,#} EPackages registered from {1}", packages.size(), file);
         }
-        catch (Exception e) {
-            Log.warn("EPackages could not be registered: {0}", file);
+        catch (IOException e) {
+            Log.warn("Failed to register EPackages from {0}", file);
 
             // Clean the registry: the resource probably no longer exist
             unregister(file);

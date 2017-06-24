@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.util.Reflect;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.ILogListener;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NeoUIPlugin extends AbstractUIPlugin {
 
@@ -61,15 +64,13 @@ public class NeoUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Retrieves the {@link URL}s of the bundles within the given {@code context}.
+     * Update the classpath with the {@link URL}s of the bundles within the given {@code context}.
      *
      * @param context the OSGi context to explore
-     *
-     * @return an array of {@link URL}
      */
-    private static URL[] getUrls(BundleContext context) {
-        return Arrays.stream(context.getBundles())
-                .filter(b -> b.getSymbolicName().startsWith("fr.inria.atlanmod.neoemf"))
+    private static void updateClasspath(BundleContext context) {
+        Set<URL> urls = Arrays.stream(context.getBundles())
+                .filter(b -> b.getSymbolicName().startsWith("fr.inria.atlanmod.neoemf.data"))
                 .map(b -> {
                     try {
                         return FileLocator.getBundleFile(b).toURI().toURL();
@@ -79,7 +80,9 @@ public class NeoUIPlugin extends AbstractUIPlugin {
                     }
                 })
                 .filter(Objects::nonNull)
-                .toArray(URL[]::new);
+                .collect(Collectors.toSet());
+
+        Reflect.addUrls(urls);
     }
 
     @Override
@@ -88,8 +91,10 @@ public class NeoUIPlugin extends AbstractUIPlugin {
 
         getLog().addLogListener(LOG_LISTENER);
 
+        updateClasspath(context);
+
         // Initialize the backend registry (force)
-        BackendFactoryRegistry.getInstance().registerAll(getUrls(context));
+        BackendFactoryRegistry.getInstance().registerAll();
 
         // Initialize the metamodel registry
         MetamodelRegistry.getInstance().registerAll();

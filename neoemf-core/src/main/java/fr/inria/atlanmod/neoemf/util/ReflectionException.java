@@ -1,42 +1,42 @@
-package fr.inria.atlanmod.neoemf.data;
-
-import fr.inria.atlanmod.neoemf.data.store.Store;
+package fr.inria.atlanmod.neoemf.util;
 
 /**
- * Exception thrown when an error occurred when creating {@link Store}.
+ * Exception thrown when an error occurred when using reflection.
+ *
+ * @see Reflect
  */
-public class InvalidStoreException extends RuntimeException {
+public class ReflectionException extends RuntimeException {
 
     @SuppressWarnings("JavaDoc")
-    private static final long serialVersionUID = -7365877931773274125L;
+    private static final long serialVersionUID = 408359593875469468L;
 
     /**
-     * Constructs an {@code InvalidStoreException} with {@code null} as its error detail message.
+     * Constructs an {@code ReflectionException} with {@code null} as its error detail message.
      */
-    public InvalidStoreException() {
+    public ReflectionException() {
     }
 
     /**
-     * Constructs an {@code InvalidStoreException} with the specified detail {@code message}.
+     * Constructs an {@code ReflectionException} with the specified detail {@code message}.
      *
      * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method)
      */
-    public InvalidStoreException(String message) {
+    public ReflectionException(String message) {
         super(message);
     }
 
     /**
-     * Constructs an {@code InvalidStoreException} with the specified {@code cause} and its detail message.
+     * Constructs an {@code ReflectionException} with the specified {@code cause} and its detail message.
      *
      * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}
      *              value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public InvalidStoreException(Throwable cause) {
+    public ReflectionException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs an {@code InvalidStoreException} with the specified detail {@code message} and {@code cause}.
+     * Constructs an {@code ReflectionException} with the specified detail {@code message} and {@code cause}.
      * <p>
      * The detail message associated with cause is not automatically incorporated into this exception's detail message.
      *
@@ -44,7 +44,7 @@ public class InvalidStoreException extends RuntimeException {
      * @param cause   the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}
      *                value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public InvalidStoreException(String message, Throwable cause) {
+    public ReflectionException(String message, Throwable cause) {
         super(message, cause);
     }
 }

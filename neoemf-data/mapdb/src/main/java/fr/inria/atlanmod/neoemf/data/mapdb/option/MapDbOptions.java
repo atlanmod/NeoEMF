@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
+import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
@@ -26,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * All features are all optional: options can be created using all or none of them.
  */
 @ParametersAreNonnullByDefault
+@BackendFactoryBinding(MapDbBackendFactory.class)
 public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
 
     /**

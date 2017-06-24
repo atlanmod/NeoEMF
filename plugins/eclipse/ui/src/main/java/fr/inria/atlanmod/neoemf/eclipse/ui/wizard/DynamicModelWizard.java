@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -169,7 +169,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             dbFolder.delete(true, new NullProgressMonitor());
 
             // Get the URI of the model file.
-            final URI uri = BlueprintsUri.builder().fromFile(dbFolder.getRawLocation().toOSString());
+            final URI uri = UriBuilder.forName("blueprints").fromFile(dbFolder.getRawLocation().toOSString());
 
             // Do the work within an operation.
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {

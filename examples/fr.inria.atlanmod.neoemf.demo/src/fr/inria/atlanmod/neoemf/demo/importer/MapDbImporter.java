@@ -45,7 +45,9 @@ public class MapDbImporter {
         URI targetUri = MapDbUri.builder().fromFile("models/sample.mapdb");
 
         Map<String, Object> options = MapDbOptions.builder()
-                .autoSave()
+        		.autoSave()
+                .cacheContainers()
+                .cacheMetaclasses()
                 .cacheIsSet()
                 .cacheSizes()
                 .asMap();

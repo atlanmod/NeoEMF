@@ -45,8 +45,10 @@ public class BlueprintsImporter {
         URI targetUri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
 
         Map<String, Object> options = BlueprintsNeo4jOptions.builder()
-                .weakCache()
                 .autoSave()
+                .cacheContainers()
+                .cacheMetaclasses()
+                .weakCache()
                 .asMap();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {

@@ -13,12 +13,6 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.Configuration;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
@@ -45,7 +39,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -106,17 +99,7 @@ public class OpenBackendCommand extends AbstractHandler {
                     String.format("%s does not contain %s property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY));
         }
 
-        if (Objects.equals(backendType, MapDbBackendFactory.NAME)) {
-            return MapDbUri.builder();
-        }
-        else if (Objects.equals(backendType, BlueprintsBackendFactory.NAME)) {
-            return BlueprintsUri.builder();
-        }
-        else if (Objects.equals(backendType, BerkeleyDbBackendFactory.NAME)) {
-            return BerkeleyDbUri.builder();
-        }
-
-        throw new InvalidOptionException(String.format("Unknown backend: %s", backendType));
+        return UriBuilder.forName(backendType);
     }
 
     /**

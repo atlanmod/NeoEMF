@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FactoryBinding {
+public @interface BackendFactoryBinding {
 
     /**
      * The class of the bounded {@link BackendFactory}.

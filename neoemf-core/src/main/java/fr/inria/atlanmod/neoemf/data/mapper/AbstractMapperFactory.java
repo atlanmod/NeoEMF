@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.util.ReflectionException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +51,9 @@ public abstract class AbstractMapperFactory {
      * @param parameters the parameters of the constructor
      *
      * @return a new instance of {@link Store}
+     *
+     * @throws ReflectionException      if an error occurs during the instantiation
+     * @throws IllegalArgumentException if the class is not assignable from {@link DataMapper}
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -60,7 +64,7 @@ public abstract class AbstractMapperFactory {
             type = Class.forName(className, false, getClass().getClassLoader());
         }
         catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ReflectionException(e);
         }
 
         if (DataMapper.class.isAssignableFrom(type)) {
@@ -78,6 +82,8 @@ public abstract class AbstractMapperFactory {
      * @param parameters  the parameters of the constructor
      *
      * @return a new instance of {@link Store}
+     *
+     * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -97,7 +103,7 @@ public abstract class AbstractMapperFactory {
             return (T) constructor.newInstance(values.toArray());
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new ReflectionException(e);
         }
     }
 

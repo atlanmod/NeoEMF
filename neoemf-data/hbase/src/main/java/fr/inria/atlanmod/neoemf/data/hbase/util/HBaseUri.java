@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.FactoryBinding;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @ParametersAreNonnullByDefault
-@FactoryBinding(HBaseBackendFactory.class)
+@BackendFactoryBinding(HBaseBackendFactory.class)
 public class HBaseUri extends AbstractUriBuilder {
 
     /**

@@ -12,16 +12,11 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
+import fr.inria.atlanmod.neoemf.util.ReflectionException;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.URI;
@@ -45,7 +40,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -62,9 +56,7 @@ public class NeoEditor extends EcoreEditor {
     @Override
     public void createModel() {
         URI resourceURI = EditUIUtil.getURI(getEditorInput());
-
-        // FIXME This only works for file-based URIs
-        resourceURI = AbstractUriBuilder.builder(resourceURI.scheme()).fromUri(resourceURI);
+        resourceURI = UriBuilder.forScheme(resourceURI.scheme()).fromUri(resourceURI);
 
         Resource resource = getEditingDomain().getResourceSet().createResource(resourceURI);
         getEditingDomain().getResourceSet().eAdapters().add(problemIndicationAdapter);
@@ -73,17 +65,10 @@ public class NeoEditor extends EcoreEditor {
         String scheme = resource.getURI().scheme();
 
         PersistenceOptions optionsBuilder;
-
-        if (Objects.equals(scheme, BlueprintsUri.SCHEME)) {
-            optionsBuilder = BlueprintsOptions.builder();
+        try {
+            optionsBuilder = PersistenceOptions.forScheme(scheme);
         }
-        else if (Objects.equals(scheme, MapDbUri.SCHEME)) {
-            optionsBuilder = MapDbOptions.builder();
-        }
-        else if (Objects.equals(scheme, BerkeleyDbUri.SCHEME)) {
-            optionsBuilder = BerkeleyDbOptions.builder();
-        }
-        else {
+        catch (IllegalArgumentException | ReflectionException e) {
             optionsBuilder = CommonOptions.builder();
         }
 
@@ -153,10 +138,8 @@ public class NeoEditor extends EcoreEditor {
             super.setSelection(selection);
         }
         // FIXME See issue #52
-        catch (NoSuchMethodError e) {
-            Log.warn("Captured a {0} when changing the selection. " +
-                    "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.",
-                    e.getClass().getSimpleName());
+        catch (UnsupportedOperationException e) {
+            Log.warn(e.getMessage());
         }
     }
 
