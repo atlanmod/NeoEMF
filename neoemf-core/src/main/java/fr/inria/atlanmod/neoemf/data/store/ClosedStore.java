@@ -30,15 +30,14 @@ public final class ClosedStore implements Store {
     private static final RuntimeException E = new UnsupportedOperationException(
             "The back-end you are using is closed");
 
-    @Nullable
     @Override
     public Resource.Internal resource() {
-        return null;
+        throw E;
     }
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
-
+        throw E;
     }
 
     @Nonnull
@@ -114,12 +113,12 @@ public final class ClosedStore implements Store {
 
     @Override
     public void close() {
-        throw E;
+        // Do nothing
     }
 
     @Override
     public void save() {
-        throw E;
+        // Do nothing
     }
 
     @Override

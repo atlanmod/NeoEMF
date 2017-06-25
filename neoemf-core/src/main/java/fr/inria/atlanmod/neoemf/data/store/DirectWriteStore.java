@@ -11,16 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
 
 import org.eclipse.emf.ecore.resource.Resource;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.ThreadFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,33 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
-
-    /**
-     * A set that holds all {@link Backend}s that need to be closed when the JVM will shutdown.
-     */
-    @Nonnull
-    private static final Set<Backend> BACKENDS = new HashSet<>();
-
-    static {
-        ThreadFactory factory = task -> {
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            return thread;
-        };
-
-        Runtime.getRuntime().addShutdownHook(factory.newThread(() -> {
-            int count = BACKENDS.size();
-
-            for (Iterator<Backend> adapters = BACKENDS.iterator(); adapters.hasNext(); ) {
-                adapters.next().close();
-                adapters.remove();
-            }
-
-            if (count > 0) {
-                Log.info("All back-ends have been properly closed ({0,number,#})", count);
-            }
-        }));
-    }
 
     /**
      * The resource to store and access.
@@ -73,9 +40,8 @@ public class DirectWriteStore extends AbstractMapperDecorator<Backend> implement
      */
     public DirectWriteStore(Backend backend, @Nullable Resource.Internal resource) {
         super(backend);
-        this.resource = resource;
 
-        BACKENDS.add(backend);
+        this.resource = resource;
     }
 
     @Nullable
@@ -93,11 +59,5 @@ public class DirectWriteStore extends AbstractMapperDecorator<Backend> implement
     @Override
     public Backend backend() {
         return next();
-    }
-
-    @Override
-    public void close() {
-        BACKENDS.remove(backend());
-        super.close();
     }
 }
