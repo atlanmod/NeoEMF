@@ -27,9 +27,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface BerkeleyDbBackend extends PersistentBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    String NAME = "BerkeleyDB";
 }

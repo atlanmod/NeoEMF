@@ -17,7 +17,6 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -44,7 +43,6 @@ public interface Cache<K, V> {
      * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key
      */
-    @Nullable
     V get(K key);
 
     /**

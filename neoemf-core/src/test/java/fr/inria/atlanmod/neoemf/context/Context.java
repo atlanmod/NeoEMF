@@ -11,10 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.neoemf.binding.Bindings;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -74,7 +76,9 @@ public interface Context {
      *
      * @return the {@link URI} scheme
      */
-    String uriScheme();
+    default String uriScheme() {
+        return Bindings.schemeOf(factory().getClass());
+    }
 
     /**
      * Creates a new {@link URI} from the given {@code uri}, according to this context.
@@ -83,7 +87,9 @@ public interface Context {
      *
      * @return the created {@link URI}
      */
-    URI createUri(URI uri);
+    default URI createUri(URI uri) {
+        return UriBuilder.forScheme(uriScheme()).fromUri(uri);
+    }
 
     /**
      * Creates a new {@link URI} from the given {@code file}, according to this context.
@@ -92,7 +98,9 @@ public interface Context {
      *
      * @return the created {@link URI}
      */
-    URI createUri(File file);
+    default URI createUri(File file) {
+        return UriBuilder.forScheme(uriScheme()).fromFile(file);
+    }
 
     /**
      * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.

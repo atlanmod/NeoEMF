@@ -20,9 +20,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface HBaseBackend extends PersistentBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    String NAME = "HBase";
 }

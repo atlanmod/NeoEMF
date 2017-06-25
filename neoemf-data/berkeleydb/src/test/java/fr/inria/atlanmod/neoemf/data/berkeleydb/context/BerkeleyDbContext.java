@@ -15,11 +15,6 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
-
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
 
 /**
  * A specific {@link Context} for the BerkeleyDB implementation.
@@ -71,20 +66,5 @@ public interface BerkeleyDbContext extends Context {
     @Override
     default BackendFactory factory() {
         return BerkeleyDbBackendFactory.getInstance();
-    }
-
-    @Override
-    default String uriScheme() {
-        return BerkeleyDbUri.SCHEME;
-    }
-
-    @Override
-    default URI createUri(URI uri) {
-        return BerkeleyDbUri.builder().fromUri(uri);
-    }
-
-    @Override
-    default URI createUri(File file) {
-        return BerkeleyDbUri.builder().fromFile(file);
     }
 }

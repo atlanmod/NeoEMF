@@ -17,6 +17,7 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
+import fr.inria.atlanmod.neoemf.binding.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -68,7 +69,8 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BlueprintsBackend.NAME.toLowerCase();
+    @FactoryName
+    public static final String NAME = "blueprints";
 
     /**
      * The configuration file name.

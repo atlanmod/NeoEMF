@@ -14,14 +14,14 @@ package fr.inria.atlanmod.neoemf.data.mapper;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
+import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
 
 import java.io.File;
 
 /**
- * A test-case that checks the behavior of {@link BoundedTransientBackend}.
+ * A test-case that checks the behavior of {@link BoundTransientBackend}.
  */
-public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
+public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 
     @Override
     public Context context() {
@@ -29,7 +29,7 @@ public class BoundedTransientBackendTest extends AbstractPersistenceMapperTest {
 
             @Override
             public Backend createMapper(File file) {
-                return BoundedTransientBackend.forId(id0);
+                return BoundTransientBackend.forId(id0);
             }
         };
     }

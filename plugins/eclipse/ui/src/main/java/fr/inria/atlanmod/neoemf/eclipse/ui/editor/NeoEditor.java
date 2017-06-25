@@ -12,10 +12,8 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.ReflectionException;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -62,17 +60,7 @@ public class NeoEditor extends EcoreEditor {
         getEditingDomain().getResourceSet().eAdapters().add(problemIndicationAdapter);
 
         // Create the store options depending of the backend
-        String scheme = resource.getURI().scheme();
-
-        PersistenceOptions optionsBuilder;
-        try {
-            optionsBuilder = PersistenceOptions.forScheme(scheme);
-        }
-        catch (IllegalArgumentException | ReflectionException e) {
-            optionsBuilder = CommonOptions.builder();
-        }
-
-        Map<String, Object> options = optionsBuilder
+        Map<String, Object> options = PersistenceOptions.forScheme(resource.getURI().scheme())
 //                .log(Level.INFO)
                 .asMap();
 

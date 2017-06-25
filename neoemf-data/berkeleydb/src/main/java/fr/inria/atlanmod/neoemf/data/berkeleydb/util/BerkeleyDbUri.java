@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
@@ -29,21 +29,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
+@FactoryBinding(BerkeleyDbBackendFactory.class)
 @ParametersAreNonnullByDefault
-@BackendFactoryBinding(BerkeleyDbBackendFactory.class)
 public class BerkeleyDbUri extends AbstractUriBuilder {
-
-    /**
-     * The scheme associated to the URI.
-     */
-    @Nonnull
-    public static final String SCHEME = formatScheme(BerkeleyDbBackendFactory.getInstance());
 
     /**
      * Constructs a new {@code BerkeleyDbUri}.
      */
     private BerkeleyDbUri() {
-        super(SCHEME);
     }
 
     /**

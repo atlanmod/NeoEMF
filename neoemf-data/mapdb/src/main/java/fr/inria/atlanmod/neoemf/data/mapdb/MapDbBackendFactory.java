@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.binding.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -52,7 +53,8 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = MapDbBackend.NAME.toLowerCase();
+    @FactoryName
+    public static final String NAME = "mapdb";
 
     /**
      * Constructs a new {@code MapDbBackendFactory}.

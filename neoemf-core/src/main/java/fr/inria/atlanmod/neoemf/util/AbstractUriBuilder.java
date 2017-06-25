@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.common.annotations.VisibleForTesting;
+import fr.inria.atlanmod.neoemf.binding.Bindings;
+import fr.inria.atlanmod.neoemf.binding.Builder;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
@@ -27,10 +29,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link UriBuilder} that manages the assembly and the construction of {@link URI}s.
  */
+@Builder("builder")
 @ParametersAreNonnullByDefault
 public abstract class AbstractUriBuilder implements UriBuilder {
 
@@ -43,8 +47,13 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     /**
      * The scheme to identify the {@link BackendFactory} to use.
      */
-    @Nonnull
     private String scheme;
+
+    /**
+     * Constructs a new default {@code AbstractUriBuilder}.
+     */
+    protected AbstractUriBuilder() {
+    }
 
     /**
      * Constructs a new {@code AbstractUriBuilder} with the given {@code scheme}.
@@ -74,15 +83,17 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     }
 
     /**
-     * Formats the {@link URI} scheme from the given {@code factory}.
+     * Gets the scheme to identify the {@link BackendFactory} to use.
      *
-     * @param factory the factory associated to the {@link URI}
-     *
-     * @return the formatted {@link URI} scheme as {@code "neo-{factory.name()}"}
+     * @return the {@link URI} scheme
      */
     @Nonnull
-    protected static String formatScheme(BackendFactory factory) {
-        return "neo-" + checkNotNull(factory).name();
+    private String scheme() {
+        if (isNull(scheme)) {
+            scheme = Bindings.schemeOf(getClass());
+        }
+
+        return scheme;
     }
 
     /**
@@ -102,14 +113,14 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromUri(URI uri) {
-        checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        checkNotNull(scheme(), "Cannot create URI without a valid scheme");
         checkNotNull(uri);
 
         if (!supportsFile()) {
             throw new UnsupportedOperationException(String.format("%s does not support file-based URI", getClass().getSimpleName()));
         }
 
-        if (Objects.equals(scheme, uri.scheme())) {
+        if (Objects.equals(scheme(), uri.scheme())) {
             checkArgument(BackendFactoryRegistry.getInstance().isRegistered(uri.scheme()),
                     "Unregistered scheme (%s)", uri.scheme());
 
@@ -148,7 +159,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromServer(String host, int port, String... segments) {
-        checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        checkNotNull(scheme(), "Cannot create URI without a valid scheme");
         checkNotNull(host);
         checkNotNull(segments);
         checkArgument(port >= 0);
@@ -157,7 +168,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
             throw new UnsupportedOperationException(String.format("%s does not support server-based URIs", getClass().getSimpleName()));
         }
 
-        return URI.createHierarchicalURI(scheme,
+        return URI.createHierarchicalURI(scheme(),
                 host + ':' + port,
                 null,
                 segments,
@@ -177,10 +188,10 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     private URI fromFile(URI uri) {
-        checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        checkNotNull(scheme(), "Cannot create URI without a valid scheme");
         checkArgument(uri.isFile(), "Expecting a file-based URI: {0}", uri.toString());
 
-        return fromUri(URI.createHierarchicalURI(scheme,
+        return fromUri(URI.createHierarchicalURI(scheme(),
                 uri.authority(),
                 uri.device(),
                 uri.segments(),

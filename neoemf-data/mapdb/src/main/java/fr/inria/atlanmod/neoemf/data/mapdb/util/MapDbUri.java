@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
@@ -29,21 +29,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
+@FactoryBinding(MapDbBackendFactory.class)
 @ParametersAreNonnullByDefault
-@BackendFactoryBinding(MapDbBackendFactory.class)
 public class MapDbUri extends AbstractUriBuilder {
-
-    /**
-     * The scheme associated to the {@link URI}.
-     */
-    @Nonnull
-    public static final String SCHEME = formatScheme(MapDbBackendFactory.getInstance());
 
     /**
      * Constructs a new {@code MapDbUri}.
      */
     private MapDbUri() {
-        super(SCHEME);
     }
 
     /**

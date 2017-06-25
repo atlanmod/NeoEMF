@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
@@ -29,21 +29,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
+@FactoryBinding(BlueprintsBackendFactory.class)
 @ParametersAreNonnullByDefault
-@BackendFactoryBinding(BlueprintsBackendFactory.class)
 public class BlueprintsUri extends AbstractUriBuilder {
-
-    /**
-     * The scheme associated to the URI.
-     */
-    @Nonnull
-    public static final String SCHEME = formatScheme(BlueprintsBackendFactory.getInstance());
 
     /**
      * Constructs a new {@code BlueprintsUri}.
      */
     private BlueprintsUri() {
-        super(SCHEME);
     }
 
     /**

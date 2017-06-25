@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
@@ -27,8 +27,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@FactoryBinding(BerkeleyDbBackendFactory.class)
 @ParametersAreNonnullByDefault
-@BackendFactoryBinding(BerkeleyDbBackendFactory.class)
 public class BerkeleyDbOptions extends AbstractPersistenceOptions<BerkeleyDbOptions> {
 
     /**

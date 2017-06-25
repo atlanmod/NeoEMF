@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -57,17 +57,12 @@ public interface HBaseContext extends Context {
     }
 
     @Override
-    default String uriScheme() {
-        return HBaseUri.SCHEME;
-    }
-
-    @Override
     default URI createUri(URI uri) {
-        return HBaseUri.builder().fromServer(HBaseCluster.host(), HBaseCluster.port(), uri);
+        return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), uri);
     }
 
     @Override
     default URI createUri(File file) {
-        return HBaseUri.builder().fromServer(HBaseCluster.host(), HBaseCluster.port(), file.getName());
+        return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), file.getName());
     }
 }

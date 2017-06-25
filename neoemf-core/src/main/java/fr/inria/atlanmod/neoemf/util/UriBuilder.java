@@ -1,5 +1,7 @@
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.neoemf.binding.Bindings;
+
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
@@ -20,6 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface UriBuilder {
 
     /**
+     * The prefix used for all {@link URI}s.
+     */
+    String PREFIX = "neo-";
+
+    /**
      * Retrieves the instance of {@code UriBuilder} that is associated to a
      * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
      *
@@ -29,8 +36,7 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forName(String name) {
-        Class<? extends UriBuilder> cls = Reflect.forName(UriBuilder.class, name);
-        return Reflect.newStaticInstance(cls, "builder");
+        return Bindings.findByName(UriBuilder.class, name);
     }
 
     /**
@@ -42,8 +48,7 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forScheme(String scheme) {
-        Class<? extends UriBuilder> cls = Reflect.forScheme(UriBuilder.class, scheme);
-        return Reflect.newStaticInstance(cls, "builder");
+        return Bindings.findByScheme(UriBuilder.class, scheme);
     }
 
     /**

@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
+import fr.inria.atlanmod.neoemf.binding.Bindings;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.util.Reflect;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.ILogListener;
@@ -82,7 +82,7 @@ public class NeoUIPlugin extends AbstractUIPlugin {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        Reflect.addUrls(urls);
+        Bindings.addUrls(urls);
     }
 
     @Override

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.neoemf.binding.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
@@ -61,7 +62,8 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = HBaseBackend.NAME.toLowerCase();
+    @FactoryName
+    public static final String NAME = "hbase";
 
     /**
      * Constructs a new {@code HBaseBackendFactory}.

@@ -15,11 +15,6 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
 
 /**
  * A specific {@link Context} for the Blueprints implementation.
@@ -44,20 +39,5 @@ public interface BlueprintsContext extends Context {
     @Override
     default BackendFactory factory() {
         return BlueprintsBackendFactory.getInstance();
-    }
-
-    @Override
-    default String uriScheme() {
-        return BlueprintsUri.SCHEME;
-    }
-
-    @Override
-    default URI createUri(URI uri) {
-        return BlueprintsUri.builder().fromUri(uri);
-    }
-
-    @Override
-    default URI createUri(File file) {
-        return BlueprintsUri.builder().fromFile(file);
     }
 }

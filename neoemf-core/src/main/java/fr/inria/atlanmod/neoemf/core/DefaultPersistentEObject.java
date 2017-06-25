@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.data.BoundedTransientBackend;
+import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.SharedStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
@@ -120,7 +120,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             newStore = PersistentResource.class.cast(resource).store();
         }
         else if (this.resource != resource) {
-            newStore = createBoundedStore(resource);
+            newStore = createBoundStore(resource);
         }
 
         this.resource = resource;
@@ -327,7 +327,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public StoreAdapter eStore() {
         if (isNull(store)) {
-            store = createBoundedStore(resource);
+            store = createBoundStore(resource);
         }
         return store;
     }
@@ -370,16 +370,16 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Creates a new {@link Store} bounded to this object.
+     * Creates a new {@link Store} bound to this object.
      *
      * @param resource the resource to attach the store
      *
      * @return a new {@link Store}
      */
     @Nonnull
-    private StoreAdapter createBoundedStore(@Nullable Resource.Internal resource) {
+    private StoreAdapter createBoundStore(@Nullable Resource.Internal resource) {
         if (isNull(store) || PersistentResource.class.isInstance(store.resource())) {
-            return SharedStoreAdapter.adapt(BoundedTransientBackend.forId(id), resource);
+            return SharedStoreAdapter.adapt(BoundTransientBackend.forId(id), resource);
         }
         else {
             store.resource(resource);

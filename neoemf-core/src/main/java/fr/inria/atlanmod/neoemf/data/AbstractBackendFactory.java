@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.neoemf.binding.Singleton;
 import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
@@ -26,6 +27,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkState;
 /**
  * An abstract {@link BackendFactory} that processes common store options and manages the configuration.
  */
+@Singleton
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackendFactory extends AbstractMapperFactory implements BackendFactory {
 

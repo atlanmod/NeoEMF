@@ -20,7 +20,7 @@ Current SNAPSHOT.
 - __[DEL]__ MapDB `Serializer`s have been replaced by Java serializers _(may change in the near future)_
 - __[DEL]__ All backend-specific implementations of `PersistentStore` have been merged with those at `core`-level
 - __[DEL]__ `InvalidStore` has been replaced by `InvalidBackend`
-- __[DEL]__ `TransientStore`s have been replaced by `BoundedTransientStore` (a lightweigth version of `TransientBackend`)
+- __[DEL]__ `TransientStore`s have been replaced by `BoundTransientStore` (a lightweigth version of `TransientBackend`)
 
 ### Utility methods
 - __[NEW]__ Some classes that provides utility methods have been added: `MoreIterables`, `MoreArrays`, `Preconditions`
@@ -58,7 +58,7 @@ should not be called if it's not loaded
 `EcoreProcessor` which has access to its real type with the `EPackage`
 - __[FIX]__ Issue #64: If an `Id` is not found in `Backend`s, then an empty array is returned
 - __[FIX]__ Issue #70: The `LazyMatchEngine` class has been removed
-- __[FIX]__ Issue #71: `BoundedTransientBackend` are registered in a local registry to ensure that the features can be 
+- __[FIX]__ Issue #71: `BoundTransientBackend` are registered in a local registry to ensure that the features can be 
 retrieved even if the associated `PersistentEObject` is freed from memory
 - __[FIX]__ Issue #72: Ignore the uniqueness check of identifiers when creating a new `Vertex`
 - __[FIX]__ Issue #73: The `neoemf-data-map-core` module no longer exists

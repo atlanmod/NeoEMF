@@ -25,9 +25,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface BlueprintsBackend extends PersistentBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    String NAME = "Blueprints";
 }

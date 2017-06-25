@@ -28,10 +28,10 @@ import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
- * A {@link TransientBackend}, bounded to a unique {@link Id}, that stores all elements in {@link Map}s.
+ * A {@link TransientBackend}, bound to a unique {@link Id}, that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public final class BoundedTransientBackend extends AbstractTransientBackend<String> {
+public final class BoundTransientBackend extends AbstractTransientBackend<String> {
 
     /**
      * A map that holds all features associated to their owner {@link Id}.
@@ -70,27 +70,27 @@ public final class BoundedTransientBackend extends AbstractTransientBackend<Stri
     private final Id owner;
 
     /**
-     * Constructs a new {@code BoundedTransientBackend} with the given {@code owner}.
+     * Constructs a new {@code BoundTransientBackend} with the given {@code owner}.
      *
      * @param owner    the identifier of the owner of this back-end
      * @param features the map used for stroring the features of this backend
      */
-    private BoundedTransientBackend(Id owner, Map<String, Object> features) {
+    private BoundTransientBackend(Id owner, Map<String, Object> features) {
         this.owner = owner;
         this.features = features;
 
-        Log.debug("BoundedTransientBackend created for {0}", owner);
+        Log.debug("BoundTransientBackend created for {0}", owner);
     }
 
     /**
-     * Retrieves or creates a new {@code BoundedTransientBackend} with the given {@code owner}.
+     * Retrieves or creates a new {@code BoundTransientBackend} with the given {@code owner}.
      *
      * @param owner the identifier of the owner of this back-end
      *
-     * @return a backend, bounded to the {@code owner}
+     * @return a backend, bound to the {@code owner}
      */
     public static TransientBackend forId(Id owner) {
-        return new BoundedTransientBackend(owner, FEATURES_REGISTRY.computeIfAbsent(owner, (o) -> new HashMap<>()));
+        return new BoundTransientBackend(owner, FEATURES_REGISTRY.computeIfAbsent(owner, (o) -> new HashMap<>()));
     }
 
     @Override
@@ -101,11 +101,11 @@ public final class BoundedTransientBackend extends AbstractTransientBackend<Stri
         // Unregister the current back-end and clear all features associated with the owner
         FEATURES_REGISTRY.remove(owner).clear();
 
-        Log.debug("BoundedTransientBackend closed for {0}", owner);
+        Log.debug("BoundTransientBackend closed for {0}", owner);
 
         // Cleans all shared in-memory maps: they will no longer be used
         if (FEATURES_REGISTRY.isEmpty()) {
-            Log.debug("Cleaning BoundedTransientBackend");
+            Log.debug("Cleaning BoundTransientBackend");
 
             CONTAINERS.clear();
             INSTANCES.clear();

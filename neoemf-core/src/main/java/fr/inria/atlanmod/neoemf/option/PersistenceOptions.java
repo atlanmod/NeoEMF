@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.common.log.Level;
+import fr.inria.atlanmod.neoemf.binding.Bindings;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.util.Reflect;
 
 import java.util.Map;
 
@@ -39,8 +39,7 @@ public interface PersistenceOptions {
      */
     @Nonnull
     static PersistenceOptions forName(String name) {
-        Class<? extends PersistenceOptions> cls = Reflect.forName(PersistenceOptions.class, name);
-        return Reflect.newStaticInstance(cls, "builder");
+        return Bindings.findByName(PersistenceOptions.class, name);
     }
 
     /**
@@ -53,8 +52,7 @@ public interface PersistenceOptions {
      */
     @Nonnull
     static PersistenceOptions forScheme(String scheme) {
-        Class<? extends PersistenceOptions> cls = Reflect.forScheme(PersistenceOptions.class, scheme);
-        return Reflect.newStaticInstance(cls, "builder");
+        return Bindings.findByScheme(PersistenceOptions.class, scheme);
     }
 
     /**

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.common.log.Level;
+import fr.inria.atlanmod.neoemf.binding.Builder;
 import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
 
 import java.util.Collections;
@@ -33,6 +34,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  *
  * @param <B> the "self"-type of this {@link PersistenceOptions}
  */
+@Builder("builder")
 @ParametersAreNonnullByDefault
 public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOptions<B>> implements PersistenceOptions {
 

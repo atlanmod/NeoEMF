@@ -14,10 +14,11 @@ package fr.inria.atlanmod.neoemf.data;
 import com.google.common.annotations.VisibleForTesting;
 
 import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.neoemf.binding.Bindings;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.Reflect;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
@@ -155,7 +156,7 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Registers all {@link BackendFactory} with their {@link URI} scheme by using the {@link BackendFactoryBinding}
+     * Registers all {@link BackendFactory} with their {@link URI} scheme by using the {@link FactoryBinding}
      * annotation.
      * <p>
      * This method scan the full Java classpath to retrieve the annotated element.
@@ -163,16 +164,18 @@ public final class BackendFactoryRegistry {
     public void registerAll() {
         Log.debug("Registering all factories");
 
-        Set<Class<? extends UriBuilder>> boundedClasses = Reflect.typesAnnotatedWith(BackendFactoryBinding.class, UriBuilder.class);
+        Set<Class<? extends UriBuilder>> boundClasses = Bindings.typesBoundWith(FactoryBinding.class, UriBuilder.class);
 
-        if (boundedClasses.isEmpty()) {
+        if (boundClasses.isEmpty()) {
             Log.warn("No factory has been found in the classpath");
             return;
         }
 
-        for (Class<? extends UriBuilder> cls : boundedClasses) {
-            BackendFactory factory = Reflect.newStaticInstance(cls.getAnnotation(BackendFactoryBinding.class).value(), "getInstance");
-            String scheme = Reflect.getStaticFieldValue(cls, "SCHEME");
+        for (Class<? extends UriBuilder> cls : boundClasses) {
+            Class<? extends BackendFactory> factoryType = cls.getAnnotation(FactoryBinding.class).value();
+
+            BackendFactory factory = Bindings.newInstance(factoryType);
+            String scheme = Bindings.schemeOf(factoryType);
 
             register(scheme, factory);
             Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);

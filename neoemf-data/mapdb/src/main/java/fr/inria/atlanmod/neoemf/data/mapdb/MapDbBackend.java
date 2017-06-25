@@ -27,9 +27,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface MapDbBackend extends PersistentBackend {
-
-    /**
-     * The literal description of this back-end.
-     */
-    String NAME = "MapDB";
 }

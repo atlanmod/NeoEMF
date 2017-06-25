@@ -15,6 +15,7 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
+import fr.inria.atlanmod.neoemf.binding.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -55,7 +56,8 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = BerkeleyDbBackend.NAME.toLowerCase();
+    @FactoryName
+    public static final String NAME = "berkeleydb";
 
     /**
      * Constructs a new {@code BerkeleyDbBackendFactory}.

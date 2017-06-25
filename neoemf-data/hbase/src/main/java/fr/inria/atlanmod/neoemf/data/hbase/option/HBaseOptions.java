@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.option;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
@@ -25,8 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@FactoryBinding(HBaseBackendFactory.class)
 @ParametersAreNonnullByDefault
-@BackendFactoryBinding(HBaseBackendFactory.class)
 public class HBaseOptions extends AbstractPersistenceOptions<HBaseOptions> {
 
     /**

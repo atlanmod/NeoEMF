@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactoryBinding;
+import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
@@ -28,8 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@FactoryBinding(BlueprintsBackendFactory.class)
 @ParametersAreNonnullByDefault
-@BackendFactoryBinding(BlueprintsBackendFactory.class)
 public class BlueprintsOptions extends AbstractBlueprintsOptions<BlueprintsOptions> {
 
     /**
