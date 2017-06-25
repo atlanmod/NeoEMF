@@ -70,7 +70,6 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      */
     private static void updateClasspath(BundleContext context) {
         Set<URL> urls = Arrays.stream(context.getBundles())
-                .filter(b -> b.getSymbolicName().startsWith("fr.inria.atlanmod.neoemf.data"))
                 .map(b -> {
                     try {
                         return FileLocator.getBundleFile(b).toURI().toURL();

@@ -78,12 +78,42 @@ public final class Bindings {
     public static void addUrls(Collection<URL> urls) {
         checkNotNull(urls);
 
-        // TODO Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
-
-        URLS.addAll(urls);
+        Set<URL> relatedUrls = filterUrls(urls);
+        if (!relatedUrls.isEmpty()) {
+            URLS.addAll(relatedUrls);
+        }
 
         // Refresh the cache: annotations stay the same, but the result may have been changed
         BOUND_TYPES.invalidateAll();
+    }
+
+    /**
+     * Filters the {@code urls} to keep only those that can be related to NeoEMF.
+     *
+     * @param urls the URLs to be filtered
+     *
+     * @return a set of related URLs
+     */
+    @Nonnull
+    private static Set<URL> filterUrls(Collection<URL> urls) {
+        ConfigurationBuilder baseConfig = new ConfigurationBuilder()
+                .useParallelExecutor()
+                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
+
+        // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
+        return urls.stream()
+                .filter(u -> {
+                    try {
+                        Set<Class<?>> relatedClasses = new Reflections(baseConfig.setUrls(u))
+                                .getTypesAnnotatedWith(FactoryBinding.class);
+
+                        return !relatedClasses.isEmpty();
+                    }
+                    catch (RuntimeException e) {
+                        return false;
+                    }
+                })
+                .collect(Collectors.toSet());
     }
 
     /**

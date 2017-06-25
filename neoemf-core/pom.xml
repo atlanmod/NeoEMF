@@ -195,13 +195,11 @@
                         <Bundle-SymbolicName>
                             ${project.groupId}.core
                         </Bundle-SymbolicName>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.common.*,
                             fr.inria.atlanmod.neoemf.*,
                         </Export-Package>
-                        <DynamicImport-Package>
-                            ${project.groupId}.data.*
-                        </DynamicImport-Package>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional,
