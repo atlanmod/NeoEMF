@@ -104,7 +104,7 @@ public final class BackendFactoryRegistry {
     public BackendFactory getFactoryProvider(String scheme) {
         checkNotNull(scheme);
 
-        if (!initialized && !factories.containsKey(scheme)) {
+        if (!initialized || !factories.containsKey(scheme)) {
             registerAll();
         }
 
@@ -126,7 +126,7 @@ public final class BackendFactoryRegistry {
             return false;
         }
 
-        if (!initialized && !factories.containsKey(scheme)) {
+        if (!initialized || !factories.containsKey(scheme)) {
             registerAll();
         }
 
