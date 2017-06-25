@@ -32,14 +32,10 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
@@ -63,33 +59,12 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implements StoreAdapter {
 
     /**
-     * A set that holds all stores that need to be closed when the JVM will shutdown.
-     */
-    @Nonnull
-    private static final Set<AbstractStoreAdapter> ADAPTERS = new HashSet<>();
-
-    static {
-        Runtime.getRuntime().addShutdownHook(((ThreadFactory) r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            return thread;
-        }).newThread(() -> {
-            for (Iterator<AbstractStoreAdapter> adapters = ADAPTERS.iterator(); adapters.hasNext(); ) {
-                adapters.next().safeClose();
-                adapters.remove();
-            }
-        }));
-    }
-
-    /**
      * Constructs a new {@code AbstractStoreAdapter} on the given {@code store}.
      *
      * @param store the inner store
      */
     protected AbstractStoreAdapter(Store store) {
         super(store);
-
-        ADAPTERS.add(this);
     }
 
     /**
@@ -129,29 +104,14 @@ public abstract class AbstractStoreAdapter extends AbstractStoreDecorator implem
     protected abstract Cache<Id, PersistentEObject> cache();
 
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public void close() {
-        if (ADAPTERS.remove(this)) {
-            safeClose();
-            next(new ClosedStore());
-        }
+        super.close();
+        next(new ClosedStore());
     }
 
     @Override
     public boolean exists(Id id) {
         return nonNull(cache().get(id)) || super.exists(id);
-    }
-
-    /**
-     * Cleanly closes this mapper, clear all data in-memory and releases any system resources associated with it. All
-     * modifications are saved before closing.
-     */
-    public void safeClose() {
-        try {
-            next().close();
-        }
-        catch (RuntimeException ignored) {
-        }
     }
 
     @Nullable

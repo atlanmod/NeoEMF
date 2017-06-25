@@ -22,6 +22,7 @@ public abstract class AbstractBackend implements Backend {
         }
 
         try {
+            save();
             safeClose();
         }
         catch (Exception ignored) {
