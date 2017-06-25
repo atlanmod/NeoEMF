@@ -3,10 +3,8 @@ package fr.inria.atlanmod.neoemf.demo.notification;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.demo.importer.BlueprintsImporter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.URI;
@@ -19,10 +17,11 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * This class shows how to load a NeoEMF/Graph resource and add an {@link Adapter} to its top-level element.
+ * This class shows how to load a NeoEMF/Graph resource and add an {@link org.eclipse.emf.common.notify.Adapter} to its
+ * top-level element.
  * <p>
- * This class needs to load an existing NeoEMF/Graph model to work, run {@link BlueprintsImporter} and
- * {@link EfficientBlueprintsImporter} to create the instance of the model.
+ * This class needs to load an existing NeoEMF/Graph model to work, run {@link fr.inria.atlanmod.neoemf.demo.importer.BlueprintsImporter}
+ * and {@link fr.inria.atlanmod.neoemf.demo.importer.EfficientBlueprintsImporter} to create the instance of the model.
  */
 public class LoadedResourceNotifier {
 

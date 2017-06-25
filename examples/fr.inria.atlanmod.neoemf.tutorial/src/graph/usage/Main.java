@@ -8,7 +8,6 @@ import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.IOException;
@@ -125,7 +124,10 @@ public class Main {
      * @throws IOException if a resource cannot be saved or loaded
      */
     public static void main(String[] args) throws IOException {
-        Resource[] resources = {createBlueprintsResource(), createMapDBResource()};
+        Resource[] resources = {
+                createBlueprintsResource(),
+                createMapDBResource()
+        };
 
         for (Resource resource : resources) {
             write(resource);

@@ -5,7 +5,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.URI;
@@ -20,7 +19,8 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * This class shows how to create a new NeoEMF/Graph resource and add an {@link Adapter} to its top-level element.
+ * This class shows how to create a new NeoEMF/Graph resource and add an {@link org.eclipse.emf.common.notify.Adapter}
+ * to its top-level element.
  * <p>
  * In this example the resource is first created, and an element is added to its direct content. An adapter is set to
  * the created object and update operations are performed to generate new notifications. Saving the resource does not
