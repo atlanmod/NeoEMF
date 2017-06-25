@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -16,90 +15,94 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static java.util.Objects.nonNull;
+
 /**
- * This abstract example wizard simply unzips a number of zips into the workspace as projects. It does not
- * offer any pages but can be added as a new wizard to the new wizards dialog through the
- * org.eclipse.ui.newWizards extension point.
+ * This abstract example wizard simply unzips a number of zips into the workspace as projects.
+ * It does not offer any pages but can be added as a new wizard to the new wizards dialog through the
+ * {@code org.eclipse.ui.newWizards} extension point.
  * <p>
- * Clients should subclass this class and override the <code>getProjectDescriptor()</code> method to provide
- * the location of the project zips that should be unzipped into the workspace. Note that any projects that
- * are already in the workspace will <i>not</i> be overwritten because the user could have made changes to
- * them that would be lost.
+ * Clients should subclass this class and override the {@link #getProjectDescriptors()} method to provide the location
+ * of the project zips that should be unzipped into the workspace.
+ * Note that any projects that are already in the workspace will <i>not</i> be overwritten because the user could have
+ * made changes to them that would be lost.
  * <p>
- * It is highly recommended when registering subclasses to the new wizards extension point that the wizard
- * declaration should have canFinishEarly = true and hasPages = false. Any label and icon can be freely given
- * to the wizard to suit the needs of the client.
+ * It is highly recommended when registering subclasses to the new wizards extension point that the wizard declaration
+ * should have {@code canFinishEarly == true} and {@code hasPages == false}.
+ * Any label and icon can be freely given to the wizard to suit the needs of the client.
  * <p>
- * This class originally came from plugin <code>org.eclipse.emf.ocl.examples</code>.
+ * This class originally came from plugin {@code org.eclipse.emf.ocl.examples}.
  */
 public abstract class AbstractExampleWizard extends Wizard implements INewWizard {
 
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        // No code is necessary.
+        // Do nothing
     }
 
     @Override
     public boolean performFinish() {
-        final Collection<ProjectDescriptor> projectDescriptors = getProjectDescriptors();
+        Collection<ProjectDescriptor> projectDescriptors = getProjectDescriptors();
 
         try {
-            getContainer().run(true, false, monitor -> {
-                final WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-                    @Override
-                    protected void execute(IProgressMonitor m)
+            getContainer().run(true, false, monitor -> new WorkspaceModifyOperation() {
+                @Override
+                protected void execute(IProgressMonitor m) throws CoreException {
+                    m.beginTask("Unzipping example...", projectDescriptors.size());
 
-                            throws CoreException, InvocationTargetException, InterruptedException
-                    {
-                        m.beginTask("Unzipping example...", projectDescriptors.size());
-
-                        for (final ProjectDescriptor project : projectDescriptors) {
-                            unzipProject(project, m);
-                            m.worked(1);
+                    for (ProjectDescriptor p : projectDescriptors) {
+                        try {
+                            extractProject(p, m);
                         }
+                        catch (CoreException e) {
+                            log(e);
+                        }
+
+                        m.worked(1);
                     }
-                };
-                op.run(monitor);
-            });
+                }
+            }.run(monitor));
         }
-        catch (final InvocationTargetException e) {
+        catch (InvocationTargetException e) {
             log(e);
         }
-        catch (final InterruptedException e) {
-            // We cannot be interrupted, just proceed as normal.
+        catch (InterruptedException e) {
+            // We cannot be interrupted, just proceed as normal
         }
 
         return true;
     }
 
     /**
-     * The subclass provides the specific project descriptors for the projects that should be unzipped into
-     * the workspace. Note that any projects that already exist in the workspace will not be overwritten as
-     * they may contain changes made by the user.
+     * The subclass provides the specific project descriptors for the projects that should be unzipped into the
+     * workspace. Note that any projects that already exist in the workspace will not be overwritten as they may contain
+     * changes made by the user.
      *
      * @return the collection of project descriptors that should be unzipped into the workspace.
      */
     protected abstract Collection<ProjectDescriptor> getProjectDescriptors();
 
     /**
-     * Any exception occuring during the example initialization (projects unzipping, workspace refreshing,
-     * ...) will be handed over to this method. Subclasses should override this in order to properly log them.
+     * Any exception occuring during the example initialization (projects unzipping, workspace refreshing, ...) will be
+     * handed over to this method. Subclasses should override this in order to properly log them.
      *
-     * @param e the exception that should be logged.
+     * @param e the exception that should be logged.F
      */
-    protected void log(Exception e) {
-        if (e instanceof CoreException) {
-            NeoEMFExamplesPlugin.getDefault().getLog().log(((CoreException) e).getStatus());
+    private void log(Exception e) {
+        if (CoreException.class.isInstance(e)) {
+            NeoEMFExamplesPlugin.getDefault().getLog().log(CoreException.class.cast(e).getStatus());
         }
         else {
             NeoEMFExamplesPlugin.getDefault().getLog().log(
@@ -108,86 +111,69 @@ public abstract class AbstractExampleWizard extends Wizard implements INewWizard
     }
 
     /**
-     * This will unzip the project described by <code>descriptor</code>, open it and refresh the workspace.
+     * This will extract the project described by {@code descriptor}, open it and refresh the workspace.
      *
      * @param descriptor the description of the project as it should be unzipped.
      * @param monitor    the {@link IProgressMonitor} that will be used to monitor the operation.
      */
-    protected void unzipProject(ProjectDescriptor descriptor, IProgressMonitor monitor) {
-        final String bundleName = descriptor.getBundleName();
-        final String zipLocation = descriptor.getZipLocation();
-        final String projectName = descriptor.getProjectName();
-
-        final URL interpreterZipUrl = FileLocator.find(Platform.getBundle(bundleName), new Path(zipLocation), null);
-
-        final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-
+    private void extractProject(ProjectDescriptor descriptor, IProgressMonitor monitor) throws CoreException {
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(descriptor.projectName());
         if (project.exists()) {
             return;
         }
 
-        try {
-            // We make sure that the project is created from this point forward.
-            project.create(monitor);
+        project.create(monitor);
 
-            final ZipInputStream zipFileStream = new ZipInputStream(interpreterZipUrl.openStream());
-            ZipEntry zipEntry = zipFileStream.getNextEntry();
+        URL zipUrl = FileLocator.find(
+                Platform.getBundle(descriptor.bundleName()),
+                new org.eclipse.core.runtime.Path(descriptor.zipLocation()),
+                null);
 
-            // We derive a regexedProjectName so that the dots don't end up being interpreted as the dot operator in the
-            // regular expression language.
-            final String regexedProjectName = projectName.replaceAll("\\.", "\\.");
+        try (ZipInputStream zis = new ZipInputStream(zipUrl.openStream())) {
+            copyAll(zis, Paths.get(project.getLocation().toOSString()), Pattern.quote(descriptor.projectName()));
+        }
+        catch (IOException e) {
+            log(e);
+        }
 
-            while (zipEntry != null) {
-                // We will construct the new file but we will strip off the project directory from the beginning of the
-                // path because we have already created the destination project for this zip.
-                final File file = new File(project.getLocation().toString(), zipEntry.getName().replaceFirst(
-                        "^" + regexedProjectName + "/", ""));
 
-                if (!zipEntry.isDirectory()) {
+        project.open(monitor);
+        project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
-					/*
-                     * Copy files (and make sure parent directory exist)
-					 */
-                    final File parentFile = file.getParentFile();
-                    if (null != parentFile && !parentFile.exists()) {
-                        parentFile.mkdirs();
-                    }
+        // Close and re-open the project to force eclipse to re-evaluate any natures that this project may have.
+        project.close(monitor);
+        project.open(monitor);
+    }
 
-                    try (OutputStream os = new FileOutputStream(file)) {
-                        final int bufferSize = 102400;
-                        final byte[] buffer = new byte[bufferSize];
+    /**
+     * Copy all the content of the ZIP stream to the specified {@code rootDir}.
+     *
+     * @param zis         the stream to copy
+     * @param rootDir     the target directory to store the content
+     * @param projectName the name of the project
+     *
+     * @throws IOException if an I/O error occurs during the extraction
+     */
+    private void copyAll(ZipInputStream zis, Path rootDir, String projectName) throws IOException {
+        ZipEntry entry;
 
-                        while (true) {
-                            final int len = zipFileStream.read(buffer);
-                            if (zipFileStream.available() == 0) {
-                                break;
-                            }
-                            os.write(buffer, 0, len);
-                        }
-                    }
-                }
+        while (nonNull(entry = zis.getNextEntry())) {
+            Path file = rootDir.resolve(entry.getName().replaceFirst("^" + projectName + "/", ""));
 
-                zipFileStream.closeEntry();
-                zipEntry = zipFileStream.getNextEntry();
+            if (!entry.isDirectory()) {
+                Files.createDirectories(file.getParent());
+                Files.copy(zis, file, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            project.open(monitor);
-            project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-
-            // Close and re-open the project to force eclipse to re-evaluate any natures that this project may have.
-            project.close(monitor);
-            project.open(monitor);
-        }
-        catch (final IOException | CoreException e) {
-            log(e);
+            zis.closeEntry();
         }
     }
 
     /**
-     * A descriptor class that describes where to find the zipped contents of a project and what that project
-     * should be named when unzipped into the workspace.
+     * A descriptor class that describes where to find the zipped contents of a project and what that project should be
+     * named when unzipped into the workspace.
      */
-    public static class ProjectDescriptor {
+    protected static class ProjectDescriptor {
 
         /**
          * Name of the plugin where the zip file is located.
@@ -195,26 +181,25 @@ public abstract class AbstractExampleWizard extends Wizard implements INewWizard
         private final String bundleName;
 
         /**
+         * Location (relative to the bundle root) of the file to extract.
+         */
+        private final String zipLocation;
+
+        /**
          * Name of the project that should be created when unzipping.
          */
         private final String projectName;
 
         /**
-         * Location (relative to the bundle root) of the file to unzip.
-         */
-        private final String zipLocation;
-
-        /**
-         * Construct a descriptor that points to a zip file located in a particular bundle at the given
-         * location within that bundle. Also provided is the project name for which the zip is the contents.
+         * Construct a descriptor that points to a zip file located in a particular bundle at the given location within
+         * that bundle. Also provided is the project name for which the zip is the contents.
          * Note that this project name should be the same as is in the contents not some alternative name.
          *
-         * @param bundleName  the bundle in the runtime that contains the zipped up project contents.
-         * @param zipLocation the location within the bundle where the zip file is located.
-         * @param projectName the project name in the workspace that will be created to house the project contents.
+         * @param bundleName  the bundle in the runtime that contains the zipped up project contents
+         * @param zipLocation the location within the bundle where the zip file is located
+         * @param projectName the project name in the workspace that will be created to house the project contents
          */
         public ProjectDescriptor(String bundleName, String zipLocation, String projectName) {
-            super();
             this.bundleName = bundleName;
             this.zipLocation = zipLocation;
             this.projectName = projectName;
@@ -223,27 +208,27 @@ public abstract class AbstractExampleWizard extends Wizard implements INewWizard
         /**
          * Returns the bundle name.
          *
-         * @return the bundle name.
+         * @return the bundle name
          */
-        public String getBundleName() {
+        public String bundleName() {
             return bundleName;
         }
 
         /**
          * Returns the project name.
          *
-         * @return the project name.
+         * @return the project name
          */
-        public String getProjectName() {
+        public String projectName() {
             return projectName;
         }
 
         /**
          * Returns the zip file location.
          *
-         * @return the zip file location.
+         * @return the zip file location
          */
-        public String getZipLocation() {
+        public String zipLocation() {
             return zipLocation;
         }
     }
