@@ -41,7 +41,7 @@ class AsyncLogger implements Logger {
     /**
      * The concurrent pool.
      */
-    private static final ExecutorService pool = createService();
+    private static final ExecutorService POOL = createService();
 
     /**
      * The internal logger.
@@ -71,6 +71,8 @@ class AsyncLogger implements Logger {
                 }));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Log.info("Shutting down AsyncLogger...");
+
             try {
                 service.shutdown();
 
@@ -80,6 +82,8 @@ class AsyncLogger implements Logger {
             }
             catch (InterruptedException ignored) {
             }
+
+            Log.info("AsyncLogger properly shut down");
         }));
 
         return service;
@@ -111,7 +115,7 @@ class AsyncLogger implements Logger {
     private void execute(Runnable runnable) {
         try {
             // Asynchronous call
-            pool.submit(runnable);
+            POOL.submit(runnable);
         }
         catch (RejectedExecutionException e) {
             // Synchronous call

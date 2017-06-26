@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.binding;
+package fr.inria.atlanmod.neoemf.bind;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -9,12 +9,12 @@ import java.lang.annotation.Target;
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Singleton {
+public @interface Builder {
 
     /**
-     * Gets the name of the method used to get the single instance of the annotated class.
+     * Gets the name of the method used to get a new instance of the annotated class.
      *
      * @return the name of the method
      */
-    String value() default "getInstance";
+    String value() default "newBuilder";
 }

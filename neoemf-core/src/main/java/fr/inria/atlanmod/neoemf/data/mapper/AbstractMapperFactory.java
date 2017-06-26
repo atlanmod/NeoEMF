@@ -1,6 +1,6 @@
 package fr.inria.atlanmod.neoemf.data.mapper;
 
-import fr.inria.atlanmod.neoemf.binding.BindingException;
+import fr.inria.atlanmod.neoemf.bind.BindingException;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;

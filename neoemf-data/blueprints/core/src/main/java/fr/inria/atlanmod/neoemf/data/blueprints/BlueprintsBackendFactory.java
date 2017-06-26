@@ -17,7 +17,7 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
-import fr.inria.atlanmod.neoemf.binding.FactoryName;
+import fr.inria.atlanmod.neoemf.bind.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;

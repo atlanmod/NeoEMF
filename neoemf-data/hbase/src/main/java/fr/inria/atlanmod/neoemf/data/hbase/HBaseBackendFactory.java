@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.binding.FactoryName;
+import fr.inria.atlanmod.neoemf.bind.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;

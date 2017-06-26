@@ -10,10 +10,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - Adapted to NeoEMF models
  */
 
-package fr.inria.atlanmod.neoemf.eclipse.ui;
+package fr.inria.atlanmod.neoemf.eclipse.ui.importer;
 
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -45,7 +46,7 @@ public final class GenModels {
     /**
      * ???
      */
-    private static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + "fr.inria.atlanmod.neoemf.core";
+    private static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + NeoUIPlugin.CORE_ID;
 
     /**
      * This class should not be instantiated.

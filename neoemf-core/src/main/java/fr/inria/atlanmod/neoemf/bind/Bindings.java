@@ -1,9 +1,8 @@
-package fr.inria.atlanmod.neoemf.binding;
+package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
@@ -25,6 +24,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -118,19 +118,19 @@ public final class Bindings {
 
     /**
      * Retrieves all types annotated with the specified {@code annotation}, which are also assignable from the given
-     * {@code instance}.
+     * {@code type}.
      *
      * @param annotation the expected annotation
-     * @param instance   the instance of the expected classes
+     * @param type       the type of the expected classes
      * @param <T>        the type of the instances to look for
      *
      * @return a set of annotated classes
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <T> Set<Class<? extends T>> typesBoundWith(Class<? extends Annotation> annotation, Class<? extends T> instance) {
+    public static <T> Set<Class<? extends T>> typesBoundWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
         return BOUND_TYPES.get(annotation).stream()
-                .filter(instance::isAssignableFrom)
+                .filter(type::isAssignableFrom)
                 .map(c -> (Class<? extends T>) c)
                 .collect(Collectors.toSet());
     }
@@ -241,66 +241,38 @@ public final class Bindings {
     }
 
     /**
-     * Retrieves the sub-class of the {@code expectedType} that is associated to a
-     * {@link UriBuilder} which use the given {@code scheme}.
+     * Retrieves the instance of the {@code type} that is bound to a
+     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} with the given {@code value}, by using the speficied
+     * {@code valueMapping}.
      * <p>
-     * The {@code expectedType} <b>must</b> be annotated with {@link FactoryBinding}.
+     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
      *
-     * @param expectedType the super-class of the classes to look for
-     * @param scheme       the scheme of the builder
-     * @param <T>          the type of the class
+     * @param type         the type of the instance to look for
+     * @param value        the expected value
+     * @param valueMapping the function used to retrieve the current value of a factory
+     * @param <T>          the type of the instance
      *
-     * @return a new instance of the {@code expectedType}
+     * @return a new instance of the {@code type}
      *
-     * @throws BindingException if no instance of {@code expectedType} is found for the given {@code scheme},
-     *                          or if an error occurs during the instantiation
+     * @throws BindingException if no instance of {@code type} is found for the given {@code value} by using the
+     *                          given {@code valueMapping}, or if an error occurs during the instantiation
      */
     @Nonnull
-    public static <T> T findByScheme(Class<? extends T> expectedType, String scheme) {
-        Class<? extends BackendFactory> factoryType = BackendFactoryRegistry.getInstance().getFactoryProvider(scheme).getClass();
-
-        for (Class<? extends T> type : typesBoundWith(FactoryBinding.class, expectedType)) {
-            if (factoryType.isAssignableFrom(type.getAnnotation(FactoryBinding.class).value())) {
-                return newInstance(type);
+    public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
+        for (Class<? extends T> t : typesBoundWith(FactoryBinding.class, type)) {
+            if (Objects.equals(value, valueMapping.apply(t.getAnnotation(FactoryBinding.class).value()))) {
+                return newInstance(t);
             }
         }
 
         throw new BindingException(
-                String.format("Unable to find a %s instance for scheme \"%s\"", expectedType.getSimpleName(), scheme));
+                String.format("Unable to find a %s instance for value \"%s\"", type.getSimpleName(), value));
     }
 
     /**
-     * Retrieves the sub-class of the {@code expectedType} that is associated to a
-     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
-     * <p>
-     * The {@code expectedType} <b>must</b> be annotated with {@link FactoryBinding}.
+     * Creates a new pre-configured {@link Reflections}.
      *
-     * @param expectedType the super-class of the classes to look for
-     * @param name         the name of the factory
-     * @param <T>          the type of the class
-     *
-     * @return a new instance of the {@code expectedType}
-     *
-     * @throws BindingException if no instance of {@code expectedType} is found for the given {@code name},
-     *                          or if an error occurs during the instantiation
-     * @see FactoryBinding
-     */
-    @Nonnull
-    public static <T> T findByName(Class<? extends T> expectedType, String name) {
-        for (Class<? extends T> type : typesBoundWith(FactoryBinding.class, expectedType)) {
-            Class<? extends BackendFactory> factoryType = type.getAnnotation(FactoryBinding.class).value();
-
-            if (Objects.equals(name, nameOf(factoryType))) {
-                return newInstance(type);
-            }
-        }
-
-        throw new BindingException(
-                String.format("Unable to find a %s instance for name \"%s\"", expectedType.getSimpleName(), name));
-    }
-
-    /**
-     * Creates a new {@link Reflections} pre-configured for scanning types.
+     * @param scanners the scanners to use
      *
      * @return a new reflections
      */

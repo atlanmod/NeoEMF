@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data;
 import com.google.common.annotations.VisibleForTesting;
 
 import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.neoemf.binding.Bindings;
-import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;

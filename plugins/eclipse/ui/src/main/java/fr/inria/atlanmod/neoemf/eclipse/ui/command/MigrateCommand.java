@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.GenModels;
+import fr.inria.atlanmod.neoemf.eclipse.ui.importer.GenModels;
 import fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter;
 
 import org.eclipse.core.commands.AbstractHandler;

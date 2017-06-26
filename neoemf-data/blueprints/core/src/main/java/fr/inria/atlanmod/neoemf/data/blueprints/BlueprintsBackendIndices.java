@@ -29,19 +29,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -308,71 +305,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         sizeForValue(key, 0);
     }
 
-    @Override
-    public <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return false;
-        }
-
-        checkNotNull(key);
-
-        return get(key.id()).map(v -> IntStream.range(0, sizeOfValue(key).orElse(0))
-                .anyMatch(i -> Objects.equals(v.<V>getProperty(formatProperty(key.name(), i)), value)))
-                .orElse(false);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-
-        if (!vertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfValue(key).orElse(0);
-        for (int i = 0; i < size; i++) {
-            if (Objects.equals(vertex.get().<V>getProperty(formatProperty(key.name(), i)), value)) {
-                return Optional.of(i);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-
-        if (!vertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfValue(key).orElse(0);
-        for (int i = size - 1; i > 0; i--) {
-            if (Objects.equals(vertex.get().<V>getProperty(formatProperty(key.name(), i)), value)) {
-                return Optional.of(i);
-            }
-        }
-
-        return Optional.empty();
-    }
-
     @Nonnull
     @Nonnegative
     @Override
@@ -630,76 +562,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .forEach(Element::remove);
 
         sizeForReference(key, 0);
-    }
-
-    @Override
-    public boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return false;
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-
-        if (!vertex.isPresent()) {
-            return false;
-        }
-
-        Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
-
-        return MoreIterables.stream(referencedVertices)
-                .anyMatch(v -> Objects.equals(v.getId().toString(), reference.toString()));
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-        Optional<Vertex> referencedVertex = get(reference);
-
-        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        // TODO Don't browse all vertices/edges
-        return MoreIterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .boxed()
-                .min(Comparator.comparingInt(i -> i));
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.id());
-        Optional<Vertex> referencedVertex = get(reference);
-
-        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        // TODO Don't browse all vertices/edges
-        return MoreIterables.stream(referencedVertex.get().getEdges(Direction.IN, key.name()))
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .boxed()
-                .max(Comparator.comparingInt(i -> i));
     }
 
     @Nonnull

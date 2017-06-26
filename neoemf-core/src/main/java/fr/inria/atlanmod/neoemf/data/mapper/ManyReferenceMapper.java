@@ -251,7 +251,6 @@ public interface ManyReferenceMapper extends ReferenceMapper {
             return Optional.empty();
         }
 
-        // TODO Don't browse all values
         return Optional.of(allReferencesOf(key).indexOf(reference))
                 .filter(i -> i >= 0);
     }
@@ -274,7 +273,6 @@ public interface ManyReferenceMapper extends ReferenceMapper {
             return Optional.empty();
         }
 
-        // TODO Don't browse all values
         return Optional.of(allReferencesOf(key).lastIndexOf(reference))
                 .filter(i -> i >= 0);
     }

@@ -257,7 +257,6 @@ public interface ManyValueMapper extends ValueMapper {
             return Optional.empty();
         }
 
-        // TODO Don't browse all values
         return Optional.of(allValuesOf(key).indexOf(value))
                 .filter(i -> i >= 0);
     }
@@ -281,7 +280,6 @@ public interface ManyValueMapper extends ValueMapper {
             return Optional.empty();
         }
 
-        // TODO Don't browse all values
         return Optional.of(allValuesOf(key).lastIndexOf(value))
                 .filter(i -> i >= 0);
     }

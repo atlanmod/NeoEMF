@@ -4,8 +4,10 @@ import fr.inria.atlanmod.common.log.Log;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,15 +32,23 @@ public abstract class AbstractBackend implements Backend {
         };
 
         Runtime.getRuntime().addShutdownHook(factory.newThread(() -> {
-            int count = BACKENDS.size();
+            Log.info("Closing PersistentBackends...");
 
-            for (AbstractBackend b : BACKENDS) {
-                b.close(false);
+            AtomicInteger count = new AtomicInteger();
+
+            for (Iterator<AbstractBackend> iter = BACKENDS.iterator(); iter.hasNext(); ) {
+                AbstractBackend backend = iter.next();
+
+                // Only close persistent backends on shutdown, transient backends have nothing to save
+                if (backend.isPersistent()) {
+                    backend.close(false);
+                    count.incrementAndGet();
+                }
+
+                iter.remove();
             }
 
-            if (count > 0) {
-                Log.info("All back-ends have been properly closed ({0,number,#})", count);
-            }
+            Log.info("PersistentBackends properly closed ({0})", count.get());
         }));
     }
 

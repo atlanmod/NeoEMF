@@ -1,6 +1,6 @@
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.binding.Bindings;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -36,7 +36,7 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forName(String name) {
-        return Bindings.findByName(UriBuilder.class, name);
+        return Bindings.findBy(UriBuilder.class, name, Bindings::nameOf);
     }
 
     /**
@@ -48,7 +48,7 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forScheme(String scheme) {
-        return Bindings.findByScheme(UriBuilder.class, scheme);
+        return Bindings.findBy(UriBuilder.class, scheme, Bindings::schemeOf);
     }
 
     /**

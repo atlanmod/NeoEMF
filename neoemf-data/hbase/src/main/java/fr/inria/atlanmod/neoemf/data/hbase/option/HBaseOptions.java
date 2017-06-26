@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.option;
 
-import fr.inria.atlanmod.neoemf.binding.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 

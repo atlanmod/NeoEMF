@@ -12,8 +12,6 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.importer;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.GenModels;
-
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;

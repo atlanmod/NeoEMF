@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.binding;
+package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 

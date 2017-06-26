@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.binding;
+package fr.inria.atlanmod.neoemf.bind;
 
 /**
  * Exception thrown when an error occurred when using bindings across reflection.
