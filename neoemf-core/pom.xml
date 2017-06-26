@@ -23,7 +23,7 @@
         <caffeine.version>2.5.2</caffeine.version>
 
         <cglib.version>3.2.5</cglib.version>
-        <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility -->
+        <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility (15.0) -->
 
         <log4j.version>2.8.2</log4j.version>
     </properties>
