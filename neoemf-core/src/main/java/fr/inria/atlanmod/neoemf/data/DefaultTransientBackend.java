@@ -35,14 +35,14 @@ public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeat
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, SingleFeatureKey> containers = new ManyToOneMap<>();
+    private final Map<Id, SingleFeatureKey> containers = new HashMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassDescriptor> instances = new ManyToOneMap<>();
+    private final Map<Id, ClassDescriptor> instances = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,

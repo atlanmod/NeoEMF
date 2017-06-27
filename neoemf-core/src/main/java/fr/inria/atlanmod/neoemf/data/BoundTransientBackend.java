@@ -47,14 +47,14 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, SingleFeatureKey> CONTAINERS = new ManyToOneMap<>();
+    private static final Map<Id, SingleFeatureKey> CONTAINERS = new HashMap<>();
 
     /**
      * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, ClassDescriptor> INSTANCES = new ManyToOneMap<>();
+    private static final Map<Id, ClassDescriptor> INSTANCES = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,

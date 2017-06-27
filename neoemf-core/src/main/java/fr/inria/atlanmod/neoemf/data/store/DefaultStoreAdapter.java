@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
@@ -27,53 +28,51 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class LocalStoreAdapter extends AbstractStoreAdapter {
+public class DefaultStoreAdapter extends AbstractStoreAdapter {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     @Nonnull
-    private final Cache<Id, PersistentEObject> localCache = CacheBuilder.builder()
+    private final Cache<Id, PersistentEObject> cache = CacheBuilder.builder()
             .softValues()
             .build();
 
     /**
-     * Constructs a new {@code LocalStoreAdapter} on the given {@code store}.
+     * Constructs a new {@code DefaultStoreAdapter} on the given {@code store}.
      *
      * @param store the inner store
      */
-    private LocalStoreAdapter(Store store) {
+    private DefaultStoreAdapter(Store store) {
         super(store);
     }
 
     /**
-     * Adapts the given {@code store} as a {@code LocalStoreAdapter}.
+     * Adapts the given {@code store} as a {@code DefaultStoreAdapter}.
      *
      * @param store the store to adapt
      *
      * @return the adapted {@code store}
      */
     public static StoreAdapter adapt(Store store) {
-        if (StoreAdapter.class.isInstance(store) && !LocalStoreAdapter.class.isInstance(store)) {
-            throw new IllegalArgumentException(String.format("Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getSimpleName()));
-        }
+        checkArgument(DefaultStoreAdapter.class.isInstance(store) || !StoreAdapter.class.isInstance(store),
+                "Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getName());
 
-        //noinspection ConstantConditions
-        return LocalStoreAdapter.class.isInstance(checkNotNull(store))
-                ? LocalStoreAdapter.class.cast(store)
-                : new LocalStoreAdapter(store);
+        return DefaultStoreAdapter.class.isInstance(checkNotNull(store))
+                ? DefaultStoreAdapter.class.cast(store)
+                : new DefaultStoreAdapter(store);
     }
 
     @Nonnull
     @Override
     protected Cache<Id, PersistentEObject> cache() {
-        return localCache;
+        return cache;
     }
 
     @Override
     public void close() {
-        localCache.invalidateAll();
-        localCache.cleanUp();
+        cache.invalidateAll();
+        cache.cleanUp();
 
         super.close();
     }

@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.store.LocalStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.DefaultStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -117,7 +117,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         Backend backend = factory.createTransientBackend();
         Store baseStore = StoreFactory.getInstance().createStore(backend, this, CommonOptions.noOption());
-        store = LocalStoreAdapter.adapt(baseStore);
+        store = DefaultStoreAdapter.adapt(baseStore);
 
         Log.info("PersistentResource created: {0}", uri);
     }
@@ -184,7 +184,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         if (!isLoaded || !isPersistent()) {
             Backend backend = factory.createPersistentBackend(uri, options);
             Store baseStore = StoreFactory.getInstance().createStore(backend, this, options);
-            StoreAdapter newStore = LocalStoreAdapter.adapt(baseStore);
+            StoreAdapter newStore = DefaultStoreAdapter.adapt(baseStore);
 
             // Direct copy to the backend
             store.copyTo(newStore.backend());
@@ -221,7 +221,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
                     Backend backend = factory.createPersistentBackend(uri, options);
                     Store baseStore = StoreFactory.getInstance().createStore(backend, this, options);
-                    store = LocalStoreAdapter.adapt(baseStore);
+                    store = DefaultStoreAdapter.adapt(baseStore);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());

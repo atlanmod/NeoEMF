@@ -83,7 +83,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     @Nonnull
     @Override
     protected Cache<Id, PersistentEObject> cache() {
-        return holder.sharedCache;
+        return holder.cache();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
          * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
          */
         @Nonnull
-        private final Cache<Id, PersistentEObject> sharedCache = CacheBuilder.builder()
+        private final Cache<Id, PersistentEObject> cache = CacheBuilder.builder()
                 .softValues()
                 .build();
 
@@ -147,13 +147,22 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
             return holder;
         }
 
+        /**
+         * Returns the cache of this holder.
+         *
+         * @return the cache
+         */
+        public Cache<Id, PersistentEObject> cache() {
+            return cache;
+        }
+
         @Override
         public void close() {
             if (dependencies.decrementAndGet() == 0L) {
                 REGISTRY.remove(resource);
 
-                sharedCache.invalidateAll();
-                sharedCache.cleanUp();
+                cache.invalidateAll();
+                cache.cleanUp();
             }
         }
     }
