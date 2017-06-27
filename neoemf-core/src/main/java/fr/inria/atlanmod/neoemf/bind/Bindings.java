@@ -2,13 +2,13 @@ package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
+import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
-import org.reflections.scanners.Scanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,12 @@ import static java.util.Objects.nonNull;
 public final class Bindings {
 
     /**
+     * The concurrent pool.
+     */
+    @Nonnull
+    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool();
+
+    /**
      * A set that holds the {@link URL} of the classpath to explore.
      */
     @Nonnull
@@ -49,9 +56,12 @@ public final class Bindings {
      * A cache that holds the result of recent queries on types.
      */
     @Nonnull
-    private static final Cache<Class<? extends Annotation>, Set<Class<?>>> BOUND_TYPES = CacheBuilder.builder()
+    private static final Cache<Class<? extends Annotation>, Set<Class<?>>> ANNOTATED_TYPES = CacheBuilder.builder()
             .softValues()
-            .build(a -> newReflections(new TypeAnnotationsScanner(), new SubTypesScanner()).getTypesAnnotatedWith(a));
+            .build(a -> new Reflections(new ConfigurationBuilder()
+                    .setExecutorService(POOL)
+                    .setUrls(URLS)
+                    .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner())).getTypesAnnotatedWith(a));
 
     static {
         // Add the default URLs for scanning
@@ -84,7 +94,7 @@ public final class Bindings {
         }
 
         // Refresh the cache: annotations stay the same, but the result may have been changed
-        BOUND_TYPES.invalidateAll();
+        ANNOTATED_TYPES.invalidateAll();
     }
 
     /**
@@ -97,7 +107,7 @@ public final class Bindings {
     @Nonnull
     private static Set<URL> filterUrls(Collection<URL> urls) {
         ConfigurationBuilder baseConfig = new ConfigurationBuilder()
-                .useParallelExecutor()
+                .setExecutorService(POOL)
                 .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
         // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
@@ -129,7 +139,7 @@ public final class Bindings {
     @Nonnull
     @SuppressWarnings("unchecked")
     public static <T> Set<Class<? extends T>> typesBoundWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
-        return BOUND_TYPES.get(annotation).stream()
+        return ANNOTATED_TYPES.get(annotation).stream()
                 .filter(type::isAssignableFrom)
                 .map(c -> (Class<? extends T>) c)
                 .collect(Collectors.toSet());
@@ -267,20 +277,5 @@ public final class Bindings {
 
         throw new BindingException(
                 String.format("Unable to find a %s instance for value \"%s\"", type.getSimpleName(), value));
-    }
-
-    /**
-     * Creates a new pre-configured {@link Reflections}.
-     *
-     * @param scanners the scanners to use
-     *
-     * @return a new reflections
-     */
-    @Nonnull
-    private static Reflections newReflections(Scanner... scanners) {
-        return new Reflections(new ConfigurationBuilder()
-                .addUrls(URLS)
-                .useParallelExecutor()
-                .setScanners(scanners));
     }
 }

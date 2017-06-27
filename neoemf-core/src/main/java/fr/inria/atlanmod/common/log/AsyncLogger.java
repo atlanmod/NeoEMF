@@ -11,15 +11,17 @@
 
 package fr.inria.atlanmod.common.log;
 
+import fr.inria.atlanmod.common.concurrent.MoreExecutors;
+
 import org.apache.logging.log4j.LogManager;
 
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
@@ -36,16 +38,19 @@ class AsyncLogger implements Logger {
     /**
      * An empty message.
      */
+    @Nonnull
     private static final String NO_MESSAGE = "";
 
     /**
      * The concurrent pool.
      */
-    private static final ExecutorService POOL = createService();
+    @Nonnull
+    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool(1);
 
     /**
      * The internal logger.
      */
+    @Nonnull
     private final org.apache.logging.log4j.Logger logger;
 
     /**
@@ -55,38 +60,6 @@ class AsyncLogger implements Logger {
      */
     public AsyncLogger(String name) {
         this.logger = LogManager.getLogger(name);
-    }
-
-    /**
-     * Creates a new {@link ExecutorService} that will be closed when the application will exit.
-     *
-     * @return a new service
-     */
-    private static ExecutorService createService() {
-        ExecutorService service = Executors.unconfigurableExecutorService(
-                Executors.newFixedThreadPool(1, r -> {
-                    Thread thread = Executors.defaultThreadFactory().newThread(r);
-                    thread.setDaemon(true);
-                    return thread;
-                }));
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Log.info("Shutting down AsyncLogger...");
-
-            try {
-                service.shutdown();
-
-                if (service.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                    service.shutdownNow().forEach(Runnable::run);
-                }
-            }
-            catch (InterruptedException ignored) {
-            }
-
-            Log.info("AsyncLogger properly shut down");
-        }));
-
-        return service;
     }
 
     @Override
@@ -99,7 +72,12 @@ class AsyncLogger implements Logger {
         execute(() -> {
             try {
                 // FIXME Parameters can change before logging them
-                logger.log(level.level(), () -> MessageFormat.format(Optional.ofNullable(message).orElse(NO_MESSAGE).toString(), params), e);
+                Supplier<String> messageSupplier = () -> Optional.ofNullable(message)
+                        .map(m -> MessageFormat.format(m.toString(), params))
+                        .orElse(NO_MESSAGE);
+
+
+                logger.log(level.level(), messageSupplier, e);
             }
             catch (Exception fe) {
                 logger.error(fe); // Format exception
