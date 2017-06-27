@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.common.log.Log;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -29,15 +27,15 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A simple file-based configuration.
+ * A simple file-based configuration for {@link Backend}s.
  */
 @ParametersAreNonnullByDefault
-public final class Configuration {
+public final class BackendConfiguration {
 
     /**
      * The header of the configuration file.
      */
-    private static final String HEADER = "NeoEMF Configuration v1.0.3";
+    private static final String HEADER = "NeoEMF Configuration";
 
     /**
      * The inner properties.
@@ -52,25 +50,25 @@ public final class Configuration {
     private final Path file;
 
     /**
-     * Constructs a new {@code Configuration} on the given {@code configuration}.
+     * Constructs a new {@code BackendConfiguration} on the given {@code configuration}.
      *
      * @param properties the inner properties
      * @param file       the file to store the properties
      */
-    private Configuration(Properties properties, Path file) {
+    private BackendConfiguration(Properties properties, Path file) {
         this.properties = checkNotNull(properties);
         this.file = checkNotNull(file);
     }
 
     /**
-     * Creates a new {@code Configuration} and loads it from the specified {@code file} if it exists.
+     * Creates a new {@code BackendConfiguration} and loads it from the specified {@code file} if it exists.
      *
      * @param file the properties file to load
      *
      * @return a new configuration
      */
     @Nonnull
-    public static Configuration load(Path file) throws IOException {
+    public static BackendConfiguration load(Path file) throws IOException {
         checkNotNull(file);
 
         Properties properties = new Properties();
@@ -81,26 +79,20 @@ public final class Configuration {
             }
         }
 
-        return new Configuration(properties, file);
+        return new BackendConfiguration(properties, file);
     }
 
     /**
      * Stores this configuration.
      */
-    public void save() {
-        try {
-            if (!Files.exists(file)) {
-                Files.createDirectories(file.getParent());
-                Files.createFile(file);
-            }
-
-            try (Writer writer = Files.newBufferedWriter(file)) {
-                properties.store(writer, HEADER);
-            }
+    public void save() throws IOException {
+        if (!Files.exists(file)) {
+            Files.createDirectories(file.getParent());
+            Files.createFile(file);
         }
-        catch (IOException e) {
-            // Supposedly it's a minor error.
-            Log.warn(e);
+
+        try (Writer writer = Files.newBufferedWriter(file)) {
+            properties.store(writer, HEADER);
         }
     }
 
@@ -111,7 +103,7 @@ public final class Configuration {
      *
      * @return {@code true} if the configuration contains a value for this key, {@code false} otherwise
      */
-    public boolean contains(String key) {
+    public boolean has(String key) {
         checkNotNull(key);
 
         return properties.containsKey(key) && nonNull(get(key));
@@ -137,7 +129,7 @@ public final class Configuration {
      * @param key   the key of the property to change
      * @param value the value
      */
-    public void put(String key, String value) {
+    public void set(String key, String value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -150,12 +142,12 @@ public final class Configuration {
      * @param key   the key of the property to change
      * @param value the value
      */
-    public void putIfAbsent(String key, String value) {
+    public void setIfAbsent(String key, String value) {
         checkNotNull(key);
         checkNotNull(value);
 
-        if (!contains(key)) {
-            put(key, value);
+        if (!has(key)) {
+            set(key, value);
         }
     }
 

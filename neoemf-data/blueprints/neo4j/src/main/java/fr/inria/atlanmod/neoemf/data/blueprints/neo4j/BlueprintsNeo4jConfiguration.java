@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
-import fr.inria.atlanmod.neoemf.data.Configuration;
+import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 
@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An internal class that sets Blueprints {@code Neo4jGraph} default configuration properties in the current NeoEMF
- * {@link Configuration}.
+ * {@link BackendConfiguration}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link BlueprintsBackendFactory} if Neo4j implementation is used to
  * store the underlying database.
@@ -55,8 +55,8 @@ public final class BlueprintsNeo4jConfiguration implements BlueprintsConfigurati
     }
 
     @Override
-    public void putDefaultConfiguration(Configuration configuration, Path directory) {
-        configuration.put(DIRECTORY, directory.toString());
+    public void putDefaultConfiguration(BackendConfiguration config, Path directory) {
+        config.set(DIRECTORY, directory.toString());
     }
 
     /**

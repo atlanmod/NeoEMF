@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.Configuration;
+import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 
@@ -62,22 +62,22 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     public void testDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsOptions.noOption());
 
-        Configuration configuration = getConfiguration();
-        assertThat(configuration.get(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertThat(config.get(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
-     * Retrieves the {@link Configuration} according to the current {@link #file()}.
+     * Retrieves the {@link BackendConfiguration} according to the current {@link #file()}.
      *
      * @return the current configuration
      */
-    protected Configuration getConfiguration() {
-        Path configurationFile = file().toPath().resolve("config.properties");
-        assertThat(configurationFile).exists();
+    protected BackendConfiguration getConfig() {
+        Path configFile = file().toPath().resolve("config.properties");
+        assertThat(configFile).exists();
 
         try {
-            return Configuration.load(configurationFile);
+            return BackendConfiguration.load(configFile);
         }
         catch (IOException e) {
             throw new IllegalStateException(e); // Should not happen
@@ -85,24 +85,24 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     }
 
     /**
-     * Checks that the {@code configuration} has the expected {@code size}.
+     * Checks that the {@code config} has the expected {@code size}.
      *
-     * @param configuration the configuration to check
-     * @param expectedSize  the expected size
+     * @param config       the configuration to check
+     * @param expectedSize the expected size
      */
-    protected void assertConfigurationHasSize(Configuration configuration, int expectedSize) {
-        assertThat(configuration.asMap().size()).isEqualTo(expectedSize);
+    protected void assertConfigurationHasSize(BackendConfiguration config, int expectedSize) {
+        assertThat(config.asMap().size()).isEqualTo(expectedSize);
     }
 
     /**
-     * Checks that the {@code configuration} has the expected {@code value} for the given {@code key}.
+     * Checks that the {@code config} has the expected {@code value} for the given {@code key}.
      *
-     * @param configuration the configuration to check
-     * @param key           the key to look for
-     * @param value         the expected value
+     * @param config the configuration to check
+     * @param key    the key to look for
+     * @param value  the expected value
      */
-    protected void assertConfigurationHasEntry(Configuration configuration, String key, String value) {
-        assertThat(configuration.contains(key)).isTrue();
-        assertThat(configuration.get(key)).isEqualTo(value);
+    protected void assertConfigurationHasEntry(BackendConfiguration config, String key, String value) {
+        assertThat(config.has(key)).isTrue();
+        assertThat(config.get(key)).isEqualTo(value);
     }
 }

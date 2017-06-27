@@ -62,27 +62,32 @@ public abstract class AbstractBackendFactory extends AbstractMapperFactory imple
     protected final void processGlobalConfiguration(Path baseDirectory, String mapping) {
         Path path = baseDirectory.resolve(CONFIG_FILE);
 
-        Configuration configuration;
+        BackendConfiguration configuration;
 
         try {
-            configuration = Configuration.load(path);
+            configuration = BackendConfiguration.load(path);
         }
         catch (IOException e) {
             throw new InvalidBackendException(e);
         }
 
-        configuration.putIfAbsent(BACKEND_PROPERTY, name());
-        configuration.putIfAbsent(FACTORY_PROPERTY, getClass().getName());
+        configuration.setIfAbsent(BACKEND_PROPERTY, name());
+        configuration.setIfAbsent(FACTORY_PROPERTY, getClass().getName());
 
-        if (configuration.contains(PersistentResourceOptions.MAPPING)) {
+        if (configuration.has(PersistentResourceOptions.MAPPING)) {
             String savedMapping = configuration.get(PersistentResourceOptions.MAPPING);
             checkState(Objects.equals(mapping, savedMapping),
                     "The back-end is mapped with %s (but actual is %s)", savedMapping, mapping);
         }
         else {
-            configuration.put(PersistentResourceOptions.MAPPING, mapping);
+            configuration.set(PersistentResourceOptions.MAPPING, mapping);
         }
 
-        configuration.save();
+        try {
+            configuration.save();
+        }
+        catch (IOException e) {
+            throw new InvalidBackendException(e);
+        }
     }
 }

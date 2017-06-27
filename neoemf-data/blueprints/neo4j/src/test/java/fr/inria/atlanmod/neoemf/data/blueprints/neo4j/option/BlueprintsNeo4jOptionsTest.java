@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
-import fr.inria.atlanmod.neoemf.data.Configuration;
+import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
@@ -40,9 +40,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
-        assertConfigurationHasSize(configuration, 2);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
+        assertConfigurationHasSize(config, 2);
     }
 
     /**
@@ -58,9 +58,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.NONE.toString());
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.NONE.toString());
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -76,9 +76,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.WEAK.toString());
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.WEAK.toString());
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -94,9 +94,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.SOFT.toString());
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.SOFT.toString());
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -112,9 +112,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.STRONG.toString());
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.STRONG.toString());
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -130,9 +130,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.TRUE.toString());
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.TRUE.toString());
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -148,9 +148,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.FALSE.toString());
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.FALSE.toString());
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -167,9 +167,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -202,9 +202,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "0M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "0M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -221,9 +221,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -256,9 +256,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "0M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "0M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -275,9 +275,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -310,9 +310,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "0M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "0M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -329,9 +329,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -364,9 +364,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "0M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "0M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -383,9 +383,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -418,9 +418,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "0M");
-        assertConfigurationHasSize(configuration, 3);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "0M");
+        assertConfigurationHasSize(config, 3);
     }
 
     /**
@@ -438,10 +438,10 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 4);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 4);
     }
 
     /**
@@ -485,14 +485,14 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
         resource.save(options);
 
-        Configuration configuration = getConfiguration();
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.SOFT.toString());
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.TRUE.toString());
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "64M");
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
-        assertConfigurationHasEntry(configuration, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
-        assertConfigurationHasSize(configuration, 9);
+        BackendConfiguration config = getConfig();
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.CACHE_TYPE, BlueprintsNeo4jResourceOptions.CacheType.SOFT.toString());
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, Boolean.TRUE.toString());
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, "64M");
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, "64M");
+        assertConfigurationHasEntry(config, BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, "64M");
+        assertConfigurationHasSize(config, 9);
     }
 }

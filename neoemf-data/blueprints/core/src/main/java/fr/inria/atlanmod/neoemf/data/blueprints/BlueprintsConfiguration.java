@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.Configuration;
+import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
- * Configuration}.
+ * BackendConfiguration}.
  * <p>
  * Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during
  * database creation.
@@ -32,10 +32,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface BlueprintsConfiguration {
 
     /**
-     * Adds specific properties about the Blueprints database in the given {@code configuration}.
+     * Adds specific properties about the Blueprints database in the given {@code config}.
      *
-     * @param configuration the {@link Configuration} that holds the resource properties
-     * @param directory     the path that contains the Blueprints database
+     * @param config    the {@link BackendConfiguration} that holds the resource properties
+     * @param directory the path that contains the Blueprints database
      */
-    void putDefaultConfiguration(Configuration configuration, Path directory);
+    void putDefaultConfiguration(BackendConfiguration config, Path directory);
 }

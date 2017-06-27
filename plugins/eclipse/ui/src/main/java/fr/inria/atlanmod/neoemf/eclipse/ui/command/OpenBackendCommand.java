@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
+import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.Configuration;
+import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -41,7 +41,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -80,9 +79,9 @@ public class OpenBackendCommand extends AbstractHandler {
      *
      * @return the {@link UriBuilder}
      *
-     * @throws IOException            if the {@code directory} does not have configuration file
-     * @throws InvalidOptionException if the information stored in the configuration does not permit to retrieve the
-     *                                {@link UriBuilder}
+     * @throws IOException             if the {@code directory} does not have configuration file
+     * @throws InvalidBackendException if the information stored in the configuration does not permit to retrieve the
+     *                                 {@link UriBuilder}
      */
     private UriBuilder getUriBuilder(Path directory) throws IOException {
         Path configFile = directory.resolve(BackendFactory.CONFIG_FILE);
@@ -92,14 +91,14 @@ public class OpenBackendCommand extends AbstractHandler {
                     String.format("Unable to find %s file", BackendFactory.CONFIG_FILE));
         }
 
-        String backendType = Configuration.load(directory.resolve(BackendFactory.CONFIG_FILE)).get(BackendFactory.BACKEND_PROPERTY);
+        BackendConfiguration config = BackendConfiguration.load(configFile);
 
-        if (isNull(backendType)) {
-            throw new InvalidOptionException(
-                    String.format("%s does not contain %s property", BackendFactory.CONFIG_FILE, BackendFactory.BACKEND_PROPERTY));
+        if (!config.has(BackendFactory.BACKEND_PROPERTY)) {
+            throw new InvalidBackendException(
+                    String.format("%s does not contain %s property", configFile, BackendFactory.BACKEND_PROPERTY));
         }
 
-        return UriBuilder.forName(backendType);
+        return UriBuilder.forName(config.get(BackendFactory.BACKEND_PROPERTY));
     }
 
     /**

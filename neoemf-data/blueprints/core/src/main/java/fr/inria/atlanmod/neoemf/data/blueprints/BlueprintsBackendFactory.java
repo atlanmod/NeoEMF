@@ -20,8 +20,8 @@ import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph
 import fr.inria.atlanmod.neoemf.bind.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.Configuration;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
@@ -113,14 +113,14 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
 
-            Configuration configuration = getOrCreateBlueprintsConfiguration(baseDirectory, options);
+            BackendConfiguration config = getOrCreateBlueprintsConfiguration(baseDirectory, options);
 
-            Graph graph = GraphFactory.open(configuration.asMap());
+            Graph graph = GraphFactory.open(config.asMap());
             if (!graph.getFeatures().supportsKeyIndices) {
                 throw new InvalidBackendException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
             }
 
-            configuration.save();
+            config.save();
 
             if (readOnly) {
                 graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
@@ -161,25 +161,25 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
      * @throws InvalidBackendException if the configuration cannot be created in the {@code directory}, or if some
      *                                 {@code options} are missing or invalid.
      */
-    private Configuration getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
+    private BackendConfiguration getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
         Path path = directory.resolve(BLUEPRINTS_CONFIG_FILE);
 
-        Configuration configuration;
+        BackendConfiguration config;
 
         try {
-            configuration = Configuration.load(path);
+            config = BackendConfiguration.load(path);
         }
         catch (IOException e) {
             throw new InvalidBackendException(e);
         }
 
         // Initialize value if the configuration file has just been created
-        if (!configuration.contains(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            configuration.putIfAbsent(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
+        if (!config.has(BlueprintsResourceOptions.GRAPH_TYPE)) {
+            config.set(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         }
         else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
             // The file already exists, verify that the problem options are not conflicting.
-            String savedGraphType = configuration.get(BlueprintsResourceOptions.GRAPH_TYPE);
+            String savedGraphType = config.get(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {
                 throw new InvalidBackendException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
@@ -189,18 +189,18 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         // Copy the Blueprints options to the configuration
         options.entrySet().stream()
                 .filter(e -> e.getKey().startsWith("blueprints."))
-                .forEach(e -> configuration.put(e.getKey(), e.getValue().toString()));
+                .forEach(e -> config.set(e.getKey(), e.getValue().toString()));
 
         // Check we have a valid graph graphType, it is needed to get the graph name
-        if (!configuration.contains(BlueprintsResourceOptions.GRAPH_TYPE)) {
+        if (!config.has(BlueprintsResourceOptions.GRAPH_TYPE)) {
             throw new InvalidBackendException(String.format("Graph is undefined for %s", directory));
         }
 
-        String graphType = configuration.get(BlueprintsResourceOptions.GRAPH_TYPE);
+        String graphType = config.get(BlueprintsResourceOptions.GRAPH_TYPE);
 
-        configurationFor(graphType).putDefaultConfiguration(configuration, directory);
+        configurationFor(graphType).putDefaultConfiguration(config, directory);
 
-        return configuration;
+        return config;
     }
 
     /**
