@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;

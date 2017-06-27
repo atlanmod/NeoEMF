@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
