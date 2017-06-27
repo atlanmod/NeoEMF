@@ -35,11 +35,6 @@
 
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
         </dependency>
 
@@ -48,28 +43,12 @@
             <artifactId>neo4j-lucene-index</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>jta</artifactId>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
 
             <!-- Database -->
-
-            <dependency>
-                <groupId>org.neo4j</groupId>
-                <artifactId>neo4j</artifactId>
-                <version>${neo4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
 
             <dependency>
                 <groupId>org.neo4j</groupId>
@@ -85,50 +64,28 @@
                 <scope>runtime</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-core</artifactId>
-                <version>${lucene.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
-                <version>${jta.version}</version>
-                <scope>runtime</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>
-                            ${project.groupId}.data.blueprints.neo4j.wrapper
-                        </Bundle-SymbolicName>
-                        <Bundle-Version>
-                            ${project.version}
-                        </Bundle-Version>
-                        <Export-Package>
-                            org.apache.lucene.*;-split-package:=first,
-                            org.neo4j.kernel.impl.cache;-split-package:=merge-last,
-                            org.neo4j.*;-split-package:=first,
-                            javax.transaction.*;-split-package:=first,
-                        </Export-Package>
-                        <Embed-Dependency>
-                            neo4j-lucene-index,
-                            lucene-core,
-                            neo4j-kernel,
-                            jta,
-                        </Embed-Dependency>
+                        <Bundle-SymbolicName>${project.groupId}.data.blueprints.neo4j.wrapper</Bundle-SymbolicName>
+                        <_exportcontents>
+                            org.neo4j.*.impl.*;x-internal:=true;version="${neo4j.version}",
+                            org.neo4j.*;version="${neo4j.version}",
+                            org.apache.lucene.*;version="${lucene.version}",
+                            javax.transaction.*;version="${jta.version}"
+                        </_exportcontents>
                     </instructions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

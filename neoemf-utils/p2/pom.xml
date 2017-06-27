@@ -32,6 +32,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
@@ -118,10 +119,12 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
 
         <pluginManagement>
             <plugins>
+
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-compiler-plugin</artifactId>
@@ -166,6 +169,7 @@
                     <artifactId>target-platform-configuration</artifactId>
                     <version>${tycho-plugin.version}</version>
                 </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

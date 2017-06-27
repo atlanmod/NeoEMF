@@ -129,7 +129,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <argLine /> <!-- Keep it empty -->
+        <argLine /><!-- Keep it empty -->
         <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
 
         <javax-annotations.version>3.0.2</javax-annotations.version>
@@ -142,12 +142,15 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>${javax-annotations.version}</version>
+            <scope>provided</scope>
             <optional>true</optional><!-- needed only for annotations -->
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -195,6 +198,7 @@
                 <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -256,6 +260,7 @@
 
         <pluginManagement>
             <plugins>
+
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
@@ -272,10 +277,10 @@
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
-                                artifactId=!jsr305;
                                 groupId=!${project.groupId}|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
+                            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         </instructions>
                     </configuration>
                 </plugin>
@@ -422,11 +427,13 @@
                         <rulesUri>https://atlanmod.github.io/NeoEMF/versions.xml</rulesUri>
                     </configuration>
                 </plugin>
+
             </plugins>
         </pluginManagement>
     </build>
 
     <profiles>
+
         <!-- A profile to manage Javadoc dependencies (EMF,...) -->
         <profile>
             <id>deploy-javadoc</id>
@@ -434,20 +441,24 @@
                 <skipTests>true</skipTests>
             </properties>
             <dependencies>
+
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
                     <artifactId>org.eclipse.emf.common</artifactId>
                     <version>${emf.version}</version>
                 </dependency>
+
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
                     <artifactId>org.eclipse.emf.ecore</artifactId>
                     <version>${emf.version}</version>
                 </dependency>
+
             </dependencies>
             <build>
                 <pluginManagement>
                     <plugins>
+
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
@@ -467,10 +478,12 @@
                                 </links>
                             </configuration>
                         </plugin>
+
                     </plugins>
                 </pluginManagement>
             </build>
         </profile>
+
         <!-- A profile to deploy artifacts on OSS Sonartype -->
         <profile>
             <id>deploy-artifacts</id>
@@ -480,6 +493,7 @@
             </properties>
             <build>
                 <plugins>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -493,6 +507,7 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -506,6 +521,7 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -520,9 +536,11 @@
                             </execution>
                         </executions>
                     </plugin>
+
                 </plugins>
             </build>
         </profile>
+
     </profiles>
 
 </project>

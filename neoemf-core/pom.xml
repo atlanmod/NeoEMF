@@ -182,32 +182,34 @@
                 <version>${log4j.version}</version>
                 <scope>runtime</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>
-                            ${project.groupId}.core
-                        </Bundle-SymbolicName>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
+                        <DynamicImport-Package>
+                            *
+                        </DynamicImport-Package>
                         <Export-Package>
-                            fr.inria.atlanmod.common.*,
                             fr.inria.atlanmod.neoemf.*,
+                            fr.inria.atlanmod.common.*
                         </Export-Package>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,
-                            org.eclipse.emf.compare;resolution:=optional,
-                            org.eclipse.core.runtime
+                            org.eclipse.emf.compare;resolution:=optional
                         </Require-Bundle>
                     </instructions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

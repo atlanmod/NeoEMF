@@ -15,6 +15,12 @@
     <name>NeoEMF Data Blueprints Neo4j</name>
     <description>Blueprints extension using Neo4j.</description>
 
+    <properties>
+        <neo4j.version>1.9.6</neo4j.version>
+        <lucene.version>3.6.2</lucene.version>
+        <jta.version>1.1</jta.version>
+    </properties>
+
     <dependencies>
 
         <!-- Database -->
@@ -65,6 +71,7 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -83,26 +90,36 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>
-                            ${project.groupId}.data.blueprints.neo4j
-                        </Bundle-SymbolicName>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Bundle-SymbolicName>${project.groupId}.data.blueprints.neo4j</Bundle-SymbolicName>
+                        <Import-Package>
+                            com.tinkerpop.blueprints;version="${blueprints.version}",
+                            org.apache.commons.configuration;version="${commons-configuration.version}"
+                        </Import-Package>
+                        <DynamicImport-Package>
+                            org.neo4j.*;version="${neo4j.version}",
+                            org.apache.lucene.*;version="${lucene.version}",
+                            javax.transaction.*;version="${jta.version}",
+                            *
+                        </DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
-                        <Embed-Dependency>
-                            blueprints-neo4j-graph
-                        </Embed-Dependency>
+                        <_exportcontents>
+                            com.tinkerpop.blueprints.impls.neo4j.*;version="${blueprints.version}"
+                        </_exportcontents>
+                        <Embed-Transitive>false</Embed-Transitive>
                         <Require-Bundle>
                             ${project.groupId}.core;visibility:=reexport,
                             ${project.groupId}.data.blueprints.core
@@ -110,6 +127,7 @@
                     </instructions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
