@@ -50,6 +50,7 @@ import javax.annotation.WillNotClose;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * The builder that creates {@link Reader} and {@link Writer} instances.
@@ -173,7 +174,7 @@ public final class Migrator<T> {
         if (header == ZXMI_HEADER) {
             ZipInputStream zis = new ZipInputStream(pbis);
 
-            for (ZipEntry e; (e = zis.getNextEntry()) != null; ) {
+            for (ZipEntry e; nonNull(e = zis.getNextEntry()); ) {
                 if (Objects.equals(e.getName(), ZXMI_CONTENT)) {
                     return zis;
                 }

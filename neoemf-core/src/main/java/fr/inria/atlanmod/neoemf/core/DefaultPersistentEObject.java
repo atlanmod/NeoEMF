@@ -91,7 +91,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
 
-        Log.debug("DefaultPersistentEObject created with ID {0}", id);
+        Log.trace("DefaultPersistentEObject created with ID {0}", id);
     }
 
     @Nonnull

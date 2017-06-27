@@ -79,7 +79,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
         this.owner = owner;
         this.features = features;
 
-        Log.debug("BoundTransientBackend created for {0}", owner);
+        Log.trace("BoundTransientBackend created for {0}", owner);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
         // Unregister the current back-end and clear all features associated with the owner
         FEATURES_REGISTRY.remove(owner).clear();
 
-        Log.debug("BoundTransientBackend closed for {0}", owner);
+        Log.trace("BoundTransientBackend closed for {0}", owner);
 
         // Cleans all shared in-memory maps: they will no longer be used
         if (FEATURES_REGISTRY.isEmpty()) {

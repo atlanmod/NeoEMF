@@ -118,7 +118,7 @@ public abstract class AbstractInputTest extends AbstractTest {
                     .to(writer)
                     .withCounter()
                     .withTimer()
-                    .withLogger()
+//                    .withLogger()
                     .migrate();
         }
 
