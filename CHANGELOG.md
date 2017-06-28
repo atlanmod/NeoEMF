@@ -102,8 +102,6 @@ retrieved even if the associated `PersistentEObject` is freed from memory
 ### Dependencies
 - __[UPD]__ `guava` : `20.0` to `15.0` (Conflict with HBase)
 
-### Back-ends
-- __[NEW]__ Merge common code from MapDB & BerkeleyDB in Map module
 
 ## 1.0.1 _(2017-01-16)_
 

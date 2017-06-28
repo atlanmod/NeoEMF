@@ -4,12 +4,6 @@ os: linux
 
 jdk: oraclejdk8
 
-branches:
-  except:
-    - gh-pages
-  only:
-    - /.*/
-
 env:
   global:
     - JAVA_OPTS="-Xms256m -Xmx2g"
