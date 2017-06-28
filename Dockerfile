@@ -40,7 +40,7 @@ RUN apt-get update -qq \
  && echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | /usr/bin/debconf-set-selections \
 
 # Install JDK8 & build tool
- && apt-get install -q --no-install-recommends -y \
+ && apt-get install -q --no-install-recommends -y --allow-unauthenticated \
     oracle-java8-installer \
     oracle-java8-set-default \
     maven \
