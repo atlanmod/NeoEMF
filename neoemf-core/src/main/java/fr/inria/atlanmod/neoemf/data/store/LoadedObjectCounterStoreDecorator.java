@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -49,7 +50,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
         super(store);
         loadedObjects = new TreeSet<>();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> Log.info("{0} objects loaded during the execution", loadedObjects.size())));
+        MoreExecutors.executeAtExit(() -> Log.info("{0} objects loaded during the execution", loadedObjects.size()));
     }
 
     @Nonnull

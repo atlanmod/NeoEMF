@@ -44,7 +44,7 @@ public final class Bindings {
      * The concurrent pool.
      */
     @Nonnull
-    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool();
+    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     /**
      * A set that holds the {@link URL} of the classpath to explore.

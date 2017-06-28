@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
+import fr.inria.atlanmod.common.concurrent.MoreExecutors;
+
 import org.junit.rules.ExternalResource;
 
 import java.io.File;
@@ -93,7 +95,7 @@ public class Workspace extends ExternalResource {
         }
         catch (Exception e) {
             try {
-                Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteDirectory(directory)));
+                MoreExecutors.executeAtExit(() -> deleteDirectory(directory));
             }
             catch (IllegalStateException ignored) {
             }

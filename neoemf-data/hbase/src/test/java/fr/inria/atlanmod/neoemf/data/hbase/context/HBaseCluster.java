@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
+import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 import fr.inria.atlanmod.common.log.Log;
 
 import org.apache.hadoop.conf.Configuration;
@@ -88,7 +89,7 @@ final class HBaseCluster {
 
             Log.info("Hadoop cluster running at {0}:{1,number,#}", host, port);
 
-            Runtime.getRuntime().addShutdownHook(new Thread(HBaseCluster::close));
+            MoreExecutors.executeAtExit(HBaseCluster::close);
         }
         catch (Exception e) {
             reset();

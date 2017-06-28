@@ -19,7 +19,6 @@ import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,13 +70,11 @@ class AsyncLogger implements Logger {
 
         execute(() -> {
             try {
-                // FIXME Parameters can change before logging them
-                Supplier<String> messageSupplier = () -> Optional.ofNullable(message)
+                String formattedMessage = Optional.ofNullable(message)
                         .map(m -> MessageFormat.format(m.toString(), params))
                         .orElse(NO_MESSAGE);
 
-
-                logger.log(level.level(), messageSupplier, e);
+                logger.log(level.level(), formattedMessage, e);
             }
             catch (Exception fe) {
                 logger.error(fe); // Format exception
@@ -87,8 +84,11 @@ class AsyncLogger implements Logger {
 
     /**
      * Executes a {@link Runnable} in a concurrent pool to run asynchronously the logging methods.
+     * If the pool rejects the task, then it is executed synchronously.
      *
      * @param runnable the function to execute
+     *
+     * @see ExecutorService#submit(Runnable)
      */
     private void execute(Runnable runnable) {
         try {
