@@ -64,6 +64,7 @@ retrieved even if the associated `PersistentEObject` is freed from memory
 - __[FIX]__ Issue #73: The `neoemf-data-map-core` module no longer exists
 - __[FIX]__ Issue #75: The `io` module now use the `DataMapper` structure, and not a custom implementation
 - __[FIX]__ Issue #78: Improve the `NullPointerException` message
+- __[FIX]__ Issue #80: `DefaultPersistentEObject.toString()` throws a `StackOverflowError` on `EClass` instances 
 
 ### Refactoring
 - __[UPD]__ `AutoCommitStoreDecorator` become `AutoSaveStoreDecorator`
@@ -101,6 +102,8 @@ retrieved even if the associated `PersistentEObject` is freed from memory
 ### Dependencies
 - __[UPD]__ `guava` : `20.0` to `15.0` (Conflict with HBase)
 
+### Back-ends
+- __[NEW]__ Merge common code from MapDB & BerkeleyDB in Map module
 
 ## 1.0.1 _(2017-01-16)_
 
