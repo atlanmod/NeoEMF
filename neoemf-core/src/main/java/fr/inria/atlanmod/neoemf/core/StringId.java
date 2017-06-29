@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.common.io.hash.Hasher;
+import fr.inria.atlanmod.common.io.hash.Hashers;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
@@ -31,6 +34,14 @@ public class StringId implements Id {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 7727028860219819798L;
+
+    /**
+     * The {@link Hasher} used to generate {@link Id} from string.
+     *
+     * @see #generate(String)
+     */
+    @Nonnull
+    private static final Hasher hasher = Hashers.md5();
 
     /**
      * The literal representation of this {@code Id} as a {@link String}.
@@ -82,6 +93,11 @@ public class StringId implements Id {
     @Nonnull
     public static Id generate() {
         return new StringId(EcoreUtil.generateUUID());
+    }
+
+    @Nonnull
+    public static Id generate(String name) {
+        return new StringId(hasher.hash(name).toString());
     }
 
     @Override
