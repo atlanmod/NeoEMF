@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -28,8 +29,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
@@ -41,7 +40,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
     /**
      * A map that holds the different calls made on the {@link Store} chain.
      */
-    private final Map<String, Integer> calls = new HashMap<>();
+    private final Map<String, AtomicLong> calls = new HashMap<>();
 
     /**
      * Constructs a new {@code LoggingStoreDecorator}.
@@ -343,7 +342,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
      * Records the call of a method with a value.
      */
     private void record() {
-        calls.compute(getCallingMethod(), (s, count) -> nonNull(count) ? count + 1 : 1);
+        calls.computeIfAbsent(getCallingMethod(), s -> new AtomicLong()).incrementAndGet();
     }
 
     /**
@@ -357,7 +356,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
         }
         else {
             return "\n" + calls.entrySet().stream()
-                    .sorted((e1, e2) -> e2.getValue() - e1.getValue()) // Descending order
+                    .sorted((e1, e2) -> Long.compare(e2.getValue().get(), e1.getValue().get())) // Descending order
                     .map(e -> e.getKey() + " = " + e.getValue())
                     .collect(Collectors.joining("\n"));
         }
