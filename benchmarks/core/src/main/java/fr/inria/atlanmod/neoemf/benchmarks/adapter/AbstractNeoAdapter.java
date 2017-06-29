@@ -89,7 +89,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     @Override
     public void unload(Resource resource) {
         if (resource.isLoaded()) {
-            if (resource instanceof PersistentResource) {
+            if (PersistentResource.class.isInstance(resource)) {
                 PersistentResource.class.cast(resource).close();
             }
             else {

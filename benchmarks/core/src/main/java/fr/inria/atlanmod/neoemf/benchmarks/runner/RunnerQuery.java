@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactoryAse15;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
 
@@ -31,7 +31,7 @@ public class RunnerQuery extends Runner {
 
     @Benchmark
     public Long traverse(ReadOnlyRunnerState state) {
-        return QueryFactory.queryCountAllElements(state.getResource()).callWithResult();
+        return QueryFactory.queryCountAllElements().apply(state.getResource());
     }
 
     //endregion
@@ -40,37 +40,37 @@ public class RunnerQuery extends Runner {
 
     @Benchmark
     public Integer classDeclarationAttributes(ReadOnlyRunnerState state) {
-        return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithResult();
+        return QueryFactory.queryClassDeclarationAttributes().apply(state.getResource());
     }
 
     @Benchmark
     public Integer grabats(ReadOnlyRunnerState state) {
-        return QueryFactory.queryGrabats(state.getResource()).callWithResult();
+        return QueryFactory.queryGrabats().apply(state.getResource());
     }
 
     @Benchmark
     public Integer invisibleMethodDeclarations(ReadOnlyRunnerState state) {
-        return QueryFactory.queryInvisibleMethodDeclarations(state.getResource()).callWithResult();
+        return QueryFactory.queryInvisibleMethodDeclarations().apply(state.getResource());
     }
 
     @Benchmark
     public Integer orphanNonPrimitiveTypes(ReadOnlyRunnerState state) {
-        return QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithResult();
+        return QueryFactory.queryOrphanNonPrimitivesTypes().apply(state.getResource());
     }
 
     @Benchmark
     public Integer thrownExceptionsPerPackage(ReadOnlyRunnerState state) {
-        return QueryFactory.queryThrownExceptionsPerPackage(state.getResource()).callWithResult();
+        return QueryFactory.queryThrownExceptionsPerPackage().apply(state.getResource());
     }
 
     @Benchmark
     public Integer unusedMethodsWithList(ReadOnlyRunnerState state) {
-        return QueryFactory.queryUnusedMethodsWithList(state.getResource()).callWithResult();
+        return QueryFactory.queryUnusedMethodsWithList().apply(state.getResource());
     }
 
     @Benchmark
     public Integer unusedMethodsWithLoop(ReadOnlyRunnerState state) {
-        return QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithResult();
+        return QueryFactory.queryUnusedMethodsWithLoop().apply(state.getResource());
     }
 
     //endregion
@@ -81,7 +81,7 @@ public class RunnerQuery extends Runner {
     public Integer renameAllMethods(ReadWriteRunnerState state) throws IOException {
         String name = UUID.randomUUID().toString();
         Resource resource = state.getResource();
-        Integer result = QueryFactory.queryRenameAllMethods(resource, name).callWithResult();
+        Integer result = QueryFactory.queryRenameAllMethods(name).apply(resource);
         state.getAdapter().save(resource);
         return result;
     }
@@ -92,22 +92,27 @@ public class RunnerQuery extends Runner {
 
     @Benchmark
     public Integer ase15CommentsTagContent(ReadOnlyRunnerState state) {
-        return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithResult();
+        return QueryFactoryAse15.queryCommentsTagContent().apply(state.getResource());
     }
 
     @Benchmark
     public Integer ase15Grabats(ReadOnlyRunnerState state) {
-        return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithResult();
+        return QueryFactoryAse15.queryGrabats().apply(state.getResource());
     }
 
     @Benchmark
     public Integer ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) {
-        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarations(state.getResource()).callWithResult();
+        return QueryFactoryAse15.querySpecificInvisibleMethodDeclarations().apply(state.getResource());
     }
 
     @Benchmark
     public Integer ase15ThrownExceptions(ReadOnlyRunnerState state) {
-        return QueryFactoryASE2015.queryThrownExceptions(state.getResource()).callWithResult();
+        return QueryFactoryAse15.queryThrownExceptions().apply(state.getResource());
+    }
+
+    @Benchmark
+    public Integer ase15BranchStatements(ReadOnlyRunnerState state) {
+        return QueryFactoryAse15.queryBranchStatements().apply(state.getResource());
     }
 
     //endregion

@@ -11,35 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
-import fr.inria.atlanmod.common.log.Log;
+import org.eclipse.emf.ecore.resource.Resource;
 
-import javax.annotation.Nullable;
-
-import static java.util.Objects.nonNull;
+import java.util.function.Function;
 
 /**
+ * A query to execute on the content of a {@link Resource}.
+ *
  * @param <V> the result type of method {@code call}
  */
 @FunctionalInterface
-public interface Query<V> {
-
-    @Nullable
-    V call();
-
-    @Nullable
-    default V callWithResult() {
-        V result;
-
-        Log.info("Start query");
-
-        result = call();
-
-        Log.info("End query");
-
-        if (nonNull(result) && Number.class.isInstance(result)) {
-            Log.info("Query returns: {0}", result);
-        }
-
-        return result;
-    }
+public interface Query<V> extends Function<Resource, V> {
 }
