@@ -1,29 +1,23 @@
 package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
-import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.xmi.XMIResource;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,6 +25,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -96,7 +91,56 @@ public final class ResourceManager {
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
 
-        return Migrator.migrate(sourceFile, adapter);
+        return migrate(sourceFile, adapter);
+    }
+
+    /**
+     * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code
+     * targetAdapter}.
+     *
+     * @param resourceFile the resource file
+     * @param adapter      the adapter where to store the resource
+     *
+     * @return the created file
+     *
+     * @throws IOException if a error occurs during the creation of the resource
+     */
+    @Nonnull
+    private static File migrate(File resourceFile, Adapter.Internal adapter) throws IOException {
+        Log.info("Adapting resource to URI {0}", adapter.initAndGetEPackage().getNsURI());
+
+        String targetFileName = getNameWithoutExtension(resourceFile.getName()) + "." + adapter.getResourceExtension() + ".zxmi";
+        File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
+
+        if (targetFile.exists()) {
+            Log.info("Already existing resource: {0}", targetFile);
+            return targetFile;
+        }
+
+        // Replace the 'xmlns:java' value
+        Charset charset = StandardCharsets.UTF_8;
+
+        try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(targetFile.toPath()))) {
+            out.putNextEntry(new ZipEntry("ResourceContents"));
+
+            try (BufferedReader reader = Files.newBufferedReader(resourceFile.toPath(), charset) ; BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, charset))) {
+                boolean migrated = false;
+
+                String line;
+                while (nonNull(line = reader.readLine())) {
+                    if (!migrated && line.contains("xmlns:java")) {
+                        writer.write(line.replaceFirst("(xmlns:java=\")[^\"]*(\")", "$1" + adapter.initAndGetEPackage().getNsURI() + "$2"));
+                        migrated = true; // Only one occurence
+                    }
+                    else {
+                        writer.write(line);
+                    }
+                    writer.newLine();
+                }
+            }
+        }
+
+        return targetFile;
     }
 
     /**
@@ -230,147 +274,5 @@ public final class ResourceManager {
         String fileName = new File(file).getName();
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-    }
-
-    /**
-     * A class that provides static methods for {@link Resource} migration.
-     */
-    @ParametersAreNonnullByDefault
-    static final class Migrator {
-
-        /**
-         * The map holding the link between the original {@link EObject} and its adaptation.
-         */
-        private final Map<EObject, EObject> correspondences = new HashMap<>();
-
-        /**
-         * Constructs a new {@code Migrator}.
-         */
-        private Migrator() {
-        }
-
-        /**
-         * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code
-         * targetAdapter}.
-         *
-         * @param resourceFile the resource file
-         * @param adapter      the adapter where to store the resource
-         *
-         * @return the created file
-         *
-         * @throws IOException if a error occurs during the creation of the resource
-         */
-        @Nonnull
-        public static File migrate(File resourceFile, Adapter.Internal adapter) throws IOException {
-            Log.info("Adapting resource to URI {0}", adapter.initAndGetEPackage().getNsURI());
-
-            String targetFileName = getNameWithoutExtension(resourceFile.getName()) + "." + adapter.getResourceExtension() + ".zxmi";
-            File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
-
-            if (targetFile.exists()) {
-                Log.info("Already existing resource: {0}", targetFile);
-                return targetFile;
-            }
-
-            ResourceSet resourceSet = ResourceCreator.loadResourceSet();
-
-            Log.info("Loading resource from: {0}", resourceFile);
-
-            URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
-            Resource sourceResource = resourceSet.getResource(sourceUri, true);
-
-            Log.info("Copying resource content...");
-
-            EObject targetRoot = new Migrator().migrate(sourceResource.getContents().get(0), adapter.initAndGetEPackage());
-            sourceResource.unload();
-
-            Log.info("Migrating resource content...");
-
-            URI targetUri = URI.createFileURI(targetFile.getAbsolutePath());
-            Resource targetResource = resourceSet.createResource(targetUri);
-
-            targetResource.getContents().add(targetRoot);
-
-            Log.info("Saving resource to: {0}", targetResource.getURI());
-
-            Map<String, Object> saveOpts = new HashMap<>();
-            saveOpts.put(XMIResource.OPTION_ZIP, true);
-            saveOpts.put(XMIResource.OPTION_ENCODING, StandardCharsets.UTF_8.name());
-            targetResource.save(saveOpts);
-
-            targetResource.unload();
-
-            return targetFile;
-        }
-
-        /**
-         * Adapts the given {@code sourceRoot} in a particular implementation, specified by the {@code targetPackage}.
-         *
-         * @param sourceRoot    the sourceRoot {@link EObject} to adapt
-         * @param targetPackage the {@link EPackage}
-         *
-         * @return the adapted {@code sourceRoot}
-         */
-        @Nonnull
-        private EObject migrate(EObject sourceRoot, EPackage targetPackage) {
-            final EObject targetRoot = correspondentOf(sourceRoot, targetPackage);
-            copy(sourceRoot, targetRoot);
-
-            MoreIterables.stream(() -> EcoreUtil.<EObject>getAllContents(sourceRoot, true))
-                    .forEach(sourceObject -> copy(sourceObject, correspondentOf(sourceObject, targetPackage)));
-
-            return targetRoot;
-        }
-
-        /**
-         * Copies the {@code src} to the {@code tgt}.
-         *
-         * @param src the src {@link EObject}
-         * @param tgt the corresponding {@link EObject}
-         *
-         * @see #correspondentOf(EObject, EPackage)
-         */
-        @SuppressWarnings("unchecked")
-        private void copy(EObject src, EObject tgt) {
-            final EClass tgtClass = tgt.eClass();
-            final EPackage tgtPackage = tgtClass.getEPackage();
-
-            src.eClass().getEAllStructuralFeatures().stream()
-                    .filter(src::eIsSet)
-                    .forEach(srcFeature -> {
-                        final Object srcValue = src.eGet(srcFeature);
-
-                        Object tgtValue;
-                        if (EAttribute.class.isInstance(srcFeature)) {
-                            tgtValue = srcValue;
-                        }
-                        else {
-                            if (!srcFeature.isMany()) {
-                                tgtValue = correspondentOf((EObject) srcValue, tgtPackage);
-                            }
-                            else {
-                                tgtValue = MoreIterables.stream((Iterable<EObject>) srcValue)
-                                        .map(v -> correspondentOf(v, tgtPackage))
-                                        .collect(Collectors.toCollection(BasicEList::new));
-                            }
-                        }
-
-                        tgt.eSet(tgtClass.getEStructuralFeature(srcFeature.getName()), tgtValue);
-                    });
-        }
-
-        /**
-         * Adapts the given {@code object} in a particular implementation, specified by the {@code targetPackage}, and
-         * stores the correspondence in the given {@code correspondences} {@link Map}.
-         *
-         * @param object        the {@link EObject} to adapt
-         * @param targetPackage the {@link EPackage} used to retrieve the corresponding {@link EObject}
-         *
-         * @return the corresponding {@link EObject}
-         */
-        @Nonnull
-        private EObject correspondentOf(EObject object, EPackage targetPackage) {
-            return correspondences.computeIfAbsent(object, o -> EcoreUtil.create(EClass.class.cast(targetPackage.getEClassifier(object.eClass().getName()))));
-        }
     }
 }
