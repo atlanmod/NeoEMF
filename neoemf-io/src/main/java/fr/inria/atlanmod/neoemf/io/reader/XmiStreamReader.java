@@ -46,7 +46,16 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
     @Override
     public void run(InputStream stream) throws Exception {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
-        factory.setProperty(XMLInputFactory2.IS_NAMESPACE_AWARE, true);
+        factory.setProperty("javax.xml.stream.isNamespaceAware", true);
+
+        // Remove contraints
+        factory.setProperty("com.ctc.wstx.maxAttributesPerElement", Integer.MAX_VALUE);
+        factory.setProperty("com.ctc.wstx.maxAttributeSize", Integer.MAX_VALUE);
+        factory.setProperty("com.ctc.wstx.maxChildrenPerElement", Integer.MAX_VALUE);
+        factory.setProperty("com.ctc.wstx.maxElementCount", Integer.MAX_VALUE);
+        factory.setProperty("com.ctc.wstx.maxElementDepth", Integer.MAX_VALUE);
+        factory.setProperty("com.ctc.wstx.maxCharacters", Integer.MAX_VALUE);
+        factory.setProperty("com.ctc.wstx.maxTextLength", Integer.MAX_VALUE);
 
         read((XMLStreamReader2) factory.createXMLStreamReader(new BufferedInputStream(stream), XmlConstants.ENCODING));
     }

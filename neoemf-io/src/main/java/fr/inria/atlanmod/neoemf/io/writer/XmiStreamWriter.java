@@ -50,9 +50,11 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
      */
     public XmiStreamWriter(OutputStream stream) {
         XMLOutputFactory factory = XMLOutputFactory2.newInstance();
-        factory.setProperty(XMLOutputFactory2.IS_REPAIRING_NAMESPACES, true);
-        factory.setProperty(XMLOutputFactory2.XSP_NAMESPACE_AWARE, true);
-        factory.setProperty(XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS, true);
+
+        factory.setProperty("javax.xml.stream.isRepairingNamespaces", true);
+        factory.setProperty("javax.xml.stream.isNamespaceAware", true);
+
+        factory.setProperty("org.codehaus.stax2.automaticEmptyElements", true);
 
         try {
             writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmlConstants.ENCODING);
