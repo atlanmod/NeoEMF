@@ -76,7 +76,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
-            safeValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElseThrow(IllegalStateException::new));
+            safeValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
         sizeForValue(key.withoutPosition(), size + 1);
@@ -97,7 +97,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         Optional<V> previousValue = valueOf(key);
 
         for (int i = key.position(); i < size - 1; i++) {
-            safeValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).orElseThrow(IllegalStateException::new));
+            safeValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
         safeValueFor(key.withPosition(size - 1), null);
