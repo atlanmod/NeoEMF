@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.common.collect;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -83,7 +84,7 @@ public final class MoreIterables {
 
         return Collection.class.isInstance(iterable)
                 ? Collection.class.cast(iterable).isEmpty()
-                : !iterable.iterator().hasNext();
+                : MoreIterators.isEmpty(iterable.iterator());
     }
 
     /**
@@ -95,5 +96,20 @@ public final class MoreIterables {
      */
     public static <E> boolean notEmpty(Iterable<E> iterable) {
         return !isEmpty(iterable);
+    }
+
+    /**
+     * Returns the single element contained in {@code iterable}.
+     *
+     * @param iterable the iterable
+     *
+     * @return an {@link Optional} containing the single element of the {@code iterable}, or {@link Optional#empty()}
+     * if the {@code iterable} is empty.
+     *
+     * @throws IllegalArgumentException if the {@code iterable} contains more than one element
+     */
+    @Nonnull
+    public static <E> Optional<E> onlyElement(Iterable<E> iterable) {
+        return MoreIterators.onlyElement(iterable.iterator());
     }
 }
