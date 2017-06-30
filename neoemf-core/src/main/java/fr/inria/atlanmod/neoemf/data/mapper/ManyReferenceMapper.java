@@ -91,22 +91,24 @@ public interface ManyReferenceMapper extends ReferenceMapper {
     }
 
     /**
-     * Adds the {@code reference} to the specified {@code key} at a defined position. If {@code key#position > size}
-     * then it creates {@code null} elements to respect the position.
+     * Adds the {@code reference} to the specified {@code key} at a defined position.
      *
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @throws NullPointerException      if any parameter is {@code null}
+     * @throws IndexOutOfBoundsException if {@code key#position() > size}
      */
     void addReference(ManyFeatureKey key, Id reference);
 
     /**
      * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
-     * If {@code key#position > size} then it creates {@code null} elements to respect the position.
      *
      * @param key        the key identifying the multi-valued attribute
      * @param collection the values to add
+     *
+     * @throws NullPointerException      if any parameter is {@code null}
+     * @throws IndexOutOfBoundsException if {@code key#position() > size}
      */
     default void addAllReferences(ManyFeatureKey key, List<Id> collection) {
         checkNotNull(key);

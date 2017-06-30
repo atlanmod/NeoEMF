@@ -220,12 +220,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             return Optional.empty();
         }
 
-        Iterable<Edge> containerEdges = containmentVertex.get().query()
-                .labels(KEY_CONTAINER)
-                .direction(Direction.OUT)
-                .edges();
-
-        Optional<Edge> containerEdge = MoreIterables.stream(containerEdges).findAny();
+        Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
+        Optional<Edge> containerEdge = MoreIterables.onlyElement(containerEdges);
 
         Optional<SingleFeatureKey> container = Optional.empty();
         if (containerEdge.isPresent()) {
@@ -244,11 +240,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         Vertex containmentVertex = getOrCreate(id);
 
-        containmentVertex.query()
-                .labels(KEY_CONTAINER)
-                .direction(Direction.OUT)
-                .edges()
-                .forEach(Edge::remove);
+        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
 
         Vertex containerVertex = getOrCreate(container.id());
         Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
@@ -261,11 +253,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         Vertex containmentVertex = getOrCreate(id);
 
-        containmentVertex.query()
-                .labels(KEY_CONTAINER)
-                .direction(Direction.OUT)
-                .edges()
-                .forEach(Edge::remove);
+        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
     }
 
     @Nonnull
@@ -279,12 +267,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             return Optional.empty();
         }
 
-        Iterable<Vertex> metaclassVertices = vertex.get().query()
-                .labels(KEY_INSTANCE_OF, "kyanosInstanceOf")
-                .direction(Direction.OUT)
-                .vertices();
-
-        Optional<Vertex> metaclassVertex = MoreIterables.stream(metaclassVertices).findAny();
+        Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
+        Optional<Vertex> metaclassVertex = MoreIterables.onlyElement(metaclassVertices);
 
         return metaclassVertex.map(v -> ClassDescriptor.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
     }
@@ -295,7 +279,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         checkNotNull(metaclass);
 
         Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
-        Vertex metaclassVertex = MoreIterables.stream(metaclassVertices).findAny().orElse(null);
+        Vertex metaclassVertex = MoreIterables.onlyElement(metaclassVertices).orElse(null);
 
         if (isNull(metaclassVertex)) {
             metaclassVertex = graph.addVertex(buildId(metaclass).toString());
@@ -309,20 +293,9 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Vertex vertex = getOrCreate(id);
 
         // Remove the previous metaclass if present
-        vertex.query()
-                .labels(KEY_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .edges()
-                .forEach(Edge::remove);
+        vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf").forEach(Edge::remove);
 
         vertex.addEdge(KEY_INSTANCE_OF, metaclassVertex);
-
-        // Remove old link
-        vertex.query()
-                .labels("kyanosInstanceOf")
-                .direction(Direction.OUT)
-                .edges()
-                .forEach(Edge::remove);
     }
 
     @Nonnull
@@ -340,10 +313,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             return allInstances.stream()
                     .map(mc -> metaclassIndex.get(KEY_NAME, mc.name()))
                     .flatMap(MoreIterables::stream)
-                    .map(mcv -> mcv.query()
-                            .labels(KEY_INSTANCE_OF, "kyanosInstanceOf")
-                            .direction(Direction.IN)
-                            .vertices())
+                    .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
                     .flatMap(MoreIterables::stream)
                     .map(v -> StringId.from(v.getId()))
                     .collect(Collectors.toList());
@@ -455,9 +425,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
                 Vertex referencedVertex = getVertex(Direction.IN);
                 super.remove();
 
-                Iterable<Edge> edges = referencedVertex.query()
-                        .direction(Direction.IN)
-                        .edges();
+                Iterable<Edge> edges = referencedVertex.getEdges(Direction.IN);
 
                 if (MoreIterables.isEmpty(edges)) {
                     // If the Vertex has no more incoming edges remove it from the DB

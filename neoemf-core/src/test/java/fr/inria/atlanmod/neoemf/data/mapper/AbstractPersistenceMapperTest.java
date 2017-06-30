@@ -441,33 +441,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureKey)}.
-     */
-    @Test
-    public void testAllValuesOfUnorderedAdd() {
-        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
-        // Add values in any order
-        mapper.addValue(key.withPosition(2), value2);
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
-
-        // Post-process the returned Iterable
-        List<String> actualValues = mapper.allValuesOf(key);
-
-        assertThat(actualValues).hasSize(3);
-
-        // Check the order of values
-        assertThat(actualValues.get(0)).isEqualTo(value0);
-        assertThat(actualValues.get(1)).isEqualTo(value1);
-        assertThat(actualValues.get(2)).isEqualTo(value2);
-    }
-
-    /**
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureKey)} when the feature doesn't contain any
      * element.
      */
@@ -521,23 +494,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAnyOrderAddValue() {
         SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
 
-        String value0 = "Value0";
-        String value1 = "Value1";
         String value2 = "Value2";
 
         // Add values in any order
-        mapper.addValue(key.withPosition(2), value2);
-        assertThat(mapper.valueOf(key.withPosition(1))).isNotPresent();
-
-        mapper.addValue(key.withPosition(0), value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).isNotPresent();
-
-        mapper.addValue(key.withPosition(1), value1);
-
-        // Check all values
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+        assertThat(catchThrowable(() ->
+                mapper.addValue(key.withPosition(2), value2)
+        )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**
@@ -616,11 +578,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         String value0 = "Value0";
         String value1 = "Value1";
 
-        mapper.addAllValues(key.withPosition(1), Arrays.asList(value0, value1));
-
-        assertThat(mapper.valueOf(key.withPosition(0))).isNotPresent();
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value1);
+        assertThat(catchThrowable(() ->
+                mapper.addAllValues(key.withPosition(1), Arrays.asList(value0, value1))
+        )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**
@@ -1376,33 +1336,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(SingleFeatureKey)}.
-     */
-    @Test
-    public void testAllReferencesOfUnorderedAdd() {
-        SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
-
-        Id ref0 = StringId.of("Ref0");
-        Id ref1 = StringId.of("Ref1");
-        Id ref2 = StringId.of("Ref2");
-
-        // Add references in any order
-        mapper.addReference(key.withPosition(2), ref2);
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
-
-        // Post-process the returned Iterable
-        List<Id> actualReferences = MoreIterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
-
-        assertThat(actualReferences).hasSize(3);
-
-        // Check the order of references
-        assertThat(actualReferences.get(0)).isEqualTo(ref0);
-        assertThat(actualReferences.get(1)).isEqualTo(ref1);
-        assertThat(actualReferences.get(2)).isEqualTo(ref2);
-    }
-
-    /**
      * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(SingleFeatureKey)} when the feature doesn't
      * contain
      * any element.
@@ -1458,23 +1391,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAnyOrderAddReference() {
         SingleFeatureKey key = SingleFeatureKey.of(id0, "Feature0");
 
-        Id ref0 = StringId.of("Ref0");
-        Id ref1 = StringId.of("Ref1");
         Id ref2 = StringId.of("Ref2");
 
         // Add references in any order
-        mapper.addReference(key.withPosition(2), ref2);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
-
-        mapper.addReference(key.withPosition(0), ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
-
-        mapper.addReference(key.withPosition(1), ref1);
-
-        // Check all references
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+        assertThat(catchThrowable(() ->
+                mapper.addReference(key.withPosition(2), ref2)
+        )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**
@@ -1555,11 +1477,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         Id ref0 = StringId.of("Ref0");
         Id ref1 = StringId.of("Ref1");
 
-        mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref0, ref1));
-
-        assertThat(mapper.referenceOf(key.withPosition(0))).isNotPresent();
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref1);
+        assertThat(catchThrowable(() ->
+                mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref0, ref1))
+        )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**

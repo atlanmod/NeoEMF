@@ -41,8 +41,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * The default {@link BlueprintsBackend} mapping.
@@ -108,12 +108,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             return Optional.empty();
         }
 
-        Iterable<Vertex> referencedVertices = vertex.get().query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .vertices();
-
-        Optional<Vertex> referencedVertex = MoreIterables.stream(referencedVertices).findAny();
+        Iterable<Vertex> referencedVertices = vertex.get().getVertices(Direction.OUT, key.name());
+        Optional<Vertex> referencedVertex = MoreIterables.onlyElement(referencedVertices);
 
         return referencedVertex.map(v -> StringId.from(v.getId()));
     }
@@ -126,12 +122,8 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
         Vertex vertex = getOrCreate(key.id());
 
-        Iterable<Edge> referenceEdges = vertex.query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .edges();
-
-        Optional<Edge> referenceEdge = MoreIterables.stream(referenceEdges).findAny();
+        Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, key.name());
+        Optional<Edge> referenceEdge = MoreIterables.onlyElement(referenceEdges);
 
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
@@ -155,11 +147,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             return;
         }
 
-        vertex.get().query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .edges()
-                .forEach(Element::remove);
+        vertex.get().getEdges(Direction.OUT, key.name()).forEach(Element::remove);
     }
 
     @Override
@@ -167,10 +155,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         checkNotNull(key);
 
         return get(key.id())
-                .map(v -> v.query()
-                        .labels(key.name())
-                        .direction(Direction.OUT)
-                        .vertices())
+                .map(v -> v.getVertices(Direction.OUT, key.name()))
                 .map(MoreIterables::notEmpty)
                 .orElse(false);
     }
@@ -226,14 +211,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         checkNotNull(value);
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        checkPositionIndex(key.position(), size);
 
         Vertex vertex = getOrCreate(key.id());
 
-        if (key.position() >= size || nonNull(vertex.<V>getProperty(formatProperty(key.name(), key.position())))) {
-            for (int i = size; i > key.position(); i--) {
-                V movedValue = vertex.<V>getProperty(formatProperty(key.name(), i - 1));
-                vertex.<V>setProperty(formatProperty(key.name(), i), movedValue);
-            }
+        for (int i = size - 1; i >= key.position(); i--) {
+            V movedValue = vertex.<V>getProperty(formatProperty(key.name(), i));
+            vertex.<V>setProperty(formatProperty(key.name(), i + 1), movedValue);
         }
 
         vertex.<V>setProperty(formatProperty(key.name(), key.position()), value);
@@ -255,16 +239,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         }
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        checkPositionIndex(key.position(), size);
 
         Vertex vertex = getOrCreate(key.id());
 
-        if (key.position() >= size || nonNull(vertex.<V>getProperty(formatProperty(key.name(), key.position())))) {
-            for (int i = size + collection.size(); i > key.position(); i--) {
-                V movedValue = vertex.<V>getProperty(formatProperty(key.name(), i - collection.size()));
-                if (nonNull(movedValue)) {
-                    vertex.<V>setProperty(formatProperty(key.name(), i), movedValue);
-                }
-            }
+        for (int i = size - 1; i >= key.position(); i--) {
+            V movedValue = vertex.<V>getProperty(formatProperty(key.name(), i));
+            vertex.<V>setProperty(formatProperty(key.name(), i + collection.size()), movedValue);
         }
 
         int i = 0;
@@ -361,7 +342,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         }
 
         int size = sizeOfValue(key).orElse(0);
-        for (int i = size - 1; i > 0; i--) {
+        for (int i = size - 1; i >= 0; i--) {
             if (Objects.equals(vertex.get().<V>getProperty(formatProperty(key.name(), i)), value)) {
                 return Optional.of(i);
             }
@@ -425,11 +406,9 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .labels(key.name())
                 .direction(Direction.OUT)
                 .has(KEY_POSITION, key.position())
-                .limit(1)
                 .vertices();
 
-        return MoreIterables.stream(referencedVertices)
-                .findAny()
+        return MoreIterables.onlyElement(referencedVertices)
                 .map(v -> StringId.from(v.getId()));
     }
 
@@ -446,10 +425,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
         Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.<Integer>getProperty(KEY_POSITION));
 
-        Iterable<Edge> edges = vertex.get().query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .edges();
+        Iterable<Edge> edges = vertex.get().getEdges(Direction.OUT, key.name());
 
         return MoreIterables.stream(edges)
                 .sorted(byPosition)
@@ -475,7 +451,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 .has(KEY_POSITION, key.position())
                 .edges();
 
-        Optional<Edge> previousEdge = MoreIterables.stream(edges).findAny();
+        Optional<Edge> previousEdge = MoreIterables.onlyElement(edges);
 
         Optional<Id> previousId = Optional.empty();
         if (previousEdge.isPresent()) {
@@ -496,25 +472,18 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         checkNotNull(reference);
 
         int size = sizeOfReference(key.withoutPosition()).orElse(0);
+        checkPositionIndex(key.position(), size);
 
         Vertex vertex = getOrCreate(key.id());
 
-        boolean alreadyExists = MoreIterables.notEmpty(vertex.query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .has(KEY_POSITION, key.position())
-                .edges());
+        if (key.position() < size) {
+            Iterable<Edge> edges = vertex.query()
+                    .labels(key.name())
+                    .direction(Direction.OUT)
+                    .interval(KEY_POSITION, key.position(), size + 1)
+                    .edges();
 
-        if (key.position() >= size || alreadyExists) {
-            if (key.position() != size) {
-                Iterable<Edge> edges = vertex.query()
-                        .labels(key.name())
-                        .direction(Direction.OUT)
-                        .interval(KEY_POSITION, key.position(), size + 1)
-                        .edges();
-
-                edges.forEach(e -> e.<Integer>setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
-            }
+            edges.forEach(e -> e.<Integer>setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
         }
 
         Edge edge = vertex.addEdge(key.name(), getOrCreate(reference));
@@ -537,25 +506,18 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
         }
 
         int size = sizeOfReference(key.withoutPosition()).orElse(0);
+        checkPositionIndex(key.position(), size);
 
         Vertex vertex = getOrCreate(key.id());
 
-        boolean alreadyExists = MoreIterables.notEmpty(vertex.query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .has(KEY_POSITION, key.position())
-                .edges());
+        if (key.position() < size) {
+            Iterable<Edge> edges = vertex.query()
+                    .labels(key.name())
+                    .direction(Direction.OUT)
+                    .interval(KEY_POSITION, key.position(), size + collection.size())
+                    .edges();
 
-        if (key.position() >= size || alreadyExists) {
-            if (key.position() != size) {
-                Iterable<Edge> edges = vertex.query()
-                        .labels(key.name())
-                        .direction(Direction.OUT)
-                        .interval(KEY_POSITION, key.position(), size + collection.size())
-                        .edges();
-
-                edges.forEach(e -> e.<Integer>setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + collection.size()));
-            }
+            edges.forEach(e -> e.<Integer>setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + collection.size()));
         }
 
         int i = 0;
@@ -601,11 +563,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
                 previousId = Optional.of(StringId.from(referencedVertex.getId()));
                 edge.remove();
 
-                referencedVertex.query()
-                        .labels(KEY_CONTAINER)
-                        .direction(Direction.OUT)
-                        .edges()
-                        .forEach(Element::remove);
+                referencedVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
             }
         }
 
@@ -624,11 +582,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             return;
         }
 
-        vertex.get().query()
-                .labels(key.name())
-                .direction(Direction.OUT)
-                .edges()
-                .forEach(Element::remove);
+        vertex.get().getEdges(Direction.OUT, key.name()).forEach(Element::remove);
 
         sizeForReference(key, 0);
     }
@@ -649,10 +603,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = referencedVertex.get().query()
-                .labels(key.name())
-                .direction(Direction.IN)
-                .edges();
+        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
         return MoreIterables.stream(edges)
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
@@ -677,10 +628,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = referencedVertex.get().query()
-                .labels(key.name())
-                .direction(Direction.IN)
-                .edges();
+        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, key.name());
 
         return MoreIterables.stream(edges)
                 .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))

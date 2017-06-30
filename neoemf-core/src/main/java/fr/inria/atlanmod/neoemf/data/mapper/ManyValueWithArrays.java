@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
@@ -76,18 +77,11 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(value);
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .orElseGet(() -> MoreArrays.newArray(Object.class, key.position() + 1));
+                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
-        if (key.position() > values.length) {
-            values = MoreArrays.resize(values, key.position() + 1);
-        }
+        checkPositionIndex(key.position(), values.length);
 
-        if (key.position() < values.length && isNull(values[key.position()])) {
-            values[key.position()] = value;
-        }
-        else {
-            values = MoreArrays.add(values, key.position(), value);
-        }
+        values = MoreArrays.add(values, key.position(), value);
 
         valueFor(key.withoutPosition(), values);
     }
@@ -105,14 +99,11 @@ public interface ManyValueWithArrays extends ManyValueMapper {
             throw new NullPointerException();
         }
 
-        int firstPosition = key.position();
-
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
-        if (firstPosition > values.length) {
-            values = MoreArrays.resize(values, firstPosition + 1);
-        }
+        int firstPosition = key.position();
+        checkPositionIndex(firstPosition, values.length);
 
         values = MoreArrays.addAll(values, firstPosition, collection);
 

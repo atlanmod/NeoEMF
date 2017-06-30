@@ -92,24 +92,26 @@ public interface ManyValueMapper extends ValueMapper {
     }
 
     /**
-     * Adds the {@code value} to the specified {@code key} at a defined position. If {@code key#position > size} then
-     * it creates {@code null} elements to respect the position.
+     * Adds the {@code value} to the specified {@code key} at a defined position.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to add
      * @param <V>   the type of value
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @throws NullPointerException      if any parameter is {@code null}
+     * @throws IndexOutOfBoundsException if {@code key#position() > size}
      */
     <V> void addValue(ManyFeatureKey key, V value);
 
     /**
      * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
-     * If {@code key#position > size} then it creates {@code null} elements to respect the position.
      *
      * @param key        the key identifying the multi-valued attribute
      * @param collection the values to add
      * @param <V>        the type of value
+     *
+     * @throws NullPointerException      if any parameter is {@code null}
+     * @throws IndexOutOfBoundsException if {@code key#position() > size}
      */
     default <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
         checkNotNull(key);

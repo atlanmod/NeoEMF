@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -29,6 +27,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
@@ -93,18 +92,9 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
-        if (key.position() > ids.size()) {
-            ids.addAll(IntStream.range(ids.size(), key.position() + 1)
-                    .mapToObj(i -> (Id) null)
-                    .collect(Collectors.toList()));
-        }
+        checkPositionIndex(key.position(), ids.size());
 
-        if (key.position() < ids.size() && isNull(ids.get(key.position()))) {
-            ids.set(key.position(), reference);
-        }
-        else {
-            ids.add(key.position(), reference);
-        }
+        ids.add(key.position(), reference);
 
         valueFor(key.withoutPosition(), func.map(ids));
     }
@@ -122,19 +112,14 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             throw new NullPointerException();
         }
 
-        int firstPosition = key.position();
-
         MappingFunction<List<Id>, M> func = manyReferencesMapping();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
-        if (firstPosition > ids.size()) {
-            ids.addAll(IntStream.range(ids.size(), firstPosition + 1)
-                    .mapToObj(i -> (Id) null)
-                    .collect(Collectors.toList()));
-        }
+        int firstPosition = key.position();
+        checkPositionIndex(firstPosition, ids.size());
 
         ids.addAll(firstPosition, collection);
 

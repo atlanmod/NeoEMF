@@ -55,7 +55,7 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     @Override
     public void close() {
-        Log.info("Statistics for {0}: {1}", backend().getClass().getSimpleName() + "@" + backend().hashCode(), formatAsString());
+        Log.debug("Statistics for {0}: {1}", backend().getClass().getSimpleName() + "@" + backend().hashCode(), formatAsString());
 
         super.close();
     }

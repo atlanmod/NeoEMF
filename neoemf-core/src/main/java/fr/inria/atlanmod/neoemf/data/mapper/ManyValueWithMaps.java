@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
@@ -83,14 +83,10 @@ public interface ManyValueWithMaps extends ManyValueMapper {
                 .orElseGet(() -> getOrCreateMap(key.withoutPosition()));
 
         int size = values.isEmpty() ? 0 : values.lastKey() + 1;
+        checkPositionIndex(key.position(), size);
 
-        if (key.position() < size && nonNull(values.get(key.position()))) {
-            for (int i = size; i > key.position(); i--) {
-                Optional<V> movingValue = Optional.ofNullable(values.get(i - 1));
-                if (movingValue.isPresent()) {
-                    values.put(i, movingValue.get());
-                }
-            }
+        for (int i = size - 1; i >= key.position(); i--) {
+            values.put(i + 1, values.get(i));
         }
 
         values.put(key.position(), value);
@@ -119,10 +115,7 @@ public interface ManyValueWithMaps extends ManyValueMapper {
             previousValue = Optional.of(values.get(key.position()));
 
             for (int i = key.position(); i < size - 1; i++) {
-                Optional<V> movingValue = Optional.ofNullable(values.get(i + 1));
-                if (movingValue.isPresent()) {
-                    values.put(i, movingValue.get());
-                }
+                values.put(i, values.get(i + 1));
             }
 
             values.remove(size - 1);

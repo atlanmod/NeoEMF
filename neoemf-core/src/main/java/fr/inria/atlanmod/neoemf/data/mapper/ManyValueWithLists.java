@@ -19,13 +19,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
@@ -79,18 +78,9 @@ public interface ManyValueWithLists extends ManyValueMapper {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElseGet(() -> getOrCreateList(key.withoutPosition()));
 
-        if (key.position() > values.size()) {
-            values.addAll(IntStream.range(values.size(), key.position() + 1)
-                    .mapToObj(i -> (V) null)
-                    .collect(Collectors.toList()));
-        }
+        checkPositionIndex(key.position(), values.size());
 
-        if (key.position() < values.size() && isNull(values.get(key.position()))) {
-            values.set(key.position(), value);
-        }
-        else {
-            values.add(key.position(), value);
-        }
+        values.add(key.position(), value);
 
         valueFor(key.withoutPosition(), values);
     }
@@ -108,16 +98,11 @@ public interface ManyValueWithLists extends ManyValueMapper {
             throw new NullPointerException();
         }
 
-        int firstPosition = key.position();
-
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElseGet(() -> getOrCreateList(key.withoutPosition()));
 
-        if (firstPosition > values.size()) {
-            values.addAll(IntStream.range(values.size(), firstPosition + 1)
-                    .mapToObj(i -> (V) null)
-                    .collect(Collectors.toList()));
-        }
+        int firstPosition = key.position();
+        checkPositionIndex(firstPosition, values.size());
 
         values.addAll(firstPosition, collection);
 

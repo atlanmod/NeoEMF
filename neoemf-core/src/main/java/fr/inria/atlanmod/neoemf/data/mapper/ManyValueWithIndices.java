@@ -28,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
@@ -72,14 +73,10 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(value);
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        checkPositionIndex(key.position(), size);
 
-        if (key.position() >= size || valueOf(key).isPresent()) {
-            for (int i = size; i > key.position(); i--) {
-                Optional<V> movingValue = valueOf(key.withPosition(i - 1));
-                if (movingValue.isPresent()) {
-                    safeValueFor(key.withPosition(i), movingValue.get());
-                }
-            }
+        for (int i = size - 1; i >= key.position(); i--) {
+            safeValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).orElseThrow(IllegalStateException::new));
         }
 
         sizeForValue(key.withoutPosition(), size + 1);
@@ -100,10 +97,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         Optional<V> previousValue = valueOf(key);
 
         for (int i = key.position(); i < size - 1; i++) {
-            Optional<V> movingValue = valueOf(key.withPosition(i + 1));
-            if (movingValue.isPresent()) {
-                safeValueFor(key.withPosition(i), movingValue.get());
-            }
+            safeValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).orElseThrow(IllegalStateException::new));
         }
 
         safeValueFor(key.withPosition(size - 1), null);
@@ -148,7 +142,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         }
 
         int size = sizeOfValue(key).orElse(0);
-        for (int i = size - 1; i > 0; i--) {
+        for (int i = size - 1; i >= 0; i--) {
             if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
                 return Optional.of(i);
             }

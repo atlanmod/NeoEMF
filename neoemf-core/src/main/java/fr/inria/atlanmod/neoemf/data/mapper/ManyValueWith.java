@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -28,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
@@ -90,18 +89,7 @@ public interface ManyValueWith<M> extends ManyValueMapper {
                 .map(func::<V>unmap)
                 .orElseGet(ArrayList::new);
 
-        if (key.position() > values.size()) {
-            values.addAll(IntStream.range(values.size(), key.position() + 1)
-                    .mapToObj(i -> (V) null)
-                    .collect(Collectors.toList()));
-        }
-
-        if (key.position() < values.size() && isNull(values.get(key.position()))) {
-            values.set(key.position(), value);
-        }
-        else {
-            values.add(key.position(), value);
-        }
+        values.add(key.position(), value);
 
         valueFor(key.withoutPosition(), func.map(values));
     }
@@ -119,19 +107,14 @@ public interface ManyValueWith<M> extends ManyValueMapper {
             throw new NullPointerException();
         }
 
-        int firstPosition = key.position();
-
         MappingFunction<List<V>, M> func = manyValuesMapping();
 
         List<V> values = this.<M>valueOf(key.withoutPosition())
                 .map(func::unmap)
                 .orElseGet(ArrayList::new);
 
-        if (firstPosition > values.size()) {
-            values.addAll(IntStream.range(values.size(), firstPosition + 1)
-                    .mapToObj(i -> (V) null)
-                    .collect(Collectors.toList()));
-        }
+        int firstPosition = key.position();
+        checkPositionIndex(firstPosition, values.size());
 
         values.addAll(firstPosition, collection);
 
