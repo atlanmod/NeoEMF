@@ -29,7 +29,7 @@ public abstract class AbstractCachingStoreDecorator<K, V> extends AbstractStoreD
      * In-memory cache that holds loaded values, identified by their key.
      */
     protected final Cache<K, V> cache = CacheBuilder.builder()
-            .maximumSize()
+            .softValues()
             .build();
 
     /**

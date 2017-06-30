@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 
@@ -23,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches {@link ClassDescriptor}s.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public class MetaclassCachingStoreDecorator extends AbstractCachingStoreDecorator<Id, Optional<ClassDescriptor>> {
 
     /**
@@ -30,7 +32,7 @@ public class MetaclassCachingStoreDecorator extends AbstractCachingStoreDecorato
      *
      * @param store the inner store
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     protected MetaclassCachingStoreDecorator(Store store) {
         super(store);
     }

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.common.log.Level;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.common.log.Logger;
@@ -38,7 +39,7 @@ import static java.util.Objects.nonNull;
  * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("MethodDoesntCallSuperMethod")
+@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
 public class LoggingStoreDecorator extends AbstractStoreDecorator {
 
     /**
@@ -56,7 +57,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public LoggingStoreDecorator(Store store) {
         this(store, Level.DEBUG);
     }
@@ -67,7 +68,7 @@ public class LoggingStoreDecorator extends AbstractStoreDecorator {
      * @param store the underlying store
      * @param level the logging level to use
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public LoggingStoreDecorator(Store store, Level level) {
         super(store);
         this.level = level;

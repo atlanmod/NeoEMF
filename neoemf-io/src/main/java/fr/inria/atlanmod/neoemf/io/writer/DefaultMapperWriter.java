@@ -59,7 +59,7 @@ public class DefaultMapperWriter implements MapperWriter {
      */
     @Nonnull
     private final Cache<String, Id> cache = CacheBuilder.builder()
-            .maximumSize()
+            .softValues()
             .build();
 
     /**
@@ -304,7 +304,7 @@ public class DefaultMapperWriter implements MapperWriter {
             mapper.metaclassFor(id, ClassDescriptor.of(name, uri));
         }
         else {
-            throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined. Use a handler with a conflicts resolution feature instead.");
+            throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined");
         }
     }
 }

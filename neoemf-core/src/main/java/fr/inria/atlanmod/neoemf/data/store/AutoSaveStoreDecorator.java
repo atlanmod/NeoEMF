@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -33,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that automatically saves modifications as calls are made.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("MethodDoesntCallSuperMethod")
+@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
 public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
 
     /**
@@ -52,7 +53,7 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      * @param store         the inner store
      * @param autoSaveChunk the number of modifications between saves
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public AutoSaveStoreDecorator(Store store, Long autoSaveChunk) {
         super(store);
         this.autoSaveChunk = autoSaveChunk;
@@ -63,9 +64,9 @@ public class AutoSaveStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the underlying store
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public AutoSaveStoreDecorator(Store store) {
-        this(store, 50_000L);
+        this(store, Runtime.getRuntime().maxMemory() / 20_480);
     }
 
     @Override

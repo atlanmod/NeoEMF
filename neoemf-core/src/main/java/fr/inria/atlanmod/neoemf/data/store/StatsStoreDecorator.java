@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
@@ -34,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("MethodDoesntCallSuperMethod")
+@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
 public class StatsStoreDecorator extends AbstractStoreDecorator {
 
     /**
@@ -47,14 +48,14 @@ public class StatsStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public StatsStoreDecorator(Store store) {
         super(store);
     }
 
     @Override
     public void close() {
-        Log.debug("Statistics for {0}: {1}", backend().getClass().getSimpleName() + "@" + backend().hashCode(), formatAsString());
+        Log.info("Statistics for {0}: {1}", backend().getClass().getSimpleName() + "@" + backend().hashCode(), formatAsString());
 
         super.close();
     }

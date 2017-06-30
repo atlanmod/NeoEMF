@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -33,6 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that count the number elements used.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
 
     /**
@@ -45,7 +47,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public LoadedObjectCounterStoreDecorator(Store store) {
         super(store);
         loadedObjects = new TreeSet<>();

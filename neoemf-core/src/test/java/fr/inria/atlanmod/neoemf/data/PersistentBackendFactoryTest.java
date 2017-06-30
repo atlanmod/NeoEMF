@@ -194,17 +194,12 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
      */
     @Test
     public void testAutoSaveOption() {
-        final long expectedChunk = 50_000L;
-
         Map<String, Object> options = CommonOptions.builder()
                 .autoSave()
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
         assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
-
-        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
-        assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotations.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
 import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
@@ -31,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * called, preventing resource corruption.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("MethodDoesntCallSuperMethod")
+@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
 public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
 
     /**
@@ -44,7 +45,7 @@ public class ReadOnlyStoreDecorator extends AbstractStoreDecorator {
      *
      * @param store the inner store
      */
-    @SuppressWarnings("unused") // Called dynamically
+    @VisibleForReflection
     public ReadOnlyStoreDecorator(Store store) {
         super(store);
     }
