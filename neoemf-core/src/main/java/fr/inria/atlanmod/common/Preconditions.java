@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -137,6 +139,7 @@ public final class Preconditions {
      *
      * @throws NullPointerException if {@code reference} is null
      */
+    @Nonnull
     public static <T> T checkNotNull(@Nullable T reference) {
         if (null == reference) {
             throw new NullPointerException();
@@ -154,6 +157,7 @@ public final class Preconditions {
      *
      * @throws NullPointerException if {@code reference} is null
      */
+    @Nonnull
     public static <T> T checkNotNull(@Nullable T reference, String message) {
         if (null == reference) {
             throw new NullPointerException(message);
@@ -173,6 +177,7 @@ public final class Preconditions {
      *
      * @throws NullPointerException if {@code reference} is null
      */
+    @Nonnull
     public static <T> T checkNotNull(@Nullable T reference, String pattern, Object... args) {
         if (null == reference) {
             throw new NullPointerException(format(pattern, args));
@@ -192,6 +197,7 @@ public final class Preconditions {
      * @throws IndexOutOfBoundsException if {@code index} is negative or is not less than {@code size}
      * @throws IllegalArgumentException  if {@code size} is negative
      */
+    @Nonnegative
     public static int checkElementIndex(int index, int size) {
         if (index < 0) {
             throw new IndexOutOfBoundsException(format("index (%d) must not be negative", index));
@@ -217,6 +223,7 @@ public final class Preconditions {
      * @throws IndexOutOfBoundsException if {@code index} is negative or is greater than {@code size}
      * @throws IllegalArgumentException  if {@code size} is negative
      */
+    @Nonnegative
     public static int checkPositionIndex(int index, int size) {
         if (index < 0) {
             throw new IndexOutOfBoundsException(format("index (%d) must not be negative", index));
@@ -238,6 +245,7 @@ public final class Preconditions {
      *
      * @return a formatted string
      */
+    @Nonnull
     private static String format(String pattern, Object... args) {
         return String.format(pattern, args);
     }
