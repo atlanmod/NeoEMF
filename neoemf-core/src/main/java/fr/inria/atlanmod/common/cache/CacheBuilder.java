@@ -33,7 +33,7 @@ public interface CacheBuilder<K, V> {
      * @see #maximumSize(long)
      */
     @Nonnegative
-    long DEFAULT_MAX_SIZE = 10_000;
+    long DEFAULT_MAX_SIZE = Runtime.getRuntime().maxMemory() / 204_800;
 
     /**
      * The default maximum weight of a weight-based caches.
@@ -41,7 +41,7 @@ public interface CacheBuilder<K, V> {
      * @see #maximumWeight(ToIntBiFunction)
      */
     @Nonnegative
-    long DEFAULT_MAX_WEIGHT = 10_000;
+    long DEFAULT_MAX_WEIGHT = DEFAULT_MAX_SIZE;
 
     /**
      * Creates a new {@code CacheBuilder} with default settings, including strong keys, strong values, and no automatic
