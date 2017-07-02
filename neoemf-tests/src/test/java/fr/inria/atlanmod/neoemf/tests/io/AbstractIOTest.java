@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.tests.AbstractBackendTest;

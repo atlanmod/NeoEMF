@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 /**
  * A test-case that checks the behavior of {@link BerkeleyDbBackendMaps}.

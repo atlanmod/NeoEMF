@@ -29,72 +29,72 @@ public enum PersistentStoreOptions {
     /**
      * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore
      */
-    CACHE_STRUCTURAL_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator"),
+    CACHE_STRUCTURAL_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore"),
 
     /**
      * Caches the presence of a value.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore
      */
-    CACHE_IS_SET("fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator"),
+    CACHE_IS_SET("fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore"),
 
     /**
      * Caches the size data.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStore
      */
-    CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator"),
+    CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCachingStore"),
 
     /**
      * Caches containers.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore
      */
-    CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator"),
+    CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore"),
 
     /**
      * Caches metaclasses.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ClassCachingStore
      */
-    CACHE_METACLASS("fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator"),
+    CACHE_METACLASS("fr.inria.atlanmod.neoemf.data.store.ClassCachingStore"),
 
     /**
      * Counts all loaded objects.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore
      */
-    COUNT_LOADED_OBJECT("fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator"),
+    COUNT_LOADED_OBJECT("fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore"),
 
     /**
      * Automatically saves modifications as calls are made.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStore
      */
-    AUTO_SAVE("fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator", PersistentResourceOptions.AUTO_SAVE_CHUNK),
+    AUTO_SAVE("fr.inria.atlanmod.neoemf.data.store.AutoSaveStore", PersistentResourceOptions.AUTO_SAVE_CHUNK),
 
     /**
      * Only allows read operations.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore
      */
-    READ_ONLY("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator"),
+    READ_ONLY("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore"),
 
     /**
      * Logs every call to a methods.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStore
      */
-    LOG("fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator", PersistentResourceOptions.LOG_LEVEL),
+    LOG("fr.inria.atlanmod.neoemf.data.store.LoggingStore", PersistentResourceOptions.LOG_LEVEL),
 
     /**
      * Records several stats.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.StatsStore
      */
-    STATS("fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator");
+    STATS("fr.inria.atlanmod.neoemf.data.store.StatsStore");
 
     /**
      * The type of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}.

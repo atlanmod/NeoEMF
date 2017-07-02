@@ -24,18 +24,14 @@ import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -49,19 +45,19 @@ import static fr.inria.atlanmod.common.Preconditions.checkArgument;
 /**
  * A factory that creates {@link BlueprintsBackend} instances.
  * <p>
- * As other implementations of {@link BackendFactory}, this class can create transient and persistent
- * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
- * PersistentResource#load(Map)} option maps.
+ * As other implementations of {@link BackendFactory}, this class can create transient and persistent databases.
+ * Persistent back-end creation can be configured using {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(Map)}
+ * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
  * <p>
  * The factory handles transient back-ends by creating an in-memory {@code TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (see {@link BlueprintsResourceOptions}. Default back-end
  * configuration (store directory and graph type) is called dynamically according to the provided Blueprints
- * implementation {@link BlueprintsTgConfiguration}.
+ * implementation {@link fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration}.
  *
- * @see PersistentResource
  * @see BlueprintsBackend
- * @see BlueprintsOptions
  * @see BlueprintsResourceOptions
+ * @see fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions
+ * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
  */
 @ParametersAreNonnullByDefault
 public class BlueprintsBackendFactory extends AbstractBackendFactory {
@@ -216,18 +212,18 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         if (segments.length >= 2) {
             String graphName = segments[segments.length - 2];
-            String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
-            String configClassName = String.format("Blueprints%sConfiguration", upperCaseGraphName);
-            String configClassQualifiedName = String.format("%s.%s.%s", BlueprintsBackendFactory.class.getPackage().getName(), graphName, configClassName);
+            String configClassName = String.format("Blueprints%sConfiguration", Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1));
+
+            String configClassQualifiedName = String.format("%s.%s.%s",
+                    BlueprintsBackendFactory.class.getPackage().getName(),
+                    graphName,
+                    configClassName);
 
             try {
-                ClassLoader classLoader = BlueprintsBackendFactory.class.getClassLoader();
-                Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
-                Method configClassInstanceMethod = configClass.getMethod("getInstance");
-
-                return BlueprintsConfiguration.class.cast(configClassInstanceMethod.invoke(configClass));
+                Class<?> configClass = getClass().getClassLoader().loadClass(configClassQualifiedName);
+                return BlueprintsConfiguration.class.cast(configClass.newInstance());
             }
-            catch (Exception e) {
+            catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
                 throw new RuntimeException(e);
             }
         }

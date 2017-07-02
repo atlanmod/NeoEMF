@@ -12,34 +12,16 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-
-import org.eclipse.emf.ecore.resource.Resource;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link DataMapper} to establish a mapping between a {@link Resource} and a {@link Backend}.
+ * A {@link DataMapper} that adds pre-processing and post-processing capabilities to data persistence.
  */
 @ParametersAreNonnullByDefault
 public interface Store extends DataMapper {
-
-    /**
-     * Returns the resource to store and access.
-     *
-     * @return the resource
-     */
-    @Nullable
-    Resource.Internal resource();
-
-    /**
-     * Defines the resource to store and access.
-     *
-     * @param resource the resource
-     */
-    void resource(@Nullable Resource.Internal resource);
 
     /**
      * Returns the back-end where data are stored.

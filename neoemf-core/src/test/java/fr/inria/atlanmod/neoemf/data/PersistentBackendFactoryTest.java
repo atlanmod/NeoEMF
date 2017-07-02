@@ -12,16 +12,16 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.context.CoreTest;
-import fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.AutoSaveStore;
+import fr.inria.atlanmod.neoemf.data.store.ClassCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore;
+import fr.inria.atlanmod.neoemf.data.store.LoggingStore;
+import fr.inria.atlanmod.neoemf.data.store.SizeCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.StatsStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
@@ -62,7 +62,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks the setup of the {@link IsSetCachingStoreDecorator}.
+     * Checks the setup of the {@link IsSetCachingStore}.
      */
     @Test
     public void testIsSetCachingOption() {
@@ -71,14 +71,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(IsSetCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link LoggingStoreDecorator}.
+     * Checks the setup of the {@link LoggingStore}.
      */
     @Test
     public void testLoggingOption() {
@@ -87,14 +87,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
+        assertThat(store).isInstanceOf(LoggingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link SizeCachingStoreDecorator}.
+     * Checks the setup of the {@link SizeCachingStore}.
      */
     @Test
     public void testSizeCachingOption() {
@@ -103,14 +103,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link FeatureCachingStoreDecorator}.
+     * Checks the setup of the {@link FeatureCachingStore}.
      */
     @Test
     public void testFeatureCachingOption() {
@@ -119,14 +119,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(FeatureCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link ContainerCachingStoreDecorator}.
+     * Checks the setup of the {@link ContainerCachingStore}.
      */
     @Test
     public void testContainerCachingOption() {
@@ -135,14 +135,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(ContainerCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(ContainerCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link MetaclassCachingStoreDecorator}.
+     * Checks the setup of the {@link ClassCachingStore}.
      */
     @Test
     public void testMetaclassCachingOption() {
@@ -151,14 +151,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(MetaclassCachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(ClassCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link StatsStoreDecorator}.
+     * Checks the setup of the {@link StatsStore}.
      */
     @Test
     public void testStatsCachingOption() {
@@ -167,14 +167,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(StatsStoreDecorator.class);
+        assertThat(store).isInstanceOf(StatsStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link LoadedObjectCounterStoreDecorator}.
+     * Checks the setup of the {@link LoadedObjectCounterStore}.
      */
     @Test
     public void testLoadedObjectCounterLoggingOption() {
@@ -183,14 +183,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
+        assertThat(store).isInstanceOf(LoadedObjectCounterStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link AutoSaveStoreDecorator} without chunk.
+     * Checks the setup of the {@link AutoSaveStore} without chunk.
      */
     @Test
     public void testAutoSaveOption() {
@@ -199,14 +199,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
+        assertThat(store).isInstanceOf(AutoSaveStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link AutoSaveStoreDecorator} with chunk.
+     * Checks the setup of the {@link AutoSaveStore} with chunk.
      */
     @Test
     public void testAutoSaveWithChunkOption() {
@@ -217,9 +217,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
+        assertThat(store).isInstanceOf(AutoSaveStore.class);
 
-        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
+        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStore.class, Long.class);
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
@@ -227,7 +227,7 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks the setup of the {@link AutoSaveStoreDecorator} with negative chunk.
+     * Checks the setup of the {@link AutoSaveStore} with negative chunk.
      */
     @Test
     public void testAutoSaveWithNegativeChunkOption() {
@@ -238,8 +238,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     /**
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
-     * <li>{@link IsSetCachingStoreDecorator}</li>
-     * <li>{@link LoggingStoreDecorator}</li>
+     * <li>{@link IsSetCachingStore}</li>
+     * <li>{@link LoggingStore}</li>
      * </ul>
      */
     @Test
@@ -250,10 +250,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(LoggingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(IsSetCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -262,8 +262,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     /**
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
-     * <li>{@link IsSetCachingStoreDecorator}</li>
-     * <li>{@link SizeCachingStoreDecorator}</li>
+     * <li>{@link IsSetCachingStore}</li>
+     * <li>{@link SizeCachingStore}</li>
      * </ul>
      */
     @Test
@@ -274,10 +274,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(IsSetCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -286,8 +286,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     /**
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
-     * <li>{@link SizeCachingStoreDecorator}</li>
-     * <li>{@link FeatureCachingStoreDecorator}</li>
+     * <li>{@link SizeCachingStore}</li>
+     * <li>{@link FeatureCachingStore}</li>
      * </ul>
      */
     @Test
@@ -298,10 +298,10 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -310,11 +310,11 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     /**
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      * <ul>
-     * <li>{@link IsSetCachingStoreDecorator}</li>
-     * <li>{@link SizeCachingStoreDecorator}</li>
-     * <li>{@link FeatureCachingStoreDecorator}</li>
-     * <li>{@link LoggingStoreDecorator}</li>
-     * <li>{@link AutoSaveStoreDecorator}</li>
+     * <li>{@link IsSetCachingStore}</li>
+     * <li>{@link SizeCachingStore}</li>
+     * <li>{@link FeatureCachingStore}</li>
+     * <li>{@link LoggingStore}</li>
+     * <li>{@link AutoSaveStore}</li>
      * </ul>
      */
     @Test
@@ -333,31 +333,31 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(StatsStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(StatsStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(LoggingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(LoggingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isInstanceOf(AutoSaveStoreDecorator.class);
+        assertThat(store).isInstanceOf(AutoSaveStore.class);
 
-        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStoreDecorator.class, Long.class);
+        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStore.class, Long.class);
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(MetaclassCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(ClassCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ContainerCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(ContainerCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(IsSetCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(IsSetCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStoreDecorator.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);

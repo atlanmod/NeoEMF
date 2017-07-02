@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 
 /**
- * A utility class that contains all the constants used in a {@link fr.inria.atlanmod.neoemf.data.mapper.DataMapper}.
+ * A utility class that contains all the constants used in a {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.
  */
 public interface MapperConstants {
 

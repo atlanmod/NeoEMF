@@ -11,13 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
-import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import org.mapdb.DB;
-import org.mapdb.Serializer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -31,12 +29,6 @@ class MapDbBackendArrays extends AbstractMapDbBackend implements ReferenceAsValu
 
     /**
      * Constructs a new {@code MapDbBackendArrays} wrapping the provided {@code db}.
-     * <p>
-     * This constructor initialize the different {@link java.util.concurrent.ConcurrentMap}s from the MapDB engine and
-     * set their respective {@link Serializer}s.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@code {@link MapDbBackend}} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link java.util.concurrent.ConcurrentMap}s and manage the
      *           database

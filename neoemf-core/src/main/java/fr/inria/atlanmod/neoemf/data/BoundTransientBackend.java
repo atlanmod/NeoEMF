@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,14 +47,14 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, SingleFeatureKey> CONTAINERS = new HashMap<>();
+    private static final Map<Id, SingleFeatureBean> CONTAINERS = new HashMap<>();
 
     /**
      * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private static final Map<Id, ClassDescriptor> INSTANCES = new HashMap<>();
+    private static final Map<Id, ClassBean> INSTANCES = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -119,13 +119,13 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
 
     @Nonnull
     @Override
-    protected Map<Id, SingleFeatureKey> allContainers() {
+    protected Map<Id, SingleFeatureBean> allContainers() {
         return CONTAINERS;
     }
 
     @Nonnull
     @Override
-    protected Map<Id, ClassDescriptor> allInstances() {
+    protected Map<Id, ClassBean> allInstances() {
         return INSTANCES;
     }
 
@@ -137,7 +137,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
 
     @Nonnull
     @Override
-    protected String transform(SingleFeatureKey key) {
+    protected String transform(SingleFeatureBean key) {
         checkArgument(Objects.equals(owner, checkNotNull(key.id())),
                 "%s is not the owner of this back-end (%s)", key.id(), owner);
 

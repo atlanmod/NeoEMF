@@ -358,12 +358,12 @@ public class QueryFactory {
      * @return {@code true} if ???
      */
     private static boolean hasNoChildTypes(Iterable<ClassDeclaration> allClasses, ClassDeclaration superClass) {
-            for (ClassDeclaration c : allClasses) {
-                if (c.getSuperClass() == superClass) {
-                    return false;
-                }
+        for (ClassDeclaration c : allClasses) {
+            if (c.getSuperClass() == superClass) {
+                return false;
             }
-            return true;
+        }
+        return true;
     }
 
     /**
@@ -375,11 +375,11 @@ public class QueryFactory {
      * @return {@code true} if ???
      */
     private static boolean hasBeenInvoked(Iterable<MethodInvocation> methodInvocations, EObject method) {
-            for (MethodInvocation methodInvocation : methodInvocations) {
-                if (Objects.equals(methodInvocation.getMethod(), method)) {
-                    return true;
-                }
+        for (MethodInvocation methodInvocation : methodInvocations) {
+            if (Objects.equals(methodInvocation.getMethod(), method)) {
+                return true;
             }
-            return false;
+        }
+        return false;
     }
 }

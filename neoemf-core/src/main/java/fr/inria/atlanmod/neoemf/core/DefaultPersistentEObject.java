@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
-import fr.inria.atlanmod.neoemf.data.store.SharedStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.SharedStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 

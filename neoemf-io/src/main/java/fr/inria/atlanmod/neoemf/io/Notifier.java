@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
-import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -123,7 +123,7 @@ public final class ResourceManager {
         try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(targetFile.toPath()))) {
             out.putNextEntry(new ZipEntry("ResourceContents"));
 
-            try (BufferedReader reader = Files.newBufferedReader(resourceFile.toPath(), charset) ; BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, charset))) {
+            try (BufferedReader reader = Files.newBufferedReader(resourceFile.toPath(), charset); BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, charset))) {
                 boolean migrated = false;
 
                 String line;

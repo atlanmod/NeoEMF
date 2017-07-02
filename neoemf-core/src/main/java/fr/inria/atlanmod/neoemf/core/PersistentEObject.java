@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;

@@ -11,13 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import org.mapdb.DB;
 import org.mapdb.Serializer;
@@ -42,20 +40,14 @@ import static java.util.Objects.nonNull;
 class MapDbBackendIndices extends AbstractMapDbBackend implements ReferenceAsValue, ManyValueWithIndices, ManyReferenceAsManyValue {
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s,
-     * identified by the associated {@link ManyFeatureKey}.
+     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the associated {@link ManyFeatureBean}.
      */
     @Nonnull
-    private final Map<ManyFeatureKey, Object> manyFeatures;
+    private final Map<ManyFeatureBean, Object> manyFeatures;
 
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
-     * <p>
-     * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
-     * {@link Serializer}s.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@link MapDbBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
@@ -66,21 +58,21 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ReferenceAsVal
         super(db);
 
         this.manyFeatures = db.hashMap("features/many")
-                .keySerializer(new SerializerDecorator<>(serializerFactory.forManyFeatureKey()))
+                .keySerializer(new SerializerDecorator<>(serializerFactory.forManyFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key);
 
         return get(manyFeatures, key);
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
+    public <V> void safeValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key);
 
         if (nonNull(value)) {

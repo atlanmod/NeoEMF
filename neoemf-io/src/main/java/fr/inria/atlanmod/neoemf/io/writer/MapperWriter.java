@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.writer;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Writer} that persists data into a {@link fr.inria.atlanmod.neoemf.data.mapper.DataMapper}.
+ * A {@link Writer} that persists data into a {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.
  */
 @ParametersAreNonnullByDefault
 public interface MapperWriter extends Writer {

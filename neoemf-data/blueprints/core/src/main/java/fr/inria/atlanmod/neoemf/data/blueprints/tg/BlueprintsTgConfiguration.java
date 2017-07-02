@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
 
 import java.nio.file.Path;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -43,36 +42,9 @@ public final class BlueprintsTgConfiguration implements BlueprintsConfiguration 
      */
     private static final String FILE_TYPE = "blueprints.tg.file-type";
 
-    /**
-     * Constructs a new {@code BlueprintsTgConfiguration}.
-     */
-    private BlueprintsTgConfiguration() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BlueprintsConfiguration getInstance() {
-        return Holder.INSTANCE;
-    }
-
     @Override
     public void putDefaultConfiguration(BackendConfiguration config, Path directory) {
         config.set(DIRECTORY, directory.toString());
         config.setIfAbsent(FILE_TYPE, "GRAPHML");
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        private static final BlueprintsConfiguration INSTANCE = new BlueprintsTgConfiguration();
     }
 }

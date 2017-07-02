@@ -11,17 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link DataMapper} that stores data.
- * <p>
- * It does not provide model-level translation; these functions are handled by {@link
- * fr.inria.atlanmod.neoemf.data.store.Store}s.
- *
- * @see fr.inria.atlanmod.neoemf.data.store.Store
  */
 @ParametersAreNonnullByDefault
 public interface Backend extends DataMapper {

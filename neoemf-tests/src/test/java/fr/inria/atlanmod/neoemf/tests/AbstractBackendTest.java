@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.common.annotations.VisibleForReflection;
+import fr.inria.atlanmod.common.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
@@ -88,23 +88,23 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 // Blueprints : Tinker
-                new Object[]{BlueprintsContext.getWithIndices(), "Tinker : Indices"},
+                new Object[]{BlueprintsContext.getWithIndices(), "Tinker"},
 
                 // Blueprints : Neo4j
-                new Object[]{BlueprintsNeo4jContext.getWithIndices(), "Neo4j : Indices"},
+                new Object[]{BlueprintsNeo4jContext.getWithIndices(), "Neo4j"},
 
                 // MapDB
-                new Object[]{MapDbContext.getWithIndices(), "MapDb : Indices"},
-//                new Object[]{MapDbContext.getWithArrays(), "MapDb : Arrays"},
-//                new Object[]{MapDbContext.getWithLists(), "MapDb : Lists"},
+                new Object[]{MapDbContext.getWithIndices(), "MapDb - Indices"},
+//                new Object[]{MapDbContext.getWithArrays(), "MapDb - Arrays"},
+//                new Object[]{MapDbContext.getWithLists(), "MapDb - Lists"},
 
                 // BerkeleyDB
-                new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB : Indices"},
-//                new Object[]{BerkeleyDbContext.getWithArrays(), "BerkeleyDB : Arrays"},
-//                new Object[]{BerkeleyDbContext.getWithLists(), "BerkeleyDB : Lists"},
+                new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB - Indices"},
+//                new Object[]{BerkeleyDbContext.getWithArrays(), "BerkeleyDB - Arrays"},
+//                new Object[]{BerkeleyDbContext.getWithLists(), "BerkeleyDB - Lists"},
 
                 // HBase
-                new Object[]{HBaseContext.getWithArraysAndStrings(), "HBase : Arrays & Strings"}
+                new Object[]{HBaseContext.getWithArraysAndStrings(), "HBase"}
         );
     }
 

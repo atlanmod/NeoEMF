@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.common.annotations.Experimental;
-import fr.inria.atlanmod.common.annotations.VisibleForTesting;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.common.annotation.Experimental;
+import fr.inria.atlanmod.common.annotation.VisibleForTesting;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.LoggingProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.TimerProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.ProgressProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
@@ -308,7 +308,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withTimer() {
-        return with(TimerProcessor.class);
+        return with(ProgressProcessor.class);
     }
 
     /**

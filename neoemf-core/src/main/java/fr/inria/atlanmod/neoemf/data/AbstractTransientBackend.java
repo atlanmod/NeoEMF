@@ -1,11 +1,22 @@
+/*
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
-import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,7 +57,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, SingleFeatureKey> allContainers();
+    protected abstract Map<Id, SingleFeatureBean> allContainers();
 
     /**
      * Returns the map that holds all instances.
@@ -54,7 +65,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, ClassDescriptor> allInstances();
+    protected abstract Map<Id, ClassBean> allInstances();
 
     /**
      * Returns the map that holds all features.
@@ -72,23 +83,23 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
      * @return the transformed key
      *
      * @see #allFeatures()
-     * @see #valueOf(SingleFeatureKey)
-     * @see #valueFor(SingleFeatureKey, Object)
-     * @see #unsetValue(SingleFeatureKey)
+     * @see #valueOf(SingleFeatureBean)
+     * @see #valueFor(SingleFeatureBean, Object)
+     * @see #unsetValue(SingleFeatureBean)
      */
     @Nonnull
-    protected abstract K transform(SingleFeatureKey key);
+    protected abstract K transform(SingleFeatureBean key);
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureKey> containerOf(Id id) {
+    public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
         return Optional.ofNullable(allContainers().get(id));
     }
 
     @Override
-    public void containerFor(Id id, SingleFeatureKey container) {
+    public void containerFor(Id id, SingleFeatureBean container) {
         checkNotNull(id);
         checkNotNull(container);
 
@@ -104,14 +115,14 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassBean> metaclassOf(Id id) {
         checkNotNull(id);
 
         return Optional.ofNullable(allInstances().get(id));
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassBean metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 
@@ -120,7 +131,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean key) {
         K k = transform(key);
 
         return Optional.ofNullable(cast(allFeatures().get(k)));
@@ -128,7 +139,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         K k = transform(key);
         checkNotNull(value);
 
@@ -136,7 +147,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureKey key) {
+    public <V> void unsetValue(SingleFeatureBean key) {
         K k = transform(key);
 
         allFeatures().remove(k);

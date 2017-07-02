@@ -13,11 +13,10 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceWith;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays;
-import fr.inria.atlanmod.neoemf.data.mapper.MappingFunction;
-import fr.inria.atlanmod.neoemf.data.mapper.ReferenceWith;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceWith;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
+import fr.inria.atlanmod.neoemf.data.mapping.MappingFunction;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceWith;
 
 import org.apache.hadoop.hbase.client.Table;
 
@@ -80,9 +79,6 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements Referenc
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@link HBaseBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param table the HBase table
      */

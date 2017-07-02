@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 /**
  * A test-case that checks the behavior of {@link MapDbBackendArrays}.

@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.common.annotation.Builder;
 import fr.inria.atlanmod.common.log.Level;
-import fr.inria.atlanmod.neoemf.bind.Builder;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.Collections;
 import java.util.HashMap;

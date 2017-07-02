@@ -12,12 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
-
-import org.eclipse.emf.ecore.resource.Resource;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -27,32 +24,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
 
     /**
-     * The resource to store and access.
-     */
-    @Nullable
-    private Resource.Internal resource;
-
-    /**
      * Constructs a new {@code DirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
-     * @param backend  the back-end used to store the model
-     * @param resource the resource to store and access
+     * @param backend the back-end used to store the model
      */
-    public DirectWriteStore(Backend backend, @Nullable Resource.Internal resource) {
+    public DirectWriteStore(Backend backend) {
         super(backend);
-
-        this.resource = resource;
-    }
-
-    @Nullable
-    @Override
-    public Resource.Internal resource() {
-        return resource;
-    }
-
-    @Override
-    public void resource(@Nullable Resource.Internal resource) {
-        this.resource = resource;
     }
 
     @Nonnull

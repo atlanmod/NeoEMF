@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperDecorator;
-import fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
+import fr.inria.atlanmod.neoemf.data.store.AbstractStore;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
 
     /**
-     * The field name describing the inner {@link Store} in a {@link AbstractStoreDecorator}.
+     * The field name describing the inner {@link Store} in a {@link AbstractStore}.
      */
     private static final String INNER_MAPPER_FIELDNAME = "next";
 
@@ -89,15 +89,13 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.TransientBackend}, specific for each
-     * implementation.
+     * Checks the creation of a {@link TransientBackend}, specific for each implementation.
      */
     @Test
     public abstract void testCreateTransientBackend();
 
     /**
-     * Checks the creation of the default {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for each
-     * implementation.
+     * Checks the creation of the default {@link PersistentBackend}, specific for each implementation.
      */
     @Test
     public abstract void testCreateDefaultPersistentBackend();

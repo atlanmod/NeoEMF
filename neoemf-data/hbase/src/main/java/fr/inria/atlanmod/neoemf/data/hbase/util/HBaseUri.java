@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -25,8 +24,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link UriBuilder} that creates HBase specific resource {@link URI}s.
  *
- * @see BackendFactoryRegistry
- * @see fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory
+ * @see HBaseBackendFactory
+ * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @FactoryBinding(HBaseBackendFactory.class)

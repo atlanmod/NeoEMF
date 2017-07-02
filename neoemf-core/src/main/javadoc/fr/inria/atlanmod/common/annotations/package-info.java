@@ -13,7 +13,7 @@
  * Provides common annotation types.
  * <p>
  * Annotations are used in NeoEMF as documentation helpers, providing information on the status of a feature. For
- * example, a class annotated with {@link fr.inria.atlanmod.common.annotations.Experimental} specifies that the
+ * example, a class annotated with {@link fr.inria.atlanmod.common.annotation.Experimental} specifies that the
  * provided
  * API might evolve in the next releases, and should be carefully used.
  * <p>

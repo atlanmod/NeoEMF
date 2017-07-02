@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.common.io.hash.Hasher;
-import fr.inria.atlanmod.common.io.hash.Hashers;
+import fr.inria.atlanmod.common.hash.Hasher;
+import fr.inria.atlanmod.common.hash.Hashers;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 

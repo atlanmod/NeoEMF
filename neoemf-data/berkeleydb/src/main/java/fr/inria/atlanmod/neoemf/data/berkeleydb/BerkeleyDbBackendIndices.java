@@ -15,13 +15,11 @@ import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,17 +41,14 @@ import static java.util.Objects.nonNull;
 class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements ReferenceAsValue, ManyValueWithIndices, ManyReferenceAsManyValue {
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link Id}, identified by the associated
-     * {@link ManyFeatureKey}.
+     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id},
+     * identified by the associated {@link ManyFeatureBean}.
      */
     @Nonnull
     private final Database manyFeatures;
 
     /**
      * Constructs a new {@code BerkeleyDbBackendIndices} wrapping the provided {@code environment}.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@link BerkeleyDbBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param environment    the database environment
      * @param databaseConfig the database configuration
@@ -85,21 +80,21 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Refe
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key);
 
-        return get(manyFeatures, key, serializerFactory.forManyFeatureKey(), serializerFactory.forAny());
+        return get(manyFeatures, key, serializerFactory.forManyFeature(), serializerFactory.forAny());
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureKey key, @Nullable V value) {
+    public <V> void safeValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value, serializerFactory.forManyFeatureKey(), serializerFactory.forAny());
+            put(manyFeatures, key, value, serializerFactory.forManyFeature(), serializerFactory.forAny());
         }
         else {
-            delete(manyFeatures, key, serializerFactory.forManyFeatureKey());
+            delete(manyFeatures, key, serializerFactory.forManyFeature());
         }
     }
 }

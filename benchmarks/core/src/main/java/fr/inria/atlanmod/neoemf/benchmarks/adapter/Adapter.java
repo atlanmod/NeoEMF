@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.ecore.EPackage;

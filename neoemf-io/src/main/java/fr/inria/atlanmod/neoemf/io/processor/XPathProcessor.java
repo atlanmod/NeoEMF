@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
-import fr.inria.atlanmod.neoemf.io.structure.BasicId;
-import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicId;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XPathConstants;
 
 import java.util.ArrayDeque;
@@ -155,20 +155,20 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
     @Nonnull
     private String formatPath(String path) {
         // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
-        String modifiedReference = path.replaceFirst(XPathConstants.START_EXPR, expressionStart);
+        String updatedReference = path.replaceFirst(XPathConstants.START_EXPR, expressionStart);
 
         // Replace elements which has not index : all elements must have an index (default = 0)
-        Matcher matcher = PATTERN_NO_INDEX.matcher(modifiedReference);
+        Matcher matcher = PATTERN_NO_INDEX.matcher(updatedReference);
         while (matcher.find()) {
-            modifiedReference = matcher.replaceAll("$2.0$3");
+            updatedReference = matcher.replaceAll("$2.0$3");
         }
 
         // Remove the latest '/' character if present
-        if (modifiedReference.endsWith(XPathConstants.END_EXPR)) {
-            modifiedReference = modifiedReference.substring(0, modifiedReference.length() - XPathConstants.END_EXPR.length());
+        if (updatedReference.endsWith(XPathConstants.END_EXPR)) {
+            updatedReference = updatedReference.substring(0, updatedReference.length() - XPathConstants.END_EXPR.length());
         }
 
-        return modifiedReference;
+        return updatedReference;
     }
 
     /**

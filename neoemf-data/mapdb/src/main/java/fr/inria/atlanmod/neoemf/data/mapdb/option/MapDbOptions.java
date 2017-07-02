@@ -13,9 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.util.Map;
 
@@ -23,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistenceOptions} that creates MapDB specific options.
+ * A {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} that creates MapDB specific options.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
@@ -62,13 +60,13 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
      * <p>
      * This mapping corresponds to a simple representation of multi-valued features, by using the {@link
-     * ManyFeatureKey#position()}.
+     * fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean#position()}.
      * <p>
      * <b>Note:</b> This is the default mapping.
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithIndices
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices
      */
     public MapDbOptions withIndices() {
         return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendIndices");
@@ -81,7 +79,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays
      */
     public MapDbOptions withArrays() {
         return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendArrays");
@@ -94,7 +92,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithLists
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists
      */
     public MapDbOptions withLists() {
         return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendLists");
@@ -107,7 +105,7 @@ public class MapDbOptions extends AbstractPersistenceOptions<MapDbOptions> {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithMaps
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithMaps
      */
     public MapDbOptions withMaps() {
         return withMapping("fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendMaps");

@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,23 +42,23 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassBean> metaclassOf(Id id) {
         throw E;
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassBean metaclass) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureKey> containerOf(Id id) {
+    public Optional<SingleFeatureBean> containerOf(Id id) {
         throw E;
     }
 
     @Override
-    public void containerFor(Id id, SingleFeatureKey container) {
+    public void containerFor(Id id, SingleFeatureBean container) {
         throw E;
     }
 
@@ -84,221 +84,221 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         throw E;
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureKey key) {
+    public <V> void unsetValue(SingleFeatureBean key) {
         throw E;
     }
 
     @Override
-    public <V> boolean hasValue(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
+    public <V> boolean hasValue(SingleFeatureBean key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
-        throw E;
-    }
-
-    @Override
-    public void unsetReference(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Override
-    public boolean hasReference(SingleFeatureKey key) {
+    public Optional<Id> referenceOf(SingleFeatureBean key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureKey key) {
+    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        throw E;
+    }
+
+    @Override
+    public void unsetReference(SingleFeatureBean key) {
+        throw E;
+    }
+
+    @Override
+    public boolean hasReference(SingleFeatureBean key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureBean key) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+    public <V> List<V> allValuesOf(SingleFeatureBean key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
         throw E;
     }
 
     @Override
-    public <V> boolean hasAnyValue(SingleFeatureKey key) {
+    public <V> boolean hasAnyValue(SingleFeatureBean key) {
         throw E;
     }
 
     @Override
-    public <V> void addValue(ManyFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureBean key, V value) {
         throw E;
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
         throw E;
     }
 
     @Nonnegative
     @Override
-    public <V> int appendValue(SingleFeatureKey key, V value) {
+    public <V> int appendValue(SingleFeatureBean key, V value) {
         throw E;
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureKey key, List<? extends V> collection) {
+    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
         throw E;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureBean key) {
         throw E;
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> moveValue(ManyFeatureKey source, ManyFeatureKey target) {
-        throw E;
-    }
-
-    @Override
-    public <V> boolean containsValue(SingleFeatureKey key, @Nullable V value) {
+    public <V> void removeAllValues(SingleFeatureBean key) {
         throw E;
     }
 
     @Nonnull
-    @Nonnegative
     @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
+    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
+        throw E;
+    }
+
+    @Override
+    public <V> boolean containsValue(SingleFeatureBean key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(ManyFeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public List<Id> allReferencesOf(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
-        throw E;
-    }
-
-    @Override
-    public boolean hasAnyReference(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Override
-    public void addReference(ManyFeatureKey key, Id reference) {
-        throw E;
-    }
-
-    @Override
-    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
-        throw E;
-    }
-
-    @Nonnegative
-    @Override
-    public int appendReference(SingleFeatureKey key, Id reference) {
-        throw E;
-    }
-
-    @Nonnegative
-    @Override
-    public int appendAllReferences(SingleFeatureKey key, List<Id> collection) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> removeReference(ManyFeatureKey key) {
-        throw E;
-    }
-
-    @Override
-    public void removeAllReferences(SingleFeatureKey key) {
-        throw E;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureKey source, ManyFeatureKey target) {
-        throw E;
-    }
-
-    @Override
-    public boolean containsReference(SingleFeatureKey key, @Nullable Id reference) {
+    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(ManyFeatureBean key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public List<Id> allReferencesOf(SingleFeatureBean key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+        throw E;
+    }
+
+    @Override
+    public boolean hasAnyReference(SingleFeatureBean key) {
+        throw E;
+    }
+
+    @Override
+    public void addReference(ManyFeatureBean key, Id reference) {
+        throw E;
+    }
+
+    @Override
+    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
+        throw E;
+    }
+
+    @Nonnegative
+    @Override
+    public int appendReference(SingleFeatureBean key, Id reference) {
+        throw E;
+    }
+
+    @Nonnegative
+    @Override
+    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(ManyFeatureBean key) {
+        throw E;
+    }
+
+    @Override
+    public void removeAllReferences(SingleFeatureBean key) {
+        throw E;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
+        throw E;
+    }
+
+    @Override
+    public boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
         throw E;
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureKey key) {
+    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
+        throw E;
+    }
+
+    @Nonnull
+    @Nonnegative
+    @Override
+    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
         throw E;
     }
 }

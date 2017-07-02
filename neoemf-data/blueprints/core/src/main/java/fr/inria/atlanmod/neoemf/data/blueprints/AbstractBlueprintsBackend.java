@@ -26,16 +26,14 @@ import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -103,10 +101,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             .build();
 
     /**
-     * List that holds indexed {@link ClassDescriptor}.
+     * List that holds indexed {@link ClassBean}.
      */
     @Nonnull
-    private final List<ClassDescriptor> indexedMetaclasses;
+    private final List<ClassBean> indexedMetaclasses;
 
     /**
      * Index containing metaclasses.
@@ -122,11 +120,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     /**
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
-     * <p>
-     * This constructor initialize the caches and create the metaclass index.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@code BlueprintsBackendIndices} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
@@ -143,14 +136,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     /**
-     * Builds the {@link Id} used to identify a {@link ClassDescriptor} {@link Vertex}.
+     * Builds the {@link Id} used to identify a {@link ClassBean} {@link Vertex}.
      *
-     * @param metaclass the {@link ClassDescriptor} to build an {@link Id} from
+     * @param metaclass the {@link ClassBean} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
     @Nonnull
-    private static Id buildId(ClassDescriptor metaclass) {
+    private static Id buildId(ClassBean metaclass) {
         return StringId.of(metaclass.name() + '@' + metaclass.uri());
     }
 
@@ -211,7 +204,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureKey> containerOf(Id id) {
+    public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
         Optional<Vertex> containmentVertex = get(id);
@@ -223,18 +216,18 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
         Optional<Edge> containerEdge = MoreIterables.onlyElement(containerEdges);
 
-        Optional<SingleFeatureKey> container = Optional.empty();
+        Optional<SingleFeatureBean> container = Optional.empty();
         if (containerEdge.isPresent()) {
             String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
             Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
-            container = Optional.of(SingleFeatureKey.of(StringId.from(containerVertex.getId()), featureName));
+            container = Optional.of(SingleFeatureBean.of(StringId.from(containerVertex.getId()), featureName));
         }
 
         return container;
     }
 
     @Override
-    public void containerFor(Id id, SingleFeatureKey container) {
+    public void containerFor(Id id, SingleFeatureBean container) {
         checkNotNull(id);
         checkNotNull(container);
 
@@ -258,7 +251,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassBean> metaclassOf(Id id) {
         checkNotNull(id);
 
         Optional<Vertex> vertex = get(id);
@@ -270,11 +263,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
         Optional<Vertex> metaclassVertex = MoreIterables.onlyElement(metaclassVertices);
 
-        return metaclassVertex.map(v -> ClassDescriptor.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
+        return metaclassVertex.map(v -> ClassBean.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassBean metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 
@@ -300,13 +293,13 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassDescriptor metaclass, boolean strict) {
+    public Iterable<Id> allInstancesOf(ClassBean metaclass, boolean strict) {
         // There is no strict instance of an abstract class
         if (metaclass.isAbstract() && strict) {
             return Collections.emptyList();
         }
         else {
-            Set<ClassDescriptor> allInstances = strict ? new HashSet<>() : metaclass.inheritedBy();
+            Set<ClassBean> allInstances = strict ? new HashSet<>() : metaclass.inheritedBy();
             allInstances.add(metaclass);
 
             // Get all vertices that are indexed with one of the metaclass

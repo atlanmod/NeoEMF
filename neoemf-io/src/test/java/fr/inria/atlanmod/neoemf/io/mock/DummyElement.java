@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
-import fr.inria.atlanmod.neoemf.io.structure.BasicId;
-import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
-import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicId;
+import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,21 +12,18 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
-
-import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link UriBuilder} that creates BerkeleyDB specific resource {@link URI}s.
+ * A {@link UriBuilder} that creates BerkeleyDB specific resource {@link org.eclipse.emf.common.util.URI}s.
  *
- * @see BackendFactoryRegistry
- * @see fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory
+ * @see BerkeleyDbBackendFactory
+ * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
 @FactoryBinding(BerkeleyDbBackendFactory.class)

@@ -11,20 +11,19 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract {@link PersistenceOptions} that provides utility methods to create generic Blueprints options.
+ * An abstract {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} that provides utility methods to create
+ * generic Blueprints options.
  * <p>
  * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  *
- * @param <B> the "self"-type of this {@link PersistenceOptions}
+ * @param <B> the "self"-type of this {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}
  *
  * @see BlueprintsResourceOptions
  */
@@ -54,7 +53,7 @@ public abstract class AbstractBlueprintsOptions<B extends AbstractBlueprintsOpti
      * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
      * <p>
      * This mapping corresponds to a simple representation of multi-valued features, by using the {@link
-     * ManyFeatureKey#position()}.
+     * fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean#position()}.
      * <p>
      * <b>Note:</b> This is the default mapping.
      *

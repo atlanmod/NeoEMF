@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.resource;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 
 import org.eclipse.emf.common.util.URI;

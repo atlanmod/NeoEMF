@@ -14,10 +14,9 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceAsManyValue;
-import fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithMaps;
-import fr.inria.atlanmod.neoemf.data.mapper.ReferenceAsValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithMaps;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -31,9 +30,6 @@ class BerkeleyDbBackendMaps extends AbstractBerkeleyDbBackend implements Referen
 
     /**
      * Constructs a new {@code BerkeleyDbBackendLists} wrapping the provided {@code environment}.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@link BerkeleyDbBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, java.util.Map)}.
      *
      * @param environment    the database environment
      * @param databaseConfig the database configuration

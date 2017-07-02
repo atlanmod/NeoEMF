@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.bind.Singleton;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperFactory;
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 import java.io.IOException;

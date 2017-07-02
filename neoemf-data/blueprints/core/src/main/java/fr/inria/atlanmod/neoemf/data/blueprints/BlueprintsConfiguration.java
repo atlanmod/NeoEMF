@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration;
 
 import java.nio.file.Path;
 
@@ -26,7 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * database creation.
  *
  * @see BlueprintsBackendFactory
- * @see BlueprintsTgConfiguration
  */
 @ParametersAreNonnullByDefault
 public interface BlueprintsConfiguration {

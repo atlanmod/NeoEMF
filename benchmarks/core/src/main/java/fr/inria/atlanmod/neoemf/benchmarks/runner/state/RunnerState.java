@@ -104,7 +104,7 @@ public class RunnerState {
     protected String a;
 
     /**
-     * The name of the current {@link fr.inria.atlanmod.neoemf.data.store.Store}s.
+     * The name of the current store chain.
      */
     @Param("AMC")
     protected String o;
@@ -264,14 +264,14 @@ public class RunnerState {
             }
 
             // Cache metaclasses (Defined by default)
-//            if (upperText.contains(Options.CACHE_METACLASSES)) {
+            if (upperText.contains(Options.CACHE_METACLASSES)) {
                 options.cacheMetaclasses();
-//            }
+            }
 
             // Cache containers (Defined by default)
-//            if (upperText.contains(Options.CACHE_CONTAINERS)) {
+            if (upperText.contains(Options.CACHE_CONTAINERS)) {
                 options.cacheContainers();
-//            }
+            }
 
             // Stats recording
             if (upperText.contains(Options.RECORD_STATS)) {

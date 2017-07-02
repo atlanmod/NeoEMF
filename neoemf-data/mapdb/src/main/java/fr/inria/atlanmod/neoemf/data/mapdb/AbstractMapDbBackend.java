@@ -12,14 +12,12 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
-import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
-import fr.inria.atlanmod.neoemf.io.serializer.SerializerFactory;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.serializer.JavaSerializerFactory;
+import fr.inria.atlanmod.neoemf.data.serializer.SerializerFactory;
 
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
@@ -44,7 +42,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend {
 
     /**
-     * The {@link SerializerFactory} to use for creating the {@link fr.inria.atlanmod.neoemf.io.serializer.Serializer}
+     * The {@link SerializerFactory} to use for creating the {@link fr.inria.atlanmod.neoemf.data.serializer.Serializer}
      * instances.
      */
     protected final SerializerFactory serializerFactory;
@@ -56,32 +54,28 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     private final DB db;
 
     /**
-     * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
+     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, SingleFeatureKey> containers;
+    private final Map<Id, SingleFeatureBean> containers;
 
     /**
-     * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
+     * A persistent map that stores the EClass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s, identified
+     * by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassDescriptor> instances;
+    private final Map<Id, ClassBean> instances;
 
     /**
-     * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
-     * associated {@link SingleFeatureKey}.
+     * A persistent map that stores Structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the associated {@link SingleFeatureBean}.
      */
     @Nonnull
-    private final Map<SingleFeatureKey, Object> features;
+    private final Map<SingleFeatureBean, Object> features;
 
     /**
      * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code db}.
-     * <p>
-     * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
-     * {@link Serializer}s.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@code AbstractMapDbBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
@@ -97,7 +91,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
         this.containers = db.hashMap("containers")
                 .keySerializer(new SerializerDecorator<>(serializerFactory.forId()))
-                .valueSerializer(new SerializerDecorator<>(serializerFactory.forSingleFeatureKey()))
+                .valueSerializer(new SerializerDecorator<>(serializerFactory.forSingleFeature()))
                 .createOrOpen();
 
         this.instances = db.hashMap("instances")
@@ -106,7 +100,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
                 .createOrOpen();
 
         this.features = db.hashMap("features/single")
-                .keySerializer(new SerializerDecorator<>(serializerFactory.forSingleFeatureKey()))
+                .keySerializer(new SerializerDecorator<>(serializerFactory.forSingleFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
@@ -150,14 +144,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureKey> containerOf(Id id) {
+    public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
         return get(containers, id);
     }
 
     @Override
-    public void containerFor(Id id, SingleFeatureKey container) {
+    public void containerFor(Id id, SingleFeatureBean container) {
         checkNotNull(id);
         checkNotNull(container);
 
@@ -173,14 +167,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassBean> metaclassOf(Id id) {
         checkNotNull(id);
 
         return get(instances, id);
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassBean metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 
@@ -189,7 +183,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         return get(features, key);
@@ -197,7 +191,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -205,7 +199,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         delete(features, key);
@@ -258,7 +252,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     /**
-     * A {@link Serializer} that delegates its processing to an internal {@link fr.inria.atlanmod.neoemf.io.serializer.Serializer}.
+     * A {@link Serializer} that delegates its processing to an internal {@link fr.inria.atlanmod.neoemf.data.serializer.Serializer}.
      *
      * @param <T> the type of the (de)serialized value
      */
@@ -270,14 +264,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
          * The serializer where to delegate the serialization process.
          */
         @Nonnull
-        private final fr.inria.atlanmod.neoemf.io.serializer.Serializer<T> delegate;
+        private final fr.inria.atlanmod.neoemf.data.serializer.Serializer<T> delegate;
 
         /**
          * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
          *
          * @param delegate the serializer where to delegate the serialization process
          */
-        public SerializerDecorator(fr.inria.atlanmod.neoemf.io.serializer.Serializer<T> delegate) {
+        public SerializerDecorator(fr.inria.atlanmod.neoemf.data.serializer.Serializer<T> delegate) {
             checkNotNull(delegate);
 
             this.delegate = delegate;

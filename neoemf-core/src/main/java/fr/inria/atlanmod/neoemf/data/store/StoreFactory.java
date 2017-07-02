@@ -1,12 +1,20 @@
+/*
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.InvalidStoreException;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractMapperFactory;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
-
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
@@ -75,8 +82,9 @@ public final class StoreFactory extends AbstractMapperFactory {
     }
 
     /**
-     * Creates a new {@link Store} on top of the {@code backend} according to the specified {@code options}. The
-     * newly created store will be detached from any resource.
+     * Creates a new {@link Store} between the {@code resource} and the {@code backend} according to the specified
+     * {@code options}. If the {@code resource} is {@code null}, then the newly created store will be detached from
+     * any resource.
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *
@@ -87,36 +95,14 @@ public final class StoreFactory extends AbstractMapperFactory {
      *
      * @throws NullPointerException  if the {@code store} or the {@code options} are {@code null}
      * @throws InvalidStoreException if an error occurs during the creation of the store
-     * @see #createStore(Backend, Resource.Internal, Map)
      */
     @Nonnull
     public Store createStore(Backend backend, Map<String, Object> options) {
-        return createStore(backend, null, options);
-    }
-
-    /**
-     * Creates a new {@link Store} between the {@code resource} and the {@code backend} according to the specified
-     * {@code options}. If the {@code resource} is {@code null}, then the newly created store will be detached from
-     * any resource.
-     * <p>
-     * The returned {@link Store} may be a succession of several {@link Store}.
-     *
-     * @param backend  the back-end where to store data
-     * @param resource the resource to store and access
-     * @param options  the options that defines the behaviour of the store
-     *
-     * @return a new store
-     *
-     * @throws NullPointerException  if the {@code store} or the {@code options} are {@code null}
-     * @throws InvalidStoreException if an error occurs during the creation of the store
-     */
-    @Nonnull
-    public Store createStore(Backend backend, @Nullable Resource.Internal resource, Map<String, Object> options) {
         checkNotNull(backend);
         checkNotNull(options);
 
         // The tail of the store chain
-        Store store = new DirectWriteStore(backend, resource);
+        Store store = new DirectWriteStore(backend);
 
         try {
             for (PersistentStoreOptions opt : getStores(options).stream().sorted().collect(Collectors.toList())) {

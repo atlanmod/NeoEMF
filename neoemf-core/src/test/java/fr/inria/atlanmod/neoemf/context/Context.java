@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;

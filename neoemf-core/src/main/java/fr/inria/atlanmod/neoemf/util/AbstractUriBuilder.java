@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.common.annotations.VisibleForTesting;
+import fr.inria.atlanmod.common.annotation.Builder;
+import fr.inria.atlanmod.common.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
-import fr.inria.atlanmod.neoemf.bind.Builder;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 

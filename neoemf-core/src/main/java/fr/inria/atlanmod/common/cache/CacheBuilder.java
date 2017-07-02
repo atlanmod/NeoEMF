@@ -33,7 +33,7 @@ public interface CacheBuilder<K, V> {
      * @see #maximumSize(long)
      */
     @Nonnegative
-    long DEFAULT_MAX_SIZE = Runtime.getRuntime().maxMemory() / 204_800;
+    long DEFAULT_MAX_SIZE = Runtime.getRuntime().maxMemory() / (2048 * 100);
 
     /**
      * The default maximum weight of a weight-based caches.

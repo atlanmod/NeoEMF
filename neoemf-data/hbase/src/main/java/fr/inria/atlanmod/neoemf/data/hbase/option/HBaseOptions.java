@@ -70,9 +70,9 @@ public class HBaseOptions extends AbstractPersistenceOptions<HBaseOptions> {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ReferenceWith
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyValueWithArrays
-     * @see fr.inria.atlanmod.neoemf.data.mapper.ManyReferenceWith
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ReferenceWith
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceWith
      */
     public HBaseOptions withArraysAndStrings() {
         return withMapping("fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendArraysStrings");

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -46,12 +46,12 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> i
     }
 
     /**
-     * Processes a {@link fr.inria.atlanmod.neoemf.io.structure.BasicNamespace} declaration.
+     * Processes a {@link BasicNamespace} declaration.
      *
      * @param prefix the prefix
      * @param uri    the URI associated with the {@code prefix}
      *
-     * @see fr.inria.atlanmod.neoemf.io.structure.BasicNamespace.Registry#register(String, String)
+     * @see BasicNamespace.Registry#register(String, String)
      */
     protected final void readNamespace(String prefix, String uri) {
         BasicNamespace.Registry.getInstance().register(prefix, uri);

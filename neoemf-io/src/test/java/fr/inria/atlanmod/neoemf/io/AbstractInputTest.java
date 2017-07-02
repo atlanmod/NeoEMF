@@ -13,13 +13,13 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.Tags;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
-import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
-import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.eclipse.emf.common.util.URI;

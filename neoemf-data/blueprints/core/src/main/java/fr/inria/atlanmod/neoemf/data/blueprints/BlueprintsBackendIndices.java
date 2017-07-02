@@ -20,14 +20,12 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.common.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.structure.ManyFeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,11 +52,6 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     /**
      * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
-     * <p>
-     * This constructor initialize the caches and create the metaclass index.
-     * <p>
-     * <b>Note:</b> This constructor is protected. To create a new {@link BlueprintsBackend} use {@link
-     * BackendFactory#createPersistentBackend(org.eclipse.emf.common.util.URI, Map)}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
@@ -72,13 +65,13 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean key) {
         return get(key.id()).map(v -> v.<V>getProperty(key.name()));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         checkNotNull(value);
 
         Vertex vertex = getOrCreate(key.id());
@@ -89,7 +82,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureKey key) {
+    public <V> void unsetValue(SingleFeatureBean key) {
         get(key.id()).ifPresent(v -> v.<V>removeProperty(key.name()));
     }
 
@@ -99,7 +92,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureKey key) {
+    public Optional<Id> referenceOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -116,7 +109,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
         checkNotNull(key);
         checkNotNull(reference);
 
@@ -138,7 +131,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void unsetReference(SingleFeatureKey key) {
+    public void unsetReference(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -151,7 +144,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public boolean hasReference(SingleFeatureKey key) {
+    public boolean hasReference(SingleFeatureBean key) {
         checkNotNull(key);
 
         return get(key.id())
@@ -166,7 +159,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureKey key) {
+    public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key);
 
         return get(key.id()).map(v -> v.<V>getProperty(formatProperty(key.name(), key.position())));
@@ -174,7 +167,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(SingleFeatureKey key) {
+    public <V> List<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -190,7 +183,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Nonnull
-    public <V> Optional<V> valueFor(ManyFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -206,7 +199,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void addValue(ManyFeatureKey key, V value) {
+    public <V> void addValue(ManyFeatureBean key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -226,7 +219,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureKey key, List<? extends V> collection) {
+    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
         checkNotNull(key);
         checkNotNull(collection);
 
@@ -259,7 +252,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureKey key) {
+    public <V> Optional<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -286,7 +279,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureKey key) {
+    public <V> void removeAllValues(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -303,7 +296,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -328,7 +321,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureKey key, @Nullable V value) {
+    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
         if (isNull(value)) {
             return Optional.empty();
         }
@@ -354,7 +347,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureKey key) {
+    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         return get(key.id())
@@ -369,7 +362,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
      * @param size the number of value
      * @param <V>  the type of value
      */
-    protected <V> void sizeForValue(SingleFeatureKey key, @Nonnegative int size) {
+    protected <V> void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
 
@@ -393,7 +386,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(ManyFeatureKey key) {
+    public Optional<Id> referenceOf(ManyFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -414,7 +407,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(SingleFeatureKey key) {
+    public List<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -435,7 +428,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureKey key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         checkNotNull(key);
         checkNotNull(reference);
 
@@ -467,7 +460,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void addReference(ManyFeatureKey key, Id reference) {
+    public void addReference(ManyFeatureBean key, Id reference) {
         checkNotNull(key);
         checkNotNull(reference);
 
@@ -493,7 +486,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void addAllReferences(ManyFeatureKey key, List<Id> collection) {
+    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
         checkNotNull(key);
         checkNotNull(collection);
 
@@ -532,7 +525,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureKey key) {
+    public Optional<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -573,7 +566,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureKey key) {
+    public void removeAllReferences(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.id());
@@ -589,7 +582,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Integer> indexOfReference(SingleFeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
         if (isNull(reference)) {
             return Optional.empty();
         }
@@ -614,7 +607,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureKey key, @Nullable Id reference) {
+    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
         if (isNull(reference)) {
             return Optional.empty();
         }
@@ -639,7 +632,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureKey key) {
+    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
         return sizeOfValue(key);
     }
 
@@ -649,7 +642,7 @@ class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
      * @param key  the key identifying the multi-valued attribute
      * @param size the number of reference
      */
-    protected void sizeForReference(SingleFeatureKey key, @Nonnegative int size) {
+    protected void sizeForReference(SingleFeatureBean key, @Nonnegative int size) {
         sizeForValue(key, size);
     }
 

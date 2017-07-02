@@ -20,14 +20,13 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
-import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
-import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.io.serializer.SerializerFactory;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.serializer.JavaSerializerFactory;
+import fr.inria.atlanmod.neoemf.data.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.serializer.SerializerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,20 +57,22 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     protected final Environment environment;
 
     /**
-     * A persistent map that stores the container of {@link PersistentEObject}, identified by the object {@link Id}.
+     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}, identified
+     * by the object {@link Id}.
      */
     @Nonnull
     private final Database containers;
 
     /**
-     * A persistent map that stores the metaclass for {@link PersistentEObject}, identified by the object {@link Id}.
+     * A persistent map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject},
+     * identified by the object {@link Id}.
      */
     @Nonnull
     private final Database instances;
 
     /**
-     * A persistent map that stores structural features values for {@link PersistentEObject}, identified by the
-     * associated {@link SingleFeatureKey}.
+     * A persistent map that stores structural features values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject},
+     * identified by the associated {@link SingleFeatureBean}.
      */
     @Nonnull
     private final Database features;
@@ -125,18 +126,18 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureKey> containerOf(Id id) {
+    public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(containers, id, serializerFactory.forId(), serializerFactory.forSingleFeatureKey());
+        return get(containers, id, serializerFactory.forId(), serializerFactory.forSingleFeature());
     }
 
     @Override
-    public void containerFor(Id id, SingleFeatureKey container) {
+    public void containerFor(Id id, SingleFeatureBean container) {
         checkNotNull(id);
         checkNotNull(container);
 
-        put(containers, id, container, serializerFactory.forId(), serializerFactory.forSingleFeatureKey());
+        put(containers, id, container, serializerFactory.forId(), serializerFactory.forSingleFeature());
     }
 
     @Override
@@ -148,14 +149,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassBean> metaclassOf(Id id) {
         checkNotNull(id);
 
         return get(instances, id, serializerFactory.forId(), serializerFactory.forClass());
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassBean metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 
@@ -164,28 +165,28 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return get(features, key, serializerFactory.forSingleFeatureKey(), serializerFactory.forAny());
+        return get(features, key, serializerFactory.forSingleFeature(), serializerFactory.forAny());
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
-        put(features, key, value, serializerFactory.forSingleFeatureKey(), serializerFactory.forAny());
+        put(features, key, value, serializerFactory.forSingleFeature(), serializerFactory.forAny());
         return previousValue;
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(SingleFeatureBean key) {
         checkNotNull(key);
 
-        delete(features, key, serializerFactory.forSingleFeatureKey());
+        delete(features, key, serializerFactory.forSingleFeature());
     }
 
     /**

@@ -11,14 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,6 +40,12 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     @Override
     void close();
 
+    @Override
+    void save(Map<?, ?> options) throws IOException;
+
+    @Override
+    void load(Map<?, ?> options) throws IOException;
+
     /**
      * Returns the {@link StoreAdapter} used to store the model.
      *
@@ -51,11 +61,11 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      *
      * @return {@code true} if the resource is persistent, {@code false} otherwise
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.Store
-     * @see fr.inria.atlanmod.neoemf.data.Backend
+     * @see Store
+     * @see Backend
      */
     default boolean isPersistent() {
-        return store().backend().isPersistent();
+        return store().store().backend().isPersistent();
     }
 
     /**
@@ -65,11 +75,11 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      *
      * @return {@code true} if the resource is distributed, {@code false} otherwise.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.Store
-     * @see fr.inria.atlanmod.neoemf.data.Backend
+     * @see Store
+     * @see Backend
      */
     default boolean isDistributed() {
-        return store().backend().isDistributed();
+        return store().store().backend().isDistributed();
     }
 
     /**

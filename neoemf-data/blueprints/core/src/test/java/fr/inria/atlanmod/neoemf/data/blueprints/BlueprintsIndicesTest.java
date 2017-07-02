@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.mapper.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 /**
  * A test-case that checks the behavior of {@link BlueprintsBackendIndices} by using the TinkerGraph implementation.

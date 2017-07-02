@@ -15,12 +15,12 @@ import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
-import fr.inria.atlanmod.neoemf.io.serializer.JavaSerializerFactory;
-import fr.inria.atlanmod.neoemf.io.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.io.serializer.SerializerFactory;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.serializer.JavaSerializerFactory;
+import fr.inria.atlanmod.neoemf.data.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.serializer.SerializerFactory;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -124,7 +124,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureKey> containerOf(Id id) {
+    public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
         return resultFrom(id)
@@ -132,15 +132,15 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                     byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return Optional.of(SingleFeatureKey.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
+                        return Optional.of(SingleFeatureBean.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
                     }
-                    return Optional.<SingleFeatureKey>empty();
+                    return Optional.<SingleFeatureBean>empty();
                 })
                 .orElseGet(Optional::empty);
     }
 
     @Override
-    public void containerFor(Id id, SingleFeatureKey container) {
+    public void containerFor(Id id, SingleFeatureBean container) {
         checkNotNull(id);
         checkNotNull(container);
 
@@ -174,7 +174,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<ClassDescriptor> metaclassOf(Id id) {
+    public Optional<ClassBean> metaclassOf(Id id) {
         checkNotNull(id);
 
         return resultFrom(id)
@@ -182,15 +182,15 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
                     if (nonNull(byteName) && nonNull(byteUri)) {
-                        return Optional.of(ClassDescriptor.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
+                        return Optional.of(ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
                     }
-                    return Optional.<ClassDescriptor>empty();
+                    return Optional.<ClassBean>empty();
                 })
                 .orElseGet(Optional::empty);
     }
 
     @Override
-    public void metaclassFor(Id id, ClassDescriptor metaclass) {
+    public void metaclassFor(Id id, ClassBean metaclass) {
         checkNotNull(id);
         checkNotNull(metaclass);
 
@@ -208,7 +208,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureKey key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         return resultFrom(key.id())
@@ -227,7 +227,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureKey key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key);
         checkNotNull(value);
 
@@ -247,7 +247,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void unsetValue(SingleFeatureKey key) {
+    public void unsetValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         try {

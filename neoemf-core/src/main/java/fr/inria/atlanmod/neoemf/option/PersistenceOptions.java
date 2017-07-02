@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.option;
 
 import fr.inria.atlanmod.common.log.Level;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.Map;
 
@@ -126,7 +126,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore
      */
     @Nonnull
     PersistenceOptions cacheFeatures();
@@ -136,7 +136,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore
      */
     @Nonnull
     PersistenceOptions cacheIsSet();
@@ -146,7 +146,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore
      */
     @Nonnull
     PersistenceOptions cacheContainers();
@@ -156,7 +156,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.MetaclassCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ClassCachingStore
      */
     @Nonnull
     PersistenceOptions cacheMetaclasses();
@@ -166,7 +166,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStore
      */
     @Nonnull
     PersistenceOptions cacheSizes();
@@ -176,7 +176,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore
      */
     @Nonnull
     PersistenceOptions countLoadedObjects();
@@ -186,7 +186,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore
      */
     @Nonnull
     PersistenceOptions readOnly();
@@ -201,7 +201,7 @@ public interface PersistenceOptions {
      * @return this builder (for chaining)
      *
      * @throws InvalidOptionException if the {@code chunk} is {@code &lt; 0}
-     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStore
      */
     @Nonnull
     PersistenceOptions autoSave(@Nonnegative long chunk);
@@ -211,7 +211,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStore
      */
     @Nonnull
     PersistenceOptions autoSave();
@@ -221,7 +221,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStore
      */
     @Nonnull
     PersistenceOptions log();
@@ -234,7 +234,7 @@ public interface PersistenceOptions {
      * @return this builder (for chaining)
      *
      * @throws NullPointerException if the {@code level} is {@code null}
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStore
      */
     @Nonnull
     PersistenceOptions log(Level level);
@@ -244,7 +244,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatsStoreDecorator
+     * @see fr.inria.atlanmod.neoemf.data.store.StatsStore
      */
     @Nonnull
     PersistenceOptions recordStats();

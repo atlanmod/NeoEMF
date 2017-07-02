@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,28 +28,28 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * A {@link TransientBackend} that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeatureKey> {
+public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeatureBean> {
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, SingleFeatureKey> containers = new HashMap<>();
+    private final Map<Id, SingleFeatureBean> containers = new HashMap<>();
 
     /**
      * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassDescriptor> instances = new HashMap<>();
+    private final Map<Id, ClassBean> instances = new HashMap<>();
 
     /**
      * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the associated {@link SingleFeatureKey}.
+     * identified by the associated {@link SingleFeatureBean}.
      */
     @Nonnull
-    private final Map<SingleFeatureKey, Object> features = new HashMap<>();
+    private final Map<SingleFeatureBean, Object> features = new HashMap<>();
 
     @Override
     protected void safeClose() {
@@ -65,25 +65,25 @@ public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeat
 
     @Nonnull
     @Override
-    protected Map<Id, SingleFeatureKey> allContainers() {
+    protected Map<Id, SingleFeatureBean> allContainers() {
         return containers;
     }
 
     @Nonnull
     @Override
-    protected Map<Id, ClassDescriptor> allInstances() {
+    protected Map<Id, ClassBean> allInstances() {
         return instances;
     }
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureKey, Object> allFeatures() {
+    protected Map<SingleFeatureBean, Object> allFeatures() {
         return features;
     }
 
     @Nonnull
     @Override
-    protected SingleFeatureKey transform(SingleFeatureKey key) {
+    protected SingleFeatureBean transform(SingleFeatureBean key) {
         checkNotNull(key);
 
         return key;

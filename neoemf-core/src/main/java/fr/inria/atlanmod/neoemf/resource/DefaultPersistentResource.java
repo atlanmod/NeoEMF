@@ -20,11 +20,11 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.store.DefaultStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.data.structure.ClassDescriptor;
+import fr.inria.atlanmod.neoemf.data.store.adapter.DefaultStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 
@@ -116,8 +116,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         factory = BackendFactoryRegistry.getInstance().getFactoryProvider(uri.scheme());
 
         Backend backend = factory.createTransientBackend();
-        Store baseStore = StoreFactory.getInstance().createStore(backend, this, CommonOptions.noOption());
-        store = DefaultStoreAdapter.adapt(baseStore);
+        Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
+        store = DefaultStoreAdapter.adapt(baseStore, this);
 
         Log.info("PersistentResource created: {0}", uri);
     }
@@ -183,11 +183,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         if (!isLoaded || !isPersistent()) {
             Backend backend = factory.createPersistentBackend(uri, options);
-            Store baseStore = StoreFactory.getInstance().createStore(backend, this, options);
-            StoreAdapter newStore = DefaultStoreAdapter.adapt(baseStore);
+            Store baseStore = StoreFactory.getInstance().createStore(backend, options);
+            StoreAdapter newStore = DefaultStoreAdapter.adapt(baseStore, this);
 
             // Direct copy to the backend
-            store.copyTo(newStore.backend());
+            store.store().copyTo(newStore.store().backend());
 
             // Close the previous store, and assign the new
             store.close();
@@ -220,8 +220,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     store.close();
 
                     Backend backend = factory.createPersistentBackend(uri, options);
-                    Store baseStore = StoreFactory.getInstance().createStore(backend, this, options);
-                    store = DefaultStoreAdapter.adapt(baseStore);
+                    Store baseStore = StoreFactory.getInstance().createStore(backend, options);
+                    store = DefaultStoreAdapter.adapt(baseStore, this);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
@@ -256,7 +256,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
         try {
-            return MoreIterables.stream(store.allInstancesOf(ClassDescriptor.from(eClass), strict))
+            return MoreIterables.stream(store.store().allInstancesOf(ClassBean.from(eClass), strict))
                     .map(id -> store.resolve(id))
                     .collect(Collectors.toList());
         }

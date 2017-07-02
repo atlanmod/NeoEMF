@@ -12,15 +12,15 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
-import fr.inria.atlanmod.neoemf.data.structure.SingleFeatureKey;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
-import fr.inria.atlanmod.neoemf.io.structure.BasicId;
-import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.BasicNamespace;
-import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicId;
+import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 
 import org.eclipse.emf.ecore.EClass;
@@ -56,7 +56,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         notifyInitialize();
 
-        SingleFeatureKey rootKey = SingleFeatureKey.of(MapperConstants.ROOT_ID, MapperConstants.ROOT_FEATURE_NAME);
+        SingleFeatureBean rootKey = SingleFeatureBean.of(MapperConstants.ROOT_ID, MapperConstants.ROOT_FEATURE_NAME);
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();
@@ -92,7 +92,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         // If root it's the name of the metaclass, otherwise the name of the containing feature
         String elementName = isRoot
                 ? metaclass.getName()
-                : mapper.containerOf(id).map(SingleFeatureKey::name).orElse(null);
+                : mapper.containerOf(id).map(SingleFeatureBean::name).orElse(null);
 
         // Create the element
         BasicElement element = new BasicElement(ns, elementName);
@@ -101,7 +101,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
-        String name = mapper.valueOf(SingleFeatureKey.of(id, MapperConstants.FEATURE_NAME))
+        String name = mapper.valueOf(SingleFeatureBean.of(id, MapperConstants.FEATURE_NAME))
                 .map(Object::toString)
                 .orElse(null);
 
@@ -113,7 +113,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         metaclass.getEAllAttributes().stream()
                 .filter(attribute -> !Objects.equals(MapperConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
                 .forEach(attribute -> {
-                    SingleFeatureKey key = SingleFeatureKey.of(id, attribute.getName());
+                    SingleFeatureBean key = SingleFeatureBean.of(id, attribute.getName());
                     if (!attribute.isMany()) {
                         readValue(key);
                     }
@@ -125,7 +125,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         // Process all references
         metaclass.getEAllReferences()
                 .forEach(reference -> {
-                    SingleFeatureKey key = SingleFeatureKey.of(id, reference.getName());
+                    SingleFeatureBean key = SingleFeatureBean.of(id, reference.getName());
                     if (!reference.isMany()) {
                         readReference(key, reference.isContainment());
                     }
@@ -142,7 +142,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key the key identifying the attribute
      */
-    protected void readValue(SingleFeatureKey key) {
+    protected void readValue(SingleFeatureBean key) {
         mapper.<String>valueOf(key).ifPresent(value -> {
             BasicAttribute attribute = new BasicAttribute(key.name());
 
@@ -159,7 +159,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key the key identifying the attributes
      */
-    protected void readAllValues(SingleFeatureKey key) {
+    protected void readAllValues(SingleFeatureBean key) {
         int size = mapper.sizeOfValue(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->
@@ -183,7 +183,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param key           the key identifying the reference
      * @param isContainment {@code true} if the reference is a containment
      */
-    protected void readReference(SingleFeatureKey key, boolean isContainment) {
+    protected void readReference(SingleFeatureBean key, boolean isContainment) {
         mapper.referenceOf(key).ifPresent(id -> {
             BasicReference reference = new BasicReference(key.name());
 
@@ -209,7 +209,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param key           the key identifying the reference
      * @param isContainment {@code true} if the reference is a containment
      */
-    protected void readAllReferences(SingleFeatureKey key, boolean isContainment) {
+    protected void readAllReferences(SingleFeatureBean key, boolean isContainment) {
         int size = mapper.sizeOfReference(key).orElse(0);
 
         IntStream.range(0, size).forEach(position ->

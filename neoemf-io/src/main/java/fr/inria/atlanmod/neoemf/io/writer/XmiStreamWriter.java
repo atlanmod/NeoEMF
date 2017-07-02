@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.common.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.io.structure.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.BasicElement;
-import fr.inria.atlanmod.neoemf.io.structure.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.structure.BasicReference;
+import fr.inria.atlanmod.common.annotation.Experimental;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;

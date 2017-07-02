@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.data.mapper.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

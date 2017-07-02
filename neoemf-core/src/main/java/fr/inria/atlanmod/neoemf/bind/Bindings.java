@@ -1,5 +1,18 @@
+/*
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
 package fr.inria.atlanmod.neoemf.bind;
 
+import fr.inria.atlanmod.common.annotation.Builder;
+import fr.inria.atlanmod.common.annotation.Singleton;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.concurrent.MoreExecutors;
@@ -80,6 +93,7 @@ public final class Bindings {
 
     /**
      * Adds {@code urls} to be scanned for binding.
+     * Theses {@link URL}s will be used to retrieves types, fields or any kind of reflective element at runtime.
      *
      * @param urls the {@link URL}s to add for scanning
      *
@@ -99,6 +113,7 @@ public final class Bindings {
 
     /**
      * Filters the {@code urls} to keep only those that can be related to NeoEMF.
+     * The {@link FactoryBinding} annotation is used to determine this relation.
      *
      * @param urls the URLs to be filtered
      *
@@ -134,7 +149,7 @@ public final class Bindings {
      * @param type       the type of the expected classes
      * @param <T>        the type of the instances to look for
      *
-     * @return a set of annotated classes
+     * @return a set of annotated instances of {@code type}
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -251,9 +266,8 @@ public final class Bindings {
     }
 
     /**
-     * Retrieves the instance of the {@code type} that is bound to a
-     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} with the given {@code value}, by using the speficied
-     * {@code valueMapping}.
+     * Retrieves the instance of the {@code type} that is bound to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
+     * with the given {@code value}, by using the speficied {@code valueMapping}.
      * <p>
      * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
      *
