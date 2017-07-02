@@ -11,10 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.common.Stopwatch;
 import fr.inria.atlanmod.common.log.Log;
-
-import java.time.Duration;
-import java.time.Instant;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,7 +25,7 @@ public class ProgressProcessor extends AbstractProcessor<Processor> {
     /**
      * The start instant.
      */
-    private final Stopwatch stopwatch = new Stopwatch();
+    private final Stopwatch stopwatch = Stopwatch.createUnstarted();
 
     /**
      * Constructs a new {@code ProgressProcessor} with the given {@code processor}.
@@ -48,37 +46,9 @@ public class ProgressProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onComplete() {
-        Log.info("Document analysis done in {0}", stopwatch.stop());
+        stopwatch.stop();
+        Log.info("Document analysis done in {0}", stopwatch.elapsed());
 
         notifyComplete();
-    }
-
-    /**
-     * An object that measures elapsed time.
-     */
-    @ParametersAreNonnullByDefault
-    private static class Stopwatch {
-
-        /**
-         * The start instant.
-         */
-        private Instant start;
-
-        /**
-         * Starts the stopwatch.
-         */
-        public void start() {
-            start = Instant.now();
-        }
-
-        /**
-         * Stops the stopwatch.
-         *
-         * @return the elapsed time between the call of {@link #start()} and {@link Instant#now()}
-         */
-        public Duration stop() {
-            Instant end = Instant.now();
-            return Duration.between(start, end);
-        }
     }
 }

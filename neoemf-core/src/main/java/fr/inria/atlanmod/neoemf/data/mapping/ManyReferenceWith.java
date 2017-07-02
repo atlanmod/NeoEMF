@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.common.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -32,7 +33,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of a set of {@link Id} for
- * multi-valued references. This behavior is specified by the {@link #manyReferencesMapping()} method.
+ * multi-valued references. This behavior is specified by the {@link #manyReferencesConverter()} method.
  *
  * @param <M> the type of the multi-valued reference after mapping
  */
@@ -42,10 +43,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     @Nonnull
     @Override
     default Optional<Id> referenceOf(ManyFeatureBean key) {
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         return this.<M>valueOf(key.withoutPosition())
-                .map(func::unmap)
+                .map(func::doBackward)
                 .filter(ids -> key.position() < ids.size())
                 .map(ids -> ids.get(key.position()));
     }
@@ -53,10 +54,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     @Nonnull
     @Override
     default List<Id> allReferencesOf(SingleFeatureBean key) {
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap)
+                .map(func::doBackward)
                 .orElseGet(Collections::emptyList);
     }
 
@@ -66,17 +67,17 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
         checkNotNull(key);
         checkNotNull(reference);
 
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::unmap)
+                .map(func::doBackward)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousId = Optional.of(ids.get(key.position()));
 
         ids.set(key.position(), reference);
 
-        valueFor(key.withoutPosition(), func.map(ids));
+        valueFor(key.withoutPosition(), func.doForward(ids));
 
         return previousId;
     }
@@ -86,17 +87,17 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
         checkNotNull(key);
         checkNotNull(reference);
 
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::unmap)
+                .map(func::doBackward)
                 .orElseGet(ArrayList::new);
 
         checkPositionIndex(key.position(), ids.size());
 
         ids.add(key.position(), reference);
 
-        valueFor(key.withoutPosition(), func.map(ids));
+        valueFor(key.withoutPosition(), func.doForward(ids));
     }
 
     @Override
@@ -112,10 +113,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             throw new NullPointerException();
         }
 
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::unmap)
+                .map(func::doBackward)
                 .orElseGet(ArrayList::new);
 
         int firstPosition = key.position();
@@ -123,7 +124,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
 
         ids.addAll(firstPosition, collection);
 
-        valueFor(key.withoutPosition(), func.map(ids));
+        valueFor(key.withoutPosition(), func.doForward(ids));
     }
 
     @Nonnull
@@ -131,10 +132,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     default Optional<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key);
 
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::unmap)
+                .map(func::doBackward)
                 .orElse(null);
 
         if (isNull(ids)) {
@@ -150,7 +151,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
                 removeAllReferences(key.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), func.map(ids));
+                valueFor(key.withoutPosition(), func.doForward(ids));
             }
         }
 
@@ -165,10 +166,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             return Optional.empty();
         }
 
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap)
+                .map(func::doBackward)
                 .map(ids -> ids.indexOf(reference))
                 .filter(i -> i >= 0);
     }
@@ -181,10 +182,10 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             return Optional.empty();
         }
 
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap)
+                .map(func::doBackward)
                 .map(ids -> ids.lastIndexOf(reference))
                 .filter(i -> i >= 0);
     }
@@ -193,14 +194,14 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     @Nonnegative
     @Override
     default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        MappingFunction<List<Id>, M> func = manyReferencesMapping();
+        Converter<List<Id>, M> func = manyReferencesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap)
+                .map(func::doBackward)
                 .map(List::size)
                 .filter(s -> s != 0);
     }
 
     @Nonnull
-    MappingFunction<List<Id>, M> manyReferencesMapping();
+    Converter<List<Id>, M> manyReferencesConverter();
 }

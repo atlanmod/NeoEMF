@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.common.Converter;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
@@ -31,7 +32,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to use {@link M} instead of a set of {@link Object} for
- * multi-valued attributes. This behavior is specified by the {@link #manyValuesMapping()} method.
+ * multi-valued attributes. This behavior is specified by the {@link #manyValuesConverter()} method.
  *
  * @param <M> the type of the multi-valued attribute after mapping
  */
@@ -41,10 +42,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(ManyFeatureBean key) {
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         return this.<M>valueOf(key.withoutPosition())
-                .map(func::<V>unmap)
+                .map(func::<V>doBackward)
                 .filter(values -> key.position() < values.size())
                 .map(values -> values.get(key.position()));
     }
@@ -52,10 +53,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> List<V> allValuesOf(SingleFeatureBean key) {
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::<V>unmap)
+                .map(func::<V>doBackward)
                 .orElseGet(Collections::<V>emptyList);
     }
 
@@ -65,10 +66,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
         checkNotNull(key);
         checkNotNull(value);
 
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         List<V> values = this.<M>valueOf(key.withoutPosition())
-                .map(func::<V>unmap)
+                .map(func::<V>doBackward)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values.set(key.position(), value));
@@ -83,15 +84,15 @@ public interface ManyValueWith<M> extends ManyValueMapper {
         checkNotNull(key);
         checkNotNull(value);
 
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         List<V> values = this.<M>valueOf(key.withoutPosition())
-                .map(func::<V>unmap)
+                .map(func::<V>doBackward)
                 .orElseGet(ArrayList::new);
 
         values.add(key.position(), value);
 
-        valueFor(key.withoutPosition(), func.map(values));
+        valueFor(key.withoutPosition(), func.doForward(values));
     }
 
     @Override
@@ -107,10 +108,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
             throw new NullPointerException();
         }
 
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         List<V> values = this.<M>valueOf(key.withoutPosition())
-                .map(func::unmap)
+                .map(func::doBackward)
                 .orElseGet(ArrayList::new);
 
         int firstPosition = key.position();
@@ -118,7 +119,7 @@ public interface ManyValueWith<M> extends ManyValueMapper {
 
         values.addAll(firstPosition, collection);
 
-        valueFor(key.withoutPosition(), func.map(values));
+        valueFor(key.withoutPosition(), func.doForward(values));
     }
 
     @Nonnull
@@ -126,10 +127,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
     default <V> Optional<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key);
 
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         List<V> values = this.<M>valueOf(key.withoutPosition())
-                .map(func::<V>unmap)
+                .map(func::<V>doBackward)
                 .orElse(null);
 
         if (isNull(values)) {
@@ -160,10 +161,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
             return Optional.empty();
         }
 
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap)
+                .map(func::doBackward)
                 .map(rs -> rs.indexOf(value))
                 .filter(i -> i >= 0);
     }
@@ -176,10 +177,10 @@ public interface ManyValueWith<M> extends ManyValueMapper {
             return Optional.empty();
         }
 
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::<V>unmap)
+                .map(func::<V>doBackward)
                 .map(rs -> rs.lastIndexOf(value))
                 .filter(i -> i >= 0);
     }
@@ -188,13 +189,13 @@ public interface ManyValueWith<M> extends ManyValueMapper {
     @Nonnegative
     @Override
     default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        MappingFunction<List<V>, M> func = manyValuesMapping();
+        Converter<List<V>, M> func = manyValuesConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap)
+                .map(func::doBackward)
                 .map(List::size)
                 .filter(s -> s != 0);
     }
 
-    <V> MappingFunction<List<V>, M> manyValuesMapping();
+    <V> Converter<List<V>, M> manyValuesConverter();
 }

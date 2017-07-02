@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.common.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceWith;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
-import fr.inria.atlanmod.neoemf.data.mapping.MappingFunction;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceWith;
 
 import org.apache.hadoop.hbase.client.Table;
@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -40,42 +39,30 @@ import static java.util.Objects.isNull;
 class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ReferenceWith<String>, ManyValueWithArrays, ManyReferenceWith<String> {
 
     /**
-     * The mapping used to convert single-valued references.
+     * The {@link String} used to delimit multi-valued references.
      */
-    private static final MappingFunction<Id, String> SINGLE_MAPPING = new MappingFunction<Id, String>() {
-        @Nonnull
-        @Override
-        public String map(Id i) {
-            return i.toString();
-        }
-
-        @Nonnull
-        @Override
-        public Id unmap(String o) {
-            return StringId.of(o);
-        }
-    };
+    @Nonnull
+    private static final String DELIMITER = ",";
 
     /**
-     * The mapping used to convert multi-valued references.
+     * The {@link Converter} used to convert single-valued references.
      */
-    private static final MappingFunction<List<Id>, String> MANY_MAPPING = new MappingFunction<List<Id>, String>() {
-        @Nonnull
-        @Override
-        public String map(List<Id> i) {
-            return checkNotNull(i).stream()
-                    .map(id -> isNull(id) ? "" : id.toString())
-                    .collect(Collectors.joining(","));
-        }
+    @Nonnull
+    private static final Converter<Id, String> SINGLE_CONVERTER = Converter.from(
+            Id::toString,
+            StringId::of);
 
-        @Nonnull
-        @Override
-        public List<Id> unmap(String o) {
-            return Arrays.stream(checkNotNull(o).split(","))
-                    .map(r -> r.isEmpty() ? null : StringId.of(r))
-                    .collect(Collectors.toList());
-        }
-    };
+    /**
+     * The {@link Converter} used to convert multi-valued references.
+     */
+    @Nonnull
+    private static final Converter<List<Id>, String> MANY_CONVERTER = Converter.from(
+            rs -> rs.stream()
+                    .map(r -> isNull(r) ? "" : SINGLE_CONVERTER.doForward(r))
+                    .collect(Collectors.joining(DELIMITER)),
+            r -> Arrays.stream(r.split(DELIMITER))
+                    .map(rs -> rs.isEmpty() ? null : SINGLE_CONVERTER.doBackward(rs))
+                    .collect(Collectors.toList()));
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
@@ -88,13 +75,13 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements Referenc
 
     @Nonnull
     @Override
-    public MappingFunction<Id, String> referenceMapping() {
-        return SINGLE_MAPPING;
+    public Converter<Id, String> referenceConverter() {
+        return SINGLE_CONVERTER;
     }
 
     @Nonnull
     @Override
-    public MappingFunction<List<Id>, String> manyReferencesMapping() {
-        return MANY_MAPPING;
+    public Converter<List<Id>, String> manyReferencesConverter() {
+        return MANY_CONVERTER;
     }
 }

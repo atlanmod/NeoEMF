@@ -33,8 +33,7 @@ public abstract class AbstractBackend implements Backend {
     private static final Set<AbstractBackend> ACTIVE_BACKENDS = new HashSet<>();
 
     static {
-        MoreExecutors.executeAtExit(() -> ACTIVE_BACKENDS.parallelStream()
-                .forEach(b -> b.close(false)));
+        MoreExecutors.executeAtExit(() -> ACTIVE_BACKENDS.parallelStream().forEach(b -> b.close(false)));
     }
 
     /**

@@ -139,6 +139,24 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         this.resource = resource;
     }
 
+    @Nonnull
+    @Override
+    public final PersistentEObject resolve(Id id) {
+        checkNotNull(id);
+
+        PersistentEObject object = cache().get(id, k ->
+                resolveInstanceOf(k)
+                        .map(c -> PersistenceFactory.getInstance().create(c, k))
+                        .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
+
+        Resource.Internal resource = resource();
+        if (nonNull(resource)) {
+            object.resource(resource);
+        }
+
+        return object;
+    }
+
     @Nullable
     @Override
     public final Object get(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index) {
@@ -820,23 +838,5 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     private void refresh(PersistentEObject object) {
         cache().putIfAbsent(object.id(), object);
-    }
-
-    @Nonnull
-    @Override
-    public final PersistentEObject resolve(Id id) {
-        checkNotNull(id);
-
-        PersistentEObject object = cache().get(id, k ->
-                resolveInstanceOf(k)
-                        .map(c -> PersistenceFactory.getInstance().create(c, k))
-                        .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
-
-        Resource.Internal resource = resource();
-        if (nonNull(resource)) {
-            object.resource(resource);
-        }
-
-        return object;
     }
 }

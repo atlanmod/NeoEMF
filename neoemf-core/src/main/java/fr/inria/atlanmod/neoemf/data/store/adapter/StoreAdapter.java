@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.Resolver;
 import fr.inria.atlanmod.neoemf.data.DataManager;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -37,7 +36,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public interface StoreAdapter extends DataManager, InternalEObject.EStore, Resolver<Id, PersistentEObject> {
+public interface StoreAdapter extends DataManager, InternalEObject.EStore {
 
     /**
      * Returns the adapted store.
@@ -61,6 +60,18 @@ public interface StoreAdapter extends DataManager, InternalEObject.EStore, Resol
      * @param resource the resource
      */
     void resource(@Nullable Resource.Internal resource);
+
+    /**
+     * Retrieves the object associated to the given {@code id}.
+     *
+     * @param id the identifier to be resolved
+     *
+     * @return the resolved object
+     *
+     * @throws java.util.NoSuchElementException if no object can be retrieved
+     */
+    @Nonnull
+    PersistentEObject resolve(Id id);
 
     @Nullable
     @Override

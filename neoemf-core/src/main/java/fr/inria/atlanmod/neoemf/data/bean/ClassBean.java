@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.bean;
 
+import fr.inria.atlanmod.common.LazyReference;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.URI;
@@ -18,7 +19,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +30,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * A simple representation of a {@link EClass}.
@@ -55,10 +54,10 @@ public class ClassBean implements Serializable {
     private final String uri;
 
     /**
-     * The represented {@link EClass}, embed in a {@link SoftReference}.
+     * The cached {@link EClass} of this bean.
      */
-    @Nullable
-    private transient SoftReference<EClass> reference;
+    @Nonnull
+    private final transient LazyReference<EClass> lazyClass;
 
     /**
      * Constructs a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a
@@ -70,6 +69,12 @@ public class ClassBean implements Serializable {
     protected ClassBean(String name, String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
+
+        lazyClass = LazyReference.soft(() ->
+                Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))
+                        .map(p -> p.getEClassifier(name))
+                        .map(EClass.class::cast)
+                        .orElse(null));
     }
 
     /**
@@ -79,7 +84,8 @@ public class ClassBean implements Serializable {
      */
     private ClassBean(EClass reference) {
         this(reference.getName(), reference.getEPackage().getNsURI());
-        this.reference = new SoftReference<>(reference);
+
+        lazyClass.update(reference);
     }
 
     /**
@@ -212,16 +218,7 @@ public class ClassBean implements Serializable {
      */
     @Nonnull
     public EClass get() {
-        if (isNull(reference) || isNull(reference.get())) {
-            reference = Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))
-                    .map(p -> p.getEClassifier(name))
-                    .map(EClass.class::cast)
-                    .map(SoftReference::new)
-                    .<NullPointerException>orElseThrow(() ->
-                            new NullPointerException(String.format("Unable to find EPackage for URI: %s", uri)));
-        }
-
-        return reference.get();
+        return checkNotNull(lazyClass.get(), "Unable to find EPackage for URI: %s", uri);
     }
 
     @Override

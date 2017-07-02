@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.common.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
@@ -21,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link ReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
- * references. This behavior is specified by the {@link #referenceMapping()} method.
+ * references. This behavior is specified by the {@link #referenceConverter()} method.
  *
  * @param <M> the type of the reference after mapping
  */
@@ -31,19 +32,19 @@ public interface ReferenceWith<M> extends ValueMapper, ReferenceMapper {
     @Nonnull
     @Override
     default Optional<Id> referenceOf(SingleFeatureBean key) {
-        MappingFunction<Id, M> func = referenceMapping();
+        Converter<Id, M> func = referenceConverter();
 
         return this.<M>valueOf(key)
-                .map(func::unmap);
+                .map(func::doBackward);
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        MappingFunction<Id, M> func = referenceMapping();
+        Converter<Id, M> func = referenceConverter();
 
-        return this.<M>valueFor(key, func.map(reference))
-                .map(func::unmap);
+        return this.<M>valueFor(key, func.doForward(reference))
+                .map(func::doBackward);
     }
 
     @Override
@@ -57,5 +58,5 @@ public interface ReferenceWith<M> extends ValueMapper, ReferenceMapper {
     }
 
     @Nonnull
-    MappingFunction<Id, M> referenceMapping();
+    Converter<Id, M> referenceConverter();
 }

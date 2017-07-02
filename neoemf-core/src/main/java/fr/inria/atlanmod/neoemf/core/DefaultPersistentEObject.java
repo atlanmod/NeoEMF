@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.common.LazyReference;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.Store;
@@ -60,6 +61,12 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
+     * The cached container of this object.
+     */
+    @Nonnull
+    private final transient LazyReference<InternalEObject> lazyContainer;
+
+    /**
      * The identifier of this object.
      */
     @Nonnull
@@ -74,6 +81,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The {@link StoreAdapter} where this object is stored.
      */
+    @Nullable
     private StoreAdapter store;
 
     /**
@@ -90,6 +98,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
+
+        lazyContainer = LazyReference.soft(super::eInternalContainer);
 
         Log.trace("DefaultPersistentEObject created with ID {0}", id);
     }
@@ -286,6 +296,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param newContainmentFeature the reference used to link the container to this object
      */
     private void setContainer(PersistentEObject newContainer, EReference newContainmentFeature) {
+        lazyContainer.update(newContainer);
         eStore().updateContainment(this, newContainmentFeature, newContainer);
         resource(newContainer.resource());
     }
@@ -294,6 +305,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * Removes the container of this object, and detaches it from its resource.
      */
     private void removeContainer() {
+        lazyContainer.update(null);
         eStore().removeContainment(this);
         resource(null);
     }
@@ -372,6 +384,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 
         eStore().unset(this, feature);
+    }
+
+    @Override
+    public InternalEObject eInternalContainer() {
+        return lazyContainer.get();
     }
 
     /**
