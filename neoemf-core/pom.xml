@@ -20,7 +20,7 @@
     </description>
 
     <properties>
-        <caffeine.version>2.5.2</caffeine.version>
+        <caffeine.version>2.5.3</caffeine.version>
 
         <cglib.version>3.2.5</cglib.version>
         <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility (15.0) -->
