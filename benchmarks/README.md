@@ -33,7 +33,7 @@ By default, all resources are executed on all backends. But you can choose to ex
 
 __Example:__ To run the query `traverse` on XMI and Neo4j backends, with the resource "fr.inria.atlanmod.kyanos.tests.xmi", you need to execute:
 
-    java -jar ... traverse -p b=xmi,neo-graph-neo4j -p r=fr.inria.atlanmod.kyanos.tests.xmi
+    java -jar ... traverse -p b=xmi,neo-neo4j -p r=fr.inria.atlanmod.kyanos.tests.xmi
 
 #### Initialization _(optional)_
 Backends have to be created before executing requests on it.
