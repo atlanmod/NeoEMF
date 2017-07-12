@@ -22,10 +22,10 @@ Some Blueprints connectors are also available to ease the integration of graph d
 
 NeoEMF comes with some features:
 
-- __Lazy-loading__ mechanism: A model is loaded part by part while needed
-- __Caching__: NeoEMF relies on database caches to retrieve EObjects. But in some situation where time performance is important this is not enough and it is possible to use application-level caches to speed up information loading
-- __Auto-commit__: For the backend having restrictions on transaction sizes it is possible to use the auto-commit feature to split large transaction into several small ones
-- __Dirty saving__: Handle large models that haven't been persisted to avoid memory overhead
+- __Lazy-Loading__: A model is loaded part by part while needed.
+- __Caching__: NeoEMF relies on database caches to retrieve _EObjects_. But, in some situation, where time performance is important, this is not enough and it is possible to use application-level caches to speed up information loading.
+- __Auto-Commit__: For backends having restrictions on transaction sizes, it is possible to use the auto-commit feature to split large transaction into several small ones.
+- __Dirty Saving__: Handle large models that haven't been persisted to avoid memory overhead.
 
 ## Why should I use NeoEMF?
 
@@ -39,7 +39,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 
 ### Latest release
 
-The most recent release is NeoEMF 1.0.1, released January 16, 2017.
+The most recent release is NeoEMF 1.0.2, released May 21, 2017.
 - Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
 - Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 
@@ -48,7 +48,7 @@ To add a dependency on NeoEMF using Maven, use the following:
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
   <artifactId>neoemf-core</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
@@ -57,7 +57,7 @@ Then add the dependency of the specific implementation you want to use:
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
   <artifactId>neoemf-{name}</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
