@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
 @ParametersAreNonnullByDefault
-public abstract class BasicFeature extends BasicNamedElement {
+public abstract class AbstractBasicFeature extends AbstractBasicElement {
 
     /**
      * The identifier of the feature.
@@ -38,11 +38,12 @@ public abstract class BasicFeature extends BasicNamedElement {
     private boolean isMany;
 
     /**
-     * Constructs a new {@code BasicFeature} with the given {@code name}. Its index is initialized to {@code -1}.
+     * Constructs a new {@code AbstractBasicFeature} with the given {@code name}. Its index is initialized to {@code
+     * -1}.
      *
      * @param name the name of this feature
      */
-    public BasicFeature(String name) {
+    public AbstractBasicFeature(String name) {
         super(name);
         this.index = -1;
         this.isMany = false;
@@ -130,14 +131,14 @@ public abstract class BasicFeature extends BasicNamedElement {
         if (this == o) {
             return true;
         }
-        if (!BasicFeature.class.isInstance(o)) {
+        if (!AbstractBasicFeature.class.isInstance(o)) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
 
-        BasicFeature that = BasicFeature.class.cast(o);
+        AbstractBasicFeature that = AbstractBasicFeature.class.cast(o);
         return Objects.equals(id, that.id);
     }
 }

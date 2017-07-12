@@ -71,7 +71,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
      * Defines whether the processed document already contains identifiers. In this case, XPath processing is
      * unnecessary and this processor simply notifies the underlying processor.
      */
-    private boolean hasIds = false;
+    private boolean hasIds;
 
     /**
      * Constructs a new {@code XPathProcessor} with the given {@code handler}.

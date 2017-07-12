@@ -16,7 +16,7 @@ import java.io.Closeable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * An object that manages the data and provides lifecycle control.
  */
 @ParametersAreNonnullByDefault
 public interface DataManager extends Closeable {

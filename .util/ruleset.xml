@@ -38,7 +38,11 @@
         <exclude name="MethodArgumentCouldBeFinal" />
     </rule>
 
-    <rule ref="rulesets/java/strictexception.xml" />
+    <rule ref="rulesets/java/strictexception.xml">
+        <exclude name="AvoidCatchingGenericException" />
+        <exclude name="AvoidThrowingNullPointerException" />
+        <exclude name="AvoidThrowingRawExceptionTypes" />
+    </rule>
 
     <rule ref="rulesets/java/strings.xml" />
 

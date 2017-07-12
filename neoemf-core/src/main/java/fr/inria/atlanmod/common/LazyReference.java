@@ -50,7 +50,7 @@ public abstract class LazyReference<T> {
     /**
      * Whether this reference has a value.
      */
-    private boolean isPresent = false;
+    private boolean isPresent;
 
     /**
      * Constructs a new {@code LazyReference}.

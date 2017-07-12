@@ -40,11 +40,11 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      * @param handler the handler to notify
      */
     public XmiStreamReader(Handler handler) {
-        super(new EcoreProcessor(new XPathProcessor((handler))));
+        super(new EcoreProcessor(new XPathProcessor(handler)));
     }
 
     @Override
-    public void run(InputStream stream) throws Exception {
+    public void run(InputStream stream) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
         factory.setProperty("javax.xml.stream.isNamespaceAware", true);
 

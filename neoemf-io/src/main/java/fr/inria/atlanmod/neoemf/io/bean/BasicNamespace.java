@@ -95,8 +95,8 @@ public class BasicNamespace {
         }
 
         BasicNamespace that = BasicNamespace.class.cast(o);
-        return Objects.equals(prefix, that.prefix) &&
-                Objects.equals(uri, that.uri);
+        return Objects.equals(prefix, that.prefix)
+                && Objects.equals(uri, that.uri);
     }
 
     @Override

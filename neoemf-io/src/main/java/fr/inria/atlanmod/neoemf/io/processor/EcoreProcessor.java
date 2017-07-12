@@ -69,7 +69,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     /**
      * Defines if the previous element was an attribute, or not.
      */
-    private boolean previousWasAttribute = false;
+    private boolean previousWasAttribute;
 
     /**
      * Constructs a new {@code EcoreProcessor} with the given {@code handler}.

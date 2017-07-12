@@ -136,7 +136,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public static Migrator<InputStream> fromXmi(InputStream stream) throws IOException {
-        return new Migrator<>(XmiStreamReader.class, getInputStream(stream));
+        return new Migrator<>(XmiStreamReader.class, adaptStream(stream));
     }
 
     /**
@@ -152,14 +152,17 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Adapts the specified {@code stream} to read its content correctly.
+     * <p>
+     * If the content is compressed, then it returns a new {@link InputStream} on top of the content, located by a
+     * {@link ZipInputStream}.
      *
      * @param stream the base stream
      *
      * @return the adapted {@code stream}
      */
     @WillNotClose
-    private static InputStream getInputStream(InputStream stream) throws IOException {
+    private static InputStream adaptStream(InputStream stream) throws IOException {
         final PushbackInputStream pbis = new PushbackInputStream(stream, 4);
 
         // Read file signature
@@ -192,7 +195,7 @@ public final class Migrator<T> {
     //region Writers
 
     /**
-     * TODO
+     * Specifies the {@code writer} where to send the reading events.
      *
      * @param writer the writer where to write
      *
@@ -206,7 +209,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Specifies the {@code mapper} where to write the data.
      *
      * @param mapper the mapper where to write
      *
@@ -218,7 +221,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Specifies the compressed XMI {@code file} where to write the data.
      *
      * @param file the file where to write
      *
@@ -235,7 +238,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Specifies the XMI {@code file} where to write the data.
      *
      * @param file the file where to write
      *
@@ -254,7 +257,7 @@ public final class Migrator<T> {
     //region Processors
 
     /**
-     * TODO
+     * Specifies the {@code stream} where to write the data.
      *
      * @param stream the file where to write
      *
@@ -267,7 +270,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Adds a pre/post-processing feature.
      *
      * @param processor the processor to add
      *
@@ -280,7 +283,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Adds the {@code logging} feature.
      *
      * @return this migrator (for chaining)
      */
@@ -290,7 +293,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * TODO
+     * Adds the {@code event-counting} feature.
      *
      * @return this migrator (for chaining)
      */
@@ -302,7 +305,7 @@ public final class Migrator<T> {
     //endregion
 
     /**
-     * TODO
+     * Adds the {@code timing} feature.
      *
      * @return this migrator (for chaining)
      */

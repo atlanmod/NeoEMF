@@ -53,7 +53,7 @@ final class HBaseCluster {
     /**
      * Whether the mini-cluster has been initialized.
      */
-    private static boolean initialized = false;
+    private static boolean initialized;
 
     /**
      * Checks whether the mini-cluster has been successfully initialized.

@@ -57,15 +57,11 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements Referenc
      */
     @Nonnull
     private static final Converter<List<Id>, String> MANY_CONVERTER = Converter.from(
-            rs -> rs.stream()
-                    .map(r -> isNull(r) ? "" : SINGLE_CONVERTER.doForward(r))
-                    .collect(Collectors.joining(DELIMITER)),
-            r -> Arrays.stream(r.split(DELIMITER))
-                    .map(rs -> rs.isEmpty() ? null : SINGLE_CONVERTER.doBackward(rs))
-                    .collect(Collectors.toList()));
+            rs -> rs.stream().map(r -> isNull(r) ? "" : SINGLE_CONVERTER.doForward(r)).collect(Collectors.joining(DELIMITER)),
+            r -> Arrays.stream(r.split(DELIMITER)).map(rs -> rs.isEmpty() ? null : SINGLE_CONVERTER.doBackward(rs)).collect(Collectors.toList()));
 
     /**
-     * Constructs a new {@code HBaseBackendArrays} on th given {@code table}
+     * Constructs a new {@code HBaseBackendArrays} on th given {@code table}.
      *
      * @param table the HBase table
      */

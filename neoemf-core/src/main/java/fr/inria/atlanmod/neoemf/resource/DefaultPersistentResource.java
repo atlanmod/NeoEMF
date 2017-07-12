@@ -216,7 +216,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             isLoading = true;
 
             if (!isLoaded) {
-                if ((uri.isFile() && new File(uri.toFileString()).exists()) || uri.hasAuthority()) {
+                if (uri.isFile() && new File(uri.toFileString()).exists() || uri.hasAuthority()) {
                     store.close();
 
                     Backend backend = factory.createPersistentBackend(uri, options);

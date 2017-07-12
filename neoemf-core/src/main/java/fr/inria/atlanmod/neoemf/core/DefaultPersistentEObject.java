@@ -311,6 +311,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @see #setContainer(PersistentEObject, EReference)
      * @see #removeContainer()
      */

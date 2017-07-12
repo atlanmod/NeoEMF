@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.io.bean;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BasicFeature} representing an attribute, with a value.
+ * A {@link AbstractBasicFeature} representing an attribute, with a value.
  */
 @ParametersAreNonnullByDefault
-public class BasicAttribute extends BasicFeature {
+public class BasicAttribute extends AbstractBasicFeature {
 
     /**
      * The value of this attribute.

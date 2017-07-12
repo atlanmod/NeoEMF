@@ -58,7 +58,7 @@ public final class BackendFactoryRegistry {
     /**
      * Whether this registry has been initialized at least once.
      */
-    boolean initialized = false;
+    boolean initialized;
 
     /**
      * Constructs a new {@code BackendFactoryRegistry} and initializes it with {@link #registerAll()}.

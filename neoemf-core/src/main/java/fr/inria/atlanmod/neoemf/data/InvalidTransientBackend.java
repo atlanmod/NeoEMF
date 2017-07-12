@@ -37,8 +37,8 @@ public final class InvalidTransientBackend implements TransientBackend {
      * The exception thrown when calling methods.
      */
     private static final RuntimeException E = new UnsupportedOperationException(
-            "The back-end you are using doesn't provide a transient layer. " +
-                    "You must save/load your resource before using it");
+            "The back-end you are using doesn't provide a transient layer. "
+                    + "You must save/load your resource before using it");
 
     @Nonnull
     @Override

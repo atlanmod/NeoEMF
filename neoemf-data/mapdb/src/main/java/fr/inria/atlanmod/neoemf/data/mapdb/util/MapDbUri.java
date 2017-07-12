@@ -37,7 +37,7 @@ public class MapDbUri extends AbstractUriBuilder {
     }
 
     /**
-     * Creates a new {@code MapDbUri} with the pre-configured scheme.
+     * Creates a new {@link UriBuilder} with the pre-configured scheme.
      *
      * @return a new builder
      */

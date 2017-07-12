@@ -63,7 +63,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      * <p>
      * Used when a special or unmanaged feature is encountered.
      */
-    private boolean ignoreElement = false;
+    private boolean ignoreElement;
 
     /**
      * A LIFO that holds the current {@link BasicId} chain. It contains the current identifier and the previous.

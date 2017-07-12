@@ -64,6 +64,13 @@ public abstract class AbstractUriBuilder implements UriBuilder {
         this.scheme = checkNotNull(scheme, "Cannot create URI without a valid scheme");
     }
 
+    /**
+     * Creates a new {@link UriBuilder} with the given {@code scheme}.
+     *
+     * @param scheme the scheme of the created URI
+     *
+     * @return a new builder
+     */
     @Nonnull
     @VisibleForTesting
     @SuppressWarnings("JavaDoc")
@@ -93,7 +100,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
             scheme = Bindings.schemeOf(getClass());
         }
 
-        return scheme;
+        return checkNotNull(scheme, "Cannot create URI without a valid scheme");
     }
 
     /**
@@ -113,7 +120,6 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromUri(URI uri) {
-        checkNotNull(scheme(), "Cannot create URI without a valid scheme");
         checkNotNull(uri);
 
         if (!supportsFile()) {
@@ -159,7 +165,6 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromServer(String host, int port, String... segments) {
-        checkNotNull(scheme(), "Cannot create URI without a valid scheme");
         checkNotNull(host);
         checkNotNull(segments);
         checkArgument(port >= 0);
@@ -188,7 +193,6 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     private URI fromFile(URI uri) {
-        checkNotNull(scheme(), "Cannot create URI without a valid scheme");
         checkArgument(uri.isFile(), "Expecting a file-based URI: {0}", uri.toString());
 
         return fromUri(URI.createHierarchicalURI(scheme(),

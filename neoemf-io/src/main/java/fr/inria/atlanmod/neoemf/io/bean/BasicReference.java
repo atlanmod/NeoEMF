@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.io.bean;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BasicFeature} representing a reference, which links several {@link BasicElement}s.
+ * A {@link AbstractBasicFeature} representing a reference, which links several {@link BasicElement}s.
  */
 @ParametersAreNonnullByDefault
-public class BasicReference extends BasicFeature {
+public class BasicReference extends AbstractBasicFeature {
 
     /**
      * The identifier of the referenced element.
