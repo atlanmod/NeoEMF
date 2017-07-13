@@ -35,8 +35,6 @@ final class IdSerializer implements Serializer<Id> {
     @Nonnull
     @Override
     public Id deserialize(DataInput in) throws IOException {
-        return StringId.of(
-                in.readUTF()
-        );
+        return StringId.of(in.readUTF());
     }
 }

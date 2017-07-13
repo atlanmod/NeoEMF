@@ -12,6 +12,9 @@
 package fr.inria.atlanmod.common.hash;
 
 import fr.inria.atlanmod.common.annotation.VisibleForTesting;
+import fr.inria.atlanmod.common.hash.murmur.Murmur128;
+import fr.inria.atlanmod.common.hash.murmur.Murmur32;
+import fr.inria.atlanmod.common.hash.murmur.Murmur64;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -79,6 +82,36 @@ public final class Hashers {
     @Nonnull
     public static Hasher sha256() {
         return bytes -> nativeHash(SHA256, bytes);
+    }
+
+    /**
+     * Returns a {@link Hasher} that uses the {@code Murmur 32-bit} algorithm.
+     *
+     * @return a new {@link Hasher}
+     */
+    @Nonnull
+    public static Hasher murmur32() {
+        return new Murmur32();
+    }
+
+    /**
+     * Returns a {@link Hasher} that uses the {@code Murmur 64-bit} algorithm.
+     *
+     * @return a new {@link Hasher}
+     */
+    @Nonnull
+    public static Hasher murmur64() {
+        return new Murmur64();
+    }
+
+    /**
+     * Returns a {@link Hasher} that uses the {@code Murmur 128-bit} algorithm.
+     *
+     * @return a new {@link Hasher}
+     */
+    @Nonnull
+    public static Hasher murmur128() {
+        return new Murmur128();
     }
 
     /**

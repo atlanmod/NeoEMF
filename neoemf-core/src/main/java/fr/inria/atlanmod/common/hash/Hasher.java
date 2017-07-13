@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.common.hash;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,12 +26,12 @@ public interface Hasher {
     /**
      * Calculates the {@link HashCode} of the given {@code byte[]}.
      *
-     * @param value the value to hash
+     * @param data the data to hash
      *
      * @return a new hash code
      */
     @Nonnull
-    HashCode hash(byte[] value);
+    HashCode hash(byte[] data);
 
     /**
      * Calculates the {@link HashCode} of the given {@code int}.
@@ -74,7 +74,7 @@ public interface Hasher {
      */
     @Nonnull
     default HashCode hash(String value) {
-        byte[] bytesValue = value.getBytes(Charset.forName("UTF-8"));
+        byte[] bytesValue = value.getBytes(StandardCharsets.UTF_8);
 
         return hash(bytesValue);
     }

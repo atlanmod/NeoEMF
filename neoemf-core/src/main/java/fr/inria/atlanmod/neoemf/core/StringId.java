@@ -41,7 +41,7 @@ public class StringId implements Id {
      * @see #generate(String)
      */
     @Nonnull
-    private static final Hasher HASHER = Hashers.md5();
+    private static final Hasher HASHER = Hashers.murmur128();
 
     /**
      * The literal representation of this {@code Id} as a {@link String}.
