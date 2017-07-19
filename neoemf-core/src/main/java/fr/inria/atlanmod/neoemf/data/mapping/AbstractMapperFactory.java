@@ -97,7 +97,7 @@ public abstract class AbstractMapperFactory {
      * @throws BindingException if an error occurs during the instantiation
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "JavaReflectionMemberAccess"})
     protected final <T> T newInstanceOf(Class<? extends DataMapper> mapperClass, ConstructorParameter... parameters) {
         List<Class<?>> types = Arrays.stream(parameters)
                 .map(p -> p.type)

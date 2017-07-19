@@ -92,7 +92,7 @@ public final class Migrator<T> {
      * The set that holds all {@link Writer} to use.
      */
     @Nonnull
-    private Set<Writer> writers = new HashSet<>();
+    private final Set<Writer> writers = new HashSet<>();
 
     /**
      * Constructs a new {@code Migrator} with the given arguments.
@@ -317,6 +317,7 @@ public final class Migrator<T> {
     /**
      * Runs the migration.
      */
+    @SuppressWarnings("JavaReflectionMemberAccess")
     public void migrate() throws IOException {
         checkNotNull(writers);
 

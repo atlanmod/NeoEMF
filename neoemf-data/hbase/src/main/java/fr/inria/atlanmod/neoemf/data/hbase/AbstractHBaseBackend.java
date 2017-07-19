@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.common.Bytes;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
@@ -27,7 +28,6 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -211,18 +211,16 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return resultFrom(key.id())
-                .map(result -> Optional.ofNullable(result.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
-                        .map(value -> {
-                            try {
-                                return Optional.of(serializerFactory.<V>forAny().deserialize(value));
-                            }
-                            catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .orElseGet(Optional::empty))
-                .orElseGet(Optional::empty);
+        return resultFrom(key.id()).flatMap(r -> Optional.ofNullable(r.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
+                .map(value -> {
+                    try {
+                        return Optional.of(serializerFactory.<V>forAny().deserialize(value));
+                    }
+                    catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .orElseGet(Optional::empty));
     }
 
     @Nonnull

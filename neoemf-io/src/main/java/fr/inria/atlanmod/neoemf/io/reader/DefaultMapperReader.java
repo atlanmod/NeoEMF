@@ -92,7 +92,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         // If root it's the name of the metaclass, otherwise the name of the containing feature
         String elementName = isRoot
                 ? metaclass.getName()
-                : mapper.containerOf(id).map(SingleFeatureBean::name).orElse(null);
+                : mapper.containerOf(id).map(SingleFeatureBean::name).<IllegalStateException>orElseThrow(IllegalStateException::new);
 
         // Create the element
         BasicElement element = new BasicElement(ns, elementName);
@@ -101,11 +101,9 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         element.isRoot(isRoot);
 
         // Retrieve the real name of this element
-        String name = mapper.valueOf(SingleFeatureBean.of(id, MapperConstants.FEATURE_NAME))
+        mapper.valueOf(SingleFeatureBean.of(id, MapperConstants.FEATURE_NAME))
                 .map(Object::toString)
-                .orElse(null);
-
-        element.className(name);
+                .ifPresent(element::className);
 
         notifyStartElement(element);
 

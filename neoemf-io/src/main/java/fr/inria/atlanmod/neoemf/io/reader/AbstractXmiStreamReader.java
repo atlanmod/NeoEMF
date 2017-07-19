@@ -59,16 +59,16 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile(REGEX_PREFIXED_VALUE);
 
     /**
-     * Whether the current element has to be ignored.
-     * <p>
-     * Used when a special or unmanaged feature is encountered.
-     */
-    private boolean ignoreElement;
-
-    /**
      * A LIFO that holds the current {@link BasicId} chain. It contains the current identifier and the previous.
      */
-    private Deque<BasicId> previousIds = new ArrayDeque<>();
+    @Nonnull
+    private final Deque<BasicId> previousIds = new ArrayDeque<>();
+
+    /**
+     * A collection that holds all attributes of the {@link #currentElement}.
+     */
+    @Nonnull
+    private final Collection<BasicAttribute> currentAttributes = new ArrayList<>();
 
     /**
      * The current element.
@@ -76,10 +76,11 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     private BasicElement currentElement;
 
     /**
-     * A collection that holds all attributes of the {@link #currentElement}.
+     * Whether the current element has to be ignored.
+     * <p>
+     * Used when a special or unmanaged feature is encountered.
      */
-    @Nonnull
-    private Collection<BasicAttribute> currentAttributes = new ArrayList<>();
+    private boolean ignoreElement;
 
     /**
      * Constructs a new {@code AbstractXmiStreamReader} with the given {@code handler}.

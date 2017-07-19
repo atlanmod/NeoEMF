@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.common.Bytes;
 import fr.inria.atlanmod.common.hash.Hasher;
 import fr.inria.atlanmod.common.hash.Hashers;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -98,8 +98,7 @@ public class StringId implements Id {
 
     @Nonnull
     public static Id generate(String name) {
-        final byte[] bytes = name.getBytes(StandardCharsets.UTF_8);
-        return new StringId(HASHER.hash(bytes).toHexString());
+        return new StringId(HASHER.hash(Bytes.toBytes(name)).toHexString());
     }
 
     @Override

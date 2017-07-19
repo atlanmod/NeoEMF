@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.common.hash;
 
+import fr.inria.atlanmod.common.Bytes;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 
 import org.junit.Test;
@@ -18,7 +19,6 @@ import org.junit.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 
 import javax.annotation.Nonnull;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 public class HasherTest extends AbstractTest {
 
-    private static final byte[] DATA = "Nantes44000".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] DATA = Bytes.toBytes("Nantes44000");
 
     /**
      * Calculates the {@link HashCode} of {@link #DATA} with the specified {@code hasher}.

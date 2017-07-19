@@ -31,19 +31,19 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
      * The current number of element.
      */
     @Nonnegative
-    private AtomicLong elementCount = new AtomicLong();
+    private final AtomicLong elementCount = new AtomicLong();
 
     /**
      * The current number of attribute.
      */
     @Nonnegative
-    private AtomicLong attributeCount = new AtomicLong();
+    private final AtomicLong attributeCount = new AtomicLong();
 
     /**
      * The current number of reference.
      */
     @Nonnegative
-    private AtomicLong referenceCount = new AtomicLong();
+    private final AtomicLong referenceCount = new AtomicLong();
 
     /**
      * Constructs a new {@code CounterProcessor} with the given {@code processor}.
