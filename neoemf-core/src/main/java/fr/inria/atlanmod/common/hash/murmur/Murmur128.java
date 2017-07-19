@@ -24,8 +24,8 @@ public class Murmur128 implements MurmurHasher {
 
     @Nonnull
     @Override
-    public HashCode hash(final byte[] data) {
-        long[] results = hash(data, DEFAULT_SEED);
+    public HashCode hash(final byte[] bytes) {
+        long[] results = hash(bytes, DEFAULT_SEED);
 
         long leastSignificant = results[0];
         long mostSignificant = results[1];
@@ -48,13 +48,13 @@ public class Murmur128 implements MurmurHasher {
     /**
      * Murmur3 128-bit variant.
      *
-     * @param data the data to hash
-     * @param seed seed
+     * @param bytes the bytes to hash
+     * @param seed  seed
      *
      * @return a 128-bit hashcode (2 longs)
      */
-    private long[] hash(final byte[] data, final int seed) {
-        final int length = data.length;
+    private long[] hash(final byte[] bytes, final int seed) {
+        final int length = bytes.length;
         final int nBlocks = length >> 4;
 
         long h1 = seed;
@@ -63,23 +63,23 @@ public class Murmur128 implements MurmurHasher {
         // Body
         for (int i = 0; i < nBlocks; i++) {
             final int i16 = i << 4;
-            long k1 = data[i16] & 0xff
-                    | (data[i16 + 1] & 0xffL) << 8
-                    | (data[i16 + 2] & 0xffL) << 16
-                    | (data[i16 + 3] & 0xffL) << 24
-                    | (data[i16 + 4] & 0xffL) << 32
-                    | (data[i16 + 5] & 0xffL) << 40
-                    | (data[i16 + 6] & 0xffL) << 48
-                    | (data[i16 + 7] & 0xffL) << 56;
+            long k1 = bytes[i16] & 0xff
+                    | (bytes[i16 + 1] & 0xffL) << 8
+                    | (bytes[i16 + 2] & 0xffL) << 16
+                    | (bytes[i16 + 3] & 0xffL) << 24
+                    | (bytes[i16 + 4] & 0xffL) << 32
+                    | (bytes[i16 + 5] & 0xffL) << 40
+                    | (bytes[i16 + 6] & 0xffL) << 48
+                    | (bytes[i16 + 7] & 0xffL) << 56;
 
-            long k2 = data[i16 + 8] & 0xffL
-                    | (data[i16 + 9] & 0xffL) << 8
-                    | (data[i16 + 10] & 0xffL) << 16
-                    | (data[i16 + 11] & 0xffL) << 24
-                    | (data[i16 + 12] & 0xffL) << 32
-                    | (data[i16 + 13] & 0xffL) << 40
-                    | (data[i16 + 14] & 0xffL) << 48
-                    | (data[i16 + 15] & 0xffL) << 56;
+            long k2 = bytes[i16 + 8] & 0xffL
+                    | (bytes[i16 + 9] & 0xffL) << 8
+                    | (bytes[i16 + 10] & 0xffL) << 16
+                    | (bytes[i16 + 11] & 0xffL) << 24
+                    | (bytes[i16 + 12] & 0xffL) << 32
+                    | (bytes[i16 + 13] & 0xffL) << 40
+                    | (bytes[i16 + 14] & 0xffL) << 48
+                    | (bytes[i16 + 15] & 0xffL) << 56;
 
             // Mix functions for k1
             k1 *= C1_64;
@@ -106,40 +106,40 @@ public class Murmur128 implements MurmurHasher {
         int tailStart = nBlocks << 4;
         switch (length - tailStart) {
             case 15:
-                k2 ^= (data[tailStart + 14] & 0xffL) << 48;
+                k2 ^= (bytes[tailStart + 14] & 0xffL) << 48;
             case 14:
-                k2 ^= (data[tailStart + 13] & 0xffL) << 40;
+                k2 ^= (bytes[tailStart + 13] & 0xffL) << 40;
             case 13:
-                k2 ^= (data[tailStart + 12] & 0xffL) << 32;
+                k2 ^= (bytes[tailStart + 12] & 0xffL) << 32;
             case 12:
-                k2 ^= (data[tailStart + 11] & 0xffL) << 24;
+                k2 ^= (bytes[tailStart + 11] & 0xffL) << 24;
             case 11:
-                k2 ^= (data[tailStart + 10] & 0xffL) << 16;
+                k2 ^= (bytes[tailStart + 10] & 0xffL) << 16;
             case 10:
-                k2 ^= (data[tailStart + 9] & 0xffL) << 8;
+                k2 ^= (bytes[tailStart + 9] & 0xffL) << 8;
             case 9:
-                k2 ^= (data[tailStart + 8] & 0xffL);
+                k2 ^= (bytes[tailStart + 8] & 0xffL);
                 k2 *= C2_64;
                 k2 = Long.rotateLeft(k2, R3_64);
                 k2 *= C1_64;
                 h2 ^= k2;
 
             case 8:
-                k1 ^= (data[tailStart + 7] & 0xffL) << 56;
+                k1 ^= (bytes[tailStart + 7] & 0xffL) << 56;
             case 7:
-                k1 ^= (data[tailStart + 6] & 0xffL) << 48;
+                k1 ^= (bytes[tailStart + 6] & 0xffL) << 48;
             case 6:
-                k1 ^= (data[tailStart + 5] & 0xffL) << 40;
+                k1 ^= (bytes[tailStart + 5] & 0xffL) << 40;
             case 5:
-                k1 ^= (data[tailStart + 4] & 0xffL) << 32;
+                k1 ^= (bytes[tailStart + 4] & 0xffL) << 32;
             case 4:
-                k1 ^= (data[tailStart + 3] & 0xffL) << 24;
+                k1 ^= (bytes[tailStart + 3] & 0xffL) << 24;
             case 3:
-                k1 ^= (data[tailStart + 2] & 0xffL) << 16;
+                k1 ^= (bytes[tailStart + 2] & 0xffL) << 16;
             case 2:
-                k1 ^= (data[tailStart + 1] & 0xffL) << 8;
+                k1 ^= (bytes[tailStart + 1] & 0xffL) << 8;
             case 1:
-                k1 ^= (data[tailStart] & 0xffL);
+                k1 ^= (bytes[tailStart] & 0xffL);
                 k1 *= C1_64;
                 k1 = Long.rotateLeft(k1, R1_64);
                 k1 *= C2_64;

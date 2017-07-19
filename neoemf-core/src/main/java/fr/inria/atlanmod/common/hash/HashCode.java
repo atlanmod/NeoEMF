@@ -21,7 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.common.Preconditions.checkState;
 
 /**
  * An immutable hash code of arbitrary bit length.
@@ -36,7 +35,7 @@ public final class HashCode implements Serializable {
     /**
      * The valid hexadecimal values.
      *
-     * @see #toString()
+     * @see #toHexString()
      */
     private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
 
@@ -75,39 +74,30 @@ public final class HashCode implements Serializable {
     }
 
     /**
-     * Returns the first four bytes of {@link #toBytes()}, converted to an {@code int} value in little-endian order.
+     * Returns a string containing each byte of {@link #toBytes()}, in order, as a two-digit unsigned hexadecimal number
+     * in lower case.
      *
-     * @return an integer
+     * @return a string
      */
-    public int toInt() {
-        checkState(bytes.length >= 4, "HashCode#toInt() requires at least 4 bytes (it only has %s bytes).", bytes.length);
+    @Nonnull
+    public String toHexString() {
+        byte[] bytes = toBytes();
 
-        return (bytes[0] & 0xFF)
-                | ((bytes[1] & 0xFF) << 8)
-                | ((bytes[2] & 0xFF) << 16)
-                | ((bytes[3] & 0xFF) << 24);
-    }
-
-    /**
-     * Returns the first eight bytes of {@link #toBytes()}, converted to a {@code long} value in little-endian order.
-     *
-     * @return a long
-     */
-    public long toLong() {
-        checkState(bytes.length >= 8, "HashCode#toLong() requires at least 8 bytes (it only has %s bytes).", bytes.length);
-
-        long value = bytes[0] & 0xFF;
-        for (int i = 1; i < Math.min(bytes.length, 8); i++) {
-            value |= (bytes[i] & 0xFFL) << (i * 8);
+        StringBuilder sb = new StringBuilder(2 * bytes.length);
+        for (byte b : bytes) {
+            sb.append(HEX_DIGITS[(b >> 4) & 0xf]).append(HEX_DIGITS[b & 0xf]);
         }
 
-        return value;
+        return sb.toString();
     }
 
     @Override
     public int hashCode() {
         if (bits() >= 32) {
-            return toInt();
+            return (bytes[0] & 0xff)
+                    | ((bytes[1] & 0xff) << 8)
+                    | ((bytes[2] & 0xff) << 16)
+                    | ((bytes[3] & 0xff) << 24);
         }
 
         byte[] bytes = toBytes();
@@ -132,21 +122,8 @@ public final class HashCode implements Serializable {
         return MessageDigest.isEqual(bytes, that.bytes);
     }
 
-    /**
-     * Returns a string containing each byte of {@link #toBytes()}, in order, as a two-digit unsigned hexadecimal number
-     * in lower case.
-     *
-     * @return a string
-     */
-    @Nonnull
+    @Override
     public String toString() {
-        byte[] bytes = toBytes();
-
-        StringBuilder sb = new StringBuilder(2 * bytes.length);
-        for (byte b : bytes) {
-            sb.append(HEX_DIGITS[(b >> 4) & 0xf]).append(HEX_DIGITS[b & 0xf]);
-        }
-
-        return sb.toString();
+        return String.format("HashCode {%s}", toHexString());
     }
 }

@@ -13,61 +13,44 @@ package fr.inria.atlanmod.common.hash;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * A test-case that checks the behavior of {@link HashCode}.
  */
 public class HashCodeTest extends AbstractTest {
 
-    private HashCode hash;
-
-    @Before
-    public void setUp() {
-        hash = new HashCode("HashCode0".getBytes(Charset.forName("UTF-8")));
-    }
+    private final static HashCode HASH = new HashCode("HashCode0".getBytes(StandardCharsets.UTF_8));
 
     @Test
     public void testBits() {
-        assertThat(hash.bits()).isEqualTo(72);
+        assertThat(HASH.bits()).isEqualTo(72);
     }
 
     @Test
     public void testToBytes() {
-        assertThat(hash.toBytes()).isEqualTo("HashCode0".getBytes(Charset.forName("UTF-8")));
+        assertThat(HASH.toBytes()).isEqualTo("HashCode0".getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
-    public void testInvalidToInt() {
-        assertThat(catchThrowable(() -> new HashCode(new byte[0]).toInt()))
-                .isExactlyInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    public void testToInt() {
-        assertThat(hash.toInt()).isEqualTo(1752392008);
-    }
-
-    @Test
-    public void testToLong() {
-        assertThat(hash.toLong()).isEqualTo(7306086830807671112L);
-    }
-
-    @Test
-    public void testInvalidToLong() {
-        assertThat(catchThrowable(() -> new HashCode(new byte[0]).toLong()))
-                .isExactlyInstanceOf(IllegalStateException.class);
+    public void testToHexString() {
+        assertThat(HASH.toHexString()).isEqualToIgnoringCase("48617368436f646530");
     }
 
     @Test
     public void testHashCode() {
-        assertThat(hash.hashCode()).isEqualTo(hash.toInt());
+        final byte[] bytes = HASH.toBytes();
+        int hashCode = (bytes[0] & 0xff)
+                | ((bytes[1] & 0xff) << 8)
+                | ((bytes[2] & 0xff) << 16)
+                | ((bytes[3] & 0xff) << 24);
+
+        assertThat(HASH.hashCode()).isEqualTo(hashCode);
 
         HashCode littleHash = new HashCode("HC".getBytes(Charset.forName("UTF-8")));
         assertThat(littleHash.bits()).isLessThan(32);
@@ -77,20 +60,15 @@ public class HashCodeTest extends AbstractTest {
     @Test
     public void testEquals() {
         //noinspection EqualsWithItself,EqualsReplaceableByObjectsCall
-        assertThat(hash.equals(hash)).isTrue();
+        assertThat(HASH.equals(HASH)).isTrue();
 
         //noinspection ObjectEqualsNull,EqualsReplaceableByObjectsCall
-        assertThat(hash.equals(null)).isFalse();
+        assertThat(HASH.equals(null)).isFalse();
 
         //noinspection EqualsReplaceableByObjectsCall
-        assertThat(hash.equals(new HashCode("HashCode0".getBytes(Charset.forName("UTF-8"))))).isTrue();
+        assertThat(HASH.equals(new HashCode("HashCode0".getBytes(Charset.forName("UTF-8"))))).isTrue();
 
         //noinspection EqualsReplaceableByObjectsCall
-        assertThat(hash.equals(new HashCode("HC".getBytes(Charset.forName("UTF-8"))))).isFalse();
-    }
-
-    @Test
-    public void testToString() {
-        assertThat(hash.toString()).isEqualToIgnoringCase("48617368436f646530");
+        assertThat(HASH.equals(new HashCode("HC".getBytes(Charset.forName("UTF-8"))))).isFalse();
     }
 }

@@ -18,8 +18,10 @@ import org.junit.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+
+import javax.annotation.Nonnull;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -28,6 +30,20 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case that checks the behavior of {@link Hasher}s.
  */
 public class HasherTest extends AbstractTest {
+
+    private static final byte[] DATA = "Nantes44000".getBytes(StandardCharsets.UTF_8);
+
+    /**
+     * Calculates the {@link HashCode} of {@link #DATA} with the specified {@code hasher}.
+     *
+     * @param hasher the {@link Hasher} to use
+     *
+     * @return the hashcode
+     */
+    @Nonnull
+    private static HashCode hashWith(Hasher hasher) {
+        return hasher.hash(DATA);
+    }
 
     @Test
     public void testConstructor() throws Exception {
@@ -49,62 +65,35 @@ public class HasherTest extends AbstractTest {
     }
 
     @Test
-    public void testMD5WithBytes() throws Exception {
-        assertThat(Hashers.md5().hash("Nantes".getBytes(Charset.forName("UTF-8"))).toString()).isEqualToIgnoringCase("62ba359fa6b58bea641314e7a4635cf6");
+    public void testMD5() {
+        assertThat(hashWith(Hashers.md5()).toHexString()).isEqualToIgnoringCase("31D0A78B13BFAB69A5ABDDA3D85333A6");
     }
 
     @Test
-    public void testMD5WithInt() throws Exception {
-        assertThat(Hashers.md5().hash(44).toString()).isEqualToIgnoringCase("6ff43a9c893f569f5e21180998ad0db6");
+    public void testSHA1() {
+        assertThat(hashWith(Hashers.sha1()).toHexString()).isEqualToIgnoringCase("88F57BD0C53086269714B07982146A2B95932A2F");
     }
 
     @Test
-    public void testMD5WithLong() throws Exception {
-        assertThat(Hashers.md5().hash(44L).toString()).isEqualToIgnoringCase("dae78b2a1c0493063800e7c3720391a8");
+    public void testSHA256() {
+        assertThat(hashWith(Hashers.sha256()).toHexString()).isEqualToIgnoringCase("6754DB63437F65F5FB29FB76717521B47DE285ADF4630700D44802D9686206D5");
     }
 
     @Test
-    public void testMD5WithString() throws Exception {
-        assertThat(Hashers.md5().hash("Nantes").toString()).isEqualToIgnoringCase("62ba359fa6b58bea641314e7a4635cf6");
+    public void testMurmur32() {
+        // TODO Verify result
+        assertThat(hashWith(Hashers.murmur32()).toHexString()).isEqualToIgnoringCase("bb0589fd");
     }
 
     @Test
-    public void testSHA1WithBytes() throws Exception {
-        assertThat(Hashers.sha1().hash("Nantes".getBytes(Charset.forName("UTF-8"))).toString()).isEqualToIgnoringCase("02e91bece69129f6c1f1dcc4322228cc362906a9");
+    public void testMurmur64() {
+        // TODO Verify result
+        assertThat(hashWith(Hashers.murmur64()).toHexString()).isEqualToIgnoringCase("09da52ee1adca312");
     }
 
     @Test
-    public void testSHA1WithInt() throws Exception {
-        assertThat(Hashers.sha1().hash(44).toString()).isEqualToIgnoringCase("6dd4ac18c5ac5532393ce704782a38e4a566320a");
-    }
-
-    @Test
-    public void testSHA1WithLong() throws Exception {
-        assertThat(Hashers.sha1().hash(44L).toString()).isEqualToIgnoringCase("4ccc3c3702164c936283bb83743bfc8ff483bd66");
-    }
-
-    @Test
-    public void testSHA1WithString() throws Exception {
-        assertThat(Hashers.sha1().hash("Nantes").toString()).isEqualToIgnoringCase("02e91bece69129f6c1f1dcc4322228cc362906a9");
-    }
-
-    @Test
-    public void testSHA256WithBytes() throws Exception {
-        assertThat(Hashers.sha256().hash("Nantes".getBytes(Charset.forName("UTF-8"))).toString()).isEqualToIgnoringCase("1e3c7690b503643635e3a349985281c1c7a85389b843ff7133a4a3d904d2a18a");
-    }
-
-    @Test
-    public void testSHA256WithInt() throws Exception {
-        assertThat(Hashers.sha256().hash(44).toString()).isEqualToIgnoringCase("552d7d672c5bbbccfb210a425e36a1d65bc663d3d3c395114c8ebc9c7cf28394");
-    }
-
-    @Test
-    public void testSHA256WithLong() throws Exception {
-        assertThat(Hashers.sha256().hash(44L).toString()).isEqualToIgnoringCase("45fff65563e17379eda2d9b8669b9a74fa206a5bc89db9464c8552e62ac9059e");
-    }
-
-    @Test
-    public void testSHA256WithString() throws Exception {
-        assertThat(Hashers.sha256().hash("Nantes").toString()).isEqualToIgnoringCase("1e3c7690b503643635e3a349985281c1c7a85389b843ff7133a4a3d904d2a18a");
+    public void testMurmur128() {
+        // TODO Verify result
+        assertThat(hashWith(Hashers.murmur128()).toHexString()).isEqualToIgnoringCase("7c2c6c4a840c5f946e571accb2bfe8cf");
     }
 }

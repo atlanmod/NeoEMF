@@ -24,8 +24,8 @@ public class Murmur64 implements MurmurHasher {
 
     @Nonnull
     @Override
-    public HashCode hash(final byte[] data) {
-        long result = hash(data, DEFAULT_SEED);
+    public HashCode hash(final byte[] bytes) {
+        long result = hash(bytes, DEFAULT_SEED);
 
         byte[] bytesValue = new byte[8];
         for (int i = 7; i >= 0; i--) {
@@ -39,13 +39,13 @@ public class Murmur64 implements MurmurHasher {
     /**
      * Murmur3 64-bit variant. This is essentially MSB 8 bytes of Murmur3 128-bit variant.
      *
-     * @param data the data to hash
-     * @param seed seed
+     * @param bytes the bytes to hash
+     * @param seed  seed
      *
      * @return a 64-bit hashcode
      */
-    private long hash(final byte[] data, final int seed) {
-        final int length = data.length;
+    private long hash(final byte[] bytes, final int seed) {
+        final int length = bytes.length;
         final int nBlocks = length >> 3;
 
         long h = seed;
@@ -53,14 +53,14 @@ public class Murmur64 implements MurmurHasher {
         // Body
         for (int i = 0; i < nBlocks; i++) {
             final int i8 = i << 3;
-            long k = data[i8] & 0xffL
-                    | (data[i8 + 1] & 0xffL) << 8
-                    | (data[i8 + 2] & 0xffL) << 16
-                    | (data[i8 + 3] & 0xffL) << 24
-                    | (data[i8 + 4] & 0xffL) << 32
-                    | (data[i8 + 5] & 0xffL) << 40
-                    | (data[i8 + 6] & 0xffL) << 48
-                    | (data[i8 + 7] & 0xffL) << 56;
+            long k = bytes[i8] & 0xffL
+                    | (bytes[i8 + 1] & 0xffL) << 8
+                    | (bytes[i8 + 2] & 0xffL) << 16
+                    | (bytes[i8 + 3] & 0xffL) << 24
+                    | (bytes[i8 + 4] & 0xffL) << 32
+                    | (bytes[i8 + 5] & 0xffL) << 40
+                    | (bytes[i8 + 6] & 0xffL) << 48
+                    | (bytes[i8 + 7] & 0xffL) << 56;
 
             // Mix functions
             k *= C1_64;
@@ -75,19 +75,19 @@ public class Murmur64 implements MurmurHasher {
         int tailStart = nBlocks << 3;
         switch (length - tailStart) {
             case 7:
-                k1 ^= (data[tailStart + 6] & 0xffL) << 48;
+                k1 ^= (bytes[tailStart + 6] & 0xffL) << 48;
             case 6:
-                k1 ^= (data[tailStart + 5] & 0xffL) << 40;
+                k1 ^= (bytes[tailStart + 5] & 0xffL) << 40;
             case 5:
-                k1 ^= (data[tailStart + 4] & 0xffL) << 32;
+                k1 ^= (bytes[tailStart + 4] & 0xffL) << 32;
             case 4:
-                k1 ^= (data[tailStart + 3] & 0xffL) << 24;
+                k1 ^= (bytes[tailStart + 3] & 0xffL) << 24;
             case 3:
-                k1 ^= (data[tailStart + 2] & 0xffL) << 16;
+                k1 ^= (bytes[tailStart + 2] & 0xffL) << 16;
             case 2:
-                k1 ^= (data[tailStart + 1] & 0xffL) << 8;
+                k1 ^= (bytes[tailStart + 1] & 0xffL) << 8;
             case 1:
-                k1 ^= (data[tailStart] & 0xffL);
+                k1 ^= (bytes[tailStart] & 0xffL);
                 k1 *= C1_64;
                 k1 = Long.rotateLeft(k1, R1_64);
                 k1 *= C2_64;

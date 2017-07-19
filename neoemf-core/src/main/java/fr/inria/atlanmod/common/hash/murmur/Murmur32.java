@@ -24,8 +24,8 @@ public class Murmur32 implements MurmurHasher {
 
     @Nonnull
     @Override
-    public HashCode hash(final byte[] data) {
-        int result = hash(data, DEFAULT_SEED);
+    public HashCode hash(final byte[] bytes) {
+        int result = hash(bytes, DEFAULT_SEED);
 
         byte[] bytesValue = new byte[]{(byte) (result >> 24), (byte) (result >> 16), (byte) (result >> 8), (byte) result};
 
@@ -35,13 +35,13 @@ public class Murmur32 implements MurmurHasher {
     /**
      * Murmur3 32-bit variant.
      *
-     * @param data the data to hash
-     * @param seed seed
+     * @param bytes the bytes to hash
+     * @param seed  seed
      *
      * @return a 32-bit hashcode
      */
-    private int hash(final byte[] data, final int seed) {
-        final int length = data.length;
+    private int hash(final byte[] bytes, final int seed) {
+        final int length = bytes.length;
         final int nBlocks = length >> 2;
 
         int h = seed;
@@ -49,10 +49,10 @@ public class Murmur32 implements MurmurHasher {
         // Body
         for (int i = 0; i < nBlocks; i++) {
             int i4 = i << 2;
-            int k = (data[i4] & 0xff)
-                    | ((data[i4 + 1] & 0xff) << 8)
-                    | ((data[i4 + 2] & 0xff) << 16)
-                    | ((data[i4 + 3] & 0xff) << 24);
+            int k = (bytes[i4] & 0xff)
+                    | ((bytes[i4 + 1] & 0xff) << 8)
+                    | ((bytes[i4 + 2] & 0xff) << 16)
+                    | ((bytes[i4 + 3] & 0xff) << 24);
 
             // Mix functions
             k *= C1_32;
@@ -67,11 +67,11 @@ public class Murmur32 implements MurmurHasher {
         int k1 = 0;
         switch (length - idx) {
             case 3:
-                k1 ^= data[idx + 2] << 16;
+                k1 ^= bytes[idx + 2] << 16;
             case 2:
-                k1 ^= data[idx + 1] << 8;
+                k1 ^= bytes[idx + 1] << 8;
             case 1:
-                k1 ^= data[idx];
+                k1 ^= bytes[idx];
 
                 // Mix functions
                 k1 *= C1_32;

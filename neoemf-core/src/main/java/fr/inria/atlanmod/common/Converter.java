@@ -35,7 +35,7 @@ public interface Converter<A, B> {
      *
      * @return a new converter
      */
-    static <T> Converter<T, T> identify() {
+    static <T> Converter<T, T> identity() {
         return new Converter<T, T>() {
             @Nonnull
             @Override
