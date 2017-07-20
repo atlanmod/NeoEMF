@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.collect;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * Static utility methods related to {@link Iterator} instances.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class MoreIterators {
 

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.common.hash;
 
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.annotation.VisibleForTesting;
 import fr.inria.atlanmod.common.hash.murmur.Murmur128;
 import fr.inria.atlanmod.common.hash.murmur.Murmur32;
@@ -27,6 +28,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * The factory that creates {@link Hasher} instances.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class Hashers {
 

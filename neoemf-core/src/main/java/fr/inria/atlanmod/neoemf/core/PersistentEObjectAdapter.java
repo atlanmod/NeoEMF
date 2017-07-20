@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.log.Log;
@@ -36,6 +37,7 @@ import static java.util.Objects.nonNull;
 /**
  * The factory that adapts {@link Object}s in a specific {@link Class}.
  */
+@Static
 @ParametersAreNonnullByDefault
 final class PersistentEObjectAdapter {
 

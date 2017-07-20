@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
@@ -25,6 +27,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * The factory that creates {@link PersistentResource} instances.
  */
+@Singleton
 @ParametersAreNonnullByDefault
 public class PersistentResourceFactory implements Resource.Factory {
 
@@ -62,6 +65,7 @@ public class PersistentResourceFactory implements Resource.Factory {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
+    @Static
     private static final class Holder {
 
         /**

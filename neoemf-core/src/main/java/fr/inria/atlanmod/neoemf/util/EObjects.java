@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -28,6 +30,7 @@ import static java.util.Objects.nonNull;
 /**
  * Static utility methods related to {@link EObject}s.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class EObjects {
 

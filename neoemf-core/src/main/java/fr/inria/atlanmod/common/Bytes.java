@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +30,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * Static utility methods related to {@code byte} arrays.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class Bytes {
 

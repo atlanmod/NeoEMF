@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,6 +23,7 @@ import static java.util.Objects.isNull;
 /**
  * Static utility methods related to {@link String}.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class Strings {
 

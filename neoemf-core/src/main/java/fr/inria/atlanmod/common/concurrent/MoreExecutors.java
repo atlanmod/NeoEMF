@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.concurrent;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,6 +28,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * Static utility methods related to {@link java.util.concurrent.Executor} instances.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class MoreExecutors {
 

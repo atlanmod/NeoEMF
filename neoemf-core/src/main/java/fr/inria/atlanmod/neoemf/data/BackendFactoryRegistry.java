@@ -12,7 +12,9 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.inject.Singleton;
 
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
@@ -46,6 +48,7 @@ import static java.util.Objects.isNull;
  * @see PersistentResource#load(Map)
  * @see PersistentResource#save(Map)
  */
+@Singleton
 @ParametersAreNonnullByDefault
 public final class BackendFactoryRegistry {
 
@@ -217,6 +220,7 @@ public final class BackendFactoryRegistry {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
+    @Static
     private static final class Holder {
 
         /**

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.common.log;
 
 import fr.inria.atlanmod.common.Strings;
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
 
@@ -29,6 +30,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
  * It also provides static methods for logging without declaring a specific instance. In this case, the
  * {@link #rootLogger()} is used by default.
  */
+@Static
 @ThreadSafe
 @ParametersAreNullableByDefault
 public final class Log {

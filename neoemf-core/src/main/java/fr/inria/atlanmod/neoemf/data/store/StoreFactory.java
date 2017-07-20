@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
@@ -30,6 +32,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * A factory that creates instances of {@link Store}.
  */
+@Singleton
 @ParametersAreNonnullByDefault
 public final class StoreFactory extends AbstractMapperFactory {
 
@@ -129,6 +132,7 @@ public final class StoreFactory extends AbstractMapperFactory {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
+    @Static
     private static final class Holder {
 
         /**

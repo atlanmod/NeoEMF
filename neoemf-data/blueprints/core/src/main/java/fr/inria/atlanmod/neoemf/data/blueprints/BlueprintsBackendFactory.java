@@ -17,6 +17,7 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.neoemf.bind.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -235,6 +236,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
+    @Static
     private static final class Holder {
 
         /**

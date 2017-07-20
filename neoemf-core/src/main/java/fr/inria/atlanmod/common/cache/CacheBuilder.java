@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.cache;
 
+import fr.inria.atlanmod.common.annotation.Builder;
+
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
@@ -25,6 +27,7 @@ import javax.annotation.Nonnull;
  * @param <K> the base key type for {@link Cache}s created by this builder
  * @param <V> the base value type for {@link Cache} created by this builder
  */
+@Builder("builder")
 public interface CacheBuilder<K, V> {
 
     /**

@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.serializer;
 
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -22,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * The factory that creates {@link Serializer} instances that uses the standard Java serialization.
  */
+@Singleton
 @ParametersAreNonnullByDefault
 public final class JavaSerializerFactory implements SerializerFactory {
 
@@ -100,6 +103,7 @@ public final class JavaSerializerFactory implements SerializerFactory {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
+    @Static
     private static final class Holder {
 
         /**

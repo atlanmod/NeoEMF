@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * should almost always do in production). In some circumstances these wasted CPU cycles and allocations can add up to a
  * real problem.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class Preconditions {
 

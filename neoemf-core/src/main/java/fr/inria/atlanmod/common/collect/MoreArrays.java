@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.collect;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Objects;
@@ -27,6 +29,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * Static utility methods related to arrays.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class MoreArrays {
 

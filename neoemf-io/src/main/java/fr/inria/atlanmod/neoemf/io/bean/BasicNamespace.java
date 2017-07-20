@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,6 +110,7 @@ public class BasicNamespace {
     /**
      * Registry of all declared {@link BasicNamespace}.
      */
+    @Singleton
     public static class Registry {
 
         /**
@@ -210,6 +214,7 @@ public class BasicNamespace {
         /**
          * The initialization-on-demand holder of the singleton of this class.
          */
+        @Static
         private static final class Holder {
 
             /**

@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.common.annotation.Builder;
 import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
 import fr.inria.atlanmod.common.concurrent.MoreExecutors;
@@ -50,6 +51,7 @@ import static java.util.Objects.nonNull;
 /**
  * A static utility class for binding, across reflection.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class Bindings {
 

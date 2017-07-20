@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -32,6 +35,7 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 /**
  * A utility class that manages external resources for I/O tests.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class IOResourceManager {
 
@@ -47,7 +51,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI xmiStandard() {
-        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleStandard.xmi");
+        return ResourceLoader.getInstance().getUri("/xmi/sampleStandard.xmi");
     }
 
     /**
@@ -57,7 +61,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI xmiWithId() {
-        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleWithId.xmi");
+        return ResourceLoader.getInstance().getUri("/xmi/sampleWithId.xmi");
     }
 
     /**
@@ -67,7 +71,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI zxmiStandard() {
-        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleStandard.zxmi");
+        return ResourceLoader.getInstance().getUri("/xmi/sampleStandard.zxmi");
     }
 
     /**
@@ -77,7 +81,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI zxmiWithId() {
-        return ResourceLoader.Holder.INSTANCE.getUri("/xmi/sampleWithId.zxmi");
+        return ResourceLoader.getInstance().getUri("/xmi/sampleWithId.zxmi");
     }
 
     /**
@@ -96,7 +100,7 @@ public final class IOResourceManager {
         final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
         rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        Resource r = rs.getResource(ResourceLoader.Holder.INSTANCE.getUri("/ecore/" + prefix + ".ecore"), true);
+        Resource r = rs.getResource(ResourceLoader.getInstance().getUri("/ecore/" + prefix + ".ecore"), true);
 
         EObject eObject = r.getContents().get(0);
         if (EPackage.class.isInstance(eObject)) {
@@ -110,7 +114,13 @@ public final class IOResourceManager {
      *
      * @see Class#getResource(String)
      */
+    @Singleton
     private static final class ResourceLoader {
+
+        @SuppressWarnings("JavaDoc")
+        public static ResourceLoader getInstance() {
+            return Holder.INSTANCE;
+        }
 
         /**
          * Retrieves the resource with the given {@code name}.
@@ -143,6 +153,7 @@ public final class IOResourceManager {
         /**
          * The initialization-on-demand holder of the singleton of this class.
          */
+        @Static
         private static final class Holder {
 
             /**

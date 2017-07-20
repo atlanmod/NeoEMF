@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.common.annotation.Static;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
@@ -25,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * The factory that creates {@link PersistentEObject} instances from {@link EClass}es.
  */
+@Singleton
 @ParametersAreNonnullByDefault
 public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
@@ -80,6 +84,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
+    @Static
     private static final class Holder {
 
         /**

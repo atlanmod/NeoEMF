@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.collect;
 
+import fr.inria.atlanmod.common.annotation.Static;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -26,6 +28,7 @@ import static java.util.Objects.isNull;
 /**
  * Static utility methods related to {@link Iterable} instances.
  */
+@Static
 @ParametersAreNonnullByDefault
 public final class MoreIterables {
 
