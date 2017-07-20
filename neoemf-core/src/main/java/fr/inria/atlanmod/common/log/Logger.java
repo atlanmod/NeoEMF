@@ -31,11 +31,6 @@ import javax.annotation.concurrent.ThreadSafe;
 public interface Logger {
 
     /**
-     * The name of the root {@link Logger}.
-     */
-    String ROOT_LOGGER_NAME = "";
-
-    /**
      * Logs a message at the {@link Level#TRACE TRACE} level.
      *
      * @param message the message to log

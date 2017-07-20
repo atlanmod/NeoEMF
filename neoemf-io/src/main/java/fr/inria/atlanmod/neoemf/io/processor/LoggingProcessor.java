@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.common.log.Logger;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
@@ -72,7 +73,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     public void onAttribute(BasicAttribute attribute) {
         LOG.info("[A]    {0}{1} = {2}",
                 attribute.name(),
-                attribute.isMany() ? " many[" + attribute.index() + "]" : "",
+                attribute.isMany() ? " many[" + attribute.index() + ']' : Strings.EMPTY,
                 attribute.value());
 
         notifyAttribute(attribute);
@@ -82,9 +83,9 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     public void onReference(BasicReference reference) {
         LOG.info("[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
-                reference.isMany() ? " many[" + reference.index() + "]" : "",
+                reference.isMany() ? " many[" + reference.index() + ']' : Strings.EMPTY,
                 Objects.isNull(reference.id()) ? "this" : reference.id(),
-                reference.isContainment() ? "C" : "-",
+                reference.isContainment() ? 'C' : '-',
                 Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
 
         notifyReference(reference);

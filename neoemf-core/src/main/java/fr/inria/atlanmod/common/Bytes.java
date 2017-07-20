@@ -32,6 +32,27 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 public final class Bytes {
 
     /**
+     * The value 0.
+     *
+     * @see Boolean#FALSE
+     */
+    private static final byte ZERO = 0;
+
+    /**
+     * The value 1.
+     *
+     * @see Boolean#TRUE
+     */
+    private static final byte ONE = 1;
+
+    /**
+     * The valid hexadecimal values.
+     *
+     * @see #toStringBinary(byte[])
+     */
+    private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
+
+    /**
      * This class should not be instantiated.
      *
      * @throws IllegalStateException every time
@@ -49,7 +70,7 @@ public final class Bytes {
      */
     @Nonnull
     public static byte[] toBytes(final boolean value) {
-        return new byte[]{(byte) (value ? 1 : 0)};
+        return new byte[]{value ? ONE : ZERO};
     }
 
     /**
@@ -58,6 +79,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Boolean value) {
@@ -72,12 +95,15 @@ public final class Bytes {
      * @param bytes the {@code byte} array to decode
      *
      * @return a {@code boolean}
+     *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@code 1}
      */
     public static boolean toBoolean(final byte[] bytes) {
         checkNotNull(bytes);
         checkArgument(bytes.length == 1, "Array has wrong size: %d", bytes.length);
 
-        return bytes[0] != (byte) 0;
+        return bytes[0] != ZERO;
     }
 
     /**
@@ -91,8 +117,10 @@ public final class Bytes {
     public static byte[] toBytes(final short value) {
         byte[] bytes = new byte[Short.BYTES];
 
-        bytes[0] = (byte) (value >> 8);
-        bytes[1] = (byte) (value);
+        final int lenght = Short.BYTES - 1;
+        for (int i = lenght; i >= 0; i--) {
+            bytes[i] = (byte) (value >> Byte.SIZE * (lenght - i));
+        }
 
         return bytes;
     }
@@ -103,6 +131,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Short value) {
@@ -117,6 +147,9 @@ public final class Bytes {
      * @param bytes the {@code byte} array to decode
      *
      * @return a {@code short}
+     *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@link Short#BYTES}
      */
     public static short toShort(final byte[] bytes) {
         checkNotNull(bytes);
@@ -124,8 +157,10 @@ public final class Bytes {
 
         short value = 0;
 
-        value |= (bytes[0] & 0xff) << 8;
-        value |= (bytes[1] & 0xff);
+        final int lenght = Short.BYTES - 1;
+        for (int i = lenght; i >= 0; i--) {
+            value |= (bytes[i] & 0xff) << Byte.SIZE * (lenght - i);
+        }
 
         return value;
     }
@@ -137,6 +172,7 @@ public final class Bytes {
      *
      * @return a {@code byte} array
      *
+     * @throws NullPointerException if the {@code value} is {@code null}
      * @see #toBytes(short)
      */
     @Nonnull
@@ -151,6 +187,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Character value) {
@@ -166,6 +204,8 @@ public final class Bytes {
      *
      * @return a {@code char}
      *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@link Character#BYTES}
      * @see #toShort(byte[])
      */
     public static char toChar(final byte[] bytes) {
@@ -184,10 +224,10 @@ public final class Bytes {
     public static byte[] toBytes(final int value) {
         byte[] bytes = new byte[Integer.BYTES];
 
-        bytes[0] = (byte) (value >> 24);
-        bytes[1] = (byte) (value >> 16);
-        bytes[2] = (byte) (value >> 8);
-        bytes[3] = (byte) (value);
+        final int lenght = Integer.BYTES - 1;
+        for (int i = lenght; i >= 0; i--) {
+            bytes[i] = (byte) (value >> Byte.SIZE * (lenght - i));
+        }
 
         return bytes;
     }
@@ -198,6 +238,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Integer value) {
@@ -212,6 +254,9 @@ public final class Bytes {
      * @param bytes the {@code byte} array to decode
      *
      * @return an {@code int}
+     *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@link Integer#BYTES}
      */
     public static int toInt(final byte[] bytes) {
         checkNotNull(bytes);
@@ -219,10 +264,10 @@ public final class Bytes {
 
         int value = 0;
 
-        value |= (bytes[0] & 0xff) << 24;
-        value |= (bytes[1] & 0xff) << 16;
-        value |= (bytes[2] & 0xff) << 8;
-        value |= (bytes[3] & 0xff);
+        final int lenght = Integer.BYTES - 1;
+        for (int i = lenght; i >= 0; i--) {
+            value |= (bytes[i] & 0xff) << Byte.SIZE * (lenght - i);
+        }
 
         return value;
     }
@@ -238,14 +283,10 @@ public final class Bytes {
     public static byte[] toBytes(final long value) {
         byte[] bytes = new byte[Long.BYTES];
 
-        bytes[0] = (byte) (value >> 56);
-        bytes[1] = (byte) (value >> 48);
-        bytes[2] = (byte) (value >> 40);
-        bytes[3] = (byte) (value >> 32);
-        bytes[4] = (byte) (value >> 24);
-        bytes[5] = (byte) (value >> 16);
-        bytes[6] = (byte) (value >> 8);
-        bytes[7] = (byte) (value);
+        final int lenght = Long.BYTES - 1;
+        for (int i = lenght; i >= 0; i--) {
+            bytes[i] = (byte) (value >> Byte.SIZE * (lenght - i));
+        }
 
         return bytes;
     }
@@ -256,6 +297,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Long value) {
@@ -270,6 +313,9 @@ public final class Bytes {
      * @param bytes the {@code byte} array to decode
      *
      * @return a {@code long}
+     *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@link Long#BYTES}
      */
     public static long toLong(final byte[] bytes) {
         checkNotNull(bytes);
@@ -277,14 +323,10 @@ public final class Bytes {
 
         long value = 0L;
 
-        value |= (bytes[0] & 0xffL) << 56;
-        value |= (bytes[1] & 0xffL) << 48;
-        value |= (bytes[2] & 0xffL) << 40;
-        value |= (bytes[3] & 0xffL) << 32;
-        value |= (bytes[4] & 0xffL) << 24;
-        value |= (bytes[5] & 0xffL) << 16;
-        value |= (bytes[6] & 0xffL) << 8;
-        value |= (bytes[7] & 0xffL);
+        final int lenght = Long.BYTES - 1;
+        for (int i = lenght; i >= 0; i--) {
+            value |= (bytes[i] & 0xffL) << Byte.SIZE * (lenght - i);
+        }
 
         return value;
     }
@@ -311,6 +353,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Float value) {
@@ -326,6 +370,8 @@ public final class Bytes {
      *
      * @return a {@code float}
      *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@link Float#BYTES}
      * @see #toInt(byte[])
      * @see Float#intBitsToFloat(int)
      */
@@ -358,6 +404,8 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException if the {@code value} is {@code null}
      */
     @Nonnull
     public static byte[] toBytes(final Double value) {
@@ -373,6 +421,8 @@ public final class Bytes {
      *
      * @return a {@code double}
      *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if the {@code bytes.length} is different from {@link Double#BYTES}
      * @see #toLong(byte[])
      * @see Double#longBitsToDouble(long)
      */
@@ -389,6 +439,9 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException     if the {@code value} is {@code null}
+     * @throws IllegalArgumentException if {@link StandardCharsets#UTF_8} is not a supported encoding
      */
     @Nonnull
     public static byte[] toBytes(final String value) {
@@ -398,6 +451,7 @@ public final class Bytes {
             return value.getBytes(StandardCharsets.UTF_8);
         }
         catch (UnsupportedCharsetException e) {
+            // Should never happen
             throw new IllegalArgumentException(e);
         }
     }
@@ -408,6 +462,9 @@ public final class Bytes {
      * @param bytes the {@code byte} array to decode
      *
      * @return a {@link String}
+     *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if {@link StandardCharsets#UTF_8} is not a supported encoding
      */
     @Nonnull
     public static String toString(final byte[] bytes) {
@@ -417,8 +474,83 @@ public final class Bytes {
             return new String(bytes, StandardCharsets.UTF_8);
         }
         catch (UnsupportedCharsetException e) {
+            // Should never happen
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * Encodes a {@link String} to a {@code byte} array, where each {@code byte} is represented as a two-digit
+     * unsigned hexadecimal number in lower case.
+     *
+     * @param value the value to encode
+     *
+     * @return a {@code byte} array
+     *
+     * @throws NullPointerException     if the {@code value} is {@code null}
+     * @throws IllegalArgumentException if the {@link String#length() length} of the {@code value} is not even.
+     * @see #toStringBinary(byte[])
+     */
+    @Nonnull
+    public static byte[] toBytesBinary(final String value) {
+        checkNotNull(value);
+        checkArgument(value.length() % 2 == 0);
+
+        byte[] bytes = new byte[value.length() / 2];
+
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) ((toHexDigit(value.charAt(i * 2)) << 4) + toHexDigit(value.charAt(i * 2 + 1)));
+        }
+
+        return bytes;
+    }
+
+    /**
+     * Retrieves the digit of the given hexadecimal {@code char}.
+     *
+     * @param c the character to look for
+     *
+     * @return the digit
+     *
+     * @throws IllegalArgumentException if the {@code char} is not an hex digit
+     */
+    private static int toHexDigit(char c) {
+        if (c >= '0' && c <= '9') {
+            return c - '0';
+        }
+
+        char lower = Character.toLowerCase(c);
+        if (lower >= 'a' && lower <= 'f') {
+            return lower - 'a' + 10;
+        }
+
+        throw new IllegalArgumentException(String.format("Unexpected hex digit: %c", c));
+    }
+
+    /**
+     * Decodes a {@code byte} array to a {@link String} that contains each byte, in order, as a two-digit unsigned
+     * hexadecimal number in lower case.
+     *
+     * @param bytes the {@code byte} array to decode
+     *
+     * @return a {@link String}
+     *
+     * @throws NullPointerException if the {@code bytes} is {@code null}
+     * @see #toBytesBinary(String)
+     */
+    @Nonnull
+    public static String toStringBinary(final byte[] bytes) {
+        checkNotNull(bytes);
+
+        char[] result = new char[bytes.length * 2];
+
+        int i = 0;
+        for (byte b : bytes) {
+            result[i++] = HEX_DIGITS[b >> 4 & 0xf];
+            result[i++] = HEX_DIGITS[b & 0xf];
+        }
+
+        return new String(result);
     }
 
     /**
@@ -427,6 +559,9 @@ public final class Bytes {
      * @param value the value to encode
      *
      * @return a {@code byte} array
+     *
+     * @throws NullPointerException     if the {@code value} is {@code null}
+     * @throws IllegalArgumentException if an error occurs during the encoding
      */
     @Nonnull
     public static <T> byte[] toBytes(final T value) {
@@ -448,6 +583,9 @@ public final class Bytes {
      * @param bytes the {@code byte} array to decode
      *
      * @return an {@link Object}
+     *
+     * @throws NullPointerException     if the {@code bytes} is {@code null}
+     * @throws IllegalArgumentException if an error occurs during the decoding
      */
     @Nonnull
     @SuppressWarnings("unchecked")

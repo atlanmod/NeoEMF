@@ -306,7 +306,7 @@ public final class CacheStats {
                         + "Hit = %d (%.2f%%), "
                         + "Miss = %d (%.2f%%), "
                         + "Eviction Count = %d"
-                        + "}",
+                        + '}',
                 hitCount(),
                 hitRate(),
                 missCount(),

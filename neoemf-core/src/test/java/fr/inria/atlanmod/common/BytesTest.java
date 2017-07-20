@@ -163,4 +163,18 @@ public class BytesTest {
     public void bytesToObject() {
         // TODO
     }
+
+    @Test
+    public void stringToBytesBinaryAndReverse() {
+        String expected0 = "NeoEMFisAwesome!";
+        byte[] bytes = Bytes.toBytes(expected0);
+
+        String actual0 = Bytes.toStringBinary(bytes);
+        assertThat(actual0).isEqualTo("4e656f454d466973417765736f6d6521");
+
+        byte[] actualBytes0 = Bytes.toBytesBinary(actual0);
+        assertThat(actualBytes0).contains(bytes);
+
+        assertThat(Bytes.toString(actualBytes0)).isEqualTo(expected0);
+    }
 }

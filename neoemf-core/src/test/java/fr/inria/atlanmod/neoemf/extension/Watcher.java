@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.common.log.Logger;
 
@@ -38,11 +39,6 @@ public class Watcher extends org.junit.rules.TestWatcher {
      * The special logger without timestamp and level.
      */
     private static final Logger LOG_VOID = Log.customLogger("void");
-
-    /**
-     * An empty message.
-     */
-    private static final String NO_MESSAGE = "";
 
     /**
      * The message to display a running test.
@@ -84,7 +80,7 @@ public class Watcher extends org.junit.rules.TestWatcher {
                     .filter(s -> nonNull(s) && !s.isEmpty())
                     .forEach(LOG_TEST::warn);
 
-            LOG_TEST.warn(NO_MESSAGE);
+            LOG_TEST.warn(Strings.EMPTY);
             LOG_TEST.warn(MESSAGE_FAILURE);
         }
         else {
@@ -95,7 +91,7 @@ public class Watcher extends org.junit.rules.TestWatcher {
                     : Collections.singletonList(e))
                     .forEach(LOG_VOID::error);
 
-            LOG_VOID.error(NO_MESSAGE);
+            LOG_VOID.error(Strings.EMPTY);
         }
     }
 
@@ -111,12 +107,12 @@ public class Watcher extends org.junit.rules.TestWatcher {
 
     @Override
     protected void starting(Description description) {
-        LOG_VOID.info(NO_MESSAGE);
+        LOG_VOID.info(Strings.EMPTY);
         LOG_TEST.info(MESSAGE_RUNNING + ": {0}", description.getMethodName());
     }
 
     @Override
     protected void finished(Description description) {
-        LOG_VOID.info(NO_MESSAGE);
+        LOG_VOID.info(Strings.EMPTY);
     }
 }

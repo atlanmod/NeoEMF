@@ -80,7 +80,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
             return BackendConfiguration.load(configFile);
         }
         catch (IOException e) {
-            throw new IllegalStateException(e); // Should not happen
+            throw new IllegalStateException(e); // Should never happen
         }
     }
 

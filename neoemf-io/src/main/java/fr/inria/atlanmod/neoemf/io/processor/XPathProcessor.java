@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
@@ -187,7 +188,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
          * It does not represent the root node path.
          */
         @Nonnull
-        private final XPathNode root = new XPathNode("");
+        private final XPathNode root = new XPathNode(Strings.EMPTY);
 
         /**
          * A LIFO that holds the current XPath.
@@ -215,7 +216,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
                 str.append(node.name()).append(XPathConstants.INDEX_SEPARATOR).append(node.index());
                 first = false;
             }
-            str.append(first ? "" : XPathConstants.START_ELT).append(name);
+            str.append(first ? Strings.EMPTY : XPathConstants.START_ELT).append(name);
             return str.toString();
         }
 
@@ -338,7 +339,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
             public XPathNode child(String id) {
                 XPathNode child = children.get(id);
                 if (isNull(child)) {
-                    throw new NoSuchElementException("No such element '" + id + "' in the element '" + this.name + "'");
+                    throw new NoSuchElementException("No such element '" + id + "' in the element '" + this.name + '\'');
                 }
                 return child;
             }

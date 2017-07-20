@@ -101,7 +101,7 @@ public class BasicNamespace {
 
     @Override
     public String toString() {
-        return prefix + "@" + uri;
+        return prefix + '@' + uri;
     }
 
     /**

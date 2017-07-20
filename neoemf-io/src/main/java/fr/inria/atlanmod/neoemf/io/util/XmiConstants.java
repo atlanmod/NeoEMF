@@ -49,7 +49,7 @@ public interface XmiConstants extends XmlConstants {
     /**
      * The attribute key representing the metaclass of an element.
      */
-    String XMI_XSI_TYPE = XmlConstants.format("(" + XMI_NS + "|" + XSI_NS + ")", TYPE);
+    String XMI_XSI_TYPE = XmlConstants.format('(' + XMI_NS + '|' + XSI_NS + ')', TYPE);
 
     /**
      * The attribute key representing the version of the parsed XMI file.

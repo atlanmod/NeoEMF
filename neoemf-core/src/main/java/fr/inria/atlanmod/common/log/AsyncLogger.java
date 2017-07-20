@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.common.log;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,12 +34,6 @@ import javax.annotation.concurrent.ThreadSafe;
 @Immutable
 @ParametersAreNonnullByDefault
 class AsyncLogger implements Logger {
-
-    /**
-     * An empty message.
-     */
-    @Nonnull
-    private static final String NO_MESSAGE = "";
 
     /**
      * The concurrent pool.
@@ -72,7 +67,7 @@ class AsyncLogger implements Logger {
             try {
                 String formattedMessage = Optional.ofNullable(message)
                         .map(m -> MessageFormat.format(m.toString(), params))
-                        .orElse(NO_MESSAGE);
+                        .orElse(Strings.EMPTY);
 
                 logger.log(level.level(), formattedMessage, e);
             }

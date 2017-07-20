@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.annotation.VisibleForReflection;
 import fr.inria.atlanmod.common.log.Level;
 import fr.inria.atlanmod.common.log.Log;
@@ -73,7 +74,7 @@ public class LoggingStore extends AbstractStore {
         super(store);
         this.level = level;
 
-        this.log = Log.customLogger(backend().getClass().getSimpleName() + "@" + backend().hashCode());
+        this.log = Log.customLogger(backend().getClass().getSimpleName() + '@' + backend().hashCode());
     }
 
     @Nonnull
@@ -417,7 +418,7 @@ public class LoggingStore extends AbstractStore {
      * @param result the result of the call
      */
     private void logSuccess(Object key, @Nullable Object value, @Nullable Object result) {
-        log.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + (nonNull(result) ? " = {3}" : ""), getCallingMethod(), key, value, result);
+        log.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : Strings.EMPTY) + (nonNull(result) ? " = {3}" : Strings.EMPTY), getCallingMethod(), key, value, result);
     }
 
     /**
@@ -428,7 +429,7 @@ public class LoggingStore extends AbstractStore {
      * @param e     the exception thrown during the the call
      */
     private void logFailure(Object key, @Nullable Object value, Throwable e) {
-        log.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : "") + " but failed with {3}", getCallingMethod(), key, value, e.getClass().getSimpleName());
+        log.log(level, "Called {0}() for {1}" + (nonNull(value) ? " with {2}" : Strings.EMPTY) + " but failed with {3}", getCallingMethod(), key, value, e.getClass().getSimpleName());
     }
 
     /**

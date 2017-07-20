@@ -74,7 +74,7 @@ public class CacheTest extends AbstractTest {
     @Test
     public void testGetWithFunction() {
         String prefix = "Value";
-        String value0 = prefix + "0";
+        String value0 = prefix + '0';
 
         assertThat(cache.get(0)).isNull();
         assertThat(cache.size()).isEqualTo(0);

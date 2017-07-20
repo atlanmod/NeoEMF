@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.common.Converter;
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceWith;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link HBaseBackend} that use a {@link ManyValueWithArrays} mapping for storing attributes and
@@ -57,8 +58,8 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements Referenc
      */
     @Nonnull
     private static final Converter<List<Id>, String> MANY_CONVERTER = Converter.from(
-            rs -> rs.stream().map(r -> isNull(r) ? "" : SINGLE_CONVERTER.doForward(r)).collect(Collectors.joining(DELIMITER)),
-            r -> Arrays.stream(r.split(DELIMITER)).map(rs -> rs.isEmpty() ? null : SINGLE_CONVERTER.doBackward(rs)).collect(Collectors.toList()));
+            rs -> rs.stream().map(r -> nonNull(r) ? SINGLE_CONVERTER.doForward(r) : null).map(Strings::nullToEmpty).collect(Collectors.joining(DELIMITER)),
+            r -> Arrays.stream(r.split(DELIMITER)).map(Strings::emptyToNull).map(SINGLE_CONVERTER::doBackward).collect(Collectors.toList()));
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on th given {@code table}.

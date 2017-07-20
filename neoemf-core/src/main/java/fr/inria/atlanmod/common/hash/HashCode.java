@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.hash;
 
+import fr.inria.atlanmod.common.Bytes;
+
 import java.io.Serializable;
 import java.security.MessageDigest;
 
@@ -31,13 +33,6 @@ public final class HashCode implements Serializable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -576482022539994714L;
-
-    /**
-     * The valid hexadecimal values.
-     *
-     * @see #toHexString()
-     */
-    private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
 
     /**
      * The bytes representation of this hash code.
@@ -78,17 +73,12 @@ public final class HashCode implements Serializable {
      * in lower case.
      *
      * @return a string
+     *
+     * @see Bytes#toStringBinary(byte[])
      */
     @Nonnull
     public String toHexString() {
-        byte[] bytes = toBytes();
-
-        StringBuilder sb = new StringBuilder(2 * bytes.length);
-        for (byte b : bytes) {
-            sb.append(HEX_DIGITS[(b >> 4) & 0xf]).append(HEX_DIGITS[b & 0xf]);
-        }
-
-        return sb.toString();
+        return Bytes.toStringBinary(bytes);
     }
 
     @Override

@@ -55,7 +55,7 @@ public final class Hashers {
     }
 
     /**
-     * Returns a {@link Hasher} that uses the {@code MD5} algorithm.
+     * Returns a {@link Hasher} that uses the {@code MD5} algorithm (128 bits).
      *
      * @return a new {@link Hasher}
      */
@@ -65,7 +65,7 @@ public final class Hashers {
     }
 
     /**
-     * Returns a {@link Hasher} that uses the {@code SHA-1} algorithm.
+     * Returns a {@link Hasher} that uses the {@code SHA-1} algorithm (160 bits).
      *
      * @return a new {@link Hasher}
      */
@@ -75,7 +75,7 @@ public final class Hashers {
     }
 
     /**
-     * Returns a {@link Hasher} that uses the {@code SHA-256} algorithm.
+     * Returns a {@link Hasher} that uses the {@code SHA-256} algorithm (256 bits).
      *
      * @return a new {@link Hasher}
      */
@@ -85,7 +85,7 @@ public final class Hashers {
     }
 
     /**
-     * Returns a {@link Hasher} that uses the {@code Murmur 32-bit} algorithm.
+     * Returns a {@link Hasher} that uses the {@code Murmur 32-bit} algorithm (32 bits).
      *
      * @return a new {@link Hasher}
      */
@@ -95,7 +95,7 @@ public final class Hashers {
     }
 
     /**
-     * Returns a {@link Hasher} that uses the {@code Murmur 64-bit} algorithm.
+     * Returns a {@link Hasher} that uses the {@code Murmur 64-bit} algorithm (64 bits).
      *
      * @return a new {@link Hasher}
      */
@@ -105,7 +105,7 @@ public final class Hashers {
     }
 
     /**
-     * Returns a {@link Hasher} that uses the {@code Murmur 128-bit} algorithm.
+     * Returns a {@link Hasher} that uses the {@code Murmur 128-bit} algorithm (128 bits).
      *
      * @return a new {@link Hasher}
      */

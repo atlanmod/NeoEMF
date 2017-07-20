@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
@@ -132,7 +133,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
                     BasicNamespace.Registry.getInstance().getFromUri(referenceType.getEPackage().getNsURI()),
                     referenceType.getName());
 
-            Arrays.stream(reference.idReference().value().split(" "))
+            Arrays.stream(reference.idReference().value().split(Strings.SPACE))
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .map(s -> {

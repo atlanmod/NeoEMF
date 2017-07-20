@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.common.Strings;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -80,6 +82,6 @@ public interface XmlConstants {
     static String format(@Nullable String prefix, String value) {
         checkNotNull(value);
 
-        return (isNull(prefix) ? "" : prefix + ':') + value;
+        return (isNull(prefix) ? Strings.EMPTY : prefix + ':') + value;
     }
 }

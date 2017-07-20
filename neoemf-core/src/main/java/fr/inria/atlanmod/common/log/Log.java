@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.common.log;
 
+import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
 
@@ -58,7 +59,7 @@ public final class Log {
      */
     @Nonnull
     public static Logger rootLogger() {
-        return customLogger(Logger.ROOT_LOGGER_NAME);
+        return customLogger(Strings.EMPTY);
     }
 
     /**
