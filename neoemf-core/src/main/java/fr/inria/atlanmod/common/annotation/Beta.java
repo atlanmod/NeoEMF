@@ -26,5 +26,5 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 @Retention(SOURCE)
 @Target({TYPE, METHOD})
-public @interface Experimental {
+public @interface Beta {
 }

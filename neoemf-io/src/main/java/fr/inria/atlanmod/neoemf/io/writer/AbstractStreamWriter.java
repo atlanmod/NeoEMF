@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.common.annotation.Experimental;
+import fr.inria.atlanmod.common.annotation.Beta;
 import fr.inria.atlanmod.common.log.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A abstract {@link StreamWriter}.
  */
-@Experimental
+@Beta
 @ParametersAreNonnullByDefault
 public abstract class AbstractStreamWriter implements StreamWriter {
 

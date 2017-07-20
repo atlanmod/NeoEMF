@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.inject.Singleton;
-
+import fr.inria.atlanmod.common.annotation.Singleton;
 import fr.inria.atlanmod.common.annotation.Static;
+import fr.inria.atlanmod.common.annotation.VisibleForTesting;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;

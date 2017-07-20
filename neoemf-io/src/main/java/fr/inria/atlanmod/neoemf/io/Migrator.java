@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.common.annotation.Experimental;
+import fr.inria.atlanmod.common.annotation.Beta;
 import fr.inria.atlanmod.common.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
@@ -230,7 +230,7 @@ public final class Migrator<T> {
      * @throws IOException if an I/O error occurs during the creation
      */
     @Nonnull
-    @Experimental
+    @Beta
     public Migrator<T> toZXmi(File file) throws IOException {
         ZipOutputStream output = new ZipOutputStream(new FileOutputStream(file));
         output.putNextEntry(new ZipEntry(ZXMI_CONTENT));
@@ -247,7 +247,7 @@ public final class Migrator<T> {
      * @throws IOException if an I/O error occurs during the creation
      */
     @Nonnull
-    @Experimental
+    @Beta
     public Migrator<T> toXmi(File file) throws IOException {
         return toXmi(new FileOutputStream(file));
     }
@@ -264,7 +264,7 @@ public final class Migrator<T> {
      * @return this migrator (for chaining)
      */
     @Nonnull
-    @Experimental
+    @Beta
     public Migrator<T> toXmi(OutputStream stream) {
         return to(new XmiStreamWriter(stream));
     }

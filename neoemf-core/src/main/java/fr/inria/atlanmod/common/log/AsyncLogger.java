@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.common.log;
 
-import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.concurrent.MoreExecutors;
+import fr.inria.atlanmod.common.primitive.Strings;
 
 import org.apache.logging.log4j.LogManager;
 

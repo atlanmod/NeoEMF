@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.common;
+package fr.inria.atlanmod.common.primitive;
 
 import org.junit.Test;
 
@@ -26,26 +26,26 @@ public class BytesTest {
     public void booleanToBytes() {
         final byte zero = 0;
 
-        byte[] actual0 = Bytes.toBytes(Boolean.TRUE);
+        byte[] actual0 = Booleans.toBytes(Boolean.TRUE);
         assertThat(actual0[0]).isNotEqualTo(zero);
 
-        byte[] actual1 = Bytes.toBytes(Boolean.FALSE);
+        byte[] actual1 = Booleans.toBytes(Boolean.FALSE);
         assertThat(actual1[0]).isEqualTo(zero);
     }
 
     @Test
     public void bytesToBoolean() {
-        boolean actual0 = Bytes.toBoolean(Bytes.toBytes(Boolean.TRUE));
+        boolean actual0 = Bytes.toBoolean(Booleans.toBytes(Boolean.TRUE));
         assertThat(actual0).isTrue();
 
-        boolean actual1 = Bytes.toBoolean(Bytes.toBytes(Boolean.FALSE));
+        boolean actual1 = Bytes.toBoolean(Booleans.toBytes(Boolean.FALSE));
         assertThat(actual1).isFalse();
     }
 
     @Test
     public void shortToBytes() {
         final Short short0 = 28433;
-        byte[] actual0 = Bytes.toBytes(short0);
+        byte[] actual0 = Shorts.toBytes(short0);
         byte[] expected0 = ByteBuffer.allocate(Short.BYTES).putShort(short0).array();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -61,7 +61,7 @@ public class BytesTest {
     @Test
     public void charToBytes() {
         final Character chart0 = 'N';
-        byte[] actual0 = Bytes.toBytes(chart0);
+        byte[] actual0 = Chars.toBytes(chart0);
         byte[] expected0 = ByteBuffer.allocate(Character.BYTES).putChar(chart0).array();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -77,7 +77,7 @@ public class BytesTest {
     @Test
     public void intToBytes() {
         final Integer int0 = 1654125381;
-        byte[] actual0 = Bytes.toBytes(int0);
+        byte[] actual0 = Ints.toBytes(int0);
         byte[] expected0 = ByteBuffer.allocate(Integer.BYTES).putInt(int0).array();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -93,7 +93,7 @@ public class BytesTest {
     @Test
     public void longToBytes() {
         final Long long0 = 1354566516474223156L;
-        byte[] actual0 = Bytes.toBytes(long0);
+        byte[] actual0 = Longs.toBytes(long0);
         byte[] expected0 = ByteBuffer.allocate(Long.BYTES).putLong(long0).array();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -109,7 +109,7 @@ public class BytesTest {
     @Test
     public void floatToBytes() {
         final Float float0 = 139895433915.09579569E18f;
-        byte[] actual0 = Bytes.toBytes(float0);
+        byte[] actual0 = Floats.toBytes(float0);
         byte[] expected0 = ByteBuffer.allocate(Float.BYTES).putFloat(float0).array();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -125,7 +125,7 @@ public class BytesTest {
     @Test
     public void doubleToBytes() {
         final Double double0 = 19876412.08910810486479E196;
-        byte[] actual0 = Bytes.toBytes(double0);
+        byte[] actual0 = Doubles.toBytes(double0);
         byte[] expected0 = ByteBuffer.allocate(Double.BYTES).putDouble(double0).array();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -141,7 +141,7 @@ public class BytesTest {
     @Test
     public void stringToBytes() {
         final String string0 = "NeoEMFisAwesome!";
-        byte[] actual0 = Bytes.toBytes(string0);
+        byte[] actual0 = Strings.toBytes(string0);
         byte[] expected0 = string0.getBytes();
         assertThat(actual0).containsExactly(expected0);
     }
@@ -167,12 +167,12 @@ public class BytesTest {
     @Test
     public void stringToBytesBinaryAndReverse() {
         String expected0 = "NeoEMFisAwesome!";
-        byte[] bytes = Bytes.toBytes(expected0);
+        byte[] bytes = Strings.toBytes(expected0);
 
         String actual0 = Bytes.toStringBinary(bytes);
         assertThat(actual0).isEqualTo("4e656f454d466973417765736f6d6521");
 
-        byte[] actualBytes0 = Bytes.toBytesBinary(actual0);
+        byte[] actualBytes0 = Strings.toBytesBinary(actual0);
         assertThat(actualBytes0).contains(bytes);
 
         assertThat(Bytes.toString(actualBytes0)).isEqualTo(expected0);

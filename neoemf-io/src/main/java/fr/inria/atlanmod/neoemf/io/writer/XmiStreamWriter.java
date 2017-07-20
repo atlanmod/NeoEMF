@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.common.annotation.Experimental;
+import fr.inria.atlanmod.common.annotation.Beta;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
@@ -34,7 +34,7 @@ import javax.xml.stream.XMLStreamWriter;
 /**
  * A {@link StreamWriter} that uses a StAX implementation with cursors for writing XMI files.
  */
-@Experimental
+@Beta
 @ParametersAreNonnullByDefault
 public class XmiStreamWriter extends AbstractXmiStreamWriter {
 

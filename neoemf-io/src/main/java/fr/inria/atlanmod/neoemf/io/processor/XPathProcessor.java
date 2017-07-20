@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.common.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicId;

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.common.hash;
 
-import fr.inria.atlanmod.common.Bytes;
+import fr.inria.atlanmod.common.primitive.Bytes;
 
 import java.io.Serializable;
 import java.security.MessageDigest;

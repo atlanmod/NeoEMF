@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.annotation.VisibleForReflection;
 import fr.inria.atlanmod.common.log.Level;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.common.log.Logger;
+import fr.inria.atlanmod.common.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;

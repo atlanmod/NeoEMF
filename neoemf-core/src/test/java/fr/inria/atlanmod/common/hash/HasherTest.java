@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.common.hash;
 
-import fr.inria.atlanmod.common.Bytes;
+import fr.inria.atlanmod.common.primitive.Strings;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 
 import org.junit.Test;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 public class HasherTest extends AbstractTest {
 
-    private static final byte[] DATA = Bytes.toBytes("Nantes44000");
+    private static final byte[] DATA = Strings.toBytes("Nantes44000");
 
     /**
      * Calculates the {@link HashCode} of {@link #DATA} with the specified {@code hasher}.

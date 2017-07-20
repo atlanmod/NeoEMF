@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.common.annotation.Experimental;
+import fr.inria.atlanmod.common.annotation.Beta;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An abstract {@link StreamWriter} that writes data into an XMI file.
  */
-@Experimental
+@Beta
 @ParametersAreNonnullByDefault
 public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 }

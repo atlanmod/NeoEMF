@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
-import fr.inria.atlanmod.common.Strings;
+import fr.inria.atlanmod.common.primitive.Strings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

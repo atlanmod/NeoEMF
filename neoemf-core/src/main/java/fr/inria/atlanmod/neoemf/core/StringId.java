@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.common.Bytes;
 import fr.inria.atlanmod.common.hash.Hasher;
 import fr.inria.atlanmod.common.hash.Hashers;
+import fr.inria.atlanmod.common.primitive.Strings;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -98,7 +98,7 @@ public class StringId implements Id {
 
     @Nonnull
     public static Id generate(String name) {
-        return new StringId(HASHER.hash(Bytes.toBytes(name)).toHexString());
+        return new StringId(HASHER.hash(Strings.toBytes(name)).toHexString());
     }
 
     @Override

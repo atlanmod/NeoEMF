@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.common.log;
 
-import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
+import fr.inria.atlanmod.common.primitive.Strings;
 
 import java.text.MessageFormat;
 

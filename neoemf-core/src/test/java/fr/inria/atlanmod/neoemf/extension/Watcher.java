@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
-import fr.inria.atlanmod.common.Strings;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.common.log.Logger;
+import fr.inria.atlanmod.common.primitive.Strings;
 
 import org.junit.AssumptionViolatedException;
 import org.junit.runner.Description;

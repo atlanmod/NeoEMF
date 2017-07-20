@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.common.hash;
 
-import fr.inria.atlanmod.common.Bytes;
+import fr.inria.atlanmod.common.primitive.Strings;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 
 import org.junit.Test;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HashCodeTest extends AbstractTest {
 
-    private final static HashCode HASH = new HashCode(Bytes.toBytes("HashCode0"));
+    private final static HashCode HASH = new HashCode(Strings.toBytes("HashCode0"));
 
     @Test
     public void testBits() {
@@ -32,7 +32,7 @@ public class HashCodeTest extends AbstractTest {
 
     @Test
     public void testToBytes() {
-        assertThat(HASH.toBytes()).isEqualTo(Bytes.toBytes("HashCode0"));
+        assertThat(HASH.toBytes()).isEqualTo(Strings.toBytes("HashCode0"));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class HashCodeTest extends AbstractTest {
 
         assertThat(HASH.hashCode()).isEqualTo(hashCode);
 
-        HashCode littleHash = new HashCode(Bytes.toBytes("HC"));
+        HashCode littleHash = new HashCode(Strings.toBytes("HC"));
         assertThat(littleHash.bits()).isLessThan(32);
         assertThat(littleHash.hashCode()).isEqualTo(17224);
     }
@@ -64,9 +64,9 @@ public class HashCodeTest extends AbstractTest {
         assertThat(HASH.equals(null)).isFalse();
 
         //noinspection EqualsReplaceableByObjectsCall
-        assertThat(HASH.equals(new HashCode(Bytes.toBytes("HashCode0")))).isTrue();
+        assertThat(HASH.equals(new HashCode(Strings.toBytes("HashCode0")))).isTrue();
 
         //noinspection EqualsReplaceableByObjectsCall
-        assertThat(HASH.equals(new HashCode(Bytes.toBytes("HC")))).isFalse();
+        assertThat(HASH.equals(new HashCode(Strings.toBytes("HC")))).isFalse();
     }
 }

@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.common.Bytes;
 import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.common.primitive.Bytes;
+import fr.inria.atlanmod.common.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
@@ -47,37 +48,37 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     /**
      * The column family holding properties.
      */
-    protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
+    protected static final byte[] PROPERTY_FAMILY = Strings.toBytes("p");
 
     /**
      * The column family holding instances.
      */
-    protected static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
+    protected static final byte[] TYPE_FAMILY = Strings.toBytes("t");
 
     /**
      * The column family holding containments.
      */
-    protected static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
+    protected static final byte[] CONTAINMENT_FAMILY = Strings.toBytes("c");
 
     /**
      * The column qualifier holding the URI of meta-models.
      */
-    private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
+    private static final byte[] METAMODEL_QUALIFIER = Strings.toBytes("m");
 
     /**
      * The column qualifier holding the name of classes.
      */
-    private static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
+    private static final byte[] ECLASS_QUALIFIER = Strings.toBytes("e");
 
     /**
      * The column qualifier holding the identifier of containers.
      */
-    private static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
+    private static final byte[] CONTAINER_QUALIFIER = Strings.toBytes("n");
 
     /**
      * The column qualifier holding the name of the feature used to retrieve the containment.
      */
-    private static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
+    private static final byte[] CONTAINING_FEATURE_QUALIFIER = Strings.toBytes("g");
 
     /**
      * The {@link SerializerFactory} to use for creating the {@link Serializer} instances.
@@ -145,9 +146,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(container);
 
         try {
-            Put put = new Put(Bytes.toBytes(id.toString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(container.id().toString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(container.name()));
+            Put put = new Put(Strings.toBytes(id.toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Strings.toBytes(container.id().toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Strings.toBytes(container.name()));
 
             table.put(put);
         }
@@ -161,7 +162,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(id);
 
         try {
-            Delete delete = new Delete(Bytes.toBytes(id.toString()))
+            Delete delete = new Delete(Strings.toBytes(id.toString()))
                     .addColumns(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER)
                     .addColumns(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
 
@@ -195,9 +196,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(metaclass);
 
         try {
-            Put put = new Put(Bytes.toBytes(id.toString()))
-                    .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(metaclass.name()))
-                    .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(metaclass.uri()));
+            Put put = new Put(Strings.toBytes(id.toString()))
+                    .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Strings.toBytes(metaclass.name()))
+                    .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Strings.toBytes(metaclass.uri()));
 
             table.put(put);
         }
@@ -211,7 +212,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return resultFrom(key.id()).flatMap(r -> Optional.ofNullable(r.getValue(PROPERTY_FAMILY, Bytes.toBytes(key.name())))
+        return resultFrom(key.id()).flatMap(r -> Optional.ofNullable(r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.name())))
                 .map(value -> {
                     try {
                         return Optional.of(serializerFactory.<V>forAny().deserialize(value));
@@ -232,8 +233,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         Optional<V> previousValue = valueOf(key);
 
         try {
-            Put put = new Put(Bytes.toBytes(key.id().toString()))
-                    .addColumn(PROPERTY_FAMILY, Bytes.toBytes(key.name()), serializerFactory.<V>forAny().serialize(value));
+            Put put = new Put(Strings.toBytes(key.id().toString()))
+                    .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.name()), serializerFactory.<V>forAny().serialize(value));
 
             table.put(put);
         }
@@ -249,8 +250,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         try {
-            Delete delete = new Delete(Bytes.toBytes(key.id().toString()))
-                    .addColumns(PROPERTY_FAMILY, Bytes.toBytes(key.name()));
+            Delete delete = new Delete(Strings.toBytes(key.id().toString()))
+                    .addColumns(PROPERTY_FAMILY, Strings.toBytes(key.name()));
 
             table.delete(delete);
         }
@@ -269,7 +270,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
      */
     private Optional<Result> resultFrom(Id id) {
         try {
-            Get get = new Get(Bytes.toBytes(id.toString()));
+            Get get = new Get(Strings.toBytes(id.toString()));
 
             Result result = table.get(get);
             return !result.isEmpty() ? Optional.of(result) : Optional.empty();
