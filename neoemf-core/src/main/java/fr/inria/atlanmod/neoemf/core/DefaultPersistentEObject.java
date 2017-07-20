@@ -244,12 +244,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nullable
     private Object attach(@Nullable Object value) {
-        PersistentEObject object = PersistentEObject.from(value);
-
-        if (isNull(object)) {
-            return value;
+        if (isNull(value)) {
+            return null;
         }
 
+        PersistentEObject object = PersistentEObject.from(value);
         object.resource(resource);
         return object;
     }

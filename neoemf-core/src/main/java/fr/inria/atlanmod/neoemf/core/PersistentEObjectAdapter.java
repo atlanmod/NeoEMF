@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.core;
 import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
-import fr.inria.atlanmod.common.log.Log;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -27,7 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
@@ -74,11 +72,9 @@ final class PersistentEObjectAdapter {
      *
      * @throws NullPointerException if the {@code type} is {@code null}
      */
-    @Nullable
-    private static <T extends PersistentEObject> T adapt(@Nullable Object o, Class<T> type) {
-        if (isNull(o)) {
-            return null;
-        }
+    @Nonnull
+    private static <T extends PersistentEObject> T adapt(Object o, Class<T> type) {
+        checkNotNull(o);
         checkNotNull(type);
 
         Object adapter = null;
@@ -95,8 +91,10 @@ final class PersistentEObjectAdapter {
         }
 
         if (isNull(adapter)) {
-            Log.warn("Unable to create a {0} adapter for this object of type {1}", type.getSimpleName(), o.getClass().getSimpleName());
-            return null;
+            throw new IllegalArgumentException(
+                    String.format("Unable to create a %s adapter for this object of type %s",
+                            type.getSimpleName(),
+                            o.getClass().getSimpleName()));
         }
 
         return type.cast(adapter);
@@ -112,8 +110,8 @@ final class PersistentEObjectAdapter {
      *
      * @see #adapt(Object, Class)
      */
-    @Nullable
-    public static PersistentEObject adapt(@Nullable Object o) {
+    @Nonnull
+    public static PersistentEObject adapt(Object o) {
         return adapt(o, PersistentEObject.class);
     }
 

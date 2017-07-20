@@ -33,10 +33,13 @@ public interface PersistentEObject extends InternalEObject {
      *
      * @param object the object to adapt
      *
-     * @return an adapted object as a {@code PersistentEObject}, or {@code null} if the {@code object} cannot be
-     * assigned as a {@code PersistentEObject}
+     * @return an adapted object as a {@code PersistentEObject}
+     *
+     * @throws NullPointerException     if the {@code object} is {@code null}
+     * @throws IllegalArgumentException if the {@code object} cannot be adapted as a {@code PersistentEObject}
      */
-    static PersistentEObject from(@Nullable Object object) {
+    @Nonnull
+    static PersistentEObject from(Object object) {
         return PersistentEObjectAdapter.adapt(object);
     }
 
