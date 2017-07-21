@@ -14,13 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-
-import java.io.File;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -45,20 +39,6 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
     @Override
     protected BackendFactory getFactory() {
         return BerkeleyDbBackendFactory.getInstance();
-    }
-
-    @Nonnull
-    @Override
-    public Resource createResource(File file, ResourceSet resourceSet) {
-        URI uri = BerkeleyDbUri.builder().fromFile(file);
-
-        return resourceSet.createResource(uri);
-    }
-
-    @Nonnull
-    @Override
-    public Map<String, Object> getOptions() {
-        return BerkeleyDbOptions.builder().asMap();
     }
 
     /**

@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -33,16 +32,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class XmiAdapter extends AbstractAdapter {
 
     /**
-     * The class of the {@link EPackage} associated to this adapter.
-     */
-    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
-
-    /**
      * Constructs a new {@code XmiAdapter}.
      */
     @SuppressWarnings("unused") // Called dynamically
     public XmiAdapter() {
-        super("xmi", "xmi", EPACKAGE_CLASS);
+        super("xmi", "xmi", org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class);
     }
 
     @Nonnull

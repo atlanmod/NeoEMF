@@ -27,7 +27,6 @@ import org.eclipse.emf.cdo.server.net4j.CDONet4jServerUtil;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.spi.server.ISessionProtocol;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -64,11 +63,6 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public class CdoAdapter extends AbstractAdapter {
 
-    /**
-     * The class of the {@link EPackage} associated to this adapter
-     */
-    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
-
     private EmbeddedCdoServer server;
 
     private CDOSession session;
@@ -80,7 +74,7 @@ public class CdoAdapter extends AbstractAdapter {
      */
     @SuppressWarnings("unused") // Called dynamically
     public CdoAdapter() {
-        super("cdo", "resource", EPACKAGE_CLASS);
+        super("cdo", "resource", org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class);
     }
 
     @Nonnull
@@ -219,7 +213,7 @@ public class CdoAdapter extends AbstractAdapter {
         @Nonnull
         private IStore createStore(JdbcDataSource dataSource) {
             IMappingStrategy mappingStrategy = CDODBUtil.createHorizontalMappingStrategy(true);
-            mappingStrategy.getProperties().put("qualifiedNames", "true");
+            mappingStrategy.getProperties().put("qualifiedNames", Boolean.TRUE.toString());
 
             IDBAdapter dbAdapter = new H2Adapter();
 
@@ -232,8 +226,8 @@ public class CdoAdapter extends AbstractAdapter {
         private IRepository createRepository(IStore store) {
             Map<String, String> props = new HashMap<>();
             props.put(IRepository.Props.OVERRIDE_UUID, repositoryName);
-            props.put(IRepository.Props.SUPPORTING_AUDITS, "false");
-            props.put(IRepository.Props.SUPPORTING_BRANCHES, "false");
+            props.put(IRepository.Props.SUPPORTING_AUDITS, Boolean.FALSE.toString());
+            props.put(IRepository.Props.SUPPORTING_BRANCHES, Boolean.FALSE.toString());
             return CDOServerUtil.createRepository(repositoryName, store, props);
         }
 

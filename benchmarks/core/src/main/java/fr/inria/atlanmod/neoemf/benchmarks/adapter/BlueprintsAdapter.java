@@ -15,13 +15,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-
-import java.io.File;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -46,14 +40,6 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
     @Override
     protected BackendFactory getFactory() {
         return BlueprintsBackendFactory.getInstance();
-    }
-
-    @Nonnull
-    @Override
-    public Resource createResource(File file, ResourceSet resourceSet) {
-        URI uri = BlueprintsUri.builder().fromFile(file);
-
-        return resourceSet.createResource(uri);
     }
 
     /**

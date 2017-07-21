@@ -18,10 +18,11 @@ import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
@@ -38,17 +39,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     /**
-     * The class of the {@link EPackage} associated to this adapter
-     */
-    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
-
-    /**
      * Constructs a new {@code AbstractNeoAdapter}.
      *
      * @param storeExtension the extension of the resource, used for benchmarks
      */
     protected AbstractNeoAdapter(String storeExtension) {
-        super("neoemf", storeExtension + ".resource", EPACKAGE_CLASS);
+        super("neoemf", storeExtension + ".resource", org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class);
     }
 
     /**
@@ -75,6 +71,18 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
         Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), options);
         return StoreFactory.getInstance().createStore(backend, options);
+    }
+
+    @Nonnull
+    @Override
+    public Resource createResource(File file, ResourceSet resourceSet) {
+        return resourceSet.createResource(UriBuilder.forName(getFactory().name()).fromFile(file));
+    }
+
+    @Nonnull
+    @Override
+    public Map<String, Object> getOptions() {
+        return PersistenceOptions.forName(getFactory().name()).asMap();
     }
 
     @Nonnull

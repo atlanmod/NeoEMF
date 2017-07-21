@@ -14,13 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-
-import java.io.File;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -45,14 +39,6 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
     @Override
     protected BackendFactory getFactory() {
         return MapDbBackendFactory.getInstance();
-    }
-
-    @Nonnull
-    @Override
-    public Resource createResource(File file, ResourceSet resourceSet) {
-        URI uri = MapDbUri.builder().fromFile(file);
-
-        return resourceSet.createResource(uri);
     }
 
     /**
