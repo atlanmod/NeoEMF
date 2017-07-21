@@ -1,15 +1,8 @@
 language: java
 
-os:
-  - linux
-  - osx
+os: linux
 
-matrix:
-  - include:
-      os: linux
-        jdk: oraclejdk8
-  - allow_failures:
-      os: osx
+jdk: oraclejdk8
 
 env:
   global:
@@ -31,7 +24,7 @@ script:
 
 after_success:
   # Publish code coverage in CodeCov
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash); fi
+  - bash <(curl -s https://codecov.io/bash)
 
   # Publish Javadoc in Github
   - bash .util/publish_javadoc.sh
