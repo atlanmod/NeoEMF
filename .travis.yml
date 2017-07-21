@@ -5,10 +5,11 @@ os:
   - osx
 
 matrix:
-  allow_failures:
-    os: osx
-
-jdk: oraclejdk8
+  - include:
+      os: linux
+        jdk: oraclejdk8
+  - allow_failures:
+      os: osx
 
 env:
   global:
