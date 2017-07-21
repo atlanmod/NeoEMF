@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 import fr.inria.atlanmod.common.log.Log;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
@@ -42,6 +43,7 @@ import org.eclipse.net4j.util.container.ContainerEventAdapter;
 import org.eclipse.net4j.util.container.ContainerUtil;
 import org.eclipse.net4j.util.container.IContainer;
 import org.eclipse.net4j.util.container.IManagedContainer;
+import org.eclipse.net4j.util.lifecycle.ILifecycle;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.Closeable;
@@ -50,11 +52,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static java.util.Objects.isNull;
+import static fr.inria.atlanmod.common.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
 /**
@@ -63,11 +67,10 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public class CdoAdapter extends AbstractAdapter {
 
+    /**
+     * The embedded CDO server.
+     */
     private EmbeddedCdoServer server;
-
-    private CDOSession session;
-
-    private CDOTransaction transaction;
 
     /**
      * Constructs a new {@code CdoAdapter}.
@@ -81,18 +84,16 @@ public class CdoAdapter extends AbstractAdapter {
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
         server = new EmbeddedCdoServer(file.toPath());
-        server.run();
-        session = server.openSession();
-        transaction = session.openTransaction();
-
-        return transaction.getOrCreateResource(file.getName());
+        return server.getTransaction().getOrCreateResource(file.getName());
     }
 
     @Nonnull
     @Override
     public Map<String, Object> getOptions() {
+        checkState(nonNull(server), "The CDO server has not been initialized");
+
         Map<String, Object> saveOpts = new HashMap<>();
-        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
+        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, server.getTransaction());
         return saveOpts;
     }
 
@@ -108,49 +109,45 @@ public class CdoAdapter extends AbstractAdapter {
 
     @Override
     public void unload(Resource resource) {
-        if (nonNull(transaction) && !transaction.isClosed()) {
-            transaction.close();
-        }
-
-        if (nonNull(session) && !session.isClosed()) {
-            session.close();
-        }
-
-        if (nonNull(server) && !server.isClosed()) {
-            server.close();
-        }
-
         if (resource.isLoaded()) {
             resource.unload();
+        }
+
+        if (nonNull(server)) {
+            server.close();
         }
     }
 
     /**
-     * Embedded implementation of CDO server.
+     * An embedded CDO server.
      */
-    public static class EmbeddedCdoServer implements Runnable, Closeable {
+    @ParametersAreNonnullByDefault
+    private static final class EmbeddedCdoServer implements Closeable {
 
         private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
-        @Nonnull
-        private final Path path;
+        private static final String DEFAULT_DESCRIPTION = "default";
 
         @Nonnull
-        private final String repositoryName;
+        private final IConnector connector;
 
-        private IConnector connector;
+        @Nonnull
+        private final IManagedContainer container;
 
-        private IManagedContainer container;
+        @Nonnull
+        private final CDOSession session;
 
+        @Nonnull
+        private final CDOTransaction transaction;
+
+        /**
+         * Constructs and initializes a new {@code EmbeddedCdoServer}.
+         *
+         * @param path the path of the server
+         */
         public EmbeddedCdoServer(Path path) {
-            this.path = path;
-            this.repositoryName = DEFAULT_REPOSITORY_NAME;
-        }
-
-        @Override
-        public void run() {
             try {
-                JdbcDataSource dataSource = createDataSource("jdbc:h2:" + path + "/" + repositoryName);
+                JdbcDataSource dataSource = createDataSource("jdbc:h2:" + path + "/" + DEFAULT_REPOSITORY_NAME);
 
                 IStore store = createStore(dataSource);
                 IRepository repository = createRepository(store);
@@ -158,8 +155,8 @@ public class CdoAdapter extends AbstractAdapter {
                 container = createContainer();
                 CDOServerUtil.addRepository(container, repository);
 
-                JVMUtil.getAcceptor(container, "default");
-                connector = JVMUtil.getConnector(container, "default");
+                JVMUtil.getAcceptor(container, DEFAULT_DESCRIPTION);
+                connector = JVMUtil.getConnector(container, DEFAULT_DESCRIPTION);
 
                 repository.getSessionManager().addListener(new ContainerEventAdapter<ISession>() {
                     @Override
@@ -171,36 +168,57 @@ public class CdoAdapter extends AbstractAdapter {
                         }
                     }
                 });
+
+                session = openSession();
+
+                transaction = session.openTransaction();
             }
             finally {
-                Runtime.getRuntime().addShutdownHook(new Thread(EmbeddedCdoServer.this::close));
+                MoreExecutors.executeAtExit(this::close);
             }
+        }
+
+        /**
+         * Closes the specified object, if it is not already {@link org.eclipse.net4j.util.collection.Closeable#isClosed()
+         * closed}.
+         *
+         * @param closeable the object to close
+         */
+        private static void close(@Nullable org.eclipse.net4j.util.collection.Closeable closeable) {
+            if (nonNull(closeable) && !closeable.isClosed()) {
+                closeable.close();
+            }
+        }
+
+        /**
+         * Deactivates the specified object, if it is {@link ILifecycle#isActive() active}.
+         *
+         * @param lifecycle the object to deactivate
+         */
+        private static void deactivate(@Nullable ILifecycle lifecycle) {
+            if (nonNull(lifecycle) && lifecycle.isActive()) {
+                Optional.ofNullable(lifecycle.deactivate()).ifPresent(Log::error);
+            }
+        }
+
+        /**
+         * Gets the transaction used by this server.
+         *
+         * @return the transaction
+         */
+        @Nonnull
+        public CDOTransaction getTransaction() {
+            return transaction;
         }
 
         @Override
         public void close() {
-            if (nonNull(connector) && !connector.isClosed()) {
-                connector.close();
+            if (!connector.isClosed()) {
+                close(transaction);
+                close(session);
+                close(connector);
+                deactivate(container);
             }
-            if (nonNull(container) && container.isActive()) {
-                Exception e = container.deactivate();
-
-                if (nonNull(e)) {
-                    Log.error(e);
-                }
-            }
-        }
-
-        public boolean isClosed() {
-            return isNull(connector) || connector.isClosed();
-        }
-
-        @Nonnull
-        private CDOSession openSession() {
-            CDONet4jSessionConfiguration config = CDONet4jUtil.createNet4jSessionConfiguration();
-            config.setConnector(connector);
-            config.setRepositoryName(repositoryName);
-            return config.openNet4jSession();
         }
 
         @Nonnull
@@ -213,7 +231,7 @@ public class CdoAdapter extends AbstractAdapter {
         @Nonnull
         private IStore createStore(JdbcDataSource dataSource) {
             IMappingStrategy mappingStrategy = CDODBUtil.createHorizontalMappingStrategy(true);
-            mappingStrategy.getProperties().put("qualifiedNames", Boolean.TRUE.toString());
+            mappingStrategy.getProperties().put(IMappingStrategy.Props.QUALIFIED_NAMES, Boolean.TRUE.toString());
 
             IDBAdapter dbAdapter = new H2Adapter();
 
@@ -224,22 +242,34 @@ public class CdoAdapter extends AbstractAdapter {
 
         @Nonnull
         private IRepository createRepository(IStore store) {
-            Map<String, String> props = new HashMap<>();
-            props.put(IRepository.Props.OVERRIDE_UUID, repositoryName);
-            props.put(IRepository.Props.SUPPORTING_AUDITS, Boolean.FALSE.toString());
-            props.put(IRepository.Props.SUPPORTING_BRANCHES, Boolean.FALSE.toString());
-            return CDOServerUtil.createRepository(repositoryName, store, props);
+            Map<String, String> properties = new HashMap<>();
+            properties.put(IRepository.Props.OVERRIDE_UUID, DEFAULT_REPOSITORY_NAME);
+            properties.put(IRepository.Props.SUPPORTING_AUDITS, Boolean.FALSE.toString());
+            properties.put(IRepository.Props.SUPPORTING_BRANCHES, Boolean.FALSE.toString());
+
+            return CDOServerUtil.createRepository(DEFAULT_REPOSITORY_NAME, store, properties);
         }
 
         @Nonnull
         private IManagedContainer createContainer() {
             IManagedContainer container = ContainerUtil.createContainer();
+
             Net4jUtil.prepareContainer(container);
             JVMUtil.prepareContainer(container);
             CDONet4jUtil.prepareContainer(container);
             CDONet4jServerUtil.prepareContainer(container);
+
             container.activate();
             return container;
+        }
+
+        @Nonnull
+        private CDOSession openSession() {
+            CDONet4jSessionConfiguration config = CDONet4jUtil.createNet4jSessionConfiguration();
+            config.setConnector(connector);
+            config.setRepositoryName(DEFAULT_REPOSITORY_NAME);
+
+            return config.openNet4jSession();
         }
     }
 }
