@@ -91,7 +91,7 @@ final class HBaseCluster {
 
             MoreExecutors.executeAtExit(HBaseCluster::close);
         }
-        catch (Exception e) {
+        catch (Exception | UnsatisfiedLinkError e) {
             reset();
             Log.error(e, "Unable to create the Hadoop cluster");
         }
