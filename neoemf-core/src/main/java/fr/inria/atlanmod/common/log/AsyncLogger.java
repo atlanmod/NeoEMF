@@ -14,8 +14,6 @@ package fr.inria.atlanmod.common.log;
 import fr.inria.atlanmod.common.concurrent.MoreExecutors;
 import fr.inria.atlanmod.common.primitive.Strings;
 
-import org.apache.logging.log4j.LogManager;
-
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -37,6 +35,8 @@ class AsyncLogger implements Logger {
 
     /**
      * The concurrent pool.
+     * <p>
+     * A single thread pool is used for keeping events order.
      */
     @Nonnull
     private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool(1);
@@ -45,7 +45,7 @@ class AsyncLogger implements Logger {
      * The internal logger.
      */
     @Nonnull
-    private final org.apache.logging.log4j.Logger logger;
+    private final java.util.logging.Logger logger;
 
     /**
      * Constructs a new {@code AsyncLogger} with the given {@code name}.
@@ -53,12 +53,12 @@ class AsyncLogger implements Logger {
      * @param name the name of this logger
      */
     public AsyncLogger(String name) {
-        this.logger = LogManager.getLogger(name);
+        this.logger = java.util.logging.Logger.getLogger(name);
     }
 
     @Override
     public void log(Level level, @Nullable Throwable e, @Nullable CharSequence message, @Nullable Object... params) {
-        if (!logger.isEnabled(level.level())) {
+        if (!logger.isLoggable(level.level())) {
             // Don't send the request if the associated level is not enabled
             return;
         }
@@ -72,14 +72,14 @@ class AsyncLogger implements Logger {
                 logger.log(level.level(), formattedMessage, e);
             }
             catch (Exception fe) {
-                logger.error(fe); // Format exception
+                logger.log(java.util.logging.Level.SEVERE, Strings.EMPTY, fe); // Format exception
             }
         });
     }
 
     /**
-     * Executes a {@link Runnable} in a concurrent pool to run asynchronously the logging methods.
-     * If the pool rejects the task, then it is executed synchronously.
+     * Executes a {@link Runnable} in a concurrent pool to run asynchronously the logging methods. If the pool rejects
+     * the task, then it is executed synchronously.
      *
      * @param runnable the function to execute
      *

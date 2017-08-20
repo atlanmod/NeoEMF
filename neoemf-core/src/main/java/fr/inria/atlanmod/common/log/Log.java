@@ -23,17 +23,44 @@ import javax.annotation.ParametersAreNullableByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * The factory that creates {@link Logger} instances.
  * <p>
- * It also provides static methods for logging without declaring a specific instance. In this case, the
- * {@link #rootLogger()} is used by default.
+ * It also provides static methods for logging without declaring a specific instance. In this case, the {@link
+ * #rootLogger()} is used by default.
  */
 @Static
 @ThreadSafe
 @ParametersAreNullableByDefault
 public final class Log {
+
+    /**
+     * The Java logging manager property.
+     */
+    @Nonnull
+    private static final String LOGGING_MANAGER_PROPERTY = "java.util.logging.manager";
+
+    /**
+     * The Log4j logging manager class.
+     */
+    @Nonnull
+    private static final String LOGGING_MANAGER_LOG4J = "org.apache.logging.log4j.jul.LogManager";
+
+    static {
+        // Don't modify the logging manager if it is already defined
+        if (isNull(System.getProperty(LOGGING_MANAGER_PROPERTY))) {
+            try {
+                // Defines the Log4j manager if the dependencies are in the classpath
+                Class.forName(LOGGING_MANAGER_LOG4J, false, Log.class.getClassLoader());
+                System.setProperty(LOGGING_MANAGER_PROPERTY, LOGGING_MANAGER_LOG4J);
+            }
+            catch (ClassNotFoundException ignored) {
+                // Use the default Java logging manager
+            }
+        }
+    }
 
     /**
      * In-memory cache that holds loaded {@link Logger}s, identified by their name.
@@ -55,13 +82,13 @@ public final class Log {
     /**
      * Returns the root {@link Logger}.
      *
-     * @return the root {@link Logger}, named ""
+     * @return the root {@link Logger}
      *
      * @see #customLogger(String)
      */
     @Nonnull
     public static Logger rootLogger() {
-        return customLogger(Strings.EMPTY);
+        return customLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     }
 
     /**
@@ -262,8 +289,8 @@ public final class Log {
     }
 
     /**
-     * Logs a message with parameters at the {@link Level#INFO INFO} level including the stack trace of the given
-     * {@link Throwable}, using the root logger.
+     * Logs a message with parameters at the {@link Level#INFO INFO} level including the stack trace of the given {@link
+     * Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
      * @param message the message to log; the format depends on the {@link MessageFormat}
@@ -328,8 +355,8 @@ public final class Log {
     }
 
     /**
-     * Logs a message with parameters at the {@link Level#WARN WARN} level including the stack trace of the given
-     * {@link Throwable}, using the root logger.
+     * Logs a message with parameters at the {@link Level#WARN WARN} level including the stack trace of the given {@link
+     * Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
      * @param message the message to log; the format depends on the {@link MessageFormat}
@@ -407,73 +434,6 @@ public final class Log {
      */
     public static void error(Throwable e, CharSequence message, Object... params) {
         rootLogger().error(e, message, params);
-    }
-
-    /**
-     * Logs a message at the {@link Level#FATAL FATAL} level, using the root logger.
-     *
-     * @param message the message to log
-     *
-     * @see #rootLogger()
-     * @see Logger#fatal(CharSequence)
-     */
-    public static void fatal(CharSequence message) {
-        rootLogger().fatal(message);
-    }
-
-    /**
-     * Logs a message with parameters at the {@link Level#FATAL FATAL} level, using the root logger.
-     *
-     * @param message the message to log; the format depends on the {@link MessageFormat}
-     * @param params  parameters to the message
-     *
-     * @see #rootLogger()
-     * @see Logger#fatal(CharSequence, Object...)
-     */
-    public static void fatal(CharSequence message, Object... params) {
-        rootLogger().fatal(message, params);
-    }
-
-    /**
-     * Logs the stack trace of the given {@link Throwable} at the {@link Level#FATAL FATAL} level, using the root
-     * logger.
-     *
-     * @param e the exception to log, including its stack trace
-     *
-     * @see #rootLogger()
-     * @see Logger#fatal(Throwable)
-     */
-    public static void fatal(Throwable e) {
-        rootLogger().fatal(e);
-    }
-
-    /**
-     * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the given {@link Throwable},
-     * using the root logger.
-     *
-     * @param e       the exception to log, including its stack trace
-     * @param message the message to log
-     *
-     * @see #rootLogger()
-     * @see Logger#fatal(Throwable, CharSequence)
-     */
-    public static void fatal(Throwable e, CharSequence message) {
-        rootLogger().fatal(e, message);
-    }
-
-    /**
-     * Logs a message with parameters at the {@link Level#FATAL FATAL} level including the stack trace of the given
-     * {@link Throwable}, using the root logger.
-     *
-     * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link MessageFormat}
-     * @param params  parameters to the message
-     *
-     * @see #rootLogger()
-     * @see Logger#fatal(Throwable, CharSequence, Object...)
-     */
-    public static void fatal(Throwable e, CharSequence message, Object... params) {
-        rootLogger().fatal(e, message, params);
     }
 
     /**

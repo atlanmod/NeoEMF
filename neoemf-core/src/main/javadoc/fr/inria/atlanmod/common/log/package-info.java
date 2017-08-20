@@ -12,9 +12,9 @@
 /**
  * Provides classes for logging information and events.
  * <p>
- * This package contains the classes related to NeoEMF logging service. The {@link
- * fr.inria.atlanmod.common.log.Log} class defines a set of static methods to log information, warnings,
- * or errors. It is possible to use {@link java.text.MessageFormat} style in logged information.
+ * This package contains the classes related to NeoEMF logging service. The {@link fr.inria.atlanmod.common.log.Log}
+ * class defines a set of static methods to log information, warnings, or errors. It is possible to use {@link
+ * java.text.MessageFormat} style in logged information.
  * <p>
  * Client code can use the NeoEMF logger to log application-level information if needed using the following code:
  * <pre>{@code
@@ -23,12 +23,11 @@
  * Log.info("an information message");
  * Log.warn("a warning message");
  * Log.error("an error message");
- * Log.fatal("a fatal message");
  * }</pre>
  * <p>
- * {@link fr.inria.atlanmod.common.log.AsyncLogger} uses Log4j as its internal logger, with a default
- * configuration that only logs info, warn, error, and fatal messages. If you want to log trace and debug messages you
- * have to specify it in a dedicated {@code log4j2.xml} file.
+ * {@link fr.inria.atlanmod.common.log.AsyncLogger} uses Java Logging as its internal logger. A Log4j adapter is
+ * preconfigured, but remains optional (see <a href="https://logging.apache.org/log4j/2.x/log4j-jul/">Log4j JDK Logging
+ * Adapter</a> for more information about its integration).
  */
 
 package fr.inria.atlanmod.common.log;

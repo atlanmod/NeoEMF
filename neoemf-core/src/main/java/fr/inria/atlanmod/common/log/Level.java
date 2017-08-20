@@ -16,15 +16,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An object used for identifying the severity of an event.
  * <p>
- * Levels are organized from most specific to least:
- * <ul>
- * <li>{@link #FATAL} (most specific, little data)</li>
- * <li>{@link #ERROR}</li>
- * <li>{@link #WARN}</li>
- * <li>{@link #INFO}</li>
- * <li>{@link #DEBUG}</li>
- * <li>{@link #TRACE} (least specific, a lot of data)</li>
- * </ul>
+ * Levels are organized from most specific to least: <ul> <li>{@link #ERROR} (most specific, little data)</li>
+ * <li>{@link #WARN}</li> <li>{@link #INFO}</li> <li>{@link #DEBUG}</li> <li>{@link #TRACE} (least specific, a lot of
+ * data)</li> </ul>
  * <p>
  * Typically, configuring a level in a filter or on a {@link Logger} will cause logging events of that level and those
  * that are more specific to pass through the filter.
@@ -35,53 +29,48 @@ public enum Level {
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    TRACE(org.apache.logging.log4j.Level.TRACE),
+    TRACE(java.util.logging.Level.FINER),
 
     /**
      * A general debugging event.
      */
-    DEBUG(org.apache.logging.log4j.Level.DEBUG),
+    DEBUG(java.util.logging.Level.FINE),
 
     /**
      * An event for informational purposes.
      */
-    INFO(org.apache.logging.log4j.Level.INFO),
+    INFO(java.util.logging.Level.INFO),
 
     /**
      * An event that might possible lead to an error.
      */
-    WARN(org.apache.logging.log4j.Level.WARN),
+    WARN(java.util.logging.Level.WARNING),
 
     /**
      * An error in the application, possibly recoverable.
      */
-    ERROR(org.apache.logging.log4j.Level.ERROR),
+    ERROR(java.util.logging.Level.SEVERE);
 
     /**
-     * A severe error that will prevent the application from continuing.
+     * The associated Java Logging level.
      */
-    FATAL(org.apache.logging.log4j.Level.FATAL);
-
-    /**
-     * The associated Log4j level.
-     */
-    private final org.apache.logging.log4j.Level level;
+    private final java.util.logging.Level level;
 
     /**
      * Constructs a new {@code Level} with its associated {@code level}.
      *
-     * @param level the associated Log4j level
+     * @param level the associated Java Logging level
      */
-    Level(org.apache.logging.log4j.Level level) {
+    Level(java.util.logging.Level level) {
         this.level = level;
     }
 
     /**
-     * Returns the Log4j {@link org.apache.logging.log4j.Level} associated with this {@code Level}.
+     * Returns the Java Logging {@link java.util.logging.Level} associated with this {@code Level}.
      *
-     * @return the Log4j level
+     * @return the Java Logging level
      */
-    org.apache.logging.log4j.Level level() {
+    java.util.logging.Level level() {
         return level;
     }
 }

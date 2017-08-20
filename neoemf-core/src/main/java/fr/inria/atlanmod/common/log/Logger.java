@@ -169,8 +169,8 @@ public interface Logger {
     }
 
     /**
-     * Logs a message with parameters at the {@link Level#INFO INFO} level including the stack trace of the given
-     * {@link Throwable}.
+     * Logs a message with parameters at the {@link Level#INFO INFO} level including the stack trace of the given {@link
+     * Throwable}.
      *
      * @param e       the exception to log, including its stack trace
      * @param message the message to log; the format depends on the {@link MessageFormat}
@@ -219,8 +219,8 @@ public interface Logger {
     }
 
     /**
-     * Logs a message with parameters at the {@link Level#WARN WARN} level including the stack trace of the given
-     * {@link Throwable}.
+     * Logs a message with parameters at the {@link Level#WARN WARN} level including the stack trace of the given {@link
+     * Throwable}.
      *
      * @param e       the exception to log, including its stack trace
      * @param message the message to log; the format depends on the {@link MessageFormat}
@@ -278,56 +278,6 @@ public interface Logger {
      */
     default void error(Throwable e, CharSequence message, Object... params) {
         log(Level.ERROR, e, message, params);
-    }
-
-    /**
-     * Logs a message at the {@link Level#FATAL FATAL} level.
-     *
-     * @param message the message to log
-     */
-    default void fatal(CharSequence message) {
-        log(Level.FATAL, message);
-    }
-
-    /**
-     * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
-     *
-     * @param message the message to log; the format depends on the {@link MessageFormat}
-     * @param params  parameters to the message
-     */
-    default void fatal(CharSequence message, Object... params) {
-        log(Level.FATAL, message, params);
-    }
-
-    /**
-     * Logs the stack trace of the given {@link Throwable} at the {@link Level#FATAL FATAL} level.
-     *
-     * @param e the exception to log, including its stack trace
-     */
-    default void fatal(Throwable e) {
-        log(Level.FATAL, e);
-    }
-
-    /**
-     * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the given {@link Throwable}.
-     *
-     * @param e       the exception to log, including its stack trace
-     * @param message the message to log
-     */
-    default void fatal(Throwable e, CharSequence message) {
-        log(Level.FATAL, e, message);
-    }
-
-    /**
-     * Logs a message with parameters at the {@link Level#FATAL FATAL} level including the stack trace of the given
-     * {@link Throwable}.
-     *
-     * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link MessageFormat}
-     * @param params  parameters to the message
-     */
-    default void fatal(Throwable e, CharSequence message, Object... params) {
-        log(Level.FATAL, e, message, params);
     }
 
     /**
