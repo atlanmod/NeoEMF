@@ -86,7 +86,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isFile(), "BerkeleyDbBackendFactory only supports file-based URIs");
 
-        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
@@ -96,14 +96,14 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
             }
 
             EnvironmentConfig environmentConfig = new EnvironmentConfig()
-                    .setAllowCreate(!readOnly)
-                    .setReadOnly(readOnly);
+                    .setAllowCreate(!isReadOnly)
+                    .setReadOnly(isReadOnly);
 
             Environment environment = new Environment(baseDirectory.toFile(), environmentConfig);
 
             DatabaseConfig databaseConfig = new DatabaseConfig()
-                    .setAllowCreate(!readOnly)
-                    .setReadOnly(readOnly)
+                    .setAllowCreate(!isReadOnly)
+                    .setReadOnly(isReadOnly)
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 

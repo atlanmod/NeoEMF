@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 /**
  * A factory that creates {@link MapDbBackend} instances.
@@ -83,7 +84,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isFile(), "MapDbBackendFactory only supports file-based URIs");
 
-        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
@@ -92,13 +93,15 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
                 Files.createDirectories(baseDirectory);
             }
 
-            DBMaker.Maker dbMaker = DBMaker.fileDB(baseDirectory.resolve("data").toFile()).fileMmapEnableIfSupported();
+            DBMaker.Maker dbBuilder = DBMaker
+                    .fileDB(baseDirectory.resolve("data").toFile())
+                    .fileMmapEnableIfSupported();
 
-            if (readOnly) {
-                dbMaker.readOnly();
+            if (isReadOnly) {
+                dbBuilder.readOnly();
             }
 
-            DB db = dbMaker.make();
+            DB db = dbBuilder.make();
 
             String mapping = mappingFrom(options);
             backend = newInstanceOf(mapping,

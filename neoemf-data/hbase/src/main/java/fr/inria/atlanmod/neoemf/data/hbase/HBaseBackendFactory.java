@@ -98,7 +98,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isHierarchical(), "HBaseBackendFactory only supports hierarchical URIs");
 
-        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Configuration configuration = HBaseConfiguration.create();
@@ -114,7 +114,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                             .collect(Collectors.joining("_")));
 
             // Initialize
-            if (!admin.tableExists(tableName) && !readOnly) {
+            if (!admin.tableExists(tableName) && !isReadOnly) {
                 HTableDescriptor desc = new HTableDescriptor(tableName);
                 HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.PROPERTY_FAMILY);
                 HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.TYPE_FAMILY);

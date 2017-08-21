@@ -105,7 +105,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         checkArgument(uri.isFile(), "BlueprintsBackendFactory only supports file-based URIs");
 
-        boolean readOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
@@ -119,7 +119,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
             config.save();
 
-            if (readOnly) {
+            if (isReadOnly) {
                 graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
             }
 
