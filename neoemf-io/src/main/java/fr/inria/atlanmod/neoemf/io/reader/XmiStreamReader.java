@@ -47,6 +47,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
     public void run(InputStream stream) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
         factory.setProperty("javax.xml.stream.isNamespaceAware", true);
+        factory.setProperty("com.ctc.wstx.lazyParsing", true);
 
         // Remove contraints
         factory.setProperty("com.ctc.wstx.maxAttributesPerElement", Integer.MAX_VALUE);
