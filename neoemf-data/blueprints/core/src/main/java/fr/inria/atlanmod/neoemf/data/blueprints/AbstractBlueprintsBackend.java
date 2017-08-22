@@ -55,42 +55,42 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     /**
      * The property key used to define the index of an edge.
      */
-    protected static final String KEY_POSITION = "position";
+    protected static final String KEY_POSITION = "p";
 
     /**
      * The label used to define container {@link Edge}s.
      */
-    protected static final String KEY_CONTAINER = "eContainer";
+    protected static final String KEY_CONTAINER = "c";
 
     /**
      * The property key used to define the opposite containing feature in container {@link Edge}s.
      */
-    protected static final String KEY_CONTAINING_FEATURE = "containingFeature";
+    protected static final String KEY_CONTAINING_FEATURE = "f";
 
     /**
      * The property key used to define the number of edges with a specific label.
      */
-    protected static final String KEY_SIZE = "size";
+    protected static final String KEY_SIZE = "s";
 
     /**
      * The label of type conformance {@link Edge}s.
      */
-    private static final String KEY_INSTANCE_OF = "neoInstanceOf";
+    private static final String KEY_INSTANCE_OF = "i";
 
     /**
-     * The name of the index entry holding metaclass {@link Vertex}s.
+     * The name of the index entry holding meta-class {@link Vertex}s.
      */
-    private static final String KEY_METACLASSES = "metaclasses";
+    private static final String KEY_METACLASSES = "m";
 
     /**
-     * The index key used to retrieve metaclass {@link Vertex}s.
+     * The index key used to retrieve meta-class {@link Vertex}s.
      */
-    private static final String KEY_NAME = "name";
+    private static final String KEY_NAME = "n";
 
     /**
-     * The property key used to set the namespace URI of metaclass {@link Vertex}s.
+     * The property key used to set the namespace URI of meta-class {@link Vertex}s.
      */
-    private static final String KEY_NS_URI = "nsURI";
+    private static final String KEY_NS_URI = "u";
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -104,13 +104,13 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * List that holds indexed {@link ClassBean}.
      */
     @Nonnull
-    private final List<ClassBean> indexedMetaclasses;
+    private final List<ClassBean> indexedMetaClasses;
 
     /**
-     * Index containing metaclasses.
+     * Index containing meta-classes.
      */
     @Nonnull
-    private final Index<Vertex> metaclassIndex;
+    private final Index<Vertex> metaClassIndex;
 
     /**
      * The Blueprints graph.
@@ -130,33 +130,46 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         this.graph = new InternalIdGraph(baseGraph);
 
-        indexedMetaclasses = new ArrayList<>();
-        metaclassIndex = Optional.ofNullable(graph.getIndex(KEY_METACLASSES, Vertex.class))
+        indexedMetaClasses = new ArrayList<>();
+        metaClassIndex = Optional.ofNullable(graph.getIndex(KEY_METACLASSES, Vertex.class))
                 .orElseGet(() -> graph.createIndex(KEY_METACLASSES, Vertex.class));
     }
 
     /**
      * Builds the {@link Id} used to identify a {@link ClassBean} {@link Vertex}.
      *
-     * @param metaclass the {@link ClassBean} to build an {@link Id} from
+     * @param metaClass the {@link ClassBean} to build an {@link Id} from
      *
      * @return the create {@link Id}
      */
     @Nonnull
-    private static Id buildId(ClassBean metaclass) {
-        return StringId.of(metaclass.name() + '@' + metaclass.uri());
+    private static Id buildId(ClassBean metaClass) {
+        return StringId.of(metaClass.name() + '@' + metaClass.uri());
     }
 
     /**
-     * Formats a property key as {@code prefix:suffix}.
+     * Formats a property as {@code prefix:suffix}.
      *
-     * @param prefix the prefix of the property key
-     * @param suffix the suffix of the property key
+     * @param prefix the prefix of the property
+     * @param suffix the suffix of the property
      *
-     * @return the formatted property key
+     * @return the formatted property
      */
-    protected static String formatProperty(String prefix, Object suffix) {
-        return prefix + ':' + suffix;
+    @Nonnull
+    protected static String formatProperty(Object prefix, Object suffix) {
+        return prefix + ":" + suffix;
+    }
+
+    /**
+     * Formats a label.
+     *
+     * @param label the label to format
+     *
+     * @return the formatted label
+     */
+    @Nonnull
+    protected static String formatLabel(Object label) {
+        return String.valueOf(label);
     }
 
     @Override
@@ -176,10 +189,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         GraphHelper.copyGraph(graph, to.graph);
 
-        indexedMetaclasses.forEach(m -> {
-            Iterable<Vertex> metaclasses = to.metaclassIndex.get(KEY_NAME, m.name());
-            checkArgument(MoreIterables.isEmpty(metaclasses), "Index is not consistent");
-            to.metaclassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+        indexedMetaClasses.forEach(m -> {
+            Iterable<Vertex> metaClasses = to.metaClassIndex.get(KEY_NAME, m.name());
+            checkArgument(MoreIterables.isEmpty(metaClasses), "Index is not consistent");
+            to.metaClassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         });
     }
 
@@ -216,14 +229,9 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
         Optional<Edge> containerEdge = MoreIterables.onlyElement(containerEdges);
 
-        Optional<SingleFeatureBean> container = Optional.empty();
-        if (containerEdge.isPresent()) {
-            String featureName = containerEdge.get().getProperty(KEY_CONTAINING_FEATURE);
-            Vertex containerVertex = containerEdge.get().getVertex(Direction.IN);
-            container = Optional.of(SingleFeatureBean.of(StringId.from(containerVertex.getId()), featureName));
-        }
-
-        return container;
+        return containerEdge.map(e -> SingleFeatureBean.of(
+                StringId.from(e.getVertex(Direction.IN).getId()),
+                e.getProperty(KEY_CONTAINING_FEATURE)));
     }
 
     @Override
@@ -232,12 +240,12 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         checkNotNull(container);
 
         Vertex containmentVertex = getOrCreate(id);
+        Vertex containerVertex = getOrCreate(container.owner());
 
         containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
 
-        Vertex containerVertex = getOrCreate(container.id());
         Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
-        edge.setProperty(KEY_CONTAINING_FEATURE, container.name());
+        edge.setProperty(KEY_CONTAINING_FEATURE, container.id());
     }
 
     @Override
@@ -251,7 +259,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
         Optional<Vertex> vertex = get(id);
@@ -260,53 +268,55 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             return Optional.empty();
         }
 
-        Iterable<Vertex> metaclassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf");
-        Optional<Vertex> metaclassVertex = MoreIterables.onlyElement(metaclassVertices);
+        Iterable<Vertex> metaClassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF);
+        Optional<Vertex> metaClassVertex = MoreIterables.onlyElement(metaClassVertices);
 
-        return metaclassVertex.map(v -> ClassBean.of(v.getProperty(KEY_NAME), v.getProperty(KEY_NS_URI)));
+        return metaClassVertex.map(v -> ClassBean.of(
+                v.getProperty(KEY_NAME),
+                v.getProperty(KEY_NS_URI)));
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
-        checkNotNull(metaclass);
+        checkNotNull(metaClass);
 
-        Iterable<Vertex> metaclassVertices = metaclassIndex.get(KEY_NAME, metaclass.name());
-        Vertex metaclassVertex = MoreIterables.onlyElement(metaclassVertices).orElse(null);
+        Iterable<Vertex> metaClassVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
+        Vertex metaClassVertex = MoreIterables.onlyElement(metaClassVertices).orElse(null);
 
-        if (isNull(metaclassVertex)) {
-            metaclassVertex = graph.addVertex(buildId(metaclass).toString());
-            metaclassVertex.setProperty(KEY_NAME, metaclass.name());
-            metaclassVertex.setProperty(KEY_NS_URI, metaclass.uri());
+        if (isNull(metaClassVertex)) {
+            metaClassVertex = graph.addVertex(buildId(metaClass).toString());
+            metaClassVertex.setProperty(KEY_NAME, metaClass.name());
+            metaClassVertex.setProperty(KEY_NS_URI, metaClass.uri());
 
-            metaclassIndex.put(KEY_NAME, metaclass.name(), metaclassVertex);
-            indexedMetaclasses.add(metaclass);
+            metaClassIndex.put(KEY_NAME, metaClass.name(), metaClassVertex);
+            indexedMetaClasses.add(metaClass);
         }
 
         Vertex vertex = getOrCreate(id);
 
-        // Remove the previous metaclass if present
-        vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF, "kyanosInstanceOf").forEach(Edge::remove);
+        // Remove the previous meta-class if present
+        vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF).forEach(Edge::remove);
 
-        vertex.addEdge(KEY_INSTANCE_OF, metaclassVertex);
+        vertex.addEdge(KEY_INSTANCE_OF, metaClassVertex);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassBean metaclass, boolean strict) {
+    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         // There is no strict instance of an abstract class
-        if (metaclass.isAbstract() && strict) {
+        if (metaClass.isAbstract() && strict) {
             return Collections.emptyList();
         }
         else {
-            Set<ClassBean> allInstances = strict ? new HashSet<>() : metaclass.inheritedBy();
-            allInstances.add(metaclass);
+            Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();
+            allInstances.add(metaClass);
 
-            // Get all vertices that are indexed with one of the metaclass
+            // Get all vertices that are indexed with one of the meta-class
             return allInstances.stream()
-                    .map(mc -> metaclassIndex.get(KEY_NAME, mc.name()))
+                    .map(mc -> metaClassIndex.get(KEY_NAME, mc.name()))
                     .flatMap(MoreIterables::stream)
-                    .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF, "kyanosInstanceOf"))
+                    .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
                     .flatMap(MoreIterables::stream)
                     .map(v -> StringId.from(v.getId()))
                     .collect(Collectors.toList());
@@ -343,9 +353,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     /**
      * Provides a direct access to the underlying graph.
      * <p>
-     * This method is public for tool compatibility (see the
-     * <a href="https://github.com/atlanmod/Mogwai">Mogwaï</a>) framework, NeoEMF consistency is not guaranteed if
-     * the graph is modified manually.
+     * This method is public for tool compatibility (see the <a href="https://github.com/atlanmod/Mogwai">Mogwaï</a>)
+     * framework, NeoEMF consistency is not guaranteed if the graph is modified manually.
      *
      * @return the underlying Blueprints {@link IdGraph}
      */
@@ -410,8 +419,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             /**
              * {@inheritDoc}
              * <p>
-             * If the {@link Edge} references a {@link Vertex} with no more incoming {@link Edge}, the referenced
-             * {@link Vertex} is removed as well.
+             * If the {@link Edge} references a {@link Vertex} with no more incoming {@link Edge}, the referenced {@link
+             * Vertex} is removed as well.
              */
             @Override
             public void remove() {

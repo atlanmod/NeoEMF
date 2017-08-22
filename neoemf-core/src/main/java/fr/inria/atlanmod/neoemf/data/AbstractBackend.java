@@ -56,8 +56,8 @@ public abstract class AbstractBackend implements Backend {
     }
 
     /**
-     * Cleanly closes this back-end, and releases any system resources associated with it.
-     * All modifications are saved before closing.
+     * Cleanly closes this back-end, and releases any system resources associated with it. All modifications are saved
+     * before closing.
      * <p>
      * If the back-end is already closed, then invoking this method has no effect.
      *

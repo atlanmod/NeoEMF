@@ -93,8 +93,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
-        thenIncrementAndSave(() -> super.metaclassFor(id, metaclass), 1);
+    public void metaClassFor(Id id, ClassBean metaClass) {
+        thenIncrementAndSave(() -> super.metaClassFor(id, metaClass), 1);
     }
 
     @Nonnull
@@ -210,8 +210,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     /**
-     * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when
-     * {@code count % chunk == 0}.
+     * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when {@code
+     * count % chunk == 0}.
      *
      * @param method the method to call before saving
      * @param count  the number of changes made
@@ -227,8 +227,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     /**
-     * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when
-     * {@code count % chunk == 0}.
+     * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when {@code
+     * count % chunk == 0}.
      *
      * @param method the method to call before saving
      * @param count  the number of changes made

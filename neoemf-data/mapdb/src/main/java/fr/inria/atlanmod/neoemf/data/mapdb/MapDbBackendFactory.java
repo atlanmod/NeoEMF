@@ -34,7 +34,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.common.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 
 /**
  * A factory that creates {@link MapDbBackend} instances.

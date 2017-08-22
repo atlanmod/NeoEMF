@@ -13,12 +13,12 @@
  * Provides classes related to data management specific to a Blueprints implementation.
  * <p>
  * This package provides {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} and {@link
- * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} classes, that correspond to Blueprints
- * specific implementations of {@link fr.inria.atlanmod.neoemf.data.PersistentBackend} and {@link
+ * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} classes, that correspond to Blueprints specific
+ * implementations of {@link fr.inria.atlanmod.neoemf.data.PersistentBackend} and {@link
  * fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
  * <p>
- * The {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} has to be registered to
- * enable {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a Blueprints storage:
+ * The {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} has to be registered to enable {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a Blueprints storage:
  * <pre>{@code
  * BackendFactoryRegistry.register(BlueprintsBackendFactory.getInstance());
  * }</pre>

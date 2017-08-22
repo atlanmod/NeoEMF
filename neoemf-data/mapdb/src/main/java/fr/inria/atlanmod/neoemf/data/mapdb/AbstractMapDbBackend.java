@@ -167,18 +167,18 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
         return get(instances, id);
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
-        checkNotNull(metaclass);
+        checkNotNull(metaClass);
 
-        put(instances, id, metaclass);
+        put(instances, id, metaClass);
     }
 
     @Nonnull

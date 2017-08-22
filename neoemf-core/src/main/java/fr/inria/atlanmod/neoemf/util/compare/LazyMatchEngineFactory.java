@@ -23,8 +23,8 @@ import org.eclipse.emf.compare.match.impl.MatchEngineFactoryImpl;
 import org.eclipse.emf.compare.utils.UseIdentifiers;
 
 /**
- * A {@link MatchEngineFactoryImpl} that creates instances of {@link IComparisonFactory} for comparing
- * {@link PersistentEObject}s.
+ * A {@link MatchEngineFactoryImpl} that creates instances of {@link IComparisonFactory} for comparing {@link
+ * PersistentEObject}s.
  *
  * @see LazyEqualityHelperFactory
  */

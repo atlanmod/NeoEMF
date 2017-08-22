@@ -21,8 +21,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
  * BackendConfiguration}.
  * <p>
- * Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during
- * database creation.
+ * Implementations of this interface are called dynamically by {@link BlueprintsBackendFactory} during database
+ * creation.
  *
  * @see BlueprintsBackendFactory
  */

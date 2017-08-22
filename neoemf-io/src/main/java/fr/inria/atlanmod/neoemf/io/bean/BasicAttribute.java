@@ -25,15 +25,6 @@ public class BasicAttribute extends AbstractBasicFeature {
     private String value;
 
     /**
-     * Constructs a new {@code BasicAttribute} with the given {@code name}.
-     *
-     * @param name the name of this attribute
-     */
-    public BasicAttribute(String name) {
-        super(name);
-    }
-
-    /**
      * Converts a {@link BasicReference} to an {@code BasicAttribute}.
      *
      * @param reference the reference to convert
@@ -41,8 +32,9 @@ public class BasicAttribute extends AbstractBasicFeature {
      * @return a new attribute
      */
     public static BasicAttribute from(BasicReference reference) {
-        BasicAttribute attribute = new BasicAttribute(reference.name());
-        attribute.id(reference.id());
+        BasicAttribute attribute = new BasicAttribute();
+        attribute.name(reference.name());
+        attribute.owner(reference.owner());
         attribute.index(reference.index());
         attribute.value(reference.idReference().value());
         return attribute;

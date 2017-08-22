@@ -20,8 +20,8 @@
  * <p>
  * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following
  * code creates a map that tells the framework to use a HBase backend in read-only mode, and a cache the accessed
- * features to retrieve them efficiently. The read-only nature is a HBase specific option, while the caching behavior
- * is defined at the core level.
+ * features to retrieve them efficiently. The read-only nature is a HBase specific option, while the caching behavior is
+ * defined at the core level.
  * <pre>{@code
  * // Create the option map
  * Map<String, Object> options = HBaseOptions.builder()

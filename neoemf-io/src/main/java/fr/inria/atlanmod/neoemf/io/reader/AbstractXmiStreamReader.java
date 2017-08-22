@@ -158,7 +158,8 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
      */
     private void processAttribute(@Nullable String prefix, String name, String value) {
         if (!isSpecialAttribute(prefix, name, value)) {
-            BasicAttribute attribute = new BasicAttribute(name);
+            BasicAttribute attribute = new BasicAttribute();
+            attribute.name(name);
             attribute.index(0);
             attribute.value(value);
 
@@ -193,8 +194,9 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             final String prefixedValue = XmlConstants.format(prefix, name);
 
             if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // A reference of the previous element
-                BasicReference reference = new BasicReference(currentElement.name());
-                reference.id(previousIds.getLast());
+                BasicReference reference = new BasicReference();
+                reference.name(currentElement.name());
+                reference.owner(previousIds.getLast());
                 reference.idReference(BasicId.original(value));
                 notifyReference(reference);
 
@@ -212,7 +214,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
                 return true;
             }
 
-            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) { // The metaclass of the current element
+            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) { // The meta-class of the current element
                 processMetaClass(value);
 
                 return true;
@@ -223,10 +225,10 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     }
 
     /**
-     * Processes a metaclass attribute from the {@code prefixedValue}, and defines is as the metaclass of the given
+     * Processes a meta-class attribute from the {@code prefixedValue}, and defines is as the meta-class of the given
      * {@code element}.
      *
-     * @param prefixedValue the value representing the metaclass
+     * @param prefixedValue the value representing the meta-class
      *
      * @see #PATTERN_PREFIXED_VALUE
      */
@@ -236,10 +238,10 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromPrefix(m.group(1));
             String name = m.group(2);
 
-            currentElement.metaclass(new BasicMetaclass(ns, name));
+            currentElement.metaClass(new BasicMetaclass(ns, name));
         }
         else {
-            throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
+            throw new IllegalArgumentException("Malformed meta-class " + prefixedValue);
         }
     }
 }

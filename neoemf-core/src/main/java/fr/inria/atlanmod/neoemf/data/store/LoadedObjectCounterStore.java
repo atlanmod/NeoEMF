@@ -76,15 +76,15 @@ public class LoadedObjectCounterStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         register(id);
-        return super.metaclassOf(id);
+        return super.metaClassOf(id);
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         register(id);
-        super.metaclassFor(id, metaclass);
+        super.metaClassFor(id, metaClass);
     }
 
     @Nonnull
@@ -355,7 +355,7 @@ public class LoadedObjectCounterStore extends AbstractStore {
      * @see #register(Id)
      */
     private void register(FeatureBean key) {
-        register(key.id());
+        register(key.owner());
     }
 
     /**

@@ -33,73 +33,76 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 public abstract class AbstractFeatureBean implements FeatureBean {
 
     /**
-     * The position that indicates that this feature has no position.
+     * The position that indicates that a feature has no position.
      */
     private static final int NO_POSITION = -1;
 
     /**
-     * The identifier of the object.
+     * The identifier of the object using the feature.
      */
     @Nonnull
-    protected final Id id;
+    protected final Id owner;
 
     /**
-     * The name of the feature of the object.
+     * The identifier of the feature.
      */
     @Nonnull
-    protected final String name;
+    protected final String id;
 
     /**
-     * The position of this key.
+     * The position of the feature in its {@code owner}.
      */
     @Nonnegative
     protected final int position;
 
     /**
-     * Constructs a new {@code AbstractFeatureBean} with the given {@code id} and the given {@code name}.
+     * Constructs a new {@code AbstractFeatureBean} with the given {@code owner} and the given {@code id}.
      *
-     * @param id   the identifier of the {@link PersistentEObject}
-     * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param owner the identifier of the {@link PersistentEObject} using the feature
+     * @param id    the identifier of the {@link EStructuralFeature} of the {@code owner}
+     *
+     * @throws NullPointerException if any argument is {@code null}
      */
-    protected AbstractFeatureBean(Id id, String name) {
-        this(id, name, NO_POSITION);
+    protected AbstractFeatureBean(Id owner, String id) {
+        this(owner, id, NO_POSITION);
     }
 
     /**
-     * Constructs a new {@code ManyFeatureBean} with the given {@code id} and the given {@code name}, which are
-     * used as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with
-     * the {@code position}.
+     * Constructs a new {@code ManyFeatureBean} with the given {@code id} and the given {@code name}, which are used as
+     * a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
+     * {@code position}.
      *
-     * @param id       the identifier of the {@link PersistentEObject}
-     * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
-     * @param position the position of the {@link EStructuralFeature}
+     * @param owner    the identifier of the {@link PersistentEObject} using the feature
+     * @param id       the identifier of the {@link EStructuralFeature} of the {@code owner}
+     * @param position the position of the {@link EStructuralFeature} in the {@code owner}
      *
      * @throws NullPointerException     if any argument is {@code null}
-     * @throws IllegalArgumentException if the {@code position} is negative, if {@code isMany() == true}
+     * @throws IllegalArgumentException if the {@code position} is negative when {@code isMany() == true}
      */
-    protected AbstractFeatureBean(Id id, String name, int position) {
+    protected AbstractFeatureBean(Id owner, String id, int position) {
+        this.owner = checkNotNull(owner);
         this.id = checkNotNull(id);
-        this.name = checkNotNull(name);
 
         if (isMany()) {
-            checkArgument(position >= 0, "Position must be >= 0");
+            checkArgument(position >= 0, "position must be >= 0");
         }
         this.position = position;
     }
 
     @Nonnull
     @Override
-    public Id id() {
-        return id;
+    public Id owner() {
+        return owner;
     }
 
     @Nonnull
     @Override
-    public String name() {
-        return name;
+    public String id() {
+        return id;
     }
 
     @Nonnegative
+    @Override
     public int position() {
         return position;
     }
@@ -117,7 +120,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      */
     @Nonnull
     public ManyFeatureBean withPosition(@Nonnegative int position) {
-        return ManyFeatureBean.of(id, name, position);
+        return ManyFeatureBean.of(owner, id, position);
     }
 
     @Override
@@ -129,11 +132,11 @@ public abstract class AbstractFeatureBean implements FeatureBean {
         int comparison = Boolean.compare(isMany(), o.isMany());
 
         if (comparison == 0) {
-            comparison = id.compareTo(o.id());
+            comparison = owner.compareTo(o.owner());
         }
 
         if (comparison == 0) {
-            comparison = name.compareTo(o.name());
+            comparison = id.compareTo(o.id());
         }
 
         if (comparison == 0 && isMany()) {
@@ -145,7 +148,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, position);
+        return Objects.hash(owner, id, position);
     }
 
     @Override
@@ -160,7 +163,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
         AbstractFeatureBean that = AbstractFeatureBean.class.cast(o);
         return isMany() == that.isMany()
                 && position == that.position
-                && Objects.equals(id, that.id)
-                && Objects.equals(name, that.name);
+                && Objects.equals(owner, that.owner)
+                && Objects.equals(id, that.id);
     }
 }

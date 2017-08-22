@@ -25,23 +25,24 @@ import javax.annotation.Nonnull;
 public interface FeatureBean extends Comparable<FeatureBean>, Serializable {
 
     /**
-     * Returns the identifier of the object using this feature.
+     * Returns the identifier of the object using the feature.
      *
      * @return the identifier
      */
     @Nonnull
-    Id id();
+    Id owner();
 
     /**
-     * Returns the name of this feature.
+     * Returns the identifier of the feature.
      *
      * @return the name
      */
     @Nonnull
-    String name();
+    String id();
 
     /**
-     * Returns the position of this feature. If {@code isMany() == false}, then returns {@code -1}.
+     * Returns the position of the feature in the {@link #owner()}. If {@code isMany() == false}, then returns {@code
+     * -1}.
      *
      * @return the position
      */

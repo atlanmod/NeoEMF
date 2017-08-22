@@ -24,9 +24,9 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An object that automatically loads an object of type {@link T} by using a {@link Supplier}.
- * The value is wrapped in a {@link Reference} that is automatically refreshed on-demand when it has been cleared,
- * either by the program or by the garbage collector.
+ * An object that automatically loads an object of type {@link T} by using a {@link Supplier}. The value is wrapped in a
+ * {@link Reference} that is automatically refreshed on-demand when it has been cleared, either by the program or by the
+ * garbage collector.
  *
  * @param <T> the type of the embed value
  *

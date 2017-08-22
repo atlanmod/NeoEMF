@@ -100,13 +100,13 @@ public class LoggingStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
-        return callAndReturn(super::metaclassOf, id);
+    public Optional<ClassBean> metaClassOf(Id id) {
+        return callAndReturn(super::metaClassOf, id);
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
-        call(super::metaclassFor, id, metaclass);
+    public void metaClassFor(Id id, ClassBean metaClass) {
+        call(super::metaClassFor, id, metaClass);
     }
 
     @Override

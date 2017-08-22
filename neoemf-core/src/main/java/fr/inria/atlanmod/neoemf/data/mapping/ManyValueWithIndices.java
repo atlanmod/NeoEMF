@@ -36,8 +36,8 @@ import static java.util.Objects.isNull;
  * position.
  * <p>
  * Indices are persisted with dedicated {@link SingleFeatureBean}s containing the index of the element to store. Using
- * this approach avoid to deserialize entire {@link java.util.Collection}s to retrieve a single element, which can be
- * an important bottleneck in terms of execution time and memory consumption if the underlying model contains very large
+ * this approach avoid to deserialize entire {@link java.util.Collection}s to retrieve a single element, which can be an
+ * important bottleneck in terms of execution time and memory consumption if the underlying model contains very large
  * {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault

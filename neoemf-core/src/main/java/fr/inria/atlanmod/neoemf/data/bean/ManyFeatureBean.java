@@ -34,27 +34,29 @@ public class ManyFeatureBean extends AbstractFeatureBean {
     private static final long serialVersionUID = 7159493156068733506L;
 
     /**
-     * Constructs a new {@code ManyFeatureBean} with the given {@code id} and the given {@code name}, which are
-     * used as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with
-     * the {@code position}.
+     * Constructs a new {@code ManyFeatureBean} with the given {@code owner} and the given {@code id}, which are used as
+     * a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
+     * {@code position}.
      *
-     * @param id       the identifier of the {@link PersistentEObject}
-     * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param owner    the identifier of the {@link PersistentEObject} using the feature
+     * @param id       the identifier of the {@link EStructuralFeature} of the {@code owner}
      * @param position the position of the {@link EStructuralFeature}
+     *
+     * @throws NullPointerException     if any argument is {@code null}
+     * @throws IllegalArgumentException if the {@code position} is negative
      */
-    protected ManyFeatureBean(Id id, String name, @Nonnegative int position) {
-        super(id, name, position);
+    protected ManyFeatureBean(Id owner, String id, @Nonnegative int position) {
+        super(owner, id, position);
     }
 
     /**
-     * Creates a new {@code ManyFeatureBean} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code ManyFeatureBean} from the given {@code owner} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code from(PersistentEObject.from(object), feature, position)}.
+     * This method behaves like: {@code from(PersistentEObject.from(owner), feature, position)}.
      *
-     * @param object   the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
+     * @param owner    the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
      *                 identifier
-     * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be
-     *                 extracted
+     * @param feature  the {@link EStructuralFeature} of the {@code owner} from which the name will be extracted
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code ManyFeatureBean}
@@ -65,18 +67,18 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * @see PersistentEObject#from(Object)
      * @see EStructuralFeature#getName()
      */
-    public static ManyFeatureBean from(InternalEObject object, EStructuralFeature feature, @Nonnegative int position) {
-        return from(PersistentEObject.from(object), feature, position);
+    @Nonnull
+    public static ManyFeatureBean from(InternalEObject owner, EStructuralFeature feature, @Nonnegative int position) {
+        return from(PersistentEObject.from(owner), feature, position);
     }
 
     /**
-     * Creates a new {@code ManyFeatureBean} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code ManyFeatureBean} from the given {@code owner} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code of(object.id(), feature.getName(), position)}.
+     * This method behaves like: {@code of(owner.id(), feature.getName(), position)}.
      *
-     * @param object   the {@link PersistentEObject} from which the identifier will be extracted
-     * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be
-     *                 extracted
+     * @param owner    the {@link PersistentEObject} from which the identifier will be extracted
+     * @param feature  the {@link EStructuralFeature} of the {@code owner} from which the name will be extracted
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code ManyFeatureBean}
@@ -87,17 +89,18 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
-    public static ManyFeatureBean from(PersistentEObject object, EStructuralFeature feature, @Nonnegative int position) {
-        return of(object.id(), feature.getName(), position);
+    @Nonnull
+    public static ManyFeatureBean from(PersistentEObject owner, EStructuralFeature feature, @Nonnegative int position) {
+        return of(owner.id(), feature.getName(), position);
     }
 
     /**
-     * Creates a new {@code ManyFeatureBean} with the given {@code id} and the given {@code name}, which are used
-     * as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
-     * {@code position}.
+     * Creates a new {@code ManyFeatureBean} with the given {@code owner} and the given {@code id}, which are used as a
+     * simple representation of a feature of an object. The "multi-valued" characteristic is identified with the {@code
+     * position}.
      *
-     * @param id       the identifier of the {@link PersistentEObject}
-     * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param owner    the identifier of the {@link PersistentEObject}
+     * @param id       the identifier of the {@link EStructuralFeature} of the {@code owner}
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code ManyFeatureBean}
@@ -105,8 +108,9 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * @throws NullPointerException     if any argument is {@code null}
      * @throws IllegalArgumentException if the {@code position} is negative
      */
-    public static ManyFeatureBean of(Id id, String name, @Nonnegative int position) {
-        return new ManyFeatureBean(id, name, position);
+    @Nonnull
+    public static ManyFeatureBean of(Id owner, String id, @Nonnegative int position) {
+        return new ManyFeatureBean(owner, id, position);
     }
 
     /**
@@ -119,7 +123,7 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      */
     @Nonnull
     public SingleFeatureBean withoutPosition() {
-        return SingleFeatureBean.of(id, name);
+        return SingleFeatureBean.of(owner, id);
     }
 
     @Override
@@ -129,6 +133,6 @@ public class ManyFeatureBean extends AbstractFeatureBean {
 
     @Override
     public String toString() {
-        return String.format("ManyFeatureBean {%s # %s [%d]}", id, name, position);
+        return String.format("ManyFeatureBean {%s # %s [%d]}", owner, id, position);
     }
 }

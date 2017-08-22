@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 
 /**
- * An abstract {@link TransientBackend} that provides the default behavior of containers and metaclasses management.
+ * An abstract {@link TransientBackend} that provides the default behavior of containers and meta-classes management.
  *
  * @param <K> the type of keys to use to identify features
  */
@@ -115,18 +115,18 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
         return Optional.ofNullable(allInstances().get(id));
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
-        checkNotNull(metaclass);
+        checkNotNull(metaClass);
 
-        allInstances().put(id, metaclass);
+        allInstances().put(id, metaClass);
     }
 
     @Nonnull

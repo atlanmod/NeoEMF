@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Handler;
@@ -24,6 +25,7 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EPackage;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -80,27 +82,27 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param isRoot {@code true} if the element is a root element
      */
     protected void readElement(Id id, boolean isRoot) {
-        // Retrieve the metaclass and namespace
-        EClass metaclass = mapper.metaclassOf(id)
-                .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new)
-                .get();
+        // Retrieve the meta-class and namespace
+        EClass metaClass = mapper.metaClassOf(id)
+                .map(ClassBean::get)
+                .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
 
-        BasicNamespace ns = BasicNamespace.Registry.getInstance()
-                .register(metaclass.getEPackage().getNsPrefix(), metaclass.getEPackage().getNsURI());
+        EPackage ePackage = metaClass.getEPackage();
+        BasicNamespace ns = BasicNamespace.Registry.getInstance().register(ePackage.getNsPrefix(), ePackage.getNsURI());
 
         // Retrieve the name of the element
-        // If root it's the name of the metaclass, otherwise the name of the containing feature
-        String elementName = isRoot
-                ? metaclass.getName()
-                : mapper.containerOf(id).map(SingleFeatureBean::name).<IllegalStateException>orElseThrow(IllegalStateException::new);
+        // If root it's the name of the meta-class, otherwise the name of the containing feature
+        String elementName = isRoot ? metaClass.getName() : mapper.containerOf(id)
+                .map(SingleFeatureBean::id)
+                .<IllegalStateException>orElseThrow(IllegalStateException::new);
 
         // Create the element
         BasicElement element = new BasicElement(ns, elementName);
         element.id(BasicId.original(id.toString()));
-        element.metaclass(new BasicMetaclass(ns, metaclass.getName()));
+        element.metaClass(new BasicMetaclass(ns, metaClass.getName()));
         element.isRoot(isRoot);
 
-        // Retrieve the real name of this element
+        // Retrieve the real "name" of this element
         mapper.valueOf(SingleFeatureBean.of(id, MapperConstants.FEATURE_NAME))
                 .map(Object::toString)
                 .ifPresent(element::className);
@@ -108,11 +110,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
         notifyStartElement(element);
 
         // Process all attributes
-        metaclass.getEAllAttributes().stream()
-                .filter(attribute -> !Objects.equals(MapperConstants.FEATURE_NAME, attribute.getName())) // "name" has a special treatment
-                .forEach(attribute -> {
-                    SingleFeatureBean key = SingleFeatureBean.of(id, attribute.getName());
-                    if (!attribute.isMany()) {
+        metaClass.getEAllAttributes().stream()
+                .filter(a -> !Objects.equals(MapperConstants.FEATURE_NAME, a.getName())) // "name" has a special treatment
+                .forEach(a -> {
+                    SingleFeatureBean key = SingleFeatureBean.of(id, a.getName());
+                    if (!a.isMany()) {
                         readValue(key);
                     }
                     else {
@@ -121,14 +123,14 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
                 });
 
         // Process all references
-        metaclass.getEAllReferences()
-                .forEach(reference -> {
-                    SingleFeatureBean key = SingleFeatureBean.of(id, reference.getName());
-                    if (!reference.isMany()) {
-                        readReference(key, reference.isContainment());
+        metaClass.getEAllReferences()
+                .forEach(r -> {
+                    SingleFeatureBean key = SingleFeatureBean.of(id, r.getName());
+                    if (!r.isMany()) {
+                        readReference(key, r.isContainment());
                     }
                     else {
-                        readAllReferences(key, reference.isContainment());
+                        readAllReferences(key, r.isContainment());
                     }
                 });
 
@@ -142,10 +144,9 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      */
     protected void readValue(SingleFeatureBean key) {
         mapper.<String>valueOf(key).ifPresent(value -> {
-            BasicAttribute attribute = new BasicAttribute(key.name());
-
-            attribute.id(BasicId.original(key.id().toString()));
-
+            BasicAttribute attribute = new BasicAttribute();
+            attribute.name(key.id());
+            attribute.owner(BasicId.original(key.owner().toString()));
             attribute.value(value);
 
             notifyAttribute(attribute);
@@ -162,13 +163,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         IntStream.range(0, size).forEach(position ->
                 mapper.<String>valueOf(key.withPosition(0)).ifPresent(value -> {
-                    BasicAttribute attribute = new BasicAttribute(key.name());
-
-                    attribute.id(BasicId.original(key.id().toString()));
+                    BasicAttribute attribute = new BasicAttribute();
+                    attribute.name(key.id());
+                    attribute.owner(BasicId.original(key.owner().toString()));
                     attribute.value(value);
-
                     attribute.index(position);
-
                     attribute.isMany(true);
 
                     notifyAttribute(attribute);
@@ -183,21 +182,20 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      */
     protected void readReference(SingleFeatureBean key, boolean isContainment) {
         mapper.referenceOf(key).ifPresent(id -> {
-            BasicReference reference = new BasicReference(key.name());
-
-            reference.id(BasicId.original(key.id().toString()));
+            BasicReference reference = new BasicReference();
+            reference.name(key.id());
+            reference.owner(BasicId.original(key.owner().toString()));
             reference.idReference(BasicId.original(id.toString()));
-
             reference.isContainment(isContainment);
 
-            mapper.metaclassOf(id).ifPresent(m -> {
+            mapper.metaClassOf(id).ifPresent(m -> {
                 BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
-                reference.metaclassReference(new BasicMetaclass(ns, m.name()));
+                reference.metaClassReference(new BasicMetaclass(ns, m.name()));
             });
 
             notifyReference(reference);
 
-            next(key.id(), id);
+            next(key.owner(), id);
         });
     }
 
@@ -212,24 +210,22 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         IntStream.range(0, size).forEach(position ->
                 mapper.referenceOf(key.withPosition(position)).ifPresent(id -> {
-                    BasicReference reference = new BasicReference(key.name());
-
-                    reference.id(BasicId.original(key.id().toString()));
+                    BasicReference reference = new BasicReference();
+                    reference.name(key.id());
+                    reference.owner(BasicId.original(key.owner().toString()));
                     reference.idReference(BasicId.original(id.toString()));
-
                     reference.index(position);
-
                     reference.isContainment(isContainment);
                     reference.isMany(true);
 
-                    mapper.metaclassOf(id).ifPresent(m -> {
+                    mapper.metaClassOf(id).ifPresent(m -> {
                         BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
-                        reference.metaclassReference(new BasicMetaclass(ns, m.name()));
+                        reference.metaClassReference(new BasicMetaclass(ns, m.name()));
                     });
 
                     notifyReference(reference);
 
-                    next(key.id(), id);
+                    next(key.owner(), id);
                 }));
     }
 
@@ -241,7 +237,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      */
     protected void next(Id parent, Id next) {
         mapper.containerOf(next)
-                .filter(c -> Objects.equals(c.id(), parent))
+                .filter(c -> Objects.equals(c.owner(), parent))
                 .ifPresent(container -> readElement(next));
     }
 }

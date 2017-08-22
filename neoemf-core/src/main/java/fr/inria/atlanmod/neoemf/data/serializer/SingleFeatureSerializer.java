@@ -29,8 +29,8 @@ final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
 
     @Override
     public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
-        out.writeUTF(key.id().toString());
-        out.writeUTF(key.name());
+        out.writeUTF(key.owner().toString());
+        out.writeUTF(key.id());
     }
 
     @Nonnull

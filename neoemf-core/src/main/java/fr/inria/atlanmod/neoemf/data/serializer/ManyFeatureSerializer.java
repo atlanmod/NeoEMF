@@ -29,8 +29,8 @@ final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
 
     @Override
     public void serialize(ManyFeatureBean key, DataOutput out) throws IOException {
-        out.writeUTF(key.id().toString());
-        out.writeUTF(key.name());
+        out.writeUTF(key.owner().toString());
+        out.writeUTF(key.id());
         out.writeInt(key.position());
     }
 

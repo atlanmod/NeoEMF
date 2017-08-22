@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a element with a {@link BasicNamespace} and a name.
  */
 @ParametersAreNonnullByDefault
-public class BasicMetaclass extends AbstractBasicElement {
+public class BasicMetaclass extends AbstractNamedElement {
 
     /**
      * The instance of the default {@code BasicMetaclass}.
@@ -39,7 +39,7 @@ public class BasicMetaclass extends AbstractBasicElement {
      * @param name the name of this {@code BasicMetaclass}
      */
     public BasicMetaclass(BasicNamespace ns, String name) {
-        super(name);
+        name(name);
         this.ns = ns;
     }
 

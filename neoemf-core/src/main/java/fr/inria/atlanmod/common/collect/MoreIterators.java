@@ -69,8 +69,8 @@ public final class MoreIterators {
      *
      * @param iterator the iterator
      *
-     * @return an {@link Optional} containing the single element of the {@code iterator}, or {@link Optional#empty()}
-     * if the {@code iterator} is empty.
+     * @return an {@link Optional} containing the single element of the {@code iterator}, or {@link Optional#empty()} if
+     * the {@code iterator} is empty.
      *
      * @throws IllegalArgumentException if the {@code iterator} contains more than one element
      */

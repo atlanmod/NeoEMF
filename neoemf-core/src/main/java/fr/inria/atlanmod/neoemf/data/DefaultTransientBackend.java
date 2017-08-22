@@ -38,7 +38,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeat
     private final Map<Id, SingleFeatureBean> containers = new HashMap<>();
 
     /**
-     * An in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * An in-memory map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull

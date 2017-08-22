@@ -28,8 +28,8 @@ import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
- * {@link Object}[].
+ * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as {@link
+ * Object}[].
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWithArrays extends ManyValueMapper {

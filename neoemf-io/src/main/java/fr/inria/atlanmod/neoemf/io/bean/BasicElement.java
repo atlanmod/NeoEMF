@@ -33,9 +33,9 @@ public class BasicElement extends BasicMetaclass {
     private String className;
 
     /**
-     * The metaclassifier of this classifier.
+     * The meta-class of this classifier.
      */
-    private BasicMetaclass metaclass;
+    private BasicMetaclass metaClass;
 
     /**
      * Whether this classifier is the root element of a structure.
@@ -90,21 +90,21 @@ public class BasicElement extends BasicMetaclass {
     }
 
     /**
-     * Returns the metaclass of this classifier.
+     * Returns the meta-class of this classifier.
      *
-     * @return the metaclass
+     * @return the meta-class
      */
-    public BasicMetaclass metaclass() {
-        return metaclass;
+    public BasicMetaclass metaClass() {
+        return metaClass;
     }
 
     /**
-     * Defines the metaclassifier of this classifier.
+     * Defines the meta-class of this classifier.
      *
-     * @param metaClass the metaclassifier
+     * @param metaClass the meta-class
      */
-    public void metaclass(BasicMetaclass metaClass) {
-        this.metaclass = metaClass;
+    public void metaClass(BasicMetaclass metaClass) {
+        this.metaClass = metaClass;
     }
 
     /**

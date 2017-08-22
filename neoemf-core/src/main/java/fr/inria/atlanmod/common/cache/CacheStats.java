@@ -141,9 +141,9 @@ public final class CacheStats {
      * Returns the ratio of cache requests which were misses. This is defined as {@code missCount / requestCount}, or
      * {@code 0.0} when {@code requestCount == 0}. Note that {@code hitRate + missRate =~ 1.0}. Cache misses include all
      * requests which weren't cache hits, including requests which resulted in either successful or failed loading
-     * attempts, and requests which waited for other threads to finish loading. It is thus the case that
-     * {@code missCount &gt;= loadSuccessCount + loadFailureCount}. Multiple concurrent misses for the same key will
-     * result in a single load operation.
+     * attempts, and requests which waited for other threads to finish loading. It is thus the case that {@code
+     * missCount &gt;= loadSuccessCount + loadFailureCount}. Multiple concurrent misses for the same key will result in
+     * a single load operation.
      *
      * @return the ratio of cache requests which were misses
      */
@@ -155,8 +155,8 @@ public final class CacheStats {
 
     /**
      * Returns the total number of times that {@link Cache} lookup methods attempted to load new values. This includes
-     * both successful load operations, as well as those that threw exceptions. This is defined as
-     * {@code loadSuccessCount + loadFailureCount}.
+     * both successful load operations, as well as those that threw exceptions. This is defined as {@code
+     * loadSuccessCount + loadFailureCount}.
      *
      * @return the {@code loadSuccessCount + loadFailureCount}
      */
@@ -181,9 +181,8 @@ public final class CacheStats {
     /**
      * Returns the number of times {@link Cache} lookup methods failed to load a new value, either because no value was
      * found or an exception was thrown while loading. This is always incremented in conjunction with {@code missCount},
-     * though {@code missCount} is also incremented when cache loading completes successfully
-     * (see {@link #loadSuccessCount}). Multiple concurrent misses for the same key will result in a single load
-     * operation.
+     * though {@code missCount} is also incremented when cache loading completes successfully (see {@link
+     * #loadSuccessCount}). Multiple concurrent misses for the same key will result in a single load operation.
      *
      * @return the number of times {@link Cache} lookup methods failed to load a new value
      */
@@ -193,9 +192,8 @@ public final class CacheStats {
     }
 
     /**
-     * Returns the ratio of cache loading attempts which threw exceptions. This is defined as
-     * {@code loadFailureCount / (loadSuccessCount + loadFailureCount)}, or {@code 0.0} when
-     * {@code loadSuccessCount + loadFailureCount == 0}.
+     * Returns the ratio of cache loading attempts which threw exceptions. This is defined as {@code loadFailureCount /
+     * (loadSuccessCount + loadFailureCount)}, or {@code 0.0} when {@code loadSuccessCount + loadFailureCount == 0}.
      *
      * @return the ratio of cache loading attempts which threw exceptions
      */
@@ -218,8 +216,8 @@ public final class CacheStats {
     }
 
     /**
-     * Returns the average time spent loading new values. This is defined as
-     * {@code totalLoadTime / (loadSuccessCount + loadFailureCount)}.
+     * Returns the average time spent loading new values. This is defined as {@code totalLoadTime / (loadSuccessCount +
+     * loadFailureCount)}.
      *
      * @return the average time spent loading new values
      */

@@ -91,7 +91,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
                 writer.writeStartElement(element.name());
             }
 
-            writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(element.metaclass().ns().prefix(), element.metaclass().name()));
+            writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(element.metaClass().ns().prefix(), element.metaClass().name()));
             writer.writeAttribute(XmiConstants.XMI_ID, element.id().value());
 
             Optional<String> name = Optional.ofNullable(element.className());
@@ -134,9 +134,9 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             else {
                 writer.writeStartElement(reference.name());
 
-                Optional<BasicMetaclass> metaclass = Optional.ofNullable(reference.metaclassReference());
-                if (metaclass.isPresent()) {
-                    writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaclass.get().ns().prefix(), metaclass.get().name()));
+                Optional<BasicMetaclass> metaClass = Optional.ofNullable(reference.metaClassReference());
+                if (metaClass.isPresent()) {
+                    writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaClass.get().ns().prefix(), metaClass.get().name()));
                 }
 
                 writer.writeAttribute(XmiConstants.XMI_IDREF, reference.idReference().value());

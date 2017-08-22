@@ -94,8 +94,8 @@ public final class Bindings {
     }
 
     /**
-     * Adds {@code urls} to be scanned for binding.
-     * Theses {@link URL}s will be used to retrieves types, fields or any kind of reflective element at runtime.
+     * Adds {@code urls} to be scanned for binding. Theses {@link URL}s will be used to retrieves types, fields or any
+     * kind of reflective element at runtime.
      *
      * @param urls the {@link URL}s to add for scanning
      *
@@ -114,8 +114,8 @@ public final class Bindings {
     }
 
     /**
-     * Filters the {@code urls} to keep only those that can be related to NeoEMF.
-     * The {@link FactoryBinding} annotation is used to determine this relation.
+     * Filters the {@code urls} to keep only those that can be related to NeoEMF. The {@link FactoryBinding} annotation
+     * is used to determine this relation.
      *
      * @param urls the URLs to be filtered
      *
@@ -165,8 +165,8 @@ public final class Bindings {
     /**
      * Gets or creates a instance of the given {@code type} by using the static method named {@code name}.
      * <p>
-     * If the {@code type} is annotated by {@link Singleton} or by {@link Builder}, then the static method identified
-     * by the value of the annotation is used to get the instance. Otherwise, the default constructor is used.
+     * If the {@code type} is annotated by {@link Singleton} or by {@link Builder}, then the static method identified by
+     * the value of the annotation is used to get the instance. Otherwise, the default constructor is used.
      *
      * @param type the class to look for
      * @param <T>  the type of the instance
@@ -203,7 +203,8 @@ public final class Bindings {
     /**
      * Retrieves the {@link URI} scheme for the speficied {@code type}.
      * <p>
-     * The {@code type} must be a sub-class of {@link BackendFactory}, or must be annotated with {@link FactoryBinding}.
+     * The {@code type} must be a sub-class of {@link BackendFactory}, or must be annotated with {@link
+     * FactoryBinding}.
      *
      * @param type the type of the factory
      *
@@ -280,8 +281,8 @@ public final class Bindings {
      *
      * @return a new instance of the {@code type}
      *
-     * @throws BindingException if no instance of {@code type} is found for the given {@code value} by using the
-     *                          given {@code valueMapping}, or if an error occurs during the instantiation
+     * @throws BindingException if no instance of {@code type} is found for the given {@code value} by using the given
+     *                          {@code valueMapping}, or if an error occurs during the instantiation
      */
     @Nonnull
     public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {

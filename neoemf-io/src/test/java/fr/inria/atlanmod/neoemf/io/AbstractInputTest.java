@@ -170,15 +170,15 @@ public abstract class AbstractInputTest extends AbstractTest {
     }
 
     /**
-     * Checks that the {@code metaclass} has the given arguments.
+     * Checks that the {@code metaClass} has the given arguments.
      *
-     * @param metaclass the metaclass to test
+     * @param metaClass the meta-class to test
      * @param name      the expected name
      * @param ns        the expected namespace URI
      */
-    protected void assertValidMetaClass(BasicMetaclass metaclass, String name, BasicNamespace ns) {
-        assertThat(metaclass.name()).isEqualTo(name);
-        assertThat(metaclass.ns()).isSameAs(ns);
+    protected void assertValidMetaClass(BasicMetaclass metaClass, String name, BasicNamespace ns) {
+        assertThat(metaClass.name()).isEqualTo(name);
+        assertThat(metaClass.ns()).isSameAs(ns);
     }
 
     /**
@@ -379,7 +379,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     }
 
     /**
-     * Check that the metaclasses ('xsi:type' or 'xmi:type') are properly processed.
+     * Check that the meta-classes ('xsi:type' or 'xmi:type') are properly processed.
      */
     @Test
     @Category(Tags.IOTests.class)

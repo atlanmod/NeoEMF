@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link ReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
- * references. This behavior is specified by the {@link #referenceConverter()} method.
+ * A {@link ReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for references.
+ * This behavior is specified by the {@link #referenceConverter()} method.
  *
  * @param <M> the type of the reference after mapping
  */

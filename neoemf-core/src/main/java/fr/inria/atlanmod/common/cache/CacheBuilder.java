@@ -110,9 +110,9 @@ public interface CacheBuilder<K, V> {
     }
 
     /**
-     * Specifies the maximum weight of entries the cache may contain. Weight is determined using the
-     * {@link ToIntBiFunction} specified with {@code weigher}. Weights are measured and recorded when entries are
-     * inserted into or updated in the cache, and are thus effectively static during the lifetime of a cache entry.
+     * Specifies the maximum weight of entries the cache may contain. Weight is determined using the {@link
+     * ToIntBiFunction} specified with {@code weigher}. Weights are measured and recorded when entries are inserted into
+     * or updated in the cache, and are thus effectively static during the lifetime of a cache entry.
      * <p>
      * Note that the cache <b>may evict an entry before this limit is exceeded or temporarily exceed the threshold while
      * evicting</b>. As the cache size grows close to the maximum, the cache evicts entries that are less likely to be
@@ -137,9 +137,9 @@ public interface CacheBuilder<K, V> {
     <K1 extends K, V1 extends V> CacheBuilder<K, V> maximumWeight(@Nonnegative long maximumWeight, ToIntBiFunction<? super K1, ? extends V1> weigher);
 
     /**
-     * Specifies the maximum weight of entries the cache may contain. Weight is determined using the
-     * {@link ToIntBiFunction} specified with {@code weigher}. Weights are measured and recorded when entries are
-     * inserted into or updated in the cache, and are thus effectively static during the lifetime of a cache entry.
+     * Specifies the maximum weight of entries the cache may contain. Weight is determined using the {@link
+     * ToIntBiFunction} specified with {@code weigher}. Weights are measured and recorded when entries are inserted into
+     * or updated in the cache, and are thus effectively static during the lifetime of a cache entry.
      * <p>
      * Note that the cache <b>may evict an entry before this limit is exceeded or temporarily exceed the threshold while
      * evicting</b>. As the cache size grows close to the maximum, the cache evicts entries that are less likely to be

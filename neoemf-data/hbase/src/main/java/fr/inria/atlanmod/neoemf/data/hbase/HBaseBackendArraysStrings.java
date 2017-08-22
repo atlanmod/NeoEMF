@@ -31,8 +31,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link HBaseBackend} that use a {@link ManyValueWithArrays} mapping for storing attributes and
- * {@link ReferenceWith}/{@link ManyReferenceWith} mappings for storing references.
+ * A {@link HBaseBackend} that use a {@link ManyValueWithArrays} mapping for storing attributes and {@link
+ * ReferenceWith}/{@link ManyReferenceWith} mappings for storing references.
  *
  * @see HBaseBackendFactory
  */

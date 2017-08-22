@@ -204,8 +204,8 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param source the key identifying the multi-valued reference to move
      * @param target the key identifying the multi-valued reference where to move the reference to
      *
-     * @return an {@link Optional} containing the moved reference, or {@link Optional#empty()} if no reference has
-     * been moved
+     * @return an {@link Optional} containing the moved reference, or {@link Optional#empty()} if no reference has been
+     * moved
      */
     @Nonnull
     default Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {

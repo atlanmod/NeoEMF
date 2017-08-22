@@ -32,8 +32,8 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 
 /**
- * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
- * {@link SortedMap}s. The implementation used is specified by the {@link #getOrCreateMap(SingleFeatureBean)} method.
+ * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as {@link
+ * SortedMap}s. The implementation used is specified by the {@link #getOrCreateMap(SingleFeatureBean)} method.
  */
 @ParametersAreNonnullByDefault
 public interface ManyValueWithMaps extends ManyValueMapper {

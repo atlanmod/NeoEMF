@@ -30,8 +30,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface PersistenceOptions {
 
     /**
-     * Retrieves the instance of {@code PersistenceOptions} that is associated to a
-     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
+     * Retrieves the instance of {@code PersistenceOptions} that is associated to a {@link
+     * fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
      *
      * @param name the name of the factory
      *
@@ -43,8 +43,8 @@ public interface PersistenceOptions {
     }
 
     /**
-     * Retrieves the instance of {@code PersistenceOptions} that is associated to a
-     * {@link fr.inria.atlanmod.neoemf.util.UriBuilder} which use the given {@code scheme}.
+     * Retrieves the instance of {@code PersistenceOptions} that is associated to a {@link
+     * fr.inria.atlanmod.neoemf.util.UriBuilder} which use the given {@code scheme}.
      *
      * @param scheme the scheme of the builder
      *
@@ -102,8 +102,8 @@ public interface PersistenceOptions {
      * @return this builder (for chaining)
      *
      * @throws NullPointerException   if the {@code mapping} is {@code null}
-     * @throws InvalidOptionException if the {@code mapping} does not represent a {@link DataMapper} instance, or if
-     *                                the associated class cannot be found
+     * @throws InvalidOptionException if the {@code mapping} does not represent a {@link DataMapper} instance, or if the
+     *                                associated class cannot be found
      */
     @Nonnull
     PersistenceOptions withMapping(String mapping);

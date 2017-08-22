@@ -17,14 +17,14 @@
  * fr.inria.atlanmod.neoemf.resource.PersistentResource#load(java.util.Map)} methods. This package defines two APIs:
  * <ul> <li>{@link fr.inria.atlanmod.neoemf.option.PersistentResourceOptions}: defines the generic options available for
  * each implementation. This interface is implemented in backend-specific packages to provide backend-related
- * options.</li> <li>{@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}: a fluent API allowing to easily
- * set NeoEMF options in client applications. Backend-specific builders are also provided to integrate backend-related
+ * options.</li> <li>{@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}: a fluent API allowing to easily set
+ * NeoEMF options in client applications. Backend-specific builders are also provided to integrate backend-related
  * options.</li> </ul>
  * <p>
  * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following
  * code creates a map that tells the framework to commit the pending transaction after 10000 operations, and cache the
- * accessed features to retrieve them efficiently. <i>PersistenceOptions</i> corresponds to a
- * backend-specific implementation of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}.
+ * accessed features to retrieve them efficiently. <i>PersistenceOptions</i> corresponds to a backend-specific
+ * implementation of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions}.
  * <pre>{@code
  * // Create the option map
  * Map<String, Object> options = PersistenceOptions.builder()

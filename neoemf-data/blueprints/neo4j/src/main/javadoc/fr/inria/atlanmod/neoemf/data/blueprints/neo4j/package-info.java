@@ -16,8 +16,8 @@
  * be set in addition to the generic {@link fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions}
  * to configure precisely the behavior of a Neo4j database.
  * <p>
- * This package does not provide a dedicated {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, see
- * {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} to create a new Neo4j-Blueprints backend.
+ * This package does not provide a dedicated {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, see {@link
+ * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} to create a new Neo4j-Blueprints backend.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;

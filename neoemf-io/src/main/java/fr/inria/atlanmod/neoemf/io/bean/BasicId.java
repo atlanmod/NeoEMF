@@ -58,8 +58,8 @@ public class BasicId {
     }
 
     /**
-     * Creates a new {@code BasicId} which has a generated {@code value}, for example: a value processed from
-     * another value.
+     * Creates a new {@code BasicId} which has a generated {@code value}, for example: a value processed from another
+     * value.
      *
      * @param value the literal representation of this identifier
      *

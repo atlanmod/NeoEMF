@@ -106,8 +106,8 @@ public final class MoreIterables {
      *
      * @param iterable the iterable
      *
-     * @return an {@link Optional} containing the single element of the {@code iterable}, or {@link Optional#empty()}
-     * if the {@code iterable} is empty.
+     * @return an {@link Optional} containing the single element of the {@code iterable}, or {@link Optional#empty()} if
+     * the {@code iterable} is empty.
      *
      * @throws IllegalArgumentException if the {@code iterable} contains more than one element
      */

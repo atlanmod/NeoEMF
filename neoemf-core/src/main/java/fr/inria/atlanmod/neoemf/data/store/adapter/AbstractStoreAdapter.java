@@ -616,7 +616,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return store.containerOf(object.id())
-                .map(c -> resolve(c.id()))
+                .map(c -> resolve(c.owner()))
                 .orElse(null);
     }
 
@@ -628,7 +628,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return store.containerOf(object.id())
-                .map(c -> resolve(c.id()).eClass().getEStructuralFeature(c.name()))
+                .map(c -> resolve(c.owner()).eClass().getEStructuralFeature(c.id()))
                 .map(EObjects::asReference)
                 .orElse(null);
     }
@@ -760,7 +760,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<SingleFeatureBean> containerDesc = store.containerOf(object.id());
 
-        if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().id(), container.id())) {
+        if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().owner(), container.id())) {
             store.containerFor(object.id(), SingleFeatureBean.from(container, containerReference));
         }
     }
@@ -796,11 +796,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      *
      * @param id the {@link Id} of the model element to compute the {@link EClass} from
      *
-     * @return an {@link EClass} representing the metaclass of the element
+     * @return an {@link EClass} representing the meta-class of the element
      */
     @Nonnull
     private Optional<EClass> resolveInstanceOf(Id id) {
-        Optional<EClass> instanceOf = store.metaclassOf(id).map(ClassBean::get);
+        Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
 
         if (!instanceOf.isPresent()) {
             throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id));
@@ -817,15 +817,15 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      * @param object the object to store the instance-of information from
      */
     private void updateInstanceOf(PersistentEObject object) {
-        // If the object is already present in the cache, then the metaclass is defined
+        // If the object is already present in the cache, then the meta-class is defined
         if (nonNull(cache().get(object.id()))) {
             return;
         }
 
-        Optional<ClassBean> metaclass = store.metaclassOf(object.id());
+        Optional<ClassBean> metaClass = store.metaClassOf(object.id());
 
-        if (!metaclass.isPresent()) {
-            store.metaclassFor(object.id(), ClassBean.from(object));
+        if (!metaClass.isPresent()) {
+            store.metaClassFor(object.id(), ClassBean.from(object));
         }
 
         refresh(object);

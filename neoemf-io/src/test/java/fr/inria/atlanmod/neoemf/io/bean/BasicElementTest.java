@@ -71,16 +71,16 @@ public class BasicElementTest {
         BasicNamespace ns = BasicNamespace.getDefault();
 
         BasicElement elt0 = new BasicElement(ns, "element0");
-        assertThat(elt0.metaclass()).isNull();
+        assertThat(elt0.metaClass()).isNull();
 
         BasicMetaclass mc0 = new BasicMetaclass(ns, "mc0");
         BasicMetaclass mc1 = new BasicMetaclass(ns, "mc1");
 
-        elt0.metaclass(mc0);
-        assertThat(elt0.metaclass()).isEqualTo(mc0);
+        elt0.metaClass(mc0);
+        assertThat(elt0.metaClass()).isEqualTo(mc0);
 
-        elt0.metaclass(mc1);
-        assertThat(elt0.metaclass()).isNotEqualTo(mc0).isEqualTo(mc1);
+        elt0.metaClass(mc1);
+        assertThat(elt0.metaClass()).isNotEqualTo(mc0).isEqualTo(mc1);
     }
 
     @Test

@@ -42,12 +42,12 @@ public interface XmiConstants extends XmlConstants {
     String XMI_IDREF = XmlConstants.format(XMI_NS, "idref");
 
     /**
-     * The default attribute key representing the metaclass of an element.
+     * The default attribute key representing the meta-class of an element.
      */
     String XMI_TYPE = XmlConstants.format(XMI_NS, TYPE);
 
     /**
-     * The attribute key representing the metaclass of an element.
+     * The attribute key representing the meta-class of an element.
      */
     String XMI_XSI_TYPE = XmlConstants.format('(' + XMI_NS + '|' + XSI_NS + ')', TYPE);
 

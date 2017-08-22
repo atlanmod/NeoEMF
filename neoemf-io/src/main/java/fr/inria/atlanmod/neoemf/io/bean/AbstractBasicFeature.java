@@ -20,51 +20,39 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicFeature extends AbstractBasicElement {
+public abstract class AbstractBasicFeature extends AbstractNamedElement {
 
     /**
-     * The identifier of the feature.
+     * The identifier of element that owns this feature.
      */
-    private BasicId id;
+    private BasicId owner;
 
     /**
      * The index of the feature.
      */
-    private int index;
+    private int index = -1;
 
     /**
      * Whether this feature is multi-valued.
      */
-    private boolean isMany;
+    private boolean isMany = false;
 
     /**
-     * Constructs a new {@code AbstractBasicFeature} with the given {@code name}. Its index is initialized to {@code
-     * -1}.
+     * Returns the identifier of the element that owns this feature.
      *
-     * @param name the name of this feature
+     * @return the owner's identifier
      */
-    public AbstractBasicFeature(String name) {
-        super(name);
-        this.index = -1;
-        this.isMany = false;
+    public BasicId owner() {
+        return owner;
     }
 
     /**
-     * Returns the identifier of this feature.
+     * Defines the identifier of the element that owns this feature.
      *
-     * @return the identifier
+     * @param ownerId the owner's identifier
      */
-    public BasicId id() {
-        return id;
-    }
-
-    /**
-     * Defines the identifier of this feature.
-     *
-     * @param id the identifier
-     */
-    public void id(BasicId id) {
-        this.id = id;
+    public void owner(BasicId ownerId) {
+        this.owner = ownerId;
     }
 
     /**
@@ -123,7 +111,7 @@ public abstract class AbstractBasicFeature extends AbstractBasicElement {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
+        return Objects.hash(super.hashCode(), owner);
     }
 
     @Override
@@ -139,6 +127,6 @@ public abstract class AbstractBasicFeature extends AbstractBasicElement {
         }
 
         AbstractBasicFeature that = AbstractBasicFeature.class.cast(o);
-        return Objects.equals(id, that.id);
+        return Objects.equals(owner, that.owner);
     }
 }

@@ -31,10 +31,10 @@ import static java.util.Objects.nonNull;
 /**
  * An {@link EqualityHelper} subclass that takes into account NeoEMF lazy-loading.
  * <p>
- * Superclass' implementation assumes {@code eGet()} methods always return the same instance.
- * NeoEMF lazy-loading doesn't ensure this, in particular when internal caches are full, and stored elements are
- * discarded and have to be fetched again from the database.
- * This class overcomes these limitations by using {@link Objects#equals(Object, Object)} instead of raw equality.
+ * Superclass' implementation assumes {@code eGet()} methods always return the same instance. NeoEMF lazy-loading
+ * doesn't ensure this, in particular when internal caches are full, and stored elements are discarded and have to be
+ * fetched again from the database. This class overcomes these limitations by using {@link Objects#equals(Object,
+ * Object)} instead of raw equality.
  * <p>
  * If this class is used with models that are not stored in NeoEMF the comparison is computed in a standard way using
  * {@code ==}.
@@ -60,9 +60,8 @@ class LazyEqualityHelper extends EqualityHelper {
      * {@inheritDoc}
      * <p>
      * This method extends the default parent behavior by calling {@link Objects#equals(Object, Object)} if at least one
-     * of the compared element is an instance of {@link PersistentEObject}.
-     * Calling equals instead of {@code ==} allows to compare NeoEMF objects that have been potentially reloading
-     * between the <i>match</i> and <i>diff</i> phases.
+     * of the compared element is an instance of {@link PersistentEObject}. Calling equals instead of {@code ==} allows
+     * to compare NeoEMF objects that have been potentially reloading between the <i>match</i> and <i>diff</i> phases.
      * <p>
      * If the comparison doesn't involve a {@link PersistentEObject} it is computed in a standard way using {@code ==}.
      */

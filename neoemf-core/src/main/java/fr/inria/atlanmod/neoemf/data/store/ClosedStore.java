@@ -46,12 +46,12 @@ public final class ClosedStore implements Store {
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         throw E;
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         throw E;
     }
 
@@ -62,7 +62,7 @@ public final class ClosedStore implements Store {
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassBean metaclass, boolean strict) {
+    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         throw E;
     }
 

@@ -25,24 +25,14 @@ public class BasicReference extends AbstractBasicFeature {
     private BasicId idReference;
 
     /**
-     * The metaclass of the referenced element.
+     * The meta-class of the referenced element.
      */
-    private BasicMetaclass metaclassReference;
+    private BasicMetaclass metaClassReference;
 
     /**
      * Whether this reference is a containment.
      */
-    private boolean isContainment;
-
-    /**
-     * Constructs a new {@code BasicReference} with the given {@code name}.
-     *
-     * @param name the name of this reference
-     */
-    public BasicReference(String name) {
-        super(name);
-        this.isContainment = false;
-    }
+    private boolean isContainment = false;
 
     /**
      * Converts an {@link BasicAttribute} to a {@code BasicReference}.
@@ -52,8 +42,9 @@ public class BasicReference extends AbstractBasicFeature {
      * @return a new reference
      */
     public static BasicReference from(BasicAttribute attribute) {
-        BasicReference reference = new BasicReference(attribute.name());
-        reference.id(attribute.id());
+        BasicReference reference = new BasicReference();
+        reference.name(attribute.name());
+        reference.owner(attribute.owner());
         reference.index(attribute.index());
         reference.idReference(BasicId.original(attribute.value()));
         return reference;
@@ -83,21 +74,21 @@ public class BasicReference extends AbstractBasicFeature {
     }
 
     /**
-     * Returns the metaclass of the referenced element.
+     * Returns the meta-class of the referenced element.
      *
-     * @return the metaclass
+     * @return the meta-class
      */
-    public BasicMetaclass metaclassReference() {
-        return metaclassReference;
+    public BasicMetaclass metaClassReference() {
+        return metaClassReference;
     }
 
     /**
-     * Defines the metaclass of the referenced element.
+     * Defines the meta-class of the referenced element.
      *
-     * @param metaclassReference the metaclass
+     * @param metaClassReference the meta-class
      */
-    public void metaclassReference(BasicMetaclass metaclassReference) {
-        this.metaclassReference = metaclassReference;
+    public void metaClassReference(BasicMetaclass metaClassReference) {
+        this.metaClassReference = metaClassReference;
     }
 
     /**

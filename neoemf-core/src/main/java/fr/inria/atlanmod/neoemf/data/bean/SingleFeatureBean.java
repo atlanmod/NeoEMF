@@ -32,23 +32,25 @@ public class SingleFeatureBean extends AbstractFeatureBean {
     private static final long serialVersionUID = -2197099155190693261L;
 
     /**
-     * Constructs a new {@code SingleFeatureBean} with the given {@code id} and the given {@code name}, which are used
+     * Constructs a new {@code SingleFeatureBean} with the given {@code owner} and the given {@code id}, which are used
      * as a simple representation of a feature of an object.
      *
-     * @param id   the identifier of the {@link PersistentEObject}
-     * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param owner the identifier of the {@link PersistentEObject} using the feature
+     * @param id    the identifier of the {@link EStructuralFeature} of the {@code owner}
+     *
+     * @throws NullPointerException if any argument is {@code null}
      */
-    protected SingleFeatureBean(Id id, String name) {
-        super(id, name);
+    protected SingleFeatureBean(Id owner, String id) {
+        super(owner, id);
     }
 
     /**
-     * Creates a new {@code SingleFeatureBean} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code SingleFeatureBean} from the given {@code owner} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code from(PersistentEObject.from(object), feature)}.
+     * This method behaves like: {@code from(PersistentEObject.from(owner), feature)}.
      *
-     * @param object  the {@link InternalEObject} that will be adapted as {@link PersistentEObject}
-     * @param feature the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param owner   the {@link InternalEObject} that will be adapted as {@link PersistentEObject}
+     * @param feature the {@link EStructuralFeature} of the {@code owner}
      *
      * @return a new {@code SingleFeatureBean}
      *
@@ -58,16 +60,16 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * @see EStructuralFeature#getName()
      */
     @Nonnull
-    public static SingleFeatureBean from(InternalEObject object, EStructuralFeature feature) {
-        return from(PersistentEObject.from(object), feature);
+    public static SingleFeatureBean from(InternalEObject owner, EStructuralFeature feature) {
+        return from(PersistentEObject.from(owner), feature);
     }
 
     /**
-     * Creates a new {@code SingleFeatureBean} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code SingleFeatureBean} from the given {@code owner} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code of(object.id(), feature.getName())}.
+     * This method behaves like: {@code of(owner.id(), feature.getName())}.
      *
-     * @param object  the {@link PersistentEObject}
+     * @param owner   the {@link PersistentEObject}
      * @param feature the {@link EStructuralFeature} of the {@link PersistentEObject}
      *
      * @return a new {@code SingleFeatureBean}
@@ -78,24 +80,24 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * @see EStructuralFeature#getName()
      */
     @Nonnull
-    public static SingleFeatureBean from(PersistentEObject object, EStructuralFeature feature) {
-        return of(object.id(), feature.getName());
+    public static SingleFeatureBean from(PersistentEObject owner, EStructuralFeature feature) {
+        return of(owner.id(), feature.getName());
     }
 
     /**
-     * Creates a new {@code SingleFeatureBean} with the given {@code id} and the given {@code name}, which are used as a
-     * simple representation of a feature of an object.
+     * Creates a new {@code SingleFeatureBean} with the given {@code owner} and the given {@code id}, which are used as
+     * a simple representation of a feature of an object.
      *
-     * @param id   the identifier of the {@link PersistentEObject}
-     * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param owner the identifier of the {@link PersistentEObject} using the feature
+     * @param id    the identifier of the {@link EStructuralFeature} of the {@code owner}
      *
      * @return a new {@code SingleFeatureBean}
      *
      * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
-    public static SingleFeatureBean of(Id id, String name) {
-        return new SingleFeatureBean(id, name);
+    public static SingleFeatureBean of(Id owner, String id) {
+        return new SingleFeatureBean(owner, id);
     }
 
     @Override
@@ -105,6 +107,6 @@ public class SingleFeatureBean extends AbstractFeatureBean {
 
     @Override
     public String toString() {
-        return String.format("SingleFeatureBean {%s # %s}", id, name);
+        return String.format("SingleFeatureBean {%s # %s}", owner, id);
     }
 }

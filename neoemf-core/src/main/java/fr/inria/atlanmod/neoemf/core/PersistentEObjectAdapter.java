@@ -180,8 +180,8 @@ final class PersistentEObjectAdapter {
     }
 
     /**
-     * A proxy that handles method calls from an {@link Object}. It dynamically transforms {@link Object}s as
-     * {@link PersistentEObject}s.
+     * A proxy that handles method calls from an {@link Object}. It dynamically transforms {@link Object}s as {@link
+     * PersistentEObject}s.
      */
     @ParametersAreNonnullByDefault
     private static class PersistentEObjectInterceptor implements MethodInterceptor {

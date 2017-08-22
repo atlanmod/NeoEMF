@@ -27,9 +27,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 final class ClassSerializer implements Serializer<ClassBean> {
 
     @Override
-    public void serialize(ClassBean metaclass, DataOutput out) throws IOException {
-        out.writeUTF(metaclass.name());
-        out.writeUTF(metaclass.uri());
+    public void serialize(ClassBean metaClass, DataOutput out) throws IOException {
+        out.writeUTF(metaClass.name());
+        out.writeUTF(metaClass.uri());
     }
 
     @Nonnull

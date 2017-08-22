@@ -105,12 +105,12 @@ public class DummyElement {
     }
 
     /**
-     * Returns the metaclass of this element.
+     * Returns the meta-class of this element.
      *
-     * @return the metaclass
+     * @return the meta-class
      */
     public BasicMetaclass metaClass() {
-        return element.metaclass();
+        return element.metaClass();
     }
 
     /**

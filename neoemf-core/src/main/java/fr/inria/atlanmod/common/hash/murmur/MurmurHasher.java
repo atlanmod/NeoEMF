@@ -51,8 +51,7 @@ interface MurmurHasher extends Hasher {
     int N2_64 = 0x38495ab5;
 
     /**
-     * Finalization mix (32 bit).
-     * Force all bits of a hash block to avalanche
+     * Finalization mix (32 bit). Force all bits of a hash block to avalanche.
      */
     static int finalizationMix32(int h) {
         h ^= (h >>> 16);
@@ -64,8 +63,7 @@ interface MurmurHasher extends Hasher {
     }
 
     /**
-     * Finalization mix (64 bit).
-     * Force all bits of a hash block to avalanche
+     * Finalization mix (64 bit). Force all bits of a hash block to avalanche.
      */
     static long finalizationMix64(long h) {
         h ^= (h >>> 33);

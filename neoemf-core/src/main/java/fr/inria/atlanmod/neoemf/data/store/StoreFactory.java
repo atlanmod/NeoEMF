@@ -86,8 +86,8 @@ public final class StoreFactory extends AbstractMapperFactory {
 
     /**
      * Creates a new {@link Store} between the {@code resource} and the {@code backend} according to the specified
-     * {@code options}. If the {@code resource} is {@code null}, then the newly created store will be detached from
-     * any resource.
+     * {@code options}. If the {@code resource} is {@code null}, then the newly created store will be detached from any
+     * resource.
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *

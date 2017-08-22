@@ -25,7 +25,7 @@ public interface MapperConstants {
     Id ROOT_ID = StringId.of("ROOT");
 
     /**
-     * The property key used by the root element to define its content.
+     * The name of the property used by the root element to define its content.
      */
     String ROOT_FEATURE_NAME = "eContents";
 

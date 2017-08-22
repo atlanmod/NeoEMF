@@ -33,8 +33,8 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 public final class MoreExecutors {
 
     /**
-     * The default thread factory, used to create {@link Thread} instances that are not attached to an
-     * {@link ExecutorService}.
+     * The default thread factory, used to create {@link Thread} instances that are not attached to an {@link
+     * ExecutorService}.
      *
      * @see #executeAtExit(Runnable)
      */
@@ -51,8 +51,8 @@ public final class MoreExecutors {
     }
 
     /**
-     * Creates a new {@link ExecutorService} using {@code nThreads} processors, that will be closed when the
-     * application will exit.
+     * Creates a new {@link ExecutorService} using {@code nThreads} processors, that will be closed when the application
+     * will exit.
      *
      * @param nThreads the number of threads in the pool
      *
@@ -92,8 +92,8 @@ public final class MoreExecutors {
      * @param service           the service to close
      * @param timeout           the maximum time to wait
      * @param unit              the time unit of the timeout argument
-     * @param executeUnfinished {@code true} if the remaining tasks must be executed synchronously if they have
-     *                          not completed their execution after the shutdown request
+     * @param executeUnfinished {@code true} if the remaining tasks must be executed synchronously if they have not
+     *                          completed their execution after the shutdown request
      *
      * @return the {@code service}
      *

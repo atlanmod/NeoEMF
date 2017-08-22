@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.DataManager;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object capable of mapping features, containers and metaclasses represented as a set of key/value pair.
+ * An object capable of mapping features, containers and meta-classes represented as a set of key/value pair.
  *
  * @see ContainerMapper
  * @see ClassMapper

@@ -151,8 +151,8 @@ public class BasicNamespace {
         }
 
         /**
-         * Returns a {@link BasicNamespace} identified by the given {@code prefix}, or {@code null} if no
-         * namespace is registered with this {@code prefix}.
+         * Returns a {@link BasicNamespace} identified by the given {@code prefix}, or {@code null} if no namespace is
+         * registered with this {@code prefix}.
          *
          * @param prefix the prefix of the desired namespace
          *
@@ -166,8 +166,8 @@ public class BasicNamespace {
         }
 
         /**
-         * Returns a {@link BasicNamespace} identified by the given {@code uri}, or {@code null} if no
-         * namespace is registered with this {@code uri}.
+         * Returns a {@link BasicNamespace} identified by the given {@code uri}, or {@code null} if no namespace is
+         * registered with this {@code uri}.
          *
          * @param uri the URI of the desired namespace
          *

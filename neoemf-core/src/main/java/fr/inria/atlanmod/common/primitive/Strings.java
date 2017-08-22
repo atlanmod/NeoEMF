@@ -110,8 +110,8 @@ public final class Strings {
     }
 
     /**
-     * Encodes a {@link String} to a {@code byte} array, where each {@code byte} is represented as a two-digit
-     * unsigned hexadecimal number in lower case.
+     * Encodes a {@link String} to a {@code byte} array, where each {@code byte} is represented as a two-digit unsigned
+     * hexadecimal number in lower case.
      *
      * @param value the value to encode
      *

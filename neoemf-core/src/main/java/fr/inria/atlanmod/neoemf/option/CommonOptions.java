@@ -17,8 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A common {@link PersistenceOptions} that creates common options that are available for all back-end
- * implementations.
+ * A common {@link PersistenceOptions} that creates common options that are available for all back-end implementations.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  * <p>

@@ -62,7 +62,8 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     String NODES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.nodestore.db.mapped_memory";
 
     /**
-     * The option key to set the maximum amount of memory to use for the file buffer cache of the property storage file.
+     * The option key to set the maximum amount of memory to use for the file buffer cache of the property storage
+     * file.
      */
     String PROPERTIES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.mapped_memory";
 

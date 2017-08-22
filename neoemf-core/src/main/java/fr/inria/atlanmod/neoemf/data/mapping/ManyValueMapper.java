@@ -247,8 +247,8 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to look for
      * @param <V>   the type of value
      *
-     * @return an {@link Optional} containing the first position of the {@code value}, or {@link Optional#empty()}
-     * if the {@code key} hasn't the {@code value}
+     * @return an {@link Optional} containing the first position of the {@code value}, or {@link Optional#empty()} if
+     * the {@code key} hasn't the {@code value}
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
@@ -270,8 +270,8 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to look for
      * @param <V>   the type of value
      *
-     * @return an {@link Optional} containing the last position of the {@code value}, or {@link Optional#empty()}
-     * if the {@code key} hasn't the {@code value}
+     * @return an {@link Optional} containing the last position of the {@code value}, or {@link Optional#empty()} if the
+     * {@code key} hasn't the {@code value}
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
@@ -292,8 +292,8 @@ public interface ManyValueMapper extends ValueMapper {
      * @param key the key identifying the multi-valued attribute
      * @param <V> the type of value
      *
-     * @return an {@link Optional} containing the number of value of the {@code key}, or {@link Optional#empty()}
-     * if the {@code key} hasn't any value, or if {@code size == 0}.
+     * @return an {@link Optional} containing the number of value of the {@code key}, or {@link Optional#empty()} if the
+     * {@code key} hasn't any value, or if {@code size == 0}.
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */

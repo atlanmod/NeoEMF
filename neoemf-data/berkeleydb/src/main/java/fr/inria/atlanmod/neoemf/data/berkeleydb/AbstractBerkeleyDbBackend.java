@@ -64,7 +64,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     private final Database containers;
 
     /**
-     * A persistent map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject},
+     * A persistent map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject},
      * identified by the object {@link Id}.
      */
     @Nonnull
@@ -149,18 +149,18 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
         return get(instances, id, serializerFactory.forId(), serializerFactory.forClass());
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
-        checkNotNull(metaclass);
+        checkNotNull(metaClass);
 
-        put(instances, id, metaclass, serializerFactory.forId(), serializerFactory.forClass());
+        put(instances, id, metaClass, serializerFactory.forId(), serializerFactory.forClass());
     }
 
     @Nonnull

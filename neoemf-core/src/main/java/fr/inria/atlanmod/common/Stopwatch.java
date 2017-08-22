@@ -122,8 +122,8 @@ public final class Stopwatch {
     }
 
     /**
-     * Returns the current elapsed time shown on this stopwatch.
-     * If this stopwatch is currently running, the duration is processed according to the starting point until now.
+     * Returns the current elapsed time shown on this stopwatch. If this stopwatch is currently running, the duration is
+     * processed according to the starting point until now.
      *
      * @return the duration
      */

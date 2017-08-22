@@ -19,8 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An object that converts an object of type {@link A} to another of type {@link B}.
  * <p>
- * The reverse operation <b>may</b> be strict <i>inverse</i>, meaning that
- * {@code converter.doBackward(converter.doForward(a)).equals(a)} always {@code true}.
+ * The reverse operation <b>may</b> be strict <i>inverse</i>, meaning that {@code converter.doBackward(converter.doForward(a)).equals(a)}
+ * always {@code true}.
  *
  * @param <A> the type of the input instance
  * @param <B> the type of the output instance

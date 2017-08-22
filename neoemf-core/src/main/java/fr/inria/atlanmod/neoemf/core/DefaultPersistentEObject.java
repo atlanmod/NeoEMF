@@ -51,11 +51,11 @@ import static java.util.Objects.nonNull;
 /**
  * The default implementation of a {@link PersistentEObject}.
  * <p>
- * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses
- * to an underlying {@link Store} that interacts with the database used to store the model.
+ * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses to an
+ * underlying {@link Store} that interacts with the database used to store the model.
  * <p>
- * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all
- * existing database implementations.
+ * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all existing
+ * database implementations.
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
@@ -85,7 +85,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private StoreAdapter store;
 
     /**
-     * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id}, using {@link StringId#generate()}.
+     * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id}, using {@link
+     * StringId#generate()}.
      */
     protected DefaultPersistentEObject() {
         this(StringId.generate());
@@ -193,8 +194,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @param feature the feature
      * @param index   the index
      *
-     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the value doesn't exist in
-     * the {@code store}
+     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the value doesn't exist in the
+     * {@code store}
      *
      * @see StoreAdapter#get(InternalEObject, EStructuralFeature, int)
      * @see #attach(Object)
@@ -651,8 +652,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * providing a custom {@link StoreAdapter#NO_INDEX} features, meaning that the {@link
          * fr.inria.atlanmod.neoemf.data.Backend} has to append the result to the existing list.
          * <p>
-         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.Backend} which
-         * would otherwise need to deserialize the underlying list to add the element at the specified index.
+         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.Backend} which would
+         * otherwise need to deserialize the underlying list to add the element at the specified index.
          */
         @Override
         public boolean add(E object) {

@@ -28,7 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Resource} that provides efficient model-level operations that are not accessible using the standard EMF API.
+ * A {@link Resource} that provides efficient model-level operations that are not accessible using the standard EMF
+ * API.
  * <p>
  * For example, {@link #allInstancesOf(EClass)} is a utility method that computes efficiently all the instances of a
  * given type by delegating the operation to the underlying database, that can benefits of its internal optimizations

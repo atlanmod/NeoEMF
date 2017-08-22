@@ -28,8 +28,8 @@ import static fr.inria.atlanmod.common.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as
- * {@link List}s. The implementation used is specified by the {@link #getOrCreateList(SingleFeatureBean)} method.
+ * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" characteristic as {@link
+ * List}s. The implementation used is specified by the {@link #getOrCreateList(SingleFeatureBean)} method.
  * <p>
  * Using a {@link List}-based implementation allows to benefit from the rich Java {@link java.util.Collection} API, with
  * the cost of a small memory overhead compared to raw arrays.

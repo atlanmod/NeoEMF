@@ -32,8 +32,8 @@ public interface ContainerMapper {
      *
      * @param id the {@link Id} of the contained element
      *
-     * @return an {@link Optional} containing the container, or {@link Optional#empty()} if the {@code
-     * id} has no defined container.
+     * @return an {@link Optional} containing the container, or {@link Optional#empty()} if the {@code id} has no
+     * defined container.
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
@@ -53,8 +53,8 @@ public interface ContainerMapper {
     /**
      * Removes the container of the specified {@code id}.
      * <p>
-     * The container must be completely removed, so that a call to {@link #containerOf(Id)} returns
-     * {@link Optional#empty()}.
+     * The container must be completely removed, so that a call to {@link #containerOf(Id)} returns {@link
+     * Optional#empty()}.
      *
      * @param id the {@link Id} of the contained element
      *

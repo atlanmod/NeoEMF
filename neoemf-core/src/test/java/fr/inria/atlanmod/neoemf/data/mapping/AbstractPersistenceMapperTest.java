@@ -73,8 +73,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link DataMapper#close()}. A call to {@link DataMapper#close()} on a closed
-     * {@link DataMapper} should do nothing.
+     * Checks the behavior of {@link DataMapper#close()}. A call to {@link DataMapper#close()} on a closed {@link
+     * DataMapper} should do nothing.
      */
     @Test
     public void testCloseThenClose() {
@@ -191,53 +191,51 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Metaclasses
 
     /**
-     * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} and {@link ClassMapper#metaclassFor(Id,
-     * ClassBean)}.
+     * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
     public void testGetSetSameMetaclass() {
-        ClassBean metaclass = ClassBean.of("Metaclass0", "Uri0");
+        ClassBean metaClass = ClassBean.of("Metaclass0", "Uri0");
 
         Id id1 = StringId.of("Id1");
 
-        // Define the metaclasses
-        mapper.metaclassFor(id0, metaclass);
-        assertThat(mapper.metaclassOf(id0)).contains(metaclass);
+        // Define the meta-classes
+        mapper.metaClassFor(id0, metaClass);
+        assertThat(mapper.metaClassOf(id0)).contains(metaClass);
 
-        mapper.metaclassFor(id1, metaclass);
-        assertThat(mapper.metaclassOf(id1)).contains(metaclass);
+        mapper.metaClassFor(id1, metaClass);
+        assertThat(mapper.metaClassOf(id1)).contains(metaClass);
     }
 
     /**
-     * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} and {@link ClassMapper#metaclassFor(Id,
-     * ClassBean)}.
+     * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
     public void testGetSetDifferentMetaclass() {
-        ClassBean metaclass0 = ClassBean.of("Metaclass0", "Uri0");
-        ClassBean metaclass1 = ClassBean.of("Metaclass1", "Uri1");
+        ClassBean metaClass0 = ClassBean.of("Metaclass0", "Uri0");
+        ClassBean metaClass1 = ClassBean.of("Metaclass1", "Uri1");
 
         Id id1 = StringId.of("Id1");
 
-        // Define the metaclasses
-        mapper.metaclassFor(id0, metaclass0);
-        assertThat(mapper.metaclassOf(id0)).contains(metaclass0);
+        // Define the meta-classes
+        mapper.metaClassFor(id0, metaClass0);
+        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
 
-        mapper.metaclassFor(id1, metaclass1);
-        assertThat(mapper.metaclassOf(id1)).contains(metaclass1);
+        mapper.metaClassFor(id1, metaClass1);
+        assertThat(mapper.metaClassOf(id1)).contains(metaClass1);
 
-        // Replace the existing metaclass
-        mapper.metaclassFor(id1, metaclass0);
-        assertThat(mapper.metaclassOf(id1)).contains(metaclass0);
+        // Replace the existing meta-class
+        mapper.metaClassFor(id1, metaClass0);
+        assertThat(mapper.metaClassOf(id1)).contains(metaClass0);
     }
 
     /**
-     * Checks the behavior of {@link ClassMapper#metaclassOf(Id)} when the element doesn't exist..
+     * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} when the element doesn't exist..
      */
     @Test
     public void testGetInexistingMetaclass() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.metaclassOf(id0)).isNotPresent()
+                assertThat(mapper.metaClassOf(id0)).isNotPresent()
         )).isNull();
     }
 
@@ -246,13 +244,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Single-value attributes
 
     /**
-     * Checks the behavior of {@link ClassMapper#metaclassFor(Id, ClassBean)} with a {@code null} value.
+     * Checks the behavior of {@link ClassMapper#metaClassFor(Id, ClassBean)} with a {@code null} value.
      */
     @Test
     public void testSetNullMetaclass() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.metaclassFor(id0, null)
+                mapper.metaClassFor(id0, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -442,8 +440,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureBean)} when the feature doesn't contain
-     * any
-     * element.
+     * any element.
      */
     @Test
     public void testAllValuesEmpty() {
@@ -552,8 +549,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature
-     * is not defined yet.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature is not
+     * defined yet.
      */
     @Test
     public void testAddAllValuesFromStart() {
@@ -569,8 +566,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature
-     * is not defined yet.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature is not
+     * defined yet.
      */
     @Test
     public void testAddAllValuesWithOffset() {
@@ -585,8 +582,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature
-     * already has values.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature already has
+     * values.
      */
     @Test
     public void testAddAllValuesFromMiddle() {
@@ -610,8 +607,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature
-     * already has values.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature already has
+     * values.
      */
     @Test
     public void testAddAllValuesFromEnd() {
@@ -632,8 +629,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty
-     * collection.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty collection.
      */
     @Test
     public void testAddAllValuesEmpty() {
@@ -645,8 +641,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a collection
-     * that contains {@code null}.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a collection that
+     * contains {@code null}.
      */
     @Test
     public void testAddAllValuesContainsNull() {
@@ -660,8 +656,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a
-     * {@code null} collection.
+     * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a {@code null}
+     * collection.
      */
     @Test
     public void testAddAllNullValues() {
@@ -720,7 +716,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with an empty collection.
+     * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with an empty
+     * collection.
      */
     @Test
     public void testAppendAllValuesEmpty() {
@@ -844,8 +841,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} and
-     * {@link ManyValueMapper#hasAnyValue(SingleFeatureBean)}.
+     * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} and {@link
+     * ManyValueMapper#hasAnyValue(SingleFeatureBean)}.
      */
     @Test
     public void testRemoveAllValues() {
@@ -1100,8 +1097,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyValueMapper#lastIndexOfValue(SingleFeatureBean, Object)} when the value is
-     * {@code
-     * null}.
+     * {@code null}.
      */
     @Test
     public void testLastIndexOfNullValue() {
@@ -1183,7 +1179,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ReferenceMapper#referenceFor(SingleFeatureBean, Id)} with a {@code null} reference.
+     * Checks the behavior of {@link ReferenceMapper#referenceFor(SingleFeatureBean, Id)} with a {@code null}
+     * reference.
      */
     @Test
     public void testSetNullReference() {
@@ -1271,7 +1268,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#referenceOf(ManyFeatureBean)} when the reference doesn't exist.
+     * Checks the behavior of {@link ManyReferenceMapper#referenceOf(ManyFeatureBean)} when the reference doesn't
+     * exist.
      */
     @Test
     public void testGetInexistingManyReference() {
@@ -1339,8 +1337,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(SingleFeatureBean)} when the feature doesn't
-     * contain
-     * any element.
+     * contain any element.
      */
     @Test
     public void testAllReferencesEmpty() {
@@ -1452,8 +1449,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature
-     * is not defined yet.
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature is
+     * not defined yet.
      */
     @Test
     public void testAddAllReferencesFromStart() {
@@ -1469,8 +1466,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature
-     * is not defined yet.
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature is
+     * not defined yet.
      */
     @Test
     public void testAddAllReferencesWithOffset() {
@@ -1545,8 +1542,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a collection
-     * that contains {@code null}.
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a collection that
+     * contains {@code null}.
      */
     @Test
     public void testAddAllReferencesContainsNull() {
@@ -1560,8 +1557,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a
-     * {@code null} collection.
+     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a {@code null}
+     * collection.
      */
     @Test
     public void testAddAllNullReferences() {
@@ -1648,8 +1645,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} with a
-     * {@code null} collection.
+     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} with a {@code
+     * null} collection.
      */
     @Test
     public void testAppendAllNullReferences() {
@@ -1746,8 +1743,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)} and
-     * {@link ManyReferenceMapper#hasAnyReference(SingleFeatureBean)}.
+     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)} and {@link
+     * ManyReferenceMapper#hasAnyReference(SingleFeatureBean)}.
      */
     @Test
     public void testRemoveAllReferences() {
@@ -1781,8 +1778,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)} when the reference
-     * doesn't
-     * exist.
+     * doesn't exist.
      */
     @Test
     public void testRemoveAllInexistingReferences() {
@@ -1887,8 +1883,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#containsReference(SingleFeatureBean, Id)} when the reference
-     * doesn't
-     * exist.
+     * doesn't exist.
      */
     @Test
     public void testContainsInexistingReference() {
@@ -1940,8 +1935,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#indexOfReference(SingleFeatureBean, Id)} when the reference
-     * doesn't
-     * exist.
+     * doesn't exist.
      */
     @Test
     public void testIndexOfInexistingReference() {
@@ -1954,8 +1948,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#indexOfReference(SingleFeatureBean, Id)} when the reference is
-     * {@code
-     * null}.
+     * {@code null}.
      */
     @Test
     public void testIndexOfNullReference() {
@@ -2007,8 +2000,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#lastIndexOfReference(SingleFeatureBean, Id)} when the reference
-     * is
-     * {@code null}.
+     * is {@code null}.
      */
     @Test
     public void testLastIndexOfNullReference() {

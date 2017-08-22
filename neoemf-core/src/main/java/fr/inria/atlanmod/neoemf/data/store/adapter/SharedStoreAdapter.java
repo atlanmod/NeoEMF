@@ -33,11 +33,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A {@link StoreAdapter} that caches statically the rebuilt {@link PersistentEObject}s. Its content is shared among
- * all the dependencies that use it.
+ * A {@link StoreAdapter} that caches statically the rebuilt {@link PersistentEObject}s. Its content is shared among all
+ * the dependencies that use it.
  * <p>
- * This adapter is used in a fully-transient context, when {@link PersistentEObject}s are not attached to a
- * {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}.
+ * This adapter is used in a fully-transient context, when {@link PersistentEObject}s are not attached to a {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource}.
  *
  * @see PersistentEObject
  */

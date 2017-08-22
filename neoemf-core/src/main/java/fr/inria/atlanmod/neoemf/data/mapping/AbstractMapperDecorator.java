@@ -121,13 +121,13 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<ClassBean> metaclassOf(Id id) {
-        return next.metaclassOf(id);
+    public Optional<ClassBean> metaClassOf(Id id) {
+        return next.metaClassOf(id);
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
-        next.metaclassFor(id, metaclass);
+    public void metaClassFor(Id id, ClassBean metaClass) {
+        next.metaClassFor(id, metaClass);
     }
 
     @Override
@@ -138,8 +138,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allInstancesOf(ClassBean metaclass, boolean strict) {
-        return next.allInstancesOf(metaclass, strict);
+    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        return next.allInstancesOf(metaClass, strict);
     }
 
     @Nonnull

@@ -14,7 +14,6 @@ package fr.inria.atlanmod.common.log;
 import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
-import fr.inria.atlanmod.common.primitive.Strings;
 
 import java.text.MessageFormat;
 
@@ -36,25 +35,16 @@ import static java.util.Objects.isNull;
 @ParametersAreNullableByDefault
 public final class Log {
 
-    /**
-     * The Java logging manager property.
-     */
-    @Nonnull
-    private static final String LOGGING_MANAGER_PROPERTY = "java.util.logging.manager";
-
-    /**
-     * The Log4j logging manager class.
-     */
-    @Nonnull
-    private static final String LOGGING_MANAGER_LOG4J = "org.apache.logging.log4j.jul.LogManager";
-
     static {
+        final String loggingManagerProperty = "java.util.logging.manager";
+        final String loggingManagerLog4j = "org.apache.logging.log4j.jul.LogManager";
+
         // Don't modify the logging manager if it is already defined
-        if (isNull(System.getProperty(LOGGING_MANAGER_PROPERTY))) {
+        if (isNull(System.getProperty(loggingManagerProperty))) {
             try {
                 // Defines the Log4j manager if the dependencies are in the classpath
-                Class.forName(LOGGING_MANAGER_LOG4J, false, Log.class.getClassLoader());
-                System.setProperty(LOGGING_MANAGER_PROPERTY, LOGGING_MANAGER_LOG4J);
+                Class.forName(loggingManagerLog4j, false, Log.class.getClassLoader());
+                System.setProperty(loggingManagerProperty, loggingManagerLog4j);
             }
             catch (ClassNotFoundException ignored) {
                 // Use the default Java logging manager
@@ -68,7 +58,7 @@ public final class Log {
     @Nonnull
     private static final Cache<String, Logger> LOGGERS = CacheBuilder.builder()
             .softValues()
-            .build();
+            .build(AsyncLogger::new);
 
     /**
      * This class should not be instantiated.
@@ -100,7 +90,7 @@ public final class Log {
      */
     @Nonnull
     public static Logger customLogger(@Nonnull String name) {
-        return LOGGERS.get(checkNotNull(name), AsyncLogger::new);
+        return LOGGERS.get(checkNotNull(name));
     }
 
     /**

@@ -20,21 +20,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple element that has a name.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicElement {
+public abstract class AbstractNamedElement {
 
     /**
      * The name of the element.
      */
-    private final String name;
-
-    /**
-     * Constructs a new {@code AbstractBasicElement} with the given {@code name}.
-     *
-     * @param name the name of this element
-     */
-    public AbstractBasicElement(String name) {
-        this.name = name;
-    }
+    private String name;
 
     /**
      * Returns the name of this element.
@@ -43,6 +34,15 @@ public abstract class AbstractBasicElement {
      */
     public String name() {
         return name;
+    }
+
+    /**
+     * Defines the name of this element.
+     *
+     * @param name the name
+     */
+    public void name(String name) {
+        this.name = name;
     }
 
     @Override
@@ -55,11 +55,11 @@ public abstract class AbstractBasicElement {
         if (this == o) {
             return true;
         }
-        if (!AbstractBasicElement.class.isInstance(o)) {
+        if (!AbstractNamedElement.class.isInstance(o)) {
             return false;
         }
 
-        AbstractBasicElement that = AbstractBasicElement.class.cast(o);
+        AbstractNamedElement that = AbstractNamedElement.class.cast(o);
         return Objects.equals(name, that.name);
     }
 

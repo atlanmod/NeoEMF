@@ -38,8 +38,8 @@ public interface UriBuilder {
     String PREFIX = "neo-";
 
     /**
-     * Retrieves the instance of {@code UriBuilder} that is associated to a
-     * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} wearing the given {@code name}.
+     * Retrieves the instance of {@code UriBuilder} that is associated to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
+     * wearing the given {@code name}.
      *
      * @param name the name of the factory
      *
@@ -65,8 +65,8 @@ public interface UriBuilder {
     /**
      * Creates a new {@code URI} from the given {@code uri}.
      * <p>
-     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
-     * UriBuilder}. Its scheme must be registered in the {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
+     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link UriBuilder}.
+     * Its scheme must be registered in the {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
      *
      * @param uri the base file-based {@link URI}
      *

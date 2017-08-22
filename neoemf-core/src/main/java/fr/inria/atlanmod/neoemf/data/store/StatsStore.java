@@ -83,13 +83,13 @@ public class StatsStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
-        return record(() -> super.metaclassOf(id));
+    public Optional<ClassBean> metaClassOf(Id id) {
+        return record(() -> super.metaClassOf(id));
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
-        record(() -> super.metaclassFor(id, metaclass));
+    public void metaClassFor(Id id, ClassBean metaClass) {
+        record(() -> super.metaClassFor(id, metaClass));
     }
 
     @Override

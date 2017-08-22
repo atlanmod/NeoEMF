@@ -236,11 +236,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
-     * <ul>
-     * <li>{@link IsSetCachingStore}</li>
-     * <li>{@link LoggingStore}</li>
-     * </ul>
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
+     * <li>{@link IsSetCachingStore}</li> <li>{@link LoggingStore}</li> </ul>
      */
     @Test
     public void testIsSetCachingLoggingOptions() {
@@ -260,11 +257,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
-     * <ul>
-     * <li>{@link IsSetCachingStore}</li>
-     * <li>{@link SizeCachingStore}</li>
-     * </ul>
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
+     * <li>{@link IsSetCachingStore}</li> <li>{@link SizeCachingStore}</li> </ul>
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() {
@@ -284,11 +278,8 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
-     * <ul>
-     * <li>{@link SizeCachingStore}</li>
-     * <li>{@link FeatureCachingStore}</li>
-     * </ul>
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
+     * <li>{@link SizeCachingStore}</li> <li>{@link FeatureCachingStore}</li> </ul>
      */
     @Test
     public void testSizeCachingFeatureCachingOptions() {
@@ -308,14 +299,9 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
-     * <ul>
-     * <li>{@link IsSetCachingStore}</li>
-     * <li>{@link SizeCachingStore}</li>
-     * <li>{@link FeatureCachingStore}</li>
-     * <li>{@link LoggingStore}</li>
-     * <li>{@link AutoSaveStore}</li>
-     * </ul>
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
+     * <li>{@link IsSetCachingStore}</li> <li>{@link SizeCachingStore}</li> <li>{@link FeatureCachingStore}</li>
+     * <li>{@link LoggingStore}</li> <li>{@link AutoSaveStore}</li> </ul>
      */
     @Test
     public void testAllOptions() {

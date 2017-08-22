@@ -42,13 +42,13 @@ public class ClassBean implements Serializable {
     private static final long serialVersionUID = 3630220484508625215L;
 
     /**
-     * The name of the metaclass.
+     * The name of the meta-class.
      */
     @Nonnull
     private final String name;
 
     /**
-     * The literal representation of the {@link URI} of the metaclass.
+     * The literal representation of the {@link URI} of the meta-class.
      */
     @Nonnull
     private final String uri;
@@ -60,8 +60,8 @@ public class ClassBean implements Serializable {
     private final transient LazyReference<EClass> lazyClass;
 
     /**
-     * Constructs a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a
-     * simple representation of a an {@link EClass}.
+     * Constructs a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a simple
+     * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
@@ -89,8 +89,8 @@ public class ClassBean implements Serializable {
     }
 
     /**
-     * Creates a new {@code ClassBean} from the given {@code object}. The {@link EClass} will be found by
-     * calling the {@link PersistentEObject#eClass()} method.
+     * Creates a new {@code ClassBean} from the given {@code object}. The {@link EClass} will be found by calling the
+     * {@link PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(reference.getName(), reference.getEPackage().getNsURI())}.
      *

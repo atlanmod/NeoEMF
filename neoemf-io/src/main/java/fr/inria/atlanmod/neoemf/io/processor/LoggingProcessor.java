@@ -61,7 +61,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
                 element.ns().prefix(),
                 element.name(),
                 element.className(),
-                element.metaclass().name(),
+                element.metaClass().name(),
                 element.id());
 
         currentId = element.id();
@@ -84,7 +84,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
         LOG.info("[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
                 reference.isMany() ? " many[" + reference.index() + ']' : Strings.EMPTY,
-                Objects.isNull(reference.id()) ? "this" : reference.id(),
+                Objects.isNull(reference.owner()) ? "this" : reference.owner(),
                 reference.isContainment() ? 'C' : '-',
                 Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
 

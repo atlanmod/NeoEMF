@@ -50,7 +50,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
     private static final Map<Id, SingleFeatureBean> CONTAINERS = new HashMap<>();
 
     /**
-     * A shared in-memory map that stores the metaclass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * A shared in-memory map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
@@ -138,9 +138,9 @@ public final class BoundTransientBackend extends AbstractTransientBackend<String
     @Nonnull
     @Override
     protected String transform(SingleFeatureBean key) {
-        checkArgument(Objects.equals(owner, checkNotNull(key.id())),
-                "%s is not the owner of this back-end (%s)", key.id(), owner);
+        checkArgument(Objects.equals(owner, checkNotNull(key.owner())),
+                "%s is not the owner of this back-end (%s)", key.owner(), owner);
 
-        return key.name();
+        return key.id();
     }
 }

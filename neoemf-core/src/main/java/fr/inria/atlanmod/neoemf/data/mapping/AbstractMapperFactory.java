@@ -159,8 +159,8 @@ public abstract class AbstractMapperFactory {
         }
 
         /**
-         * Constructs a new {@code ConstructorParameter} with the value, and the direct {@link Class} of the
-         * {@code value}.
+         * Constructs a new {@code ConstructorParameter} with the value, and the direct {@link Class} of the {@code
+         * value}.
          *
          * @param value the value to use in the constructor
          */

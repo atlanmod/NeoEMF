@@ -21,8 +21,8 @@ import java.io.IOException;
 import static org.junit.Assume.assumeTrue;
 
 /**
- * An abstract {@link ContextualTest} that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and
- * holds the temporary file.
+ * An abstract {@link ContextualTest} that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and holds
+ * the temporary file.
  */
 public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
 

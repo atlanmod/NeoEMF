@@ -72,7 +72,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
      * Defines whether the processed document already contains identifiers. In this case, XPath processing is
      * unnecessary and this processor simply notifies the underlying processor.
      */
-    private boolean hasIds;
+    private Boolean ignore;
 
     /**
      * Constructs a new {@code XPathProcessor} with the given {@code handler}.
@@ -86,11 +86,11 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
     @Override
     public void onStartElement(BasicElement element) {
         // If the first element has an identifier, we assume that the file is ID-based.
-        if (nonNull(element.id())) {
-            hasIds = true;
+        if (isNull(ignore)) {
+            ignore = nonNull(element.id());
         }
 
-        if (!hasIds) {
+        if (!ignore) {
             // Processes the id from the path of the element in XML tree
             String path = paths.path(element.name());
 
@@ -116,7 +116,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onReference(BasicReference reference) {
-        if (!hasIds) {
+        if (!ignore) {
             // Format the reference according internal XPath management
             reference.idReference(BasicId.generated(formatPath(reference.idReference().value())));
         }
@@ -126,7 +126,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onEndElement() {
-        if (!hasIds) {
+        if (!ignore) {
             // Removes children of the last element
             paths.clearLast();
         }
@@ -136,7 +136,7 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onComplete() {
-        if (!hasIds) {
+        if (!ignore) {
             long size = paths.size();
             if (size > 1) {
                 Log.warn("Some elements have not been cleaned ({0})", size);

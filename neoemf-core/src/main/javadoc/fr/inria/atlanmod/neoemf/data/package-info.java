@@ -16,10 +16,10 @@
  * mapping. They are extended in backend-specific packages with a concrete implementation tailored to the corresponding
  * backend.
  * <p>
- * Every backend supported by NeoEMF implements the {@link fr.inria.atlanmod.neoemf.data.Backend} interface,
- * that defines a set of primitives that allows the core component to access a database and serialize model elements.
- * These specific implementations have to be registered in the {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}
- * to allow their instanciation by the framework.
+ * Every backend supported by NeoEMF implements the {@link fr.inria.atlanmod.neoemf.data.Backend} interface, that
+ * defines a set of primitives that allows the core component to access a database and serialize model elements. These
+ * specific implementations have to be registered in the {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry} to
+ * allow their instanciation by the framework.
  */
 
 package fr.inria.atlanmod.neoemf.data;

@@ -75,16 +75,16 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onInitialize() {
-        // Create the 'ROOT' node with the default metaclass
+        // Create the 'ROOT' node with the default meta-class
         BasicMetaclass metaClass = BasicMetaclass.getDefault();
 
         BasicElement rootElement = new BasicElement(metaClass.ns(), metaClass.name());
         rootElement.id(BasicId.generated(MapperConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.isRoot(false);
-        rootElement.metaclass(metaClass);
+        rootElement.metaClass(metaClass);
 
-        createElement(rootElement, MapperConstants.ROOT_ID);
+        createElement(rootElement, MapperConstants.ROOT_ID, true);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        Id id = Optional.ofNullable(attribute.id())
+        Id id = Optional.ofNullable(attribute.owner())
                 .map(this::getOrCreateId)
                 .orElseGet(previousIds::getLast);
 
@@ -103,7 +103,7 @@ public class DefaultMapperWriter implements MapperWriter {
 
     @Override
     public void onReference(BasicReference reference) {
-        Id id = Optional.ofNullable(reference.id())
+        Id id = Optional.ofNullable(reference.owner())
                 .map(this::getOrCreateId)
                 .orElseGet(previousIds::getLast);
 
@@ -130,30 +130,32 @@ public class DefaultMapperWriter implements MapperWriter {
     /**
      * Creates an element from the given {@code element} with the given {@code id}.
      *
-     * @param element the information about the new element
-     * @param id      the identifier of the element
+     * @param element     the information about the new element
+     * @param id          the identifier of the element
+     * @param isDummyRoot {@code true} if the {@code element} represents the 'ROOT' node
      *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
-    protected void createElement(BasicElement element, Id id) {
-        checkNotNull(element);
-        checkNotNull(id);
+    protected void createElement(BasicElement element, Id id, boolean isDummyRoot) {
+        updateInstanceOf(id, element.metaClass().name(), element.metaClass().ns().uri());
 
-        updateInstanceOf(id, element.metaclass().name(), element.metaclass().ns().uri());
+        if (!isDummyRoot) { // The 'ROOT' node doesn't need these features
+            Optional.ofNullable(element.className())
+                    .map(cn -> {
+                        BasicAttribute attribute = new BasicAttribute();
+                        attribute.name(MapperConstants.FEATURE_NAME);
+                        attribute.value(cn);
+                        return attribute;
+                    }).ifPresent(a -> addAttribute(id, a));
 
-        Optional.ofNullable(element.className())
-                .map(c -> {
-                    BasicAttribute attribute = new BasicAttribute(MapperConstants.FEATURE_NAME);
-                    attribute.value(c);
-                    return attribute;
-                }).ifPresent(a -> addAttribute(id, a));
+            // Add the current element as content of the 'ROOT' node
+            if (element.isRoot()) {
+                BasicReference reference = new BasicReference();
+                reference.name(MapperConstants.ROOT_FEATURE_NAME);
+                reference.isMany(true);
 
-        // Add the current element as content of the 'ROOT' node
-        if (element.isRoot()) {
-            BasicReference reference = new BasicReference(MapperConstants.ROOT_FEATURE_NAME);
-            reference.isMany(true);
-
-            addReference(MapperConstants.ROOT_ID, reference, id);
+                addReference(MapperConstants.ROOT_ID, reference, id);
+            }
         }
     }
 
@@ -168,11 +170,9 @@ public class DefaultMapperWriter implements MapperWriter {
      */
     @Nonnull
     protected Id createElement(BasicElement element) {
-        checkNotNull(element.id());
-
         Id id = createId(element.id());
 
-        createElement(element, id);
+        createElement(element, id, false);
         cache.put(element.id().value(), id);
 
         return id;
@@ -187,8 +187,6 @@ public class DefaultMapperWriter implements MapperWriter {
      */
     @Nonnull
     protected Id getOrCreateId(BasicId identifier) {
-        checkNotNull(identifier);
-
         return cache.get(identifier.value(), value -> createId(identifier));
     }
 
@@ -201,8 +199,6 @@ public class DefaultMapperWriter implements MapperWriter {
      */
     @Nonnull
     protected Id createId(BasicId identifier) {
-        checkNotNull(identifier);
-
         // If identifier has been generated we hash it, otherwise we use the original
         return identifier.isGenerated()
                 ? StringId.generate(identifier.value())
@@ -216,9 +212,6 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param attribute the attribute to add
      */
     protected void addAttribute(Id id, BasicAttribute attribute) {
-        checkNotNull(id);
-        checkNotNull(attribute);
-
         SingleFeatureBean key = SingleFeatureBean.of(id, attribute.name());
 
         if (!attribute.isMany()) {
@@ -243,10 +236,6 @@ public class DefaultMapperWriter implements MapperWriter {
      * @param idReference the identifier of the referenced element
      */
     protected void addReference(Id id, BasicReference reference, Id idReference) {
-        checkNotNull(id);
-        checkNotNull(reference);
-        checkNotNull(idReference);
-
         // Update the containment reference if needed
         if (reference.isContainment()) {
             updateContainment(id, reference.name(), idReference);
@@ -269,39 +258,31 @@ public class DefaultMapperWriter implements MapperWriter {
     }
 
     /**
-     * Updates the containment identified by its {@code name} between the {@code idContainer} and the {@code
+     * Updates the containment identified by its {@code featureId} between the {@code idContainer} and the {@code
      * idContainment}.
      *
      * @param idContainer   the identifier of the element
-     * @param name          the name of the property identifying the reference (parent -&gt; child)
+     * @param featureId     the identifier of the reference (parent -&gt; child)
      * @param idContainment the identifier of the referenced element
      */
-    protected void updateContainment(Id idContainer, String name, Id idContainment) {
-        checkNotNull(idContainer);
-        checkNotNull(name);
-        checkNotNull(idContainment);
-
+    protected void updateContainment(Id idContainer, String featureId, Id idContainment) {
         Optional<SingleFeatureBean> container = mapper.containerOf(idContainment);
-        if (!container.isPresent() || !Objects.equals(container.get().id(), idContainer)) {
-            mapper.containerFor(idContainment, SingleFeatureBean.of(idContainer, name));
+        if (!container.isPresent() || !Objects.equals(container.get().owner(), idContainer)) {
+            mapper.containerFor(idContainment, SingleFeatureBean.of(idContainer, featureId));
         }
     }
 
     /**
-     * Defines the metaclass to the element identified by the given {@code id}.
+     * Defines the meta-class to the element identified by the given {@code id}.
      *
      * @param id   the identifier of the element
-     * @param name the name of the metaclass
-     * @param uri  the uri of the metaclass
+     * @param name the name of the meta-class
+     * @param uri  the uri of the meta-class
      */
     protected void updateInstanceOf(Id id, String name, String uri) {
-        checkNotNull(id);
-        checkNotNull(name);
-        checkNotNull(uri);
-
-        Optional<ClassBean> metaclass = mapper.metaclassOf(id);
-        if (!metaclass.isPresent()) {
-            mapper.metaclassFor(id, ClassBean.of(name, uri));
+        Optional<ClassBean> metaClass = mapper.metaClassOf(id);
+        if (!metaClass.isPresent()) {
+            mapper.metaClassFor(id, ClassBean.of(name, uri));
         }
         else {
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined");

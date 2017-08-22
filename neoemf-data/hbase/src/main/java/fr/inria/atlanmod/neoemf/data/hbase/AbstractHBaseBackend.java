@@ -147,8 +147,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Put put = new Put(Strings.toBytes(id.toString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Strings.toBytes(container.id().toString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Strings.toBytes(container.name()));
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Strings.toBytes(container.owner().toString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Strings.toBytes(container.id()));
 
             table.put(put);
         }
@@ -175,7 +175,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaclassOf(Id id) {
+    public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
         return resultFrom(id)
@@ -191,14 +191,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
-        checkNotNull(metaclass);
+        checkNotNull(metaClass);
 
         try {
             Put put = new Put(Strings.toBytes(id.toString()))
-                    .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Strings.toBytes(metaclass.name()))
-                    .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Strings.toBytes(metaclass.uri()));
+                    .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Strings.toBytes(metaClass.name()))
+                    .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Strings.toBytes(metaClass.uri()));
 
             table.put(put);
         }
@@ -212,7 +212,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return resultFrom(key.id()).flatMap(r -> Optional.ofNullable(r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.name())))
+        return resultFrom(key.owner()).flatMap(r -> Optional.ofNullable(r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.id())))
                 .map(value -> {
                     try {
                         return Optional.of(serializerFactory.<V>forAny().deserialize(value));
@@ -233,8 +233,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         Optional<V> previousValue = valueOf(key);
 
         try {
-            Put put = new Put(Strings.toBytes(key.id().toString()))
-                    .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.name()), serializerFactory.<V>forAny().serialize(value));
+            Put put = new Put(Strings.toBytes(key.owner().toString()))
+                    .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.id()), serializerFactory.<V>forAny().serialize(value));
 
             table.put(put);
         }
@@ -250,8 +250,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         try {
-            Delete delete = new Delete(Strings.toBytes(key.id().toString()))
-                    .addColumns(PROPERTY_FAMILY, Strings.toBytes(key.name()));
+            Delete delete = new Delete(Strings.toBytes(key.owner().toString()))
+                    .addColumns(PROPERTY_FAMILY, Strings.toBytes(key.id()));
 
             table.delete(delete);
         }

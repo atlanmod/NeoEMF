@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object capable of mapping metaclasses.
+ * An object capable of mapping meta-classes.
  *
  * @see ClassBean
  */
@@ -28,53 +28,53 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface ClassMapper {
 
     /**
-     * Retrieves the metaclass for the specified {@code id}.
+     * Retrieves the meta-class for the specified {@code id}.
      *
      * @param id the {@link Id} of the element
      *
-     * @return an {@link Optional} containing the metaclass, or {@link Optional#empty()} if the {@code id}
-     * has no defined metaclass.
+     * @return an {@link Optional} containing the meta-class, or {@link Optional#empty()} if the {@code id} has no
+     * defined meta-class.
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<ClassBean> metaclassOf(Id id);
+    Optional<ClassBean> metaClassOf(Id id);
 
     /**
-     * Stores the {@code metaclass} for the specified {@code id}.
+     * Stores the {@code metaClass} for the specified {@code id}.
      *
      * @param id        the {@link Id} of the element
-     * @param metaclass the containing element's metaclass information to store
+     * @param metaClass the containing element's meta-class information to store
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void metaclassFor(Id id, ClassBean metaclass);
+    void metaClassFor(Id id, ClassBean metaClass);
 
     /**
-     * Checks whether the specified {@code id} has a defined metaclass.
+     * Checks whether the specified {@code id} has a defined meta-class.
      *
      * @param id the {@link Id} of the element
      *
-     * @return {@code true} if the {@code id} has a metaclass, {@code false} otherwise
+     * @return {@code true} if the {@code id} has a meta-class, {@code false} otherwise
      *
      * @throws NullPointerException if the {@code id} is {@code null}
      */
     default boolean hasMetaclass(Id id) {
-        return metaclassOf(id).isPresent();
+        return metaClassOf(id).isPresent();
     }
 
     /**
-     * Retrieves all instances of the given {@code metaclass}.
+     * Retrieves all instances of the given {@code metaClass}.
      *
-     * @param metaclass the metaclass to compute the instances of
+     * @param metaClass the meta-class to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return a {@link Iterable} containing the instances of the {@code metaclass}
+     * @return a {@link Iterable} containing the instances of the {@code metaClass}
      *
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
-    default Iterable<Id> allInstancesOf(ClassBean metaclass, boolean strict) {
+    default Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
     }
 }

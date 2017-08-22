@@ -55,7 +55,7 @@ public enum PersistentStoreOptions {
     CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore"),
 
     /**
-     * Caches metaclasses.
+     * Caches meta-classes.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.ClassCachingStore
      */

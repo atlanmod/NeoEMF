@@ -155,8 +155,7 @@ public interface StoreAdapter extends DataManager, InternalEObject.EStore {
 
     /**
      * Sets the {@code values} in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean) content} of
-     * the
-     * object's feature.
+     * the object's feature.
      * <p>
      * If the object's feature already have values, then they will be replaced by {@code values}.
      *
@@ -172,8 +171,8 @@ public interface StoreAdapter extends DataManager, InternalEObject.EStore {
      *
      * @param internalObject the object in question
      * @param feature        a {@link org.eclipse.emf.ecore.ETypedElement#isMany() many-valued} feature of the object
-     * @param index          the first index from which to start the addition within the content. If negative, then
-     *                       the addition will begin from the end of the existing content
+     * @param index          the first index from which to start the addition within the content. If negative, then the
+     *                       addition will begin from the end of the existing content
      * @param values         the value to add
      *
      * @return the first index
@@ -213,8 +212,8 @@ public interface StoreAdapter extends DataManager, InternalEObject.EStore {
     void updateContainment(PersistentEObject object, EReference containerReference, PersistentEObject container);
 
     /**
-     * Removes the containment link between {@code object} and its container, and deletes any previous link to
-     * {@code object}.
+     * Removes the containment link between {@code object} and its container, and deletes any previous link to {@code
+     * object}.
      *
      * @param object the object to remove from the containment list of its actual container
      */

@@ -66,7 +66,7 @@ public class ReadOnlyStore extends AbstractStore {
     }
 
     @Override
-    public void metaclassFor(Id id, ClassBean metaclass) {
+    public void metaClassFor(Id id, ClassBean metaClass) {
         throw E;
     }
 

@@ -89,12 +89,12 @@ public class DummyWriter implements MapperWriter {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        if (isNull(attribute.id()) || attribute.id().equals(stack.getLast().id())) {
+        if (isNull(attribute.owner()) || attribute.owner().equals(stack.getLast().id())) {
             stack.getLast().attributes().add(attribute);
         }
         else {
-            DummyElement mock = identifiers.get(attribute.id().value());
-            if (nonNull(mock) && Objects.equals(mock.id(), attribute.id())) {
+            DummyElement mock = identifiers.get(attribute.owner().value());
+            if (nonNull(mock) && Objects.equals(mock.id(), attribute.owner())) {
                 mock.attributes().add(attribute);
             }
             else {
@@ -105,12 +105,12 @@ public class DummyWriter implements MapperWriter {
 
     @Override
     public void onReference(BasicReference reference) {
-        if (isNull(reference.id()) || reference.id().equals(stack.getLast().id())) {
+        if (isNull(reference.owner()) || reference.owner().equals(stack.getLast().id())) {
             stack.getLast().references().add(reference);
         }
         else {
-            DummyElement mock = identifiers.get(reference.id().value());
-            if (nonNull(mock) && Objects.equals(mock.id(), reference.id())) {
+            DummyElement mock = identifiers.get(reference.owner().value());
+            if (nonNull(mock) && Objects.equals(mock.id(), reference.owner())) {
                 mock.references().add(reference);
             }
             else {

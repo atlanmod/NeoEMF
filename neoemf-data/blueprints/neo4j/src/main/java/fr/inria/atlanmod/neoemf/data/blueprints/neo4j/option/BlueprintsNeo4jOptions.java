@@ -35,8 +35,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions<BlueprintsNeo4jOptions> {
 
     /**
-     * Constructs a new {@code BlueprintsNeo4jOptions} and sets the graph type to
-     * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
+     * Constructs a new {@code BlueprintsNeo4jOptions} and sets the graph type to {@link
+     * BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
      */
     protected BlueprintsNeo4jOptions() {
         withIndices();
