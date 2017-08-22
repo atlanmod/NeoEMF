@@ -58,11 +58,11 @@ public class ExportTest extends AbstractIOTest {
 
         // Comparing PersistentBackend
         EObject expected = closeAtExit(context().loadResource(sourceBackend)).getContents().get(0);
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
 
         // Comparing with EMF
         expected = loadWithEMF(IOResourceManager.xmiStandard());
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -88,7 +88,7 @@ public class ExportTest extends AbstractIOTest {
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
         EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -114,7 +114,7 @@ public class ExportTest extends AbstractIOTest {
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
         EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -136,7 +136,7 @@ public class ExportTest extends AbstractIOTest {
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
         EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -158,6 +158,6 @@ public class ExportTest extends AbstractIOTest {
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
         EObject expected = loadWithEMF(IOResourceManager.xmiStandard());
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 }

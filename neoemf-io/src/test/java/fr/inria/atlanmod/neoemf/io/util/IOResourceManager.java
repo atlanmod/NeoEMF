@@ -15,7 +15,6 @@ import fr.inria.atlanmod.common.annotation.Singleton;
 import fr.inria.atlanmod.common.annotation.Static;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -51,7 +50,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI xmiStandard() {
-        return ResourceLoader.getInstance().getUri("/xmi/sampleStandard.xmi");
+        return ResourceLoader.getInstance().getResourceUri("/xmi/sampleStandard.xmi");
     }
 
     /**
@@ -61,7 +60,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI xmiWithId() {
-        return ResourceLoader.getInstance().getUri("/xmi/sampleWithId.xmi");
+        return ResourceLoader.getInstance().getResourceUri("/xmi/sampleWithId.xmi");
     }
 
     /**
@@ -71,7 +70,7 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI zxmiStandard() {
-        return ResourceLoader.getInstance().getUri("/xmi/sampleStandard.zxmi");
+        return ResourceLoader.getInstance().getResourceUri("/xmi/sampleStandard.zxmi");
     }
 
     /**
@@ -81,16 +80,38 @@ public final class IOResourceManager {
      */
     @Nonnull
     public static URI zxmiWithId() {
-        return ResourceLoader.getInstance().getUri("/xmi/sampleWithId.zxmi");
+        return ResourceLoader.getInstance().getResourceUri("/xmi/sampleWithId.zxmi");
     }
 
     /**
-     * Registers a EPackage in {@link EPackage.Registry} according to its {@code prefix} and {@code uri}, from an
-     * Ecore file.
+     * Registers all {@link EPackage}s used in test-cases.
+     */
+    public static void registerAllPackages() {
+        registerPackage("Java");
+    }
+
+    /**
+     * Registers a EPackage in {@link EPackage.Registry} according to its {@code name} and {@code uri}, from an Ecore
+     * file.
      * <p>
      * The targeted Ecore file must be present in the {@code /resources/ecore} directory of this modules.
      */
-    public static void registerPackage(String prefix) {
+    private static void registerPackage(String name) {
+        loadMetaModel(name).getContents().stream()
+                .filter(EPackage.class::isInstance)
+                .map(EPackage.class::cast)
+                .forEach(p -> EPackage.Registry.INSTANCE.put(p.getNsURI(), p));
+    }
+
+    /**
+     * Loads a {@link Resource} from an Ecore file, named as {@code name.ecore}.
+     * <p>
+     * The targeted Ecore file must be present in the {@code /resources/ecore} directory of this modules.
+     *
+     * @return the loaded resource
+     */
+    @Nonnull
+    private static Resource loadMetaModel(String name) {
         Resource.Factory.Registry.INSTANCE
                 .getExtensionToFactoryMap()
                 .put("ecore", new EcoreResourceFactoryImpl());
@@ -100,13 +121,7 @@ public final class IOResourceManager {
         final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
         rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        Resource r = rs.getResource(ResourceLoader.getInstance().getUri("/ecore/" + prefix + ".ecore"), true);
-
-        EObject eObject = r.getContents().get(0);
-        if (EPackage.class.isInstance(eObject)) {
-            EPackage pkg = checkNotNull(EPackage.class.cast(eObject));
-            EPackage.Registry.INSTANCE.put(pkg.getNsURI(), pkg);
-        }
+        return rs.getResource(ResourceLoader.getInstance().getResourceUri("/ecore/" + name + ".ecore"), true);
     }
 
     /**
@@ -127,27 +142,14 @@ public final class IOResourceManager {
          *
          * @param name the name of the resource
          *
-         * @return the URL of the resource
-         *
-         * @throws NullPointerException if the resource cannot be found
-         */
-        @Nonnull
-        private URL getUrl(String name) {
-            return checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
-        }
-
-        /**
-         * Retrieves the resource with the given {@code name}.
-         *
-         * @param name the name of the resource
-         *
          * @return a URI of the resource
          *
          * @throws NullPointerException if the resource cannot be found
          */
         @Nonnull
-        private URI getUri(String name) {
-            return URI.createURI(getUrl(name).toString());
+        private URI getResourceUri(String name) {
+            URL url = checkNotNull(getClass().getResource(name), "Unable to find the resource %s", name);
+            return URI.createURI(url.toString());
         }
 
         /**

@@ -106,7 +106,7 @@ public abstract class AbstractInputTest extends AbstractTest {
 
     @BeforeClass
     public static void registerPackages() {
-        IOResourceManager.registerPackage("java");
+        IOResourceManager.registerAllPackages();
     }
 
     @Before

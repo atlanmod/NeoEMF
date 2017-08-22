@@ -47,7 +47,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-        IOResourceManager.registerPackage("java");
+        IOResourceManager.registerAllPackages();
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class AbstractIOTest extends AbstractBackendTest {
      * @param actual   the object to check
      * @param expected the expected object
      */
-    protected void assertNotifierAreEqual(EObject actual, EObject expected) {
+    protected void assertEObjectAreEqual(EObject actual, EObject expected) {
         IMatchEngine.Factory factory = new LazyMatchEngineFactory(UseIdentifiers.NEVER);
 
         IMatchEngine.Factory.Registry registry = new MatchEngineFactoryRegistryImpl();

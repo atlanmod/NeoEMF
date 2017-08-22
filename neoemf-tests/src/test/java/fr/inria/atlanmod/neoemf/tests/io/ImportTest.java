@@ -41,7 +41,7 @@ public class ImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -59,7 +59,7 @@ public class ImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -77,7 +77,7 @@ public class ImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -95,6 +95,6 @@ public class ImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertNotifierAreEqual(actual, expected);
+        assertEObjectAreEqual(actual, expected);
     }
 }
