@@ -16,13 +16,7 @@ import fr.inria.atlanmod.common.annotation.Static;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
+import org.eclipse.gmt.modisco.java.impl.JavaPackageImpl;
 
 import java.net.URL;
 
@@ -87,41 +81,7 @@ public final class IOResourceManager {
      * Registers all {@link EPackage}s used in test-cases.
      */
     public static void registerAllPackages() {
-        registerPackage("Java");
-    }
-
-    /**
-     * Registers a EPackage in {@link EPackage.Registry} according to its {@code name} and {@code uri}, from an Ecore
-     * file.
-     * <p>
-     * The targeted Ecore file must be present in the {@code /resources/ecore} directory of this modules.
-     */
-    private static void registerPackage(String name) {
-        loadMetaModel(name).getContents().stream()
-                .filter(EPackage.class::isInstance)
-                .map(EPackage.class::cast)
-                .forEach(p -> EPackage.Registry.INSTANCE.put(p.getNsURI(), p));
-    }
-
-    /**
-     * Loads a {@link Resource} from an Ecore file, named as {@code name.ecore}.
-     * <p>
-     * The targeted Ecore file must be present in the {@code /resources/ecore} directory of this modules.
-     *
-     * @return the loaded resource
-     */
-    @Nonnull
-    private static Resource loadMetaModel(String name) {
-        Resource.Factory.Registry.INSTANCE
-                .getExtensionToFactoryMap()
-                .put("ecore", new EcoreResourceFactoryImpl());
-
-        ResourceSet rs = new ResourceSetImpl();
-
-        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
-        rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
-
-        return rs.getResource(ResourceLoader.getInstance().getResourceUri("/ecore/" + name + ".ecore"), true);
+        JavaPackageImpl.init();
     }
 
     /**
