@@ -157,7 +157,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected static String formatProperty(Object prefix, Object suffix) {
-        return prefix + ":" + suffix;
+        return String.valueOf(prefix) + ':' + String.valueOf(suffix);
     }
 
     /**

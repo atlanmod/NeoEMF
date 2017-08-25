@@ -9,7 +9,8 @@ Current SNAPSHOT.
 - __[NEW]__ `Backend` are split in 2 categories: `PersistentBackend` and `TransientBackend`
 - __[NEW]__ A generic `DefaultTransientBackend` has been created to handle elements in several in-memory `Map`s _(experimental)_
 - __[NEW]__ `URI`s are automatically created according to a common prefix ("neo-") and the lowercase name of the created `Backend` of their associated `BackendFactory`
-- __[UPD]__ `Backend`s are auto-closed by the `DirectWriteStore` in front of them
+- __[NEW]__ `BackendFactories` are linked to their associated `UriBuilder` and `PersistentOption` with annotations which are processed by `Bindings` at runtime
+- __[UPD]__ `Backend`s are auto-closed when the JVM is shutting-down
 - __[UPD]__ `StoreAdapter` is the only `EStore` implementation, which provides a bridge between EMF and `DataMapper`s
 - __[UPD]__ All back-ends and stores inherit from the `DataMapper` architecture
 - __[UPD]__ `PersistenceOptions` have been updated and simplified
@@ -17,7 +18,7 @@ Current SNAPSHOT.
 - __[UPD]__ `PersistentResource` are not linked to their `Backend`s (prefer using `Store`s)
 - __[UPD]__ `BlueprintsBackend`s use "neoInstanceOf" instead of "kyanosInstance" to link `EObject`s to their `EClass` (with support for the previous)
 - __[UPD]__ `BackendFactory#createPersistentBackend(***)` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
-- __[DEL]__ MapDB `Serializer`s have been replaced by Java serializers _(may change in the near future)_
+- __[UPD]__ MapDB `Serializer`s have been replaced by generic serializers
 - __[DEL]__ All backend-specific implementations of `PersistentStore` have been merged with those at `core`-level
 - __[DEL]__ `InvalidStore` has been replaced by `InvalidBackend`
 - __[DEL]__ `TransientStore`s have been replaced by `BoundTransientStore` (a lightweigth version of `TransientBackend`)
@@ -71,9 +72,10 @@ retrieved even if the associated `PersistentEObject` is freed from memory
 - __[UPD]__ `PersistenceBackendFactory` become `BackendFactory`: they also create `TransientBackend`s
 - __[UPD]__ `PersistenceURI` becore `URIBuilder`: static methods have been replaced by this builder
 - __[UPD]__ `PersistentStore` becore `Store`: they don't have any state, so the "Persistent" prefix does not make sense
-- __[UPD]__ `MultiFeatureKey` become `ManyFeatureKey`
-- __[UPD]__ `MetaclassValue` become `ClassDescriptor`
-- __[UPD]__ `ContainerValue` become `ContainerDescriptor`
+- __[UPD]__ `FeatureKey` become `SingleFeatureBean`
+- __[UPD]__ `MultiFeatureKey` become `ManyFeatureBean`
+- __[UPD]__ `MetaclassValue` become `ClassBean`
+- __[UPD]__ `ContainerValue` has been merged with `SingleFeatureBean`
 - __[UPD]__ `***OptionsBuilder` becore `***Options`
 
 ### Dependencies
