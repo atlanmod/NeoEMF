@@ -25,9 +25,7 @@
  * Log.error("an error message");
  * }</pre>
  * <p>
- * {@link fr.inria.atlanmod.common.log.AsyncLogger} uses Java Logging as its internal logger. A Log4j adapter is
- * preconfigured, but remains optional (see <a href="https://logging.apache.org/log4j/2.x/log4j-jul/">Log4j JDK Logging
- * Adapter</a> for more information about its integration).
+ * The default logging API used is Log4j2.
  */
 
 package fr.inria.atlanmod.common.log;

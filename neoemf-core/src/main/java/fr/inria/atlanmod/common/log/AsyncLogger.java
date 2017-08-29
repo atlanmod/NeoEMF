@@ -25,6 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
+import static java.util.Objects.isNull;
+
 /**
  * A {@link Logger} that asynchronously invokes logging operations, respecting the order of invocation.
  */
@@ -41,11 +43,28 @@ class AsyncLogger implements Logger {
     @Nonnull
     private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool(1);
 
+    static {
+        final String loggingManagerProperty = "java.util.logging.manager";
+        final String loggingManagerLog4j = "org.apache.logging.log4j.jul.LogManager";
+
+        // Don't modify the logging manager if it is already defined
+        if (isNull(System.getProperty(loggingManagerProperty))) {
+            try {
+                // Defines the Log4j manager if the dependencies are in the classpath
+                Class.forName(loggingManagerLog4j, false, Log.class.getClassLoader());
+                System.setProperty(loggingManagerProperty, loggingManagerLog4j);
+            }
+            catch (ClassNotFoundException ignored) {
+                // Use the default Java logging manager
+            }
+        }
+    }
+
     /**
      * The internal logger.
      */
     @Nonnull
-    private final java.util.logging.Logger logger;
+    private final org.apache.logging.log4j.Logger logger;
 
     /**
      * Constructs a new {@code AsyncLogger} with the given {@code name}.
@@ -53,12 +72,12 @@ class AsyncLogger implements Logger {
      * @param name the name of this logger
      */
     public AsyncLogger(String name) {
-        this.logger = java.util.logging.Logger.getLogger(name);
+        this.logger = org.apache.logging.log4j.LogManager.getLogger(name);
     }
 
     @Override
     public void log(Level level, @Nullable Throwable e, @Nullable CharSequence message, @Nullable Object... params) {
-        if (!logger.isLoggable(level.level())) {
+        if (!logger.isEnabled(level.level())) {
             // Don't send the request if the associated level is not enabled
             return;
         }
@@ -72,7 +91,7 @@ class AsyncLogger implements Logger {
                 logger.log(level.level(), formattedMessage, e);
             }
             catch (Exception fe) {
-                logger.log(java.util.logging.Level.SEVERE, Strings.EMPTY, fe); // Format exception
+                logger.log(org.apache.logging.log4j.Level.ERROR, fe); // Format exception
             }
         });
     }

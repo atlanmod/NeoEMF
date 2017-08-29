@@ -14,6 +14,7 @@ package fr.inria.atlanmod.common.log;
 import fr.inria.atlanmod.common.annotation.Static;
 import fr.inria.atlanmod.common.cache.Cache;
 import fr.inria.atlanmod.common.cache.CacheBuilder;
+import fr.inria.atlanmod.common.primitive.Strings;
 
 import java.text.MessageFormat;
 
@@ -22,7 +23,6 @@ import javax.annotation.ParametersAreNullableByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 
 import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * The factory that creates {@link Logger} instances.
@@ -34,23 +34,6 @@ import static java.util.Objects.isNull;
 @ThreadSafe
 @ParametersAreNullableByDefault
 public final class Log {
-
-    static {
-        final String loggingManagerProperty = "java.util.logging.manager";
-        final String loggingManagerLog4j = "org.apache.logging.log4j.jul.LogManager";
-
-        // Don't modify the logging manager if it is already defined
-        if (isNull(System.getProperty(loggingManagerProperty))) {
-            try {
-                // Defines the Log4j manager if the dependencies are in the classpath
-                Class.forName(loggingManagerLog4j, false, Log.class.getClassLoader());
-                System.setProperty(loggingManagerProperty, loggingManagerLog4j);
-            }
-            catch (ClassNotFoundException ignored) {
-                // Use the default Java logging manager
-            }
-        }
-    }
 
     /**
      * In-memory cache that holds loaded {@link Logger}s, identified by their name.
@@ -78,7 +61,7 @@ public final class Log {
      */
     @Nonnull
     public static Logger rootLogger() {
-        return customLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+        return customLogger(Strings.EMPTY);
     }
 
     /**

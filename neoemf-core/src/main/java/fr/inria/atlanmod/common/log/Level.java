@@ -29,48 +29,48 @@ public enum Level {
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    TRACE(java.util.logging.Level.FINER),
+    TRACE(org.apache.logging.log4j.Level.TRACE),
 
     /**
      * A general debugging event.
      */
-    DEBUG(java.util.logging.Level.FINE),
+    DEBUG(org.apache.logging.log4j.Level.DEBUG),
 
     /**
      * An event for informational purposes.
      */
-    INFO(java.util.logging.Level.INFO),
+    INFO(org.apache.logging.log4j.Level.INFO),
 
     /**
      * An event that might possible lead to an error.
      */
-    WARN(java.util.logging.Level.WARNING),
+    WARN(org.apache.logging.log4j.Level.WARN),
 
     /**
      * An error in the application, possibly recoverable.
      */
-    ERROR(java.util.logging.Level.SEVERE);
+    ERROR(org.apache.logging.log4j.Level.ERROR);
 
     /**
-     * The associated Java Logging level.
+     * The associated level.
      */
-    private final java.util.logging.Level level;
+    private final org.apache.logging.log4j.Level level;
 
     /**
      * Constructs a new {@code Level} with its associated {@code level}.
      *
-     * @param level the associated Java Logging level
+     * @param level the associated level
      */
-    Level(java.util.logging.Level level) {
+    Level(org.apache.logging.log4j.Level level) {
         this.level = level;
     }
 
     /**
-     * Returns the Java Logging {@link java.util.logging.Level} associated with this {@code Level}.
+     * Returns the {@link org.apache.logging.log4j.Level} associated with this {@code Level}.
      *
-     * @return the Java Logging level
+     * @return the level
      */
-    java.util.logging.Level level() {
+    org.apache.logging.log4j.Level level() {
         return level;
     }
 }
