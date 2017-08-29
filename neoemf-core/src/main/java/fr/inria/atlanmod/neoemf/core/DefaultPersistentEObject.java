@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.emf.ecore.util.EcoreEMap;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -356,16 +357,19 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public Object dynamicGet(int dynamicFeatureId) {
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 
-        if (!feature.isMany()) {
-            return eStore().get(this, feature, EStore.NO_INDEX);
+        if (FeatureMapUtil.isFeatureMap(feature)) {
+            return new DelegatedStoreFeatureMap(feature);
         }
-        else {
+        else if (feature.isMany()) {
             if (Objects.equals(feature.getEType().getInstanceClassName(), java.util.Map.Entry.class.getName())) {
                 return new DelegatedStoreMap<>(feature);
             }
             else {
                 return new DelegatedStoreList<>(feature);
             }
+        }
+        else {
+            return eStore().get(this, feature, EStore.NO_INDEX);
         }
     }
 
@@ -677,6 +681,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @see #eStore()
      */
+    @ParametersAreNonnullByDefault
     private class DelegatedStoreMap<K, V> extends EcoreEMap<K, V> {
 
         @SuppressWarnings("JavaDoc")
@@ -736,6 +741,25 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             protected void didMove(int index, Entry<K, V> movedObject, int oldIndex) {
                 DelegatedStoreMap.this.doMove(movedObject);
             }
+        }
+    }
+
+    /**
+     * A {@link org.eclipse.emf.ecore.util.FeatureMap} representing a multi-valued feature which behaves as a proxy and
+     * that delegates its operations to the associated {@link Store}.
+     *
+     * @see #eStore()
+     */
+    @ParametersAreNonnullByDefault
+    private class DelegatedStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap {
+
+        public DelegatedStoreFeatureMap(EStructuralFeature feature) {
+            super(DefaultPersistentEObject.this, feature);
+        }
+
+        @Override
+        protected EStore eStore() {
+            return DefaultPersistentEObject.this.eStore();
         }
     }
 }
