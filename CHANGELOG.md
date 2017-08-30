@@ -2,34 +2,44 @@
 
 Current SNAPSHOT.
 
+__IMPORTANT NOTE:__ Due to changes in data mapping, databases created with a previous version are not compatible with 
+this release.
+
 ### Back-ends and stores abstraction
 - __[NEW]__ Introduce the new `DataMapper` layer to manipulate elements as key/value pairs
 - __[NEW]__ Several default mappings have been implemented to manage data with indices, arrays, lists, or strings
-- __[NEW]__ Store decorators and mappings are created by using reflection in `BackendFactory`
-- __[NEW]__ `Backend` are split in 2 categories: `PersistentBackend` and `TransientBackend`
+- __[NEW]__ `Backend` are split in 2 categories: `PersistentBackend` that are stored in a database, and `TransientBackend` that are stored in memory
 - __[NEW]__ A generic `DefaultTransientBackend` has been created to handle elements in several in-memory `Map`s _(experimental)_
-- __[NEW]__ `URI`s are automatically created according to a common prefix ("neo-") and the lowercase name of the created `Backend` of their associated `BackendFactory`
-- __[NEW]__ `BackendFactories` are linked to their associated `UriBuilder` and `PersistentOption` with annotations which are processed by `Bindings` at runtime
+- __[NEW]__ The direct-import becomes generic and works with all implementations
+- __[NEW]__ `URI`s are now created with builders instead of static methods
 - __[UPD]__ `Backend`s are auto-closed when the JVM is shutting-down
 - __[UPD]__ `StoreAdapter` is the only `EStore` implementation, which provides a bridge between EMF and `DataMapper`s
 - __[UPD]__ All back-ends and stores inherit from the `DataMapper` architecture
 - __[UPD]__ `PersistenceOptions` have been updated and simplified
-- __[UPD]__ The default chunk of `AutoSaveStoreDecorator` have been decreased from 100 000 to 50 000
-- __[UPD]__ `PersistentResource` are not linked to their `Backend`s (prefer using `Store`s)
-- __[UPD]__ `BlueprintsBackend`s use "neoInstanceOf" instead of "kyanosInstance" to link `EObject`s to their `EClass` (with support for the previous)
+- __[UPD]__ Configuration is now managed with a simple `Properties` file _(may change in the near future)_
+- __[UPD]__ `PersistentResource` are no longer linked to their `Backend`s, prefer using `Store`s
 - __[UPD]__ `BackendFactory#createPersistentBackend(***)` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
-- __[UPD]__ MapDB `Serializer`s have been replaced by generic serializers
 - __[DEL]__ All backend-specific implementations of `PersistentStore` have been merged with those at `core`-level
 - __[DEL]__ `InvalidStore` has been replaced by `InvalidBackend`
 - __[DEL]__ `TransientStore`s have been replaced by `BoundTransientStore` (a lightweigth version of `TransientBackend`)
 
+### Automation
+- __[NEW]__ `BackendFactory`s are automatically registered at runtime
+- __[NEW]__ `BackendFactory`s are linked to their associated `UriBuilder` and `PersistentOption` with annotations which are processed at runtime
+- __[NEW]__ Store decorators and mappings are created by using reflection in `BackendFactory`
+- __[NEW]__ `URI`s are automatically created according to a common prefix ("neo-") and the lowercase name of the created `Backend` of their associated `BackendFactory`
+
+### Performance
+- __[NEW]__ Add batch methods `getAll`, `setAll`,... in addition to `get`, `set`,... to avoid multiple call
+- __[UPD]__ `BlueprintsBackend`s labels has been simplified by one-letter labels
+- __[UPD]__ The default chunk of `AutoSaveStoreDecorator` have been decreased from 100 000 to 50 000
+- __[UPD]__ MapDB `Serializer`s have been replaced by generic serializers
+
 ### Utility methods
 - __[NEW]__ Some classes that provides utility methods have been added: `MoreIterables`, `MoreArrays`, `Preconditions`
 - __[NEW]__ Cache implementation is now wrapped to avoid dependencies declaration in modules
-- __[NEW]__ `URI`s are now created with builders instead of static methods
-- __[NEW]__ `Hashers` now provides SHA-1 and SHA-256 hash algorithms in addition to MD5
+- __[NEW]__ `Hashers` now provides SHA-1, SHA-256 and Murmur hash algorithms in addition to MD5
 - __[UPD]__ `Hasher` now process `HashCode`s from `byte[]` instead of `String`s
-- __[UPD]__ Configuration is now managed with a simple `Properties` file _(may change in the near future)_
 
 ### Tests
 - __[NEW]__ All mappings have a code coverage of 100% to ensure the expected behavior of future implementations
@@ -37,13 +47,15 @@ Current SNAPSHOT.
 - __[NEW]__ HBase is now integrated in tests by using an Hadoop mini-cluster (requires Cygwin on Windows)
 - __[UPD]__ Test helpers have been merged and simplified: now only a link to `Context` is needed for multi-backend tests
 - __[UPD]__ Tests display the full stacktrace when a test fails or are ignored
+- __[UPD]__ Models used in `io` test-cases are now generated with Maven during the compilation
 
 ### Benchmarks
+- __[NEW]__ Use `NEOEMF_HOME` system variable to locate the base benchmark directory
+- __[UPD]__ The NeoEMF database are created using the `io` importer instead of the standard importer
 - __[NEW]__ `Store`s can be configured in benchmarks, with the `s` parameter
 - __[UPD]__ `Adapter`s are configured with the `a` parameter (previously `b`)
 
 ### Miscellaneous
-- __[NEW]__ The direct-import becomes generic and works with all implementations
 - __[NEW]__ Some methods use `Optional` instead of a comparison to `null`
 - __[UPD]__ `EList` and `EMap` implementations are inner classes in `DefaultPersistentEObject`
 - __[FIX]__ Issue #11: The `LoggingStoreDecorator` now use a dedicated `Logger` for its associated `Backend`
@@ -65,7 +77,8 @@ retrieved even if the associated `PersistentEObject` is freed from memory
 - __[FIX]__ Issue #73: The `neoemf-data-map-core` module no longer exists
 - __[FIX]__ Issue #75: The `io` module now use the `DataMapper` structure, and not a custom implementation
 - __[FIX]__ Issue #78: Improve the `NullPointerException` message
-- __[FIX]__ Issue #80: `DefaultPersistentEObject.toString()` throws a `StackOverflowError` on `EClass` instances 
+- __[FIX]__ Issue #80: `DefaultPersistentEObject.toString()` throws a `StackOverflowError` on `EClass` instances
+- __[FIX]__ Issue #84: `FeatureMap`s was not supported
 
 ### Refactoring
 - __[UPD]__ `AutoCommitStoreDecorator` become `AutoSaveStoreDecorator`
@@ -79,11 +92,13 @@ retrieved even if the associated `PersistentEObject` is freed from memory
 - __[UPD]__ `***OptionsBuilder` becore `***Options`
 
 ### Dependencies
-- __[UPD]__ `assertj` : `3.6.1` to `3.6.2`
-- __[UPD]__ `mockito` : `1.10.19` to `2.7.18`
+- __[NEW]__ `reflections`: `0.9.9`
+- __[UPD]__ `junit`: `4.11` to `4.12`
+- __[UPD]__ `assertj` : `3.6.1` to `3.8.0`
+- __[UPD]__ `mockito` : `1.10.19` to `2.8.47`
 - __[UPD]__ `cglib` : `3.2.4` to `3.2.5`
-- __[UPD]__ `log4j` : `2.7` to `2.8.1`
-- __[UPD]__ `caffeine` : `2.3.5` to `2.4.0`
+- __[UPD]__ `log4j` : `2.7` to `2.8.2`
+- __[UPD]__ `caffeine` : `2.3.5` to `2.5.3`
 - __[DEL]__ `guava` : No longer needed
 - __[DEL]__ `commons-collections4` : No longer needed
 - __[DEL]__ `commons-configuration` : Replaced by native `Properties`
