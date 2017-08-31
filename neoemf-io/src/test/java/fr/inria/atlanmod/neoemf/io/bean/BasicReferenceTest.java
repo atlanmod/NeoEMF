@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.commons.AbstractTest;
+
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * A test-case that checks the behavior of {@link BasicReference}.
  */
-public class BasicReferenceTest {
+public class BasicReferenceTest extends AbstractTest {
 
     @Test
     public void testName() {

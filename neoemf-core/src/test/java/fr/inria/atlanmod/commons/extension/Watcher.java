@@ -16,6 +16,7 @@ import fr.inria.atlanmod.commons.log.Logger;
 import fr.inria.atlanmod.commons.primitive.Strings;
 
 import org.junit.AssumptionViolatedException;
+import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
 
@@ -28,7 +29,7 @@ import static java.util.Objects.nonNull;
 /**
  * A {@link org.junit.Rule} that logs each test-case call.
  */
-public class Watcher extends org.junit.rules.TestWatcher {
+public class Watcher extends TestWatcher {
 
     /**
      * The special logger without timestamp.

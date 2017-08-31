@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.commons.AbstractTest;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -20,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
-public class EObjectsTest {
+public class EObjectsTest extends AbstractTest {
 
     @Test
     public void testIsAttribute() throws Exception {

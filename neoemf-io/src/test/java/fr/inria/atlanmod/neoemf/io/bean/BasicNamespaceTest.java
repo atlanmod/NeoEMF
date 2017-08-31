@@ -11,12 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.commons.AbstractTest;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BasicNamespaceTest {
+public class BasicNamespaceTest extends AbstractTest {
 
     @Before
     public void setUp() throws Exception {
