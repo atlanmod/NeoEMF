@@ -134,6 +134,17 @@ public interface Range<C extends Comparable<C>> {
     }
 
     /**
+     * Creates a {@code Range} that does not contain any value.
+     *
+     * @param <C>
+     *
+     * @return
+     */
+    static <C extends Comparable<C>> Range<C> empty() {
+        return v -> false;
+    }
+
+    /**
      * Creates a {@code Range} that contains ...
      *
      * @param r1
@@ -144,7 +155,7 @@ public interface Range<C extends Comparable<C>> {
      *
      * @see Boolean#logicalAnd(boolean, boolean)
      */
-    static <C extends Comparable<C>> Range<C> intersection(Range<C> r1, Range<C> r2) {
+    static <C extends Comparable<C>> Range<C> and(Range<C> r1, Range<C> r2) {
         return v -> Boolean.logicalAnd(r1.contains(v), r2.contains(v));
     }
 
@@ -159,7 +170,7 @@ public interface Range<C extends Comparable<C>> {
      *
      * @see Boolean#logicalOr(boolean, boolean)
      */
-    static <C extends Comparable<C>> Range<C> union(Range<C> r1, Range<C> r2) {
+    static <C extends Comparable<C>> Range<C> or(Range<C> r1, Range<C> r2) {
         return v -> Boolean.logicalOr(r1.contains(v), r2.contains(v));
     }
 
@@ -174,7 +185,7 @@ public interface Range<C extends Comparable<C>> {
      *
      * @see Boolean#logicalXor(boolean, boolean)
      */
-    static <C extends Comparable<C>> Range<C> difference(Range<C> r1, Range<C> r2) {
+    static <C extends Comparable<C>> Range<C> xor(Range<C> r1, Range<C> r2) {
         return v -> Boolean.logicalXor(r1.contains(v), r2.contains(v));
     }
 

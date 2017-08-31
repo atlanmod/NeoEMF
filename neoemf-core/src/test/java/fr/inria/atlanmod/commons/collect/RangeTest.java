@@ -119,11 +119,22 @@ public class RangeTest extends AbstractTest {
     }
 
     @Test
-    public void testIntersection() {
+    public void testEmpty() {
+        Range<Integer> r0 = Range.empty();
+
+        assertThat(r0.contains(-1)).isFalse();
+        assertThat(r0.contains(0)).isFalse();
+        assertThat(r0.contains(1)).isFalse();
+        assertThat(r0.contains(2)).isFalse();
+        assertThat(r0.contains(3)).isFalse();
+    }
+
+    @Test
+    public void testAnd() {
         Range<Integer> r0 = Range.closed(0, 2);
         Range<Integer> r1 = Range.closed(1, 3);
 
-        Range<Integer> r01 = Range.intersection(r0, r1);
+        Range<Integer> r01 = Range.and(r0, r1);
 
         assertThat(r01.contains(0)).isFalse();
         assertThat(r01.contains(1)).isTrue();
@@ -132,11 +143,11 @@ public class RangeTest extends AbstractTest {
     }
 
     @Test
-    public void testUnion() {
+    public void testOr() {
         Range<Integer> r0 = Range.closed(0, 2);
         Range<Integer> r1 = Range.closed(1, 3);
 
-        Range<Integer> r01 = Range.union(r0, r1);
+        Range<Integer> r01 = Range.or(r0, r1);
 
         assertThat(r01.contains(0)).isTrue();
         assertThat(r01.contains(1)).isTrue();
@@ -145,10 +156,10 @@ public class RangeTest extends AbstractTest {
     }
 
     @Test
-    public void testDifference() {
+    public void testXor() {
         Range<Integer> r0 = Range.closed(0, 2);
         Range<Integer> r1 = Range.closed(1, 3);
-        Range<Integer> r01 = Range.difference(r0, r1);
+        Range<Integer> r01 = Range.xor(r0, r1);
 
         assertThat(r01.contains(0)).isTrue();
         assertThat(r01.contains(1)).isFalse();
