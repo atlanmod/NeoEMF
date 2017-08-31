@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.common.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 
 import java.io.IOException;
 import java.util.HashSet;

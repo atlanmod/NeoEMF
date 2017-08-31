@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.common.cache.Cache;
-import fr.inria.atlanmod.common.cache.CacheBuilder;
+import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.cache.CacheBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

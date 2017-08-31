@@ -17,7 +17,7 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
-import fr.inria.atlanmod.common.annotation.Static;
+import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.bind.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -41,7 +41,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
  * A factory that creates {@link BlueprintsBackend} instances.

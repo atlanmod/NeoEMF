@@ -11,18 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.common.log.Log;
-import fr.inria.atlanmod.common.primitive.Bytes;
-import fr.inria.atlanmod.common.primitive.Strings;
+import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.primitive.Bytes;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.serializer.JavaSerializerFactory;
-import fr.inria.atlanmod.neoemf.data.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.data.serializer.SerializerFactory;
+import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -36,7 +35,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -81,9 +80,9 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     private static final byte[] CONTAINING_FEATURE_QUALIFIER = Strings.toBytes("g");
 
     /**
-     * The {@link SerializerFactory} to use for creating the {@link Serializer} instances.
+     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
      */
-    protected final SerializerFactory serializerFactory;
+    protected final BeanSerializerFactory serializerFactory = BeanSerializerFactory.getInstance();
 
     /**
      * The HBase table used to access the model.
@@ -97,8 +96,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
      */
     protected AbstractHBaseBackend(Table table) {
         checkNotNull(table);
-
-        this.serializerFactory = JavaSerializerFactory.getInstance();
 
         this.table = table;
     }

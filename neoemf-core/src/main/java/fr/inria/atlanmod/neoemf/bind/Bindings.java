@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.bind;
 
-import fr.inria.atlanmod.common.annotation.Builder;
-import fr.inria.atlanmod.common.annotation.Singleton;
-import fr.inria.atlanmod.common.annotation.Static;
-import fr.inria.atlanmod.common.cache.Cache;
-import fr.inria.atlanmod.common.cache.CacheBuilder;
-import fr.inria.atlanmod.common.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.annotation.Builder;
+import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.cache.CacheBuilder;
+import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**

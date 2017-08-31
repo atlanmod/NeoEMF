@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.common.annotation.Singleton;
-import fr.inria.atlanmod.common.annotation.Static;
-import fr.inria.atlanmod.common.annotation.VisibleForTesting;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.store.Store;
@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**

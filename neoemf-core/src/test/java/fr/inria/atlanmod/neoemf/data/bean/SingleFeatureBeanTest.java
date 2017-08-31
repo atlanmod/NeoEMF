@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.bean;
 
-import fr.inria.atlanmod.neoemf.AbstractTest;
+import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 

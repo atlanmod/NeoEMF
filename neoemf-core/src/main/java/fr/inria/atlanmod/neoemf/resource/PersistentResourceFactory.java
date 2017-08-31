@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.common.annotation.Singleton;
-import fr.inria.atlanmod.common.annotation.Static;
+import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The factory that creates {@link PersistentResource} instances.

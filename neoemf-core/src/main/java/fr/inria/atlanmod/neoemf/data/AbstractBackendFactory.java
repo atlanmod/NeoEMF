@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.common.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
@@ -22,7 +22,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkState;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 
 /**
  * An abstract {@link BackendFactory} that processes common store options and manages the configuration.

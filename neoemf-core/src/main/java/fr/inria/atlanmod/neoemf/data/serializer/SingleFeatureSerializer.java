@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.serializer;
 
+import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 

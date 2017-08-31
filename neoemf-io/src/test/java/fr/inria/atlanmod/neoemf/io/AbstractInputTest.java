@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.AbstractTest;
+import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
@@ -37,8 +37,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 

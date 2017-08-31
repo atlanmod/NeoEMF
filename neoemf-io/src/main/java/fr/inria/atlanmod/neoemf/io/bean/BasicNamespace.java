@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
-import fr.inria.atlanmod.common.annotation.Singleton;
-import fr.inria.atlanmod.common.annotation.Static;
+import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Static;
 
 import java.util.Collections;
 import java.util.HashMap;

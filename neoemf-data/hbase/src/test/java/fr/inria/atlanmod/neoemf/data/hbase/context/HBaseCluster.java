@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
-import fr.inria.atlanmod.common.concurrent.MoreExecutors;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.log.Log;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 
-import static fr.inria.atlanmod.common.Preconditions.checkState;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
 /**

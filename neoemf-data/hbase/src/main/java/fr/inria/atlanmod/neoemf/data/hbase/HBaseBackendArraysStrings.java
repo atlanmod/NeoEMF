@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.common.Converter;
-import fr.inria.atlanmod.common.primitive.Strings;
+import fr.inria.atlanmod.commons.Converter;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceWith;

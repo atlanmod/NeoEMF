@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf;
 
+import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
 import org.junit.Before;

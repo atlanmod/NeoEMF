@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.common.annotation.Builder;
-import fr.inria.atlanmod.common.log.Level;
+import fr.inria.atlanmod.commons.annotation.Builder;
+import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.Collections;
@@ -25,7 +25,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link PersistenceOptions} that manages the assembly and the construction of {@link Map} options.

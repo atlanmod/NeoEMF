@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link Notifier} that provides overall behavior for the management of handlers.

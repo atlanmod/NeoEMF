@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A builder that manages the assembly and the construction of {@link PersistentResource}.

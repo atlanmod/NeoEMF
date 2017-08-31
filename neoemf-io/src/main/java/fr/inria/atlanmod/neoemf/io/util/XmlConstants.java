@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
-import fr.inria.atlanmod.common.primitive.Strings;
+import fr.inria.atlanmod.commons.primitive.Strings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**

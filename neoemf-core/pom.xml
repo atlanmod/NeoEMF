@@ -219,7 +219,7 @@
                         </DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*,
-                            fr.inria.atlanmod.common.*
+                            fr.inria.atlanmod.commons.*
                         </Export-Package>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,

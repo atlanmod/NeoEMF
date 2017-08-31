@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.common.annotation.Beta;
+import fr.inria.atlanmod.commons.annotation.Beta;
 
 import java.io.OutputStream;
 

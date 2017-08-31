@@ -19,14 +19,13 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
+import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.serializer.JavaSerializerFactory;
-import fr.inria.atlanmod.neoemf.data.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.data.serializer.SerializerFactory;
+import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,8 +35,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
@@ -46,9 +45,9 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend {
 
     /**
-     * The {@link SerializerFactory} to use for creating the {@link Serializer} instances.
+     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
      */
-    protected final SerializerFactory serializerFactory;
+    protected final BeanSerializerFactory serializerFactory = BeanSerializerFactory.getInstance();
 
     /**
      * The databases environment.
@@ -86,8 +85,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     protected AbstractBerkeleyDbBackend(Environment environment, DatabaseConfig databaseConfig) {
         checkNotNull(environment);
         checkNotNull(databaseConfig);
-
-        this.serializerFactory = JavaSerializerFactory.getInstance();
 
         this.environment = environment;
 

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-import fr.inria.atlanmod.common.log.Level;
+import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 

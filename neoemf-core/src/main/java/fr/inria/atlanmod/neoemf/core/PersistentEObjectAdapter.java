@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.common.annotation.Static;
-import fr.inria.atlanmod.common.cache.Cache;
-import fr.inria.atlanmod.common.cache.CacheBuilder;
+import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.cache.CacheBuilder;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -28,7 +28,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 

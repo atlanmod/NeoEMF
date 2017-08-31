@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.common.annotation.Beta;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.annotation.Beta;
+import fr.inria.atlanmod.commons.log.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

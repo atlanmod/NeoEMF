@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.common.Stopwatch;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.Stopwatch;
+import fr.inria.atlanmod.commons.log.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

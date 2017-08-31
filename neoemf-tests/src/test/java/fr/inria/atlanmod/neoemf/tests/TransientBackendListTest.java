@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.AbstractTest;
+import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.tests.issues.Issue7Test;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;

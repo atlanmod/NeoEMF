@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.common.annotation.VisibleForReflection;
-import fr.inria.atlanmod.common.concurrent.MoreExecutors;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
+import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;

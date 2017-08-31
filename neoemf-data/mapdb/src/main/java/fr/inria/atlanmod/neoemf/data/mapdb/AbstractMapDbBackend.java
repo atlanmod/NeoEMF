@@ -16,8 +16,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.serializer.JavaSerializerFactory;
-import fr.inria.atlanmod.neoemf.data.serializer.SerializerFactory;
+import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
@@ -32,8 +31,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
@@ -42,10 +41,10 @@ import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
 abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend {
 
     /**
-     * The {@link SerializerFactory} to use for creating the {@link fr.inria.atlanmod.neoemf.data.serializer.Serializer}
+     * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.Serializer}
      * instances.
      */
-    protected final SerializerFactory serializerFactory;
+    protected final BeanSerializerFactory serializerFactory = BeanSerializerFactory.getInstance();
 
     /**
      * The MapDB database.
@@ -84,8 +83,6 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     @SuppressWarnings("unchecked")
     protected AbstractMapDbBackend(DB db) {
         checkNotNull(db);
-
-        this.serializerFactory = JavaSerializerFactory.getInstance();
 
         this.db = db;
 
@@ -252,7 +249,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     /**
-     * A {@link Serializer} that delegates its processing to an internal {@link fr.inria.atlanmod.neoemf.data.serializer.Serializer}.
+     * A {@link Serializer} that delegates its processing to an internal {@link fr.inria.atlanmod.commons.io.serializer.Serializer}.
      *
      * @param <T> the type of the (de)serialized value
      */
@@ -264,14 +261,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
          * The serializer where to delegate the serialization process.
          */
         @Nonnull
-        private final fr.inria.atlanmod.neoemf.data.serializer.Serializer<T> delegate;
+        private final fr.inria.atlanmod.commons.io.serializer.Serializer<T> delegate;
 
         /**
          * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
          *
          * @param delegate the serializer where to delegate the serialization process
          */
-        public SerializerDecorator(fr.inria.atlanmod.neoemf.data.serializer.Serializer<T> delegate) {
+        public SerializerDecorator(fr.inria.atlanmod.commons.io.serializer.Serializer<T> delegate) {
             checkNotNull(delegate);
 
             this.delegate = delegate;

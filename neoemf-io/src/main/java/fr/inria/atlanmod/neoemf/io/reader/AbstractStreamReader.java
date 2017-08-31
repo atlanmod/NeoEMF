@@ -20,7 +20,7 @@ import java.io.InputStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link StreamReader} that notifies {@link Handler} and provides overall behavior for the management of

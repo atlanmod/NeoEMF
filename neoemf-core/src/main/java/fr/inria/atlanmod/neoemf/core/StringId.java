@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.common.hash.Hasher;
-import fr.inria.atlanmod.common.hash.Hashers;
-import fr.inria.atlanmod.common.primitive.Strings;
+import fr.inria.atlanmod.commons.hash.Hasher;
+import fr.inria.atlanmod.commons.hash.Hashers;
+import fr.inria.atlanmod.commons.primitive.Strings;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An {@link Id} with a {@link String} representation.

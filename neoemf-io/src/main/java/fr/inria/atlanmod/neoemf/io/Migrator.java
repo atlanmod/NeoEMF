@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.common.annotation.Beta;
-import fr.inria.atlanmod.common.annotation.VisibleForTesting;
+import fr.inria.atlanmod.commons.annotation.Beta;
+import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
@@ -48,8 +48,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
