@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.common.primitive;
 
+import fr.inria.atlanmod.neoemf.AbstractTest;
+
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -20,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * A test-case that checks the behavior of {@link Bytes}.
  */
-public class BytesTest {
+public class BytesTest extends AbstractTest {
 
     @Test
     public void booleanToBytes() {
