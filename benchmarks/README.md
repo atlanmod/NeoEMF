@@ -47,7 +47,7 @@ By default, all resources are executed on all backends. But you can choose to ex
 
 **Example:** To run the query `traverse` on *XMI* and *Neo4j*, with the resources "set1" and "set3", with feature caching, auto-saving (chuck = 50 000) and logging (default level), you need to execute:
 
-    java -jar ... -p a=xmi,neo-neo4j -p r=set1,set3 -p o=FA{50000}L traverse
+    java -jar ... -p a=xmi,neo4j -p r=set1,set3 -p o=FA{50000}L traverse
 
 #### Initialization _(optional)_
 Backends have to be created before executing requests on it.
