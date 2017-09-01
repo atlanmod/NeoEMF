@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

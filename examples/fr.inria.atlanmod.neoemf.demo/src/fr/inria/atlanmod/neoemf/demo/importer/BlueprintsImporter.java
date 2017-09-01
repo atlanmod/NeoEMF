@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.common.concurrent.MoreExecutors;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.concurrent.MoreThreads;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.cdo.eresource.CDOResource;
@@ -58,7 +58,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkState;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
 /**
@@ -174,7 +174,7 @@ public class CdoAdapter extends AbstractAdapter {
                 transaction = session.openTransaction();
             }
             finally {
-                MoreExecutors.executeAtExit(this::close);
+                MoreThreads.executeAtExit(this::close);
             }
         }
 

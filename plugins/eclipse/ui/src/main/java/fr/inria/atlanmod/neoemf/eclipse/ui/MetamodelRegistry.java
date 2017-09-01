@@ -1,7 +1,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
-import fr.inria.atlanmod.common.collect.MoreIterables;
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction;
 
 import org.eclipse.core.resources.IResourceChangeEvent;

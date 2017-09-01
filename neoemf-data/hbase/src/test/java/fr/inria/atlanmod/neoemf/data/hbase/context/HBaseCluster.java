@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
-import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.log.Log;
 
 import org.apache.hadoop.conf.Configuration;
@@ -89,7 +89,7 @@ final class HBaseCluster {
 
             Log.info("Hadoop cluster running at {0}:{1,number,#}", host, port);
 
-            MoreExecutors.executeAtExit(HBaseCluster::close);
+            MoreThreads.executeAtExit(HBaseCluster::close);
         }
         catch (Exception | UnsatisfiedLinkError e) {
             reset();

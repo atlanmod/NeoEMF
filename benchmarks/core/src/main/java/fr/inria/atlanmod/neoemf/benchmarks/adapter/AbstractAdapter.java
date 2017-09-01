@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The abstract implementation of an {@link Adapter.Internal}.

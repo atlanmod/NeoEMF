@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.RegEx;
 
-import static fr.inria.atlanmod.common.Preconditions.checkState;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -281,7 +281,7 @@ public class RunnerState {
             // Logging
             Matcher levelMatcher = Options.LOG_LEVEL.matcher(upperText);
             if (levelMatcher.find()) {
-                options.log(fr.inria.atlanmod.common.log.Level.valueOf(levelMatcher.group(1)));
+                options.log(fr.inria.atlanmod.commons.log.Level.valueOf(levelMatcher.group(1)));
             }
             else if (upperText.contains(Options.LOG)) {
                 options.log();

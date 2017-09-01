@@ -21,30 +21,6 @@
             <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!--
-            Needed to complete the build, Tycho limitation
-            Pom-first dependencies of manifest-first projects are not fully transitive
-            https://wiki.eclipse.org/Tycho/How_Tos/Dependency_on_pom-first_artifacts
-         -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-blueprints-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-mapdb</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-berkeleydb</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

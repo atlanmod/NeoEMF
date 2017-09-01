@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
-import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -52,7 +52,7 @@ public class LoadedObjectCounterStore extends AbstractStore {
         super(store);
         loadedObjects = new TreeSet<>();
 
-        MoreExecutors.executeAtExit(() -> Log.info("{0} objects loaded during the execution", loadedObjects.size()));
+        MoreThreads.executeAtExit(() -> Log.info("{0} objects loaded during the execution", loadedObjects.size()));
     }
 
     @Nonnull

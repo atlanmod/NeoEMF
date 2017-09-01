@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -33,7 +33,7 @@ public abstract class AbstractBackend implements Backend {
     private static final Set<AbstractBackend> ACTIVE_BACKENDS = new HashSet<>();
 
     static {
-        MoreExecutors.executeAtExit(() -> ACTIVE_BACKENDS.parallelStream().forEach(b -> b.close(false)));
+        MoreThreads.executeAtExit(() -> ACTIVE_BACKENDS.parallelStream().forEach(b -> b.close(false)));
     }
 
     /**

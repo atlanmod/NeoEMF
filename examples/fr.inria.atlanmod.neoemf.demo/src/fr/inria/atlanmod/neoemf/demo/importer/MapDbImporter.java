@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

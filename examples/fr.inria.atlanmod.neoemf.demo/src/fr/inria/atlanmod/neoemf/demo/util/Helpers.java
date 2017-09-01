@@ -1,6 +1,6 @@
 package fr.inria.atlanmod.neoemf.demo.util;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.compare.LazyMatchEngineFactory;
 

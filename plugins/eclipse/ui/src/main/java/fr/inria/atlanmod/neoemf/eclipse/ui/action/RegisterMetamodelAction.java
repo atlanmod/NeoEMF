@@ -12,7 +12,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.action;
 
-import fr.inria.atlanmod.common.collect.MoreIterables;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
 
 import org.eclipse.core.resources.IFile;

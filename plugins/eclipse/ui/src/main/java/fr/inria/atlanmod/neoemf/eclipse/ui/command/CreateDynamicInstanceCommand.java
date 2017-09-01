@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.eclipse.ui.wizard.DynamicModelWizard;
 
 import org.eclipse.core.commands.AbstractHandler;

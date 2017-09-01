@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -42,7 +42,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.common.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
  * A class that provides static methods for {@link Resource} creation.

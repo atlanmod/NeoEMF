@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

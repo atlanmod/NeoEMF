@@ -1,6 +1,6 @@
 package fr.inria.atlanmod.neoemf.demo.notification;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

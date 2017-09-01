@@ -6,6 +6,7 @@ Bundle-Version: 1.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
+ org.eclipse.emf.compare;bundle-version="3.1.2";resolution:=optional,
  org.eclipse.gmt.modisco.java;bundle-version="0.1.0",
  org.eclipse.ocl.ecore;bundle-version="3.3.100",
  fr.inria.atlanmod.neoemf.core;bundle-version="1.0.3";visibility:=reexport,
@@ -15,9 +16,7 @@ Require-Bundle: org.eclipse.emf.ecore,
  fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.3",
  fr.inria.atlanmod.neoemf.data.berkeleydb;bundle-version="1.0.3",
  fr.inria.atlanmod.neoemf.data.hbase;bundle-version="1.0.3",
- fr.inria.atlanmod.neoemf.io;bundle-version="1.0.3",
- com.google.guava;bundle-version="15.0.0",
- org.eclipse.emf.compare;bundle-version="3.1.2";resolution:=optional
+ fr.inria.atlanmod.neoemf.io;bundle-version="1.0.3"
 Import-Package: org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.eclipse.ocl,

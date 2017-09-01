@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 
@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import static fr.inria.atlanmod.common.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * This state provides a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.

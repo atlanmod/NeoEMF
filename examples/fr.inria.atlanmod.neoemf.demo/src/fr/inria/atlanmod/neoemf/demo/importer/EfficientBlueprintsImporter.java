@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.common.log.Log;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
