@@ -30,12 +30,46 @@ import static java.util.Objects.nonNull;
  * A simple file-based configuration for {@link Backend}s.
  */
 @ParametersAreNonnullByDefault
-public final class BackendConfiguration {
+public final class BackendConfig {
+
+    /**
+     * The name of the default configuration file of a back-end.
+     */
+    public static final String DEFAULT_FILENAME = "neoemf.properties";
+
+    /**
+     * The property to define the {@link Backend}.
+     */
+    public static final String BACKEND_PROPERTY = "neoemf.backend.type";
+
+    /**
+     * The property to define the {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.
+     */
+    public static final String MAPPING_PROPERTY = "neoemf.backend.mapping";
+
+    /**
+     * The property to define the {@link BackendFactory}.
+     */
+    public static final String FACTORY_PROPERTY = "neoemf.backend.factory";
 
     /**
      * The header of the configuration file.
      */
     private static final String HEADER = "NeoEMF Configuration";
+
+    /**
+     * The property to define the current version of NeoEMF.
+     *
+     * @see #VERSION_CURRENT
+     */
+    private static final String VERSION_PROPERTY = "neoemf.version";
+
+    /**
+     * The current version of NeoEMF.
+     *
+     * @see #VERSION_PROPERTY
+     */
+    private static final String VERSION_CURRENT = "1.0.3";
 
     /**
      * The inner properties.
@@ -50,36 +84,35 @@ public final class BackendConfiguration {
     private final Path file;
 
     /**
-     * Constructs a new {@code BackendConfiguration} on the given {@code configuration}.
+     * Constructs a new {@code BackendConfig} with the given {@code file}.
      *
-     * @param properties the inner properties
-     * @param file       the file to store the properties
+     * @param file the file to read/store the configuration
+     *
+     * @throws NullPointerException if {@code file} is {@code null}
      */
-    private BackendConfiguration(Properties properties, Path file) {
-        this.properties = checkNotNull(properties);
+    private BackendConfig(Path file) throws IOException {
         this.file = checkNotNull(file);
-    }
 
-    /**
-     * Creates a new {@code BackendConfiguration} and loads it from the specified {@code file} if it exists.
-     *
-     * @param file the properties file to load
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static BackendConfiguration load(Path file) throws IOException {
-        checkNotNull(file);
-
-        Properties properties = new Properties();
-
+        this.properties = new Properties();
         if (Files.exists(file)) {
             try (Reader reader = Files.newBufferedReader(file)) {
                 properties.load(reader);
             }
         }
 
-        return new BackendConfiguration(properties, file);
+        setIfAbsent(VERSION_PROPERTY, VERSION_CURRENT);
+    }
+
+    /**
+     * Creates a new {@code BackendConfig} and loads it from the specified {@code file} if it exists.
+     *
+     * @param file the properties file to load
+     *
+     * @return a new configuration
+     */
+    @Nonnull
+    public static BackendConfig load(Path file) throws IOException {
+        return new BackendConfig(file);
     }
 
     /**

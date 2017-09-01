@@ -66,8 +66,8 @@ public class MigrateCommand extends AbstractHandler {
     /**
      * Retrieves the current {@link IFile} from the {@link #currentFile}.
      *
-     * @return an {@link Optional} containing the file, or {@link Optional#empty()} if the selection does not
-     * represents a file
+     * @return an {@link Optional} containing the file, or {@link Optional#empty()} if the selection does not represents
+     * a file
      */
     private Optional<IFile> currentFile() {
         return Optional.ofNullable(currentFile)
@@ -84,8 +84,8 @@ public class MigrateCommand extends AbstractHandler {
      *
      * @param file the genmodel file
      *
-     * @return an {@link Optional} containing the {@link GenModel}, or {@link Optional#empty()} if the {@code file}
-     * does not contains a generator model
+     * @return an {@link Optional} containing the {@link GenModel}, or {@link Optional#empty()} if the {@code file} does
+     * not contains a generator model
      */
     private Optional<GenModel> genModelFrom(IFile file) {
         ResourceSet resourceSet = new ResourceSetImpl();

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
+import fr.inria.atlanmod.neoemf.data.BackendConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 
@@ -62,22 +62,22 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     public void testDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsOptions.noOption());
 
-        BackendConfiguration config = getConfig();
+        BackendConfig config = getConfig();
         assertThat(config.get(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        assertConfigurationHasSize(config, 3);
+        assertConfigurationHasSize(config, 4);
     }
 
     /**
-     * Retrieves the {@link BackendConfiguration} according to the current {@link #file()}.
+     * Retrieves the {@link BackendConfig} according to the current {@link #file()}.
      *
      * @return the current configuration
      */
-    protected BackendConfiguration getConfig() {
+    protected BackendConfig getConfig() {
         Path configFile = file().toPath().resolve("config.properties");
         assertThat(configFile).exists();
 
         try {
-            return BackendConfiguration.load(configFile);
+            return BackendConfig.load(configFile);
         }
         catch (IOException e) {
             throw new IllegalStateException(e); // Should never happen
@@ -90,7 +90,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
      * @param config       the configuration to check
      * @param expectedSize the expected size
      */
-    protected void assertConfigurationHasSize(BackendConfiguration config, int expectedSize) {
+    protected void assertConfigurationHasSize(BackendConfig config, int expectedSize) {
         assertThat(config.asMap().size()).isEqualTo(expectedSize);
     }
 
@@ -101,7 +101,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
      * @param key    the key to look for
      * @param value  the expected value
      */
-    protected void assertConfigurationHasEntry(BackendConfiguration config, String key, String value) {
+    protected void assertConfigurationHasEntry(BackendConfig config, String key, String value) {
         assertThat(config.has(key)).isTrue();
         assertThat(config.get(key)).isEqualTo(value);
     }

@@ -34,8 +34,7 @@ import static java.util.Objects.nonNull;
 /**
  * A registry that manage metamodels.
  * <p>
- * The metamodels are added by using the {@link RegisterMetamodelAction}
- * extension point on {@code *.ecore} files.
+ * The metamodels are added by using the {@link RegisterMetamodelAction} extension point on {@code *.ecore} files.
  * <p>
  * These metamodels are saved in the {@link NeoUIPlugin} store.
  */

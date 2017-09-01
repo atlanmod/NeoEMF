@@ -21,11 +21,12 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.bind.FactoryName;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
+import fr.inria.atlanmod.neoemf.data.BackendConfig;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfig;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -53,7 +54,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
  * The factory handles transient back-ends by creating an in-memory {@code TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (see {@link BlueprintsResourceOptions}. Default back-end
  * configuration (store directory and graph type) is called dynamically according to the provided Blueprints
- * implementation {@link fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfiguration}.
+ * implementation {@link BlueprintsTgConfig}.
  *
  * @see BlueprintsBackend
  * @see BlueprintsResourceOptions
@@ -110,7 +111,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
 
-            BackendConfiguration config = getOrCreateBlueprintsConfiguration(baseDirectory, options);
+            BackendConfig config = getOrCreateBlueprintsConfiguration(baseDirectory, options);
 
             Graph graph = GraphFactory.open(config.asMap());
             if (!graph.getFeatures().supportsKeyIndices) {
@@ -158,13 +159,13 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
      * @throws InvalidBackendException if the configuration cannot be created in the {@code directory}, or if some
      *                                 {@code options} are missing or invalid.
      */
-    private BackendConfiguration getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
+    private BackendConfig getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
         Path path = directory.resolve(BLUEPRINTS_CONFIG_FILE);
 
-        BackendConfiguration config;
+        BackendConfig config;
 
         try {
-            config = BackendConfiguration.load(path);
+            config = BackendConfig.load(path);
         }
         catch (IOException e) {
             throw new InvalidBackendException(e);
@@ -195,25 +196,25 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         String graphType = config.get(BlueprintsResourceOptions.GRAPH_TYPE);
 
-        configurationFor(graphType).putDefaultConfiguration(config, directory);
+        configurationFor(graphType).putDefault(config, directory);
 
         return config;
     }
 
     /**
-     * Retrieves the {@link BlueprintsConfiguration} instance from the {@code graphType}.
+     * Retrieves the {@link BlueprintsConfig} instance from the {@code graphType}.
      *
      * @param graphType the type of the graph to use
      *
-     * @return a {@link BlueprintsConfiguration} instance
+     * @return a {@link BlueprintsConfig} instance
      */
-    private BlueprintsConfiguration configurationFor(String graphType) {
+    private BlueprintsConfig configurationFor(String graphType) {
         // Define the configuration
         String[] segments = graphType.split("\\.");
 
         if (segments.length >= 2) {
             String graphName = segments[segments.length - 2];
-            String configClassName = String.format("Blueprints%sConfiguration", Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1));
+            String configClassName = String.format("Blueprints%sConfig", Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1));
 
             String configClassQualifiedName = String.format("%s.%s.%s",
                     BlueprintsBackendFactory.class.getPackage().getName(),
@@ -222,7 +223,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
             try {
                 Class<?> configClass = getClass().getClassLoader().loadClass(configClassQualifiedName);
-                return BlueprintsConfiguration.class.cast(configClass.newInstance());
+                return BlueprintsConfig.class.cast(configClass.newInstance());
             }
             catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
                 throw new RuntimeException(e);

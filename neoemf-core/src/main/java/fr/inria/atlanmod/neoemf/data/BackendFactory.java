@@ -37,24 +37,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface BackendFactory {
 
     /**
-     * The name of the configuration file of a back-end persistence.
-     */
-    // TODO Replace the file name to something like "neoemf.properties"
-    String CONFIG_FILE = "neoconfig.properties";
-
-    /**
-     * The property to define the {@link Backend} in the configuration file.
-     */
-    // TODO Replace by a fully-qualified name, like "neoemf.backend.type"
-    String BACKEND_PROPERTY = "backend";
-
-    /**
-     * The property to define the {@link BackendFactory} in the configuration file.
-     */
-    // TODO Replace by a fully-qualified name, like "neoemf.backend.factory"
-    String FACTORY_PROPERTY = "factory";
-
-    /**
      * Returns the literal description of the created {@link Backend}.
      *
      * @return the literal description of the created {@link Backend}
@@ -84,7 +66,7 @@ public interface BackendFactory {
      * @see #supportsTransient()
      */
     @Nonnull
-    // TODO Return a `TransientBackend`
+    // TODO Return a `TransientBackend`: need to re-implement a default `DataMapper#copyTo` method
     Backend createTransientBackend();
 
     /**

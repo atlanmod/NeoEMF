@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
-import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
+import fr.inria.atlanmod.neoemf.data.BackendConfig;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfig;
 
 import java.nio.file.Path;
 
@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An internal class that sets Blueprints {@code Neo4jGraph} default configuration properties in the current NeoEMF
- * {@link BackendConfiguration}.
+ * {@link BackendConfig}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory}
  * if Neo4j implementation is used to store the underlying database.
@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public final class BlueprintsNeo4jConfiguration implements BlueprintsConfiguration {
+public final class BlueprintsNeo4jConfig implements BlueprintsConfig {
 
     /**
      * The property to define the directory of the {@code Neo4jGraph} instance.
@@ -37,7 +37,7 @@ public final class BlueprintsNeo4jConfiguration implements BlueprintsConfigurati
     private static final String DIRECTORY = "blueprints.neo4j.directory";
 
     @Override
-    public void putDefaultConfiguration(BackendConfiguration config, Path directory) {
+    public void putDefault(BackendConfig config, Path directory) {
         config.set(DIRECTORY, directory.toString());
     }
 }

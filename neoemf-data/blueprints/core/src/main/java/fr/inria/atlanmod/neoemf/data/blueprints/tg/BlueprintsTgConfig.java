@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.tg;
 
-import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
+import fr.inria.atlanmod.neoemf.data.BackendConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsConfig;
 
 import java.nio.file.Path;
 
@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An internal class that defines Blueprints {@code TinkerGraph} default configuration properties in the current NeoEMF
- * {@link BackendConfiguration}.
+ * {@link BackendConfig}.
  * <p>
  * <b>Note:</b> This class is called dynamically by {@link BlueprintsBackendFactory} if {@code TinkerGraph}
  * implementation is used to store the underlying database.
@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public final class BlueprintsTgConfiguration implements BlueprintsConfiguration {
+public final class BlueprintsTgConfig implements BlueprintsConfig {
 
     /**
      * The property to define the directory in which to store the {@code TinkerGraph}.
@@ -43,7 +43,7 @@ public final class BlueprintsTgConfiguration implements BlueprintsConfiguration 
     private static final String FILE_TYPE = "blueprints.tg.file-type";
 
     @Override
-    public void putDefaultConfiguration(BackendConfiguration config, Path directory) {
+    public void putDefault(BackendConfig config, Path directory) {
         config.set(DIRECTORY, directory.toString());
         config.setIfAbsent(FILE_TYPE, "GRAPHML");
     }

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
-import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -60,27 +59,27 @@ public abstract class AbstractBackendFactory extends AbstractMapperFactory imple
      * @throws InvalidBackendException if the configuration cannot be created in the {@code baseDirectory}
      */
     protected final void processGlobalConfiguration(Path baseDirectory, String mapping) {
-        Path path = baseDirectory.resolve(CONFIG_FILE);
+        Path path = baseDirectory.resolve(BackendConfig.DEFAULT_FILENAME);
 
-        BackendConfiguration configuration;
+        BackendConfig configuration;
 
         try {
-            configuration = BackendConfiguration.load(path);
+            configuration = BackendConfig.load(path);
         }
         catch (IOException e) {
             throw new InvalidBackendException(e);
         }
 
-        configuration.setIfAbsent(BACKEND_PROPERTY, name());
-        configuration.setIfAbsent(FACTORY_PROPERTY, getClass().getName());
+        configuration.setIfAbsent(BackendConfig.BACKEND_PROPERTY, name());
+        configuration.setIfAbsent(BackendConfig.FACTORY_PROPERTY, getClass().getName());
 
-        if (configuration.has(PersistentResourceOptions.MAPPING)) {
-            String savedMapping = configuration.get(PersistentResourceOptions.MAPPING);
+        if (configuration.has(BackendConfig.MAPPING_PROPERTY)) {
+            String savedMapping = configuration.get(BackendConfig.MAPPING_PROPERTY);
             checkState(Objects.equals(mapping, savedMapping),
                     "The back-end is mapped with %s (but actual is %s)", savedMapping, mapping);
         }
         else {
-            configuration.set(PersistentResourceOptions.MAPPING, mapping);
+            configuration.set(BackendConfig.MAPPING_PROPERTY, mapping);
         }
 
         try {

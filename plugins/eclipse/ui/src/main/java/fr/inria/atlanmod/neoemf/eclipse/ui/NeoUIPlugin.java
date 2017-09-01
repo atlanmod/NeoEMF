@@ -145,8 +145,8 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      *
      * @param bundle the bundle to locate
      *
-     * @return an {@link Optional} containing the {@link URL} of the {@code bundle}, or {@link Optional#empty()} if
-     * the {@code bundle} cannot be located
+     * @return an {@link Optional} containing the {@link URL} of the {@code bundle}, or {@link Optional#empty()} if the
+     * {@code bundle} cannot be located
      */
     private static Optional<URL> getUrl(Bundle bundle) {
         URL url = null;

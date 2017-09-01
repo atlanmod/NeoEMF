@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.tester;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendConfig;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IFolder;
@@ -28,6 +28,6 @@ public class IsBackendTester extends PropertyTester {
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         return Objects.equals("isNeoEMFDB", property)
                 && IFolder.class.isInstance(receiver)
-                && IFolder.class.cast(receiver).exists(new Path(BackendFactory.CONFIG_FILE)) == Boolean.class.cast(expectedValue);
+                && IFolder.class.cast(receiver).exists(new Path(BackendConfig.DEFAULT_FILENAME)) == Boolean.class.cast(expectedValue);
     }
 }

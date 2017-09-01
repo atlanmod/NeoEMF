@@ -11,8 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.data.BackendConfiguration;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.BackendConfig;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
@@ -84,21 +83,21 @@ public class OpenBackendCommand extends AbstractHandler {
      *                                 {@link UriBuilder}
      */
     private UriBuilder getUriBuilder(Path directory) throws IOException {
-        Path configFile = directory.resolve(BackendFactory.CONFIG_FILE);
+        Path configFile = directory.resolve(BackendConfig.DEFAULT_FILENAME);
 
         if (Files.notExists(configFile)) {
             throw new FileNotFoundException(
-                    String.format("Unable to find %s file", BackendFactory.CONFIG_FILE));
+                    String.format("Unable to find %s file", BackendConfig.DEFAULT_FILENAME));
         }
 
-        BackendConfiguration config = BackendConfiguration.load(configFile);
+        BackendConfig config = BackendConfig.load(configFile);
 
-        if (!config.has(BackendFactory.BACKEND_PROPERTY)) {
+        if (!config.has(BackendConfig.BACKEND_PROPERTY)) {
             throw new InvalidBackendException(
-                    String.format("%s does not contain %s property", configFile, BackendFactory.BACKEND_PROPERTY));
+                    String.format("%s does not contain %s property", configFile, BackendConfig.BACKEND_PROPERTY));
         }
 
-        return UriBuilder.forName(config.get(BackendFactory.BACKEND_PROPERTY));
+        return UriBuilder.forName(config.get(BackendConfig.BACKEND_PROPERTY));
     }
 
     /**
