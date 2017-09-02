@@ -126,15 +126,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(id);
 
         return resultFrom(id)
-                .map(result -> {
-                    byte[] byteId = result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
-                    byte[] byteName = result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
+                .map(r -> {
+                    byte[] byteId = r.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
+                    byte[] byteName = r.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return Optional.of(SingleFeatureBean.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName)));
+                        return SingleFeatureBean.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName));
                     }
-                    return Optional.<SingleFeatureBean>empty();
-                })
-                .orElseGet(Optional::empty);
+                    return null;
+                });
     }
 
     @Override
@@ -179,12 +178,11 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                 .map(result -> {
                     byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
                     byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
-                    if (nonNull(byteName) && nonNull(byteUri)) {
-                        return Optional.of(ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
-                    }
-                    return Optional.<ClassBean>empty();
-                })
-                .orElseGet(Optional::empty);
+
+                    return nonNull(byteName) && nonNull(byteUri)
+                            ? ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri))
+                            : null;
+                });
     }
 
     @Override
@@ -209,16 +207,16 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return resultFrom(key.owner()).flatMap(r -> Optional.ofNullable(r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.id())))
-                .map(value -> {
+        return resultFrom(key.owner())
+                .map(r -> r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.id())))
+                .map(v -> {
                     try {
-                        return Optional.of(serializerFactory.<V>forAny().deserialize(value));
+                        return serializerFactory.<V>forAny().deserialize(v);
                     }
                     catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .orElseGet(Optional::empty));
+                });
     }
 
     @Nonnull
