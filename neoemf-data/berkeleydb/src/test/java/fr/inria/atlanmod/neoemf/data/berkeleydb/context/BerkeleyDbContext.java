@@ -49,15 +49,6 @@ public interface BerkeleyDbContext extends Context {
         return (BerkeleyDbContext) () -> BerkeleyDbOptions.builder().withLists();
     }
 
-    /**
-     * Creates a new {@code BerkeleyDbContext} with a mapping with maps.
-     *
-     * @return a new context.
-     */
-    static Context getWithMaps() {
-        return (BerkeleyDbContext) () -> BerkeleyDbOptions.builder().withMaps();
-    }
-
     @Override
     default String name() {
         return "BerkeleyDB";

@@ -106,26 +106,4 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
                     .asMap();
         }
     }
-
-    /**
-     * A {@link MapDbAdapter} with a mapping with maps.
-     */
-    public static final class WithMaps extends MapDbAdapter {
-
-        /**
-         * Constructs a new {@code MapDbAdapter.WithMaps}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public WithMaps() {
-            super("maps");
-        }
-
-        @Nonnull
-        @Override
-        public Map<String, Object> getOptions() {
-            return MapDbOptions.builder()
-                    .withMaps()
-                    .asMap();
-        }
-    }
 }

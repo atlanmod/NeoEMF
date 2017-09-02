@@ -63,11 +63,9 @@ public class RunnerState {
         ADAPTERS.put("mapdb-i", MapDbAdapter.WithIndices.class);
         ADAPTERS.put("mapdb-a", MapDbAdapter.WithArrays.class);
         ADAPTERS.put("mapdb-l", MapDbAdapter.WithLists.class);
-        ADAPTERS.put("mapdb-m", MapDbAdapter.WithMaps.class);
         ADAPTERS.put("berkeleydb-i", BerkeleyDbAdapter.WithIndices.class);
         ADAPTERS.put("berkeleydb-a", BerkeleyDbAdapter.WithArrays.class);
         ADAPTERS.put("berkeleydb-l", BerkeleyDbAdapter.WithLists.class);
-        ADAPTERS.put("berkeleydb-m", BerkeleyDbAdapter.WithMaps.class);
         ADAPTERS.put("tinker", BlueprintsAdapter.Tinker.class);
         ADAPTERS.put("neo4j", BlueprintsAdapter.Neo4j.class);
     }

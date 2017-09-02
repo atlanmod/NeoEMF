@@ -106,26 +106,4 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
                     .asMap();
         }
     }
-
-    /**
-     * A {@link BerkeleyDbAdapter} with a mapping with maps.
-     */
-    public static final class WithMaps extends BerkeleyDbAdapter {
-
-        /**
-         * Constructs a new {@code BerkeleyDbAdapter.WithMaps}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public WithMaps() {
-            super("maps");
-        }
-
-        @Nonnull
-        @Override
-        public Map<String, Object> getOptions() {
-            return BerkeleyDbOptions.builder()
-                    .withMaps()
-                    .asMap();
-        }
-    }
 }

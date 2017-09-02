@@ -49,15 +49,6 @@ public interface MapDbContext extends Context {
         return (MapDbContext) () -> MapDbOptions.builder().withLists();
     }
 
-    /**
-     * Creates a new {@code MapDbContext} with a mapping with maps.
-     *
-     * @return a new context.
-     */
-    static Context getWithMaps() {
-        return (MapDbContext) () -> MapDbOptions.builder().withMaps();
-    }
-
     @Override
     default String name() {
         return "MapDb";
