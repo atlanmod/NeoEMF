@@ -19,12 +19,15 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
+import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
 import java.io.IOException;
@@ -42,12 +45,14 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend {
+// TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
+abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend, AllReferenceAs<String> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
      */
-    protected final BeanSerializerFactory serializerFactory = BeanSerializerFactory.getInstance();
+    @Nonnull
+    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
      * The databases environment.
@@ -116,7 +121,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    protected void safeClose() {
+    protected void innerClose() {
         activeDatabases().forEach(Database::close);
         environment.close();
     }
@@ -126,7 +131,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
-        return get(containers, id, serializerFactory.forId(), serializerFactory.forSingleFeature());
+        return get(containers, id, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forSingleFeature());
     }
 
     @Override
@@ -134,14 +139,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
         checkNotNull(id);
         checkNotNull(container);
 
-        put(containers, id, container, serializerFactory.forId(), serializerFactory.forSingleFeature());
+        put(containers, id, container, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forSingleFeature());
     }
 
     @Override
     public void unsetContainer(Id id) {
         checkNotNull(id);
 
-        delete(containers, id, serializerFactory.forId());
+        delete(containers, id, SERIALIZER_FACTORY.forId());
     }
 
     @Nonnull
@@ -149,7 +154,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
-        return get(instances, id, serializerFactory.forId(), serializerFactory.forClass());
+        return get(instances, id, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
     }
 
     @Override
@@ -157,7 +162,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
         checkNotNull(id);
         checkNotNull(metaClass);
 
-        put(instances, id, metaClass, serializerFactory.forId(), serializerFactory.forClass());
+        put(instances, id, metaClass, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
     }
 
     @Nonnull
@@ -165,7 +170,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return get(features, key, serializerFactory.forSingleFeature(), serializerFactory.forAny());
+        return get(features, key, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
     }
 
     @Nonnull
@@ -175,7 +180,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
         checkNotNull(value);
 
         Optional<V> previousValue = valueOf(key);
-        put(features, key, value, serializerFactory.forSingleFeature(), serializerFactory.forAny());
+        put(features, key, value, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
         return previousValue;
     }
 
@@ -183,7 +188,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     public void unsetValue(SingleFeatureBean key) {
         checkNotNull(key);
 
-        delete(features, key, serializerFactory.forSingleFeature());
+        delete(features, key, SERIALIZER_FACTORY.forSingleFeature());
+    }
+
+    @Nonnull
+    @Override
+    public Converter<Id, String> referenceConverter() {
+        return ReferenceAs.DEFAULT_CONVERTER;
     }
 
     /**

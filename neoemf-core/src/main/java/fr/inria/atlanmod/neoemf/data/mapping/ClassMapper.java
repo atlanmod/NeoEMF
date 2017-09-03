@@ -75,6 +75,6 @@ public interface ClassMapper {
      */
     @Nonnull
     default Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
-        throw new UnsupportedOperationException("This back-end doesn't support the lookup of all instances");
+        throw new UnsupportedOperationException("This mapper doesn't support the lookup of all instances");
     }
 }

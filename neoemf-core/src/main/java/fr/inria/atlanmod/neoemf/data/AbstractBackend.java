@@ -70,7 +70,7 @@ public abstract class AbstractBackend implements Backend {
 
         try {
             save();
-            safeClose();
+            innerClose();
         }
         catch (Exception ignored) {
         }
@@ -88,5 +88,5 @@ public abstract class AbstractBackend implements Backend {
      *
      * @throws IOException if an I/O error occurs during the closure
      */
-    protected abstract void safeClose() throws IOException;
+    protected abstract void innerClose() throws IOException;
 }

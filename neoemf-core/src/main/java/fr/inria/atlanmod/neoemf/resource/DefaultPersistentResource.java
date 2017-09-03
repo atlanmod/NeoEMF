@@ -145,13 +145,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) throws IOException {
-        safeSave((Map<String, Object>) options);
+        innerSave((Map<String, Object>) options);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
-        safeLoad((Map<String, Object>) options);
+        innerLoad((Map<String, Object>) options);
     }
 
     @Override
@@ -178,7 +178,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      *
      * @throws IOException if an I/O error occurs during the save
      */
-    protected void safeSave(Map<String, Object> options) throws IOException {
+    protected void innerSave(Map<String, Object> options) throws IOException {
         checkOptions(options);
 
         if (!isLoaded || !isPersistent()) {
@@ -211,7 +211,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      *
      * @throws IOException if an I/O error occurs during the load
      */
-    protected void safeLoad(Map<String, Object> options) throws IOException {
+    protected void innerLoad(Map<String, Object> options) throws IOException {
         try {
             isLoading = true;
 

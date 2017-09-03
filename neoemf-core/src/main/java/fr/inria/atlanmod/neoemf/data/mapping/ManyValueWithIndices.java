@@ -62,7 +62,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
             throw new NoSuchElementException();
         }
 
-        safeValueFor(key, value);
+        innerValueFor(key, value);
 
         return previousValue;
     }
@@ -76,12 +76,12 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
-            safeValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
         sizeForValue(key.withoutPosition(), size + 1);
 
-        safeValueFor(key, value);
+        innerValueFor(key, value);
     }
 
     @Nonnull
@@ -97,10 +97,10 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         Optional<V> previousValue = valueOf(key);
 
         for (int i = key.position(); i < size - 1; i++) {
-            safeValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            innerValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
-        safeValueFor(key.withPosition(size - 1), null);
+        innerValueFor(key.withPosition(size - 1), null);
 
         sizeForValue(key.withoutPosition(), size - 1);
 
@@ -110,7 +110,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Override
     default <V> void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> safeValueFor(key.withPosition(i), null));
+                .forEach(i -> innerValueFor(key.withPosition(i), null));
 
         unsetValue(key);
     }
@@ -194,5 +194,5 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> void safeValueFor(ManyFeatureBean key, @Nullable V value);
+    <V> void innerValueFor(ManyFeatureBean key, @Nullable V value);
 }

@@ -11,9 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import org.mapdb.DB;
 
@@ -25,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see MapDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendLists extends AbstractMapDbBackend implements ReferenceAsValue, ManyValueWithLists, ManyReferenceAsManyValue {
+class MapDbBackendLists extends AbstractMapDbBackend implements ManyValueWithLists {
 
     /**
      * Constructs a new {@code MapDbBackendLists} wrapping the provided {@code db}.

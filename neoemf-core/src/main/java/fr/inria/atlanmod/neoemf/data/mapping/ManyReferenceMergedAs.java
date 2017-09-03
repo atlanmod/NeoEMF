@@ -33,17 +33,20 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of a set of {@link Id} for
- * multi-valued references. This behavior is specified by the {@link #manyReferencesConverter()} method.
+ * multi-valued references. This behavior is specified by the {@link #manyReferenceMerger()} method.
+ * <p>
+ * This mapper merges the multi-valued references in a single-value., unlike {@link ManyReferenceAs} that converts each
+ * reference.
  *
  * @param <M> the type of the multi-valued reference after mapping
  */
 @ParametersAreNonnullByDefault
-public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapper {
+public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReferenceMapper {
 
     @Nonnull
     @Override
     default Optional<Id> referenceOf(ManyFeatureBean key) {
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         return this.<M>valueOf(key.withoutPosition())
                 .map(func::doBackward)
@@ -54,7 +57,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     @Nonnull
     @Override
     default List<Id> allReferencesOf(SingleFeatureBean key) {
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         return this.<M>valueOf(key)
                 .map(func::doBackward)
@@ -67,7 +70,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
         checkNotNull(key);
         checkNotNull(reference);
 
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::doBackward)
@@ -87,7 +90,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
         checkNotNull(key);
         checkNotNull(reference);
 
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::doBackward)
@@ -113,7 +116,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             throw new NullPointerException();
         }
 
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::doBackward)
@@ -132,7 +135,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     default Optional<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key);
 
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
                 .map(func::doBackward)
@@ -166,7 +169,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             return Optional.empty();
         }
 
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         return this.<M>valueOf(key)
                 .map(func::doBackward)
@@ -182,7 +185,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
             return Optional.empty();
         }
 
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         return this.<M>valueOf(key)
                 .map(func::doBackward)
@@ -194,7 +197,7 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     @Nonnegative
     @Override
     default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        Converter<List<Id>, M> func = manyReferencesConverter();
+        Converter<List<Id>, M> func = manyReferenceMerger();
 
         return this.<M>valueOf(key)
                 .map(func::doBackward)
@@ -203,5 +206,5 @@ public interface ManyReferenceWith<M> extends ManyValueMapper, ManyReferenceMapp
     }
 
     @Nonnull
-    Converter<List<Id>, M> manyReferencesConverter();
+    Converter<List<Id>, M> manyReferenceMerger();
 }

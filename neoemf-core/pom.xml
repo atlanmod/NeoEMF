@@ -20,6 +20,8 @@
     </description>
 
     <properties>
+        <chronicle.version>3.14.1</chronicle.version>
+
         <cglib.version>3.2.5</cglib.version>
         <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility (15.0) -->
     </properties>
@@ -31,6 +33,13 @@
         <dependency>
             <groupId>fr.inria.atlanmod.commons</groupId>
             <artifactId>commons-core</artifactId>
+        </dependency>
+
+        <!-- Database -->
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-map</artifactId>
         </dependency>
 
         <!-- Reflection -->
@@ -128,6 +137,14 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Database -->
+
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-map</artifactId>
+                <version>${chronicle.version}</version>
+            </dependency>
 
             <!-- Reflection -->
 

@@ -9,12 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapping;
+package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.context.CoreTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 /**
- * A test-case that checks the behavior of {@link fr.inria.atlanmod.neoemf.data.DefaultTransientBackend}.
+ * A test-case that checks the behavior of {@link DefaultTransientBackend}.
  */
 public class DefaultTransientBackendTest extends AbstractPersistenceMapperTest implements CoreTest {
 }

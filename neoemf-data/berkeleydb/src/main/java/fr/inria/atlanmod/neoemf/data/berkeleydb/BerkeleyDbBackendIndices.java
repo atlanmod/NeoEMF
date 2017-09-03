@@ -17,9 +17,7 @@ import com.sleepycat.je.Environment;
 
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +36,7 @@ import static java.util.Objects.nonNull;
  * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements ReferenceAsValue, ManyValueWithIndices, ManyReferenceAsManyValue {
+class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements ManyValueWithIndices {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id},
@@ -83,18 +81,18 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Refe
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key);
 
-        return get(manyFeatures, key, serializerFactory.forManyFeature(), serializerFactory.forAny());
+        return get(manyFeatures, key, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureBean key, @Nullable V value) {
+    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key);
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value, serializerFactory.forManyFeature(), serializerFactory.forAny());
+            put(manyFeatures, key, value, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
         }
         else {
-            delete(manyFeatures, key, serializerFactory.forManyFeature());
+            delete(manyFeatures, key, SERIALIZER_FACTORY.forManyFeature());
         }
     }
 }

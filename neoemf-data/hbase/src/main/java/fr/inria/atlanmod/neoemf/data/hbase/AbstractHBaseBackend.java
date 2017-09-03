@@ -45,6 +45,11 @@ import static java.util.Objects.nonNull;
 abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements HBaseBackend {
 
     /**
+     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+     */
+    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
+
+    /**
      * The column family holding properties.
      */
     protected static final byte[] PROPERTY_FAMILY = Strings.toBytes("p");
@@ -80,11 +85,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     private static final byte[] CONTAINING_FEATURE_QUALIFIER = Strings.toBytes("g");
 
     /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
-     */
-    protected final BeanSerializerFactory serializerFactory = BeanSerializerFactory.getInstance();
-
-    /**
      * The HBase table used to access the model.
      */
     protected final Table table;
@@ -116,7 +116,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    protected void safeClose() throws IOException {
+    protected void innerClose() throws IOException {
         table.close();
     }
 
@@ -211,7 +211,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                 .map(r -> r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.id())))
                 .map(v -> {
                     try {
-                        return serializerFactory.<V>forAny().deserialize(v);
+                        return SERIALIZER_FACTORY.<V>forAny().deserialize(v);
                     }
                     catch (IOException e) {
                         throw new RuntimeException(e);
@@ -229,7 +229,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Put put = new Put(Strings.toBytes(key.owner().toString()))
-                    .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.id()), serializerFactory.<V>forAny().serialize(value));
+                    .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
 
             table.put(put);
         }

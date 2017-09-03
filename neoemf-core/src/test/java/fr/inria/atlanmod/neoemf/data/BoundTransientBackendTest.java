@@ -9,12 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.mapping;
+package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.CoreContext;
-import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import java.io.File;
 

@@ -207,7 +207,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    protected void safeClose() {
+    protected void innerClose() {
         try {
             graph.shutdown();
         }

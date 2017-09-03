@@ -13,49 +13,103 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
-import java.util.HashMap;
+import net.openhft.chronicle.map.ChronicleMap;
+import net.openhft.chronicle.map.ChronicleMapBuilder;
+
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link TransientBackend} that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeatureBean> {
+// TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
+public class DefaultTransientBackend extends AbstractTransientBackend {
+
+    /**
+     * The number of instances of this class.
+     */
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, SingleFeatureBean> containers = new HashMap<>();
+    private final ChronicleMap<Id, SingleFeatureBean> containers;
 
     /**
      * An in-memory map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassBean> instances = new HashMap<>();
+    private final ChronicleMap<Id, ClassBean> instances;
 
     /**
-     * An in-memory map that stores structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * An in-memory map that stores single-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link SingleFeatureBean}.
      */
     @Nonnull
-    private final Map<SingleFeatureBean, Object> features = new HashMap<>();
+    private final ChronicleMap<SingleFeatureBean, Object> singleFeatures;
+
+    /**
+     * An in-memory map that stores many-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the associated {@link ManyFeatureBean}.
+     */
+    @Nonnull
+    private final ChronicleMap<ManyFeatureBean, Object> manyFeatures;
+
+    public DefaultTransientBackend() {
+        final int id = COUNTER.getAndIncrement();
+
+        containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
+                .name("default/" + id + "/containers")
+                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
+                .averageKeySize(24)
+                .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
+                .averageValueSize(24 + 16)
+                .entries(10_000)
+                .create();
+
+        instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
+                .name("default/" + id + "/instances")
+                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
+                .averageKeySize(24)
+                .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
+                .averageValueSize(16 + 64)
+                .entries(10_000)
+                .create();
+
+        singleFeatures = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
+                .name("default/" + id + "/features/single")
+                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
+                .averageKeySize(24 + 16)
+                .averageValueSize(64)
+                .entries(100_000)
+                .create();
+
+        manyFeatures = ChronicleMapBuilder.of(ManyFeatureBean.class, Object.class)
+                .name("default/" + id + "/features/many")
+                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forManyFeature()))
+                .averageKeySize(24 + 16 + 4)
+                .averageValueSize(64)
+                .entries(100_000)
+                .create();
+    }
 
     @Override
-    protected void safeClose() {
-        containers.clear();
-        instances.clear();
-        features.clear();
+    protected void innerClose() {
+        containers.close();
+        instances.close();
+        singleFeatures.close();
+        manyFeatures.close();
     }
 
     @Override
@@ -77,15 +131,13 @@ public class DefaultTransientBackend extends AbstractTransientBackend<SingleFeat
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureBean, Object> allFeatures() {
-        return features;
+    protected Map<SingleFeatureBean, Object> singleFeatures() {
+        return singleFeatures;
     }
 
     @Nonnull
     @Override
-    protected SingleFeatureBean transform(SingleFeatureBean key) {
-        checkNotNull(key);
-
-        return key;
+    protected Map<ManyFeatureBean, Object> manyFeatures() {
+        return manyFeatures;
     }
 }

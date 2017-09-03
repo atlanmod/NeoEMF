@@ -11,11 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
 import org.mapdb.DB;
@@ -38,13 +41,15 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend {
+// TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
+abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend, AllReferenceAs<String> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.Serializer}
      * instances.
      */
-    protected final BeanSerializerFactory serializerFactory = BeanSerializerFactory.getInstance();
+    @Nonnull
+    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
      * The MapDB database.
@@ -87,17 +92,17 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
         this.db = db;
 
         this.containers = db.hashMap("containers")
-                .keySerializer(new SerializerDecorator<>(serializerFactory.forId()))
-                .valueSerializer(new SerializerDecorator<>(serializerFactory.forSingleFeature()))
+                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forId()))
+                .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .createOrOpen();
 
         this.instances = db.hashMap("instances")
-                .keySerializer(new SerializerDecorator<>(serializerFactory.forId()))
-                .valueSerializer(new SerializerDecorator<>(serializerFactory.forClass()))
+                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forId()))
+                .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forClass()))
                 .createOrOpen();
 
         this.features = db.hashMap("features/single")
-                .keySerializer(new SerializerDecorator<>(serializerFactory.forSingleFeature()))
+                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
@@ -135,7 +140,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    protected void safeClose() {
+    protected void innerClose() {
         db.close();
     }
 
@@ -200,6 +205,12 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         delete(features, key);
+    }
+
+    @Nonnull
+    @Override
+    public Converter<Id, String> referenceConverter() {
+        return ReferenceAs.DEFAULT_CONVERTER;
     }
 
     /**

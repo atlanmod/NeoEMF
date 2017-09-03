@@ -15,9 +15,9 @@ import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceWith;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceMergedAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceWith;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 
 import org.apache.hadoop.hbase.client.Table;
 
@@ -32,12 +32,12 @@ import static java.util.Objects.nonNull;
 
 /**
  * A {@link HBaseBackend} that use a {@link ManyValueWithArrays} mapping for storing attributes and {@link
- * ReferenceWith}/{@link ManyReferenceWith} mappings for storing references.
+ * ReferenceAs}/{@link ManyReferenceMergedAs} mappings for storing references.
  *
  * @see HBaseBackendFactory
  */
 @ParametersAreNonnullByDefault
-class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ReferenceWith<String>, ManyValueWithArrays, ManyReferenceWith<String> {
+class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ReferenceAs<String>, ManyValueWithArrays, ManyReferenceMergedAs<String> {
 
     /**
      * The {@link String} used to delimit multi-valued references.
@@ -78,7 +78,7 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements Referenc
 
     @Nonnull
     @Override
-    public Converter<List<Id>, String> manyReferencesConverter() {
+    public Converter<List<Id>, String> manyReferenceMerger() {
         return MANY_CONVERTER;
     }
 }

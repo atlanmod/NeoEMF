@@ -13,9 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
 
 import org.mapdb.DB;
 import org.mapdb.Serializer;
@@ -37,7 +35,7 @@ import static java.util.Objects.nonNull;
  * @see MapDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendIndices extends AbstractMapDbBackend implements ReferenceAsValue, ManyValueWithIndices, ManyReferenceAsManyValue {
+class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithIndices {
 
     /**
      * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -58,7 +56,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ReferenceAsVal
         super(db);
 
         this.manyFeatures = db.hashMap("features/many")
-                .keySerializer(new SerializerDecorator<>(serializerFactory.forManyFeature()))
+                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forManyFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
@@ -72,7 +70,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ReferenceAsVal
     }
 
     @Override
-    public <V> void safeValueFor(ManyFeatureBean key, @Nullable V value) {
+    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key);
 
         if (nonNull(value)) {

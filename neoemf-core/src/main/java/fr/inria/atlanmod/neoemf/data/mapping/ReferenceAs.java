@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.Optional;
@@ -27,7 +28,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @param <M> the type of the reference after mapping
  */
 @ParametersAreNonnullByDefault
-public interface ReferenceWith<M> extends ValueMapper, ReferenceMapper {
+public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
+
+    /**
+     * The default converter that simply returns the original {@link Id}.
+     */
+    @Nonnull
+    Converter<Id, Id> IDENTITY_CONVERTER = Converter.identity();
+
+    /**
+     * The default converter to use {@link String} instead of {@link Id}.
+     */
+    @Nonnull
+    Converter<Id, String> DEFAULT_CONVERTER = Converter.from(Id::toString, StringId::of);
 
     @Nonnull
     @Override
@@ -49,12 +62,12 @@ public interface ReferenceWith<M> extends ValueMapper, ReferenceMapper {
 
     @Override
     default void unsetReference(SingleFeatureBean key) {
-        unsetValue(key);
+        this.<M>unsetValue(key);
     }
 
     @Override
     default boolean hasReference(SingleFeatureBean key) {
-        return referenceOf(key).isPresent();
+        return this.<M>hasValue(key);
     }
 
     @Nonnull

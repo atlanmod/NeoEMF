@@ -11,13 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.commons.Converter;
+import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceAsManyValue;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAsValue;
+import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
+import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
+import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.hash.serialization.BytesReader;
+import net.openhft.chronicle.hash.serialization.BytesWriter;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,14 +39,19 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link TransientBackend} that provides the default behavior of containers and meta-classes management.
- *
- * @param <K> the type of keys to use to identify features
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractTransientBackend<K> extends AbstractBackend implements TransientBackend, ReferenceAsValue, ManyValueWithArrays, ManyReferenceAsManyValue {
+public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithIndices, AllReferenceAs<String> {
+
+    /**
+     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+     */
+    @Nonnull
+    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
      * Casts the {@code value} as expected.
@@ -47,7 +65,7 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    protected static <V> V cast(@Nullable Object value) {
+    private static <V> V cast(@Nullable Object value) {
         return (V) value;
     }
 
@@ -68,27 +86,20 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
     protected abstract Map<Id, ClassBean> allInstances();
 
     /**
-     * Returns the map that holds all features.
+     * Returns the map that holds single-features.
      *
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<K, Object> allFeatures();
+    protected abstract Map<SingleFeatureBean, Object> singleFeatures();
 
     /**
-     * Transforms the specified {@code key} to be compatible with the type {@link K} used by this backend.
+     * Returns the map that holds many-features.
      *
-     * @param key the key to transform
-     *
-     * @return the transformed key
-     *
-     * @see #allFeatures()
-     * @see #valueOf(SingleFeatureBean)
-     * @see #valueFor(SingleFeatureBean, Object)
-     * @see #unsetValue(SingleFeatureBean)
+     * @return a mutable map
      */
     @Nonnull
-    protected abstract K transform(SingleFeatureBean key);
+    protected abstract Map<ManyFeatureBean, Object> manyFeatures();
 
     @Nonnull
     @Override
@@ -132,24 +143,84 @@ public abstract class AbstractTransientBackend<K> extends AbstractBackend implem
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        K k = transform(key);
+        checkNotNull(key);
 
-        return Optional.ofNullable(cast(allFeatures().get(k)));
+        return Optional.ofNullable(cast(singleFeatures().get(key)));
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        K k = transform(key);
+        checkNotNull(key);
         checkNotNull(value);
 
-        return Optional.ofNullable(cast(allFeatures().put(k, value)));
+        return Optional.ofNullable(cast(singleFeatures().put(key, value)));
     }
 
     @Override
     public <V> void unsetValue(SingleFeatureBean key) {
-        K k = transform(key);
+        checkNotNull(key);
 
-        allFeatures().remove(k);
+        singleFeatures().remove(key);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueOf(ManyFeatureBean key) {
+        checkNotNull(key);
+
+        return Optional.ofNullable(cast(manyFeatures().get(key)));
+    }
+
+    @Override
+    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
+        checkNotNull(key);
+
+        if (nonNull(value)) {
+            manyFeatures().put(key, value);
+        }
+        else {
+            manyFeatures().remove(key);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public Converter<Id, String> referenceConverter() {
+        return ReferenceAs.DEFAULT_CONVERTER;
+    }
+
+    /**
+     * @param <T>
+     */
+    @ParametersAreNonnullByDefault
+    static final class BeanMarshaller<T> implements BytesWriter<T>, BytesReader<T> {
+
+        private final Serializer<T> serializer;
+
+        public BeanMarshaller(Serializer<T> serializer) {
+            this.serializer = serializer;
+        }
+
+        @Nonnull
+        @Override
+        public T read(@SuppressWarnings("rawtypes") Bytes in, @Nullable T using) {
+            try {
+                return serializer.deserialize(new DataInputStream(in.inputStream()));
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void write(@SuppressWarnings("rawtypes") Bytes out, @NotNull T value) {
+            try {
+                serializer.serialize(value, new DataOutputStream(out.outputStream()));
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
