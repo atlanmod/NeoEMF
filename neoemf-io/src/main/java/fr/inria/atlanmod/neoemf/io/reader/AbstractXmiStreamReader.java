@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.RegEx;
 
 import static java.util.Objects.nonNull;
 
@@ -44,19 +43,12 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
-     * Regular expression of a prefixed value.
-     */
-    @RegEx
-    @Nonnull
-    private static final String REGEX_PREFIXED_VALUE = "(\\w+):(\\w+)";
-
-    /**
      * Pattern of a prefixed value.
      * <p>
      * Example of recognized strings : {@code "&lt;prefix&gt;:&lt;name&gt;"}
      */
     @Nonnull
-    private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile(REGEX_PREFIXED_VALUE);
+    private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile("(\\w+):(\\w+)");
 
     /**
      * A LIFO that holds the current {@link BasicId} chain. It contains the current identifier and the previous.
@@ -72,6 +64,9 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
      * The current element.
+     *
+     * @see #readStartElement(String, String)
+     * @see #flushStartElement()
      */
     private BasicElement currentElement;
 

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
@@ -41,8 +40,14 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
     }
 
     @Override
-    @Ignore("Not supported")
     public void testCopyBackend() {
+        Backend transientBackend = context().factory().createTransientBackend();
+        assertThat(transientBackend).isInstanceOf(BlueprintsBackend.class);
+
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
+        assertThat(persistentBackend).isInstanceOf(BlueprintsBackendIndices.class);
+
+        transientBackend.copyTo(persistentBackend);
     }
 
     /**

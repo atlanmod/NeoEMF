@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
+import fr.inria.atlanmod.commons.Copiable;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.DataManager;
@@ -36,7 +37,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public interface StoreAdapter extends DataManager, InternalEObject.EStore {
+public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, InternalEObject.EStore {
 
     /**
      * Returns the adapted store.

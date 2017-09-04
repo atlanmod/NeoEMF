@@ -16,6 +16,7 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -29,6 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
@@ -94,7 +96,8 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
 
     @Override
     public void copyTo(DataMapper target) {
-        // No need to copy anything
+        // FIXME Copy only the elements related to the owner
+        throw new UnsupportedOperationException(String.format("%s does not support copy", getClass().getName()));
     }
 
     @Nonnull
@@ -119,6 +122,12 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     @Override
     protected Map<ManyFeatureBean, Object> manyFeatures() {
         return dataHolder.manyFeatures;
+    }
+
+    @Override
+    protected void checkKey(FeatureBean key) {
+        super.checkKey(key);
+        checkArgument(key.owner().equals(owner), "%s is not the owner of this back-end (%s)", key.owner(), owner);
     }
 
     /**
@@ -179,7 +188,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
                     .averageKeySize(24)
                     .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                     .averageValueSize(24 + 16)
-                    .entries(10_000)
+                    .entries(1_000_000)
                     .create();
 
             instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
@@ -188,7 +197,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
                     .averageKeySize(24)
                     .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
                     .averageValueSize(16 + 64)
-                    .entries(10_000)
+                    .entries(1_000_000)
                     .create();
 
             singleFeatures = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
@@ -196,7 +205,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                     .averageKeySize(24 + 16)
                     .averageValueSize(64)
-                    .entries(100_000)
+                    .entries(10_000_000)
                     .create();
 
             manyFeatures = ChronicleMapBuilder.of(ManyFeatureBean.class, Object.class)
@@ -204,7 +213,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forManyFeature()))
                     .averageKeySize(24 + 16 + 4)
                     .averageValueSize(64)
-                    .entries(100_000)
+                    .entries(10_000_000)
                     .create();
         }
 
@@ -220,11 +229,9 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
             // Unregister the current back-end and clear all features associated with the id
             // TODO Remove all features of the associated 'owner'
 
-            Log.trace("BoundTransientBackend closed for {0}", id);
-
             // Cleans all shared in-memory maps: they will no longer be used
             if (COUNTER.get() == 0) {
-                Log.debug("Cleaning BoundTransientBackend");
+                Log.debug("Cleaning {0}", BoundTransientBackend.class.getSimpleName());
 
                 containers.close();
                 instances.close();

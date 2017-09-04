@@ -93,6 +93,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      *
      * @see EcoreUtil#createFromString(EDataType, String)
      */
+    // FIXME IllegalArgumentException with 'EFeatureMapEntry'
     private static Object deserialize(EAttribute attribute, String property) {
         return EcoreUtil.createFromString(attribute.getEAttributeType(), property);
     }
@@ -107,6 +108,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      *
      * @see EcoreUtil#convertToString(EDataType, Object)
      */
+    // FIXME IllegalArgumentException with 'EFeatureMapEntry'
     private static String serialize(EAttribute attribute, Object value) {
         return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
@@ -770,6 +772,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         updateInstanceOf(object);
 
         store.unsetContainer(object.id());
+    }
+
+    @Override
+    public void copyTo(StoreAdapter target) {
+        store.copyTo(target.store());
     }
 
     /**

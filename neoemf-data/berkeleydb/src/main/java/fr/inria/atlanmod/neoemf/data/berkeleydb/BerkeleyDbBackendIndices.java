@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
@@ -60,11 +59,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     }
 
     @Override
-    public void copyTo(DataMapper target) {
-        checkArgument(BerkeleyDbBackendIndices.class.isInstance(target));
-        BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
+    protected void innerCopyTo(DataMapper target) {
+        super.innerCopyTo(target);
 
-        super.copyTo(target);
+        BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
         this.copy(manyFeatures, to.manyFeatures);
     }
 

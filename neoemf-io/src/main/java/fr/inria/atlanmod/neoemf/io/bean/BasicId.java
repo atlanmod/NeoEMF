@@ -11,8 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.commons.LazyReference;
+import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.cache.CacheBuilder;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
+
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -23,14 +30,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BasicId {
 
     /**
+     * In-memory cache that holds the recently hashed {@link Id}s, identified by their original value.
+     */
+    @Nonnull
+    private static final Cache<String, String> HASH_CACHE = CacheBuilder.builder()
+            .softValues()
+            .build();
+
+    /**
      * The literal representation of this identifier.
      */
+    @Nonnull
     private final String value;
 
     /**
      * Whether this identifier has been auto-generated.
      */
     private final boolean generated;
+
+    /**
+     * The {@link Id} associated to this {@code BasicId}.
+     */
+    @Nonnull
+    private final LazyReference<Id> id = LazyReference.soft(() -> {
+        // If identifier has been generated we hash it, otherwise we use the original
+        String literalId = isGenerated()
+                ? HASH_CACHE.get(value(), v -> StringId.generate(value()).toString())
+                : value();
+
+        return StringId.of(literalId);
+    });
 
     /**
      * Constructs a new {@code BasicId} with its {@code value}.
@@ -85,6 +114,16 @@ public class BasicId {
      */
     public boolean isGenerated() {
         return generated;
+    }
+
+    /**
+     * Creates the {@link Id} instance associated to this {@code BasicId}.
+     *
+     * @return a new instance of {@link Id}
+     */
+    @Nonnull
+    public Id getOrCreateId() {
+        return id.get();
     }
 
     @Override

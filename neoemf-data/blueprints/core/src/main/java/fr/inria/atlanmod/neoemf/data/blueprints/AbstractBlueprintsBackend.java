@@ -183,20 +183,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void copyTo(DataMapper target) {
-        checkArgument(AbstractBlueprintsBackend.class.isInstance(target));
-        AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
-
-        GraphHelper.copyGraph(graph, to.graph);
-
-        indexedMetaClasses.forEach(m -> {
-            Iterable<Vertex> metaClasses = to.metaClassIndex.get(KEY_NAME, m.name());
-            checkArgument(MoreIterables.isEmpty(metaClasses), "Index is not consistent");
-            to.metaClassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
-        });
-    }
-
-    @Override
     public boolean exists(Id id) {
         return get(id).isPresent();
     }
@@ -213,6 +199,19 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
         catch (Exception ignored) {
         }
+    }
+
+    @Override
+    protected void innerCopyTo(DataMapper target) {
+        AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
+
+        GraphHelper.copyGraph(graph, to.graph);
+
+        indexedMetaClasses.forEach(m -> {
+            Iterable<Vertex> metaClasses = to.metaClassIndex.get(KEY_NAME, m.name());
+            checkArgument(MoreIterables.isEmpty(metaClasses), "Index is not consistent");
+            to.metaClassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+        });
     }
 
     @Nonnull

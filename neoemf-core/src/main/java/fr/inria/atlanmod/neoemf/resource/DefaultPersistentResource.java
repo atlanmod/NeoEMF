@@ -186,8 +186,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             Store baseStore = StoreFactory.getInstance().createStore(backend, options);
             StoreAdapter newStore = DefaultStoreAdapter.adapt(baseStore, this);
 
-            // Direct copy to the backend
-            store.store().copyTo(newStore.store().backend());
+            // Direct copy
+            store.copyTo(newStore);
 
             // Close the previous store, and assign the new
             store.close();
@@ -299,6 +299,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * The {@link PersistentEObject} that represents the root entry point for this {@link PersistentResource}.
      */
+    @ParametersAreNonnullByDefault
     private static final class RootObject extends DefaultPersistentEObject {
 
         /**
@@ -320,6 +321,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * The {@link org.eclipse.emf.ecore.EReference} that represents the {@link Resource#getContents()} feature.
      */
+    @ParametersAreNonnullByDefault
     private static final class RootContentsReference extends EReferenceImpl {
 
         /**
@@ -346,7 +348,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      *
      * @see RootContentsReference
      */
-    private class RootContentsList<E> extends EStoreEObjectImpl.EStoreEList<E> {
+    @ParametersAreNonnullByDefault
+    private class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
         @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 4130828923851153715L;
@@ -355,7 +358,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * Constructs a new {@code RootContentsList}.
          */
         public RootContentsList() {
-            super(rootObject, ROOT_CONTENTS_REFERENCE, store());
+            super(rootObject, ROOT_CONTENTS_REFERENCE);
         }
 
         @Override
@@ -412,6 +415,60 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
 
         @Override
+        protected void didSet(int index, E newObject, E oldObject) {
+            super.didSet(index, newObject, oldObject);
+            modified();
+        }
+
+        @Override
+        protected void didAdd(int index, E object) {
+            super.didAdd(index, object);
+            if (index == size() - 1) {
+                loaded();
+            }
+            modified();
+        }
+
+        @Override
+        protected void didRemove(int index, E object) {
+            super.didRemove(index, object);
+            modified();
+        }
+
+        @Override
+        protected void didClear(int oldSize, Object[] oldData) {
+            if (oldSize == 0) {
+                loaded();
+            }
+            else {
+                super.didClear(oldSize, oldData);
+            }
+        }
+
+        /**
+         * Notifies that this resource has been loaded.
+         */
+        private void loaded() {
+            if (!isLoaded()) {
+                Optional.ofNullable(setLoaded(true)).ifPresent(DefaultPersistentResource.this::eNotify);
+            }
+        }
+
+        /**
+         * Notifies that this resource has been modified.
+         */
+        private void modified() {
+            if (isTrackingModification()) {
+                setModified(true);
+            }
+        }
+
+        @Override
+        protected InternalEObject.EStore eStore() {
+            return DefaultPersistentResource.this.store();
+        }
+
+        @Override
         protected void delegateAdd(int index, Object object) {
             /*
              * FIXME Maintain a list of hard links to the elements while moving them to the new resource.
@@ -460,56 +517,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .forEach(e -> e.resource(null));
 
             return previousValue;
-        }
-
-        @Override
-        protected void didSet(int index, E newObject, E oldObject) {
-            super.didSet(index, newObject, oldObject);
-            modified();
-        }
-
-        @Override
-        protected void didAdd(int index, E object) {
-            super.didAdd(index, object);
-            if (index == size() - 1) {
-                loaded();
-            }
-            modified();
-        }
-
-        @Override
-        protected void didRemove(int index, E object) {
-            super.didRemove(index, object);
-            modified();
-        }
-
-        @Override
-        protected void didClear(int oldSize, Object[] oldData) {
-            if (oldSize == 0) {
-                loaded();
-            }
-            else {
-                super.didClear(oldSize, oldData);
-            }
-        }
-
-        /**
-         * Notifies that this resource has been loaded.
-         */
-        private void loaded() {
-            if (!isLoaded()) {
-                Optional.ofNullable(setLoaded(true))
-                        .ifPresent(DefaultPersistentResource.this::eNotify);
-            }
-        }
-
-        /**
-         * Notifies that this resource has been modified.
-         */
-        private void modified() {
-            if (isTrackingModification()) {
-                setModified(true);
-            }
         }
     }
 }

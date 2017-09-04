@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.Copier;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
@@ -141,7 +142,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (nonNull(newStore) && newStore != store) {
             if (nonNull(store)) {
                 if (nonNull(resource)) {
-                    copyStore(store, newStore);
+                    // TODO Use the direct copy (see BoundTransientStore)
+                    new ContentCopier(this).copy(store, newStore);
                 }
                 //else: Resource is unloading, no need to copy the stores
 
@@ -153,106 +155,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
             store = newStore;
         }
-    }
-
-    /**
-     * Move the content from the {@code source} {@link StoreAdapter} to the {@code target}.
-     *
-     * @param source the store to copy
-     * @param target the store where to store data
-     */
-    private void copyStore(StoreAdapter source, StoreAdapter target) {
-        Optional<PersistentEObject> container = Optional.ofNullable(source.getContainer(this));
-
-        if (container.isPresent()) {
-            //noinspection ConstantConditions
-            target.updateContainment(this, source.getContainingFeature(this), container.get());
-        }
-        else {
-            target.removeContainment(this);
-        }
-
-        eClass().getEAllStructuralFeatures().forEach(feature -> {
-            // Don't call EStore#isSet(): this acts the same as a call to EStore#get() with result checking
-            if (!feature.isMany()) {
-                Optional<Object> value = valueFrom(source, feature, EStore.NO_INDEX);
-                value.ifPresent(o -> target.set(this, feature, EStore.NO_INDEX, o));
-            }
-            else {
-                List<Object> allValues = allValuesFrom(source, feature);
-                if (!allValues.isEmpty()) {
-                    target.setAll(this, feature, allValues);
-                }
-            }
-        });
-    }
-
-    /**
-     * Retrieves the value from the {@code store}, and attach the value to the {@link #resource() resource} if
-     * necessary.
-     *
-     * @param store   the store to look for the value
-     * @param feature the feature
-     * @param index   the index
-     *
-     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the value doesn't exist in the
-     * {@code store}
-     *
-     * @see StoreAdapter#get(InternalEObject, EStructuralFeature, int)
-     * @see #attach(Object)
-     */
-    @Nonnull
-    private Optional<Object> valueFrom(StoreAdapter store, EStructuralFeature feature, int index) {
-        Optional<Object> value = Optional.ofNullable(store.get(this, feature, index));
-
-        if (value.isPresent() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
-            return value.map(this::attach);
-        }
-
-        return value;
-    }
-
-    /**
-     * Retrieves all values from the {@code store}, and attach each value to the {@link #resource() resource} if
-     * necessary.
-     *
-     * @param store   the store to look for the values
-     * @param feature the feature
-     *
-     * @return a list containing all values
-     *
-     * @see StoreAdapter#getAll(InternalEObject, EStructuralFeature)
-     * @see #attach(Object)
-     */
-    @Nonnull
-    private List<Object> allValuesFrom(StoreAdapter store, EStructuralFeature feature) {
-        List<Object> values = store.getAll(this, feature);
-
-        if (!values.isEmpty() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
-            return values.stream().map(this::attach).collect(Collectors.toList());
-        }
-
-        return values;
-    }
-
-    /**
-     * Attachs the {@code value} to {@link #resource()} if it is assignable to a {@link PersistentEObject}.
-     *
-     * @param value the value to attach
-     *
-     * @return the {@code value}
-     *
-     * @see #resource(Resource.Internal)
-     */
-    @Nullable
-    private Object attach(@Nullable Object value) {
-        if (isNull(value)) {
-            return null;
-        }
-
-        PersistentEObject object = PersistentEObject.from(value);
-        object.resource(resource);
-        return object;
     }
 
     @Nullable
@@ -431,6 +333,120 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         PersistentEObject that = PersistentEObject.class.cast(o);
         return Objects.equals(id, that.id());
+    }
+
+    /**
+     * A {@link Copier} that copies the content related to a single {@link PersistentEObject}, from a {@link
+     * StoreAdapter} to another, by using the EMF methods.
+     */
+    @ParametersAreNonnullByDefault
+    private static final class ContentCopier implements Copier<StoreAdapter> {
+
+        @Nonnull
+        private final PersistentEObject object;
+
+        /**
+         * Contructs a new {@code ContentCopier} for the specified {@code object}.
+         *
+         * @param object the object to copy
+         */
+        public ContentCopier(PersistentEObject object) {
+            this.object = object;
+        }
+
+        @Override
+        public void copy(StoreAdapter source, StoreAdapter target) {
+            Optional<PersistentEObject> container = Optional.ofNullable(source.getContainer(object));
+            if (container.isPresent()) {
+                //noinspection ConstantConditions
+                target.updateContainment(object, source.getContainingFeature(object), container.get());
+            }
+            else {
+                target.removeContainment(object);
+            }
+
+            object.eClass().getEAllStructuralFeatures().forEach(feature -> {
+                // Don't call EStore#isSet(): this acts the same as a call to EStore#get() with result checking
+                if (!feature.isMany()) {
+                    Optional<Object> value = valueFrom(source, feature, EStore.NO_INDEX);
+                    value.ifPresent(o -> target.set(object, feature, EStore.NO_INDEX, o));
+                }
+                else {
+                    List<Object> allValues = allValuesFrom(source, feature);
+                    if (!allValues.isEmpty()) {
+                        target.setAll(object, feature, allValues);
+                    }
+                }
+            });
+        }
+
+        /**
+         * Retrieves the value from the {@code store}, and attach the value to the {@link #resource() resource} if
+         * necessary.
+         *
+         * @param store   the store to look for the value
+         * @param feature the feature
+         * @param index   the index
+         *
+         * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the value doesn't exist in
+         * the {@code store}
+         *
+         * @see StoreAdapter#get(InternalEObject, EStructuralFeature, int)
+         * @see #attach(Object)
+         */
+        @Nonnull
+        private Optional<Object> valueFrom(StoreAdapter store, EStructuralFeature feature, int index) {
+            Optional<Object> value = Optional.ofNullable(store.get(object, feature, index));
+
+            if (value.isPresent() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
+                return value.map(this::attach);
+            }
+
+            return value;
+        }
+
+        /**
+         * Retrieves all values from the {@code store}, and attach each value to the {@link #resource() resource} if
+         * necessary.
+         *
+         * @param store   the store to look for the values
+         * @param feature the feature
+         *
+         * @return a list containing all values
+         *
+         * @see StoreAdapter#getAll(InternalEObject, EStructuralFeature)
+         * @see #attach(Object)
+         */
+        @Nonnull
+        private List<Object> allValuesFrom(StoreAdapter store, EStructuralFeature feature) {
+            List<Object> values = store.getAll(object, feature);
+
+            if (!values.isEmpty() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
+                return values.stream().map(this::attach).collect(Collectors.toList());
+            }
+
+            return values;
+        }
+
+        /**
+         * Attachs the {@code value} to {@link #resource()} if it is assignable to a {@link PersistentEObject}.
+         *
+         * @param value the value to attach
+         *
+         * @return the {@code value}
+         *
+         * @see #resource(Resource.Internal)
+         */
+        @Nullable
+        private Object attach(@Nullable Object value) {
+            if (isNull(value)) {
+                return null;
+            }
+
+            PersistentEObject o = PersistentEObject.from(value);
+            o.resource(object.resource());
+            return o;
+        }
     }
 
     /**

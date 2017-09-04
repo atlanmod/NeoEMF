@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.commons.Copiable;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.DataManager;
 
@@ -27,14 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see ManyReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface DataMapper extends DataManager, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
-
-    /**
-     * Copies all the contents from this mapper to the {@code target}.
-     *
-     * @param target the mapper to copy the mapper contents to
-     */
-    void copyTo(DataMapper target);
+public interface DataMapper extends DataManager, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
 
     /**
      * Checks whether the specified {@code id} already exists in this {@code DataMapper}.

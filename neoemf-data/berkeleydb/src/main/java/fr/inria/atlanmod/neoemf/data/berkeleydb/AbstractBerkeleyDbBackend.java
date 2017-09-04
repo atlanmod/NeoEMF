@@ -38,7 +38,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -106,16 +105,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void copyTo(DataMapper target) {
-        checkArgument(AbstractBerkeleyDbBackend.class.isInstance(target));
-        AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
-
-        copy(instances, to.instances);
-        copy(features, to.features);
-        copy(containers, to.containers);
-    }
-
-    @Override
     public boolean isDistributed() {
         return false;
     }
@@ -124,6 +113,15 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     protected void innerClose() {
         activeDatabases().forEach(Database::close);
         environment.close();
+    }
+
+    @Override
+    protected void innerCopyTo(DataMapper target) {
+        AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
+
+        copy(instances, to.instances);
+        copy(features, to.features);
+        copy(containers, to.containers);
     }
 
     @Nonnull

@@ -20,13 +20,6 @@
 
     <dependencies>
 
-        <!-- Commons -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
-            <artifactId>commons-core</artifactId>
-        </dependency>
-
         <!-- Database -->
 
         <dependency>
@@ -39,21 +32,7 @@
             <artifactId>commons-configuration</artifactId>
         </dependency>
 
-        <!-- EMF -->
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
-
         <!-- Test -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
-            <artifactId>commons-core</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -73,22 +52,6 @@
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Internal -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
 

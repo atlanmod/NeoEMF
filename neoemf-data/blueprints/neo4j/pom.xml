@@ -23,13 +23,6 @@
 
     <dependencies>
 
-        <!-- Commons -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
-            <artifactId>commons-core</artifactId>
-        </dependency>
-
         <!-- Database -->
 
         <dependency>
@@ -38,13 +31,6 @@
         </dependency>
 
         <!-- Test -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
-            <artifactId>commons-core</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -60,22 +46,8 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-core</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

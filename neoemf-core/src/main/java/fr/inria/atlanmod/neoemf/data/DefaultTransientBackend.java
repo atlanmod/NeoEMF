@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import net.openhft.chronicle.map.ChronicleMap;
 import net.openhft.chronicle.map.ChronicleMapBuilder;
@@ -75,7 +74,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .averageKeySize(24)
                 .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .averageValueSize(24 + 16)
-                .entries(10_000)
+                .entries(1_000_000)
                 .create();
 
         instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
@@ -84,7 +83,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .averageKeySize(24)
                 .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
                 .averageValueSize(16 + 64)
-                .entries(10_000)
+                .entries(1_000_000)
                 .create();
 
         singleFeatures = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
@@ -92,7 +91,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .averageKeySize(24 + 16)
                 .averageValueSize(64)
-                .entries(100_000)
+                .entries(10_000_000)
                 .create();
 
         manyFeatures = ChronicleMapBuilder.of(ManyFeatureBean.class, Object.class)
@@ -100,7 +99,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forManyFeature()))
                 .averageKeySize(24 + 16 + 4)
                 .averageValueSize(64)
-                .entries(100_000)
+                .entries(10_000_000)
                 .create();
     }
 
@@ -110,11 +109,6 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
         instances.close();
         singleFeatures.close();
         manyFeatures.close();
-    }
-
-    @Override
-    public void copyTo(DataMapper target) {
-        // TODO Implement this method
     }
 
     @Nonnull

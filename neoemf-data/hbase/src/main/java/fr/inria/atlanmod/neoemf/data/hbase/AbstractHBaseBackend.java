@@ -106,11 +106,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void copyTo(DataMapper target) {
-        Log.warn("NeoEMF/HBase doesn't support copy backend feature");
-    }
-
-    @Override
     public boolean isDistributed() {
         return true;
     }

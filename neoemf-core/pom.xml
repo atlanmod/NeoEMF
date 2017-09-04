@@ -222,6 +222,9 @@
                             fr.inria.atlanmod.neoemf.*,
                             fr.inria.atlanmod.commons.*
                         </Export-Package>
+                        <Import-Package>
+                            com.google.common.cache;resolution:=optional
+                        </Import-Package>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional

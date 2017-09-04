@@ -11,11 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -28,7 +25,6 @@ import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -55,14 +51,6 @@ public class DefaultMapperWriter implements MapperWriter {
     private final Deque<Id> previousIds = new ArrayDeque<>();
 
     /**
-     * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
-     */
-    @Nonnull
-    private final Cache<String, Id> cache = CacheBuilder.builder()
-            .softValues()
-            .build();
-
-    /**
      * Constructs a new {@code DefaultMapperWriter} on top of the {@code mapper}.
      *
      * @param mapper the mapper where to write data
@@ -79,139 +67,25 @@ public class DefaultMapperWriter implements MapperWriter {
         BasicMetaclass metaClass = BasicMetaclass.getDefault();
 
         BasicElement rootElement = new BasicElement(metaClass.ns(), metaClass.name());
-        rootElement.id(BasicId.generated(MapperConstants.ROOT_ID.toString()));
+        rootElement.id(BasicId.original(MapperConstants.ROOT_ID.toString()));
         rootElement.className(metaClass.name());
         rootElement.isRoot(false);
         rootElement.metaClass(metaClass);
 
-        createElement(rootElement, MapperConstants.ROOT_ID, true);
+        createElement(rootElement, true);
     }
 
     @Override
     public void onStartElement(BasicElement element) {
-        previousIds.addLast(createElement(element));
+        createElement(element, false);
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        Id id = Optional.ofNullable(attribute.owner())
-                .map(this::getOrCreateId)
+        final Id id = Optional.ofNullable(attribute.owner())
+                .map(BasicId::getOrCreateId)
                 .orElseGet(previousIds::getLast);
 
-        addAttribute(id, attribute);
-    }
-
-    @Override
-    public void onReference(BasicReference reference) {
-        Id id = Optional.ofNullable(reference.owner())
-                .map(this::getOrCreateId)
-                .orElseGet(previousIds::getLast);
-
-        Id idReference = getOrCreateId(reference.idReference());
-
-        addReference(id, reference, idReference);
-    }
-
-    @Override
-    public void onCharacters(String characters) {
-        // Do nothing
-    }
-
-    @Override
-    public void onEndElement() {
-        previousIds.removeLast();
-    }
-
-    @Override
-    public void onComplete() {
-        mapper.save();
-    }
-
-    /**
-     * Creates an element from the given {@code element} with the given {@code id}.
-     *
-     * @param element     the information about the new element
-     * @param id          the identifier of the element
-     * @param isDummyRoot {@code true} if the {@code element} represents the 'ROOT' node
-     *
-     * @throws NullPointerException if any of the parameters is {@code null}
-     */
-    protected void createElement(BasicElement element, Id id, boolean isDummyRoot) {
-        updateInstanceOf(id, element.metaClass().name(), element.metaClass().ns().uri());
-
-        if (!isDummyRoot) { // The 'ROOT' node doesn't need these features
-            Optional.ofNullable(element.className())
-                    .map(cn -> {
-                        BasicAttribute attribute = new BasicAttribute();
-                        attribute.name(MapperConstants.FEATURE_NAME);
-                        attribute.value(cn);
-                        return attribute;
-                    }).ifPresent(a -> addAttribute(id, a));
-
-            // Add the current element as content of the 'ROOT' node
-            if (element.isRoot()) {
-                BasicReference reference = new BasicReference();
-                reference.name(MapperConstants.ROOT_FEATURE_NAME);
-                reference.isMany(true);
-
-                addReference(MapperConstants.ROOT_ID, reference, id);
-            }
-        }
-    }
-
-    /**
-     * Creates an element from the given {@code element}, and creates its {@link Id}.
-     *
-     * @param element the information about the new element
-     *
-     * @return the {@link Id} of the created element
-     *
-     * @throws NullPointerException if the {@code element} is {@code null} or if it does not have an {@link Id}
-     */
-    @Nonnull
-    protected Id createElement(BasicElement element) {
-        Id id = createId(element.id());
-
-        createElement(element, id, false);
-        cache.put(element.id().value(), id);
-
-        return id;
-    }
-
-    /**
-     * Returns the {@link Id} of the given {@code identifier}.
-     *
-     * @param identifier the representation of the {@link Id}
-     *
-     * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
-     */
-    @Nonnull
-    protected Id getOrCreateId(BasicId identifier) {
-        return cache.get(identifier.value(), value -> createId(identifier));
-    }
-
-    /**
-     * Creates an {@link Id} from the given {@code identifier}.
-     *
-     * @param identifier the representation of the {@link Id}
-     *
-     * @return the {@link Id}
-     */
-    @Nonnull
-    protected Id createId(BasicId identifier) {
-        // If identifier has been generated we hash it, otherwise we use the original
-        return identifier.isGenerated()
-                ? StringId.generate(identifier.value())
-                : StringId.of(identifier.value());
-    }
-
-    /**
-     * Adds a new {@code attribute} to the element identified by the given {@code id}.
-     *
-     * @param id        the identifier of the element
-     * @param attribute the attribute to add
-     */
-    protected void addAttribute(Id id, BasicAttribute attribute) {
         SingleFeatureBean key = SingleFeatureBean.of(id, attribute.name());
 
         if (!attribute.isMany()) {
@@ -228,17 +102,17 @@ public class DefaultMapperWriter implements MapperWriter {
         }
     }
 
-    /**
-     * Adds a new reference to the element identified by the given {@code id}.
-     *
-     * @param id          the identifier of the element
-     * @param reference   the reference to add
-     * @param idReference the identifier of the referenced element
-     */
-    protected void addReference(Id id, BasicReference reference, Id idReference) {
+    @Override
+    public void onReference(BasicReference reference) {
+        final Id id = Optional.ofNullable(reference.owner())
+                .map(BasicId::getOrCreateId)
+                .orElseGet(previousIds::getLast);
+
+        final Id idReference = reference.idReference().getOrCreateId();
+
         // Update the containment reference if needed
         if (reference.isContainment()) {
-            updateContainment(id, reference.name(), idReference);
+            mapper.containerFor(idReference, SingleFeatureBean.of(id, reference.name()));
         }
 
         SingleFeatureBean key = SingleFeatureBean.of(id, reference.name());
@@ -257,35 +131,62 @@ public class DefaultMapperWriter implements MapperWriter {
         }
     }
 
-    /**
-     * Updates the containment identified by its {@code featureId} between the {@code idContainer} and the {@code
-     * idContainment}.
-     *
-     * @param idContainer   the identifier of the element
-     * @param featureId     the identifier of the reference (parent -&gt; child)
-     * @param idContainment the identifier of the referenced element
-     */
-    protected void updateContainment(Id idContainer, String featureId, Id idContainment) {
-        Optional<SingleFeatureBean> container = mapper.containerOf(idContainment);
-        if (!container.isPresent() || !Objects.equals(container.get().owner(), idContainer)) {
-            mapper.containerFor(idContainment, SingleFeatureBean.of(idContainer, featureId));
-        }
+    @Override
+    public void onCharacters(String characters) {
+        // Do nothing
+    }
+
+    @Override
+    public void onEndElement() {
+        previousIds.removeLast();
+    }
+
+    @Override
+    public void onComplete() {
+        mapper.save();
     }
 
     /**
-     * Defines the meta-class to the element identified by the given {@code id}.
+     * Creates an element from the given {@code element}.
      *
-     * @param id   the identifier of the element
-     * @param name the name of the meta-class
-     * @param uri  the uri of the meta-class
+     * @param element     the information about the new element
+     * @param isDummyRoot {@code true} if the {@code element} represents the 'ROOT' node
+     *
+     * @throws NullPointerException if the {@code element} is {@code null}
      */
-    protected void updateInstanceOf(Id id, String name, String uri) {
+    protected void createElement(BasicElement element, boolean isDummyRoot) {
+        final Id id = element.id().getOrCreateId();
         Optional<ClassBean> metaClass = mapper.metaClassOf(id);
+
         if (!metaClass.isPresent()) {
-            mapper.metaClassFor(id, ClassBean.of(name, uri));
+            mapper.metaClassFor(id, ClassBean.of(element.metaClass().name(), element.metaClass().ns().uri()));
         }
-        else {
+        else if (!isDummyRoot) { // The "ROOT" Id may already exist for an existing resource
             throw new IllegalArgumentException("An element with the same Id (" + id + ") is already defined");
         }
+
+        if (!isDummyRoot) { // The 'ROOT' node doesn't need these features
+            Optional.ofNullable(element.className())
+                    .map(cn -> {
+                        BasicAttribute attribute = new BasicAttribute();
+                        attribute.owner(element.id());
+                        attribute.name(MapperConstants.FEATURE_NAME);
+                        attribute.value(cn);
+                        return attribute;
+                    }).ifPresent(this::onAttribute);
+
+            // Add the current element as content of the 'ROOT' node
+            if (element.isRoot()) {
+                BasicReference reference = new BasicReference();
+                reference.owner(BasicId.original(MapperConstants.ROOT_ID.toString()));
+                reference.name(MapperConstants.ROOT_FEATURE_NAME);
+                reference.idReference(element.id());
+                reference.isMany(true);
+
+                onReference(reference);
+            }
+        }
+
+        previousIds.addLast(id);
     }
 }

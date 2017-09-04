@@ -15,6 +15,7 @@ import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
@@ -101,6 +102,15 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     protected abstract Map<ManyFeatureBean, Object> manyFeatures();
 
+    /**
+     * Checks the specified {@code key} before using it.
+     *
+     * @param key the key to check
+     */
+    protected void checkKey(FeatureBean key) {
+        checkNotNull(key);
+    }
+
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
@@ -143,7 +153,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkKey(key);
 
         return Optional.ofNullable(cast(singleFeatures().get(key)));
     }
@@ -151,7 +161,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key);
+        checkKey(key);
         checkNotNull(value);
 
         return Optional.ofNullable(cast(singleFeatures().put(key, value)));
@@ -159,7 +169,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
     @Override
     public <V> void unsetValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkKey(key);
 
         singleFeatures().remove(key);
     }
@@ -167,14 +177,14 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkKey(key);
 
         return Optional.ofNullable(cast(manyFeatures().get(key)));
     }
 
     @Override
     public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
-        checkNotNull(key);
+        checkKey(key);
 
         if (nonNull(value)) {
             manyFeatures().put(key, value);

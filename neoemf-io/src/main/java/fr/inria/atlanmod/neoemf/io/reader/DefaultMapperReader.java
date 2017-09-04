@@ -27,7 +27,9 @@ import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -159,10 +161,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param key the key identifying the attributes
      */
     protected void readAllValues(SingleFeatureBean key) {
-        int size = mapper.sizeOfValue(key).orElse(0);
+        final List<String> values = mapper.allValuesOf(key);
 
-        IntStream.range(0, size).forEach(position ->
-                mapper.<String>valueOf(key.withPosition(0)).ifPresent(value -> {
+        IntStream.range(0, values.size()).forEach(position ->
+                Optional.ofNullable(values.get(position)).ifPresent(value -> {
                     BasicAttribute attribute = new BasicAttribute();
                     attribute.name(key.id());
                     attribute.owner(BasicId.original(key.owner().toString()));
@@ -206,10 +208,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param isContainment {@code true} if the reference is a containment
      */
     protected void readAllReferences(SingleFeatureBean key, boolean isContainment) {
-        int size = mapper.sizeOfReference(key).orElse(0);
+        final List<Id> references = mapper.allReferencesOf(key);
 
-        IntStream.range(0, size).forEach(position ->
-                mapper.referenceOf(key.withPosition(position)).ifPresent(id -> {
+        IntStream.range(0, references.size()).forEach(position ->
+                Optional.ofNullable(references.get(position)).ifPresent(id -> {
                     BasicReference reference = new BasicReference();
                     reference.name(key.id());
                     reference.owner(BasicId.original(key.owner().toString()));

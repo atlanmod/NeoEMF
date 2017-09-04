@@ -110,6 +110,10 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
                 element.id(BasicId.generated(id));
             }
         }
+        else if (element.id().isGenerated()) {
+            // Should not be generated
+            element.id(BasicId.original(element.id().value()));
+        }
 
         notifyStartElement(element);
     }
@@ -119,6 +123,10 @@ public class XPathProcessor extends AbstractProcessor<Handler> {
         if (!ignore) {
             // Format the reference according internal XPath management
             reference.idReference(BasicId.generated(formatPath(reference.idReference().value())));
+        }
+        else if (reference.idReference().isGenerated()) {
+            // Should not be generated
+            reference.idReference(BasicId.original(reference.idReference().value()));
         }
 
         notifyReference(reference);

@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
@@ -98,18 +99,13 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     public void onAttribute(BasicAttribute attribute) {
         EStructuralFeature eFeature = previousClasses.getLast().getEStructuralFeature(attribute.name());
 
-        // Checks that the attribute is well a attribute
         if (EObjects.isAttribute(eFeature)) {
-            EAttribute eAttribute = EObjects.asAttribute(eFeature);
-
-            attribute.isMany(eAttribute.isMany());
-
-            notifyAttribute(attribute);
+            // The attribute is well a attribute
+            processAttribute(attribute, EObjects.asAttribute(eFeature));
         }
-
-        // Otherwise redirect to the reference handler
-        else if (EObjects.isReference(eFeature)) {
-            onReference(BasicReference.from(attribute));
+        else {
+            // Otherwise redirect to the reference handler
+            processReference(BasicReference.from(attribute), EObjects.asReference(eFeature));
         }
     }
 
@@ -117,45 +113,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     public void onReference(BasicReference reference) {
         EStructuralFeature eFeature = previousClasses.getLast().getEStructuralFeature(reference.name());
 
-        // Checks that the reference is well a reference
-        if (EObjects.isReference(eFeature)) {
-            EReference eReference = EObjects.asReference(eFeature);
-
-            AtomicInteger index = new AtomicInteger();
-
-            String name = reference.name();
-            BasicId ownerId = reference.owner();
-            boolean isMany = eReference.isMany();
-            boolean isContainment = eReference.isContainment();
-
-            EClass eReferenceType = eReference.getEReferenceType();
-            BasicMetaclass metaClassRef = new BasicMetaclass(
-                    BasicNamespace.Registry.getInstance().getFromUri(eReferenceType.getEPackage().getNsURI()),
-                    eReferenceType.getName());
-
-            // Split a multi-valued reference
-            Arrays.stream(reference.idReference().value().split(Strings.SPACE))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(s -> {
-                        BasicReference newRef = new BasicReference();
-                        newRef.name(name);
-                        newRef.owner(ownerId);
-                        newRef.idReference(BasicId.original(s));
-                        newRef.index(isMany && !isContainment ? index.getAndIncrement() : -1);
-                        newRef.isContainment(isContainment);
-                        newRef.isMany(isMany);
-                        newRef.metaClassReference(metaClassRef);
-
-                        return newRef;
-                    })
-                    .forEach(this::notifyReference);
-        }
-
-        // Otherwise redirect to the attribute handler
-        else if (EObjects.isAttribute(eFeature)) {
-            onAttribute(BasicAttribute.from(reference));
-        }
+        processReference(reference, EObjects.asReference(eFeature));
     }
 
     @Override
@@ -222,8 +180,8 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     }
 
     /**
-     * Processes a feature and redirects the processing to the associated method according to its type (attribute or
-     * reference).
+     * Processes an element as a feature and redirects the processing to the associated method according to its type
+     * (attribute or reference).
      *
      * @param element the element representing the feature
      *
@@ -259,7 +217,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     }
 
     /**
-     * Processes an attribute.
+     * Processes an element as an attribute.
      *
      * @param element    the element representing the attribute
      * @param eAttribute the associated EMF attribute
@@ -278,7 +236,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     }
 
     /**
-     * Processes a reference.
+     * Processes an element as a reference.
      *
      * @param element    the element representing the reference
      * @param ns         the namespace of the class of the reference
@@ -302,12 +260,61 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
             reference.owner(previousIds.getLast());
             reference.idReference(currentId);
 
-            onReference(reference);
+            processReference(reference, eReference);
         }
 
         // Save EClass and identifier
         previousClasses.addLast(eClass);
         previousIds.addLast(currentId);
+    }
+
+    /**
+     * Processes an attribute.
+     *
+     * @param attribute  the attribute to process
+     * @param eAttribute the associated EMF attribute
+     */
+    private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
+        attribute.isMany(eAttribute.isMany());
+
+        notifyAttribute(attribute);
+    }
+
+    /**
+     * Processes a reference.
+     *
+     * @param reference  the reference to process
+     * @param eReference the associated EMF reference
+     */
+    private void processReference(BasicReference reference, EReference eReference) {
+        AtomicInteger index = new AtomicInteger();
+
+        boolean isMany = eReference.isMany();
+        boolean isContainment = eReference.isContainment();
+
+        BasicMetaclass metaClassRef = Optional.of(eReference.getEReferenceType())
+                .map(r -> new BasicMetaclass(
+                        BasicNamespace.Registry.getInstance().getFromUri(r.getEPackage().getNsURI()),
+                        r.getName()))
+                .<IllegalStateException>orElseThrow(IllegalStateException::new); // Should newer happen
+
+        // Split a multi-valued reference
+        Arrays.stream(reference.idReference().value().split(Strings.SPACE))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                    BasicReference newRef = new BasicReference();
+                    newRef.name(reference.name());
+                    newRef.owner(reference.owner());
+                    newRef.idReference(BasicId.generated(s));
+                    newRef.index(isMany && !isContainment ? index.getAndIncrement() : -1);
+                    newRef.isContainment(isContainment);
+                    newRef.isMany(isMany);
+                    newRef.metaClassReference(metaClassRef);
+
+                    return newRef;
+                })
+                .forEach(this::notifyReference);
     }
 
     /**

@@ -34,7 +34,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -115,9 +114,18 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
+    public boolean isDistributed() {
+        return false;
+    }
+
+    @Override
+    protected void innerClose() {
+        db.close();
+    }
+
+    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void copyTo(DataMapper target) {
-        checkArgument(AbstractMapDbBackend.class.isInstance(target));
+    protected void innerCopyTo(DataMapper target) {
         AbstractMapDbBackend to = AbstractMapDbBackend.class.cast(target);
 
         for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
@@ -132,16 +140,6 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
                 throw new UnsupportedOperationException(String.format("Cannot copy MapDB backend: store type %s is not supported", collection.getClass().getSimpleName()));
             }
         }
-    }
-
-    @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
-    protected void innerClose() {
-        db.close();
     }
 
     @Nonnull
