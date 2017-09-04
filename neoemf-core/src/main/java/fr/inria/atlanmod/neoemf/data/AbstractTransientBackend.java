@@ -16,10 +16,9 @@ import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
-import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
@@ -40,13 +39,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link TransientBackend} that provides the default behavior of containers and meta-classes management.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithIndices, AllReferenceAs<String> {
+public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithLists, AllReferenceAs<String> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
@@ -92,15 +90,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<SingleFeatureBean, Object> singleFeatures();
-
-    /**
-     * Returns the map that holds many-features.
-     *
-     * @return a mutable map
-     */
-    @Nonnull
-    protected abstract Map<ManyFeatureBean, Object> manyFeatures();
+    protected abstract Map<SingleFeatureBean, Object> allFeatures();
 
     /**
      * Checks the specified {@code key} before using it.
@@ -155,7 +145,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkKey(key);
 
-        return Optional.ofNullable(cast(singleFeatures().get(key)));
+        return Optional.ofNullable(cast(allFeatures().get(key)));
     }
 
     @Nonnull
@@ -164,34 +154,14 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         checkKey(key);
         checkNotNull(value);
 
-        return Optional.ofNullable(cast(singleFeatures().put(key, value)));
+        return Optional.ofNullable(cast(allFeatures().put(key, value)));
     }
 
     @Override
     public <V> void unsetValue(SingleFeatureBean key) {
         checkKey(key);
 
-        singleFeatures().remove(key);
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkKey(key);
-
-        return Optional.ofNullable(cast(manyFeatures().get(key)));
-    }
-
-    @Override
-    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
-        checkKey(key);
-
-        if (nonNull(value)) {
-            manyFeatures().put(key, value);
-        }
-        else {
-            manyFeatures().remove(key);
-        }
+        allFeatures().remove(key);
     }
 
     @Nonnull

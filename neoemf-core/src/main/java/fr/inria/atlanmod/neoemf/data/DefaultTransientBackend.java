@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
-import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import net.openhft.chronicle.map.ChronicleMap;
@@ -56,14 +55,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
      * identified by the associated {@link SingleFeatureBean}.
      */
     @Nonnull
-    private final ChronicleMap<SingleFeatureBean, Object> singleFeatures;
-
-    /**
-     * An in-memory map that stores many-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the associated {@link ManyFeatureBean}.
-     */
-    @Nonnull
-    private final ChronicleMap<ManyFeatureBean, Object> manyFeatures;
+    private final ChronicleMap<SingleFeatureBean, Object> features;
 
     public DefaultTransientBackend() {
         final int id = COUNTER.getAndIncrement();
@@ -86,18 +78,10 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .entries(1_000_000)
                 .create();
 
-        singleFeatures = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
-                .name("default/" + id + "/features/single")
+        features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
+                .name("default/" + id + "/features")
                 .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .averageKeySize(24 + 16)
-                .averageValueSize(64)
-                .entries(10_000_000)
-                .create();
-
-        manyFeatures = ChronicleMapBuilder.of(ManyFeatureBean.class, Object.class)
-                .name("default/" + id + "/features/many")
-                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forManyFeature()))
-                .averageKeySize(24 + 16 + 4)
                 .averageValueSize(64)
                 .entries(10_000_000)
                 .create();
@@ -105,10 +89,14 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     @Override
     protected void innerClose() {
+        containers.clear();
         containers.close();
+
+        instances.clear();
         instances.close();
-        singleFeatures.close();
-        manyFeatures.close();
+
+        features.clear();
+        features.close();
     }
 
     @Nonnull
@@ -125,13 +113,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureBean, Object> singleFeatures() {
-        return singleFeatures;
-    }
-
-    @Nonnull
-    @Override
-    protected Map<ManyFeatureBean, Object> manyFeatures() {
-        return manyFeatures;
+    protected Map<SingleFeatureBean, Object> allFeatures() {
+        return features;
     }
 }
