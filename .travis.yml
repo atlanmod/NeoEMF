@@ -6,8 +6,8 @@ jdk: oraclejdk8
 
 env:
   global:
-    - JAVA_OPTS="-Xms256m -Xmx2g"
-    - MAVEN_OPTS="-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC"
+    - JAVA_OPTS="-Xms256m -Xmx3g"
+    - MAVEN_OPTS="-Xms256m -Xmx3g -XX:+UseConcMarkSweepGC"
     # GH_TOKEN
     - secure: Mc7Pm9YGZiw3jr2NKBtIVozgC+iyrJ6F7V3UvpGPWQgn/IbJ6AM5YBSwvOk2P+jZI9k1vIgsrWIIKfu/1NYoJ5MC1mk94942ZNC+DJW1n+thgJ84xyLc4wXD8sYCdofWGcSrLYNZQpXkpbSuL8gVYk4iMQ8tI+jIoxRye1fgfYiBle2W3Pt/e4g0OGD339+ghSoKgBduM91elZmqFvf25CXYPcPtqZaXapmor9wBZyf8j7HLZsXLg2paA0Owpbn+WSdzFxKTvT3vn7ZY/iB6O80KYZTM/CcpzONdEEQUkMGc2bKfOVQ1lgqCbZyjbSyp8eTA43m949o+WOujhYQxqfZkg/1FPB5urIf+VF4o+hFFF/zZ8bJ6zPvD8MA7E4i3/LpNP7uNVndv6p8ijfm6fbuNe2MaK19yUQqMbriFlY6KfVy+o0yrc9InNoEFP+cbRMIoTVY/wIL5OIf06AE1RG7hNW7/jd8Nh4yuGLCgL87QybTxu37Jeho/K1XHZ2y7xi+6B3vbajvRpUgvyks/C0nnrpip5cnwS89XhEb/dj7rPvanfRiUUmoWxJKKEYut257SkP8AMxgUwc4TJb+GAsT7EyruToFsft4zzAXvejd6HM1QjAcq/96BbY8f6n+LnAHyKmwJbbLis0SxlmFMeyCeCJwcXmqzN7Axd/76gR4=
     # CI_DEPLOY_USERNAME
