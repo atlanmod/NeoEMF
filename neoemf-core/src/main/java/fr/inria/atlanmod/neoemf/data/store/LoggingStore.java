@@ -60,7 +60,7 @@ public class LoggingStore extends AbstractStore {
      */
     @VisibleForReflection
     public LoggingStore(Store store) {
-        this(store, Level.DEBUG);
+        this(store, Level.INFO);
     }
 
     /**

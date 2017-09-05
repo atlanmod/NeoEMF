@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -80,7 +81,7 @@ final class ContextualResourceBuilder {
      */
     private Map<String, Object> allOptions() {
         return context.optionsBuilder()
-                .log()
+                .log(Level.DEBUG)
                 .autoSave(100)
                 .cacheIsSet()
                 .cacheSizes()
