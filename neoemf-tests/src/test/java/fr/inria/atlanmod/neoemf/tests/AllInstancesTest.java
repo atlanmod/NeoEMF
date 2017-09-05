@@ -13,11 +13,11 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent2;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.SpecializedPackContent;
+import fr.inria.atlanmod.neoemf.tests.sample.Node;
+import fr.inria.atlanmod.neoemf.tests.sample.PhysicalNode;
+import fr.inria.atlanmod.neoemf.tests.sample.RemoteNode;
+import fr.inria.atlanmod.neoemf.tests.sample.Tree;
+import fr.inria.atlanmod.neoemf.tests.sample.VirtualNode;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -31,46 +31,44 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
+ * A test-case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
  */
 public class AllInstancesTest extends AbstractBackendTest {
 
     /**
-     * The expected number of {@link Pack} in the resulting list.
+     * The expected number of {@link Tree} in the resulting list.
      */
-    private static final int PACK_COUNT = 6;
+    private static final int TREE_COUNT = 6;
 
     /**
-     * The expected number of {@link fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent} in the
-     * resulting list.
+     * The expected number of {@link Node} in the resulting list.
      */
-    private static final int ABSTRACT_PACK_CONTENT_COUNT = 150;
+    private static final int NODE_COUNT = 150;
 
     /**
-     * The expected number of {@link PackContent} in the resulting list.
+     * The expected number of {@link PhysicalNode} in the resulting list.
      */
-    private static final int PACK_CONTENT_COUNT = 100;
+    private static final int PHYSICAL_NODE_COUNT = 100;
 
     /**
-     * The expected number of {@link SpecializedPackContent} in the resulting list.
+     * The expected number of {@link RemoteNode} in the resulting list.
      */
-    private static final int SPECIALIZED_PACK_CONTENT_COUNT = 50;
+    private static final int REMOTE_NODE_COUNT = 50;
 
     /**
-     * The expected number of {@link PackContent2} in the resulting list.
+     * The expected number of {@link VirtualNode} in the resulting list.
      */
-    private static final int PACK_CONTENT_2_COUNT = 50;
+    private static final int VIRTUAL_NODE_COUNT = 50;
 
     /**
-     * The expected number of {@link fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent} in the
-     * resulting list in a {@code strict} mode.
+     * The expected number of {@link Node} in the resulting list in a {@code strict} mode.
      */
-    private static final int ABSTRACT_PACK_CONTENT_STRICT_COUNT = 0;
+    private static final int NODE_STRICT_COUNT = 0;
 
     /**
-     * The expected number of {@link PackContent} in the resulting list in a {@code strict} mode.
+     * The expected number of {@link PhysicalNode} in the resulting list in a {@code strict} mode.
      */
-    private static final int PACK_CONTENT_STRICT_COUNT = 50;
+    private static final int PHYSICAL_NODE_STRICT_COUNT = 50;
 
     /**
      * Checks the content with a persistent store, and {@code strict = false}.
@@ -78,10 +76,10 @@ public class AllInstancesTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testAllInstancesPersistent() {
-        PersistentResource resource = createPersistentStore();
+        PersistentResource resource = newPersistentStore();
         fillResource(resource);
 
-        assertAllInstancesHas(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
+        assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
     }
 
     /**
@@ -90,10 +88,10 @@ public class AllInstancesTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testAllInstancesStrictPersistent() {
-        PersistentResource resource = createPersistentStore();
+        PersistentResource resource = newPersistentStore();
         fillResource(resource);
 
-        assertAllInstancesHas(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+        assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
     }
 
     /**
@@ -106,14 +104,14 @@ public class AllInstancesTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testAllInstancesPersistentLoaded() throws IOException {
-        PersistentResource resource = createPersistentStore();
+        PersistentResource resource = newPersistentStore();
         fillResource(resource);
 
         resource.save(context().optionsBuilder().asMap());
         resource.close();
         resource.load(context().optionsBuilder().asMap());
 
-        assertAllInstancesHas(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
+        assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
     }
 
     /**
@@ -126,14 +124,14 @@ public class AllInstancesTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testAllInstancesStrictPersistentLoaded() throws IOException {
-        PersistentResource resource = createPersistentStore();
+        PersistentResource resource = newPersistentStore();
         fillResource(resource);
 
         resource.save(context().optionsBuilder().asMap());
         resource.close();
         resource.load(context().optionsBuilder().asMap());
 
-        assertAllInstancesHas(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+        assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
     }
 
     /**
@@ -142,10 +140,10 @@ public class AllInstancesTest extends AbstractBackendTest {
     @Test
     @Category(Tags.TransientTests.class)
     public void testAllInstancesTransient() {
-        PersistentResource resource = createTransientStore();
+        PersistentResource resource = newTransientStore();
         fillResource(resource);
 
-        assertAllInstancesHas(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
+        assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
     }
 
     /**
@@ -154,10 +152,10 @@ public class AllInstancesTest extends AbstractBackendTest {
     @Test
     @Category(Tags.TransientTests.class)
     public void testAllInstancesStrictTransient() {
-        PersistentResource resource = createTransientStore();
+        PersistentResource resource = newTransientStore();
         fillResource(resource);
 
-        assertAllInstancesHas(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+        assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
     }
 
     /**
@@ -166,54 +164,54 @@ public class AllInstancesTest extends AbstractBackendTest {
      * @param resource the resource to fill
      */
     private void fillResource(PersistentResource resource) {
-        Pack rootPack = EFACTORY.createPack();
-        rootPack.setName("root");
+        Tree rootTree = EFACTORY.createTree();
+        rootTree.setName("RootTree");
 
         IntStream.range(0, 5).forEach(i -> {
-            Pack newPack = EFACTORY.createPack();
-            newPack.setName("pack" + i);
-            rootPack.getPacks().add(newPack);
+            Tree tree = EFACTORY.createTree();
+            tree.setName("Tree" + i);
+            rootTree.getChildren().add(tree);
 
             IntStream.range(0, 10).forEach(j -> {
-                PackContent newPackContent = EFACTORY.createPackContent();
-                newPackContent.setName("pContent" + i + '-' + j);
-                newPack.getOwnedContents().add(newPackContent);
+                Node physicalNode = EFACTORY.createPhysicalNode();
+                physicalNode.setLabel("Physical" + i + '-' + j);
+                tree.getNodes().add(physicalNode);
 
-                SpecializedPackContent newSpecializedPackContent = EFACTORY.createSpecializedPackContent();
-                newSpecializedPackContent.setName("spContent" + i + '-' + j);
-                newPack.getOwnedContents().add(newSpecializedPackContent);
+                Node remoteNode = EFACTORY.createRemoteNode();
+                remoteNode.setLabel("Remote" + i + '-' + j);
+                tree.getNodes().add(remoteNode);
 
-                PackContent2 newPackContent2 = EFACTORY.createPackContent2();
-                newPackContent2.setName("pContent2" + i + '-' + j);
-                newPack.getOwnedContents().add(newPackContent2);
+                Node virtualNode = EFACTORY.createVirtualNode();
+                virtualNode.setLabel("Virtual" + i + '-' + j);
+                tree.getNodes().add(virtualNode);
             });
         });
-        resource.getContents().add(rootPack);
+        resource.getContents().add(rootTree);
     }
 
     /**
      * Assert that the {@code resource} has the expected number of each element after calling {@link
      * PersistentResource#allInstancesOf(EClass, boolean)}.
      *
-     * @param resource                 the resource to test
-     * @param strict                   {@code true} if the lookup searches for strict instances
-     * @param abstractPackContentCount the expected number of {@link fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent}
-     * @param packContentCount         the expected number of {@link PackContent}
+     * @param resource          the resource to test
+     * @param strict            {@code true} if the lookup searches for strict instances
+     * @param nodeCount         the expected number of {@link Node}
+     * @param physicalNodeCount the expected number of {@link PhysicalNode}
      */
-    private void assertAllInstancesHas(PersistentResource resource, boolean strict, int abstractPackContentCount, int packContentCount) {
-        Iterable<EObject> allPacks = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getPack(), strict);
-        assertThat(allPacks).hasSize(PACK_COUNT);
+    private void assertAllInstancesHas(PersistentResource resource, boolean strict, int nodeCount, int physicalNodeCount) {
+        Iterable<EObject> trees = resource.allInstancesOf(EPACKAGE.getTree(), strict);
+        assertThat(trees).hasSize(TREE_COUNT);
 
-        Iterable<EObject> allAbstractPackContents = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
-        assertThat(allAbstractPackContents).hasSize(abstractPackContentCount);
+        Iterable<EObject> abstractNodes = resource.allInstancesOf(EPACKAGE.getNode(), strict);
+        assertThat(abstractNodes).hasSize(nodeCount);
 
-        Iterable<EObject> allPackContents = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getPackContent(), strict);
-        assertThat(allPackContents).hasSize(packContentCount);
+        Iterable<EObject> physicalNodes = resource.allInstancesOf(EPACKAGE.getPhysicalNode(), strict);
+        assertThat(physicalNodes).hasSize(physicalNodeCount);
 
-        Iterable<EObject> allSpecializedPackContents = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
-        assertThat(allSpecializedPackContents).hasSize(SPECIALIZED_PACK_CONTENT_COUNT);
+        Iterable<EObject> remoteNodes = resource.allInstancesOf(EPACKAGE.getRemoteNode(), strict);
+        assertThat(remoteNodes).hasSize(REMOTE_NODE_COUNT);
 
-        Iterable<EObject> allPackContents2 = resource.allInstancesOf(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
-        assertThat(allPackContents2).hasSize(PACK_CONTENT_2_COUNT);
+        Iterable<EObject> virtualNodes = resource.allInstancesOf(EPACKAGE.getVirtualNode(), strict);
+        assertThat(virtualNodes).hasSize(VIRTUAL_NODE_COUNT);
     }
 }

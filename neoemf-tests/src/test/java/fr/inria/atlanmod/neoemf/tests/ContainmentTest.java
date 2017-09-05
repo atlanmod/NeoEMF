@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContentComment;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
+import fr.inria.atlanmod.neoemf.tests.sample.Comment;
+import fr.inria.atlanmod.neoemf.tests.sample.Node;
+import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,93 +23,93 @@ import org.junit.experimental.categories.Category;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Checks that adding a transient containment sub-tree to an existing {@link PersistentResource} add all its elements to
- * the resource.
+ * A test-case that checks that adding a transient containment sub-tree to an existing {@link PersistentResource} add
+ * all its elements to the {@link org.eclipse.emf.ecore.resource.Resource}.
  */
 public class ContainmentTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testAddContainmentSubtree() {
-        PersistentResource resource = createPersistentStore();
+        PersistentResource resource = newPersistentStore();
 
-        Pack p1 = EFACTORY.createPack();
-        p1.setName("P1");
+        Tree tree0 = EFACTORY.createTree();
+        tree0.setName("Tree0");
 
-        resource.getContents().add(p1);
+        resource.getContents().add(tree0);
 
-        assertThat(p1.resource()).isSameAs(resource);
-        assertThat(p1.eInternalContainer()).isNull();
+        assertThat(tree0.resource()).isSameAs(resource);
+        assertThat(tree0.eInternalContainer()).isNull();
 
-        Pack p2 = EFACTORY.createPack();
-        p2.setName("P2");
+        Tree tree1 = EFACTORY.createTree();
+        tree1.setName("Tree1");
 
-        PackContent pc1 = EFACTORY.createPackContent();
+        Node node0 = EFACTORY.createLocalNode();
 
-        Pack p3 = EFACTORY.createPack();
-        p3.setName("P3");
+        Tree tree2 = EFACTORY.createTree();
+        tree2.setName("Tree2");
 
-        p2.getPacks().add(p3);
+        tree1.getChildren().add(tree2);
 
-        assertThat(p3.eInternalContainer()).isEqualTo(p2);
+        assertThat(tree2.eInternalContainer()).isEqualTo(tree1);
 
-        pc1.setName("PC1");
+        node0.setLabel("PhysicalNode0");
 
-        p3.getOwnedContents().add(pc1);
+        tree2.getNodes().add(node0);
 
-        assertThat(pc1.eInternalContainer()).isEqualTo(p3);
+        assertThat(node0.eInternalContainer()).isEqualTo(tree2);
 
-        p1.getPacks().add(p2);
+        tree0.getChildren().add(tree1);
 
-        assertThat(p2.eInternalContainer()).isEqualTo(p1);
+        assertThat(tree1.eInternalContainer()).isEqualTo(tree0);
 
         assertThat(resource.getAllContents()).hasSize(4);
 
-        assertThat(p1.resource()).isSameAs(resource);
-        assertThat(p2.resource()).isSameAs(resource);
-        assertThat(p3.resource()).isSameAs(resource);
-        assertThat(pc1.resource()).isSameAs(resource);
+        assertThat(tree0.resource()).isSameAs(resource);
+        assertThat(tree1.resource()).isSameAs(resource);
+        assertThat(tree2.resource()).isSameAs(resource);
+        assertThat(node0.resource()).isSameAs(resource);
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testSetContainmentAfterNonContainment() {
-        PersistentResource resource = createPersistentStore();
+        PersistentResource resource = newPersistentStore();
 
-        Pack p1 = EFACTORY.createPack();
-        p1.setName("P1");
+        Tree tree0 = EFACTORY.createTree();
+        tree0.setName("Tree0");
 
-        resource.getContents().add(p1);
+        resource.getContents().add(tree0);
 
-        assertThat(p1.resource()).isSameAs(resource);
-        assertThat(p1.eInternalContainer()).isNull();
+        assertThat(tree0.resource()).isSameAs(resource);
+        assertThat(tree0.eInternalContainer()).isNull();
 
-        Pack p2 = EFACTORY.createPack();
-        p2.setName("P2");
+        Tree tree1 = EFACTORY.createTree();
+        tree1.setName("Tree1");
 
-        p1.getPacks().add(p2);
+        tree0.getChildren().add(tree1);
 
-        PackContent pc1 = EFACTORY.createPackContent();
-        pc1.setName("PC1");
+        Node node0 = EFACTORY.createLocalNode();
+        node0.setLabel("PhysicalNode0");
 
-        p2.getOwnedContents().add(pc1);
+        tree1.getNodes().add(node0);
 
-        AbstractPackContentComment com1 = EFACTORY.createAbstractPackContentComment();
-        com1.setContent("Comment1");
+        Comment comment0 = EFACTORY.createComment();
+        comment0.setContent("Comment1");
 
         // Add using the non-containment reference
-        p2.getNonContainmentRefComments().add(com1);
+        tree1.getManyReference().add(comment0);
 
         // Then add the element to the resource tree using the containment reference
-        pc1.getContainmentNoOppositeRefComment().add(com1);
+        node0.getManyContainmentReference().add(comment0);
 
-        assertThat(com1.resource()).isSameAs(resource);
+        assertThat(comment0.resource()).isSameAs(resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)
-        assertThat(com1.eInternalContainer()).isEqualTo(pc1);
+        assertThat(comment0.eInternalContainer()).isEqualTo(node0);
 
         // Check that the element is in the containment reference list of its parent
-        assertThat(pc1.getContainmentNoOppositeRefComment()).contains(com1);
+        assertThat(node0.getManyContainmentReference()).contains(comment0);
 
         // Check everything is accessible from the resource
         assertThat(resource.getAllContents()).hasSize(4);

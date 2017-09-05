@@ -17,7 +17,7 @@
 
     <properties>
         <generated-sources.location>${project.basedir}/src/test/java-gen/</generated-sources.location>
-        <models.location>${project.basedir}/src/test/resources/ecore/</models.location>
+        <models.location>${project.basedir}/src/test/resources/model/</models.location>
 
         <stax.verions>1.0-2</stax.verions>
         <stax2.version>4.0.0</stax2.version>

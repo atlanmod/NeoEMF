@@ -1,0 +1,122 @@
+@Ecore(nsURI="http://www.neoemf.com/tests/sample")
+@GenModel(modelDirectory="/fr.inria.atlanmod.neoemf.tests.sample/src",
+	rootExtendsInterface="fr.inria.atlanmod.neoemf.core.PersistentEObject",
+	rootExtendsClass="fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject",
+	importerID="fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter", bundleManifest="false",
+	reflectiveDelegation="true", featureDelegation="Reflective")
+package fr.inria.atlanmod.neoemf.tests.sample
+
+import org.eclipse.emf.ecore.EFeatureMapEntry
+
+enum SomeKind {
+	one
+	Two as "two" = 1
+	Three as "Three-is-Three" = 3
+}
+
+type SomeType wraps String
+
+type Uri wraps org.eclipse.emf.common.util.URI
+
+class ETypes {
+	contains TypeMap[] values
+	contains TypeMapReference[] valuesWithReferences
+	contains StringMap[] stringValues
+	contains DataTypeMap[] dataTypeValues
+	unique Uri[] uris
+}
+
+class StringMap wraps java.util.Map.Entry {
+	String key
+	String value
+}
+
+class TypeMap wraps java.util.Map.Entry {
+	contains Type key
+	contains Value value
+}
+
+class TypeMapReference wraps java.util.Map.Entry {
+	refers PrimaryObject key
+	refers TargetObject value
+}
+
+class DataTypeMap wraps java.util.Map.Entry {
+	SomeType key
+	String value
+}
+
+class Type {
+	String name
+}
+
+class Value {
+	int value
+}
+
+class PrimaryObject {
+	id String ^id
+	String name
+	SomeKind kind
+	unsettable String unsettableAttribute
+	unsettable String unsettableAttributeWithDefault = "junit"
+	refers unsettable TargetObject unsettableReference
+	refers local TargetObject singleReference
+	refers local TargetObject[] manyReferences
+	contains TargetObject singleContainmentReference
+	contains TargetObject[] manyContainmentReferences
+	@ExtendedMetaData(kind="group")
+	unique EFeatureMapEntry featureMapReferenceCollection
+	@ExtendedMetaData(group="#featureMapReferenceCollection")
+	refers local transient volatile derived TargetObject[] featureMapReferenceType1
+	@ExtendedMetaData(group="#featureMapReferenceCollection")
+	contains transient volatile derived TargetObject[] featureMapReferenceType2
+	@ExtendedMetaData(kind="group")
+	unique EFeatureMapEntry[] featureMapAttributeCollection
+	@ExtendedMetaData(group="#featureMapAttributeCollection")
+	unique transient volatile derived String[] featureMapAttributeType1
+	@ExtendedMetaData(group="#featureMapAttributeCollection")
+	unique transient volatile derived String[] featureMapAttributeType2
+}
+
+class TargetObject {
+	String name
+	String singleAttribute
+	unique String[] manyAttributes
+	refers PrimaryObject singleReference
+	refers local PrimaryObject[] manyReferences
+}
+
+class Tree {
+	String name
+	contains Node[] nodes opposite tree
+	container Tree parent opposite children
+	contains Tree[] children opposite parent
+	refers Comment[] manyReference
+}
+
+abstract class Node {
+	String label
+	contains Node[] children opposite parent
+	contains Node[] childrenProxies opposite parentProxy
+	container Node parent opposite children
+	container Node parentProxy opposite childrenProxies
+	container Tree tree opposite nodes
+	contains Comment[] manyContainmentReference
+}
+
+class PhysicalNode extends Node {
+}
+
+class RemoteNode extends PhysicalNode {
+}
+
+class LocalNode extends PhysicalNode {
+}
+
+class VirtualNode extends Node {
+}
+
+class Comment {
+	String content
+}

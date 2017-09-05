@@ -21,8 +21,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jCon
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
+import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,10 +36,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import static org.junit.Assume.assumeTrue;
 
 /**
- * A utility class for testing on different {@link Context}s.
+ * The base class for testing on different {@link Context}s.
  */
 @RunWith(Parameterized.class)
 public abstract class AbstractBackendTest extends AbstractTest implements ContextualTest {
@@ -47,12 +49,20 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     /**
      * The {@link org.eclipse.emf.ecore.EFactory} of the test model.
      */
-    protected static final MapSampleFactory EFACTORY = MapSampleFactory.eINSTANCE;
+    @Nonnull
+    protected static final SampleFactory EFACTORY = SampleFactory.eINSTANCE;
 
     /**
      * The {@link org.eclipse.emf.ecore.EPackage} of the test model.
      */
-    protected static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
+    @Nonnull
+    protected static final SamplePackage EPACKAGE = SamplePackage.eINSTANCE;
+
+    /**
+     * A list that holds the resources that should be closed at the end of the tests.
+     */
+    @Nonnull
+    private final List<PersistentResource> loadedResources = new ArrayList<>();
 
     /**
      * The current context.
@@ -69,11 +79,6 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     public String name;
 
     /**
-     * A list that holds the resources that should be closed at the end of the tests.
-     */
-    private List<PersistentResource> loadedResources;
-
-    /**
      * The current temporary file.
      */
     private File file;
@@ -83,6 +88,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return a collection
      */
+    @Nonnull
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
@@ -126,7 +132,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return the created resource
      */
-    public PersistentResource createPersistentStore() {
+    public PersistentResource newPersistentStore() {
         try {
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
         }
@@ -140,7 +146,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return the created resource
      */
-    public PersistentResource createTransientStore() {
+    public PersistentResource newTransientStore() {
         try {
             return closeAtExit(context.createTransientResource(EPACKAGE, file));
         }
@@ -171,7 +177,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         context.init();
         assumeTrue("The context has not been initialized", context.isInitialized());
 
-        loadedResources = new ArrayList<>();
+        loadedResources.clear();
         file = workspace.newFile(context.name());
     }
 

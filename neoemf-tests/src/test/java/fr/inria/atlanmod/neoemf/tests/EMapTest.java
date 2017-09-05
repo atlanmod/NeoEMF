@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
+import fr.inria.atlanmod.neoemf.tests.sample.ETypes;
+import fr.inria.atlanmod.neoemf.tests.sample.Type;
+import fr.inria.atlanmod.neoemf.tests.sample.Value;
 
 import org.eclipse.emf.common.util.EMap;
 import org.junit.Test;
@@ -23,7 +23,10 @@ import org.junit.experimental.categories.Category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EMapSupportTest extends AbstractBackendTest {
+/**
+ * A test-case that checks the support of {@link EMap}.
+ */
+public class EMapTest extends AbstractBackendTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
@@ -34,24 +37,24 @@ public class EMapSupportTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetMapStringStringEmpty() {
-        PersistentResource resource = createPersistentStore();
-        resource.getContents().add(EFACTORY.createSampleModel());
+        PersistentResource resource = newPersistentStore();
+        resource.getContents().add(EFACTORY.createETypes());
 
-        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
-        assertThat(model.getMap()).isInstanceOf(EMap.class);
+        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+        assertThat(eTypes.getStringValues()).isInstanceOf(EMap.class);
 
-        EMap<String, String> map = model.getMap();
+        EMap<String, String> map = eTypes.getStringValues();
         assertThat(map).isEmpty();
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testPutMapStringString() {
-        PersistentResource resource = createPersistentStore();
-        resource.getContents().add(EFACTORY.createSampleModel());
+        PersistentResource resource = newPersistentStore();
+        resource.getContents().add(EFACTORY.createETypes());
 
-        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
-        EMap<String, String> map = model.getMap();
+        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+        EMap<String, String> map = eTypes.getStringValues();
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
 
@@ -65,40 +68,36 @@ public class EMapSupportTest extends AbstractBackendTest {
     @Test
     @Category(Tags.PersistentTests.class)
     public void testGetMapKVEmpty() {
-        PersistentResource resource = createPersistentStore();
-        resource.getContents().add(EFACTORY.createSampleModel());
+        PersistentResource resource = newPersistentStore();
+        resource.getContents().add(EFACTORY.createETypes());
 
-        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
-        assertThat(model.getKvMap()).isInstanceOf(EMap.class);
+        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+        assertThat(eTypes.getValues()).isInstanceOf(EMap.class);
 
-        EMap<K, V> map = model.getKvMap();
+        EMap<Type, Value> map = eTypes.getValues();
         assertThat(map).isEmpty();
     }
 
     @Test
     @Category(Tags.PersistentTests.class)
     public void testPutMapKV() {
-        PersistentResource resource = createPersistentStore();
-        resource.getContents().add(EFACTORY.createSampleModel());
+        PersistentResource resource = newPersistentStore();
+        resource.getContents().add(EFACTORY.createETypes());
 
-        SampleModel model = SampleModel.class.cast(resource.getContents().get(0));
-        EMap<K, V> map = model.getKvMap();
+        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+        EMap<Type, Value> map = eTypes.getValues();
 
-        K k1 = EFACTORY.createK();
-        k1.setKName(KEY1);
-        k1.setKInt(10);
+        Type k1 = EFACTORY.createType();
+        k1.setName(KEY1);
 
-        K k2 = EFACTORY.createK();
-        k2.setKName(KEY2);
-        k2.setKInt(100);
+        Type k2 = EFACTORY.createType();
+        k2.setName(KEY2);
 
-        V v1 = EFACTORY.createV();
-        v1.setVName(VALUE1);
-        v1.setVInt(1);
+        Value v1 = EFACTORY.createValue();
+        v1.setValue(1);
 
-        V v2 = EFACTORY.createV();
-        v2.setVName(VALUE2);
-        v2.setVInt(5);
+        Value v2 = EFACTORY.createValue();
+        v2.setValue(2);
 
         map.put(k1, v1);
         map.put(k2, v2);
