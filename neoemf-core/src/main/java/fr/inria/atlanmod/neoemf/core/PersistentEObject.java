@@ -54,9 +54,9 @@ public interface PersistentEObject extends InternalEObject {
     /**
      * Defines the identifier of this {@code PersistentEObject}.
      *
-     * @param id the identifier
+     * @param newId the identifier
      */
-    void id(Id id);
+    void id(Id newId);
 
     /**
      * Returns the resource that contains this {@code PersistentEObject}.
@@ -69,9 +69,9 @@ public interface PersistentEObject extends InternalEObject {
     /**
      * Defines the resource that contains this {@code PersistentEObject}.
      *
-     * @param resource the containing resource
+     * @param newResource the containing resource
      */
-    void resource(@Nullable Resource.Internal resource);
+    void resource(@Nullable Resource.Internal newResource);
 
     @Override
     StoreAdapter eStore();
