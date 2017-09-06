@@ -191,16 +191,6 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
     void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values);
 
     /**
-     * Retains only the {@code values} in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean)
-     * content} of the object's feature.
-     *
-     * @param internalObject the object in question
-     * @param feature        a {@link org.eclipse.emf.ecore.ETypedElement#isMany() many-valued} feature of the object
-     * @param values         the values to retain
-     */
-    void retainAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values);
-
-    /**
      * Creates or updates the containment link between {@code object} and {@code container}, and deletes any previous
      * link to {@code object}. The {@code object} is added to the containment list of the {@code container}.
      * <p>
