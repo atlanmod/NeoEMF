@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -36,5 +38,23 @@ public abstract class AbstractStore extends AbstractMapperDecorator<Store> imple
     @Override
     public Backend backend() {
         return next().backend();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(backend());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || AbstractStore.class.isInstance(o)) {
+            return false;
+        }
+
+        AbstractStore that = AbstractStore.class.cast(o);
+        return Objects.equals(backend(), that.backend());
     }
 }

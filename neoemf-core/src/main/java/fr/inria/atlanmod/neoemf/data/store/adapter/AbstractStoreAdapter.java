@@ -588,7 +588,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         return getAll(internalObject, feature).hashCode();
     }
 
-    @Nullable
     @Override
     public final PersistentEObject getContainer(InternalEObject internalObject) {
         checkNotNull(internalObject);
@@ -600,7 +599,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 .orElse(null);
     }
 
-    @Nullable
     @Override
     public final EReference getContainingFeature(InternalEObject internalObject) {
         checkNotNull(internalObject);
@@ -769,7 +767,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      * @return {@code true} if the {@code id} exists, {@code false} otherwise.
      */
     private boolean exists(Id id) {
-        return nonNull(cache().get(id)) || store.exists(id);
+        return cache().contains(id) || store.exists(id);
     }
 
     /**
@@ -799,7 +797,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     private void updateInstanceOf(PersistentEObject object) {
         // If the object is already present in the cache, then the meta-class is defined
-        if (nonNull(cache().get(object.id()))) {
+        if (cache().contains(object.id())) {
             return;
         }
 
@@ -810,6 +808,24 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
 
         refresh(object);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(store);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || AbstractStoreAdapter.class.isInstance(o)) {
+            return false;
+        }
+
+        AbstractStoreAdapter that = AbstractStoreAdapter.class.cast(o);
+        return Objects.equals(store, that.store);
     }
 
     /**

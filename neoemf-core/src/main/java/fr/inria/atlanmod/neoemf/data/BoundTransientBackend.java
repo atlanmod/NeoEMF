@@ -26,6 +26,7 @@ import net.openhft.chronicle.map.ChronicleMapBuilder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -146,6 +147,24 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
         dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())
                 .remove(key.id());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(owner);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BoundTransientBackend that = BoundTransientBackend.class.cast(o);
+        return Objects.equals(owner, that.owner);
     }
 
     /**

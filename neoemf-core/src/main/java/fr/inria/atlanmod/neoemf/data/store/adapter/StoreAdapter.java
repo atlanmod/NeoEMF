@@ -129,11 +129,9 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
     @Override
     int hashCode(InternalEObject internalObject, EStructuralFeature feature);
 
-    @Nullable
     @Override
     PersistentEObject getContainer(InternalEObject internalObject);
 
-    @Nullable
     @Override
     EReference getContainingFeature(InternalEObject internalObject);
 
