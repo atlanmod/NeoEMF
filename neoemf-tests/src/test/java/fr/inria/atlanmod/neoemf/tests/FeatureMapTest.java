@@ -22,7 +22,7 @@ public class FeatureMapTest extends AbstractBackendTest {
      * Checks that the {@link FeatureMap}s are correctly detected and created.
      */
     @Test
-    public void newInstanceTest() {
+    public void testNewInstance() {
         PersistentResource resource = newPersistentStore();
 
         PrimaryObject primary = EFACTORY.createPrimaryObject();
@@ -38,7 +38,7 @@ public class FeatureMapTest extends AbstractBackendTest {
     // region Attributes
 
     @Test
-    public void addAttributesTest() {
+    public void testAddAttributes() {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
@@ -62,7 +62,7 @@ public class FeatureMapTest extends AbstractBackendTest {
     }
 
     @Test
-    public void removeAttributesTest() {
+    public void testRemoveAttributes() {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
@@ -92,7 +92,7 @@ public class FeatureMapTest extends AbstractBackendTest {
     }
 
     @Test
-    public void setAttributesTest() {
+    public void testSetAttributes() {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
@@ -123,7 +123,7 @@ public class FeatureMapTest extends AbstractBackendTest {
 
     // region References
     @Test
-    public void addReferencesTest() {
+    public void testAddReferences() {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -154,7 +154,7 @@ public class FeatureMapTest extends AbstractBackendTest {
     }
 
     @Test
-    public void removeReferencesTest() {
+    public void testRemoveReferences() {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -191,7 +191,7 @@ public class FeatureMapTest extends AbstractBackendTest {
     }
 
     @Test
-    public void setReferencesTest() {
+    public void testSetReferences() {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
