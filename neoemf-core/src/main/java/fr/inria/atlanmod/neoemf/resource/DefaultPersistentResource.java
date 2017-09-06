@@ -45,10 +45,11 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -469,29 +470,15 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
 
         @Override
-        protected void delegateAdd(int index, Object object) {
+        protected void delegateAdd(int index, Object value) {
             /*
              * FIXME Maintain a list of hard links to the elements while moving them to the new resource.
              * If a garbage collection happens while traversing the children elements, some unsaved objects that are
              * referenced from a saved object may be garbage collected before they have been completely stored in the DB
              */
-            PersistentEObject eObject = PersistentEObject.from(object);
+            hardAllContents(PersistentEObject.from(value)).forEach(e -> e.resource(DefaultPersistentResource.this));
 
-            // Collect all contents
-            Set<EObject> allContents = MoreIterables.stream(eObject::eAllContents)
-                    .collect(Collectors.toSet());
-
-            allContents.add(eObject);
-
-            /*
-             * Iterate using the hard links set instead the getAllContents.
-             * We ensure that using the hard links set it is not taken out by JIT compiler.
-             */
-            allContents.stream()
-                    .map(PersistentEObject::from)
-                    .forEach(e -> e.resource(DefaultPersistentResource.this));
-
-            super.delegateAdd(index, object);
+            super.delegateAdd(index, value);
         }
 
         @Override
@@ -499,24 +486,31 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         protected E delegateRemove(int index) {
             E previousValue = super.delegateRemove(index);
 
-            PersistentEObject eObject = PersistentEObject.from(previousValue);
-
-            // Collect all contents
-            Set<E> allContents = MoreIterables.stream(eObject::eAllContents)
-                    .map(e -> (E) e)
-                    .collect(Collectors.toSet());
-
-            allContents.add(previousValue);
-
-            /*
-             * Iterate using the hard links set instead the getAllContents.
-             * We ensure that using the hard links set it is not taken out by JIT compiler.
-             */
-            allContents.stream()
-                    .map(PersistentEObject::from)
-                    .forEach(e -> e.resource(null));
+            hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));
 
             return previousValue;
+        }
+
+        /**
+         * Retrieves all the content of the specified {@code rootObject} and stores it in a {@link List}.
+         * <p>
+         * By iterating using the hard links list instead the {@link #getAllContents()}, we ensure that the content is
+         * not taken out by JIT compiler.
+         *
+         * @param rootObject the object from which to retrieve the content
+         *
+         * @return the content of {@code rootObject}
+         */
+        @Nonnull
+        private List<PersistentEObject> hardAllContents(PersistentEObject rootObject) {
+            List<PersistentEObject> allContents = new ArrayList<>();
+            allContents.add(rootObject);
+
+            MoreIterables.stream(rootObject::eAllContents)
+                    .map(PersistentEObject::from)
+                    .forEach(allContents::add);
+
+            return allContents;
         }
     }
 }
