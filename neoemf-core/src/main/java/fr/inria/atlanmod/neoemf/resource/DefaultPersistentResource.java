@@ -334,12 +334,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * Constructs a new {@code RootContentsReference}.
          */
         public RootContentsReference() {
-            setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-            setLowerBound(0);
-            setName(NAME);
-            setEType(new EClassifierImpl() {
-            });
             setFeatureID(RESOURCE__CONTENTS);
+            setName(NAME);
+            setLowerBound(0);
+            setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
+            setEType(new EClassifierImpl() {});
         }
     }
 
