@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that needs a {@link Context}.
  */
@@ -21,5 +23,6 @@ public interface ContextualTest {
      *
      * @return the current {@link Context}.
      */
+    @Nonnull
     Context context();
 }

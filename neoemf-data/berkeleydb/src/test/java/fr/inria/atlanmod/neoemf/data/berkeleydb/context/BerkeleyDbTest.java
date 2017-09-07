@@ -14,11 +14,14 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that uses a {@link BerkeleyDbContext}.
  */
 public interface BerkeleyDbTest extends ContextualTest {
 
+    @Nonnull
     @Override
     default Context context() {
         return BerkeleyDbContext.getWithIndices();

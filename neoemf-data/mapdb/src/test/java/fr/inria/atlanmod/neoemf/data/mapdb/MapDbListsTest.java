@@ -15,11 +15,14 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that checks the behavior of {@link MapDbBackendLists}.
  */
 public class MapDbListsTest extends AbstractPersistenceMapperTest {
 
+    @Nonnull
     @Override
     public Context context() {
         return MapDbContext.getWithLists();

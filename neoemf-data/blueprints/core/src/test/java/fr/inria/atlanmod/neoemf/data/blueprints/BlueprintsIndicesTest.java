@@ -15,11 +15,14 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that checks the behavior of {@link BlueprintsBackendIndices} by using the TinkerGraph implementation.
  */
 public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
 
+    @Nonnull
     @Override
     public Context context() {
         return BlueprintsContext.getWithIndices();

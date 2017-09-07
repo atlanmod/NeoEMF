@@ -15,11 +15,14 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that checks the behavior of {@link BerkeleyDbBackendLists}.
  */
 public class BerkeleyDbListsTest extends AbstractPersistenceMapperTest {
 
+    @Nonnull
     @Override
     public Context context() {
         return BerkeleyDbContext.getWithLists();

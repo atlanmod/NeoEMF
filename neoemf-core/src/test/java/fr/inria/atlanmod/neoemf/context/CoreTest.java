@@ -11,11 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that uses a {@link CoreContext}.
  */
 public interface CoreTest extends ContextualTest {
 
+    @Nonnull
     @Override
     default Context context() {
         return CoreContext.get();

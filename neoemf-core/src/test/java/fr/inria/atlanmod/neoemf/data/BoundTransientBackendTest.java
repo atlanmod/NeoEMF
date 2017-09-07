@@ -17,11 +17,14 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that checks the behavior of {@link BoundTransientBackend}.
  */
 public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 
+    @Nonnull
     @Override
     public Context context() {
         return new CoreContext() {

@@ -15,11 +15,14 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that checks the behavior of {@link HBaseBackendArraysStrings}.
  */
 public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
 
+    @Nonnull
     @Override
     public Context context() {
         return HBaseContext.getWithArraysAndStrings();

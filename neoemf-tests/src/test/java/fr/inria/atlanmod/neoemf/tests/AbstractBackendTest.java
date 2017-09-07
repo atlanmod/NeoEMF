@@ -90,29 +90,43 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      */
     @Nonnull
     @Parameterized.Parameters(name = "{1}")
-    public static Collection<Object[]> data() {
+    public static Collection<Object[]> allContexts() {
         return Arrays.asList(
-                // Blueprints : Tinker
-                new Object[]{BlueprintsContext.getWithIndices(), "Tinker"},
-
-                // Blueprints : Neo4j
-                new Object[]{BlueprintsNeo4jContext.getWithIndices(), "Neo4j"},
+                // Blueprints
+                buildContext(BlueprintsContext.getWithIndices(), "Tinker"),
+                buildContext(BlueprintsNeo4jContext.getWithIndices(), "Neo4j"),
 
                 // MapDB
-                new Object[]{MapDbContext.getWithIndices(), "MapDb - Indices"},
-                new Object[]{MapDbContext.getWithArrays(), "MapDb - Arrays"},
-                new Object[]{MapDbContext.getWithLists(), "MapDb - Lists"},
+                buildContext(MapDbContext.getWithIndices(), "MapDb - Indices"),
+                buildContext(MapDbContext.getWithArrays(), "MapDb - Arrays"),
+                buildContext(MapDbContext.getWithLists(), "MapDb - Lists"),
 
                 // BerkeleyDB
-                new Object[]{BerkeleyDbContext.getWithIndices(), "BerkeleyDB - Indices"},
-                new Object[]{BerkeleyDbContext.getWithArrays(), "BerkeleyDB - Arrays"},
-                new Object[]{BerkeleyDbContext.getWithLists(), "BerkeleyDB - Lists"},
+                buildContext(BerkeleyDbContext.getWithIndices(), "BerkeleyDB - Indices"),
+                buildContext(BerkeleyDbContext.getWithArrays(), "BerkeleyDB - Arrays"),
+                buildContext(BerkeleyDbContext.getWithLists(), "BerkeleyDB - Lists"),
 
                 // HBase
-                new Object[]{HBaseContext.getWithArraysAndStrings(), "HBase"}
+                buildContext(HBaseContext.getWithArraysAndStrings(), "HBase")
         );
     }
 
+    /**
+     * Build a new {@link Context} entry.
+     *
+     * @param context the context
+     * @param name    the name of the context
+     *
+     * @return a new entry
+     *
+     * @see #allContexts()
+     */
+    @Nonnull
+    private static Object[] buildContext(Context context, String name) {
+        return new Object[]{context, name};
+    }
+
+    @Nonnull
     @Override
     public Context context() {
         return context;
@@ -123,6 +137,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return a file.
      */
+    @Nonnull
     public File file() {
         return file;
     }
@@ -132,6 +147,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return the created resource
      */
+    @Nonnull
     public PersistentResource newPersistentStore() {
         try {
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
@@ -146,6 +162,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return the created resource
      */
+    @Nonnull
     public PersistentResource newTransientStore() {
         try {
             return closeAtExit(context.createTransientResource(EPACKAGE, file));
@@ -162,6 +179,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      *
      * @return the {@code resource}
      */
+    @Nonnull
     public PersistentResource closeAtExit(PersistentResource resource) {
         loadedResources.add(resource);
         return resource;

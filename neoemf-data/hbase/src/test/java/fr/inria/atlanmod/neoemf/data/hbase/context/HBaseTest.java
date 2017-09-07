@@ -14,11 +14,14 @@ package fr.inria.atlanmod.neoemf.data.hbase.context;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that uses a {@link HBaseContext}.
  */
 public interface HBaseTest extends ContextualTest {
 
+    @Nonnull
     @Override
     default Context context() {
         return HBaseContext.getWithArraysAndStrings();

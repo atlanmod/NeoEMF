@@ -14,11 +14,14 @@ package fr.inria.atlanmod.neoemf.data.blueprints.context;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
+import javax.annotation.Nonnull;
+
 /**
  * A test-case that uses a {@link BlueprintsContext}.
  */
 public interface BlueprintsTest extends ContextualTest {
 
+    @Nonnull
     @Override
     default Context context() {
         return BlueprintsContext.getWithIndices();
