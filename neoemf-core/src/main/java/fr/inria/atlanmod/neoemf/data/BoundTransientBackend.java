@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
@@ -155,7 +156,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
@@ -165,6 +166,11 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
 
         BoundTransientBackend that = BoundTransientBackend.class.cast(o);
         return Objects.equals(owner, that.owner);
+    }
+
+    @Override
+    public String toString() {
+        return "BoundTransientBackend[" + owner + ']';
     }
 
     /**

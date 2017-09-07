@@ -816,7 +816,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
