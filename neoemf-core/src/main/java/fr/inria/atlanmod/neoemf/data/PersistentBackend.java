@@ -21,6 +21,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface PersistentBackend extends Backend {
 
     @Override
+    default boolean isTransient() {
+        return false;
+    }
+
+    @Override
     default boolean isPersistent() {
         return true;
     }

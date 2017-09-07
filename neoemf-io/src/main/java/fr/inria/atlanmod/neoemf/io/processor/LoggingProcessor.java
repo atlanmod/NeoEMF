@@ -32,7 +32,7 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
     /**
      * The special logger.
      */
-    private static final Logger LOG = Log.rootLogger();
+    private static final Logger LOG = Log.root();
 
     /**
      * The current identifier, used to replace a full reference by "this".

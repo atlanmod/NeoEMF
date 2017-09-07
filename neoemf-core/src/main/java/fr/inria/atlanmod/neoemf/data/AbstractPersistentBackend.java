@@ -11,8 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import javax.annotation.Nullable;
+
 /**
  * An abstract {@link PersistentBackend}.
  */
 public abstract class AbstractPersistentBackend extends AbstractBackend implements PersistentBackend {
+
+    /**
+     * Constructs a new {@code AbstractPersistentBackend}.
+     */
+    protected AbstractPersistentBackend() {
+        super();
+    }
+
+    /**
+     * Constructs a new {@code AbstractPersistentBackend} with the given {@code name}.
+     *
+     * @param name the unique name of this backend
+     */
+    protected AbstractPersistentBackend(@Nullable String name) {
+        super(name);
+    }
 }

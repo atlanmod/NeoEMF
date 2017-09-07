@@ -56,11 +56,21 @@
             <AppenderRef ref="Console" />
         </Logger>
 
+        <!-- HBase specific loggers -->
+
         <Logger name="SecurityLogger" level="ERROR" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
 
         <Logger name="BlockStateChange" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="NameNodeMetricsLog" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="DataNodeMetricsLog" level="ERROR" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
 

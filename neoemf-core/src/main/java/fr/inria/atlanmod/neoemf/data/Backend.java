@@ -22,7 +22,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface Backend extends DataMapper {
 
     /**
-     * Returns whether this back-end is persistent, i.e., if it is stored in a database.
+     * Returns whether this back-end is transient, i.e., if it is stored in memory.
+     *
+     * @return {@code true} if the back-end is transient, {@code false} otherwise.
+     */
+    boolean isTransient();
+
+    /**
+     * Returns whether this back-end is persistent, i.e., if it is stored in a local database.
      *
      * @return {@code true} if the back-end is persistent, {@code false} otherwise.
      */

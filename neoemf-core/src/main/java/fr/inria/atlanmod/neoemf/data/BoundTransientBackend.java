@@ -71,6 +71,8 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
      * @param owner the identifier of the owner of this back-end
      */
     private BoundTransientBackend(Id owner) {
+        super(owner.toString());
+
         if (dataHolder.isClosed()) {
             COUNTER.set(0);
             dataHolder.init();
@@ -166,11 +168,6 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
 
         BoundTransientBackend that = BoundTransientBackend.class.cast(o);
         return Objects.equals(owner, that.owner);
-    }
-
-    @Override
-    public String toString() {
-        return "BoundTransientBackend[" + owner + ']';
     }
 
     /**

@@ -25,6 +25,11 @@ public interface TransientBackend extends Backend {
     }
 
     @Override
+    default boolean isTransient() {
+        return true;
+    }
+
+    @Override
     default boolean isPersistent() {
         return false;
     }

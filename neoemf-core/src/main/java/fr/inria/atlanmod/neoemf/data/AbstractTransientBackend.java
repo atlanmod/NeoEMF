@@ -53,6 +53,22 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
+     * Constructs a new {@code AbstractTransientBackend}.
+     */
+    protected AbstractTransientBackend() {
+        super();
+    }
+
+    /**
+     * Constructs a new {@code AbstractTransientBackend} with the given {@code name}.
+     *
+     * @param name the unique name of this backend
+     */
+    protected AbstractTransientBackend(@Nullable String name) {
+        super(name);
+    }
+
+    /**
      * Casts the {@code value} as expected.
      *
      * @param value the value to be cast

@@ -22,7 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link Backend} that provides a global behavior about the closure.
@@ -41,6 +44,12 @@ public abstract class AbstractBackend implements Backend {
     }
 
     /**
+     * The unique name of this backend.
+     */
+    @Nullable
+    private final String name;
+
+    /**
      * Whether this backend is closed.
      */
     private boolean isClosed;
@@ -49,6 +58,17 @@ public abstract class AbstractBackend implements Backend {
      * Constructs a new {@code AbstractBackend}.
      */
     protected AbstractBackend() {
+        this(null);
+    }
+
+    /**
+     * Constructs a new {@code AbstractBackend} with the given {@code name}.
+     *
+     * @param name the unique name of this backend
+     */
+    protected AbstractBackend(@Nullable String name) {
+        this.name = name;
+
         if (isPersistent()) {
             ACTIVE_BACKENDS.add(this);
         }
@@ -141,6 +161,11 @@ public abstract class AbstractBackend implements Backend {
      */
     protected void innerCopyTo(DataMapper target) {
         throw new UnsupportedOperationException(String.format("%s does not support specific copy", getClass().getName()));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + (isNull(name) ? ("@" + hashCode()) : ("#" + name));
     }
 
     /**

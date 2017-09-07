@@ -46,10 +46,10 @@ public class LoggingStore extends AbstractStore {
     /**
      * The {@link Logger} for the associated {@link Backend}.
      */
-    private final Logger log;
+    private static final Logger LOG = Log.root();
 
     /**
-     * The default {@link Level} for the {@link #log}.
+     * The default {@link Level} for the {@link #LOG}.
      */
     private final Level level;
 
@@ -73,8 +73,6 @@ public class LoggingStore extends AbstractStore {
     public LoggingStore(Store store, Level level) {
         super(store);
         this.level = level;
-
-        this.log = Log.customLogger(backend().getClass().getSimpleName() + '@' + backend().hashCode());
     }
 
     @Override
@@ -434,8 +432,8 @@ public class LoggingStore extends AbstractStore {
      * Logs a call of a method.
      */
     private void log() {
-        log.log(level, "[{0}] Called {1}()",
-                getBackendIdentifier(),
+        LOG.log(level, "[{0}] Called {1}()",
+                backend(),
                 getCallingMethod());
     }
 
@@ -447,8 +445,8 @@ public class LoggingStore extends AbstractStore {
      * @param result the result of the call
      */
     private void logSuccess(Object key, @Nullable Object value, @Nullable Object result) {
-        log.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + (nonNull(result) ? " = {4}" : Strings.EMPTY),
-                getBackendIdentifier(),
+        LOG.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + (nonNull(result) ? " = {4}" : Strings.EMPTY),
+                backend(),
                 getCallingMethod(),
                 key,
                 value,
@@ -463,8 +461,8 @@ public class LoggingStore extends AbstractStore {
      * @param e     the exception thrown during the the call
      */
     private void logFailure(Object key, @Nullable Object value, Throwable e) {
-        log.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + " but failed with {4}",
-                getBackendIdentifier(),
+        LOG.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + " but failed with {4}",
+                backend(),
                 getCallingMethod(),
                 key,
                 value,
@@ -478,14 +476,5 @@ public class LoggingStore extends AbstractStore {
      */
     private String getCallingMethod() {
         return Thread.currentThread().getStackTrace()[4].getMethodName();
-    }
-
-    /**
-     * Returns the identifier of the backend used by this store.
-     *
-     * @return the identifier
-     */
-    private String getBackendIdentifier() {
-        return backend().getClass().getSimpleName();
     }
 }
