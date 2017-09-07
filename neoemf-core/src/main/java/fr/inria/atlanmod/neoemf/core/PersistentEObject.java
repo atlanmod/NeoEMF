@@ -73,6 +73,7 @@ public interface PersistentEObject extends InternalEObject {
      */
     void resource(@Nullable Resource.Internal newResource);
 
+    @Nonnull
     @Override
     StoreAdapter eStore();
 }

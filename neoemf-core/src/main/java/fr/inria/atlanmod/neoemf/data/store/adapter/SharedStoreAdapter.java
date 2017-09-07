@@ -43,7 +43,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-// TODO Share a store chain (share caching,...)
+// TODO Remove this implementation: TransientBackend don't need cache
 public class SharedStoreAdapter extends AbstractStoreAdapter {
 
     /**

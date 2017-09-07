@@ -45,8 +45,10 @@ public class DefaultStoreAdapter extends AbstractStoreAdapter {
     /**
      * Constructs a new {@code DefaultStoreAdapter} on the given {@code store}.
      *
-     * @param store the inner store
+     * @param store    the inner store
+     * @param resource the resource to store and access
      */
+    // TODO Create an empty cache if store.backend().isPersistent() == true
     private DefaultStoreAdapter(Store store, @Nullable Resource.Internal resource) {
         super(store, resource);
     }
@@ -54,10 +56,12 @@ public class DefaultStoreAdapter extends AbstractStoreAdapter {
     /**
      * Adapts the given {@code store} as a {@code DefaultStoreAdapter}.
      *
-     * @param store the store to adapt
+     * @param store    the store to adapt
+     * @param resource the resource to store and access
      *
      * @return the adapted {@code store}
      */
+    @Nonnull
     public static StoreAdapter adapt(Store store, @Nullable Resource.Internal resource) {
         checkArgument(DefaultStoreAdapter.class.isInstance(store) || !StoreAdapter.class.isInstance(store),
                 "Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getName());

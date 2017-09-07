@@ -129,6 +129,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                         .map(c -> PersistenceFactory.getInstance().create(c, k))
                         .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
+        // TODO Simply refresh the resource of the object
         Resource.Internal resource = resource();
         if (nonNull(resource)) {
             object.resource(resource);
@@ -628,34 +629,34 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            List<String> value;
+            List<String> values;
             if (!feature.isMany()) {
-                value = store.<String>valueOf(key)
+                values = store.<String>valueOf(key)
                         .map(Collections::singletonList)
                         .orElseGet(Collections::emptyList);
             }
             else {
-                value = store.allValuesOf(key);
+                values = store.allValuesOf(key);
             }
 
             EAttribute attribute = EObjects.asAttribute(feature);
 
-            return value.stream()
+            return values.stream()
                     .map(v -> serializer.deserialize(attribute, v))
                     .collect(Collectors.toList());
         }
         else {
-            List<Id> reference;
+            List<Id> references;
             if (!feature.isMany()) {
-                reference = store.referenceOf(key)
+                references = store.referenceOf(key)
                         .map(Collections::singletonList)
                         .orElseGet(Collections::emptyList);
             }
             else {
-                reference = store.allReferencesOf(key);
+                references = store.allReferencesOf(key);
             }
 
-            return reference.stream()
+            return references.stream()
                     .map(this::resolve)
                     .collect(Collectors.toList());
         }
@@ -692,30 +693,30 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         if (EObjects.isAttribute(feature)) {
             EAttribute attribute = EObjects.asAttribute(feature);
 
-            List<String> vs = values.stream()
+            List<String> valuesToAdd = values.stream()
                     .map(v -> serializer.serialize(attribute, v))
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
-                return store.appendAllValues(key, vs);
+                return store.appendAllValues(key, valuesToAdd);
             }
             else {
-                store.addAllValues(key.withPosition(index), vs);
+                store.addAllValues(key.withPosition(index), valuesToAdd);
                 return index;
             }
         }
         else {
-            List<Id> rs = values.stream()
+            List<Id> referencesToAdd = values.stream()
                     .map(PersistentEObject::from)
                     .peek(this::updateInstanceOf)
                     .map(PersistentEObject::id)
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
-                return store.appendAllReferences(key, rs);
+                return store.appendAllReferences(key, referencesToAdd);
             }
             else {
-                store.addAllReferences(key.withPosition(index), rs);
+                store.addAllReferences(key.withPosition(index), referencesToAdd);
                 return index;
             }
         }

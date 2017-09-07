@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.Copier;
 import fr.inria.atlanmod.commons.LazyReference;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.SharedStoreAdapter;
@@ -39,7 +38,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -66,7 +64,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * The cached container of this object.
      */
     @Nonnull
-    private final transient LazyReference<InternalEObject> lazyContainer;
+    private final transient LazyReference<InternalEObject> lazyContainer = LazyReference.soft(super::eInternalContainer);
 
     /**
      * The identifier of this object.
@@ -83,7 +81,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The {@link StoreAdapter} where this object is stored.
      */
-    @Nullable
     private StoreAdapter store;
 
     /**
@@ -101,10 +98,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
-
-        lazyContainer = LazyReference.soft(super::eInternalContainer);
-
-        Log.trace("DefaultPersistentEObject created with ID {0}", id);
     }
 
     @Nonnull
@@ -114,8 +107,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public void id(Id id) {
-        this.id = checkNotNull(id);
+    public void id(Id newId) {
+        this.id = checkNotNull(newId);
     }
 
     @Override
@@ -125,35 +118,22 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public void resource(@Nullable Resource.Internal resource) {
+    public void resource(@Nullable Resource.Internal newResource) {
         StoreAdapter newStore = null;
 
-        if (PersistentResource.class.isInstance(resource)) {
+        if (PersistentResource.class.isInstance(newResource)) {
             // The resource store may have been changed (persistent <-> transient)
-            newStore = PersistentResource.class.cast(resource).store();
+            newStore = PersistentResource.class.cast(newResource).store();
         }
-        else if (this.resource != resource) {
-            newStore = createBoundStore(resource);
+        else if (resource != newResource) {
+            newStore = getOrCreateStore(newResource);
         }
 
-        this.resource = resource;
+        resource = newResource;
 
-        // Move contents from the previous store to the new
-        if (nonNull(newStore) && newStore != store) {
-            if (nonNull(store)) {
-                if (nonNull(resource)) {
-                    // TODO Use the direct copy (see BoundTransientStore)
-                    new ContentCopier(this).copy(store, newStore);
-                }
-                //else: Resource is unloading, no need to copy the stores
-
-                // Close the previous store if it's not attached to a persistent resource
-                // Otherwise the resource will close it
-                if (!PersistentResource.class.isInstance(store.resource())) {
-                    store.close();
-                }
-            }
-            store = newStore;
+        // The store may have been modified
+        if (nonNull(newStore)) {
+            eStore(newStore);
         }
     }
 
@@ -192,43 +172,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         return sb.toString();
     }
 
-    /**
-     * Defines the container of this object, and attaches it to the resource of its {@code newContainer}.
-     *
-     * @param newContainer          the new container of this object
-     * @param newContainmentFeature the reference used to link the container to this object
-     */
-    private void setContainer(PersistentEObject newContainer, EReference newContainmentFeature) {
-        lazyContainer.update(newContainer);
-        eStore().updateContainment(this, newContainmentFeature, newContainer);
-        resource(newContainer.resource());
-    }
-
-    /**
-     * Removes the container of this object, and detaches it from its resource.
-     */
-    private void removeContainer() {
-        lazyContainer.update(null);
-        eStore().removeContainment(this);
-        resource(null);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see #setContainer(PersistentEObject, EReference)
-     * @see #removeContainer()
-     */
     @Override
     protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
         if (nonNull(newContainer)) {
             PersistentEObject container = PersistentEObject.from(newContainer);
             EReference containmentFeature = eContainmentFeature(this, container, newContainerFeatureID);
 
-            setContainer(container, containmentFeature);
+            lazyContainer.update(container);
+            eStore().updateContainment(this, containmentFeature, container);
+            resource(container.resource());
         }
         else {
-            removeContainer();
+            lazyContainer.update(null);
+            eStore().removeContainment(this);
+            resource(null);
         }
     }
 
@@ -249,7 +206,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public StoreAdapter eStore() {
         if (isNull(store)) {
-            store = createBoundStore(resource);
+            store = getOrCreateStore(resource);
         }
         return store;
     }
@@ -262,7 +219,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (FeatureMapUtil.isFeatureMap(feature)) {
             return new DelegatedStoreFeatureMap(feature);
         }
-        else if (feature.isMany()) {
+
+        if (feature.isMany()) {
             if (Objects.equals(feature.getEType().getInstanceClassName(), java.util.Map.Entry.class.getName())) {
                 return new DelegatedStoreMap<>(feature);
             }
@@ -270,9 +228,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 return new DelegatedStoreList<>(feature);
             }
         }
-        else {
-            return eStore().get(this, feature, EStore.NO_INDEX);
-        }
+
+        return eStore().get(this, feature, EStore.NO_INDEX);
     }
 
     @Override
@@ -300,20 +257,50 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * Creates a new {@link Store} bound to this object.
+     * Retrieves or creates a new store bound to this object.
      *
      * @param resource the resource to attach the store
      *
-     * @return a new {@link Store}
+     * @return a new store
+     *
+     * @see #resource(Resource.Internal)
+     * @see #eStore()
      */
     @Nonnull
-    private StoreAdapter createBoundStore(@Nullable Resource.Internal resource) {
+    private StoreAdapter getOrCreateStore(@Nullable Resource.Internal resource) {
         if (isNull(store) || PersistentResource.class.isInstance(store.resource())) {
             return SharedStoreAdapter.adapt(BoundTransientBackend.forId(id), resource);
         }
         else {
             store.resource(resource);
             return store;
+        }
+    }
+
+    /**
+     * Defines the new store of this object, and copies the content from the existing store if necessary.
+     *
+     * @param newStore the store of this object
+     *
+     * @see #resource()
+     */
+    private void eStore(StoreAdapter newStore) {
+        checkNotNull(newStore);
+
+        if (!Objects.equals(store, newStore)) {
+            if (nonNull(store)) {
+                // Copy if the resource is not being unloaded
+                if (nonNull(resource)) {
+                    new ContentCopier(this).copy(store, newStore);
+                }
+
+                // If the resource is persistent, it will close its store
+                if (!PersistentResource.class.isInstance(store.resource())) {
+                    store.close();
+                }
+            }
+
+            store = newStore;
         }
     }
 
@@ -336,7 +323,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
-     * A {@link Copier} that copies the content related to a single {@link PersistentEObject}, from a {@link
+     * A {@link Copier} that recursively copies the content related to a {@link PersistentEObject}, from a {@link
      * StoreAdapter} to another, by using the EMF methods.
      */
     @ParametersAreNonnullByDefault
@@ -356,76 +343,49 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         @Override
         public void copy(StoreAdapter source, StoreAdapter target) {
-            Optional<PersistentEObject> container = Optional.ofNullable(source.getContainer(object));
-            if (container.isPresent()) {
-                //noinspection ConstantConditions
-                target.updateContainment(object, source.getContainingFeature(object), container.get());
+            PersistentEObject container = source.getContainer(object);
+            if (nonNull(container)) {
+                target.updateContainment(object, source.getContainingFeature(object), container);
             }
             else {
                 target.removeContainment(object);
             }
 
             object.eClass().getEAllStructuralFeatures().forEach(feature -> {
-                // Don't call EStore#isSet(): this acts the same as a call to EStore#get() with result checking
                 if (!feature.isMany()) {
-                    Optional<Object> value = valueFrom(source, feature, EStore.NO_INDEX);
-                    value.ifPresent(o -> target.set(object, feature, EStore.NO_INDEX, o));
+                    Object value = source.get(object, feature, EStore.NO_INDEX);
+                    if (nonNull(value)) {
+                        if (requireAttachment(feature)) {
+                            value = attach(value);
+                        }
+
+                        target.set(object, feature, EStore.NO_INDEX, value);
+                    }
                 }
                 else {
-                    List<Object> allValues = allValuesFrom(source, feature);
-                    if (!allValues.isEmpty()) {
-                        target.setAll(object, feature, allValues);
+                    List<Object> values = source.getAll(object, feature);
+                    if (!values.isEmpty()) {
+                        if (requireAttachment(feature)) {
+                            values = values.stream().map(this::attach).collect(Collectors.toList());
+                        }
+
+                        target.setAll(object, feature, values);
                     }
                 }
             });
         }
 
         /**
-         * Retrieves the value from the {@code store}, and attach the value to the {@link #resource() resource} if
-         * necessary.
+         * Checks that a {@code feature} is candidate for attachment.
          *
-         * @param store   the store to look for the value
-         * @param feature the feature
-         * @param index   the index
+         * @param feature the feature to test
          *
-         * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the value doesn't exist in
-         * the {@code store}
+         * @return {@code true} is the {@code feature} is candidate for attachment
          *
-         * @see StoreAdapter#get(InternalEObject, EStructuralFeature, int)
          * @see #attach(Object)
          */
-        @Nonnull
-        private Optional<Object> valueFrom(StoreAdapter store, EStructuralFeature feature, int index) {
-            Optional<Object> value = Optional.ofNullable(store.get(object, feature, index));
-
-            if (value.isPresent() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
-                return value.map(this::attach);
-            }
-
-            return value;
-        }
-
-        /**
-         * Retrieves all values from the {@code store}, and attach each value to the {@link #resource() resource} if
-         * necessary.
-         *
-         * @param store   the store to look for the values
-         * @param feature the feature
-         *
-         * @return a list containing all values
-         *
-         * @see StoreAdapter#getAll(InternalEObject, EStructuralFeature)
-         * @see #attach(Object)
-         */
-        @Nonnull
-        private List<Object> allValuesFrom(StoreAdapter store, EStructuralFeature feature) {
-            List<Object> values = store.getAll(object, feature);
-
-            if (!values.isEmpty() && EObjects.isReference(feature) && EObjects.asReference(feature).isContainment()) {
-                return values.stream().map(this::attach).collect(Collectors.toList());
-            }
-
-            return values;
+        private boolean requireAttachment(EStructuralFeature feature) {
+            return EObjects.isReference(feature) && EObjects.asReference(feature).isContainment();
         }
 
         /**
@@ -457,6 +417,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param <E> the type of elements in this list
      */
+    @ParametersAreNonnullByDefault
     private static class DelegatedContentsList<E> extends EContentsEList<E> {
 
         /**
@@ -489,7 +450,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          */
         @SuppressWarnings("unchecked")
         public static <E> DelegatedContentsList<E> empty() {
-            return DelegatedContentsList.class.cast(EMPTY);
+            return (DelegatedContentsList<E>) EMPTY;
         }
 
         /**
@@ -501,13 +462,13 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * @return a new list
          */
         public static <E> DelegatedContentsList<E> newList(PersistentEObject owner) {
-            EStructuralFeature[] containments = EClassImpl.FeatureSubsetSupplier.class.cast(owner.eClass().getEAllStructuralFeatures()).containments();
+            EStructuralFeature[] containments = EClassImpl.FeatureSubsetSupplier.class.cast(owner.eClass()
+                    .getEAllStructuralFeatures())
+                    .containments();
 
-            if (nonNull(containments)) {
-                return new DelegatedContentsList<>(owner, containments);
-            }
-
-            return DelegatedContentsList.empty();
+            return nonNull(containments)
+                    ? new DelegatedContentsList<>(owner, containments)
+                    : DelegatedContentsList.empty();
         }
 
         @Override
@@ -587,52 +548,50 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         @Override
-        // TODO Re-implement this method
-        public void replaceAll(UnaryOperator<E> operator) {
-            super.replaceAll(operator);
+        protected String delegateToString() {
+            return eStore().getAll(owner, eStructuralFeature).stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", ", "[", "]"));
         }
 
         @Override
         public boolean containsAll(Collection<?> collection) {
+            if (isNull(collection) || collection.isEmpty()) {
+                return false;
+            }
+
             if (collection.size() <= 1) {
                 return contains(collection.iterator().next());
             }
 
-            List<Object> values = eStore().getAll(owner, eStructuralFeature);
-            return values.containsAll(collection);
-        }
-
-        @Override
-        // TODO Re-implement this method
-        public boolean retainAll(Collection<?> collection) {
-            return super.retainAll(collection);
+            return eStore().getAll(owner, eStructuralFeature).containsAll(collection);
         }
 
         @Nonnull
         @Override
         public Object[] toArray() {
-            return eStore().toArray(owner, eStructuralFeature);
+            return delegateToArray();
         }
 
         @Nonnull
         @Override
         public <T> T[] toArray(T[] array) {
-            return eStore().toArray(owner, eStructuralFeature, array);
+            return delegateToArray(array);
         }
 
         @Override
         public boolean contains(Object object) {
-            return eStore().contains(owner, eStructuralFeature, object);
+            return delegateContains(object);
         }
 
         @Override
         public int indexOf(Object object) {
-            return eStore().indexOf(owner, eStructuralFeature, object);
+            return delegateIndexOf(object);
         }
 
         @Override
         public int lastIndexOf(Object object) {
-            return eStore().lastIndexOf(owner, eStructuralFeature, object);
+            return delegateLastIndexOf(object);
         }
 
         @Override
@@ -774,7 +733,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         @Override
-        protected EStore eStore() {
+        protected StoreAdapter eStore() {
             return DefaultPersistentEObject.this.eStore();
         }
     }
