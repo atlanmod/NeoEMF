@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -184,6 +185,51 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Override
     public Converter<Id, String> referenceConverter() {
         return ReferenceAs.DEFAULT_CONVERTER;
+    }
+
+    /**
+     * Some statistics about the size of key and values.
+     */
+    protected interface Sizes {
+
+        /**
+         * The estimated number of entries in maps.
+         */
+        long ENTRIES = powerTwo(20);
+
+        /**
+         * The estimated size of an {@link Id}.
+         */
+        long ID = powerTwo(5);
+
+        /**
+         * The estimated size of a {@link ClassBean}.
+         */
+        long CLASS = powerTwo(7);
+
+        /**
+         * The estimated size of a {@link FeatureBean}.
+         */
+        long FEATURE = powerTwo(6);
+
+        /**
+         * The estimated size of a feature value.
+         */
+        long FEATURE_VALUE = powerTwo(10);
+
+        /**
+         * Returns {@code 2}<sup>{@code exponent}</sup>.
+         */
+        @Nonnegative
+        static long powerTwo(int exponent) {
+            double value = Math.pow(2, exponent);
+
+            if (value > Long.MAX_VALUE) {
+                throw new ArithmeticException(String.format("%f > %d", value, Long.MAX_VALUE));
+            }
+
+            return (long) value;
+        }
     }
 
     /**

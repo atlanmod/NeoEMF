@@ -215,28 +215,28 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
         public void init() {
             containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
                     .name("bound/containers")
+                    .entries(Sizes.ENTRIES)
+                    .averageKeySize(Sizes.ID)
+                    .averageValueSize(Sizes.FEATURE)
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
-                    .averageKeySize(24)
                     .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
-                    .averageValueSize(24 + 16)
-                    .entries(1_000_000)
                     .create();
 
             instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
                     .name("bound/instances")
+                    .entries(Sizes.ENTRIES)
+                    .averageKeySize(Sizes.ID)
+                    .averageValueSize(Sizes.CLASS)
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
-                    .averageKeySize(24)
                     .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
-                    .averageValueSize(16 + 64)
-                    .entries(1_000_000)
                     .create();
 
             features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
                     .name("bound/features")
+                    .entries(Sizes.ENTRIES)
+                    .averageKeySize(Sizes.FEATURE)
+                    .averageValueSize(Sizes.FEATURE_VALUE)
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
-                    .averageKeySize(24 + 16)
-                    .averageValueSize(64)
-                    .entries(10_000_000)
                     .create();
 
             featuresById = new HashMap<>();
