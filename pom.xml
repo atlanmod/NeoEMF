@@ -110,8 +110,6 @@
     </developers>
 
     <properties>
-        <argLine.global>-Xms256m -Xmx3g -XX:+UseConcMarkSweepGC</argLine.global>
-
         <emf.version>2.12.0</emf.version>
     </properties>
 
