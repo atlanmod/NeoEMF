@@ -45,19 +45,19 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
     @Nonnull
     @Override
     default Optional<Id> referenceOf(SingleFeatureBean key) {
-        Converter<Id, M> func = referenceConverter();
+        Converter<Id, M> converter = referenceConverter();
 
         return this.<M>valueOf(key)
-                .map(func::doBackward);
+                .map(converter::revert);
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        Converter<Id, M> func = referenceConverter();
+        Converter<Id, M> converter = referenceConverter();
 
-        return this.<M>valueFor(key, func.doForward(reference))
-                .map(func::doBackward);
+        return this.<M>valueFor(key, converter.convert(reference))
+                .map(converter::revert);
     }
 
     @Override

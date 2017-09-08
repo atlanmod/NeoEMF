@@ -27,29 +27,29 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     @Nonnull
     @Override
     default Optional<Id> referenceOf(ManyFeatureBean key) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>valueOf(key)
-                .map(func::doBackward);
+                .map(converter::revert);
     }
 
     @Nonnull
     @Override
     default List<Id> allReferencesOf(SingleFeatureBean key) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>allValuesOf(key).stream()
-                .map(func::doBackward)
+                .map(converter::revert)
                 .collect(Collectors.toList());
     }
 
     @Nonnull
     @Override
     default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>valueFor(key, func.doForward(reference))
-                .map(func::doBackward);
+        return this.<M>valueFor(key, converter.convert(reference))
+                .map(converter::revert);
     }
 
     @Override
@@ -59,39 +59,39 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Override
     default void addReference(ManyFeatureBean key, Id reference) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        this.<M>addValue(key, func.doForward(reference));
+        this.<M>addValue(key, converter.convert(reference));
     }
 
     @Override
     default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        this.<M>addAllValues(key, collection.stream().map(func::doForward).collect(Collectors.toList()));
+        this.<M>addAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Override
     default int appendReference(SingleFeatureBean key, Id reference) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>appendValue(key, func.doForward(reference));
+        return this.<M>appendValue(key, converter.convert(reference));
     }
 
     @Override
     default int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>appendAllValues(key, collection.stream().map(func::doForward).collect(Collectors.toList()));
+        return this.<M>appendAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Nonnull
     @Override
     default Optional<Id> removeReference(ManyFeatureBean key) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>removeValue(key)
-                .map(func::doBackward);
+                .map(converter::revert);
     }
 
     @Override
@@ -102,33 +102,33 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     @Nonnull
     @Override
     default Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>moveValue(source, target)
-                .map(func::doBackward);
+                .map(converter::revert);
     }
 
     @Override
     default boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>containsValue(key, isNull(reference) ? null : func.doForward(reference));
+        return this.<M>containsValue(key, isNull(reference) ? null : converter.convert(reference));
     }
 
     @Nonnull
     @Override
     default Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>indexOfValue(key, isNull(reference) ? null : func.doForward(reference));
+        return this.<M>indexOfValue(key, isNull(reference) ? null : converter.convert(reference));
     }
 
     @Nonnull
     @Override
     default Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        Converter<Id, M> func = manyReferenceConverter();
+        Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>lastIndexOfValue(key, isNull(reference) ? null : func.doForward(reference));
+        return this.<M>lastIndexOfValue(key, isNull(reference) ? null : converter.convert(reference));
     }
 
     @Nonnull

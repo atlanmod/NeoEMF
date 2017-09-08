@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.ecore.EClass;
@@ -53,35 +50,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return the {@link StoreAdapter}
      */
     @Nonnull
-    StoreAdapter store();
-
-    /**
-     * Checks whether this resource is mapped to a {@link PersistentBackend}.
-     * <p>
-     * This method behaves like: {@code store().backend().isPersistent()}.
-     *
-     * @return {@code true} if the resource is persistent, {@code false} otherwise
-     *
-     * @see Store
-     * @see Backend
-     */
-    default boolean isPersistent() {
-        return store().store().backend().isPersistent();
-    }
-
-    /**
-     * Checks whether this resource is mapped to a distributed {@link PersistentBackend}.
-     * <p>
-     * This method behaves like: {@code store().backend().isDistributed()}.
-     *
-     * @return {@code true} if the resource is distributed, {@code false} otherwise.
-     *
-     * @see Store
-     * @see Backend
-     */
-    default boolean isDistributed() {
-        return store().store().backend().isDistributed();
-    }
+    StoreAdapter eStore();
 
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).

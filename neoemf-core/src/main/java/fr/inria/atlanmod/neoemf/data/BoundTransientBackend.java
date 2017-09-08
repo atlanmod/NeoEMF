@@ -29,8 +29,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,10 +49,12 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
      * The number of instances of this class.
      *
      * @see #innerClose()
-     * @see DataHolder#cleanAndClose(Id)
+     * @see DataHolder#close(Id)
      */
     @Nonnull
-    private final static AtomicInteger COUNTER = new AtomicInteger();
+    @Nonnegative
+    // FIXME May be inconsistent if a PersistentEObject is released by the garbage collector
+    private final static AtomicLong INSTANCES = new AtomicLong();
 
     /**
      * The owner of this back-end.
@@ -70,35 +73,24 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
      *
      * @param owner the identifier of the owner of this back-end
      */
-    private BoundTransientBackend(Id owner) {
+    public BoundTransientBackend(Id owner) {
         super(owner.toString());
 
         if (dataHolder.isClosed()) {
-            COUNTER.set(0);
+            INSTANCES.set(0L);
             dataHolder.init();
         }
 
-        COUNTER.incrementAndGet();
+        INSTANCES.incrementAndGet();
 
         this.owner = owner;
     }
 
-    /**
-     * Retrieves or creates a new {@code BoundTransientBackend} with the given {@code owner}.
-     *
-     * @param owner the identifier of the owner of this back-end
-     *
-     * @return a backend, bound to the {@code owner}
-     */
-    public static TransientBackend forId(Id owner) {
-        return new BoundTransientBackend(owner);
-    }
-
     @Override
     protected void innerClose() {
-        COUNTER.decrementAndGet();
+        INSTANCES.decrementAndGet();
 
-        dataHolder.cleanAndClose(owner);
+        dataHolder.close(owner);
     }
 
     @Override
@@ -109,19 +101,19 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    protected Map<Id, SingleFeatureBean> allContainers() {
+    protected Map<Id, SingleFeatureBean> containers() {
         return dataHolder.containers;
     }
 
     @Nonnull
     @Override
-    protected Map<Id, ClassBean> allInstances() {
+    protected Map<Id, ClassBean> instances() {
         return dataHolder.instances;
     }
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureBean, Object> allFeatures() {
+    protected Map<SingleFeatureBean, Object> features() {
         return dataHolder.features;
     }
 
@@ -222,7 +214,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
          */
         public void init() {
             containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
-                    .name("bound/all/containers")
+                    .name("bound/containers")
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
                     .averageKeySize(24)
                     .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
@@ -231,7 +223,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
                     .create();
 
             instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
-                    .name("bound/all/instances")
+                    .name("bound/instances")
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
                     .averageKeySize(24)
                     .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
@@ -240,7 +232,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
                     .create();
 
             features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
-                    .name("bound/all/features")
+                    .name("bound/features")
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                     .averageKeySize(24 + 16)
                     .averageValueSize(64)
@@ -255,7 +247,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
          *
          * @param id the identifier of the data to clean
          */
-        public void cleanAndClose(Id id) {
+        public void close(Id id) {
             // Remove the container from the id if present (accessible only by the id)
             containers.remove(id);
 
@@ -263,7 +255,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
             featuresById.remove(id).forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
 
             // Cleans all shared in-memory maps: they will no longer be used
-            if (COUNTER.get() == 0) {
+            if (INSTANCES.get() == 0L) {
                 Log.debug("Cleaning BoundTransientBackend");
 
                 containers.clear();
@@ -285,7 +277,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
          * @return {@code true} if the maps are closed, or not initialized yet.
          */
         public boolean isClosed() {
-            // If the 'containers' map is closed, then they are all closed
+            // If the 'containers' map is closed, we consider that all maps are closed
             return isNull(containers) || !containers.isOpen();
         }
 

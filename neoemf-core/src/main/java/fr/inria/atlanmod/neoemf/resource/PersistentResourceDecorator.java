@@ -198,14 +198,8 @@ public class PersistentResourceDecorator implements PersistentResource {
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public StoreAdapter store() {
-        return resource.store();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean isPersistent() {
-        return resource.isPersistent();
+    public StoreAdapter eStore() {
+        return resource.eStore();
     }
 
     @Nonnull

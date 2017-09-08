@@ -14,9 +14,12 @@ package fr.inria.atlanmod.neoemf.core;
 import fr.inria.atlanmod.commons.Copier;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
+import fr.inria.atlanmod.neoemf.data.TransientBackend;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.adapter.SharedStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.TransientStoreAdapter;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
@@ -56,6 +59,9 @@ import static java.util.Objects.nonNull;
  * <p>
  * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all existing
  * database implementations.
+ *
+ * @see TransientStoreAdapter
+ * @see BoundTransientBackend
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
@@ -81,7 +87,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The {@link StoreAdapter} where this object is stored.
      */
-    private StoreAdapter store;
+    private StoreAdapter eStore;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id}, using {@link
@@ -123,7 +129,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         if (PersistentResource.class.isInstance(newResource)) {
             // The resource store may have been changed (persistent <-> transient)
-            newStore = PersistentResource.class.cast(newResource).store();
+            newStore = PersistentResource.class.cast(newResource).eStore();
         }
         else if (resource != newResource) {
             newStore = getOrCreateStore(newResource);
@@ -205,10 +211,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     @Override
     public StoreAdapter eStore() {
-        if (isNull(store)) {
-            store = getOrCreateStore(resource);
+        if (isNull(eStore)) {
+            eStore = getOrCreateStore(resource);
         }
-        return store;
+        return eStore;
     }
 
     @Nullable
@@ -268,12 +274,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nonnull
     private StoreAdapter getOrCreateStore(@Nullable Resource.Internal resource) {
-        if (isNull(store) || PersistentResource.class.isInstance(store.resource())) {
-            return SharedStoreAdapter.adapt(BoundTransientBackend.forId(id), resource);
+        if (isNull(eStore) || PersistentResource.class.isInstance(eStore.resource())) {
+            TransientBackend backend = new BoundTransientBackend(id);
+            Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
+            return new TransientStoreAdapter(baseStore, resource);
         }
         else {
-            store.resource(resource);
-            return store;
+            eStore.resource(resource);
+            return eStore;
         }
     }
 
@@ -287,20 +295,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private void eStore(StoreAdapter newStore) {
         checkNotNull(newStore);
 
-        if (!Objects.equals(store, newStore)) {
-            if (nonNull(store)) {
+        if (!Objects.equals(eStore, newStore)) {
+            if (nonNull(eStore)) {
                 // Copy if the resource is not being unloaded
                 if (nonNull(resource)) {
-                    new ContentCopier(this).copy(store, newStore);
+                    new ContentCopier(this).copy(eStore, newStore);
                 }
 
                 // If the resource is persistent, it will close its store
-                if (!PersistentResource.class.isInstance(store.resource())) {
-                    store.close();
+                if (!PersistentResource.class.isInstance(eStore.resource())) {
+                    eStore.close();
                 }
             }
 
-            store = newStore;
+            eStore = newStore;
         }
     }
 
@@ -726,6 +734,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @see #eStore()
      */
     @ParametersAreNonnullByDefault
+    // TODO Add support for FeatureMap#Entry: need a post-processing, especially for references
     private class DelegatedStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap {
 
         public DelegatedStoreFeatureMap(EStructuralFeature feature) {

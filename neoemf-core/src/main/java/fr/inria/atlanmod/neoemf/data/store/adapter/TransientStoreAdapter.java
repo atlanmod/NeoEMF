@@ -15,8 +15,6 @@ import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.TransientBackend;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -33,18 +31,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A {@link StoreAdapter} that caches statically the rebuilt {@link PersistentEObject}s. Its content is shared among all
- * the dependencies that use it.
+ * A {@link StoreAdapter}, bound to a {@link Resource.Internal}, that caches the rebuilt {@link PersistentEObject}s. Its
+ * content is shared among all the dependencies that use it, i.e. each {@link Resource.Internal} has its own cache.
  * <p>
- * This adapter is used in a fully-transient context, when {@link PersistentEObject}s are not attached to a {@link
+ * This adapter is used in a transient context, when {@link PersistentEObject}s are not attached to a {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource}.
  *
  * @see PersistentEObject
  */
 @Immutable
 @ParametersAreNonnullByDefault
-// TODO Remove this implementation: TransientBackend don't need cache
-public class SharedStoreAdapter extends AbstractStoreAdapter {
+public class TransientStoreAdapter extends AbstractStoreAdapter {
 
     /**
      * The cache holder associated with the resource of the underlying store.
@@ -53,25 +50,14 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     private SharedHolder holder;
 
     /**
-     * Constructs a new {@code SharedStoreAdapter} on the given {@code store}.
+     * Constructs a new {@code TransientStoreAdapter} on the given {@code store}.
      *
      * @param store the inner store
      */
-    protected SharedStoreAdapter(Store store, @Nullable Resource.Internal resource) {
+    public TransientStoreAdapter(Store store, @Nullable Resource.Internal resource) {
         super(store, resource);
 
         this.holder = SharedHolder.forResource(resource);
-    }
-
-    /**
-     * Adapts the given {@code backend} into a {@code SharedStoreAdapter}.
-     *
-     * @param backend the backend to adapt
-     *
-     * @return the adapted {@code backend}
-     */
-    public static StoreAdapter adapt(TransientBackend backend, @Nullable Resource.Internal resource) {
-        return new SharedStoreAdapter(new DirectWriteStore(backend), resource);
     }
 
     @Override
@@ -96,7 +82,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
     }
 
     /**
-     * A shared holder of {@link Cache}.
+     * An object that holds {@link Cache} for a specific {@link Resource.Internal}.
      */
     @Immutable
     @ParametersAreNonnullByDefault
@@ -106,7 +92,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
          * A map that holds all created instances of {@link SharedHolder}, identified by their associated resource.
          */
         @Nonnull
-        private static final Map<Resource, SharedHolder> REGISTRY = new HashMap<>();
+        private static final Map<Resource.Internal, SharedHolder> REGISTRY = new HashMap<>();
 
         /**
          * The number of dependencies that use this store.
@@ -128,12 +114,12 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
          * The resource associated to this holder.
          */
         @Nullable
-        private final Resource resource;
+        private final Resource.Internal resource;
 
         /**
          * Constructs a new {@code SharedHolder} for the given {@code resource}.
          */
-        private SharedHolder(@Nullable Resource resource) {
+        private SharedHolder(@Nullable Resource.Internal resource) {
             this.resource = resource;
         }
 
@@ -143,7 +129,7 @@ public class SharedStoreAdapter extends AbstractStoreAdapter {
          * @param resource the resource identifying the holder to use
          */
         @Nonnull
-        public static SharedHolder forResource(@Nullable Resource resource) {
+        public static SharedHolder forResource(@Nullable Resource.Internal resource) {
             SharedHolder holder = REGISTRY.computeIfAbsent(resource, SharedHolder::new);
             holder.dependencies.incrementAndGet();
             return holder;

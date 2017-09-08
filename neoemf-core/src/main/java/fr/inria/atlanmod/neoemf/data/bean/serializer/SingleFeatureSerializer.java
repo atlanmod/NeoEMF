@@ -9,11 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.serializer;
+package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -23,19 +23,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Serializer} for {@link Id}s.
+ * A {@link Serializer} for {@link SingleFeatureBean}s.
  */
 @ParametersAreNonnullByDefault
-final class IdSerializer implements Serializer<Id> {
+final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
 
     @Override
-    public void serialize(Id id, DataOutput out) throws IOException {
-        out.writeUTF(id.toString());
+    public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
+        out.writeUTF(key.owner().toString());
+        out.writeUTF(key.id());
     }
 
     @Nonnull
     @Override
-    public Id deserialize(DataInput in) throws IOException {
-        return StringId.of(in.readUTF());
+    public SingleFeatureBean deserialize(DataInput in) throws IOException {
+        return SingleFeatureBean.of(
+                StringId.of(in.readUTF()),
+                in.readUTF()
+        );
     }
 }

@@ -17,10 +17,10 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
-import fr.inria.atlanmod.neoemf.data.serializer.BeanSerializerFactory;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.hash.serialization.BytesReader;
@@ -90,7 +90,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, SingleFeatureBean> allContainers();
+    protected abstract Map<Id, SingleFeatureBean> containers();
 
     /**
      * Returns the map that holds all instances.
@@ -98,7 +98,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, ClassBean> allInstances();
+    protected abstract Map<Id, ClassBean> instances();
 
     /**
      * Returns the map that holds single-features.
@@ -106,7 +106,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<SingleFeatureBean, Object> allFeatures();
+    protected abstract Map<SingleFeatureBean, Object> features();
 
     /**
      * Checks the specified {@code key} before using it.
@@ -122,7 +122,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(allContainers().get(id));
+        return Optional.ofNullable(containers().get(id));
     }
 
     @Override
@@ -130,14 +130,14 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         checkNotNull(id);
         checkNotNull(container);
 
-        allContainers().put(id, container);
+        containers().put(id, container);
     }
 
     @Override
     public void unsetContainer(Id id) {
         checkNotNull(id);
 
-        allContainers().remove(id);
+        containers().remove(id);
     }
 
     @Nonnull
@@ -145,7 +145,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
-        return Optional.ofNullable(allInstances().get(id));
+        return Optional.ofNullable(instances().get(id));
     }
 
     @Override
@@ -153,7 +153,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         checkNotNull(id);
         checkNotNull(metaClass);
 
-        allInstances().put(id, metaClass);
+        instances().put(id, metaClass);
     }
 
     @Nonnull
@@ -161,7 +161,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkKey(key);
 
-        return Optional.ofNullable(cast(allFeatures().get(key)));
+        return Optional.ofNullable(cast(features().get(key)));
     }
 
     @Nonnull
@@ -170,14 +170,14 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         checkKey(key);
         checkNotNull(value);
 
-        return Optional.ofNullable(cast(allFeatures().put(key, value)));
+        return Optional.ofNullable(cast(features().put(key, value)));
     }
 
     @Override
     public <V> void unsetValue(SingleFeatureBean key) {
         checkKey(key);
 
-        allFeatures().remove(key);
+        features().remove(key);
     }
 
     @Nonnull

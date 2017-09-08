@@ -21,6 +21,7 @@ import net.openhft.chronicle.map.ChronicleMapBuilder;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -34,7 +35,9 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
     /**
      * The number of instances of this class.
      */
-    private static final AtomicInteger COUNTER = new AtomicInteger();
+    @Nonnull
+    @Nonnegative
+    private static final AtomicInteger INSTANCES = new AtomicInteger();
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -58,7 +61,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
     private final ChronicleMap<SingleFeatureBean, Object> features;
 
     public DefaultTransientBackend() {
-        final int id = COUNTER.getAndIncrement();
+        final int id = INSTANCES.getAndIncrement();
 
         containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
                 .name("default/" + id + "/containers")
@@ -101,19 +104,19 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
 
     @Nonnull
     @Override
-    protected Map<Id, SingleFeatureBean> allContainers() {
+    protected Map<Id, SingleFeatureBean> containers() {
         return containers;
     }
 
     @Nonnull
     @Override
-    protected Map<Id, ClassBean> allInstances() {
+    protected Map<Id, ClassBean> instances() {
         return instances;
     }
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureBean, Object> allFeatures() {
+    protected Map<SingleFeatureBean, Object> features() {
         return features;
     }
 }

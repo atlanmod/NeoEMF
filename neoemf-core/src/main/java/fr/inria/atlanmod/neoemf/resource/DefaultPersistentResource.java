@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.data.store.adapter.DefaultStoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
@@ -64,6 +64,8 @@ import static java.util.Objects.nonNull;
  * <p>
  * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations to its internal
  * {@link Store} which is responsible of database access.
+ *
+ * @see PersistentStoreAdapter
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
@@ -96,7 +98,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      * The {@link StoreAdapter} responsible of the database serialization.
      */
     @Nonnull
-    private StoreAdapter store;
+    private StoreAdapter eStore;
 
     /**
      * The last options used during {@link #load(Map)}.
@@ -118,7 +120,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         Backend backend = factory.createTransientBackend();
         Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
-        store = DefaultStoreAdapter.adapt(baseStore, this);
+        eStore = new PersistentStoreAdapter(baseStore, this);
 
         Log.info("PersistentResource created: {0}", uri);
     }
@@ -140,7 +142,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return store.resolve(StringId.of(uriFragment));
+        return eStore.resolve(StringId.of(uriFragment));
     }
 
     @Override
@@ -182,22 +184,22 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     protected void innerSave(Map<String, Object> options) throws IOException {
         checkOptions(options);
 
-        if (!isLoaded || !isPersistent()) {
+        if (!isLoaded || !eStore.store().backend().isPersistent()) {
             Backend backend = factory.createPersistentBackend(uri, options);
             Store baseStore = StoreFactory.getInstance().createStore(backend, options);
-            StoreAdapter newStore = DefaultStoreAdapter.adapt(baseStore, this);
+            StoreAdapter newStore = new PersistentStoreAdapter(baseStore, this);
 
             // Direct copy
-            store.copyTo(newStore);
+            eStore.copyTo(newStore);
 
             // Close the previous store, and assign the new
-            store.close();
-            store = newStore;
+            eStore.close();
+            eStore = newStore;
 
             isLoaded = true;
         }
 
-        store.save();
+        eStore.save();
 
         Log.info("PersistentResource saved:   {0}", uri);
     }
@@ -218,11 +220,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
             if (!isLoaded) {
                 if (uri.isFile() && new File(uri.toFileString()).exists() || uri.hasAuthority()) {
-                    store.close();
+                    eStore.close();
 
                     Backend backend = factory.createPersistentBackend(uri, options);
                     Store baseStore = StoreFactory.getInstance().createStore(backend, options);
-                    store = DefaultStoreAdapter.adapt(baseStore, this);
+                    eStore = new PersistentStoreAdapter(baseStore, this);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
@@ -240,7 +242,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void close() {
-        store.close();
+        eStore.close();
 
         isLoaded = false;
 
@@ -249,16 +251,16 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
-    public StoreAdapter store() {
-        return store;
+    public StoreAdapter eStore() {
+        return eStore;
     }
 
     @Nonnull
     @Override
     public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
         try {
-            return MoreIterables.stream(store.store().allInstancesOf(ClassBean.from(eClass), strict))
-                    .map(id -> store.resolve(id))
+            return MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict))
+                    .map(id -> eStore.resolve(id))
                     .collect(Collectors.toList());
         }
         catch (UnsupportedOperationException e) {
@@ -465,7 +467,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         protected InternalEObject.EStore eStore() {
-            return DefaultPersistentResource.this.store();
+            return DefaultPersistentResource.this.eStore();
         }
 
         @Override

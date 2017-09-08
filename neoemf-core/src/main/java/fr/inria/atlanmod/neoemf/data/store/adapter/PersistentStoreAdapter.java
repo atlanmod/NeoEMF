@@ -16,23 +16,25 @@ import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-
-import org.eclipse.emf.ecore.resource.Resource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A {@link StoreAdapter} that caches locally the rebuilt {@link PersistentEObject}s.
+ * A {@link StoreAdapter} that caches the rebuilt {@link PersistentEObject}s.
+ * <p>
+ * This adapter can be used either in a transient context or in a persistent context, and is bound to a unique {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource}.
+ *
+ * @see PersistentResource
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public class DefaultStoreAdapter extends AbstractStoreAdapter {
+public class PersistentStoreAdapter extends AbstractStoreAdapter {
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
@@ -43,32 +45,13 @@ public class DefaultStoreAdapter extends AbstractStoreAdapter {
             .build();
 
     /**
-     * Constructs a new {@code DefaultStoreAdapter} on the given {@code store}.
+     * Constructs a new {@code PersistentStoreAdapter} on the given {@code store}.
      *
      * @param store    the inner store
      * @param resource the resource to store and access
      */
-    // TODO Create an empty cache if store.backend().isPersistent() == true
-    private DefaultStoreAdapter(Store store, @Nullable Resource.Internal resource) {
-        super(store, resource);
-    }
-
-    /**
-     * Adapts the given {@code store} as a {@code DefaultStoreAdapter}.
-     *
-     * @param store    the store to adapt
-     * @param resource the resource to store and access
-     *
-     * @return the adapted {@code store}
-     */
-    @Nonnull
-    public static StoreAdapter adapt(Store store, @Nullable Resource.Internal resource) {
-        checkArgument(DefaultStoreAdapter.class.isInstance(store) || !StoreAdapter.class.isInstance(store),
-                "Unable to adapt another implementation of StoreAdapter, but was %s", store.getClass().getName());
-
-        return DefaultStoreAdapter.class.isInstance(checkNotNull(store))
-                ? DefaultStoreAdapter.class.cast(store)
-                : new DefaultStoreAdapter(store, resource);
+    public PersistentStoreAdapter(Store store, PersistentResource resource) {
+        super(store, checkNotNull(resource));
     }
 
     @Override

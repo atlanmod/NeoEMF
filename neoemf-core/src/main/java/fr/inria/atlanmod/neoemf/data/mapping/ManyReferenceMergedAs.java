@@ -46,10 +46,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
     @Nonnull
     @Override
     default Optional<Id> referenceOf(ManyFeatureBean key) {
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key.withoutPosition())
-                .map(func::doBackward)
+                .map(converter::revert)
                 .filter(ids -> key.position() < ids.size())
                 .map(ids -> ids.get(key.position()));
     }
@@ -57,10 +57,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
     @Nonnull
     @Override
     default List<Id> allReferencesOf(SingleFeatureBean key) {
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
-                .map(func::doBackward)
+                .map(converter::revert)
                 .orElseGet(Collections::emptyList);
     }
 
@@ -70,17 +70,17 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
         checkNotNull(key);
         checkNotNull(reference);
 
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::doBackward)
+                .map(converter::revert)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<Id> previousId = Optional.of(ids.get(key.position()));
 
         ids.set(key.position(), reference);
 
-        valueFor(key.withoutPosition(), func.doForward(ids));
+        valueFor(key.withoutPosition(), converter.convert(ids));
 
         return previousId;
     }
@@ -90,17 +90,17 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
         checkNotNull(key);
         checkNotNull(reference);
 
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::doBackward)
+                .map(converter::revert)
                 .orElseGet(ArrayList::new);
 
         checkPositionIndex(key.position(), ids.size());
 
         ids.add(key.position(), reference);
 
-        valueFor(key.withoutPosition(), func.doForward(ids));
+        valueFor(key.withoutPosition(), converter.convert(ids));
     }
 
     @Override
@@ -116,10 +116,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
             throw new NullPointerException();
         }
 
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::doBackward)
+                .map(converter::revert)
                 .orElseGet(ArrayList::new);
 
         int firstPosition = key.position();
@@ -127,7 +127,7 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
 
         ids.addAll(firstPosition, collection);
 
-        valueFor(key.withoutPosition(), func.doForward(ids));
+        valueFor(key.withoutPosition(), converter.convert(ids));
     }
 
     @Nonnull
@@ -135,10 +135,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
     default Optional<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key);
 
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .map(func::doBackward)
+                .map(converter::revert)
                 .orElse(null);
 
         if (isNull(ids)) {
@@ -154,7 +154,7 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
                 removeAllReferences(key.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), func.doForward(ids));
+                valueFor(key.withoutPosition(), converter.convert(ids));
             }
         }
 
@@ -169,10 +169,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
             return Optional.empty();
         }
 
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
-                .map(func::doBackward)
+                .map(converter::revert)
                 .map(ids -> ids.indexOf(reference))
                 .filter(i -> i >= 0);
     }
@@ -185,10 +185,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
             return Optional.empty();
         }
 
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
-                .map(func::doBackward)
+                .map(converter::revert)
                 .map(ids -> ids.lastIndexOf(reference))
                 .filter(i -> i >= 0);
     }
@@ -197,10 +197,10 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
     @Nonnegative
     @Override
     default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        Converter<List<Id>, M> func = manyReferenceMerger();
+        Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
-                .map(func::doBackward)
+                .map(converter::revert)
                 .map(List::size)
                 .filter(s -> s != 0);
     }

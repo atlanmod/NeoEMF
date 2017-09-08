@@ -9,11 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.serializer;
+package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -23,23 +23,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Serializer} for {@link SingleFeatureBean}s.
+ * A {@link Serializer} for {@link ManyFeatureBean}s.
  */
 @ParametersAreNonnullByDefault
-final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
+final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
 
     @Override
-    public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
+    public void serialize(ManyFeatureBean key, DataOutput out) throws IOException {
         out.writeUTF(key.owner().toString());
         out.writeUTF(key.id());
+        out.writeInt(key.position());
     }
 
     @Nonnull
     @Override
-    public SingleFeatureBean deserialize(DataInput in) throws IOException {
-        return SingleFeatureBean.of(
+    public ManyFeatureBean deserialize(DataInput in) throws IOException {
+        return ManyFeatureBean.of(
                 StringId.of(in.readUTF()),
-                in.readUTF()
+                in.readUTF(),
+                in.readInt()
         );
     }
 }

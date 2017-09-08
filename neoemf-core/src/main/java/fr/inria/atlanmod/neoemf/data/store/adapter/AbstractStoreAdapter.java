@@ -63,10 +63,10 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     /**
-     * The (de)serializer used to transform the value of {@link EAttribute}s.
+     * The converter used to transform the value of {@link EAttribute}s.
      */
     @Nonnull
-    private final EAttributeSerializer serializer = new EAttributeSerializer();
+    private final AttributeConverter attrConverter = new AttributeConverter();
 
     /**
      * The adapted store.
@@ -168,7 +168,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             }
 
             return value
-                    .map(v -> serializer.deserialize(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -210,14 +210,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         if (EObjects.isAttribute(feature)) {
             Optional<String> previousValue;
             if (!feature.isMany()) {
-                previousValue = store.valueFor(key, serializer.serialize(EObjects.asAttribute(feature), value));
+                previousValue = store.valueFor(key, attrConverter.convert(EObjects.asAttribute(feature), value));
             }
             else {
-                previousValue = store.valueFor(key.withPosition(index), serializer.serialize(EObjects.asAttribute(feature), value));
+                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(EObjects.asAttribute(feature), value));
             }
 
             return previousValue
-                    .map(v -> serializer.deserialize(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -364,7 +364,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            return store.containsValue(key, serializer.serialize(EObjects.asAttribute(feature), value));
+            return store.containsValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
         }
         else {
             return store.containsReference(key, PersistentEObject.from(value).id());
@@ -394,7 +394,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = store.indexOfValue(key, serializer.serialize(EObjects.asAttribute(feature), value));
+            index = store.indexOfValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
         }
         else {
             index = store.indexOfReference(key, PersistentEObject.from(value).id());
@@ -425,7 +425,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = store.lastIndexOfValue(key, serializer.serialize(EObjects.asAttribute(feature), value));
+            index = store.lastIndexOfValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
         }
         else {
             index = store.lastIndexOfReference(key, PersistentEObject.from(value).id());
@@ -452,10 +452,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
-                store.appendValue(key, serializer.serialize(EObjects.asAttribute(feature), value));
+                store.appendValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
             }
             else {
-                store.addValue(key.withPosition(index), serializer.serialize(EObjects.asAttribute(feature), value));
+                store.addValue(key.withPosition(index), attrConverter.convert(EObjects.asAttribute(feature), value));
             }
         }
         else {
@@ -493,7 +493,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             return store.<String>removeValue(key)
-                    .map(v -> serializer.deserialize(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -528,7 +528,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             return store.<String>moveValue(sourceKey, targetKey)
-                    .map(v -> serializer.deserialize(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
                     .orElse(null);
         }
         else {
@@ -642,7 +642,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             EAttribute attribute = EObjects.asAttribute(feature);
 
             return values.stream()
-                    .map(v -> serializer.deserialize(attribute, v))
+                    .map(v -> attrConverter.revert(attribute, v))
                     .collect(Collectors.toList());
         }
         else {
@@ -694,7 +694,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             EAttribute attribute = EObjects.asAttribute(feature);
 
             List<String> valuesToAdd = values.stream()
-                    .map(v -> serializer.serialize(attribute, v))
+                    .map(v -> attrConverter.convert(attribute, v))
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
@@ -839,10 +839,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * A serializer that transforms the value of {@link EAttribute}s.
+     * A converter that transforms the value of {@link EAttribute}s.
      */
     @ParametersAreNonnullByDefault
-    private class EAttributeSerializer {
+    // TODO Add support for FeatureMap#Entry
+    private class AttributeConverter {
 
         /**
          * Converts an instance of the {@code attribute} to a string literal representation.
@@ -854,7 +855,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
          *
          * @see EcoreUtil#convertToString(EDataType, Object)
          */
-        public String serialize(EAttribute attribute, @Nullable Object value) {
+        public String convert(EAttribute attribute, @Nullable Object value) {
             if (isNull(value)) {
                 return null;
             }
@@ -862,13 +863,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             final EDataType dataType = attribute.getEAttributeType();
 
             if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-                return serializeEntry(attribute, FeatureMap.Entry.class.cast(value));
+                return convertEntry(attribute, FeatureMap.Entry.class.cast(value));
             }
 
             return EcoreUtil.convertToString(dataType, value);
         }
 
-        private String serializeEntry(EAttribute attribute, FeatureMap.Entry entry) {
+        private String convertEntry(EAttribute attribute, FeatureMap.Entry entry) {
             throw new UnsupportedOperationException("FeatureMap.Entry are not supported yet");
         }
 
@@ -882,7 +883,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
          *
          * @see EcoreUtil#createFromString(EDataType, String)
          */
-        public Object deserialize(EAttribute attribute, @Nullable String value) {
+        public Object revert(EAttribute attribute, @Nullable String value) {
             if (isNull(value)) {
                 return null;
             }
@@ -890,13 +891,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             final EDataType dataType = attribute.getEAttributeType();
 
             if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-                return deserializeEntry(attribute, value);
+                return revertEntry(attribute, value);
             }
 
             return EcoreUtil.createFromString(dataType, value);
         }
 
-        private FeatureMap.Entry deserializeEntry(EAttribute attribute, String value) {
+        private FeatureMap.Entry revertEntry(EAttribute attribute, String value) {
             throw new UnsupportedOperationException("FeatureMap.Entry are not supported yet");
         }
     }

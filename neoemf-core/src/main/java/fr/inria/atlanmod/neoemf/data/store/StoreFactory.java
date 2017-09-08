@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
@@ -66,7 +67,8 @@ public final class StoreFactory extends AbstractMapperFactory {
                 return Collection.class.cast(options.get(PersistentResourceOptions.STORES));
             }
         }
-        catch (ClassCastException ignored) {
+        catch (ClassCastException e) {
+            Log.warn(String.format("%s option must be an instance of Collection", PersistentResourceOptions.STORES));
         }
 
         return Collections.emptySet();
