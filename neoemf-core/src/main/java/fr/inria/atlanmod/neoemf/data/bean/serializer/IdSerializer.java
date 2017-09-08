@@ -28,6 +28,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class IdSerializer implements Serializer<Id> {
 
+    @SuppressWarnings("JavaDoc")
+    private static final long serialVersionUID = 4870583637926304450L;
+
     @Override
     public void serialize(Id id, DataOutput out) throws IOException {
         out.writeUTF(id.toString());

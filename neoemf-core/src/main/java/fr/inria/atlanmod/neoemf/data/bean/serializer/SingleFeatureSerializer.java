@@ -28,6 +28,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
 
+    @SuppressWarnings("JavaDoc")
+    private static final long serialVersionUID = -6425763366179041775L;
+
     @Override
     public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
         out.writeUTF(key.owner().toString());

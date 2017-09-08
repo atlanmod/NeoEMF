@@ -28,6 +28,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
 
+    @SuppressWarnings("JavaDoc")
+    private static final long serialVersionUID = -8503200234566675439L;
+
     @Override
     public void serialize(ManyFeatureBean key, DataOutput out) throws IOException {
         out.writeUTF(key.owner().toString());

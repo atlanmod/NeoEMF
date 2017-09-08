@@ -27,6 +27,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 final class ClassSerializer implements Serializer<ClassBean> {
 
+    @SuppressWarnings("JavaDoc")
+    private static final long serialVersionUID = 2381621024821659111L;
+
     @Override
     public void serialize(ClassBean metaClass, DataOutput out) throws IOException {
         out.writeUTF(metaClass.name());
