@@ -63,30 +63,30 @@ final class PersistentEObjectAdapter {
     /**
      * Adapts the provided object as a {@code type} instance.
      *
-     * @param <T>  the type of the adapted object
-     * @param o    the object to adapt
-     * @param type the class in which the object must be adapted
+     * @param <T>    the type of the adapted object
+     * @param object the object to adapt
+     * @param type   the class in which the object must be adapted
      *
      * @return an adapted object in the given {@code type}, or {@code null} if the {@code object} cannot be assigned as
      * a {@code type}
      *
-     * @throws NullPointerException if the {@code type} is {@code null}
+     * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
-    private static <T extends PersistentEObject> T adapt(Object o, Class<T> type) {
-        checkNotNull(o);
+    private static <T extends PersistentEObject> T adapt(Object object, Class<T> type) {
+        checkNotNull(object);
         checkNotNull(type);
 
         Object adapter = null;
 
-        if (type.isInstance(o)) {
-            adapter = o;
+        if (type.isInstance(object)) {
+            adapter = object;
         }
-        else if (InternalEObject.class.isInstance(o)) {
-            adapter = CACHE.get(o);
+        else if (InternalEObject.class.isInstance(object)) {
+            adapter = CACHE.get(object);
             if (isNull(adapter) || !type.isAssignableFrom(adapter.getClass())) {
-                adapter = createAdapter(o, type);
-                CACHE.put(o, PersistentEObject.class.cast(adapter));
+                adapter = createAdapter(InternalEObject.class.cast(object), type);
+                CACHE.put(object, PersistentEObject.class.cast(adapter));
             }
         }
 
@@ -94,7 +94,7 @@ final class PersistentEObjectAdapter {
             throw new IllegalArgumentException(
                     String.format("Unable to create a %s adapter for this object of type %s",
                             type.getSimpleName(),
-                            o.getClass().getSimpleName()));
+                            object.getClass().getSimpleName()));
         }
 
         return type.cast(adapter);
@@ -103,7 +103,7 @@ final class PersistentEObjectAdapter {
     /**
      * Adapts the provided object as a {@link PersistentEObject} instance.
      *
-     * @param o the object to adapt
+     * @param object the object to adapt
      *
      * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
      * assigned as a {@link PersistentEObject}
@@ -111,22 +111,23 @@ final class PersistentEObjectAdapter {
      * @see #adapt(Object, Class)
      */
     @Nonnull
-    public static PersistentEObject adapt(Object o) {
-        return adapt(o, PersistentEObject.class);
+    public static PersistentEObject adapt(Object object) {
+        return adapt(object, PersistentEObject.class);
     }
 
     /**
      * Create an adapter for the given {@code object} in a specific {@code type}.
      *
-     * @param o    the object to adapt
-     * @param type the class in which the object must be adapted
+     * @param object the object to adapt
+     * @param type   the class in which the object must be adapted
      *
      * @return an adapted object in the given {@code type}
      */
     @Nonnull
-    private static <T> Object createAdapter(Object o, Class<T> type) {
+    @SuppressWarnings("unchecked")
+    private static <T extends PersistentEObject> T createAdapter(InternalEObject object, Class<T> type) {
         // Compute the interfaces that the proxy has to implement
-        Set<Class<?>> interfaces = getAllInterfaces(o.getClass());
+        Set<Class<?>> interfaces = getAllInterfaces(object.getClass());
         interfaces.add(type);
 
         // Create the proxy
@@ -137,11 +138,11 @@ final class PersistentEObjectAdapter {
          * create an PersistentEObject while it does not have a dependency to NeoEMF core)
          */
         proxy.setClassLoader(type.getClassLoader());
-        proxy.setSuperclass(o.getClass());
+        proxy.setSuperclass(object.getClass());
         proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         proxy.setCallback(new PersistentEObjectInterceptor());
 
-        return proxy.create();
+        return (T) proxy.create();
     }
 
     /**
@@ -192,15 +193,15 @@ final class PersistentEObjectAdapter {
         private PersistentEObject persistentObject;
 
         @Override
-        public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             try {
                 // Note: 'invokeSuper()' calls the method itself, not the super method
-                return methodProxy.invokeSuper(obj, args);
+                return methodProxy.invokeSuper(object, args);
             }
             catch (Throwable e) {
                 // Resolve object for a call to a non-static method
-                if (isNull(persistentObject) && nonNull(obj)) {
-                    persistentObject = resolve(InternalEObject.class.cast(obj));
+                if (isNull(persistentObject) && nonNull(object)) {
+                    persistentObject = resolve(InternalEObject.class.cast(object));
                 }
 
                 return method.invoke(persistentObject, args);

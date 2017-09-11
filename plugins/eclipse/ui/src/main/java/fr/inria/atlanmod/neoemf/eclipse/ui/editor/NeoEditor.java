@@ -53,11 +53,12 @@ public class NeoEditor extends EcoreEditor {
 
     @Override
     public void createModel() {
-        URI resourceURI = EditUIUtil.getURI(getEditorInput());
-        resourceURI = UriBuilder.forScheme(resourceURI.scheme()).fromUri(resourceURI);
+        URI uri = EditUIUtil.getURI(getEditorInput());
+        uri = UriBuilder.forScheme(uri.scheme()).fromUri(uri);
 
-        Resource resource = getEditingDomain().getResourceSet().createResource(resourceURI);
-        getEditingDomain().getResourceSet().eAdapters().add(problemIndicationAdapter);
+        ResourceSet resourceSet = getEditingDomain().getResourceSet();
+        Resource resource = resourceSet.createResource(uri);
+        resourceSet.eAdapters().add(problemIndicationAdapter);
 
         // Create the store options depending of the backend
         Map<String, Object> options = PersistenceOptions.forScheme(resource.getURI().scheme())
