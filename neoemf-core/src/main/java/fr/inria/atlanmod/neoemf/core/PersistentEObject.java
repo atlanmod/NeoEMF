@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.Storable;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * fr.inria.atlanmod.neoemf.data.Backend}.
  */
 @ParametersAreNonnullByDefault
-public interface PersistentEObject extends InternalEObject {
+public interface PersistentEObject extends InternalEObject, Storable {
 
     /**
      * Returns the given {@code object} as a {@code PersistentEObject}.
@@ -72,8 +72,4 @@ public interface PersistentEObject extends InternalEObject {
      * @param newResource the containing resource
      */
     void resource(@Nullable Resource.Internal newResource);
-
-    @Nonnull
-    @Override
-    StoreAdapter eStore();
 }

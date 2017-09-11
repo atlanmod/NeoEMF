@@ -198,13 +198,6 @@ public class PersistentResourceDecorator implements PersistentResource {
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public StoreAdapter eStore() {
-        return resource.eStore();
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstancesOf(EClass eClass) {
         return resource.allInstancesOf(eClass);
     }
@@ -214,6 +207,13 @@ public class PersistentResourceDecorator implements PersistentResource {
     @OverridingMethodsMustInvokeSuper
     public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
         return resource.allInstancesOf(eClass, strict);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public StoreAdapter eStore() {
+        return resource.eStore();
     }
 
     @Override

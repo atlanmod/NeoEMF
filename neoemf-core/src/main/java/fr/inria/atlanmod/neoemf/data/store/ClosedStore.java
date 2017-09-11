@@ -124,11 +124,6 @@ public final class ClosedStore implements Store {
         throw E;
     }
 
-    @Override
-    public boolean exists(Id id) {
-        throw E;
-    }
-
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureBean key) {

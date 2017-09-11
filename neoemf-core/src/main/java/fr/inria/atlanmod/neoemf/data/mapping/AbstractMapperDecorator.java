@@ -89,12 +89,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.copyTo(target);
     }
 
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean exists(Id id) {
-        return next.exists(id);
-    }
-
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper

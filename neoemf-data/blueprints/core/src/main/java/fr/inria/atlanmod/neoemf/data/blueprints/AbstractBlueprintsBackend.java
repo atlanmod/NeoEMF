@@ -183,11 +183,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public boolean exists(Id id) {
-        return get(id).isPresent();
-    }
-
-    @Override
     public boolean isDistributed() {
         return false;
     }

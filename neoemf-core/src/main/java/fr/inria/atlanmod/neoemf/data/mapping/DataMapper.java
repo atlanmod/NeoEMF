@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.Copiable;
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.DataManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,15 +28,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface DataMapper extends DataManager, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
-
-    /**
-     * Checks whether the specified {@code id} already exists in this {@code DataMapper}.
-     *
-     * @param id the identifier to check
-     *
-     * @return {@code true} if the {@code id} exists, {@code false} otherwise.
-     */
-    default boolean exists(Id id) {
-        return hasMetaclass(id);
-    }
 }

@@ -149,11 +149,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return null;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -244,11 +239,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(feature);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return false;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -277,11 +267,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(feature);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -323,11 +308,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return 0;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -354,11 +334,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return false;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -383,11 +358,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return EStore.NO_INDEX;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -414,11 +384,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return EStore.NO_INDEX;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -482,11 +447,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkElementIndex(index, size(internalObject, feature));
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return null;
-        }
-
         refresh(object);
 
         ManyFeatureBean key = ManyFeatureBean.from(object, feature, index);
@@ -516,11 +476,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkPositionIndex(targetIndex, size);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return null;
-        }
-
         refresh(object);
 
         ManyFeatureBean sourceKey = ManyFeatureBean.from(object, feature, sourceIndex);
@@ -546,11 +501,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkArgument(feature.isMany(), "Cannot compute clear() of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return;
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -619,11 +569,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(feature);
 
         PersistentEObject object = PersistentEObject.from(internalObject);
-
-        if (!exists(object.id())) {
-            return Collections.emptyList();
-        }
-
         refresh(object);
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
@@ -759,17 +704,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     @Nonnull
     protected abstract Cache<Id, PersistentEObject> cache();
-
-    /**
-     * Checks whether the specified {@code id} already exists in this {@link StoreAdapter}.
-     *
-     * @param id the identifier to check
-     *
-     * @return {@code true} if the {@code id} exists, {@code false} otherwise.
-     */
-    private boolean exists(Id id) {
-        return cache().contains(id) || store.exists(id);
-    }
 
     /**
      * Compute the {@link EClass} associated to the model element with the provided {@link Id}.

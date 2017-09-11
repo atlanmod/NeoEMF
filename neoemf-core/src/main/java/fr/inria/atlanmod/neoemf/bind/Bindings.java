@@ -59,7 +59,7 @@ public final class Bindings {
      * The concurrent pool.
      */
     @Nonnull
-    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool();
 
     /**
      * A set that holds the {@link URL} of the classpath to explore.
@@ -250,6 +250,11 @@ public final class Bindings {
                 ReflectionUtils.withAnnotation(FactoryName.class),
                 ReflectionUtils.withType(String.class),
                 ReflectionUtils.withModifier(Modifier.PUBLIC));
+
+        if (boundFields.size() != 1) {
+            throw new BindingException(
+                    String.format("%s must have only one field annotated with %s", factoryType.getName(), FactoryName.class.getName()));
+        }
 
         Optional<Field> field = boundFields.stream()
                 .filter(f -> factoryType.isAssignableFrom(f.getDeclaringClass()))

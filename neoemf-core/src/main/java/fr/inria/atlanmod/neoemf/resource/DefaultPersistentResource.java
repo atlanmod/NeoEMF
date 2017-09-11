@@ -251,12 +251,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
-    public StoreAdapter eStore() {
-        return eStore;
-    }
-
-    @Nonnull
-    @Override
     public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
         try {
             return MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict))
@@ -272,6 +266,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         }
+    }
+
+    @Nonnull
+    @Override
+    public StoreAdapter eStore() {
+        return eStore;
     }
 
     /**

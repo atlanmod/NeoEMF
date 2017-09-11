@@ -170,17 +170,17 @@ public final class BackendFactoryRegistry {
 
         if (boundClasses.isEmpty()) {
             Log.warn("No factory has been found in the classpath");
-            return;
         }
+        else {
+            for (Class<? extends UriBuilder> cls : boundClasses) {
+                Class<? extends BackendFactory> factoryType = cls.getAnnotation(FactoryBinding.class).value();
 
-        for (Class<? extends UriBuilder> cls : boundClasses) {
-            Class<? extends BackendFactory> factoryType = cls.getAnnotation(FactoryBinding.class).value();
+                BackendFactory factory = Bindings.newInstance(factoryType);
+                String scheme = Bindings.schemeOf(factoryType);
 
-            BackendFactory factory = Bindings.newInstance(factoryType);
-            String scheme = Bindings.schemeOf(factoryType);
-
-            register(scheme, factory);
-            Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);
+                register(scheme, factory);
+                Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);
+            }
         }
 
         initialized = true;

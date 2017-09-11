@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.Storable;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * and indices.
  */
 @ParametersAreNonnullByDefault
-public interface PersistentResource extends Resource, Resource.Internal, Closeable {
+public interface PersistentResource extends Resource, Resource.Internal, Storable, Closeable {
 
     @Override
     void close();
@@ -43,14 +43,6 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
 
     @Override
     void load(Map<?, ?> options) throws IOException;
-
-    /**
-     * Returns the {@link StoreAdapter} used to store the model.
-     *
-     * @return the {@link StoreAdapter}
-     */
-    @Nonnull
-    StoreAdapter eStore();
 
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).

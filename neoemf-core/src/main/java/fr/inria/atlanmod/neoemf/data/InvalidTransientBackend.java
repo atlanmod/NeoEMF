@@ -77,11 +77,6 @@ public final class InvalidTransientBackend implements TransientBackend {
         // No need to copy anything
     }
 
-    @Override
-    public boolean exists(Id id) {
-        throw E;
-    }
-
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
