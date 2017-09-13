@@ -35,6 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
@@ -174,11 +175,11 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
         checkNotNull(metaClass);
 
-        put(instances, id, metaClass);
+        return putIfAbsent(instances, id, metaClass);
     }
 
     @Nonnull
@@ -244,6 +245,22 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     @SuppressWarnings("unchecked")
     protected <K, V> Optional<V> put(Map<K, ? super V> database, K key, V value) {
         return Optional.ofNullable((V) database.put(key, value));
+    }
+
+    /**
+     * Saves a {@code value} identified by the {@code key} in the {@code database}, only if the {@code key} is not
+     * already defined
+     *
+     * @param database the database where to save the value
+     * @param key      the key of the element to save
+     * @param value    the value to save
+     * @param <K>      the type of the key
+     * @param <V>      the type of the value
+     *
+     * @return {@code true} if the {@code key} has been saved
+     */
+    protected <K, V> boolean putIfAbsent(Map<K, ? super V> database, K key, V value) {
+        return isNull(database.putIfAbsent(key, value));
     }
 
     /**

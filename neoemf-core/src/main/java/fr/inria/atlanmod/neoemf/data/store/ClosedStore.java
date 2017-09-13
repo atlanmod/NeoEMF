@@ -51,7 +51,7 @@ public final class ClosedStore implements Store {
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         throw E;
     }
 

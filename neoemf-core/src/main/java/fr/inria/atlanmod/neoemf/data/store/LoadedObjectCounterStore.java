@@ -82,9 +82,9 @@ public class LoadedObjectCounterStore extends AbstractStore {
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         register(id);
-        super.metaClassFor(id, metaClass);
+        return super.metaClassFor(id, metaClass);
     }
 
     @Nonnull

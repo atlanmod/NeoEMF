@@ -47,7 +47,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         throw E;
     }
 

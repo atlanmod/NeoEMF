@@ -93,8 +93,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
-        thenIncrementAndSave(() -> super.metaClassFor(id, metaClass), 1);
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
+        return thenIncrementAndSave(() -> super.metaClassFor(id, metaClass), 1);
     }
 
     @Nonnull

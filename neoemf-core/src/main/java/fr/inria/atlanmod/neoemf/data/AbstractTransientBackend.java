@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link TransientBackend} that provides the default behavior of containers and meta-classes management.
@@ -150,11 +151,11 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
         checkNotNull(metaClass);
 
-        instances().put(id, metaClass);
+        return isNull(instances().putIfAbsent(id, metaClass));
     }
 
     @Nonnull

@@ -156,11 +156,11 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
         checkNotNull(metaClass);
 
-        put(instances, id, metaClass, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
+        return putIfAbsent(instances, id, metaClass, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
     }
 
     @Nonnull
@@ -261,6 +261,31 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
             DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
 
             database.put(null, dbKey, dbValue);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Saves a {@code value} identified by the {@code key} in the database, only if the {@code key} is not defined.
+     *
+     * @param database        the database where to save the value
+     * @param key             the key of the element to save
+     * @param value           the value to save
+     * @param keySerializer   the serializer to serialize the {@code key}
+     * @param valueSerializer the serializer to serialize the {@code value}
+     * @param <K>             the type of the key
+     * @param <V>             the type of the value
+     *
+     * @return {@code true} if the {@code value} has been saved
+     */
+    protected <K, V> boolean putIfAbsent(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        try {
+            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
+            DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
+
+            return database.putNoOverwrite(null, dbKey, dbValue) != OperationStatus.KEYEXIST;
         }
         catch (IOException e) {
             throw new RuntimeException(e);

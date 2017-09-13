@@ -44,7 +44,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
@@ -271,28 +270,35 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
         checkNotNull(metaClass);
 
-        Iterable<Vertex> metaClassVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
-        Vertex metaClassVertex = MoreIterables.onlyElement(metaClassVertices).orElse(null);
-
-        if (isNull(metaClassVertex)) {
-            metaClassVertex = graph.addVertex(buildId(metaClass).toString());
-            metaClassVertex.setProperty(KEY_NAME, metaClass.name());
-            metaClassVertex.setProperty(KEY_NS_URI, metaClass.uri());
-
-            metaClassIndex.put(KEY_NAME, metaClass.name(), metaClassVertex);
-            indexedMetaClasses.add(metaClass);
-        }
-
         Vertex vertex = getOrCreate(id);
 
-        // Remove the previous meta-class if present
-        vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF).forEach(Edge::remove);
+        // Check the presence of a meta-class
+        Iterable<Edge> instanceEdges = vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF);
+        if (MoreIterables.onlyElement(instanceEdges).isPresent()) {
+            return false;
+        }
 
+        // Retrieve or create the meta-class and store it in the index
+        Iterable<Vertex> metaClassVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
+        Vertex metaClassVertex = MoreIterables.onlyElement(metaClassVertices).orElseGet(() -> {
+            Vertex mcv = graph.addVertex(buildId(metaClass).toString());
+            mcv.setProperty(KEY_NAME, metaClass.name());
+            mcv.setProperty(KEY_NS_URI, metaClass.uri());
+
+            metaClassIndex.put(KEY_NAME, metaClass.name(), mcv);
+            indexedMetaClasses.add(metaClass);
+
+            return mcv;
+        });
+
+        // Defines the meta-class
         vertex.addEdge(KEY_INSTANCE_OF, metaClassVertex);
+
+        return true;
     }
 
     @Nonnull

@@ -736,12 +736,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return;
         }
 
-        Optional<ClassBean> metaClass = store.metaClassOf(object.id());
-
-        if (!metaClass.isPresent()) {
-            store.metaClassFor(object.id(), ClassBean.from(object));
-        }
-
+        store.metaClassFor(object.id(), ClassBean.from(object));
         refresh(object);
     }
 

@@ -45,8 +45,12 @@ public class ClassCachingStore extends AbstractCachingStore<Id, Optional<ClassBe
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
+        if (cache.contains(id)) {
+            return false;
+        }
+
         cache.put(id, Optional.of(metaClass));
-        super.metaClassFor(id, metaClass);
+        return super.metaClassFor(id, metaClass);
     }
 }

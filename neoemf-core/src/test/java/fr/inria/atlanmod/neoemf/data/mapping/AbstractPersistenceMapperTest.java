@@ -215,18 +215,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ClassBean metaClass0 = ClassBean.of("Metaclass0", "Uri0");
         ClassBean metaClass1 = ClassBean.of("Metaclass1", "Uri1");
 
-        Id id1 = StringId.of("Id1");
-
         // Define the meta-classes
-        mapper.metaClassFor(id0, metaClass0);
+        assertThat(mapper.metaClassFor(id0, metaClass0)).isTrue();
         assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
 
-        mapper.metaClassFor(id1, metaClass1);
-        assertThat(mapper.metaClassOf(id1)).contains(metaClass1);
-
         // Replace the existing meta-class
-        mapper.metaClassFor(id1, metaClass0);
-        assertThat(mapper.metaClassOf(id1)).contains(metaClass0);
+        assertThat(mapper.metaClassFor(id0, metaClass1)).isFalse();
+        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
     }
 
     /**

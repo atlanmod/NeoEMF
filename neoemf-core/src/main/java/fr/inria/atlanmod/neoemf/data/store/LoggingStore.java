@@ -113,8 +113,8 @@ public class LoggingStore extends AbstractStore {
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
-        call(super::metaClassFor, id, metaClass);
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
+        return callAndReturn(super::metaClassFor, id, metaClass);
     }
 
     @Override

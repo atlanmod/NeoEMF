@@ -88,8 +88,8 @@ public class StatsStore extends AbstractStore {
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
-        record(() -> super.metaClassFor(id, metaClass));
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
+        return record(() -> super.metaClassFor(id, metaClass));
     }
 
     @Override

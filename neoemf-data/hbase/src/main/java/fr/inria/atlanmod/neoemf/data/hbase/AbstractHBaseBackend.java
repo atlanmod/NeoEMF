@@ -179,16 +179,24 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
         checkNotNull(id);
         checkNotNull(metaClass);
 
         try {
-            Put put = new Put(Strings.toBytes(id.toString()))
+            byte[] row = Strings.toBytes(id.toString());
+
+            Get get = new Get(row).addColumn(TYPE_FAMILY, ECLASS_QUALIFIER);
+            if (table.exists(get)) {
+                return false;
+            }
+
+            Put put = new Put(row)
                     .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Strings.toBytes(metaClass.name()))
                     .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Strings.toBytes(metaClass.uri()));
 
             table.put(put);
+            return true;
         }
         catch (IOException e) {
             throw new RuntimeException(e);

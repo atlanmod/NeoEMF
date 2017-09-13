@@ -120,8 +120,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Override
-    public void metaClassFor(Id id, ClassBean metaClass) {
-        next.metaClassFor(id, metaClass);
+    public boolean metaClassFor(Id id, ClassBean metaClass) {
+        return next.metaClassFor(id, metaClass);
     }
 
     @Override

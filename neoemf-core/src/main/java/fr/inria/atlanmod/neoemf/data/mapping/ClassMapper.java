@@ -46,9 +46,11 @@ public interface ClassMapper {
      * @param id        the {@link Id} of the element
      * @param metaClass the containing element's meta-class information to store
      *
+     * @return {@code true} if the meta-class has been defined, {@code false} if the {@code id} already has a meta-class
+     *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void metaClassFor(Id id, ClassBean metaClass);
+    boolean metaClassFor(Id id, ClassBean metaClass);
 
     /**
      * Checks whether the specified {@code id} has a defined meta-class.
