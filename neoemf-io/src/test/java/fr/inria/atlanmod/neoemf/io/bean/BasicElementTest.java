@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.junit.Test;
 
@@ -27,12 +29,12 @@ public class BasicElementTest extends AbstractTest {
         String name0 = "element0";
         String name1 = "element1";
 
-        BasicNamespace ns = BasicNamespace.getDefault();
-
-        BasicElement elt0 = new BasicElement(ns, name0);
+        BasicElement elt0 = new BasicElement();
+        elt0.name(name0);
         assertThat(elt0.name()).isEqualTo(name0);
 
-        BasicElement elt1 = new BasicElement(ns, name1);
+        BasicElement elt1 = new BasicElement();
+        elt1.name(name1);
         assertThat(elt1.name()).isEqualTo(name1);
 
         assertThat(elt0.name()).isNotEqualTo(elt1.name());
@@ -40,11 +42,11 @@ public class BasicElementTest extends AbstractTest {
 
     @Test
     public void testId() {
-        BasicElement elt0 = new BasicElement(BasicNamespace.getDefault(), "element0");
+        BasicElement elt0 = new BasicElement();
         assertThat(elt0.id()).isNull();
 
-        BasicId id0 = BasicId.original("id0");
-        BasicId id1 = BasicId.generated("id1");
+        Id id0 = StringId.of("id0");
+        Id id1 = StringId.of("id1");
 
         elt0.id(id0);
         assertThat(elt0.id()).isEqualTo(id0);
@@ -54,25 +56,10 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testClassName() {
-        BasicElement elt0 = new BasicElement(BasicNamespace.getDefault(), "element0");
-        assertThat(elt0.className()).isNull();
-
-        String className0 = "cn0";
-        String className1 = "cn1";
-
-        elt0.className(className0);
-        assertThat(elt0.className()).isEqualTo(className0);
-
-        elt0.className(className1);
-        assertThat(elt0.className()).isNotEqualTo(className0).isEqualTo(className1);
-    }
-
-    @Test
     public void testMetaclass() {
         BasicNamespace ns = BasicNamespace.getDefault();
 
-        BasicElement elt0 = new BasicElement(ns, "element0");
+        BasicElement elt0 = new BasicElement();
         assertThat(elt0.metaClass()).isNull();
 
         BasicMetaclass mc0 = new BasicMetaclass(ns, "mc0");
@@ -87,7 +74,7 @@ public class BasicElementTest extends AbstractTest {
 
     @Test
     public void testRoot() {
-        BasicElement elt0 = new BasicElement(BasicNamespace.getDefault(), "element0");
+        BasicElement elt0 = new BasicElement();
         assertThat(elt0.isRoot()).isFalse();
 
         elt0.isRoot(true);
@@ -99,11 +86,14 @@ public class BasicElementTest extends AbstractTest {
 
     @Test
     public void testHashCode() {
-        BasicNamespace ns = BasicNamespace.getDefault();
+        BasicElement elt0 = new BasicElement();
+        elt0.id(StringId.of("element0"));
 
-        BasicElement elt0 = new BasicElement(ns, "element0");
-        BasicElement elt0Bis = new BasicElement(ns, "element0");
-        BasicElement elt1 = new BasicElement(ns, "element1");
+        BasicElement elt0Bis = new BasicElement();
+        elt0Bis.id(StringId.of("element0"));
+
+        BasicElement elt1 = new BasicElement();
+        elt1.id(StringId.of("element1"));
 
         assertThat(elt0.hashCode()).isEqualTo(elt0Bis.hashCode());
         assertThat(elt0.hashCode()).isNotEqualTo(elt1.hashCode());
@@ -112,11 +102,14 @@ public class BasicElementTest extends AbstractTest {
 
     @Test
     public void testEquals() {
-        BasicNamespace ns = BasicNamespace.getDefault();
+        BasicElement elt0 = new BasicElement();
+        elt0.id(StringId.of("element0"));
 
-        BasicElement elt0 = new BasicElement(ns, "element0");
-        BasicElement elt0Bis = new BasicElement(ns, "element0");
-        BasicElement elt1 = new BasicElement(ns, "element1");
+        BasicElement elt0Bis = new BasicElement();
+        elt0Bis.id(StringId.of("element0"));
+
+        BasicElement elt1 = new BasicElement();
+        elt1.id(StringId.of("element1"));
 
         assertThat(elt0).isEqualTo(elt0Bis);
         assertThat(elt0).isNotEqualTo(elt1);

@@ -1,53 +1,95 @@
-/*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- */
-
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.io.Handler;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that measures elapsed time between the start and the end of an I/O process.
+ * A {@link Processor} that logs the progress of a migration.
  */
 @ParametersAreNonnullByDefault
-public class ProgressProcessor extends AbstractProcessor<Processor> {
+public class ProgressProcessor extends AbstractProcessor<Handler> {
 
     /**
-     * The start instant.
+     * The stream to watch.
      */
-    private final Stopwatch stopwatch = Stopwatch.createUnstarted();
+    private final InputStream stream;
 
     /**
-     * Constructs a new {@code ProgressProcessor} with the given {@code processor}.
+     * The total size of the {@link #stream}.
+     */
+    private final double totalSize;
+
+    /**
+     * The time between progress analysis, in milliseconds
+     */
+    private final long period;
+
+    /**
+     * The progress analysis task.
+     */
+    private Timer task;
+
+    /**
+     * Constructs a new {@code ProgressProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
+     * @param stream  the stream to watch
      */
-    public ProgressProcessor(Processor processor) {
-        super(processor);
+    public ProgressProcessor(Handler handler, InputStream stream) {
+        this(handler, stream, 20_000);
+    }
+
+    /**
+     * Constructs a new {@code ProgressProcessor} with the given {@code handler}.
+     *
+     * @param handler the handler to notify
+     * @param stream  the stream to watch
+     * @param period  the time between progress analysis, in milliseconds
+     */
+    public ProgressProcessor(Handler handler, InputStream stream, @Nonnegative long period) {
+        super(handler);
+        this.stream = stream;
+        this.period = period;
+
+        try {
+            this.totalSize = stream.available();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onInitialize() {
-        Log.info("Document analysis in progress...");
-        stopwatch.start();
+        task = new Timer();
+        task.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    final double progress = totalSize / (totalSize - stream.available());
+                    Log.info("Progress: {0,number,0.00%}", progress);
+                }
+                catch (IOException e) {
+                    Log.warn(e);
+                    task.cancel();
+                }
+            }
+        }, 0, period);
 
         notifyInitialize();
     }
 
     @Override
     public void onComplete() {
-        stopwatch.stop();
-        Log.info("Document analysis done in {0}", stopwatch.elapsed());
+        task.cancel();
 
         notifyComplete();
     }

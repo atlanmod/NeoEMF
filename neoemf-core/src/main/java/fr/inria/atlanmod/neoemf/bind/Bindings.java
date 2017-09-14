@@ -96,6 +96,9 @@ public final class Bindings {
     /**
      * Adds {@code urls} to be scanned for binding. Theses {@link URL}s will be used to retrieves types, fields or any
      * kind of reflective element at runtime.
+     * <p>
+     * All {@link URL}s are filtered to keep only those that can be related to NeoEMF. The {@link FactoryBinding}
+     * annotation is used to determine this relation.
      *
      * @param urls the {@link URL}s to add for scanning
      *
@@ -104,43 +107,25 @@ public final class Bindings {
     public static void addUrls(Collection<URL> urls) {
         checkNotNull(urls);
 
-        Set<URL> relatedUrls = filterUrls(urls);
-        if (!relatedUrls.isEmpty()) {
-            URLS.addAll(relatedUrls);
-        }
-
-        // Refresh the cache: annotations stay the same, but the result may have been changed
-        ANNOTATED_TYPES.invalidateAll();
-    }
-
-    /**
-     * Filters the {@code urls} to keep only those that can be related to NeoEMF. The {@link FactoryBinding} annotation
-     * is used to determine this relation.
-     *
-     * @param urls the URLs to be filtered
-     *
-     * @return a set of related URLs
-     */
-    @Nonnull
-    private static Set<URL> filterUrls(Collection<URL> urls) {
         ConfigurationBuilder baseConfig = new ConfigurationBuilder()
                 .setExecutorService(POOL)
                 .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
         // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
-        return urls.stream()
-                .filter(u -> {
-                    try {
-                        Set<Class<?>> relatedClasses = new Reflections(baseConfig.setUrls(u))
-                                .getTypesAnnotatedWith(FactoryBinding.class);
+        urls.stream().filter(url -> {
+            try {
+                Set<Class<?>> relatedClasses = new Reflections(baseConfig.setUrls(url))
+                        .getTypesAnnotatedWith(FactoryBinding.class);
 
-                        return !relatedClasses.isEmpty();
-                    }
-                    catch (RuntimeException e) {
-                        return false;
-                    }
-                })
-                .collect(Collectors.toSet());
+                return !relatedClasses.isEmpty();
+            }
+            catch (RuntimeException e) {
+                return false;
+            }
+        }).collect(Collectors.toCollection(() -> URLS));
+
+        // Refresh the cache: annotations stay the same, but the result may have been changed
+        ANNOTATED_TYPES.invalidateAll();
     }
 
     /**

@@ -21,7 +21,7 @@ public class ZXmiReaderStandardTest extends AbstractInputTest {
 
     @Nonnull
     @Override
-    protected URI getSample() {
+    protected URI getResourceUri() {
         return IOResourceManager.zxmiStandard();
     }
 

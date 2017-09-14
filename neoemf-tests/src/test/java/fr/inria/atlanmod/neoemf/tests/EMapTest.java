@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.ETypes;
 import fr.inria.atlanmod.neoemf.tests.sample.Type;
@@ -19,7 +18,6 @@ import fr.inria.atlanmod.neoemf.tests.sample.Value;
 
 import org.eclipse.emf.common.util.EMap;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +33,6 @@ public class EMapTest extends AbstractBackendTest {
     private static final String VALUE2 = "value2";
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetMapStringStringEmpty() {
         PersistentResource resource = newPersistentStore();
         resource.getContents().add(EFACTORY.createETypes());
@@ -48,7 +45,6 @@ public class EMapTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testPutMapStringString() {
         PersistentResource resource = newPersistentStore();
         resource.getContents().add(EFACTORY.createETypes());
@@ -66,7 +62,6 @@ public class EMapTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetMapKVEmpty() {
         PersistentResource resource = newPersistentStore();
         resource.getContents().add(EFACTORY.createETypes());
@@ -79,7 +74,6 @@ public class EMapTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testPutMapKV() {
         PersistentResource resource = newPersistentStore();
         resource.getContents().add(EFACTORY.createETypes());

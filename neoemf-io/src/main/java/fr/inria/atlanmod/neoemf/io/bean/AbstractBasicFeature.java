@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -20,17 +22,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicFeature extends AbstractNamedElement {
+public abstract class AbstractBasicFeature<V> extends AbstractNamedElement {
 
     /**
      * The identifier of element that owns this feature.
      */
-    private BasicId owner;
-
-    /**
-     * The index of the feature.
-     */
-    private int index = -1;
+    private Id owner;
 
     /**
      * Whether this feature is multi-valued.
@@ -38,11 +35,16 @@ public abstract class AbstractBasicFeature extends AbstractNamedElement {
     private boolean isMany = false;
 
     /**
+     * The value of this feature.
+     */
+    private V value;
+
+    /**
      * Returns the identifier of the element that owns this feature.
      *
      * @return the owner's identifier
      */
-    public BasicId owner() {
+    public Id owner() {
         return owner;
     }
 
@@ -51,26 +53,8 @@ public abstract class AbstractBasicFeature extends AbstractNamedElement {
      *
      * @param ownerId the owner's identifier
      */
-    public void owner(BasicId ownerId) {
+    public void owner(Id ownerId) {
         this.owner = ownerId;
-    }
-
-    /**
-     * Returns the index of this feature.
-     *
-     * @return the index
-     */
-    public int index() {
-        return index;
-    }
-
-    /**
-     * Defines the index of this feature.
-     *
-     * @param index the index
-     */
-    public void index(int index) {
-        this.index = index;
     }
 
     /**
@@ -92,21 +76,21 @@ public abstract class AbstractBasicFeature extends AbstractNamedElement {
     }
 
     /**
-     * Defines whether this feature is a {@link BasicReference}.
+     * Returns the value of this feature.
      *
-     * @return {@code true} if this feature is a reference.
+     * @return the value
      */
-    public boolean isReference() {
-        return false;
+    public V value() {
+        return value;
     }
 
     /**
-     * Defines whether this feature is an {@link BasicAttribute}.
+     * Defines the value of this feature.
      *
-     * @return {@code true} if this feature is an attribute.
+     * @param value the value
      */
-    public boolean isAttribute() {
-        return false;
+    public void value(V value) {
+        this.value = value;
     }
 
     @Override
@@ -119,14 +103,14 @@ public abstract class AbstractBasicFeature extends AbstractNamedElement {
         if (this == o) {
             return true;
         }
-        if (!AbstractBasicFeature.class.isInstance(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
 
-        AbstractBasicFeature that = AbstractBasicFeature.class.cast(o);
+        AbstractBasicFeature<?> that = AbstractBasicFeature.class.cast(o);
         return Objects.equals(owner, that.owner);
     }
 }

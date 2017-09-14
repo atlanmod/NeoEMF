@@ -11,9 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import com.ctc.wstx.api.WstxInputProperties;
+
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import org.codehaus.stax2.XMLInputFactory2;
@@ -29,7 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * A {@link StreamReader} that uses a StAX implementation with cursors for reading and parsing XMI files.
+ * An {@link AbstractXmiStreamReader} that uses a StAX implementation with cursors for reading and parsing XMI files.
  */
 @ParametersAreNonnullByDefault
 public class XmiStreamReader extends AbstractXmiStreamReader {
@@ -40,25 +42,40 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      * @param handler the handler to notify
      */
     public XmiStreamReader(Handler handler) {
-        super(new EcoreProcessor(new XPathProcessor(handler)));
+        super(new EcoreProcessor(new XPathResolver(handler)));
     }
 
     @Override
     public void run(InputStream stream) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
-        factory.setProperty("javax.xml.stream.isNamespaceAware", true);
-        factory.setProperty("com.ctc.wstx.lazyParsing", true);
-
-        // Remove contraints
-        factory.setProperty("com.ctc.wstx.maxAttributesPerElement", Integer.MAX_VALUE);
-        factory.setProperty("com.ctc.wstx.maxAttributeSize", Integer.MAX_VALUE);
-        factory.setProperty("com.ctc.wstx.maxChildrenPerElement", Integer.MAX_VALUE);
-        factory.setProperty("com.ctc.wstx.maxElementCount", Integer.MAX_VALUE);
-        factory.setProperty("com.ctc.wstx.maxElementDepth", Integer.MAX_VALUE);
-        factory.setProperty("com.ctc.wstx.maxCharacters", Integer.MAX_VALUE);
-        factory.setProperty("com.ctc.wstx.maxTextLength", Integer.MAX_VALUE);
+        configure(factory);
 
         read((XMLStreamReader2) factory.createXMLStreamReader(new BufferedInputStream(stream), XmlConstants.ENCODING));
+    }
+
+    /**
+     * Configures the specified {@code factory} with default options.
+     *
+     * @param factory the XML factory to configure
+     */
+    private void configure(XMLInputFactory factory) {
+        // Use namespace support
+        factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
+
+        // Use lazy-parsing
+//        factory.setProperty(XMLInputFactory2.P_LAZY_PARSING, true);
+
+        // Remove constraints
+        factory.setProperty(WstxInputProperties.P_MAX_CHARACTERS, Integer.MAX_VALUE);
+
+        factory.setProperty(WstxInputProperties.P_MAX_ELEMENT_COUNT, Integer.MAX_VALUE);
+        factory.setProperty(WstxInputProperties.P_MAX_ELEMENT_DEPTH, Integer.MAX_VALUE);
+        factory.setProperty(WstxInputProperties.P_MAX_CHILDREN_PER_ELEMENT, Integer.MAX_VALUE);
+
+        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, Integer.MAX_VALUE);
+        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTES_PER_ELEMENT, Integer.MAX_VALUE);
+
+        factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.MAX_VALUE);
     }
 
     /**
@@ -83,7 +100,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
                 IntStream.range(0, reader.getAttributeCount()).forEach(i ->
                         readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i)));
 
-                flushStartElement();
+                flushCurrentElement();
             }
             else if (event == XMLStreamReader.END_ELEMENT) {
                 readEndElement();

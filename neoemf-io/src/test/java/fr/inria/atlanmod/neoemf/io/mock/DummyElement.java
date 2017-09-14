@@ -11,11 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.util.ArrayList;
@@ -69,38 +68,11 @@ public class DummyElement {
     }
 
     /**
-     * Returns the namespace of this element.
-     *
-     * @return the namespace
-     */
-    public BasicNamespace ns() {
-        return element.ns();
-    }
-
-    /**
-     * Returns whether this element is the root element of a structure.
-     *
-     * @return {@code true} if this element is a root element
-     */
-    public boolean isRoot() {
-        return element.isRoot();
-    }
-
-    /**
-     * Returns the name of the class of this element.
-     *
-     * @return the name of the class
-     */
-    public String className() {
-        return element.className();
-    }
-
-    /**
      * Returns the identifier of this classifier.
      *
      * @return the identifier
      */
-    public BasicId id() {
+    public Id id() {
         return element.id();
     }
 

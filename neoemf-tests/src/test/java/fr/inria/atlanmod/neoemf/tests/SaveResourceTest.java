@@ -11,14 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.Iterator;
 
@@ -33,7 +31,6 @@ public class SaveResourceTest extends AbstractBackendTest {
     private TargetObject target;
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testEContainer() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -46,7 +43,6 @@ public class SaveResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsContainer() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -63,7 +59,6 @@ public class SaveResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testEResource() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -73,7 +68,6 @@ public class SaveResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEResource() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -88,7 +82,6 @@ public class SaveResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testEDirectResource() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -98,7 +91,6 @@ public class SaveResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);

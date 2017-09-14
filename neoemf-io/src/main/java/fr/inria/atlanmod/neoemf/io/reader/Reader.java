@@ -22,7 +22,7 @@ import javax.annotation.WillNotClose;
 /**
  * A {@link Notifier} able to read data from an {@link Object}.
  *
- * @param <T> the type of the read source
+ * @param <T> the type of the source
  */
 @ParametersAreNonnullByDefault
 public interface Reader<T> extends Notifier<Handler> {

@@ -11,86 +11,54 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+
 import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A identifiable {@link BasicMetaclass} which can be typed.
+ * A simple representation of an identifiable element, typed with a meta-class.
  */
 @ParametersAreNonnullByDefault
-public class BasicElement extends BasicMetaclass {
+public class BasicElement extends AbstractNamedElement {
 
     /**
-     * The identifier of this classifier.
+     * The identifier of this element.
      */
-    private BasicId id;
+    private Id id;
 
     /**
-     * The name of the class of this classifier.
-     */
-    private String className;
-
-    /**
-     * The meta-class of this classifier.
+     * The meta-class of this element.
      */
     private BasicMetaclass metaClass;
 
     /**
-     * Whether this classifier is the root element of a structure.
+     * Whether this element is the root of a structure.
      */
     private boolean isRoot;
 
     /**
-     * Constructs a new {@code BasicElement} with the given {@code ns} and {@code name}.
-     *
-     * @param ns   the ns of this classifier
-     * @param name the name of this classifier
-     */
-    public BasicElement(BasicNamespace ns, String name) {
-        super(ns, name);
-        this.isRoot = false;
-    }
-
-    /**
-     * Returns the identifier of this classifier.
+     * Returns the identifier of this element.
      *
      * @return the identifier
      */
-    public BasicId id() {
+    public Id id() {
         return id;
     }
 
     /**
-     * Defines the identifier of this classifier.
+     * Defines the identifier of this element.
      *
      * @param id the identifier
      */
-    public void id(BasicId id) {
+    public void id(Id id) {
         this.id = id;
     }
 
     /**
-     * Returns the name of the class of this classifier.
-     *
-     * @return the name of the class
-     */
-    public String className() {
-        return className;
-    }
-
-    /**
-     * Defines the name of the class of this classifier.
-     *
-     * @param className the name of the class
-     */
-    public void className(String className) {
-        this.className = className;
-    }
-
-    /**
-     * Returns the meta-class of this classifier.
+     * Returns the meta-class of this element.
      *
      * @return the meta-class
      */
@@ -99,7 +67,7 @@ public class BasicElement extends BasicMetaclass {
     }
 
     /**
-     * Defines the meta-class of this classifier.
+     * Defines the meta-class of this element.
      *
      * @param metaClass the meta-class
      */
@@ -108,18 +76,18 @@ public class BasicElement extends BasicMetaclass {
     }
 
     /**
-     * Returns whether this classifier is the root element of a structure.
+     * Returns whether this element is the root of a structure.
      *
-     * @return {@code true} if this classifier is a root element
+     * @return {@code true} if this element is the root of a structure
      */
     public boolean isRoot() {
         return isRoot;
     }
 
     /**
-     * Defines whether this classifier is the root element of a structure.
+     * Defines whether this element is the root of a structure.
      *
-     * @param isRoot {@code true} if this classifier is a root element
+     * @param isRoot {@code true} if this element is the root of a structure
      */
     public void isRoot(boolean isRoot) {
         this.isRoot = isRoot;
@@ -127,7 +95,7 @@ public class BasicElement extends BasicMetaclass {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
+        return Objects.hash(id);
     }
 
     @Override
@@ -135,10 +103,7 @@ public class BasicElement extends BasicMetaclass {
         if (this == o) {
             return true;
         }
-        if (!BasicElement.class.isInstance(o)) {
-            return false;
-        }
-        if (!super.equals(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 

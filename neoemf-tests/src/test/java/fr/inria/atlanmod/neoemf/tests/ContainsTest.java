@@ -11,13 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContainsTest extends AbstractBackendTest {
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testContainsPersistent3Elements() {
         PersistentResource resource = newPersistentStore();
         List<TargetObject> content = fillResource(resource, 3);
@@ -41,7 +38,6 @@ public class ContainsTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testContainsPersistent4Elements() {
         PersistentResource resource = newPersistentStore();
         List<TargetObject> content = fillResource(resource, 4);
@@ -50,7 +46,6 @@ public class ContainsTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testContainsPersistent5Elements() {
         PersistentResource resource = newPersistentStore();
         List<TargetObject> content = fillResource(resource, 5);
@@ -59,7 +54,6 @@ public class ContainsTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.TransientTests.class)
     public void testContainsTransient3Elements() {
         PersistentResource resource = newTransientStore();
         List<TargetObject> content = fillResource(resource, 3);
@@ -68,7 +62,6 @@ public class ContainsTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.TransientTests.class)
     public void testContainsTransient4Elements() {
         PersistentResource resource = newTransientStore();
         List<TargetObject> content = fillResource(resource, 4);
@@ -77,7 +70,6 @@ public class ContainsTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.TransientTests.class)
     public void testContainsTransient5Elements() {
         PersistentResource resource = newTransientStore();
         List<TargetObject> content = fillResource(resource, 5);

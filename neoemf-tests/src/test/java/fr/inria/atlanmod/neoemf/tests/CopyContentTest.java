@@ -11,13 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,7 +50,6 @@ public class CopyContentTest extends AbstractBackendTest {
      * @throws IOException if an I/O error occurs during {@link PersistentResource#save(Map)}
      */
     @Test
-    @Category(Tags.TransientTests.class)
     public void testCopyBackend() throws IOException {
         PersistentResource resource = newTransientStore();
         fillResource(resource);

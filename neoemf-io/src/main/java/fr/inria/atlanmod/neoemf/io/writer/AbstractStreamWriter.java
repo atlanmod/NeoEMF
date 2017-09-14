@@ -12,21 +12,24 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.commons.annotation.Beta;
-import fr.inria.atlanmod.commons.log.Log;
+
+import java.io.OutputStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A abstract {@link StreamWriter}.
+ * A abstract {@link Writer} that writes data into a {@link OutputStream}.
  */
 @Beta
 @ParametersAreNonnullByDefault
-public abstract class AbstractStreamWriter implements StreamWriter {
+public abstract class AbstractStreamWriter extends AbstractWriter<OutputStream> {
 
     /**
-     * Constructs a new {@code AbstractStreamWriter}.
+     * Constructs a new {@code AbstractStreamWriter} with the given {@code stream}.
+     *
+     * @param stream the stream where to write data
      */
-    protected AbstractStreamWriter() {
-        Log.debug("{0} created", getClass().getSimpleName());
+    protected AbstractStreamWriter(OutputStream stream) {
+        super(stream);
     }
 }

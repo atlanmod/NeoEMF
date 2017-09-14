@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.AbstractTest;
-import fr.inria.atlanmod.neoemf.Tags;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.mock.DummyElement;
 import fr.inria.atlanmod.neoemf.io.mock.DummyWriter;
@@ -26,7 +26,6 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,7 +80,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     /**
      * The root element of the read file.
      */
-    protected DummyElement root;
+    private DummyElement root;
 
     /**
      * Retrieves an element from the {@code root} element with the successive {@code indices}.
@@ -92,7 +91,7 @@ public abstract class AbstractInputTest extends AbstractTest {
      * @return the element
      */
     @Nonnull
-    public static DummyElement childFrom(DummyElement root, int... indices) {
+    private static DummyElement childFrom(DummyElement root, int... indices) {
         checkArgument(indices.length > 0, "You must define at least one index");
 
         DummyElement child = root;
@@ -113,7 +112,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     public void readResource() throws IOException {
         DummyWriter writer = new DummyWriter();
 
-        try (InputStream in = new URL(getSample().toString()).openStream()) {
+        try (InputStream in = new URL(getResourceUri().toString()).openStream()) {
             Migrator.fromXmi(in)
                     .to(writer)
                     .withCounter()
@@ -131,7 +130,7 @@ public abstract class AbstractInputTest extends AbstractTest {
      * @return the stream
      */
     @Nonnull
-    protected abstract URI getSample();
+    protected abstract URI getResourceUri();
 
     /**
      * Checks whether this test-case use {@code xmi:id} instead of XPath as references.
@@ -149,36 +148,38 @@ public abstract class AbstractInputTest extends AbstractTest {
      *
      * @see #useIds()
      */
-    protected String getId(String path) {
-        return checkNotNull(useIds() ? MAPPING.get(path) : path, "Undefined path: %s", path);
+    protected Id getId(String path) {
+        Id id = useIds()
+                ? StringId.of(MAPPING.get(path))
+                : StringId.generate(path);
+
+        return checkNotNull(id, "Undefined path: %s", path);
     }
 
     /**
      * Checks that the {@code element} has the given arguments.
      *
-     * @param element   the element to test
-     * @param id        the expected identifier
-     * @param name      the expected name
-     * @param className the expected class name
-     * @param size      the expected size
+     * @param element the element to test
+     * @param id      the expected identifier
+     * @param name    the expected name
+     * @param size    the expected size
      */
-    protected void assertValidElement(DummyElement element, String id, String name, String className, int size) {
-        assertThat(element.id().value()).isEqualTo(id);
+    protected void assertValidElement(DummyElement element, Id id, String name, int size) {
+        assertThat(element.id()).isEqualTo(id);
         assertThat(element.name()).isEqualTo(name);
         assertThat(element.children()).hasSize(size);
-        assertThat(element.className()).isEqualTo(className);
     }
 
     /**
      * Checks that the {@code metaClass} has the given arguments.
      *
      * @param metaClass the meta-class to test
+     * @param nsPrefix  the expected namespace prefix
      * @param name      the expected name
-     * @param ns        the expected namespace URI
      */
-    protected void assertValidMetaClass(BasicMetaclass metaClass, String name, BasicNamespace ns) {
+    protected void assertValidMetaClass(BasicMetaclass metaClass, String nsPrefix, String name) {
+        assertThat(metaClass.ns().prefix()).isSameAs(nsPrefix);
         assertThat(metaClass.name()).isEqualTo(name);
-        assertThat(metaClass.ns()).isSameAs(ns);
     }
 
     /**
@@ -186,15 +187,13 @@ public abstract class AbstractInputTest extends AbstractTest {
      *
      * @param reference     the reference to test
      * @param name          the expected name
-     * @param value         the expected value
-     * @param index         the expected index
+     * @param idReference   the expected reference
      * @param isMany        {@code true} if the {@code reference} is multi-valued
      * @param isContainment {@code true} if the {@code reference} is a containment
      */
-    protected void assertValidReference(BasicReference reference, String name, String value, int index, boolean isMany, boolean isContainment) {
+    protected void assertValidReference(BasicReference reference, String name, Id idReference, boolean isMany, boolean isContainment) {
         assertThat(reference.name()).isEqualTo(name);
-        assertThat(reference.index()).isEqualTo(index);
-        assertThat(reference.idReference().value()).isEqualTo(value);
+        assertThat(reference.value()).isEqualTo(idReference);
         assertThat(reference.isContainment()).isEqualTo(isContainment);
         assertThat(reference.isMany()).isEqualTo(isMany);
     }
@@ -205,53 +204,50 @@ public abstract class AbstractInputTest extends AbstractTest {
      * @param attribute the attribute to test
      * @param name      the expected name
      * @param value     the expected value
-     * @param index     the expected index
      */
-    protected void assertValidAttribute(BasicAttribute attribute, String name, String value, int index) {
+    protected void assertValidAttribute(BasicAttribute attribute, String name, String value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
-        assertThat(attribute.index()).isEqualTo(index);
     }
 
     /**
      * Check that the elements and their children are properly processed.
      */
     @Test
-    @Category(Tags.IOTests.class)
     public void testElementsAndChildren() {
         DummyElement o;
         DummyElement child;
 
-        assertValidElement(root, getId("/@Model.0"), "Model", "fr.inria.atlanmod.kyanos.tests", 19);
+        assertValidElement(root, getId("/@Model.0"), "Model", 19);
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             o = childFrom(root, 0, 0, 0, 0, 0, 0);
-            assertValidElement(o, getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0"), "ownedElements", "TestCreateResource", 7);
+            assertValidElement(o, getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0"), "ownedElements", 7);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 child = childFrom(o, 0);
-                assertValidElement(child, getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@modifier.0"), "modifier", null, 0);
+                assertValidElement(child, getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@modifier.0"), "modifier", 0);
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 child = childFrom(o, 3);
-                assertValidElement(child, getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.2"), "bodyDeclarations", "tearDownAfterClass", 5);
+                assertValidElement(child, getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.2"), "bodyDeclarations", 5);
             }
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
-            assertValidElement(o, getId("/@Model.0/@ownedElements.1"), "ownedElements", "java", 5);
+            assertValidElement(o, getId("/@Model.0/@ownedElements.1"), "ownedElements", 5);
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
-            assertValidElement(o, getId("/@Model.0/@orphanTypes.5"), "orphanTypes", "void", 0);
+            assertValidElement(o, getId("/@Model.0/@orphanTypes.5"), "orphanTypes", 0);
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
-            assertValidElement(o, getId("/@Model.0/@compilationUnits.1"), "compilationUnits", "TestXmi.java", 16);
+            assertValidElement(o, getId("/@Model.0/@compilationUnits.1"), "compilationUnits", 16);
             {
                 //@Model/@compilationUnits.1/@imports.2
                 child = childFrom(o, 2);
-                assertValidElement(child, getId("/@Model.0/@compilationUnits.1/@imports.2"), "imports", null, 0);
+                assertValidElement(child, getId("/@Model.0/@compilationUnits.1/@imports.2"), "imports", 0);
             }
         }
     }
@@ -260,7 +256,6 @@ public abstract class AbstractInputTest extends AbstractTest {
      * Check that the XPath references are properly processed.
      */
     @Test
-    @Category(Tags.IOTests.class)
     public void testReferences() {
         DummyElement o;
         DummyElement child;
@@ -269,15 +264,15 @@ public abstract class AbstractInputTest extends AbstractTest {
 
         references = root.references();
         assertThat(references).hasSize(19);
-        assertValidReference(references.get(0), "ownedElements", getId("/@Model.0/@ownedElements.0"), -1, true, true);
-        assertValidReference(references.get(12), "orphanTypes", getId("/@Model.0/@orphanTypes.9"), -1, true, true);
+        assertValidReference(references.get(0), "ownedElements", getId("/@Model.0/@ownedElements.0"), true, true);
+        assertValidReference(references.get(12), "orphanTypes", getId("/@Model.0/@orphanTypes.9"), true, true);
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             o = childFrom(root, 0, 0, 0, 0, 0, 0);
             references = o.references();
             assertThat(references).hasSize(8);
-            assertValidReference(references.get(0), "originalCompilationUnit", getId("/@Model.0/@compilationUnits.0"), -1, false, false);
-            assertValidReference(references.get(5), "bodyDeclarations", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.3"), -1, true, true);
+            assertValidReference(references.get(0), "originalCompilationUnit", getId("/@Model.0/@compilationUnits.0"), false, false);
+            assertValidReference(references.get(5), "bodyDeclarations", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.3"), true, true);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 child = childFrom(o, 0);
@@ -287,38 +282,38 @@ public abstract class AbstractInputTest extends AbstractTest {
                 child = childFrom(o, 3);
                 references = child.references();
                 assertThat(references).hasSize(6);
-                assertValidReference(references.get(0), "originalCompilationUnit", getId("/@Model.0/@compilationUnits.0"), -1, false, false);
-                assertValidReference(references.get(2), "modifier", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.2/@modifier.0"), -1, false, true);
+                assertValidReference(references.get(0), "originalCompilationUnit", getId("/@Model.0/@compilationUnits.0"), false, false);
+                assertValidReference(references.get(2), "modifier", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.2/@modifier.0"), false, true);
             }
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
             references = o.references();
             assertThat(references).hasSize(5);
-            assertValidReference(references.get(1), "ownedPackages", getId("/@Model.0/@ownedElements.1/@ownedPackages.1"), -1, true, true);
+            assertValidReference(references.get(1), "ownedPackages", getId("/@Model.0/@ownedElements.1/@ownedPackages.1"), true, true);
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
             references = o.references();
 
             assertThat(references).hasSize(12);
-            assertValidReference(references.get(0), "usagesInTypeAccess", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.1/@returnType.0"), 0, true, false);
-            assertValidReference(references.get(9), "usagesInTypeAccess", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.1/@bodyDeclarations.5/@returnType.0"), 9, true, false);
+            assertValidReference(references.get(0), "usagesInTypeAccess", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.1/@returnType.0"), true, false);
+            assertValidReference(references.get(9), "usagesInTypeAccess", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.1/@bodyDeclarations.5/@returnType.0"), true, false);
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
             references = o.references();
             assertThat(references).hasSize(18);
-            assertValidReference(references.get(0), "package", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0"), -1, false, false);
-            assertValidReference(references.get(3), "imports", getId("/@Model.0/@compilationUnits.1/@imports.1"), -1, true, true);
-            assertValidReference(references.get(12), "imports", getId("/@Model.0/@compilationUnits.1/@imports.10"), -1, true, true);
+            assertValidReference(references.get(0), "package", getId("/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0"), false, false);
+            assertValidReference(references.get(3), "imports", getId("/@Model.0/@compilationUnits.1/@imports.1"), true, true);
+            assertValidReference(references.get(12), "imports", getId("/@Model.0/@compilationUnits.1/@imports.10"), true, true);
             {
                 //@Model/@compilationUnits.1/@imports.2
                 child = childFrom(o, 2);
                 references = child.references();
                 assertThat(references).hasSize(2);
-                assertValidReference(references.get(0), "originalCompilationUnit", getId("/@Model.0/@compilationUnits.1"), -1, false, false);
-                assertValidReference(references.get(1), "importedElement", getId("/@Model.0/@ownedElements.2/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0"), -1, false, false);
+                assertValidReference(references.get(0), "originalCompilationUnit", getId("/@Model.0/@compilationUnits.1"), false, false);
+                assertValidReference(references.get(1), "importedElement", getId("/@Model.0/@ownedElements.2/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0"), false, false);
             }
         }
     }
@@ -327,7 +322,6 @@ public abstract class AbstractInputTest extends AbstractTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    @Category(Tags.IOTests.class)
     public void testAttributes() {
         DummyElement o;
         DummyElement child;
@@ -335,41 +329,47 @@ public abstract class AbstractInputTest extends AbstractTest {
         List<BasicAttribute> attributes;
 
         attributes = root.attributes();
-        assertThat(attributes).isEmpty(); // Assert that 'xmi:version' and 'xmlns' don't exist
+        assertThat(attributes).hasSize(1); // Assert that 'xmi:version' and 'xmlns' don't exist
+        assertValidAttribute(attributes.get(0), "name", "fr.inria.atlanmod.kyanos.tests");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             o = childFrom(root, 0, 0, 0, 0, 0, 0);
             attributes = o.attributes();
-            assertThat(attributes).isEmpty();
+            assertThat(attributes).hasSize(1);
+            assertValidAttribute(attributes.get(0), "name", "TestCreateResource");
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 child = childFrom(o, 0);
                 attributes = child.attributes();
                 assertThat(attributes).hasSize(1);
-                assertValidAttribute(attributes.get(0), "visibility", "public", 0);
+                assertValidAttribute(attributes.get(0), "visibility", "public");
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 child = childFrom(o, 3);
                 attributes = child.attributes();
-                assertThat(attributes).isEmpty();
+                assertThat(attributes).hasSize(1);
+                assertValidAttribute(attributes.get(0), "name", "tearDownAfterClass");
             }
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
             attributes = o.attributes();
-            assertThat(attributes).hasSize(1);
-            assertValidAttribute(attributes.get(0), "proxy", "true", 0);
+            assertThat(attributes).hasSize(2);
+            assertValidAttribute(attributes.get(0), "name", "java");
+            assertValidAttribute(attributes.get(1), "proxy", "true");
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
             attributes = o.attributes();
-            assertThat(attributes).isEmpty();
+            assertThat(attributes).hasSize(1);
+            assertValidAttribute(attributes.get(0), "name", "void");
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
             attributes = o.attributes();
-            assertThat(attributes).hasSize(1);
-            assertValidAttribute(attributes.get(0), "originalFilePath", "C:\\Eclipse\\eclipse-SDK-4.3.1-win32-x86_64-Blue\\eclipse\\workspace\\fr.inria.atlanmod.kyanos.tests\\src\\fr\\inria\\atlanmod\\kyanos\\tests\\TestXmi.java", 0);
+            assertThat(attributes).hasSize(2);
+            assertValidAttribute(attributes.get(0), "name", "TestXmi.java");
+            assertValidAttribute(attributes.get(1), "originalFilePath", "C:\\Eclipse\\eclipse-SDK-4.3.1-win32-x86_64-Blue\\eclipse\\workspace\\fr.inria.atlanmod.kyanos.tests\\src\\fr\\inria\\atlanmod\\kyanos\\tests\\TestXmi.java");
             {
                 //@Model/@compilationUnits.1/@imports.2
                 child = childFrom(o, 2);
@@ -382,42 +382,40 @@ public abstract class AbstractInputTest extends AbstractTest {
      * Check that the meta-classes ('xsi:type' or 'xmi:type') are properly processed.
      */
     @Test
-    @Category(Tags.IOTests.class)
     public void testMetaClasses() {
         DummyElement o;
         DummyElement child;
 
-        BasicNamespace ns = root.ns();
-        assertValidMetaClass(root.metaClass(), "Model", ns);
+        assertValidMetaClass(root.metaClass(), "java", "Model");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             o = childFrom(root, 0, 0, 0, 0, 0, 0);
-            assertValidMetaClass(o.metaClass(), "ClassDeclaration", ns);
+            assertValidMetaClass(o.metaClass(), "java", "ClassDeclaration");
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 child = childFrom(o, 0);
-                assertValidMetaClass(child.metaClass(), "Modifier", ns);
+                assertValidMetaClass(child.metaClass(), "java", "Modifier");
 
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 child = childFrom(o, 3);
-                assertValidMetaClass(child.metaClass(), "MethodDeclaration", ns);
+                assertValidMetaClass(child.metaClass(), "java", "MethodDeclaration");
             }
 
             //@Model/@ownedElements.1
             o = childFrom(root, 1);
-            assertValidMetaClass(o.metaClass(), "Package", ns);
+            assertValidMetaClass(o.metaClass(), "java", "Package");
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
-            assertValidMetaClass(o.metaClass(), "PrimitiveTypeVoid", ns);
+            assertValidMetaClass(o.metaClass(), "java", "PrimitiveTypeVoid");
 
             //@Model/@compilationUnits.1
             o = childFrom(root, 17);
-            assertValidMetaClass(o.metaClass(), "CompilationUnit", ns);
+            assertValidMetaClass(o.metaClass(), "java", "CompilationUnit");
             {
                 //@Model/@compilationUnits.1/@imports.2
                 child = childFrom(o, 2);
-                assertValidMetaClass(child.metaClass(), "ImportDeclaration", ns);
+                assertValidMetaClass(child.metaClass(), "java", "ImportDeclaration");
             }
         }
     }
@@ -426,10 +424,10 @@ public abstract class AbstractInputTest extends AbstractTest {
      * Check if the reader stop its execution if it hasn't any handler.
      */
     @Test
-    @Category(Tags.IOTests.class)
     public void testReaderWithoutHandler() {
         //noinspection ConstantConditions
-        assertThat(catchThrowable(() -> new XmiStreamReader(null).read(null)))
-                .isInstanceOf(NullPointerException.class);
+        assertThat(
+                catchThrowable(() -> new XmiStreamReader(null).read(null))
+        ).isInstanceOf(NullPointerException.class);
     }
 }

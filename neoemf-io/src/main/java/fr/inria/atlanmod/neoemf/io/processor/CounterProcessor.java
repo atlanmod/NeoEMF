@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -25,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Processor} that counts the number of different element.
  */
 @ParametersAreNonnullByDefault
-public class CounterProcessor extends AbstractProcessor<Processor> {
+public class CounterProcessor extends AbstractProcessor<Handler> {
 
     /**
      * The current number of element.
@@ -46,12 +47,12 @@ public class CounterProcessor extends AbstractProcessor<Processor> {
     private final AtomicLong referenceCount = new AtomicLong();
 
     /**
-     * Constructs a new {@code CounterProcessor} with the given {@code processor}.
+     * Constructs a new {@code CounterProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public CounterProcessor(Processor processor) {
-        super(processor);
+    public CounterProcessor(Handler handler) {
+        super(handler);
     }
 
     @Override

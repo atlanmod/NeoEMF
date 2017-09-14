@@ -11,57 +11,76 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.log.Logger;
 import fr.inria.atlanmod.commons.primitive.Strings;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link Processor} that logs every events.
  */
 @ParametersAreNonnullByDefault
-public class LoggingProcessor extends AbstractProcessor<Processor> {
+public class LoggingProcessor extends AbstractProcessor<Handler> {
 
     /**
      * The special logger.
      */
+    @Nonnull
     private static final Logger LOG = Log.root();
+
+    /**
+     * The {@link Level} for the {@link #LOG}.
+     */
+    @Nonnull
+    private final Level level;
 
     /**
      * The current identifier, used to replace a full reference by "this".
      */
-    private BasicId currentId;
+    private Id currentId;
 
     /**
-     * Constructs a new {@code LoggingProcessor} with the given {@code processor}.
+     * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
      *
-     * @param processor the processor to notify
+     * @param handler the handler to notify
      */
-    public LoggingProcessor(Processor processor) {
-        super(processor);
+    public LoggingProcessor(Handler handler) {
+        this(handler, Level.INFO);
+    }
+
+    /**
+     * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
+     *
+     * @param handler the handler to notify
+     * @param level   the logging level to use
+     */
+    public LoggingProcessor(Handler handler, Level level) {
+        super(handler);
+        this.level = level;
     }
 
     @Override
     public void onInitialize() {
-        LOG.info("[#] Starting document");
+        LOG.log(level, "[#] Starting document");
 
         notifyInitialize();
     }
 
     @Override
     public void onStartElement(BasicElement element) {
-        LOG.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
-                element.ns().prefix(),
+        LOG.log(level, "[E] {0} : {1} = {2}",
+                element.metaClass(),
                 element.name(),
-                element.className(),
-                element.metaClass().name(),
                 element.id());
 
         currentId = element.id();
@@ -71,9 +90,9 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        LOG.info("[A]    {0}{1} = {2}",
+        LOG.log(level, "[A]    {0}{1} = {2}",
                 attribute.name(),
-                attribute.isMany() ? " many[" + attribute.index() + ']' : Strings.EMPTY,
+                attribute.isMany() ? " many[-1]" : Strings.EMPTY,
                 attribute.value());
 
         notifyAttribute(attribute);
@@ -81,19 +100,19 @@ public class LoggingProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(BasicReference reference) {
-        LOG.info("[R]    {0}{1} = {2} -{3}> {4}",
+        LOG.log(level, "[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
-                reference.isMany() ? " many[" + reference.index() + ']' : Strings.EMPTY,
+                reference.isMany() ? " many[-1]" : Strings.EMPTY,
                 Objects.isNull(reference.owner()) ? "this" : reference.owner(),
                 reference.isContainment() ? 'C' : '-',
-                Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
+                Objects.equals(reference.value(), currentId) ? "this" : reference.value());
 
         notifyReference(reference);
     }
 
     @Override
     public void onComplete() {
-        LOG.info("[#] Ending document");
+        LOG.log(level, "[#] Ending document");
 
         notifyComplete();
     }

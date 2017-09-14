@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.resource;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -306,17 +305,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private static final class RootObject extends DefaultPersistentEObject {
 
         /**
-         * The literal representation of the identifier of the root element in a database.
-         */
-        private static final Id ID = StringId.of("ROOT");
-
-        /**
          * Constructs a new {@code RootObject} with the given {@code resource}.
          *
          * @param resource the resource containing this object.
          */
         public RootObject(Resource.Internal resource) {
-            super(ID);
+            super(ROOT_ID);
             eSetDirectResource(resource);
         }
     }
@@ -328,16 +322,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private static final class RootContentsReference extends EReferenceImpl {
 
         /**
-         * The name of this reference.
-         */
-        private static final String NAME = "eContents";
-
-        /**
          * Constructs a new {@code RootContentsReference}.
          */
         public RootContentsReference() {
             setFeatureID(RESOURCE__CONTENTS);
-            setName(NAME);
+            setName(ROOT_REFERENCE_NAME);
             setLowerBound(0);
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
             setEType(new EClassifierImpl() {});

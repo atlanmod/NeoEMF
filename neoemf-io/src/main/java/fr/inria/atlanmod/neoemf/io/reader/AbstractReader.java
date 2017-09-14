@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An abstract {@link Reader}.
  *
- * @param <T> the type of the read source
+ * @param <T> the type of the source
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractReader<T> extends AbstractNotifier<Handler> implements Reader<T> {

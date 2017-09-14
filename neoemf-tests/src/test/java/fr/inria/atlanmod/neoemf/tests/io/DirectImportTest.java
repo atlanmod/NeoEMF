@@ -11,20 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 
 /**
- * A test case about the import from XMI to {@link fr.inria.atlanmod.neoemf.data.Backend}s.
+ * A test case about the import from files to {@link fr.inria.atlanmod.neoemf.data.Backend}s.
  */
-public class ImportTest extends AbstractIOTest {
+public class DirectImportTest extends AbstractIOTest {
 
     /**
      * Compares a model read with standard EMF and another read with NeoEMF.
@@ -34,7 +32,6 @@ public class ImportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareStandard() throws IOException {
         URI uri = IOResourceManager.xmiStandard();
 
@@ -52,7 +49,6 @@ public class ImportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareStandardCompressed() throws IOException {
         URI uri = IOResourceManager.zxmiStandard();
 
@@ -70,7 +66,6 @@ public class ImportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithId() throws IOException {
         URI uri = IOResourceManager.xmiWithId();
 
@@ -88,7 +83,6 @@ public class ImportTest extends AbstractIOTest {
      * @throws IOException if an I/O error occur during the loading of models
      */
     @Test
-    @Category({Tags.PersistentTests.class, Tags.IOTests.class})
     public void testCompareWithIdCompressed() throws IOException {
         URI uri = IOResourceManager.zxmiWithId();
 

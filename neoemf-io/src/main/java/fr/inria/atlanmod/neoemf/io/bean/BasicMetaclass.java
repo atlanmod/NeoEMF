@@ -13,61 +13,72 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
+
 /**
- * A simple representation of a element with a {@link BasicNamespace} and a name.
+ * A simple representation of a meta-class.
  */
 @ParametersAreNonnullByDefault
 public class BasicMetaclass extends AbstractNamedElement {
 
     /**
-     * The instance of the default {@code BasicMetaclass}.
+     * The instance of the default meta-class.
      */
+    @Nonnull
     private static final BasicMetaclass DEFAULT = new BasicMetaclass(BasicNamespace.getDefault(), "EObject");
 
     /**
-     * The namespace of this {@code BasicMetaclass}.
+     * The namespace of this meta-class.
      */
-    private BasicNamespace ns;
+    @Nonnull
+    private final BasicNamespace ns;
 
     /**
-     * Constructs a new {@code BasicMetaclass} with the given {@code namespace} and {@code name}.
+     * Constructs a new {@code BasicMetaclass} with the given {@code ns}.
      *
-     * @param ns   the namespace of this {@code BasicMetaclass}
-     * @param name the name of this {@code BasicMetaclass}
+     * @param ns the namespace of this meta-class
      */
-    public BasicMetaclass(BasicNamespace ns, String name) {
-        name(name);
-        this.ns = ns;
+    public BasicMetaclass(BasicNamespace ns) {
+        this(ns, null);
     }
 
     /**
-     * Returns the default {@code BasicMetaclass}.
+     * Constructs a new {@code BasicMetaclass} with the given {@code ns} and {@code name}.
+     *
+     * @param ns   the namespace of this meta-class
+     * @param name the name of this meta-class
+     */
+    public BasicMetaclass(BasicNamespace ns, @Nullable String name) {
+        this.ns = checkNotNull(ns);
+
+        if (nonNull(name)) {
+            name(name);
+        }
+    }
+
+    /**
+     * Returns the default meta-class.
      *
      * @return the {@code BasicMetaclass} representing "ecore:EObject"
      */
+    @Nonnull
     public static BasicMetaclass getDefault() {
         return DEFAULT;
     }
 
     /**
-     * Returns the namespace of this {@code BasicMetaclass}.
+     * Returns the namespace of this meta-class.
      *
      * @return the namespace
      */
+    @Nonnull
     public BasicNamespace ns() {
         return ns;
-    }
-
-    /**
-     * Defines the namespace of this {@code BasicMetaclass}.
-     *
-     * @param ns the namespace
-     */
-    public void ns(BasicNamespace ns) {
-        this.ns = ns;
     }
 
     @Override
@@ -80,7 +91,7 @@ public class BasicMetaclass extends AbstractNamedElement {
         if (this == o) {
             return true;
         }
-        if (!BasicMetaclass.class.isInstance(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         if (!super.equals(o)) {

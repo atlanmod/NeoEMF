@@ -56,7 +56,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * The abstract implementation of a {@code StoreAdapter}.
+ * An abstract {@code StoreAdapter}.
  */
 @Immutable
 @ParametersAreNonnullByDefault

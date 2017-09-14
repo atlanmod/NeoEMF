@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.PhysicalNode;
@@ -22,7 +21,6 @@ import fr.inria.atlanmod.neoemf.tests.sample.VirtualNode;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.Map;
@@ -74,7 +72,6 @@ public class AllInstancesTest extends AbstractBackendTest {
      * Checks the content with a persistent store, and {@code strict = false}.
      */
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testAllInstancesPersistent() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -86,7 +83,6 @@ public class AllInstancesTest extends AbstractBackendTest {
      * Checks the content with a persistent store, and {@code strict = true}.
      */
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testAllInstancesStrictPersistent() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -102,7 +98,6 @@ public class AllInstancesTest extends AbstractBackendTest {
      *                     PersistentResource#load(Map)}
      */
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testAllInstancesPersistentLoaded() throws IOException {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -122,7 +117,6 @@ public class AllInstancesTest extends AbstractBackendTest {
      *                     PersistentResource#load(Map)}
      */
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testAllInstancesStrictPersistentLoaded() throws IOException {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -138,7 +132,6 @@ public class AllInstancesTest extends AbstractBackendTest {
      * Checks the content with a transient store, and {@code strict = false}.
      */
     @Test
-    @Category(Tags.TransientTests.class)
     public void testAllInstancesTransient() {
         PersistentResource resource = newTransientStore();
         fillResource(resource);
@@ -150,7 +143,6 @@ public class AllInstancesTest extends AbstractBackendTest {
      * Checks the content with a transient store, and {@code strict = true}.
      */
     @Test
-    @Category(Tags.TransientTests.class)
     public void testAllInstancesStrictTransient() {
         PersistentResource resource = newTransientStore();
         fillResource(resource);

@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
 
 import org.eclipse.emf.ecore.EClass;
@@ -34,6 +36,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface PersistentResource extends Resource, Resource.Internal, Storable, Closeable {
+
+    /**
+     * The identifier of the root element in a {@code PersistentResource}.
+     */
+    Id ROOT_ID = StringId.of("ROOT");
+
+    /**
+     * The name of the property used by the {@link #ROOT_ID} element to define its content.
+     */
+    String ROOT_REFERENCE_NAME = "eContents";
 
     @Override
     void close();

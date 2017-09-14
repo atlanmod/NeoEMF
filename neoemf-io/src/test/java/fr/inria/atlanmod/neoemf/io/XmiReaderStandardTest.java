@@ -21,7 +21,7 @@ public class XmiReaderStandardTest extends AbstractInputTest {
 
     @Nonnull
     @Override
-    protected URI getSample() {
+    protected URI getResourceUri() {
         return IOResourceManager.xmiStandard();
     }
 

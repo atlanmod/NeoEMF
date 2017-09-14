@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.annotation.Beta;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.LoggingProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.ProgressProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.TimerProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
@@ -59,9 +59,9 @@ import static java.util.Objects.nonNull;
 public final class Migrator<T> {
 
     /**
-     * The 4-bit header of a compressed {@code xmi} file.
+     * The 4-bit header of a ZIP file.
      */
-    private static final int ZXMI_HEADER = 0x04034b50;
+    private static final int ZIP_HEADER = 0x04034b50; // ZipConstants#LOCSIG
 
     /**
      * The name of the only entry of a compressed {@code xmi} file.
@@ -93,6 +93,12 @@ public final class Migrator<T> {
      */
     @Nonnull
     private final Set<Writer> writers = new HashSet<>();
+
+    /**
+     * A set that holds all {@link OutputStream}s to close after the migration.
+     */
+    @Nonnull
+    private final Set<OutputStream> streamsToClose = new HashSet<>();
 
     /**
      * Constructs a new {@code Migrator} with the given arguments.
@@ -161,8 +167,7 @@ public final class Migrator<T> {
      *
      * @return the adapted {@code stream}
      */
-    @WillNotClose
-    private static InputStream adaptStream(InputStream stream) throws IOException {
+    private static InputStream adaptStream(@WillNotClose InputStream stream) throws IOException {
         final PushbackInputStream pbis = new PushbackInputStream(stream, 4);
 
         // Read file signature
@@ -174,7 +179,7 @@ public final class Migrator<T> {
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .getInt();
 
-        if (header == ZXMI_HEADER) {
+        if (header == ZIP_HEADER) {
             ZipInputStream zis = new ZipInputStream(pbis);
 
             for (ZipEntry e; nonNull(e = zis.getNextEntry()); ) {
@@ -230,10 +235,11 @@ public final class Migrator<T> {
      * @throws IOException if an I/O error occurs during the creation
      */
     @Nonnull
-    @Beta
     public Migrator<T> toZXmi(File file) throws IOException {
         ZipOutputStream output = new ZipOutputStream(new FileOutputStream(file));
         output.putNextEntry(new ZipEntry(ZXMI_CONTENT));
+        streamsToClose.add(output);
+
         return toXmi(output);
     }
 
@@ -247,9 +253,11 @@ public final class Migrator<T> {
      * @throws IOException if an I/O error occurs during the creation
      */
     @Nonnull
-    @Beta
     public Migrator<T> toXmi(File file) throws IOException {
-        return toXmi(new FileOutputStream(file));
+        OutputStream output = new FileOutputStream(file);
+        streamsToClose.add(output);
+
+        return toXmi(output);
     }
 
     //endregion
@@ -264,8 +272,7 @@ public final class Migrator<T> {
      * @return this migrator (for chaining)
      */
     @Nonnull
-    @Beta
-    public Migrator<T> toXmi(OutputStream stream) {
+    public Migrator<T> toXmi(@WillNotClose OutputStream stream) {
         return to(new XmiStreamWriter(stream));
     }
 
@@ -311,7 +318,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withTimer() {
-        return with(ProgressProcessor.class);
+        return with(TimerProcessor.class);
     }
 
     /**
@@ -327,7 +334,7 @@ public final class Migrator<T> {
 
         try {
             for (Class<? extends Processor> c : processorClasses) {
-                processor = c.getConstructor(Processor.class).newInstance(processor);
+                processor = c.getConstructor(Handler.class).newInstance(processor);
             }
 
             reader = readerClass.getConstructor(Handler.class).newInstance(processor);
@@ -337,5 +344,25 @@ public final class Migrator<T> {
         }
 
         reader.read(source);
+        closeAll();
+    }
+
+    /**
+     * Closes all internal streams.
+     */
+    private void closeAll() {
+        for (OutputStream out : streamsToClose) {
+            try {
+                if (ZipOutputStream.class.isInstance(out)) {
+                    ZipOutputStream zos = ZipOutputStream.class.cast(out);
+                    zos.closeEntry();
+                }
+
+                out.close();
+            }
+            catch (IOException e) {
+                Log.warn(e);
+            }
+        }
     }
 }

@@ -11,10 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.writer.MapperWriter;
+import fr.inria.atlanmod.neoemf.io.writer.Writer;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -29,20 +30,20 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link MapperWriter} that stores all elements in {@link java.util.Collection}s.
+ * A {@link Writer} that stores all elements in {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault
-public class DummyWriter implements MapperWriter {
+public class DummyWriter implements Writer {
 
     /**
      * A map that holds the identifier of all elements.
      */
-    private final Map<String, DummyElement> identifiers;
+    private final Map<Id, DummyElement> identifiers;
 
     /**
-     * A stack that holds the current path, from the root to the current element.
+     * A LIFO that holds the current path, from the root to the current element.
      */
-    private final Deque<DummyElement> stack;
+    private final Deque<DummyElement> previousElements;
 
     /**
      * The root element.
@@ -54,7 +55,7 @@ public class DummyWriter implements MapperWriter {
      */
     public DummyWriter() {
         this.identifiers = new HashMap<>();
-        this.stack = new ArrayDeque<>();
+        this.previousElements = new ArrayDeque<>();
     }
 
     /**
@@ -75,25 +76,25 @@ public class DummyWriter implements MapperWriter {
     public void onStartElement(BasicElement element) {
         DummyElement mock = new DummyElement(element);
 
-        if (stack.isEmpty()) {
+        if (previousElements.isEmpty()) {
             root = mock;
         }
         else {
-            stack.getLast().children().add(mock);
+            previousElements.getLast().children().add(mock);
         }
 
-        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id().value(), mock));
+        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id(), mock));
 
-        stack.addLast(mock);
+        previousElements.addLast(mock);
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        if (isNull(attribute.owner()) || attribute.owner().equals(stack.getLast().id())) {
-            stack.getLast().attributes().add(attribute);
+        if (isNull(attribute.owner()) || attribute.owner().equals(previousElements.getLast().id())) {
+            previousElements.getLast().attributes().add(attribute);
         }
         else {
-            DummyElement mock = identifiers.get(attribute.owner().value());
+            DummyElement mock = identifiers.get(attribute.owner());
             if (nonNull(mock) && Objects.equals(mock.id(), attribute.owner())) {
                 mock.attributes().add(attribute);
             }
@@ -105,11 +106,11 @@ public class DummyWriter implements MapperWriter {
 
     @Override
     public void onReference(BasicReference reference) {
-        if (isNull(reference.owner()) || reference.owner().equals(stack.getLast().id())) {
-            stack.getLast().references().add(reference);
+        if (isNull(reference.owner()) || reference.owner().equals(previousElements.getLast().id())) {
+            previousElements.getLast().references().add(reference);
         }
         else {
-            DummyElement mock = identifiers.get(reference.owner().value());
+            DummyElement mock = identifiers.get(reference.owner());
             if (nonNull(mock) && Objects.equals(mock.id(), reference.owner())) {
                 mock.references().add(reference);
             }
@@ -126,12 +127,12 @@ public class DummyWriter implements MapperWriter {
 
     @Override
     public void onEndElement() {
-        stack.removeLast();
+        previousElements.removeLast();
     }
 
     @Override
     public void onComplete() {
-        stack.clear();
+        previousElements.clear();
         identifiers.clear();
     }
 }

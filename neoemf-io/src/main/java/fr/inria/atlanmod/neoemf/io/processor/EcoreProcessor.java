@@ -13,10 +13,10 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -31,8 +31,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,29 +38,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Processor} that creates and links simple elements to an EMF structure.
+ * A {@link Processor} that transforms simple elements to an EMF structure.
  */
 @ParametersAreNonnullByDefault
-public class EcoreProcessor extends AbstractProcessor<Handler> {
+public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     /**
      * A LIFO that holds the current {@link EClass} chain. It contains the current meta-class and the previous.
      */
     @Nonnull
-    private final Deque<EClass> previousClasses = new ArrayDeque<>();
+    private final Deque<EClass> previousMetaClasses = new ArrayDeque<>();
 
     /**
-     * A LIFO that holds the current {@link BasicId} chain. It contains the current identifier and the previous.
+     * A LIFO that holds the current {@link Id} chain. It contains the current identifier and the previous.
      */
     @Nonnull
-    private final Deque<BasicId> previousIds = new ArrayDeque<>();
+    private final Deque<Id> previousIds = new ArrayDeque<>();
 
     /**
-     * An attribute that is waiting a value.
+     * An attribute that is waiting for a value.
      *
      * @see #onCharacters(String)
      */
@@ -75,18 +72,18 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     private boolean previousWasAttribute;
 
     /**
-     * Constructs a new {@code EcoreProcessor} with the given {@code handler}.
+     * Constructs a new {@code EcoreProcessor} with the given {@code processor}.
      *
-     * @param handler the handler to notify
+     * @param processor the processor to notify
      */
-    public EcoreProcessor(Handler handler) {
-        super(handler);
+    public EcoreProcessor(Processor processor) {
+        super(processor);
     }
 
     @Override
     public void onStartElement(BasicElement element) {
         // Is root
-        if (previousClasses.isEmpty()) {
+        if (previousMetaClasses.isEmpty()) {
             processElementAsRoot(element);
         }
         // Is a feature of parent
@@ -97,7 +94,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        EStructuralFeature eFeature = previousClasses.getLast().getEStructuralFeature(attribute.name());
+        EStructuralFeature eFeature = previousMetaClasses.getLast().getEStructuralFeature(attribute.name());
 
         if (EObjects.isAttribute(eFeature)) {
             // The attribute is well a attribute
@@ -105,13 +102,17 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
         }
         else {
             // Otherwise redirect to the reference handler
-            processReference(BasicReference.from(attribute), EObjects.asReference(eFeature));
+            BasicReference reference = new BasicReference();
+            reference.name(attribute.name());
+            reference.value(StringId.of(attribute.value()));
+
+            processReference(reference, EObjects.asReference(eFeature));
         }
     }
 
     @Override
     public void onReference(BasicReference reference) {
-        EStructuralFeature eFeature = previousClasses.getLast().getEStructuralFeature(reference.name());
+        EStructuralFeature eFeature = previousMetaClasses.getLast().getEStructuralFeature(reference.name());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
@@ -133,7 +134,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     @Override
     public void onEndElement() {
         if (!previousWasAttribute) {
-            previousClasses.removeLast();
+            previousMetaClasses.removeLast();
             previousIds.removeLast();
 
             notifyEndElement();
@@ -153,29 +154,29 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
      * @throws NullPointerException if the {@code element} does not have a namespace
      */
     private void processElementAsRoot(BasicElement element) {
-        BasicNamespace ns = checkNotNull(element.ns(), "The root element must have a namespace");
+        checkNotNull(element.metaClass(), "The root element must have a namespace");
 
-        // Retrieves the EPackage from NS prefix
-        EPackage ePackage = checkNotNull(EPackage.class.cast(EPackage.Registry.INSTANCE.get(ns.uri())),
-                "EPackage %s is not registered.", ns.uri());
+        BasicNamespace ns = element.metaClass().ns();
 
-        // Gets the current EClass
-        EClass eClass = checkNotNull(EClass.class.cast(ePackage.getEClassifier(element.name())),
-                "Cannot retrieve EClass {0} from the EPackage {1}", element.name(), ePackage);
+        // Retrieve the EPackage from the NS prefix
+        EPackage ePackage = EPackage.class.cast(EPackage.Registry.INSTANCE.get(ns.uri()));
+        checkNotNull(ePackage, "EPackage %s is not registered.", ns.uri());
 
-        // Defines the meta-class of the current element if not present
-        if (isNull(element.metaClass())) {
-            element.metaClass(new BasicMetaclass(ns, eClass.getName()));
-        }
+        // Retrieve the current EClass
+        EClass eClass = EClass.class.cast(ePackage.getEClassifier(element.name()));
+        checkNotNull(eClass, "Cannot retrieve EClass %s from the EPackage %s", element.name(), ePackage);
 
-        // Defines the element as root node
+        // Define the meta-class of the current element if not present
+        element.metaClass().name(eClass.getName());
+
+        // Define the element as root node
         element.isRoot(true);
 
-        // Notifies next handlers
+        // Notify next handlers
         notifyStartElement(element);
 
-        // Saves the current EClass, and the identifier of the element created by next handlers
-        previousClasses.addLast(eClass);
+        // Save the current EClass, and the identifier of the element created by next handlers
+        previousMetaClasses.addLast(eClass);
         previousIds.addLast(element.id());
     }
 
@@ -186,33 +187,43 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
      * @param element the element representing the feature
      *
      * @see #processElementAsAttribute(BasicElement, EAttribute)
-     * @see #processElementAsReference(BasicElement, BasicNamespace, EReference, EPackage)
+     * @see #processElementAsReference(BasicElement, EReference)
      */
     private void processElementAsFeature(BasicElement element) {
         // Retrieve the parent EClass
-        EClass parentEClass = previousClasses.getLast();
+        EClass parentEClass = previousMetaClasses.getLast();
 
-        // Gets the EPackage from it
-        BasicNamespace ns;
-        EPackage ePackage;
-
-        if (nonNull(element.ns())) {
-            ns = element.ns();
-            ePackage = EPackage.Registry.INSTANCE.getEPackage(ns.uri());
-        }
-        else {
-            ePackage = parentEClass.getEPackage();
-            ns = BasicNamespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
-        }
-
-        // Gets the structural feature from the parent, according the its local name (the attr/ref name)
+        // Retrieve the structural feature from the parent, according the its local name (the attr/ref name)
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
 
         if (EObjects.isAttribute(feature)) {
             processElementAsAttribute(element, EObjects.asAttribute(feature));
         }
         else {
-            processElementAsReference(element, ns, EObjects.asReference(feature), ePackage);
+            EReference eReference = EObjects.asReference(feature);
+
+            // Retrieve the namespace xor the EPackage, and build the meta-class
+            BasicNamespace ns;
+            EPackage ePackage;
+
+            if (nonNull(element.metaClass())) {
+                ns = element.metaClass().ns();
+                ePackage = EPackage.Registry.INSTANCE.getEPackage(ns.uri());
+            }
+            else {
+                ePackage = parentEClass.getEPackage();
+                ns = BasicNamespace.Registry.getInstance().getFromUri(ePackage.getNsURI());
+                element.metaClass(new BasicMetaclass(ns));
+            }
+
+            // Retrieve the type the reference or gets the type from the registered meta-class
+            EClass eClass = resolveInstanceOf(element.metaClass(), EClass.class.cast(eReference.getEType()), ePackage);
+            element.metaClass().name(eClass.getName());
+
+            // Save the original meta-class
+            previousMetaClasses.addLast(eClass);
+
+            processElementAsReference(element, eReference);
         }
     }
 
@@ -228,10 +239,13 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
         }
 
         // Waiting a plain text value
-        waitingAttribute = new BasicAttribute();
-        waitingAttribute.name(eAttribute.getName());
-        waitingAttribute.owner(previousIds.getLast());
+        BasicAttribute attribute = new BasicAttribute();
+        attribute.name(eAttribute.getName());
+        attribute.owner(previousIds.getLast());
+        attribute.isMany(eAttribute.isMany());
 
+        // The attribute waiting for a value
+        waitingAttribute = attribute;
         previousWasAttribute = true;
     }
 
@@ -239,32 +253,25 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
      * Processes an element as a reference.
      *
      * @param element    the element representing the reference
-     * @param ns         the namespace of the class of the reference
      * @param eReference the associated EMF reference
-     * @param ePackage   the package where to find the class of the reference
      */
-    private void processElementAsReference(BasicElement element, BasicNamespace ns, EReference eReference, EPackage ePackage) {
-        // Gets the type the reference or gets the type from the registered meta-class
-        EClass eClass = resolveInstanceOf(element, ns, EClass.class.cast(eReference.getEType()), ePackage);
-
-        element.ns(ns);
-
-        // Notify next handlers of new element, and retrieve its identifier
+    private void processElementAsReference(BasicElement element, EReference eReference) {
+        // Notify next handlers of new element
         notifyStartElement(element);
-        BasicId currentId = element.id();
+
+        // Retrieve the identifier of the element (generated by next handlers)
+        Id currentId = element.id();
 
         // Create a reference from the parent to this element, with the given local name
         if (eReference.isContainment()) {
             BasicReference reference = new BasicReference();
             reference.name(eReference.getName());
-            reference.owner(previousIds.getLast());
-            reference.idReference(currentId);
+            reference.value(currentId);
 
             processReference(reference, eReference);
         }
 
-        // Save EClass and identifier
-        previousClasses.addLast(eClass);
+        // Save the identifier
         previousIds.addLast(currentId);
     }
 
@@ -275,6 +282,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
      * @param eAttribute the associated EMF attribute
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
+        attribute.owner(previousIds.getLast());
         attribute.isMany(eAttribute.isMany());
 
         notifyAttribute(attribute);
@@ -287,30 +295,21 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
      * @param eReference the associated EMF reference
      */
     private void processReference(BasicReference reference, EReference eReference) {
-        AtomicInteger index = new AtomicInteger();
-
-        boolean isMany = eReference.isMany();
-        boolean isContainment = eReference.isContainment();
-
-        BasicMetaclass metaClassRef = Optional.of(eReference.getEReferenceType())
-                .map(r -> new BasicMetaclass(
-                        BasicNamespace.Registry.getInstance().getFromUri(r.getEPackage().getNsURI()),
-                        r.getName()))
-                .<IllegalStateException>orElseThrow(IllegalStateException::new); // Should newer happen
+        reference.owner(previousIds.getLast());
+        reference.isMany(eReference.isMany());
+        reference.isContainment(eReference.isContainment());
 
         // Split a multi-valued reference
-        Arrays.stream(reference.idReference().value().split(Strings.SPACE))
+        Arrays.stream(reference.value().toString().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .map(s -> {
                     BasicReference newRef = new BasicReference();
                     newRef.name(reference.name());
                     newRef.owner(reference.owner());
-                    newRef.idReference(BasicId.generated(s));
-                    newRef.index(isMany && !isContainment ? index.getAndIncrement() : -1);
-                    newRef.isContainment(isContainment);
-                    newRef.isMany(isMany);
-                    newRef.metaClassReference(metaClassRef);
+                    newRef.value(StringId.of(s));
+                    newRef.isMany(reference.isMany());
+                    newRef.isContainment(reference.isContainment());
 
                     return newRef;
                 })
@@ -320,8 +319,7 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
     /**
      * Returns the {@link EClass} associated with the given {@code element}.
      *
-     * @param element    the element representing the class
-     * @param ns         the namespace of the {@code superClass}
+     * @param metaClass  the element representing the class
      * @param superClass the super-type of the sought class
      * @param ePackage   the package where to find the class
      *
@@ -330,21 +328,18 @@ public class EcoreProcessor extends AbstractProcessor<Handler> {
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */
     @Nonnull
-    private EClass resolveInstanceOf(BasicElement element, BasicNamespace ns, EClass superClass, EPackage ePackage) {
-        BasicMetaclass metaClass = element.metaClass();
+    private EClass resolveInstanceOf(BasicMetaclass metaClass, EClass superClass, EPackage ePackage) {
+        // Is a more specific meta-class defined ?
+        if (nonNull(metaClass.name())) {
+            EClass eClass = EClass.class.cast(ePackage.getEClassifier(metaClass.name()));
 
-        if (nonNull(metaClass)) {
-            EClass subEClass = EClass.class.cast(ePackage.getEClassifier(metaClass.name()));
+            checkNotNull(eClass, "Cannot retrieve EClass {0} from the EPackage {1}", metaClass.name(), ePackage);
 
             // Checks that the meta-class is a subtype of the reference type
-            checkArgument(superClass.isSuperTypeOf(subEClass), "%s is not a subclass of %s", subEClass.getName(), superClass.getName());
+            checkArgument(superClass.isSuperTypeOf(eClass),
+                    "%s is not a subclass of %s", eClass.getName(), superClass.getName());
 
-            superClass = subEClass;
-        }
-
-        // If not present, create the meta-class from the current class
-        else {
-            element.metaClass(new BasicMetaclass(ns, superClass.getName()));
+            return eClass;
         }
 
         return superClass;

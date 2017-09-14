@@ -11,14 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -32,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LoadResourceTest extends AbstractBackendTest {
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetElementsContainer() throws IOException {
         PersistentResource resource = fillResource(newPersistentStore());
 
@@ -46,7 +43,6 @@ public class LoadResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsContainer() throws IOException {
         PersistentResource resource = fillResource(newPersistentStore());
 
@@ -62,7 +58,6 @@ public class LoadResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetElementsEResource() throws IOException {
         PersistentResource resource = fillResource(newPersistentStore());
 
@@ -74,7 +69,6 @@ public class LoadResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEResource() throws IOException {
         PersistentResource resource = fillResource(newPersistentStore());
 
@@ -88,7 +82,6 @@ public class LoadResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetElementsEDirectResource() throws IOException {
         PersistentResource resource = fillResource(newPersistentStore());
 
@@ -100,7 +93,6 @@ public class LoadResourceTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() throws IOException {
         PersistentResource resource = fillResource(newPersistentStore());
 

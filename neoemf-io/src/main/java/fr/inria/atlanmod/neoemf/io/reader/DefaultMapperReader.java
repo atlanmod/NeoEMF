@@ -18,11 +18,11 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -30,15 +30,17 @@ import org.eclipse.emf.ecore.EPackage;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The default implementation of a {@link MapperReader}.
+ * The default implementation of a {@link Reader} that reads data from a {@link DataMapper}.
  */
 @ParametersAreNonnullByDefault
-public class DefaultMapperReader extends AbstractReader<DataMapper> implements MapperReader {
+public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
     /**
      * The mapper to read.
@@ -60,21 +62,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         notifyInitialize();
 
-        SingleFeatureBean rootKey = SingleFeatureBean.of(MapperConstants.ROOT_ID, MapperConstants.ROOT_FEATURE_NAME);
+        SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, PersistentResource.ROOT_REFERENCE_NAME);
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();
-
-        mapper = null;
-    }
-
-    /**
-     * Reads the element identified by its {@code id}.
-     *
-     * @param id the identifier of the element
-     */
-    protected void readElement(Id id) {
-        readElement(id, false);
     }
 
     /**
@@ -83,7 +74,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      * @param id     the identifier of the element
      * @param isRoot {@code true} if the element is a root element
      */
-    protected void readElement(Id id, boolean isRoot) {
+    private void readElement(Id id, boolean isRoot) {
         // Retrieve the meta-class and namespace
         EClass metaClass = mapper.metaClassOf(id)
                 .map(ClassBean::get)
@@ -94,49 +85,72 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
 
         // Retrieve the name of the element
         // If root it's the name of the meta-class, otherwise the name of the containing feature
-        String elementName = isRoot ? metaClass.getName() : mapper.containerOf(id)
+        String name = isRoot ? metaClass.getName() : mapper.containerOf(id)
                 .map(SingleFeatureBean::id)
                 .<IllegalStateException>orElseThrow(IllegalStateException::new);
 
         // Create the element
-        BasicElement element = new BasicElement(ns, elementName);
-        element.id(BasicId.original(id.toString()));
+        BasicElement element = new BasicElement();
+        element.name(name);
+        element.id(id);
         element.metaClass(new BasicMetaclass(ns, metaClass.getName()));
         element.isRoot(isRoot);
 
-        // Retrieve the real "name" of this element
-        mapper.valueOf(SingleFeatureBean.of(id, MapperConstants.FEATURE_NAME))
-                .map(Object::toString)
-                .ifPresent(element::className);
-
         notifyStartElement(element);
 
-        // Process all attributes
-        metaClass.getEAllAttributes().stream()
-                .filter(a -> !Objects.equals(MapperConstants.FEATURE_NAME, a.getName())) // "name" has a special treatment
-                .forEach(a -> {
-                    SingleFeatureBean key = SingleFeatureBean.of(id, a.getName());
-                    if (!a.isMany()) {
-                        readValue(key);
-                    }
-                    else {
-                        readAllValues(key);
-                    }
-                });
-
-        // Process all references
-        metaClass.getEAllReferences()
-                .forEach(r -> {
-                    SingleFeatureBean key = SingleFeatureBean.of(id, r.getName());
-                    if (!r.isMany()) {
-                        readReference(key, r.isContainment());
-                    }
-                    else {
-                        readAllReferences(key, r.isContainment());
-                    }
-                });
+        // Process all features
+        readAllFeatures(id, metaClass);
 
         notifyEndElement();
+    }
+
+    /**
+     * Reads all features of the speficied {@code eClass} for the given {@code id}.
+     *
+     * @param id        the identifier of the element
+     * @param metaClass the meta-class of the element
+     */
+    private void readAllFeatures(Id id, EClass metaClass) {
+        // Read all feature of the element, and notify the next handler
+        List<Id> containmentId = metaClass.getEAllStructuralFeatures().stream()
+                .flatMap(f -> {
+                    Stream<Id> containmentStream = Stream.empty();
+
+                    SingleFeatureBean key = SingleFeatureBean.of(id, f.getName());
+
+                    if (EObjects.isAttribute(f)) {
+                        if (!f.isMany()) {
+                            readValue(key);
+                        }
+                        else {
+                            readAllValues(key);
+                        }
+                    }
+                    else {
+                        boolean isContainment = EObjects.asReference(f).isContainment();
+
+                        if (!f.isMany()) {
+                            Optional<Id> r = readReference(key, isContainment);
+                            if (isContainment) {
+                                containmentStream = r.map(Stream::of).orElseGet(Stream::empty);
+                            }
+                        }
+                        else {
+                            List<Id> rs = readAllReferences(key, isContainment);
+                            if (isContainment) {
+                                containmentStream = rs.stream();
+                            }
+                        }
+                    }
+
+                    return containmentStream;
+                })
+                .collect(Collectors.toList());
+
+        // Read the next element only if containerOf(next) == parent
+        containmentId.forEach(r -> mapper.containerOf(r)
+                .filter(c -> Objects.equals(c.owner(), id))
+                .ifPresent(c -> readElement(r, false)));
     }
 
     /**
@@ -144,11 +158,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key the key identifying the attribute
      */
-    protected void readValue(SingleFeatureBean key) {
+    private void readValue(SingleFeatureBean key) {
         mapper.<String>valueOf(key).ifPresent(value -> {
             BasicAttribute attribute = new BasicAttribute();
             attribute.name(key.id());
-            attribute.owner(BasicId.original(key.owner().toString()));
+            attribute.owner(key.owner());
             attribute.value(value);
 
             notifyAttribute(attribute);
@@ -160,20 +174,17 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key the key identifying the attributes
      */
-    protected void readAllValues(SingleFeatureBean key) {
-        final List<String> values = mapper.allValuesOf(key);
-
-        IntStream.range(0, values.size()).forEach(position ->
-                Optional.ofNullable(values.get(position)).ifPresent(value -> {
+    private void readAllValues(SingleFeatureBean key) {
+        mapper.<String>allValuesOf(key)
+                .forEach(value -> {
                     BasicAttribute attribute = new BasicAttribute();
                     attribute.name(key.id());
-                    attribute.owner(BasicId.original(key.owner().toString()));
+                    attribute.owner(key.owner());
                     attribute.value(value);
-                    attribute.index(position);
                     attribute.isMany(true);
 
                     notifyAttribute(attribute);
-                }));
+                });
     }
 
     /**
@@ -181,24 +192,24 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key           the key identifying the reference
      * @param isContainment {@code true} if the reference is a containment
+     *
+     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the reference is not defined
+     * or if {@code isContainment == false}
      */
-    protected void readReference(SingleFeatureBean key, boolean isContainment) {
-        mapper.referenceOf(key).ifPresent(id -> {
-            BasicReference reference = new BasicReference();
-            reference.name(key.id());
-            reference.owner(BasicId.original(key.owner().toString()));
-            reference.idReference(BasicId.original(id.toString()));
-            reference.isContainment(isContainment);
+    @Nonnull
+    private Optional<Id> readReference(SingleFeatureBean key, boolean isContainment) {
+        return mapper.referenceOf(key)
+                .map(id -> {
+                    BasicReference reference = new BasicReference();
+                    reference.name(key.id());
+                    reference.owner(key.owner());
+                    reference.value(id);
+                    reference.isContainment(isContainment);
 
-            mapper.metaClassOf(id).ifPresent(m -> {
-                BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
-                reference.metaClassReference(new BasicMetaclass(ns, m.name()));
-            });
+                    notifyReference(reference);
 
-            notifyReference(reference);
-
-            next(key.owner(), id);
-        });
+                    return isContainment ? id : null;
+                });
     }
 
     /**
@@ -206,40 +217,26 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> implements M
      *
      * @param key           the key identifying the reference
      * @param isContainment {@code true} if the reference is a containment
+     *
+     * @return a list of all references, or an empty list if the reference is not defined or if {@code isContainment ==
+     * false}
      */
-    protected void readAllReferences(SingleFeatureBean key, boolean isContainment) {
-        final List<Id> references = mapper.allReferencesOf(key);
-
-        IntStream.range(0, references.size()).forEach(position ->
-                Optional.ofNullable(references.get(position)).ifPresent(id -> {
+    @Nonnull
+    private List<Id> readAllReferences(SingleFeatureBean key, boolean isContainment) {
+        return mapper.allReferencesOf(key).stream()
+                .map(id -> {
                     BasicReference reference = new BasicReference();
                     reference.name(key.id());
-                    reference.owner(BasicId.original(key.owner().toString()));
-                    reference.idReference(BasicId.original(id.toString()));
-                    reference.index(position);
-                    reference.isContainment(isContainment);
+                    reference.owner(key.owner());
+                    reference.value(id);
                     reference.isMany(true);
-
-                    mapper.metaClassOf(id).ifPresent(m -> {
-                        BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(m.uri());
-                        reference.metaClassReference(new BasicMetaclass(ns, m.name()));
-                    });
+                    reference.isContainment(isContainment);
 
                     notifyReference(reference);
 
-                    next(key.owner(), id);
-                }));
-    }
-
-    /**
-     * Reads the {@code next} element if {@code containerOf(next) == parent}.
-     *
-     * @param parent the parent identifier of {@code next}
-     * @param next   the next identifier
-     */
-    protected void next(Id parent, Id next) {
-        mapper.containerOf(next)
-                .filter(c -> Objects.equals(c.owner(), parent))
-                .ifPresent(container -> readElement(next));
+                    return isContainment ? id : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }

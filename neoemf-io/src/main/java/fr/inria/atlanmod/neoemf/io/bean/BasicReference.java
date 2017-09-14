@@ -11,85 +11,20 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link AbstractBasicFeature} representing a reference, which links several {@link BasicElement}s.
  */
 @ParametersAreNonnullByDefault
-public class BasicReference extends AbstractBasicFeature {
-
-    /**
-     * The identifier of the referenced element.
-     */
-    private BasicId idReference;
-
-    /**
-     * The meta-class of the referenced element.
-     */
-    private BasicMetaclass metaClassReference;
+public class BasicReference extends AbstractBasicFeature<Id> {
 
     /**
      * Whether this reference is a containment.
      */
     private boolean isContainment = false;
-
-    /**
-     * Converts an {@link BasicAttribute} to a {@code BasicReference}.
-     *
-     * @param attribute the attribute to convert
-     *
-     * @return a new reference
-     */
-    public static BasicReference from(BasicAttribute attribute) {
-        BasicReference reference = new BasicReference();
-        reference.name(attribute.name());
-        reference.owner(attribute.owner());
-        reference.index(attribute.index());
-        reference.idReference(BasicId.original(attribute.value()));
-        return reference;
-    }
-
-    /**
-     * Returns the identifier of the referenced element.
-     *
-     * @return the identifier
-     */
-    public BasicId idReference() {
-        return idReference;
-    }
-
-    /**
-     * Defines the identifier of the referenced element.
-     *
-     * @param idReference the identifier
-     */
-    public void idReference(BasicId idReference) {
-        this.idReference = idReference;
-    }
-
-    @Override
-    public boolean isReference() {
-        return true;
-    }
-
-    /**
-     * Returns the meta-class of the referenced element.
-     *
-     * @return the meta-class
-     */
-    public BasicMetaclass metaClassReference() {
-        return metaClassReference;
-    }
-
-    /**
-     * Defines the meta-class of the referenced element.
-     *
-     * @param metaClassReference the meta-class
-     */
-    public void metaClassReference(BasicMetaclass metaClassReference) {
-        this.metaClassReference = metaClassReference;
-    }
 
     /**
      * Returns whether this reference is a containment.

@@ -55,7 +55,7 @@ public abstract class AbstractNamedElement {
         if (this == o) {
             return true;
         }
-        if (!AbstractNamedElement.class.isInstance(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 

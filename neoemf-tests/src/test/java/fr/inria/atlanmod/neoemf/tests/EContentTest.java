@@ -11,14 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +57,6 @@ public class EContentTest extends AbstractBackendTest {
     private List<Node> treeNodes;
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testEObjectEContents() {
         PersistentResource resource = newPersistentStore();
         fillResource(resource);
@@ -77,7 +74,6 @@ public class EContentTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testEObjectEmptyEContentsSize() {
         PersistentResource resource = newPersistentStore();
         fillResourceWithEmpty(resource);
@@ -87,7 +83,6 @@ public class EContentTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testEObjectEmptyEContentsGet() {
         PersistentResource resource = newPersistentStore();
         fillResourceWithEmpty(resource);

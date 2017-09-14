@@ -33,16 +33,19 @@ public class BasicNamespace {
     /**
      * The instance of the default {@code BasicNamespace}.
      */
+    @Nonnull
     private static final BasicNamespace DEFAULT = new BasicNamespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
 
     /**
      * The prefix of this namespace.
      */
+    @Nonnull
     private final String prefix;
 
     /**
      * The literal representation of the URI of this namespace.
      */
+    @Nonnull
     private final String uri;
 
     /**
@@ -61,6 +64,7 @@ public class BasicNamespace {
      *
      * @return the namespace representing "ecore @ http://www.eclipse.org/emf/2002/Ecore"
      */
+    @Nonnull
     public static BasicNamespace getDefault() {
         return DEFAULT;
     }
@@ -70,6 +74,7 @@ public class BasicNamespace {
      *
      * @return the prefix
      */
+    @Nonnull
     public String prefix() {
         return prefix;
     }
@@ -79,13 +84,14 @@ public class BasicNamespace {
      *
      * @return the literal representation of the URI
      */
+    @Nonnull
     public String uri() {
         return uri;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(prefix, uri);
+        return Objects.hash(uri);
     }
 
     @Override
@@ -93,13 +99,12 @@ public class BasicNamespace {
         if (this == o) {
             return true;
         }
-        if (!BasicNamespace.class.isInstance(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         BasicNamespace that = BasicNamespace.class.cast(o);
-        return Objects.equals(prefix, that.prefix)
-                && Objects.equals(uri, that.uri);
+        return Objects.equals(uri, that.uri);
     }
 
     @Override
@@ -116,19 +121,17 @@ public class BasicNamespace {
         /**
          * A map that holds registered {@link BasicNamespace}, identified by their prefix.
          */
-        private final Map<String, BasicNamespace> namespacesByPrefix;
+        private final Map<String, BasicNamespace> namespacesByPrefix = new HashMap<>();
 
         /**
          * A map that holds registered {@link BasicNamespace}, identified by their URI.
          */
-        private final Map<String, BasicNamespace> namespacesByUri;
+        private final Map<String, BasicNamespace> namespacesByUri = new HashMap<>();
 
         /**
          * Constructs a new {@code Registry}.
          */
         private Registry() {
-            namespacesByPrefix = new HashMap<>();
-            namespacesByUri = new HashMap<>();
         }
 
         /**
@@ -146,6 +149,7 @@ public class BasicNamespace {
          *
          * @return a immutable collection
          */
+        @Nonnull
         public Iterable<String> getPrefixes() {
             return Collections.unmodifiableSet(namespacesByPrefix.keySet());
         }
@@ -188,6 +192,7 @@ public class BasicNamespace {
          *
          * @return the new {@link BasicNamespace}
          */
+        @Nonnull
         public BasicNamespace register(String prefix, String uri) {
             if (namespacesByPrefix.containsKey(prefix)) {
                 BasicNamespace ns = namespacesByPrefix.get(prefix);

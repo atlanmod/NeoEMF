@@ -12,35 +12,30 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.commons.annotation.Beta;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.util.MapperConstants;
-import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import org.codehaus.stax2.XMLOutputFactory2;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
-import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 /**
- * A {@link StreamWriter} that uses a StAX implementation with cursors for writing XMI files.
+ * A {@link AbstractXmiStreamWriter} that uses a StAX implementation with cursors for writing XMI files.
  */
 @Beta
 @ParametersAreNonnullByDefault
 public class XmiStreamWriter extends AbstractXmiStreamWriter {
 
     /**
-     * The XML writer.
+     * The XML writer on the {@link #target}.
      */
+    @Nonnull
     private final XMLStreamWriter writer;
 
     /**
@@ -49,12 +44,10 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
      * @param stream the output stream to write
      */
     public XmiStreamWriter(OutputStream stream) {
+        super(stream);
+
         XMLOutputFactory factory = XMLOutputFactory2.newInstance();
-
-        factory.setProperty("javax.xml.stream.isRepairingNamespaces", true);
-        factory.setProperty("javax.xml.stream.isNamespaceAware", true);
-
-        factory.setProperty("org.codehaus.stax2.automaticEmptyElements", true);
+        configure(factory);
 
         try {
             writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmlConstants.ENCODING);
@@ -64,8 +57,21 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
         }
     }
 
+    /**
+     * Configures the specified {@code factory} with default options.
+     *
+     * @param factory the XML factory to configure
+     */
+    private void configure(XMLOutputFactory factory) {
+        // Use namespace support
+        factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+
+        // Automatically close empty elements
+        factory.setProperty(XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS, true);
+    }
+
     @Override
-    public void onInitialize() {
+    protected void writeStartDocument() {
         try {
             writer.writeStartDocument(XmlConstants.ENCODING, XmlConstants.VERSION);
         }
@@ -75,29 +81,9 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    protected void writeStartElement(String name) {
         try {
-            if (element.isRoot()) {
-                writer.writeStartElement(XmlConstants.format(element.ns().prefix(), element.name()));
-
-                // Namespaces
-                writer.writeNamespace(element.ns().prefix(), element.ns().uri());
-                writer.writeNamespace(XmiConstants.XMI_NS, XmiConstants.XMI_URI);
-
-                // XMI version
-                writer.writeAttribute(XmiConstants.XMI_VERSION_ATTR, XmiConstants.XMI_VERSION);
-            }
-            else {
-                writer.writeStartElement(element.name());
-            }
-
-            writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(element.metaClass().ns().prefix(), element.metaClass().name()));
-            writer.writeAttribute(XmiConstants.XMI_ID, element.id().value());
-
-            Optional<String> name = Optional.ofNullable(element.className());
-            if (name.isPresent()) {
-                writer.writeAttribute(MapperConstants.FEATURE_NAME, name.get());
-            }
+            writer.writeStartElement(name);
         }
         catch (XMLStreamException e) {
             throw new RuntimeException(e);
@@ -105,16 +91,9 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) {
+    protected void writeNamespace(String prefix, String uri) {
         try {
-            if (!attribute.isMany()) {
-                writer.writeAttribute(attribute.name(), String.valueOf(attribute.value()));
-            }
-            else {
-                writer.writeStartElement(attribute.name());
-                writer.writeCharacters(String.valueOf(attribute.value()));
-                writer.writeEndElement();
-            }
+            writer.writeNamespace(prefix, uri);
         }
         catch (XMLStreamException e) {
             throw new RuntimeException(e);
@@ -122,26 +101,9 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    protected void writeAttribute(String name, String value) {
         try {
-            if (reference.isContainment()) {
-                return;
-            }
-
-            if (!reference.isMany()) {
-                writer.writeAttribute(reference.name(), reference.idReference().value());
-            }
-            else {
-                writer.writeStartElement(reference.name());
-
-                Optional<BasicMetaclass> metaClass = Optional.ofNullable(reference.metaClassReference());
-                if (metaClass.isPresent()) {
-                    writer.writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaClass.get().ns().prefix(), metaClass.get().name()));
-                }
-
-                writer.writeAttribute(XmiConstants.XMI_IDREF, reference.idReference().value());
-                writer.writeEndElement();
-            }
+            writer.writeAttribute(name, value);
         }
         catch (XMLStreamException e) {
             throw new RuntimeException(e);
@@ -149,12 +111,17 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onCharacters(String characters) {
-        // Do nothing
+    protected void writeCharacters(String characters) {
+        try {
+            writer.writeCharacters(characters);
+        }
+        catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void onEndElement() {
+    protected void writeEndElement() {
         try {
             writer.writeEndElement();
         }
@@ -164,7 +131,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    public void onComplete() {
+    protected void writeEndDocument() {
         try {
             writer.writeEndDocument();
             writer.close();

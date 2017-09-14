@@ -17,49 +17,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link AbstractBasicFeature} representing an attribute, with a value.
  */
 @ParametersAreNonnullByDefault
-public class BasicAttribute extends AbstractBasicFeature {
-
-    /**
-     * The value of this attribute.
-     */
-    private String value;
-
-    /**
-     * Converts a {@link BasicReference} to an {@code BasicAttribute}.
-     *
-     * @param reference the reference to convert
-     *
-     * @return a new attribute
-     */
-    public static BasicAttribute from(BasicReference reference) {
-        BasicAttribute attribute = new BasicAttribute();
-        attribute.name(reference.name());
-        attribute.owner(reference.owner());
-        attribute.index(reference.index());
-        attribute.value(reference.idReference().value());
-        return attribute;
-    }
-
-    /**
-     * Returns the value of this attribute.
-     *
-     * @return the value
-     */
-    public String value() {
-        return value;
-    }
-
-    /**
-     * Defines the value of this attribute.
-     *
-     * @param value the value
-     */
-    public void value(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public boolean isAttribute() {
-        return true;
-    }
+public class BasicAttribute extends AbstractBasicFeature<String> {
 }

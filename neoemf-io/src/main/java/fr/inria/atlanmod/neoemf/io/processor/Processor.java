@@ -19,6 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Handler} that pre-processes and post-processes received events, before notifying the next {@link Handler}.
  * <p>
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
+ * <p>
+ * <b>NOTE:</b> Because of the stream-based architecture, all {@code Processor}s are stateful.
  */
 @ParametersAreNonnullByDefault
 public interface Processor extends Handler {

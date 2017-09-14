@@ -11,14 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.Comment;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContainmentTest extends AbstractBackendTest {
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testAddContainmentSubtree() {
         PersistentResource resource = newPersistentStore();
 
@@ -72,7 +69,6 @@ public class ContainmentTest extends AbstractBackendTest {
     }
 
     @Test
-    @Category(Tags.PersistentTests.class)
     public void testSetContainmentAfterNonContainment() {
         PersistentResource resource = newPersistentStore();
 
