@@ -46,7 +46,7 @@ public interface Adapter {
      * @return the datastore location
      */
     @Nonnull
-    File getOrCreateStore(File file) throws IOException;
+    File getOrCreateStore(File file, PersistenceOptions options, boolean useDirectImport) throws IOException;
 
     /**
      * Creates a datastore from the given {@code file} in a temporary location.
@@ -55,7 +55,7 @@ public interface Adapter {
      */
     @Nonnull
     @SuppressWarnings("UnusedReturnValue")
-    File createTempStore(File file) throws IOException;
+    File createTempStore(File file, PersistenceOptions options, boolean useDirectImport) throws IOException;
 
     /**
      * Loads a resource file from the given {@code file}.
@@ -68,7 +68,7 @@ public interface Adapter {
     /**
      * Saves the given {@code resource}.
      */
-    void save(Resource resource) throws IOException;
+    void save(Resource resource, PersistenceOptions options) throws IOException;
 
     /**
      * Unloads the given {@code resource}.
@@ -106,7 +106,7 @@ public interface Adapter {
          * @throws UnsupportedOperationException if this {@code Adapter} does not support {@link DataMapper} creation
          * @see #supportsMapper()
          */
-        default DataMapper createMapper(File file) {
+        default DataMapper createMapper(File file, PersistenceOptions options) {
             throw new UnsupportedOperationException("This adapter does not support DataMapper creation");
         }
 

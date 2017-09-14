@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.benchmarks.resource.ResourceCreator;
 import fr.inria.atlanmod.neoemf.benchmarks.resource.ResourceManager;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -91,19 +92,19 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file) throws IOException {
-        return getOrCreateStore(file, false);
+    public File getOrCreateStore(File file, PersistenceOptions options, boolean useDirectImport) throws IOException {
+        return getOrCreateStore(file, options, useDirectImport, false);
     }
 
     @Nonnull
     @Override
-    public File createTempStore(File file) throws IOException {
-        return getOrCreateStore(file, true);
+    public File createTempStore(File file, PersistenceOptions options, boolean useDirectImport) throws IOException {
+        return getOrCreateStore(file, options, useDirectImport, true);
     }
 
     @Override
-    public void save(Resource resource) throws IOException {
-        resource.save(getOptions());
+    public void save(Resource resource, PersistenceOptions options) throws IOException {
+        resource.save(options.withOptions(getOptions()).asMap());
     }
 
     @Nonnull
@@ -121,19 +122,14 @@ abstract class AbstractAdapter implements Adapter.Internal {
      * @return the resource
      */
     @Nonnull
-    private File getOrCreateStore(File file, boolean temporary) {
+    private File getOrCreateStore(File file, PersistenceOptions options, boolean useDirectImport, boolean temporary) throws IOException {
         File storeFile;
 
-        try {
-            if (temporary) {
-                storeFile = ResourceCreator.createTempStore(file, this);
-            }
-            else {
-                storeFile = ResourceCreator.createStore(file, this);
-            }
+        if (temporary) {
+            storeFile = ResourceCreator.createTempStore(file, options, this, useDirectImport);
         }
-        catch (Exception e) {
-            throw new RuntimeException(e);
+        else {
+            storeFile = ResourceCreator.createStore(file, options, this, useDirectImport);
         }
 
         if (!storeFile.exists()) {

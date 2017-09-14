@@ -61,16 +61,11 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     }
 
     @Override
-    public DataMapper createMapper(File file) {
-        Map<String, Object> options = CommonOptions.builder()
-                .withOptions(getOptions())
-                .cacheContainers()
-                .cacheMetaclasses()
-                .autoSave()
-                .asMap();
+    public DataMapper createMapper(File file, PersistenceOptions options) {
+        Map<String, Object> mapOptions = options.withOptions(getOptions()).asMap();
 
-        Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), options);
-        return StoreFactory.getInstance().createStore(backend, options);
+        Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), mapOptions);
+        return StoreFactory.getInstance().createStore(backend, mapOptions);
     }
 
     @Nonnull

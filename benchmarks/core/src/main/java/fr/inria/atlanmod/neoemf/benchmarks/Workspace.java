@@ -68,8 +68,8 @@ public class Workspace {
     /**
      * Retrieves the base directory benchmarks.
      * <p>
-     * This path can be defined with the {@code NEOEMF_HOME} environment variable.
-     * If this environment variable is not defined, then {@code ${user.home}/.neoemf} is used.
+     * This path can be defined with the {@code NEOEMF_HOME} environment variable. If this environment variable is not
+     * defined, then {@code ${user.home}/.neoemf} is used.
      *
      * @return the directory
      */
@@ -140,13 +140,8 @@ public class Workspace {
      * @return the temporary directory.
      */
     @Nonnull
-    public static Path newTempDirectory() {
-        try {
-            return Files.createTempDirectory(getTempDirectory(), "tmp");
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static Path newTempDirectory() throws IOException {
+        return Files.createTempDirectory(getTempDirectory(), "tmp");
     }
 
     /**

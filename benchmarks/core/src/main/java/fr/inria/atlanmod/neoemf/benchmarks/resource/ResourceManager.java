@@ -62,8 +62,8 @@ public final class ResourceManager {
     private static Map<String, String> registeredResources;
 
     /**
-     * Creates a new {@link Resource} from the given {@code resourceFileName}, and adapts it for the given
-     * {@code targetAdapter}. The resource file can be placed in the resource ZIP, or in the file system.
+     * Creates a new {@link Resource} from the given {@code resourceFileName}, and adapts it for the given {@code
+     * targetAdapter}. The resource file can be placed in the resource ZIP, or in the file system.
      *
      * @param resourceFileName the name of the resource file
      * @param adapter          the adapter where to store the resource
@@ -95,8 +95,7 @@ public final class ResourceManager {
     }
 
     /**
-     * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code
-     * targetAdapter}.
+     * Creates a new {@link Resource} from the given {@code file}, and adapts it for the given {@code targetAdapter}.
      *
      * @param resourceFile the resource file
      * @param adapter      the adapter where to store the resource

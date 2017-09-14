@@ -44,6 +44,6 @@ public class RunnerCreation extends Runner {
     @Measurement(iterations = 1)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void create(RunnerState state) throws IOException {
-        state.getAdapter().createTempStore(state.getResourceFile());
+        state.getAdapter().createTempStore(state.getResourceFile(), state.getOptions(), state.useDirectImport());
     }
 }

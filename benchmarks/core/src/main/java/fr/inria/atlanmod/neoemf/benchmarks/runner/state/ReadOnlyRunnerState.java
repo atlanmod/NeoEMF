@@ -79,7 +79,7 @@ public class ReadOnlyRunnerState extends RunnerState {
     @Setup(Level.Iteration)
     public void loadResource() throws IOException {
         Log.info("Initializing the datastore");
-        storeFile = getAdapter().getOrCreateStore(getResourceFile());
+        storeFile = getAdapter().getOrCreateStore(getResourceFile(), getOptions(), useDirectImport());
 
         Log.info("Loading the resource");
         resource = getAdapter().load(getStoreLocation(), getOptions());

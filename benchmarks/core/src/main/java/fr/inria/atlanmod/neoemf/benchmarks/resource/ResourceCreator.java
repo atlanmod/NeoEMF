@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -49,11 +50,6 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
  */
 @ParametersAreNonnullByDefault
 public final class ResourceCreator {
-
-    /**
-     * Defines whether the store creation must use the NeoEMF importer if available.
-     */
-    public static boolean useImporter = true;
 
     @SuppressWarnings("JavaDoc")
     private ResourceCreator() {
@@ -100,8 +96,9 @@ public final class ResourceCreator {
      * from the given {@code resourceFile}, and stores it to the given {@code adapter}, located in a temporary
      * directory.
      *
-     * @param resourceFile the resource resourceFile
-     * @param adapter      the adapter where to store the resource
+     * @param resourceFile    the resource file
+     * @param adapter         the adapter where to store the resource
+     * @param useDirectImport {@code true} if the direct import must be used
      *
      * @return the created resourceFile
      *
@@ -109,14 +106,14 @@ public final class ResourceCreator {
      * @see Workspace#newTempDirectory()
      */
     @Nonnull
-    public static File createTempStore(File resourceFile, Adapter.Internal adapter) throws IOException {
+    public static File createTempStore(File resourceFile, PersistenceOptions options, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
         Path dir = Workspace.newTempDirectory();
 
-        if (useImporter && adapter.supportsMapper()) {
-            return createStoreDirect(resourceFile, adapter, dir);
+        if (useDirectImport && adapter.supportsMapper()) {
+            return createStoreDirect(resourceFile, options, adapter, dir);
         }
         else {
-            return createStore(resourceFile, adapter, dir);
+            return createStore(resourceFile, options, adapter, dir);
         }
     }
 
@@ -124,8 +121,9 @@ public final class ResourceCreator {
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
      * from the given {@code resourceFile}, and stores it to the given {@code targetAdapter}, located in the workspace.
      *
-     * @param resourceFile the resource resourceFile
-     * @param adapter      the adapter where to store the resource
+     * @param resourceFile    the resource file
+     * @param adapter         the adapter where to store the resource
+     * @param useDirectImport {@code true} if the direct import must be used
      *
      * @return the created resourceFile
      *
@@ -133,14 +131,14 @@ public final class ResourceCreator {
      * @see Workspace#getStoreDirectory()
      */
     @Nonnull
-    public static File createStore(File resourceFile, Adapter.Internal adapter) throws IOException {
+    public static File createStore(File resourceFile, PersistenceOptions options, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
         Path dir = Workspace.getStoreDirectory();
 
-        if (useImporter && adapter.supportsMapper()) {
-            return createStoreDirect(resourceFile, adapter, dir);
+        if (useDirectImport && adapter.supportsMapper()) {
+            return createStoreDirect(resourceFile, options, adapter, dir);
         }
         else {
-            return createStore(resourceFile, adapter, dir);
+            return createStore(resourceFile, options, adapter, dir);
         }
     }
 
@@ -161,7 +159,7 @@ public final class ResourceCreator {
      * @throws IOException if a error occurs during the creation of the store
      */
     @Nonnull
-    private static File createStoreDirect(File resourceFile, Adapter.Internal adapter, Path dir) throws IOException {
+    private static File createStoreDirect(File resourceFile, PersistenceOptions options, Adapter.Internal adapter, Path dir) throws IOException {
         Log.info("Creating store with NeoEMF importer");
 
         ResourceManager.checkValidResource(resourceFile.getName());
@@ -179,7 +177,7 @@ public final class ResourceCreator {
 
         Log.info("Importing resource content...");
 
-        try (DataMapper mapper = adapter.createMapper(targetFile)) {
+        try (DataMapper mapper = adapter.createMapper(targetFile, options)) {
             Migrator.fromXmi(resourceFile)
                     .toMapper(mapper)
                     .migrate();
@@ -194,8 +192,7 @@ public final class ResourceCreator {
 
     /**
      * Creates a new {@link Resource} (a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} in case of NeoEMF)
-     * from the given {@code resourceFile}, and stores it to the given {@code targetAdapter}, located in {@code
-     * dir}.
+     * from the given {@code resourceFile}, and stores it to the given {@code targetAdapter}, located in {@code dir}.
      *
      * @param resourceFile the resource resourceFile
      * @param adapter      the adapter where to store the resource
@@ -206,7 +203,7 @@ public final class ResourceCreator {
      * @throws IOException if a error occurs during the creation of the store
      */
     @Nonnull
-    private static File createStore(File resourceFile, Adapter.Internal adapter, Path dir) throws IOException {
+    private static File createStore(File resourceFile, PersistenceOptions options, Adapter.Internal adapter, Path dir) throws IOException {
         Log.info("Creating store with standard EMF");
 
         ResourceManager.checkValidResource(resourceFile.getName());
@@ -243,12 +240,12 @@ public final class ResourceCreator {
         Log.info("Migrating resource content...");
 
         Resource targetResource = adapter.createResource(targetFile, resourceSet);
-        adapter.save(targetResource);
+        adapter.save(targetResource, options);
 
         targetResource.getContents().addAll(targetRoot);
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
-        adapter.save(targetResource);
+        adapter.save(targetResource, options);
 
         adapter.unload(targetResource);
 

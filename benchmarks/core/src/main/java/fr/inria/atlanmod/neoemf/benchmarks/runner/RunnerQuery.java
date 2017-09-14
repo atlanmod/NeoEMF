@@ -82,7 +82,7 @@ public class RunnerQuery extends Runner {
         String name = UUID.randomUUID().toString();
         Resource resource = state.getResource();
         Integer result = QueryFactory.queryRenameAllMethods(name).apply(resource);
-        state.getAdapter().save(resource);
+        state.getAdapter().save(resource, state.getOptions());
         return result;
     }
 

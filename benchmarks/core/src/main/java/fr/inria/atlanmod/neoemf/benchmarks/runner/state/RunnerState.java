@@ -45,9 +45,7 @@ import static java.util.Objects.nonNull;
 
 /**
  * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Adapter} and the preloaded
- * resource file.
- * <p>
- * <p>Note:</p> It does not load the datastores.
+ * resource file. <p> <p>Note:</p> It does not load the datastores.
  */
 @State(Scope.Thread)
 public class RunnerState {
@@ -77,8 +75,6 @@ public class RunnerState {
             "set1",
             "set2",
             "set3",
-//            "set4",
-//            "set5"
     })
     protected String r;
 
@@ -88,16 +84,9 @@ public class RunnerState {
     @Param({
             "xmi",
             "cdo",
-//            "tinker",
             "neo4j",
             "berkeleydb-i",
-//            "berkeleydb-a",
-//            "berkeleydb-l",
-//            "berkeleydb-m",
             "mapdb-i",
-//            "mapdb-a",
-//            "mapdb-l",
-//            "mapdb-m",
     })
     protected String a;
 
@@ -106,6 +95,12 @@ public class RunnerState {
      */
     @Param("AMC")
     protected String o;
+
+    /**
+     * {@code "true"} if the direct import has to be used when creating or importing resources.
+     */
+    @Param("true")
+    protected String direct;
 
     /**
      * The current {@link Adapter}.
@@ -142,6 +137,15 @@ public class RunnerState {
     @Nonnull
     public File getResourceFile() {
         return resourceFile;
+    }
+
+    /**
+     * Returns {@code true} if the direct import has to be used when creating or importing resources.
+     *
+     * @return {@code true} if the direct import has to be used when creating or importing resources.
+     */
+    public boolean useDirectImport() {
+        return Boolean.valueOf(direct);
     }
 
     /**
