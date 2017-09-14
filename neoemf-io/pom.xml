@@ -115,6 +115,14 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-utils</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

@@ -17,16 +17,16 @@ import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
 
-public class XmiReaderWithIdTest extends AbstractInputTest {
+public class ImportStandardTest extends AbstractImportTest {
 
     @Nonnull
     @Override
     protected URI getResourceUri() {
-        return IOResourceManager.xmiWithId();
+        return IOResourceManager.xmiStandard();
     }
 
     @Override
     protected boolean useIds() {
-        return true;
+        return false;
     }
 }

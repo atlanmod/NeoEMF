@@ -41,7 +41,10 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-public abstract class AbstractInputTest extends AbstractTest {
+/**
+ * An abstract test-case about the importation of a model.
+ */
+public abstract class AbstractImportTest extends AbstractTest {
 
     /**
      * A map that holds the mapping between an XPath and its {@code xmi:id} value.

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
+import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -22,7 +23,7 @@ import java.io.IOException;
 /**
  * A test case about the import from files to {@link fr.inria.atlanmod.neoemf.data.Backend}s.
  */
-public class DirectImportTest extends AbstractIOTest {
+public class DirectImportTest extends AbstractMigrationTest {
 
     /**
      * Compares a model read with standard EMF and another read with NeoEMF.
@@ -38,7 +39,7 @@ public class DirectImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertEObjectAreEqual(actual, expected);
+        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -55,7 +56,7 @@ public class DirectImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertEObjectAreEqual(actual, expected);
+        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -72,7 +73,7 @@ public class DirectImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertEObjectAreEqual(actual, expected);
+        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -89,6 +90,6 @@ public class DirectImportTest extends AbstractIOTest {
         EObject actual = loadWithNeoEMF(uri);
         EObject expected = loadWithEMF(uri);
 
-        assertEObjectAreEqual(actual, expected);
+        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 }

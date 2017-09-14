@@ -133,6 +133,7 @@
             <optional>true</optional>
             <type>pom</type>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
+import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +30,7 @@ import java.net.URL;
 /**
  * A test case about the export from {@link Backend}s to files.
  */
-public class DirectExportTest extends AbstractIOTest {
+public class DirectExportTest extends AbstractMigrationTest {
 
     /**
      * Checks the export from a {@link Backend} to a standard XMI.
@@ -56,7 +57,7 @@ public class DirectExportTest extends AbstractIOTest {
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
         EObject expected = loadWithEMF(expectedUri);
 
-        assertEObjectAreEqual(actual, expected);
+        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 
     /**
@@ -84,6 +85,6 @@ public class DirectExportTest extends AbstractIOTest {
         final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
         EObject expected = loadWithEMF(expectedUri);
 
-        assertEObjectAreEqual(actual, expected);
+        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 }
