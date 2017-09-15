@@ -18,6 +18,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * A test-case about {@link BasicNamespace}.
+ */
 public class BasicNamespaceTest extends AbstractTest {
 
     @Before

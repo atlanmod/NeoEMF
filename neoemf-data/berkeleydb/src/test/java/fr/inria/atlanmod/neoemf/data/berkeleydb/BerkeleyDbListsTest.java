@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 import javax.annotation.Nonnull;
 
 /**
- * A test-case that checks the behavior of {@link BerkeleyDbBackendLists}.
+ * A test-case about {@link BerkeleyDbBackendLists}.
  */
 public class BerkeleyDbListsTest extends AbstractPersistenceMapperTest {
 

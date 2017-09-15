@@ -26,7 +26,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of {@link Serializer} instances.
+ * A test-case about {@link Serializer} implementations.
  */
 public class BeanSerializerTest extends AbstractSerializerTest {
 

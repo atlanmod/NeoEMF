@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * An abstract test-case that checks the behavior of {@link AbstractUriBuilder}s.
+ * An abstract test-case about {@link AbstractUriBuilder} and its implementations.
  */
 public abstract class AbstractUriTest extends AbstractUnitTest {
 

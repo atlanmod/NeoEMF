@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case that checks the behavior of {@link BackendFactoryRegistry}.
+ * A test-case about {@link BackendFactoryRegistry}.
  */
 public class BackendFactoryRegistryTest extends AbstractTest {
 

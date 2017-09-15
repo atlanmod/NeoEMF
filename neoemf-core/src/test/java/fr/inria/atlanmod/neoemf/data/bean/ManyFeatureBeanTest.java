@@ -22,41 +22,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * A test-case about {@link SingleFeatureBean}.
  */
-public class SingleFeatureBeanTest extends AbstractTest {
+public class ManyFeatureBeanTest extends AbstractTest {
 
     /**
-     * Checks the comparison of 2 {@link SingleFeatureBean}s. In this case, they are equal.
+     * Checks the comparison of 2 {@link ManyFeatureBean}s. In this case, they are equal.
      */
     @Test
     public void testCompareEqualTo() {
         Id id0 = StringId.of("id0");
 
-        SingleFeatureBean key0 = SingleFeatureBean.of(id0, "aaa");
-        SingleFeatureBean key1 = SingleFeatureBean.of(id0, "aaa");
+        SingleFeatureBean key = SingleFeatureBean.of(id0, "aaa");
+        ManyFeatureBean key0 = key.withPosition(0);
+        ManyFeatureBean key1 = key.withPosition(0);
 
         assertThat(key0.compareTo(key1)).isEqualTo(0);
     }
 
     /**
-     * Checks the comparison of 2 {@link SingleFeatureBean}s. In this case, the first is lower than the second.
+     * Checks the comparison of 2 {@link ManyFeatureBean}s. In this case, the first is lower than the second.
      */
     @Test
     public void testCompareLowerThan() {
         Id id0 = StringId.of("id0");
 
-        SingleFeatureBean key0 = SingleFeatureBean.of(id0, "aaa");
-        SingleFeatureBean key1 = SingleFeatureBean.of(id0, "bbb");
+        SingleFeatureBean key = SingleFeatureBean.of(id0, "aaa");
+        ManyFeatureBean key0 = key.withPosition(0);
+        ManyFeatureBean key1 = key.withPosition(1);
 
         assertThat(key0.compareTo(key1)).isLessThan(0);
     }
 
     /**
-     * Checks the comparison of 2 {@link SingleFeatureBean}s. In this case, the first is greater than the second.
+     * Checks the comparison of 2 {@link ManyFeatureBean}s. In this case, the first is greater than the second.
      */
     @Test
     public void testCompareGreaterThan() {
-        SingleFeatureBean key0 = SingleFeatureBean.of(StringId.of("AAA"), "aaa");
-        SingleFeatureBean key1 = SingleFeatureBean.of(StringId.of("BBB"), "zzz");
+        Id id0 = StringId.of("id0");
+        SingleFeatureBean key = SingleFeatureBean.of(id0, "aaa");
+
+        ManyFeatureBean key0 = key.withPosition(1);
+        ManyFeatureBean key1 = key.withPosition(0);
 
         assertThat(key0.compareTo(key1)).isGreaterThan(0);
     }

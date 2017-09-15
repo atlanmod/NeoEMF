@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the behavior of {@link HBaseUri}.
+ * A test-case about {@link HBaseUri}.
  */
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 

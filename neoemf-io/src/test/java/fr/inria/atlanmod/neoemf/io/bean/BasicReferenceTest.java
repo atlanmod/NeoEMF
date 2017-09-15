@@ -20,7 +20,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of {@link BasicReference}.
+ * A test-case about {@link BasicReference}.
  */
 public class BasicReferenceTest extends AbstractTest {
 

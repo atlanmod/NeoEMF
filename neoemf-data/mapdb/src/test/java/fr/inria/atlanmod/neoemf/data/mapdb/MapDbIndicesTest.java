@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 import javax.annotation.Nonnull;
 
 /**
- * A test-case that checks the behavior of {@link MapDbBackendIndices}.
+ * A test-case about {@link MapDbBackendIndices}.
  */
 public class MapDbIndicesTest extends AbstractPersistenceMapperTest {
 

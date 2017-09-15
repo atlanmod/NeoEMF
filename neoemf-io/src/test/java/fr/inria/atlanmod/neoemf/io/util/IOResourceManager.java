@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A utility class that manages external resources for I/O tests.
+ * A static utility class that manages external resources for I/O tests.
  */
 @Static
 @ParametersAreNonnullByDefault

@@ -9,27 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.neoemf.context.CoreTest;
-import fr.inria.atlanmod.neoemf.data.store.AutoSaveStore;
-import fr.inria.atlanmod.neoemf.data.store.ClassCachingStore;
-import fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore;
-import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore;
-import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore;
-import fr.inria.atlanmod.neoemf.data.store.LoggingStore;
-import fr.inria.atlanmod.neoemf.data.store.SizeCachingStore;
-import fr.inria.atlanmod.neoemf.data.store.StatsStore;
-import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
+import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,9 +28,41 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case that checks the behavior of {@link StoreFactory#createStore(Backend, Map)}.
+ * A test-case about {@link StoreFactory}.
  */
-public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest implements CoreTest {
+public class StoreFactoryTest extends AbstractTest {
+
+    /**
+     * The field name describing the inner {@link Store} in a {@link AbstractStore}.
+     */
+    private static final String INNER_MAPPER_FIELDNAME = "next";
+
+    /**
+     * Retrieves the value of a field, identified by its {@code fieldName}, in the given {@code object}.
+     *
+     * @param object    the object where to look for the field
+     * @param fieldName the name of the field to retrieve the value
+     * @param in        the type of the {@code object}
+     * @param out       the type of the expected value
+     * @param <I>       the type of the actual value
+     * @param <O>       the type of the expected value
+     *
+     * @return the value
+     */
+    private static <I, O> O getValue(Object object, String fieldName, Class<I> in, Class<O> out) {
+        if (!in.isInstance(object)) {
+            throw new IllegalArgumentException();
+        }
+
+        try {
+            Field storeField = in.getDeclaredField(fieldName);
+            storeField.setAccessible(true);
+            return out.cast(storeField.get(object));
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
@@ -349,18 +372,14 @@ public class PersistentBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
-    @Override
-    @Ignore("Not supported")
-    public void testCreateTransientBackend() {
-    }
-
-    @Override
-    @Ignore("Not supported")
-    public void testCreateDefaultPersistentBackend() {
-    }
-
-    @Override
-    @Ignore("Not supported")
-    public void testCopyBackend() {
+    /**
+     * Retrieves the inner {@link Store} in the given {@code store}.
+     *
+     * @param store the store where to look for the inner store
+     *
+     * @return the inner store
+     */
+    private Store getInnerStore(Store store) {
+        return getValue(store, INNER_MAPPER_FIELDNAME, AbstractMapperDecorator.class, Store.class);
     }
 }

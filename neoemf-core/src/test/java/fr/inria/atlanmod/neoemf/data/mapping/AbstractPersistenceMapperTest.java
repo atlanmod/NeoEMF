@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * An abstract test-case that checks the behavior of {@link DataMapper}s and their sub-classes.
+ * An abstract test-case about {@link DataMapper} and its implementations.
  */
 // TODO Add tests with `key.position() > size()` and an existing many value/reference
 public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {

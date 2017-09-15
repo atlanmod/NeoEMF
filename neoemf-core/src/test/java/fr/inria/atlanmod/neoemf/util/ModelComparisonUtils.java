@@ -20,6 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * A static utility class for model comparison.
+ */
 @Static
 @ParametersAreNonnullByDefault
 public final class ModelComparisonUtils {

@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the behavior of {@link MapDbUri}.
+ * A test-case about {@link MapDbUri}.
  */
 public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
 

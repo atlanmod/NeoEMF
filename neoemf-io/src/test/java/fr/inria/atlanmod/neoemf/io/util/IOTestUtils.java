@@ -15,6 +15,9 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * A static utility class for all IO tests.
+ */
 @Static
 @ParametersAreNonnullByDefault
 public final class IOTestUtils {

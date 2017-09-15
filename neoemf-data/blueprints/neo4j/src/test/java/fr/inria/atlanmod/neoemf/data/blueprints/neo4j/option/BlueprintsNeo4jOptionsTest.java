@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the behavior of {@link BlueprintsNeo4jOptions}.
+ * A test-case about {@link BlueprintsNeo4jOptions}.
  */
 public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 

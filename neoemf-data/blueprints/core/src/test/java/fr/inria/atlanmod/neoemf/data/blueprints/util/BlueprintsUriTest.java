@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case that checks the behavior of {@link BlueprintsUri}.
+ * A test-case about {@link BlueprintsUri}.
  */
 public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest {
 

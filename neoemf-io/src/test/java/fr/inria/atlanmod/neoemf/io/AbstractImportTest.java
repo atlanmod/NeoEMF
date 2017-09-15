@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * An abstract test-case about the importation of a model.
+ * An abstract test-case about the import of a model.
  */
 public abstract class AbstractImportTest extends AbstractTest {
 

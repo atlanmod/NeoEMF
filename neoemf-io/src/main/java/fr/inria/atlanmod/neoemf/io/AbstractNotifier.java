@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.commons.log.Log;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 

@@ -12,55 +12,18 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
-import fr.inria.atlanmod.neoemf.data.store.AbstractStore;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * An abstract test-cases that checks the behavior of {@link BackendFactory}s and provides methods to retrieve private
- * fields.
+ * An abstract test-cases about {@link BackendFactory} and its implementations.
  */
 public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
-
-    /**
-     * The field name describing the inner {@link Store} in a {@link AbstractStore}.
-     */
-    private static final String INNER_MAPPER_FIELDNAME = "next";
-
-    /**
-     * Retrieves the value of a field, identified by its {@code fieldName}, in the given {@code object}.
-     *
-     * @param object    the object where to look for the field
-     * @param fieldName the name of the field to retrieve the value
-     * @param in        the type of the {@code object}
-     * @param out       the type of the expected value
-     * @param <I>       the type of the actual value
-     * @param <O>       the type of the expected value
-     *
-     * @return the value
-     */
-    protected static <I, O> O getValue(Object object, String fieldName, Class<I> in, Class<O> out) {
-        if (!in.isInstance(object)) {
-            throw new IllegalArgumentException();
-        }
-
-        try {
-            Field storeField = in.getDeclaredField(fieldName);
-            storeField.setAccessible(true);
-            return out.cast(storeField.get(object));
-        }
-        catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Check the creation of chaining between the default {@link Store}s and a {@link TransientBackend}.
@@ -105,15 +68,4 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      */
     @Test
     public abstract void testCopyBackend();
-
-    /**
-     * Retrieves the inner {@link Store} in the given {@code store}.
-     *
-     * @param store the store where to look for the inner store
-     *
-     * @return the inner store
-     */
-    protected Store getInnerStore(Store store) {
-        return getValue(store, INNER_MAPPER_FIELDNAME, AbstractMapperDecorator.class, Store.class);
-    }
 }

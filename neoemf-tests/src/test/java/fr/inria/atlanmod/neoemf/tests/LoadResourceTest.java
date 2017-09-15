@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of a loaded {@link org.eclipse.emf.ecore.resource.Resource}.
+ * A test-case that checks the behavior of a loaded {@link PersistentResource}.
  */
 public class LoadResourceTest extends AbstractBackendTest {
 

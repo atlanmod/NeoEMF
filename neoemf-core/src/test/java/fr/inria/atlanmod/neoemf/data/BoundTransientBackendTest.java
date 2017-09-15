@@ -20,7 +20,7 @@ import java.io.File;
 import javax.annotation.Nonnull;
 
 /**
- * A test-case that checks the behavior of {@link BoundTransientBackend}.
+ * A test-case about {@link BoundTransientBackend}.
  */
 public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 

@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of {@link HBaseBackendFactory}.
+ * A test-case about {@link HBaseBackendFactory}.
  */
 public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implements HBaseTest {
 

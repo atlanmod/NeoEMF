@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of {@link BlueprintsOptions}.
+ * A test-case about {@link BlueprintsOptions}.
  */
 public class BlueprintsOptionsTest extends AbstractUnitTest implements BlueprintsTest {
 

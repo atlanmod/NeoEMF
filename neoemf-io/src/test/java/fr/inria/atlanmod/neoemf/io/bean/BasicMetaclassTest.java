@@ -18,7 +18,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of {@link BasicMetaclass}.
+ * A test-case about {@link BasicMetaclass}.
  */
 public class BasicMetaclassTest extends AbstractTest {
 

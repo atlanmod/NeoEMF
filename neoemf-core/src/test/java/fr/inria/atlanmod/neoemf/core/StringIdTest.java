@@ -20,6 +20,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * A test-case about {@link StringId}.
+ */
 public class StringIdTest extends AbstractTest {
 
     @Test

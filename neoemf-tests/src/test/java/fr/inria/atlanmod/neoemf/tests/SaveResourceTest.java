@@ -23,7 +23,7 @@ import java.util.Iterator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of a saved {@link org.eclipse.emf.ecore.resource.Resource}.
+ * A test-case that checks the behavior of a saved {@link PersistentResource}.
  */
 public class SaveResourceTest extends AbstractBackendTest {
 

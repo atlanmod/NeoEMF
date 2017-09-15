@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.context.CoreTest;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 /**
- * A test-case that checks the behavior of {@link DefaultTransientBackend}.
+ * A test-case about {@link DefaultTransientBackend}.
  */
 public class DefaultTransientBackendTest extends AbstractPersistenceMapperTest implements CoreTest {
 }

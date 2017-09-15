@@ -23,7 +23,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the behavior of {@link BlueprintsBackendFactory}.
+ * A test-case about {@link BlueprintsBackendFactory}.
  */
 public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest implements BlueprintsTest {
 

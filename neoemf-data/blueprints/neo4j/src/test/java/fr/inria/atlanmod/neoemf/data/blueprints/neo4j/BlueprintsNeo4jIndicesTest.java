@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 import javax.annotation.Nonnull;
 
 /**
- * A test-case that checks the behavior of {@code BlueprintsBackendIndices} by using a Neo4j implementation.
+ * A test-case about {@code BlueprintsBackendIndices} with a Neo4j implementation.
  */
 public class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest {
 

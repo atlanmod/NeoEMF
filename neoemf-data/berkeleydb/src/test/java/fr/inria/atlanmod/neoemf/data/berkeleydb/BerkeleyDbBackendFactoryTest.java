@@ -22,6 +22,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * A test-case about {@link BerkeleyDbBackendFactory}.
+ */
 public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest implements BerkeleyDbTest {
 
     @Override
