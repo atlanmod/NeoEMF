@@ -48,16 +48,16 @@ import static java.util.Objects.isNull;
  * @see BlueprintsBackendFactory
  */
 @ParametersAreNonnullByDefault
-class BlueprintsBackendIndices extends AbstractBlueprintsBackend {
+class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     /**
-     * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
+     * Constructs a new {@code DefaultBlueprintsBackend} wrapping the provided {@code baseGraph}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
      * @see BlueprintsBackendFactory
      */
-    protected BlueprintsBackendIndices(KeyIndexableGraph baseGraph) {
+    protected DefaultBlueprintsBackend(KeyIndexableGraph baseGraph) {
         super(baseGraph);
     }
 

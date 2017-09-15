@@ -36,7 +36,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
     @Override
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
-        assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
+        assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
         assertThat(transientBackend).isInstanceOf(BlueprintsBackend.class);
 
         Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), BlueprintsOptions.noOption());
-        assertThat(persistentBackend).isInstanceOf(BlueprintsBackendIndices.class);
+        assertThat(persistentBackend).isInstanceOf(DefaultBlueprintsBackend.class);
 
         transientBackend.copyTo(persistentBackend);
     }
@@ -62,6 +62,6 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest imp
                 .asMap();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
-        assertThat(backend).isInstanceOf(BlueprintsBackendIndices.class);
+        assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
     }
 }

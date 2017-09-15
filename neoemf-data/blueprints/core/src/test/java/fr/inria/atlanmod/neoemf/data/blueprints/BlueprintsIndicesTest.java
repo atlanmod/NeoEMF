@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 import javax.annotation.Nonnull;
 
 /**
- * A test-case about {@link BlueprintsBackendIndices} with a TinkerGraph implementation.
+ * A test-case about {@link DefaultBlueprintsBackend} with a TinkerGraph implementation.
  */
 public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
 

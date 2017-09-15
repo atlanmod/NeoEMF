@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 import javax.annotation.Nonnull;
 
 /**
- * A test-case about {@link HBaseBackendArraysStrings}.
+ * A test-case about {@link DefaultHBaseBackend}.
  */
 public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
 

@@ -118,7 +118,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     private final IdGraph<KeyIndexableGraph> graph;
 
     /**
-     * Constructs a new {@code BlueprintsBackendIndices} wrapping the provided {@code baseGraph}.
+     * Constructs a new {@code AbstractBlueprintsBackend} wrapping the provided {@code baseGraph}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *

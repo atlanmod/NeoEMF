@@ -60,6 +60,6 @@ public abstract class AbstractBlueprintsOptions<B extends AbstractBlueprintsOpti
      * @return this builder (for chaining)
      */
     public B withIndices() {
-        return withMapping("fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendIndices");
+        return withMapping("fr.inria.atlanmod.neoemf.data.blueprints.DefaultBlueprintsBackend");
     }
 }

@@ -38,7 +38,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
     @Override
     public void testCreateDefaultPersistentBackend() {
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), HBaseOptions.noOption());
-        assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
+        assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 
     @Ignore("Not supported")
@@ -58,6 +58,6 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
                 .asMap();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
-        assertThat(backend).isInstanceOf(HBaseBackendArraysStrings.class);
+        assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 }

@@ -37,7 +37,7 @@ import static java.util.Objects.nonNull;
  * @see HBaseBackendFactory
  */
 @ParametersAreNonnullByDefault
-class HBaseBackendArraysStrings extends AbstractHBaseBackend implements ReferenceAs<String>, ManyValueWithArrays, ManyReferenceMergedAs<String> {
+class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<String>, ManyValueWithArrays, ManyReferenceMergedAs<String> {
 
     /**
      * The {@link String} used to delimit multi-valued references.
@@ -66,7 +66,7 @@ class HBaseBackendArraysStrings extends AbstractHBaseBackend implements Referenc
      *
      * @param table the HBase table
      */
-    protected HBaseBackendArraysStrings(Table table) {
+    protected DefaultHBaseBackend(Table table) {
         super(table);
     }
 

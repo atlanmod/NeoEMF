@@ -72,6 +72,6 @@ public class HBaseOptions extends AbstractPersistenceOptions<HBaseOptions> {
      * @see fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceMergedAs
      */
     public HBaseOptions withArraysAndStrings() {
-        return withMapping("fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendArraysStrings");
+        return withMapping("fr.inria.atlanmod.neoemf.data.hbase.DefaultHBaseBackend");
     }
 }

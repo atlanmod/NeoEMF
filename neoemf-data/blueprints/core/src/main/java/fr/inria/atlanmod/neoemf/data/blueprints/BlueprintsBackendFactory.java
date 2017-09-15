@@ -142,7 +142,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     // TODO Remove this implementation
     public Backend createTransientBackend() {
         try {
-            return new BlueprintsBackendIndices(new TinkerGraph());
+            return new DefaultBlueprintsBackend(new TinkerGraph());
         }
         catch (Exception e) {
             throw new InvalidBackendException(e);
