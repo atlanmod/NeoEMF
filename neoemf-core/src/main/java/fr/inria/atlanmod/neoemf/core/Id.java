@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
@@ -29,6 +31,35 @@ import javax.annotation.concurrent.Immutable;
 public interface Id extends Comparable<Id>, Serializable {
 
     /**
+     * An immutable undefined {@link Id}.
+     */
+    @Nonnull
+    Id UNDEFINED = new Id() {
+        @Override
+        public long toLong() {
+            throw new IllegalStateException("Undefined identifier");
+        }
+
+        @Override
+        public int compareTo(@NotNull Id o) {
+            throw new IllegalStateException("Undefined identifier");
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            throw new IllegalStateException("Undefined identifier");
+        }
+    };
+
+    /**
+     * Returns the {@link Long} representation of this {@code Id}.
+     *
+     * @return a long
+     */
+    long toLong();
+
+    /**
      * Returns the {@link String} representation of this {@code Id}.
      *
      * @return a string
@@ -36,11 +67,4 @@ public interface Id extends Comparable<Id>, Serializable {
     @Nonnull
     @Override
     String toString();
-
-    /**
-     * Returns the {@link Long} number of this {@code Id}.
-     *
-     * @return a long
-     */
-    long toLong();
 }
