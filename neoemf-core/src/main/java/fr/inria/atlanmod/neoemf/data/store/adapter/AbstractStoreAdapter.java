@@ -15,6 +15,7 @@ import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -771,8 +772,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      * A converter that transforms the value of {@link EAttribute}s.
      */
     @ParametersAreNonnullByDefault
-    // TODO Add support for FeatureMap#Entry
     private class AttributeConverter {
+
+        /**
+         * The delimiter used to separate the feature from its value in a serialized {@link FeatureMap.Entry}.
+         */
+        @Nonnull
+        private static final String FEATURE_MAP_DELIMITER = "#";
 
         /**
          * Converts an instance of the {@code attribute} to a string literal representation.
@@ -782,6 +788,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
          *
          * @return the string literal representation of the value
          *
+         * @see #revert(EAttribute, String)
          * @see EcoreUtil#convertToString(EDataType, Object)
          */
         public String convert(EAttribute attribute, @Nullable Object value) {
@@ -798,8 +805,38 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return EcoreUtil.convertToString(dataType, value);
         }
 
-        private String convertEntry(EAttribute attribute, FeatureMap.Entry entry) {
-            throw new UnsupportedOperationException("FeatureMap.Entry are not supported yet");
+        /**
+         * Converts an instance of {@link FeatureMap.Entry} to a string literal representation.
+         * <p>
+         * The {@code entry} is serialized as {@code featureName#value}, where {@code value} is the string
+         * representation of the {@link FeatureMap.Entry#getValue() value} for an attribute, or the string
+         * representation of the {@link Id} for a reference.
+         *
+         * @param attribute the attribute to instantiate
+         * @param entry     the entry of the attribute
+         *
+         * @return the string literal representation of the entry
+         *
+         * @see #revertEntry(EAttribute, String)
+         * @see EcoreUtil#convertToString(EDataType, Object)
+         */
+        @Nonnull
+        private String convertEntry(@SuppressWarnings("unused") EAttribute attribute, FeatureMap.Entry entry) {
+            EStructuralFeature innerFeature = entry.getEStructuralFeature();
+            String value;
+
+            if (EObjects.isAttribute(innerFeature)) {
+                EAttribute innerAttribute = EObjects.asAttribute(innerFeature);
+                value = EcoreUtil.convertToString(innerAttribute.getEAttributeType(), entry.getValue());
+            }
+            else {
+                PersistentEObject referencedObject = PersistentEObject.from(entry.getValue());
+                updateInstanceOf(referencedObject);
+
+                value = referencedObject.id().toString();
+            }
+
+            return innerFeature.getName() + FEATURE_MAP_DELIMITER + value;
         }
 
         /**
@@ -810,6 +847,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
          *
          * @return the value of the attribute
          *
+         * @see #convert(EAttribute, Object)
          * @see EcoreUtil#createFromString(EDataType, String)
          */
         public Object revert(EAttribute attribute, @Nullable String value) {
@@ -826,8 +864,37 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return EcoreUtil.createFromString(dataType, value);
         }
 
-        private FeatureMap.Entry revertEntry(EAttribute attribute, String value) {
-            throw new UnsupportedOperationException("FeatureMap.Entry are not supported yet");
+        /**
+         * Creates an instance of {@link FeatureMap.Entry} from a string literal representation.
+         * <p>
+         * The {@code entry} must be serialized as {@code featureName#value}.
+         *
+         * @param attribute the attribute to instantiate
+         * @param entry     the string literal representation of the entry
+         *
+         * @return the entry of the attribute
+         *
+         * @see #convertEntry(EAttribute, FeatureMap.Entry)
+         * @see EcoreUtil#createFromString(EDataType, String)
+         */
+        @Nonnull
+        private FeatureMap.Entry revertEntry(EAttribute attribute, String entry) {
+            String[] splitValues = entry.split(FEATURE_MAP_DELIMITER, 2);
+
+            EClass metaClass = attribute.getEContainingClass();
+            EStructuralFeature innerFeature = metaClass.getEStructuralFeature(splitValues[0]);
+
+            Object value;
+
+            if (EObjects.isAttribute(innerFeature)) {
+                EAttribute innerAttribute = EObjects.asAttribute(innerFeature);
+                value = EcoreUtil.createFromString(innerAttribute.getEAttributeType(), splitValues[1]);
+            }
+            else {
+                value = resolve(StringId.of(splitValues[1]));
+            }
+
+            return FeatureMapUtil.createEntry(innerFeature, value);
         }
     }
 }

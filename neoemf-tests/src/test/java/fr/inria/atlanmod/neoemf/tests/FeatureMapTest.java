@@ -5,7 +5,6 @@ import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.eclipse.emf.ecore.util.FeatureMap;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * A test-case that checks the support of {@link FeatureMap}.
  */
-@Ignore("Not implemented yet")
+// TODO Add tests on FeatureMap.size(), ...indexOf(), ...contains(), ...
 public class FeatureMapTest extends AbstractBackendTest {
 
     /**
@@ -112,10 +111,10 @@ public class FeatureMapTest extends AbstractBackendTest {
         assertThat(featureMapAttributes.getValue(1)).isEqualTo(value1);
         assertThat(featureMapAttributes.getValue(2)).isEqualTo(value2);
 
-        attributes2.set(0, value3);
+        attributes2.set(0, value3); // Replace 1 by 3
 
-        assertThat(featureMapAttributes.getValue(0)).isEqualTo(value3);
-        assertThat(featureMapAttributes.getValue(1)).isEqualTo(value1);
+        assertThat(featureMapAttributes.getValue(0)).isEqualTo(value0);
+        assertThat(featureMapAttributes.getValue(1)).isEqualTo(value3);
         assertThat(featureMapAttributes.getValue(2)).isEqualTo(value2);
     }
 
@@ -218,10 +217,10 @@ public class FeatureMapTest extends AbstractBackendTest {
         assertThat(featureMapReferences.getValue(1)).isEqualTo(target1);
         assertThat(featureMapReferences.getValue(2)).isEqualTo(target2);
 
-        references2.set(0, target3);
+        references2.set(0, target3); // Replace 1 by 3
 
-        assertThat(featureMapReferences.getValue(0)).isEqualTo(target3);
-        assertThat(featureMapReferences.getValue(1)).isEqualTo(target1);
+        assertThat(featureMapReferences.getValue(0)).isEqualTo(target0);
+        assertThat(featureMapReferences.getValue(1)).isEqualTo(target3);
         assertThat(featureMapReferences.getValue(2)).isEqualTo(target2);
     }
 
