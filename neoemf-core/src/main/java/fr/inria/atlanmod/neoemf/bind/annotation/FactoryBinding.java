@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.bind;
+package fr.inria.atlanmod.neoemf.bind.annotation;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 

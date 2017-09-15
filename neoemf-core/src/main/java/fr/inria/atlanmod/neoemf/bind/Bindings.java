@@ -17,6 +17,8 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.annotation.FactoryName;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
@@ -49,7 +51,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A static utility class for binding, across reflection.
+ * A static utility class for binding and reflection.
  */
 @Static
 @ParametersAreNonnullByDefault
@@ -73,10 +75,7 @@ public final class Bindings {
     @Nonnull
     private static final Cache<Class<? extends Annotation>, Set<Class<?>>> ANNOTATED_TYPES = CacheBuilder.builder()
             .softValues()
-            .build(a -> new Reflections(new ConfigurationBuilder()
-                    .setExecutorService(POOL)
-                    .setUrls(URLS)
-                    .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner())).getTypesAnnotatedWith(a));
+            .build(Bindings::typesAnnotatedWith);
 
     static {
         // Add the default URLs for scanning
@@ -128,6 +127,26 @@ public final class Bindings {
         ANNOTATED_TYPES.invalidateAll();
     }
 
+    // region Reflection
+
+    /**
+     * Retrieves all types annotated with the specified {@code annotation}.
+     *
+     * @param annotation the expected annotation
+     *
+     * @return a set of annotated instances
+     *
+     * @see Reflections#getTypesAnnotatedWith(Class)
+     */
+    @Nonnull
+    public static Set<Class<?>> typesAnnotatedWith(Class<? extends Annotation> annotation) {
+        return new Reflections(new ConfigurationBuilder()
+                .setExecutorService(POOL)
+                .setUrls(URLS)
+                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()))
+                .getTypesAnnotatedWith(annotation);
+    }
+
     /**
      * Retrieves all types annotated with the specified {@code annotation}, which are also assignable from the given
      * {@code type}.
@@ -140,7 +159,7 @@ public final class Bindings {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <T> Set<Class<? extends T>> typesBoundWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
+    public static <T> Set<Class<? extends T>> typesAnnotatedWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
         return ANNOTATED_TYPES.get(annotation).stream()
                 .filter(type::isAssignableFrom)
                 .map(c -> (Class<? extends T>) c)
@@ -184,6 +203,8 @@ public final class Bindings {
             throw new BindingException(e);
         }
     }
+
+    // endregion
 
     /**
      * Retrieves the {@link URI} scheme for the speficied {@code type}.
@@ -276,7 +297,7 @@ public final class Bindings {
      */
     @Nonnull
     public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
-        for (Class<? extends T> t : typesBoundWith(FactoryBinding.class, type)) {
+        for (Class<? extends T> t : typesAnnotatedWith(FactoryBinding.class, type)) {
             if (Objects.equals(value, valueMapping.apply(t.getAnnotation(FactoryBinding.class).value()))) {
                 return newInstance(t);
             }

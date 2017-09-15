@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 

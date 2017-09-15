@@ -16,7 +16,7 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
-import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -166,7 +166,7 @@ public final class BackendFactoryRegistry {
     public void registerAll() {
         Log.debug("Registering all factories");
 
-        Set<Class<? extends UriBuilder>> boundClasses = Bindings.typesBoundWith(FactoryBinding.class, UriBuilder.class);
+        Set<Class<? extends UriBuilder>> boundClasses = Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class);
 
         if (boundClasses.isEmpty()) {
             Log.warn("No factory has been found in the classpath");
