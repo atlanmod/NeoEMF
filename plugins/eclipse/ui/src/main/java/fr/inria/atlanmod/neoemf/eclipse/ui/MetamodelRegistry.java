@@ -2,6 +2,7 @@ package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -9,20 +10,21 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -59,6 +61,9 @@ public final class MetamodelRegistry {
      * Constructs a new {@code Registry}.
      */
     private MetamodelRegistry() {
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
+        EPackage.Registry.INSTANCE.put(EcorePackage.eINSTANCE.getNsURI(), EcorePackage.eINSTANCE);
+
         ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> {
             if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
                 return;
@@ -98,34 +103,6 @@ public final class MetamodelRegistry {
      */
     public static MetamodelRegistry getInstance() {
         return Holder.INSTANCE;
-    }
-
-    /**
-     * Replace the instance class name of each {@link EDataType} of the {@code resource} if it represents a boxed
-     * primitive.
-     *
-     * @param resource the resource to analyze
-     */
-    private static void setDataTypesInstanceClasses(Resource resource) {
-        List<Class<?>> primitives = Arrays.asList(
-                Byte.class,
-                Short.class,
-                Integer.class,
-                Long.class,
-                Float.class,
-                Double.class,
-                Boolean.class,
-                Character.class,
-                String.class);
-
-        MoreIterables.stream(resource::getAllContents)
-                .filter(EDataType.class::isInstance)
-                .map(EDataType.class::cast)
-                .forEach(type -> primitives.stream()
-                        .filter(c -> Objects.equals(type.getName(), c.getSimpleName()))
-                        .findAny()
-                        .map(Class::getName)
-                        .ifPresent(type::setInstanceClassName));
     }
 
     /**
@@ -244,47 +221,56 @@ public final class MetamodelRegistry {
      * @return a immutable set of all registered metamodels
      */
     private Set<EPackage> register(URI uri, EPackage.Registry registry) throws IOException {
-        Resource.Factory.Registry.INSTANCE
-                .getExtensionToFactoryMap()
-                .put("*", new XMIResourceFactoryImpl());
-
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getPackageRegistry().put(EcorePackage.eINSTANCE.getNsURI(), EcorePackage.eINSTANCE);
+        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(registry);
+        resourceSet.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        Resource metamodel = resourceSet.createResource(uri);
-        metamodel.load(Collections.emptyMap());
+        Resource resource = resourceSet.getResource(uri, true);
+        resource.load(Collections.emptyMap());
 
-        setDataTypesInstanceClasses(metamodel);
-
-        return MoreIterables.stream(metamodel::getAllContents)
+        return MoreIterables.stream(resource::getAllContents)
                 .filter(EPackage.class::isInstance)
                 .map(EPackage.class::cast)
-                .peek(pkg -> {
-                    if (isNull(pkg.getNsURI()) || pkg.getNsURI().trim().isEmpty()) {
-                        if (isNull(pkg.getESuperPackage())) {
-                            pkg.setNsURI(pkg.getName());
-                        }
-                        else {
-                            pkg.setNsURI(pkg.getESuperPackage().getNsURI() + "/" + pkg.getName());
-                        }
-                    }
-
-                    if ((isNull(pkg.getNsPrefix()) || pkg.getNsPrefix().trim().isEmpty()) && nonNull(pkg.getESuperPackage())) {
-                        if (nonNull(pkg.getESuperPackage().getNsPrefix())) {
-                            pkg.setNsPrefix(pkg.getESuperPackage().getNsPrefix() + "." + pkg.getName());
-                        }
-                        else {
-                            pkg.setNsPrefix(pkg.getName());
-                        }
-                    }
-
-                    if (isNull(pkg.getNsPrefix())) {
-                        pkg.setNsPrefix(pkg.getName());
-                    }
-                })
-                .peek(pkg -> registry.put(pkg.getNsURI(), pkg))
-                .peek(pkg -> metamodel.setURI(URI.createURI(pkg.getNsURI())))
+                .map(this::fix)
+                .peek(p -> registry.put(p.getNsURI(), p))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Adds the missing information in an incomplete {@link EPackage}.
+     *
+     * @param ePackage the package to fix
+     *
+     * @return the fixed {@code ePackage}
+     */
+    private EPackage fix(EPackage ePackage) {
+        String uri = ePackage.getNsURI();
+        String prefix = ePackage.getNsPrefix();
+        EPackage superEPackage = ePackage.getESuperPackage();
+
+        if (Strings.isNullOrEmpty(uri)) {
+            if (isNull(superEPackage)) {
+                ePackage.setNsURI(ePackage.getName());
+            }
+            else {
+                ePackage.setNsURI(superEPackage.getNsURI() + "/" + ePackage.getName());
+            }
+        }
+
+        if (Strings.isNullOrEmpty(prefix) && nonNull(superEPackage)) {
+            if (nonNull(superEPackage.getNsPrefix())) {
+                ePackage.setNsPrefix(superEPackage.getNsPrefix() + "." + ePackage.getName());
+            }
+            else {
+                ePackage.setNsPrefix(ePackage.getName());
+            }
+        }
+
+        if (isNull(prefix)) {
+            ePackage.setNsPrefix(ePackage.getName());
+        }
+
+        return ePackage;
     }
 
     /**
