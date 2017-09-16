@@ -66,23 +66,29 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
+        checkNotNull(key);
+
         return get(key.owner()).map(v -> v.<V>getProperty(formatLabel(key.id())));
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
+        checkNotNull(key);
         checkNotNull(value);
 
         Vertex vertex = getOrCreate(key.owner());
 
         Optional<V> previousValue = Optional.ofNullable(vertex.<V>getProperty(formatLabel(key.id())));
         vertex.<V>setProperty(formatLabel(key.id()), value);
+
         return previousValue;
     }
 
     @Override
     public <V> void unsetValue(SingleFeatureBean key) {
+        checkNotNull(key);
+
         get(key.owner()).ifPresent(v -> v.<V>removeProperty(formatLabel(key.id())));
     }
 
@@ -114,6 +120,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(reference);
 
         Vertex vertex = getOrCreate(key.owner());
+        Vertex referencedVertex = getOrCreate(reference);
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, formatLabel(key.id()));
         Optional<Edge> referenceEdge = MoreIterables.onlyElement(referenceEdges);
@@ -125,7 +132,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             referenceEdge.get().remove();
         }
 
-        vertex.addEdge(formatLabel(key.id()), getOrCreate(reference));
+        vertex.addEdge(formatLabel(key.id()), referencedVertex);
 
         return previousId;
     }
@@ -134,13 +141,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public void unsetReference(SingleFeatureBean key) {
         checkNotNull(key);
 
-        Optional<Vertex> vertex = get(key.owner());
-
-        if (!vertex.isPresent()) {
-            return;
-        }
-
-        vertex.get().getEdges(Direction.OUT, formatLabel(key.id())).forEach(Element::remove);
+        get(key.owner())
+                .map(v -> v.getEdges(Direction.OUT, formatLabel(key.id())))
+                .ifPresent(v -> v.forEach(Element::remove));
     }
 
     @Override
@@ -172,7 +175,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Optional<Vertex> vertex = get(key.owner());
 
-        //noinspection OptionalIsPresent
         if (!vertex.isPresent()) {
             return Collections.emptyList();
         }
@@ -195,6 +197,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Optional<V> previousValue = valueOf(key);
         vertex.get().<V>setProperty(formatProperty(key.id(), key.position()), value);
+
         return previousValue;
     }
 
@@ -589,20 +592,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         checkNotNull(key);
 
-        Optional<Vertex> vertex = get(key.owner());
         Optional<Vertex> referencedVertex = get(reference);
 
-        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
+        if (!referencedVertex.isPresent()) {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, formatLabel(key.id()));
-
-        return MoreIterables.stream(edges)
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .boxed()
-                .min(Comparator.comparingInt(i -> i));
+        int index = allReferencesOf(key).indexOf(reference);
+        return index >= 0 ? Optional.of(index) : Optional.empty();
     }
 
     @Nonnull
@@ -614,20 +611,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         checkNotNull(key);
 
-        Optional<Vertex> vertex = get(key.owner());
         Optional<Vertex> referencedVertex = get(reference);
 
-        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
+        if (!referencedVertex.isPresent()) {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = referencedVertex.get().getEdges(Direction.IN, formatLabel(key.id()));
-
-        return MoreIterables.stream(edges)
-                .filter(e -> Objects.equals(e.getVertex(Direction.OUT), vertex.get()))
-                .mapToInt(e -> e.<Integer>getProperty(KEY_POSITION))
-                .boxed()
-                .max(Comparator.comparingInt(i -> i));
+        int lastIndex = allReferencesOf(key).lastIndexOf(reference);
+        return lastIndex >= 0 ? Optional.of(lastIndex) : Optional.empty();
     }
 
     @Nonnull
