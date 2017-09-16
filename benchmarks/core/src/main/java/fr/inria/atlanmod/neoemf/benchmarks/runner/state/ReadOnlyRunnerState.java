@@ -26,8 +26,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-
 /**
  * This state provides a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
  * <p/>
@@ -38,63 +36,49 @@ public class ReadOnlyRunnerState extends RunnerState {
     /**
      * The current {@link Resource}.
      */
-    protected Resource resource;
+    private Resource resource;
 
     /**
      * The location of the current {@link Adapter}.
      */
-    protected File storeFile;
+    private File storeFile;
 
     /**
      * Returns the current resource loaded from the datastore.
-     *
-     * @throws NullPointerException if the resource has not been initialized
      */
     @Nonnull
-    public Resource getResource() {
-        checkNotNull(resource);
-
+    public Resource resource() {
         return resource;
     }
 
     /**
      * Returns the location of the current {@link Adapter}.
-     *
-     * @return the location of the current {@link Adapter}.
-     *
-     * @throws NullPointerException if the store file has not been initialized
      */
     @Nonnull
-    protected File getStoreLocation() {
-        checkNotNull(storeFile);
-
+    protected File storeFile() {
         return storeFile;
     }
 
     /**
      * Loads and creates the current datastore and its resource.
-     * <p/>
-     * This method is automatically called when setup the iteration level.
      */
     @Setup(Level.Iteration)
     public void loadResource() throws IOException {
-        Log.info("Initializing the datastore");
-        storeFile = getAdapter().getOrCreateStore(getResourceFile(), getOptions(), useDirectImport());
+        Log.info("Initializing the data store");
+        storeFile = adapter().getOrCreateStore(resourceFile(), options(), useDirectImport());
 
         Log.info("Loading the resource");
-        resource = getAdapter().load(getStoreLocation(), getOptions());
+        resource = adapter().load(storeFile(), options());
     }
 
     /**
      * Unloads the current resource.
-     * <p/>
-     * This method is automatically called when tear down the iteration level.
      */
     @TearDown(Level.Iteration)
     public void unloadResource() {
         Log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {
-            getAdapter().unload(resource);
+            adapter().unload(resource);
             resource = null;
         }
 

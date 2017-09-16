@@ -53,10 +53,6 @@ public class QueryFactory {
 
     /**
      * Counts the number of elements in a {@link Resource} by using {@link Resource#getAllContents()}.
-     *
-     * @return a new query
-     *
-     * @see Resource#getAllContents()
      */
     @Nonnull
     public static Query<Long> queryCountAllElements() {
@@ -76,11 +72,6 @@ public class QueryFactory {
     /**
      * Returns the orphan and non-primitive types of a {@link Model}. This is a common query to all both standard and
      * customized methods.
-     *
-     * @return a new query
-     *
-     * @see Model#getOrphanTypes()
-     * @see PrimitiveType
      */
     @Nonnull
     public static Query<Integer> queryOrphanNonPrimitivesTypes() {
@@ -100,8 +91,6 @@ public class QueryFactory {
 
     /**
      * ???
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryClassDeclarationAttributes() {
@@ -120,8 +109,6 @@ public class QueryFactory {
 
     /**
      * ???
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryThrownExceptionsPerPackage() {
@@ -147,8 +134,6 @@ public class QueryFactory {
 
     /**
      * Renames all the method names with the given {@code name}.
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryRenameAllMethods(String name) {
@@ -167,8 +152,6 @@ public class QueryFactory {
 
     /**
      * ???
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryGrabats() {
@@ -193,8 +176,6 @@ public class QueryFactory {
 
     /**
      * ???
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryInvisibleMethodDeclarations() {
@@ -224,8 +205,6 @@ public class QueryFactory {
 
     /**
      * ???
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryUnusedMethodsWithList() {
@@ -256,8 +235,6 @@ public class QueryFactory {
 
     /**
      * ???
-     *
-     * @return a new query
      */
     @Nonnull
     public static Query<Integer> queryUnusedMethodsWithLoop() {

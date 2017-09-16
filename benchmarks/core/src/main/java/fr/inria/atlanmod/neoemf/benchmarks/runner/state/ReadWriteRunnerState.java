@@ -21,14 +21,13 @@ import javax.annotation.Nonnull;
  * <p/>
  * It is used for read/write queries.
  */
-// TODO: Dynamically save in a temporary datastore
 public class ReadWriteRunnerState extends ReadOnlyRunnerState {
 
     @Nonnull
     @Override
-    protected File getStoreLocation() {
+    protected File storeFile() {
         try {
-            return getAdapter().copy(super.getStoreLocation());
+            return adapter().copy(super.storeFile());
         }
         catch (Exception e) {
             throw new RuntimeException(e);

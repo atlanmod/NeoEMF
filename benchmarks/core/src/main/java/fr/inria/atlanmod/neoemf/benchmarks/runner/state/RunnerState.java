@@ -40,7 +40,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.RegEx;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -53,6 +52,7 @@ public class RunnerState {
     /**
      * A map that holds all existing {@link Adapter} instances, identified by their name.
      */
+    @Nonnull
     private static final Map<String, Class<? extends Adapter>> ADAPTERS = new HashMap<>();
 
     static {
@@ -67,6 +67,8 @@ public class RunnerState {
         ADAPTERS.put("tinker", BlueprintsAdapter.Tinker.class);
         ADAPTERS.put("neo4j", BlueprintsAdapter.Neo4j.class);
     }
+
+    // region JMH parameters
 
     /**
      * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
@@ -102,10 +104,7 @@ public class RunnerState {
     @Param("true")
     protected String direct;
 
-    /**
-     * The current {@link Adapter}.
-     */
-    private Adapter adapter;
+    // endregion
 
     /**
      * The current {@link org.eclipse.emf.ecore.resource.Resource} file.
@@ -116,13 +115,12 @@ public class RunnerState {
      * Returns the current adapter.
      */
     @Nonnull
-    public Adapter getAdapter() {
+    public Adapter adapter() {
         try {
-            if (isNull(adapter)) {
-                Class<? extends Adapter> instance = ADAPTERS.get(a);
-                checkState(nonNull(instance), "No adapter named '%s' is registered", a);
-                adapter = ADAPTERS.get(a).newInstance();
-            }
+            Adapter adapter;
+            Class<? extends Adapter> instance = ADAPTERS.get(a);
+            checkState(nonNull(instance), "No adapter named '%s' is registered", a);
+            adapter = ADAPTERS.get(a).newInstance();
             return adapter;
         }
         catch (InstantiationException | IllegalAccessException e) {
@@ -135,14 +133,12 @@ public class RunnerState {
      * Returns the current resource file.
      */
     @Nonnull
-    public File getResourceFile() {
+    public File resourceFile() {
         return resourceFile;
     }
 
     /**
      * Returns {@code true} if the direct import has to be used when creating or importing resources.
-     *
-     * @return {@code true} if the direct import has to be used when creating or importing resources.
      */
     public boolean useDirectImport() {
         return Boolean.valueOf(direct);
@@ -150,22 +146,18 @@ public class RunnerState {
 
     /**
      * Loads and creates the current resource file.
-     * <p/>
-     * This method is automatically called when setup the trial level.
      */
     @Setup(Level.Trial)
     public void initResource() throws IOException {
         Log.info("Initializing the resource");
-        resourceFile = getAdapter().getOrCreateResource(r);
+        resourceFile = adapter().getOrCreateResource(r);
     }
 
     /**
      * Returns all existing {@link PersistentStoreOptions} instances.
-     *
-     * @return an immutable map
      */
     @Nonnull
-    public PersistenceOptions getOptions() {
+    public PersistenceOptions options() {
         return Options.parse(o);
     }
 

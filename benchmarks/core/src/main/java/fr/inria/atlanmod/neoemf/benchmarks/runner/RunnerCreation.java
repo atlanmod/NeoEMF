@@ -25,25 +25,43 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Runner that provides benchmark methods for the initialization of data stores.
+ * Runner that provides benchmark methods for the initialization of resources and data stores.
  */
 public class RunnerCreation extends Runner {
 
+    /**
+     * Creates a new resource according to the current {@code state}. If the resource already exists, then this method
+     * does nothing.
+     */
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
-    @Warmup(iterations = 0)
-    @Measurement(iterations = 1)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
+    @Warmup(iterations = 1)
+    @Measurement(iterations = 0)
+    public void initResource(@SuppressWarnings("unused") RunnerState state) {
+        // Let setup and read down methods to create resource
+    }
+
+    /**
+     * Creates a new resource and store according to the current {@code state}. If the resource and store already exist,
+     * then this method does nothing.
+     */
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Warmup(iterations = 1)
+    @Measurement(iterations = 0)
+    public void initStore(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
     }
 
+    /**
+     * Creates a new store in a temporary location.
+     */
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
-    @OutputTimeUnit(TimeUnit.SECONDS)
     public void create(RunnerState state) throws IOException {
-        state.getAdapter().createTempStore(state.getResourceFile(), state.getOptions(), state.useDirectImport());
+        state.adapter().createTempStore(state.resourceFile(), state.options(), state.useDirectImport());
     }
 }
