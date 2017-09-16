@@ -183,8 +183,8 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
         private ChronicleMap<Id, ClassBean> instances;
 
         /**
-         * An in-memory map that stores single-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-         * identified by the associated {@link SingleFeatureBean}.
+         * An in-memory map that stores all feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+         * identified by the associated {@link SingleFeatureBean}. Many-feature values are grouped in collections.
          */
         private ChronicleMap<SingleFeatureBean, Object> features;
 

@@ -96,7 +96,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     private final Cache<Id, Vertex> verticesCache = CacheBuilder.builder()
-            .maximumSize()
+            .softValues()
             .build();
 
     /**
@@ -127,11 +127,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
         checkNotNull(baseGraph);
 
-        this.graph = new InternalIdGraph(baseGraph);
+        graph = new InternalIdGraph(baseGraph);
 
         indexedMetaClasses = new ArrayList<>();
-        metaClassIndex = Optional.ofNullable(graph.getIndex(KEY_METACLASSES, Vertex.class))
-                .orElseGet(() -> graph.createIndex(KEY_METACLASSES, Vertex.class));
+        metaClassIndex = getOrCreateIndex(KEY_METACLASSES);
     }
 
     /**
@@ -169,6 +168,19 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     protected static String formatLabel(Object label) {
         return String.valueOf(label);
+    }
+
+    /**
+     * Retrieves or create an index for the given {@code name}.
+     *
+     * @param name the name of the index
+     *
+     * @return the index
+     */
+    @Nonnull
+    private Index<Vertex> getOrCreateIndex(String name) {
+        return Optional.ofNullable(graph.getIndex(name, Vertex.class))
+                .orElseGet(() -> graph.createIndex(name, Vertex.class));
     }
 
     @Override

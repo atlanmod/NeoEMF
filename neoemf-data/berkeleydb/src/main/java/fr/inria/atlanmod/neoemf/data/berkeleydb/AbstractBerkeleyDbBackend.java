@@ -54,28 +54,29 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
-     * The databases environment.
+     * The BerkeleyDB environment.
      */
     @Nonnull
     protected final Environment environment;
 
     /**
-     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}, identified
-     * by the object {@link Id}.
+     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
      */
     @Nonnull
     private final Database containers;
 
     /**
-     * A persistent map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject},
+     * A persistent map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
     private final Database instances;
 
     /**
-     * A persistent map that stores structural features values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject},
-     * identified by the associated {@link SingleFeatureBean}.
+     * A persistent map that stores single-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the associated {@link SingleFeatureBean}. Depending on the mapping used, it can also contain
+     * many-feature values grouped in collections.
      */
     @Nonnull
     private final Database features;
@@ -83,8 +84,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     /**
      * Creates a new {@code AbstractBerkeleyDbBackend} with the configuration of the databases.
      *
-     * @param environment    the database environment
-     * @param databaseConfig the database configuration
+     * @param environment    the database environment used to create and manage {@link Database}s
+     * @param databaseConfig the configuration of the created {@link Database}s
      */
     protected AbstractBerkeleyDbBackend(Environment environment, DatabaseConfig databaseConfig) {
         checkNotNull(environment);

@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
 
 import org.mapdb.DB;
+import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
 import java.util.Map;
@@ -36,24 +37,24 @@ import static java.util.Objects.nonNull;
 class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithIndices {
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * A persistent map that stores many-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link ManyFeatureBean}.
      */
     @Nonnull
-    private final Map<ManyFeatureBean, Object> manyFeatures;
+    private final HTreeMap<ManyFeatureBean, Object> manyFeatures;
 
     /**
-     * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code db}.
+     * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code database}.
      *
-     * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
+     * @param database the {@link DB} used to creates the used {@link HTreeMap}s and manage the database
      *
      * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")
-    protected MapDbBackendIndices(DB db) {
-        super(db);
+    protected MapDbBackendIndices(DB database) {
+        super(database);
 
-        this.manyFeatures = db.hashMap("features/many")
+        manyFeatures = database.hashMap("features/many")
                 .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forManyFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();

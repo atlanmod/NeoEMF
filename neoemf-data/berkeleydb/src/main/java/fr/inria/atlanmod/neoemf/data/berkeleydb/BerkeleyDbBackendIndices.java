@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
 class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements ManyValueWithIndices {
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.Id},
+     * A persistent map that stores many-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the associated {@link ManyFeatureBean}.
      */
     @Nonnull

@@ -24,6 +24,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
+import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
 import java.io.IOException;
@@ -55,53 +56,54 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
      * The MapDB database.
      */
     @Nonnull
-    private final DB db;
+    private final DB database;
 
     /**
      * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
      * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, SingleFeatureBean> containers;
+    private final HTreeMap<Id, SingleFeatureBean> containers;
 
     /**
-     * A persistent map that stores the EClass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s, identified
-     * by the object {@link Id}.
+     * A persistent map that stores the meta-class for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the object {@link Id}.
      */
     @Nonnull
-    private final Map<Id, ClassBean> instances;
+    private final HTreeMap<Id, ClassBean> instances;
 
     /**
-     * A persistent map that stores Structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
-     * identified by the associated {@link SingleFeatureBean}.
+     * A persistent map that stores single-feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
+     * identified by the associated {@link SingleFeatureBean}. Depending on the mapping used, it can also contain
+     * many-feature values grouped in collections.
      */
     @Nonnull
-    private final Map<SingleFeatureBean, Object> features;
+    private final HTreeMap<SingleFeatureBean, Object> singleFeatures;
 
     /**
-     * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code db}.
+     * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code database}.
      *
-     * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
+     * @param database the {@link DB} used to create and manage {@link HTreeMap}s
      *
      * @see MapDbBackendFactory
      */
     @SuppressWarnings("unchecked")
-    protected AbstractMapDbBackend(DB db) {
-        checkNotNull(db);
+    protected AbstractMapDbBackend(DB database) {
+        checkNotNull(database);
 
-        this.db = db;
+        this.database = database;
 
-        this.containers = db.hashMap("containers")
+        this.containers = database.hashMap("containers")
                 .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forId()))
                 .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .createOrOpen();
 
-        this.instances = db.hashMap("instances")
+        this.instances = database.hashMap("instances")
                 .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forId()))
                 .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forClass()))
                 .createOrOpen();
 
-        this.features = db.hashMap("features/single")
+        this.singleFeatures = database.hashMap("singleFeatures/single")
                 .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
@@ -109,8 +111,8 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Override
     public void save() {
-        if (!db.isClosed()) {
-            db.commit();
+        if (!database.isClosed()) {
+            database.commit();
         }
     }
 
@@ -121,7 +123,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Override
     protected void innerClose() {
-        db.close();
+        database.close();
     }
 
     @Override
@@ -129,11 +131,11 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     protected void innerCopyTo(DataMapper target) {
         AbstractMapDbBackend to = AbstractMapDbBackend.class.cast(target);
 
-        for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
+        for (Map.Entry<String, Object> entry : database.getAll().entrySet()) {
             Object collection = entry.getValue();
             if (Map.class.isInstance(collection)) {
                 Map fromMap = Map.class.cast(collection);
-                Map toMap = to.db.hashMap(entry.getKey()).createOrOpen();
+                Map toMap = to.database.hashMap(entry.getKey()).createOrOpen();
 
                 toMap.putAll(fromMap);
             }
@@ -187,7 +189,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return get(features, key);
+        return get(singleFeatures, key);
     }
 
     @Nonnull
@@ -196,14 +198,14 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
         checkNotNull(value);
 
-        return put(features, key, value);
+        return put(singleFeatures, key, value);
     }
 
     @Override
     public void unsetValue(SingleFeatureBean key) {
         checkNotNull(key);
 
-        delete(features, key);
+        delete(singleFeatures, key);
     }
 
     @Nonnull
@@ -225,7 +227,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> get(Map<K, ? super V> database, K key) {
+    protected <K, V> Optional<V> get(HTreeMap<K, ? super V> database, K key) {
         return Optional.ofNullable((V) database.get(key));
     }
 
@@ -243,7 +245,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> put(Map<K, ? super V> database, K key, V value) {
+    protected <K, V> Optional<V> put(HTreeMap<K, ? super V> database, K key, V value) {
         return Optional.ofNullable((V) database.put(key, value));
     }
 
@@ -259,7 +261,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
      *
      * @return {@code true} if the {@code key} has been saved
      */
-    protected <K, V> boolean putIfAbsent(Map<K, ? super V> database, K key, V value) {
+    protected <K, V> boolean putIfAbsent(HTreeMap<K, ? super V> database, K key, V value) {
         return isNull(database.putIfAbsent(key, value));
     }
 
@@ -270,7 +272,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
      * @param key      the key of the element to remove
      * @param <K>      the type of the key
      */
-    protected <K> void delete(Map<K, ?> database, K key) {
+    protected <K> void delete(HTreeMap<K, ?> database, K key) {
         database.remove(key);
     }
 
