@@ -21,6 +21,12 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- EMF -->
 
         <dependency>

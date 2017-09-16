@@ -9,8 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.io;
 
+import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.log.Log;
 
 import java.io.IOException;
@@ -32,27 +33,32 @@ import static java.util.Objects.nonNull;
 /**
  * A class that provides static methods for {@link Path} management.
  */
+@Static
 @ParametersAreNonnullByDefault
 public class Workspace {
 
     /**
      * The environment variable key of the NeoEMF home directory.
      */
+    @Nonnull
     private static final String HOME_KEY = "NEOEMF_HOME";
 
     /**
      * The base directory of benchmarks.
      */
+    @Nonnull
     private static final Path BASE_DIRECTORY = getHome();
 
     /**
      * The directory where to store the original {@link org.eclipse.emf.ecore.resource.Resource}s.
      */
+    @Nonnull
     private static final Path RESOURCES_DIRECTORY = getBaseDirectory().resolve("resources");
 
     /**
      * The directory where to store the adapted {@link org.eclipse.emf.ecore.resource.Resource}s.
      */
+    @Nonnull
     private static final Path STORES_DIRECTORY = getBaseDirectory().resolve("stores");
 
     /**
