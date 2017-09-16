@@ -120,7 +120,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(reference);
 
         Vertex vertex = getOrCreate(key.owner());
-        Vertex referencedVertex = getOrCreate(reference);
 
         Iterable<Edge> referenceEdges = vertex.getEdges(Direction.OUT, formatLabel(key.id()));
         Optional<Edge> referenceEdge = MoreIterables.onlyElement(referenceEdges);
@@ -131,6 +130,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             previousId = Optional.of(StringId.from(previousVertex.getId()));
             referenceEdge.get().remove();
         }
+
+        Vertex referencedVertex = getOrCreate(reference);
 
         vertex.addEdge(formatLabel(key.id()), referencedVertex);
 
@@ -456,7 +457,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             previousEdge.get().remove();
         }
 
-        Edge edge = vertex.get().addEdge(formatLabel(key.id()), getOrCreate(reference));
+        Vertex referencedVertex = getOrCreate(reference);
+
+        Edge edge = vertex.get().addEdge(formatLabel(key.id()), referencedVertex);
         edge.<Integer>setProperty(KEY_POSITION, key.position());
 
         return previousId;
@@ -482,7 +485,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             edges.forEach(e -> e.<Integer>setProperty(KEY_POSITION, e.<Integer>getProperty(KEY_POSITION) + 1));
         }
 
-        Edge edge = vertex.addEdge(formatLabel(key.id()), getOrCreate(reference));
+        Vertex referencedVertex = getOrCreate(reference);
+
+        Edge edge = vertex.addEdge(formatLabel(key.id()), referencedVertex);
         edge.<Integer>setProperty(KEY_POSITION, key.position());
 
         sizeForReference(key.withoutPosition(), size + 1);
@@ -518,7 +523,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         int i = 0;
         for (Id reference : collection) {
-            Edge edge = vertex.addEdge(formatLabel(key.id()), getOrCreate(reference));
+            Vertex referencedVertex = getOrCreate(reference);
+
+            Edge edge = vertex.addEdge(formatLabel(key.id()), referencedVertex);
             edge.<Integer>setProperty(KEY_POSITION, key.position() + i);
             i++;
         }
