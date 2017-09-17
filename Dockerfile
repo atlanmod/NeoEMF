@@ -52,7 +52,7 @@ RUN apt-get update -qq \
 ADD . src
 
 # Build the main project
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f src/pom.xml
+RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -pl !neoemf-data/hbase,!neoemf-tests -f src/pom.xml
 
 # Build benchmarks
 RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml
