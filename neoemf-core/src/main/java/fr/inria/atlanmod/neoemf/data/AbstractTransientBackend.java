@@ -26,8 +26,6 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.hash.serialization.BytesReader;
 import net.openhft.chronicle.hash.serialization.BytesWriter;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -36,10 +34,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -208,60 +206,58 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         /**
          * The estimated number of entries in maps.
          */
-        long ENTRIES = powerTwo(20);
+        long ENTRIES = (long) Math.pow(2, 20);
 
         /**
          * The estimated size of an {@link Id}.
          */
-        long ID = powerTwo(6);
+        long ID = (long) Math.pow(2, 6);
 
         /**
          * The estimated size of a {@link ClassBean}.
          */
-        long CLASS = powerTwo(6);
+        long CLASS = (long) Math.pow(2, 6);
 
         /**
          * The estimated size of a {@link FeatureBean}.
          */
-        long FEATURE = powerTwo(6);
+        long FEATURE = (long) Math.pow(2, 6);
 
         /**
          * The estimated size of a feature value.
          */
-        long FEATURE_VALUE = powerTwo(12);
-
-        /**
-         * Returns {@code 2}<sup>{@code exponent}</sup>.
-         */
-        @Nonnegative
-        static long powerTwo(int exponent) {
-            double value = Math.pow(2, exponent);
-
-            if (value > Long.MAX_VALUE) {
-                throw new ArithmeticException(String.format("%f > %d", value, Long.MAX_VALUE));
-            }
-
-            return (long) value;
-        }
+        long FEATURE_VALUE = (long) Math.pow(2, 12);
     }
 
     /**
-     * @param <T>
+     * A ChronicleMap serializer that delegates its processing to an internal {@link Serializer}.
+     *
+     * @param <T> the type of the (de)serialized value
      */
+    @Immutable
     @ParametersAreNonnullByDefault
     static final class BeanMarshaller<T> implements BytesWriter<T>, BytesReader<T> {
 
-        private final Serializer<T> serializer;
+        /**
+         * The serializer where to delegate the serialization process.
+         */
+        @Nonnull
+        private final Serializer<T> delegate;
 
-        public BeanMarshaller(Serializer<T> serializer) {
-            this.serializer = serializer;
+        /**
+         * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
+         *
+         * @param delegate the serializer where to delegate the serialization process
+         */
+        public BeanMarshaller(Serializer<T> delegate) {
+            this.delegate = delegate;
         }
 
         @Nonnull
         @Override
         public T read(@SuppressWarnings("rawtypes") Bytes in, @Nullable T using) {
             try {
-                return serializer.deserialize(new DataInputStream(in.inputStream()));
+                return delegate.deserialize(new DataInputStream(in.inputStream()));
             }
             catch (IOException e) {
                 throw new IllegalStateException(e); // Should never happen
@@ -269,9 +265,9 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         }
 
         @Override
-        public void write(@SuppressWarnings("rawtypes") Bytes out, @NotNull T value) {
+        public void write(@SuppressWarnings("rawtypes") Bytes out, @Nonnull T value) {
             try {
-                serializer.serialize(value, new DataOutputStream(out.outputStream()));
+                delegate.serialize(value, new DataOutputStream(out.outputStream()));
             }
             catch (IOException e) {
                 throw new IllegalStateException(e); // Should never happen

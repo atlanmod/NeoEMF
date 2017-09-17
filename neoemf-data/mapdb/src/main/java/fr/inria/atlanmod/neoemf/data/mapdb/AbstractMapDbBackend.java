@@ -288,7 +288,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     /**
-     * A {@link Serializer} that delegates its processing to an internal {@link fr.inria.atlanmod.commons.io.serializer.Serializer}.
+     * A MapDB serializer that delegates its processing to an internal {@link fr.inria.atlanmod.commons.io.serializer.Serializer}.
      *
      * @param <T> the type of the (de)serialized value
      */
@@ -318,6 +318,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
             delegate.serialize(value, out);
         }
 
+        @Nonnull
         @Override
         public T deserialize(DataInput2 in, int available) throws IOException {
             return delegate.deserialize(in);

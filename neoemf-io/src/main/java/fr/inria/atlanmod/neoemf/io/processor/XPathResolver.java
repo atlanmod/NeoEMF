@@ -61,18 +61,14 @@ public class XPathResolver extends AbstractProcessor<Handler> {
     private static final Pattern PATTERN_NO_INDEX = Pattern.compile(REGEX_NO_INDEX, Pattern.UNICODE_CASE);
 
     /**
-     * The XPath structure.
-     */
-    @Nonnull
-    private final XPathTree paths = new XPathTree();
-
-    /**
      * In-memory cache that holds the recently hashed {@link Id}s, identified by their XPath value.
      */
-    @Nonnull
-    private final Cache<String, Id> idCache = CacheBuilder.builder()
-            .softValues()
-            .build();
+    private Cache<String, Id> idCache;
+
+    /**
+     * The XPath structure.
+     */
+    private XPathTree paths;
 
     /**
      * The start of an XPath expression in this {@link XPathResolver}.
@@ -94,6 +90,18 @@ public class XPathResolver extends AbstractProcessor<Handler> {
      */
     public XPathResolver(Handler handler) {
         super(handler);
+    }
+
+    @Override
+    public void onInitialize() {
+        idCache = CacheBuilder.builder()
+                .maximumSize(Runtime.getRuntime().maxMemory() / (long) Math.pow(2, 18))
+                .softValues()
+                .build();
+
+        paths = new XPathTree();
+
+        notifyInitialize();
     }
 
     @Override
@@ -127,6 +135,14 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         }
 
         notifyEndElement();
+    }
+
+    @Override
+    public void onComplete() {
+        idCache.invalidateAll();
+        idCache.cleanUp();
+
+        notifyComplete();
     }
 
     /**

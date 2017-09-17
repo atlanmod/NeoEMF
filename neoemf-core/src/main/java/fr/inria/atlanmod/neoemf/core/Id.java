@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
@@ -41,7 +39,7 @@ public interface Id extends Comparable<Id>, Serializable {
         }
 
         @Override
-        public int compareTo(@NotNull Id o) {
+        public int compareTo(@Nonnull Id o) {
             throw new IllegalStateException("Undefined identifier");
         }
 
