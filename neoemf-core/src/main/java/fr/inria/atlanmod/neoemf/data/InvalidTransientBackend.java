@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -48,6 +49,18 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
+        throw EXCEPTION;
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        throw EXCEPTION;
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         throw EXCEPTION;
     }
 

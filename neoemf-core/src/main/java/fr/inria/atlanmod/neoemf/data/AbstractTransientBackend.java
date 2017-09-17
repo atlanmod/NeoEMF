@@ -33,6 +33,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -160,6 +162,15 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
     @Nonnull
     @Override
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return instances().entrySet().stream()
+                .filter(e -> metaClasses.contains(e.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+    }
+
+    @Nonnull
+    @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkKey(key);
 
@@ -191,6 +202,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     /**
      * Some statistics about the size of key and values.
      */
+    @ParametersAreNonnullByDefault
     protected interface Sizes {
 
         /**
@@ -201,12 +213,12 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         /**
          * The estimated size of an {@link Id}.
          */
-        long ID = powerTwo(5);
+        long ID = powerTwo(6);
 
         /**
          * The estimated size of a {@link ClassBean}.
          */
-        long CLASS = powerTwo(7);
+        long CLASS = powerTwo(6);
 
         /**
          * The estimated size of a {@link FeatureBean}.
@@ -216,7 +228,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         /**
          * The estimated size of a feature value.
          */
-        long FEATURE_VALUE = powerTwo(10);
+        long FEATURE_VALUE = powerTwo(15);
 
         /**
          * Returns {@code 2}<sup>{@code exponent}</sup>.

@@ -30,7 +30,6 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -345,23 +344,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
-        // There is no strict instance of an abstract class
-        if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
-            return Collections.emptyList();
-        }
-
-        Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();
-        allInstances.add(metaClass);
-
-        // Get all vertices that are indexed with one of the meta-class
-        return allInstances.stream()
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return metaClasses.stream()
                 .map(mc -> metaClassIndex.get(KEY_NAME, mc.name()))
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
                 .map(v -> StringId.from(v.getId()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**

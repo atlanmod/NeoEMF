@@ -267,7 +267,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     .map(id -> eStore.resolve(id));
         }
         catch (UnsupportedOperationException e) {
-            Log.debug(e.getMessage() + ": using standard EMF API instead");
+            Log.debug("This mapper doesn't support the lookup of all instances: using standard EMF API instead");
 
             allInstancesOf = MoreIterables.stream(this::getAllContents)
                     .filter(eClass::isInstance)

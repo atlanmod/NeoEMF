@@ -30,6 +30,8 @@ import org.mapdb.Serializer;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -103,7 +105,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
                 .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forClass()))
                 .createOrOpen();
 
-        this.singleFeatures = database.hashMap("singleFeatures/single")
+        this.singleFeatures = database.hashMap("features/single")
                 .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
@@ -182,6 +184,15 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
         checkNotNull(metaClass);
 
         return putIfAbsent(instances, id, metaClass);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return instances.getEntries().stream()
+                .filter(e -> metaClasses.contains(e.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     @Nonnull

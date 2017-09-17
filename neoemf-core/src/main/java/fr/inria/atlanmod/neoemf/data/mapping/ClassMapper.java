@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 
-import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -72,17 +72,22 @@ public interface ClassMapper {
      * @param metaClass the meta-class to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return a {@link Iterable} containing the instances of the {@code metaClass}
+     * @return an {@link Iterable} containing the instances of the {@code metaClass}
      *
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
-    default Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
-        // There is no strict instance of an abstract class
-        if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
-            return Collections.emptyList();
-        }
+    Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
 
-        throw new UnsupportedOperationException("This mapper doesn't support the lookup of all instances");
-    }
+    /**
+     * Retrieves all instances of the given {@code metaClasses}.
+     *
+     * @param metaClasses the meta-classes to compute the instances of
+     *
+     * @return a {@link Iterable} containing the instances of the {@code metaClasses}
+     *
+     * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
+     */
+    @Nonnull
+    Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses);
 }

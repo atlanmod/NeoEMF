@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.client.Table;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -202,6 +203,12 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             handleException(e);
             return false;
         }
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        throw new UnsupportedOperationException();
     }
 
     @Nonnull

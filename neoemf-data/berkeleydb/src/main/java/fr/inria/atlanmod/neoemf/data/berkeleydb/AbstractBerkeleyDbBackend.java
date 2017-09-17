@@ -32,8 +32,11 @@ import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -162,6 +165,29 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
         checkNotNull(metaClass);
 
         return putIfAbsent(instances, id, metaClass, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        try (Cursor cursor = instances.openCursor(null, null)) {
+            DatabaseEntry dbKey = new DatabaseEntry();
+            DatabaseEntry dbValue = new DatabaseEntry();
+
+            Set<Id> instancesOf = new HashSet<>();
+
+            while (cursor.getNext(dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                if (metaClasses.contains(SERIALIZER_FACTORY.forClass().deserialize(dbValue.getData()))) {
+                    instancesOf.add(SERIALIZER_FACTORY.forId().deserialize(dbKey.getData()));
+                }
+            }
+
+            return instancesOf;
+        }
+        catch (IOException e) {
+            handleException(e);
+            return Collections.emptySet();
+        }
     }
 
     @Nonnull

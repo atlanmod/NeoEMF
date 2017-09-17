@@ -14,10 +14,13 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.commons.Copier;
 import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -105,6 +108,19 @@ public abstract class AbstractBackend implements Backend {
                 ACTIVE_BACKENDS.remove(this);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    public final Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
+            return Collections.emptySet();
+        }
+
+        Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();
+        allInstances.add(metaClass);
+
+        return allInstancesOf(allInstances);
     }
 
     /**

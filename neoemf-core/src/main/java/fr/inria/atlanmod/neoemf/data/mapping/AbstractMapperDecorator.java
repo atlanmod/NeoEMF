@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -134,6 +135,13 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         return next.allInstancesOf(metaClass, strict);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return next.allInstancesOf(metaClasses);
     }
 
     @Nonnull

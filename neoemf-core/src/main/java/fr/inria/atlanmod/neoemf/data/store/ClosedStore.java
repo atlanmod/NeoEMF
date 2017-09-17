@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,6 +64,12 @@ public final class ClosedStore implements Store {
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        throw EXCEPTION;
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         throw EXCEPTION;
     }
 
