@@ -55,7 +55,7 @@ public class StatsStore extends AbstractStore {
 
     @Override
     public void close() {
-        Log.debug("Statistics for {0}: {1}", backend().getClass().getSimpleName() + '@' + backend().hashCode(), formatAsString());
+        Log.info("Statistics for {0}: {1}", backend().getClass().getSimpleName() + '@' + backend().hashCode(), formatAsString());
 
         super.close();
     }

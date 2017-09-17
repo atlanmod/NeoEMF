@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.log.Logger;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.Handler;
@@ -33,13 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class LoggingProcessor extends AbstractProcessor<Handler> {
 
     /**
-     * The special logger.
-     */
-    @Nonnull
-    private static final Logger LOG = Log.root();
-
-    /**
-     * The {@link Level} for the {@link #LOG}.
+     * The {@link Level} for logging.
      */
     @Nonnull
     private final Level level;
@@ -71,14 +64,14 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onInitialize() {
-        LOG.log(level, "[#] Starting document");
+        Log.log(level, "[#] Starting document");
 
         notifyInitialize();
     }
 
     @Override
     public void onStartElement(BasicElement element) {
-        LOG.log(level, "[E] {0} : {1} = {2}",
+        Log.log(level, "[E] {0} : {1} = {2}",
                 element.metaClass(),
                 element.name(),
                 element.id());
@@ -90,7 +83,7 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        LOG.log(level, "[A]    {0}{1} = {2}",
+        Log.log(level, "[A]    {0}{1} = {2}",
                 attribute.name(),
                 attribute.isMany() ? " many[-1]" : Strings.EMPTY,
                 attribute.value());
@@ -100,7 +93,7 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onReference(BasicReference reference) {
-        LOG.log(level, "[R]    {0}{1} = {2} -{3}> {4}",
+        Log.log(level, "[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
                 reference.isMany() ? " many[-1]" : Strings.EMPTY,
                 Objects.isNull(reference.owner()) ? "this" : reference.owner(),
@@ -112,7 +105,7 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
 
     @Override
     public void onComplete() {
-        LOG.log(level, "[#] Ending document");
+        Log.log(level, "[#] Ending document");
 
         notifyComplete();
     }

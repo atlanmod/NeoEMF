@@ -14,10 +14,8 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.log.Logger;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -44,12 +42,7 @@ import static java.util.Objects.nonNull;
 public class LoggingStore extends AbstractStore {
 
     /**
-     * The {@link Logger} for the associated {@link Backend}.
-     */
-    private static final Logger LOG = Log.root();
-
-    /**
-     * The default {@link Level} for the {@link #LOG}.
+     * The default {@link Level} for logging.
      */
     private final Level level;
 
@@ -432,7 +425,7 @@ public class LoggingStore extends AbstractStore {
      * Logs a call of a method.
      */
     private void log() {
-        LOG.log(level, "[{0}] Called {1}()",
+        Log.log(level, "[{0}] Called {1}()",
                 backend(),
                 getCallingMethod());
     }
@@ -445,7 +438,7 @@ public class LoggingStore extends AbstractStore {
      * @param result the result of the call
      */
     private void logSuccess(Object key, @Nullable Object value, @Nullable Object result) {
-        LOG.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + (nonNull(result) ? " = {4}" : Strings.EMPTY),
+        Log.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + (nonNull(result) ? " = {4}" : Strings.EMPTY),
                 backend(),
                 getCallingMethod(),
                 key,
@@ -461,7 +454,7 @@ public class LoggingStore extends AbstractStore {
      * @param e     the exception thrown during the the call
      */
     private void logFailure(Object key, @Nullable Object value, Throwable e) {
-        LOG.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + " but failed with {4}",
+        Log.log(level, "[{0}] Called {1}() for {2}" + (nonNull(value) ? " with {3}" : Strings.EMPTY) + " but failed with {4}",
                 backend(),
                 getCallingMethod(),
                 key,
