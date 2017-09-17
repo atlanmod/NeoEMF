@@ -252,7 +252,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
                 return serializer.deserialize(new DataInputStream(in.inputStream()));
             }
             catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e); // Should never happen
             }
         }
 
@@ -262,7 +262,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
                 serializer.serialize(value, new DataOutputStream(out.outputStream()));
             }
             catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e); // Should never happen
             }
         }
     }

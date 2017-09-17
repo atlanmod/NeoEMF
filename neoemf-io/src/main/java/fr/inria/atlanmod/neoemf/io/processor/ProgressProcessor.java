@@ -63,7 +63,7 @@ public class ProgressProcessor extends AbstractProcessor<Handler> {
             this.totalSize = stream.available();
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 

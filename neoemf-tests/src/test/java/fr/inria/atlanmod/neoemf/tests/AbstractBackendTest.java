@@ -153,7 +153,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e); // Should never happen
         }
     }
 
@@ -168,7 +168,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
             return closeAtExit(context.createTransientResource(EPACKAGE, file));
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e); // Should never happen
         }
     }
 

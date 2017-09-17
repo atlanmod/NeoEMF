@@ -227,7 +227,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
                 return BlueprintsConfig.class.cast(configClass.newInstance());
             }
             catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e); // Should never happen
             }
         }
         else {

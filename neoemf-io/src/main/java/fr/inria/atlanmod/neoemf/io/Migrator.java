@@ -272,7 +272,7 @@ public final class Migrator<T> {
      * @return this migrator (for chaining)
      */
     @Nonnull
-    public Migrator<T> toXmi(@WillNotClose OutputStream stream) {
+    public Migrator<T> toXmi(@WillNotClose OutputStream stream) throws IOException {
         return to(new XmiStreamWriter(stream));
     }
 
@@ -340,7 +340,7 @@ public final class Migrator<T> {
             reader = readerClass.getConstructor(Handler.class).newInstance(processor);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e); // Should never happen
         }
 
         reader.read(source);

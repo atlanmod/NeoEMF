@@ -142,7 +142,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             table.put(put);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
         }
     }
 
@@ -158,7 +158,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             table.delete(delete);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
         }
     }
 
@@ -199,7 +199,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             return true;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
+            return false;
         }
     }
 
@@ -215,7 +216,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                         return SERIALIZER_FACTORY.<V>forAny().deserialize(v);
                     }
                     catch (IOException e) {
-                        throw new RuntimeException(e);
+                        handleException(e);
+                        return null;
                     }
                 });
     }
@@ -235,7 +237,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             table.put(put);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
         }
 
         return previousValue;
@@ -252,7 +254,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             table.delete(delete);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
         }
     }
 
@@ -272,7 +274,12 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
             return !result.isEmpty() ? Optional.of(result) : Optional.empty();
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
+            return Optional.empty();
         }
+    }
+
+    private void handleException(IOException e) {
+        throw new RuntimeException(e);
     }
 }

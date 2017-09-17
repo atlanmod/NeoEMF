@@ -60,7 +60,7 @@ public class StoreFactoryTest extends AbstractTest {
             return out.cast(storeField.get(object));
         }
         catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e); // Should never happen
         }
     }
 

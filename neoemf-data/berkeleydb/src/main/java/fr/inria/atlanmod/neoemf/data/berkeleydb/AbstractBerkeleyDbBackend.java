@@ -241,7 +241,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
             return value;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
+            return Optional.empty();
         }
     }
 
@@ -264,7 +265,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
             database.put(null, dbKey, dbValue);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
         }
     }
 
@@ -289,7 +290,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
             return database.putNoOverwrite(null, dbKey, dbValue) != OperationStatus.KEYEXIST;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
+            return false;
         }
     }
 
@@ -308,7 +310,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
             database.delete(null, dbKey);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            handleException(e);
         }
     }
 
@@ -327,5 +329,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
             }
         }
         to.sync();
+    }
+
+    private void handleException(IOException e) {
+        throw new RuntimeException(e);
     }
 }

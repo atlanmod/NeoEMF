@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 import org.codehaus.stax2.XMLOutputFactory2;
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.annotation.Nonnull;
@@ -43,7 +44,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
      *
      * @param stream the output stream to write
      */
-    public XmiStreamWriter(OutputStream stream) {
+    public XmiStreamWriter(OutputStream stream) throws IOException {
         super(stream);
 
         XMLOutputFactory factory = XMLOutputFactory2.newInstance();
@@ -53,7 +54,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmlConstants.ENCODING);
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
@@ -71,73 +72,73 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     }
 
     @Override
-    protected void writeStartDocument() {
+    protected void writeStartDocument() throws IOException {
         try {
             writer.writeStartDocument(XmlConstants.ENCODING, XmlConstants.VERSION);
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @Override
-    protected void writeStartElement(String name) {
+    protected void writeStartElement(String name) throws IOException {
         try {
             writer.writeStartElement(name);
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @Override
-    protected void writeNamespace(String prefix, String uri) {
+    protected void writeNamespace(String prefix, String uri) throws IOException {
         try {
             writer.writeNamespace(prefix, uri);
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @Override
-    protected void writeAttribute(String name, String value) {
+    protected void writeAttribute(String name, String value) throws IOException {
         try {
             writer.writeAttribute(name, value);
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @Override
-    protected void writeCharacters(String characters) {
+    protected void writeCharacters(String characters) throws IOException {
         try {
             writer.writeCharacters(characters);
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @Override
-    protected void writeEndElement() {
+    protected void writeEndElement() throws IOException {
         try {
             writer.writeEndElement();
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @Override
-    protected void writeEndDocument() {
+    protected void writeEndDocument() throws IOException {
         try {
             writer.writeEndDocument();
             writer.close();
         }
         catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 }
