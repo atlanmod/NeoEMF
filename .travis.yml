@@ -14,22 +14,26 @@ env:
     # CI_DEPLOY_PASSWORD
     - secure: FbSKxzPkjTrkom1EAjqbOKfSLmeWDfUj6FZks5pmTvdO6bFX641HRPOkWQ7o3p0QnXTWIl3KaT6PLCdRlVmIdepHbHjJt1x1HTuD/j82aOxUl1JUhiG3WFWE2V4tOuvABE8eRyvE1uGJ5Ik0F5BXy1QYwlWpbO9VORA3Kz4Xm6yu/kroH2EQlRxJN4LtM6ufDeimfU3LmbSSPs54Et3e45GNzbAw0KmupOvphfr5sJd3xpS3vQMtdHbVlCoDu0/F9ntEgBzwrOphX7rpo90MOU2j8dakAGGMku1DddPEuOckCkn0KjYfcvBwETJWd09my6L3BFCyto3doaYpjv361/GYc5508eYLmGom+AQVybhXTVOzIDn8gdr7UkvgJgeown8STMiiTKfq7HmJ3vTXpNrAXzS6Oa9la2OFa+wW54hs+nABfsPLNkIuaC9X5FXt8X356OgAOv0GUn3EiofMXH928dIXb3kftnF9Y+oS7OE+mwnbp5SfrOOp3TF8v0E3fOuWs/Wfe1QWuDu3+xa7wXfMLLxBb6HqsUV5A4/DaCqwcH4/tMge3PVWJ56jWIpzL33On7wMuzaRnxjbuO6brL3ywLWgXJnuGv2FVfe3CYpLLgT4zstspM/oftREBQlAQffpYQMiaSRuqm+rMbQuXpH2Fi+AO7jA2ENiQBkOk98=
 
+install:
+  # Resolve all dependencies
+  - mvn -B -V -q -DskipTests install
+
 script:
   # Build and test with code coverage
-  - mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate
+  - mvn -B jacoco:prepare-agent test jacoco:report jacoco:report-aggregate
 
 after_success:
   # Publish code coverage in CodeCov
   - bash <(curl -s https://codecov.io/bash)
 
+  # Deploy snapshot in Maven central
+  - bash .util/deploy_snapshot.sh
+
   # Publish Javadoc in Github
   - bash .util/publish_javadoc.sh
 
-  # Publish snapshot in Maven central
-  - bash .util/publish_snapshot.sh
-
-  # Publish update-site in Github
-  - bash .util/publish_eclipse.sh
+  # Publish update-site of Eclipse plugin in Github
+  - bash .util/publish_plugin.sh
 
 notifications:
   slack:
