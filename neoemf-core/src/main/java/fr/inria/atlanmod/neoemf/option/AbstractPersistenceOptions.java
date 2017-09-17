@@ -130,7 +130,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
 
     @Nonnull
     @Override
-    public B cacheMetaclasses() {
+    public B cacheMetaClasses() {
         return withStore(PersistentStoreOptions.CACHE_METACLASS);
     }
 
@@ -138,12 +138,6 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
     @Override
     public B cacheSizes() {
         return withStore(PersistentStoreOptions.CACHE_SIZE);
-    }
-
-    @Nonnull
-    @Override
-    public B countLoadedObjects() {
-        return withStore(PersistentStoreOptions.COUNT_LOADED_OBJECT);
     }
 
     @Nonnull

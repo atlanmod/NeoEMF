@@ -87,7 +87,7 @@ final class ContextualResourceBuilder {
                 .cacheSizes()
                 .cacheFeatures()
                 .cacheContainers()
-                .cacheMetaclasses()
+                .cacheMetaClasses()
 //                .recordStats()
                 .asMap();
     }

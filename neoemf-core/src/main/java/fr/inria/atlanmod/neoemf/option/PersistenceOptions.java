@@ -159,7 +159,7 @@ public interface PersistenceOptions {
      * @see fr.inria.atlanmod.neoemf.data.store.ClassCachingStore
      */
     @Nonnull
-    PersistenceOptions cacheMetaclasses();
+    PersistenceOptions cacheMetaClasses();
 
     /**
      * Adds the {@code cache-sizes} feature in the created options.
@@ -170,16 +170,6 @@ public interface PersistenceOptions {
      */
     @Nonnull
     PersistenceOptions cacheSizes();
-
-    /**
-     * Adds the {@code count-loaded-objects} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore
-     */
-    @Nonnull
-    PersistenceOptions countLoadedObjects();
 
     /**
      * Adds the {@code read-only} feature in the created options.

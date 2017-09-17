@@ -170,7 +170,7 @@ public class StoreFactoryTest extends AbstractTest {
     @Test
     public void testMetaclassCachingOption() {
         Map<String, Object> options = CommonOptions.builder()
-                .cacheMetaclasses()
+                .cacheMetaClasses()
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
@@ -191,22 +191,6 @@ public class StoreFactoryTest extends AbstractTest {
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
         assertThat(store).isInstanceOf(StatsStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    /**
-     * Checks the setup of the {@link LoadedObjectCounterStore}.
-     */
-    @Test
-    public void testLoadedObjectCounterLoggingOption() {
-        Map<String, Object> options = CommonOptions.builder()
-                .countLoadedObjects()
-                .asMap();
-
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(LoadedObjectCounterStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -242,7 +226,7 @@ public class StoreFactoryTest extends AbstractTest {
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
         assertThat(store).isInstanceOf(AutoSaveStore.class);
 
-        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStore.class, Long.class);
+        long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
@@ -337,7 +321,7 @@ public class StoreFactoryTest extends AbstractTest {
                 .log()
                 .autoSave(expectedChunk)
                 .cacheContainers()
-                .cacheMetaclasses()
+                .cacheMetaClasses()
                 .recordStats()
                 .asMap();
 
@@ -350,7 +334,7 @@ public class StoreFactoryTest extends AbstractTest {
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStore.class);
 
-        long actualChunk = getValue(store, "autoSaveChunk", AutoSaveStore.class, Long.class);
+        long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);

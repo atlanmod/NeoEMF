@@ -36,25 +36,32 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class AutoSaveStore extends AbstractStore {
 
     /**
+     * The default number of allowed changes between saves.
+     */
+    @Nonnegative
+    public static final long DEFAULT_CHUNK = Runtime.getRuntime().maxMemory() / (long) Math.pow(2, 15);
+
+    /**
      * Number of allowed changes between saves on the underlying {@link EStore} for this store.
      */
-    private final long autoSaveChunk;
+    @Nonnegative
+    private final long chunk;
 
     /**
      * Current number of changes made since the last call of {@link #incremendAndSave(int)}.
      */
-    private final AtomicLong changesCount = new AtomicLong();
+    private final AtomicLong count = new AtomicLong();
 
     /**
      * Constructs a new {@code AutoSaveStore} with the given {@code chunk}.
      *
-     * @param store         the inner store
-     * @param autoSaveChunk the number of modifications between saves
+     * @param store the inner store
+     * @param chunk the number of modifications between saves
      */
     @VisibleForReflection
-    public AutoSaveStore(Store store, Long autoSaveChunk) {
+    public AutoSaveStore(Store store, Long chunk) {
         super(store);
-        this.autoSaveChunk = autoSaveChunk;
+        this.chunk = chunk;
     }
 
     /**
@@ -64,7 +71,7 @@ public class AutoSaveStore extends AbstractStore {
      */
     @VisibleForReflection
     public AutoSaveStore(Store store) {
-        this(store, Runtime.getRuntime().maxMemory() / (2048 * 10));
+        this(store, DEFAULT_CHUNK);
     }
 
     @Override
@@ -248,8 +255,8 @@ public class AutoSaveStore extends AbstractStore {
      * @see #save()
      */
     private void incremendAndSave(int count) {
-        if (changesCount.addAndGet(count) >= autoSaveChunk) {
-            changesCount.set(0L);
+        if (this.count.addAndGet(count) >= chunk) {
+            this.count.set(0L);
             save();
         }
     }

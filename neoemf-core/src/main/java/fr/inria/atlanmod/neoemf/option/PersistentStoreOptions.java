@@ -62,13 +62,6 @@ public enum PersistentStoreOptions {
     CACHE_METACLASS("fr.inria.atlanmod.neoemf.data.store.ClassCachingStore"),
 
     /**
-     * Counts all loaded objects.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore
-     */
-    COUNT_LOADED_OBJECT("fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStore"),
-
-    /**
      * Automatically saves modifications as calls are made.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.AutoSaveStore

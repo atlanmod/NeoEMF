@@ -254,7 +254,7 @@ public class RunnerState {
 
             // Cache metaclasses (Defined by default)
             if (upperText.contains(Options.CACHE_METACLASSES)) {
-                options.cacheMetaclasses();
+                options.cacheMetaClasses();
             }
 
             // Cache containers (Defined by default)

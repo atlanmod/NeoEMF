@@ -62,6 +62,9 @@ public class NeoEditor extends EcoreEditor {
 
         // Create the store options depending of the backend
         Map<String, Object> options = PersistenceOptions.forScheme(resource.getURI().scheme())
+                .cacheContainers()
+                .cacheMetaClasses()
+                .autoSave()
 //                .log(Level.INFO)
                 .asMap();
 
