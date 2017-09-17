@@ -26,6 +26,7 @@ import static java.util.Objects.nonNull;
  * @param <E> the type of elements in this list
  */
 @ParametersAreNonnullByDefault
+// TODO Reimplements `iterator()` and `listIterator()` to use batch methods
 public class ContentsList<E> extends EContentsEList<E> {
 
     /**

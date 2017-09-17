@@ -352,6 +352,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      * @see RootContentsReference
      */
     @ParametersAreNonnullByDefault
+    // TODO Reimplements `iterator()` and `listIterator()` to use batch methods
     private class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
         @SuppressWarnings("JavaDoc")
