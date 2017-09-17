@@ -228,7 +228,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         /**
          * The estimated size of a feature value.
          */
-        long FEATURE_VALUE = powerTwo(15);
+        long FEATURE_VALUE = powerTwo(12);
 
         /**
          * Returns {@code 2}<sup>{@code exponent}</sup>.
