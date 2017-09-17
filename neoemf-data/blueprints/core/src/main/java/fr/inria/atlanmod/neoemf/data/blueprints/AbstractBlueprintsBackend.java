@@ -30,10 +30,8 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +40,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -100,10 +97,13 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             .build();
 
     /**
-     * List that holds indexed {@link ClassBean}.
+     * A set that holds indexed {@link ClassBean}.
+     *
+     * @see #metaClassIndex
+     * @see #innerCopyTo(DataMapper)
      */
     @Nonnull
-    private final List<ClassBean> indexedMetaClasses;
+    private final Set<ClassBean> metaClassSet;
 
     /**
      * Index containing meta-classes.
@@ -129,7 +129,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         graph = new InternalIdGraph(baseGraph);
 
-        indexedMetaClasses = new ArrayList<>();
+        metaClassSet = new HashSet<>();
         metaClassIndex = getOrCreateIndex(KEY_METACLASSES);
     }
 
@@ -141,8 +141,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the create {@link Id}
      */
     @Nonnull
-    private static Id buildId(ClassBean metaClass) {
-        return StringId.of(metaClass.name() + '@' + metaClass.uri());
+    private static Id idFor(ClassBean metaClass) {
+        return StringId.generate(metaClass.name() + metaClass.uri());
     }
 
     /**
@@ -213,10 +213,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         GraphHelper.copyGraph(graph, to.graph);
 
-        indexedMetaClasses.forEach(m -> {
-            Iterable<Vertex> metaClasses = to.metaClassIndex.get(KEY_NAME, m.name());
-            checkArgument(MoreIterables.isEmpty(metaClasses), "Index is not consistent");
-            to.metaClassIndex.put(KEY_NAME, m.name(), get(buildId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+        metaClassSet.forEach(m -> {
+            Id id = idFor(m);
+            Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
+            to.metaClassIndex.put(KEY_NAME, m.name(), vertex);
         });
     }
 
@@ -231,12 +231,16 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             return Optional.empty();
         }
 
-        Iterable<Edge> containerEdges = containmentVertex.get().getEdges(Direction.OUT, KEY_CONTAINER);
-        Optional<Edge> containerEdge = MoreIterables.onlyElement(containerEdges);
+        Iterable<Edge> edges = containmentVertex.get().query()
+                .labels(KEY_CONTAINER)
+                .direction(Direction.OUT)
+                .limit(1)
+                .edges();
 
-        return containerEdge.map(e -> SingleFeatureBean.of(
-                StringId.from(e.getVertex(Direction.IN).getId()),
-                e.getProperty(KEY_CONTAINING_FEATURE)));
+        return MoreIterables.onlyElement(edges)
+                .map(e -> SingleFeatureBean.of(
+                        StringId.from(e.getVertex(Direction.IN).getId()),
+                        e.getProperty(KEY_CONTAINING_FEATURE)));
     }
 
     @Override
@@ -247,7 +251,13 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Vertex containmentVertex = getOrCreate(id);
         Vertex containerVertex = getOrCreate(container.owner());
 
-        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
+        Iterable<Edge> containmentEdges = containmentVertex.query()
+                .labels(KEY_CONTAINER)
+                .direction(Direction.OUT)
+                .limit(1)
+                .edges();
+
+        containmentEdges.forEach(Edge::remove);
 
         Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
         edge.setProperty(KEY_CONTAINING_FEATURE, container.id());
@@ -257,9 +267,19 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     public void unsetContainer(Id id) {
         checkNotNull(id);
 
-        Vertex containmentVertex = getOrCreate(id);
+        Optional<Vertex> containmentVertex = get(id);
 
-        containmentVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Edge::remove);
+        if (!containmentVertex.isPresent()) {
+            return;
+        }
+
+        Iterable<Edge> containmentEdges = containmentVertex.get().query()
+                .labels(KEY_CONTAINER)
+                .direction(Direction.OUT)
+                .limit(1)
+                .edges();
+
+        containmentEdges.forEach(Edge::remove);
     }
 
     @Nonnull
@@ -273,12 +293,16 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             return Optional.empty();
         }
 
-        Iterable<Vertex> metaClassVertices = vertex.get().getVertices(Direction.OUT, KEY_INSTANCE_OF);
-        Optional<Vertex> metaClassVertex = MoreIterables.onlyElement(metaClassVertices);
+        Iterable<Vertex> metaClassVertices = vertex.get().query()
+                .labels(KEY_INSTANCE_OF)
+                .direction(Direction.OUT)
+                .limit(1)
+                .vertices();
 
-        return metaClassVertex.map(v -> ClassBean.of(
-                v.getProperty(KEY_NAME),
-                v.getProperty(KEY_NS_URI)));
+        return MoreIterables.onlyElement(metaClassVertices)
+                .map(v -> ClassBean.of(
+                        v.getProperty(KEY_NAME),
+                        v.getProperty(KEY_NS_URI)));
     }
 
     @Override
@@ -289,20 +313,26 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Vertex vertex = getOrCreate(id);
 
         // Check the presence of a meta-class
-        Iterable<Edge> instanceEdges = vertex.getEdges(Direction.OUT, KEY_INSTANCE_OF);
+        Iterable<Edge> instanceEdges = vertex.query()
+                .labels(KEY_INSTANCE_OF)
+                .direction(Direction.OUT)
+                .limit(1)
+                .edges();
+
         if (MoreIterables.onlyElement(instanceEdges).isPresent()) {
             return false;
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> metaClassVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
-        Vertex metaClassVertex = MoreIterables.onlyElement(metaClassVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(buildId(metaClass).toString());
+        Iterable<Vertex> instanceVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
+
+        Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
+            Vertex mcv = graph.addVertex(idFor(metaClass).toString());
             mcv.setProperty(KEY_NAME, metaClass.name());
             mcv.setProperty(KEY_NS_URI, metaClass.uri());
 
             metaClassIndex.put(KEY_NAME, metaClass.name(), mcv);
-            indexedMetaClasses.add(metaClass);
+            metaClassSet.add(metaClass);
 
             return mcv;
         });
@@ -344,7 +374,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, key -> graph.getVertex(key.toString())));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(i.toString())));
     }
 
     /**
@@ -357,9 +387,9 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected Vertex getOrCreate(Id id) {
-        return verticesCache.get(id, k ->
-                Optional.ofNullable(graph.getVertex(k.toString()))
-                        .orElseGet(() -> graph.addVertex(k.toString())));
+        return verticesCache.get(id, i ->
+                Optional.ofNullable(graph.getVertex(i.toString()))
+                        .orElseGet(() -> graph.addVertex(i.toString())));
     }
 
     /**
@@ -387,7 +417,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
          * @param baseGraph the base graph
          */
         public InternalIdGraph(KeyIndexableGraph baseGraph) {
-            super(baseGraph);
+            super(baseGraph, true, false);
             enforceUniqueIds(false);
         }
 
