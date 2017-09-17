@@ -61,8 +61,8 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
     }
 
     @Override
-    default void unsetReference(SingleFeatureBean key) {
-        this.<M>unsetValue(key);
+    default void removeReference(SingleFeatureBean key) {
+        this.<M>removeValue(key);
     }
 
     @Override

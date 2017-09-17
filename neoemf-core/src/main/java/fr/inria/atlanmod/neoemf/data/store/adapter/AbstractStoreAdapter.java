@@ -274,7 +274,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
-                store.unsetValue(key);
+                store.removeValue(key);
             }
             else {
                 store.removeAllValues(key);
@@ -282,7 +282,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
         else {
             if (!feature.isMany()) {
-                store.unsetReference(key);
+                store.removeReference(key);
             }
             else {
                 store.removeAllReferences(key);
@@ -690,7 +690,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public void removeContainment(PersistentEObject object) {
         updateInstanceOf(object);
 
-        store.unsetContainer(object.id());
+        store.removeContainer(object.id());
     }
 
     @Override

@@ -41,15 +41,15 @@ public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Op
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         cacheSize(key, 0);
-        super.unsetValue(key);
+        super.removeValue(key);
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
+    public void removeReference(SingleFeatureBean key) {
         cacheSize(key, 0);
-        super.unsetReference(key);
+        super.removeReference(key);
     }
 
     @Override

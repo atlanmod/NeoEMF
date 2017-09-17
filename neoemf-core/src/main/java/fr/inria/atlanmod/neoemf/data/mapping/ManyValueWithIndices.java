@@ -112,7 +112,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> innerValueFor(key.withPosition(i), null));
 
-        unsetValue(key);
+        removeValue(key);
     }
 
     @Nonnull
@@ -178,7 +178,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
             valueFor(key, size);
         }
         else {
-            unsetValue(key);
+            removeValue(key);
         }
     }
 

@@ -199,7 +199,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default <V> void removeAllValues(SingleFeatureBean key) {
-        unsetValue(key);
+        removeValue(key);
     }
 
     /**

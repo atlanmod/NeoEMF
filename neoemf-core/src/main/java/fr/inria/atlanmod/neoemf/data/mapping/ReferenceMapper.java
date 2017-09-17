@@ -53,13 +53,13 @@ public interface ReferenceMapper {
     Optional<Id> referenceFor(SingleFeatureBean key, Id reference);
 
     /**
-     * Unsets the reference of the specified {@code key}.
+     * Removes the reference of the specified {@code key}.
      *
      * @param key the key identifying the reference
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void unsetReference(SingleFeatureBean key);
+    void removeReference(SingleFeatureBean key);
 
     /**
      * Checks whether the specified {@code key} has a defined reference.

@@ -142,7 +142,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         checkNotNull(id);
 
         delete(containers, id, SERIALIZER_FACTORY.forId());
@@ -184,7 +184,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void unsetValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         delete(features, key, SERIALIZER_FACTORY.forSingleFeature());

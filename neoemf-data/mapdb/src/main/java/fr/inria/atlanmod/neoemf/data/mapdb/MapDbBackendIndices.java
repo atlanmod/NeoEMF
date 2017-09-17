@@ -18,7 +18,6 @@ import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
-import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;

@@ -63,7 +63,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         throw E;
     }
 
@@ -90,7 +90,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         throw E;
     }
 
@@ -112,7 +112,7 @@ public final class InvalidTransientBackend implements TransientBackend {
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
+    public void removeReference(SingleFeatureBean key) {
         throw E;
     }
 

@@ -56,9 +56,9 @@ public class IsSetCachingStore extends AbstractCachingStore<SingleFeatureBean, B
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         cache.put(key, false);
-        super.unsetValue(key);
+        super.removeValue(key);
     }
 
     @Override
@@ -83,9 +83,9 @@ public class IsSetCachingStore extends AbstractCachingStore<SingleFeatureBean, B
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
+    public void removeReference(SingleFeatureBean key) {
         cache.put(key, false);
-        super.unsetReference(key);
+        super.removeReference(key);
     }
 
     @Override

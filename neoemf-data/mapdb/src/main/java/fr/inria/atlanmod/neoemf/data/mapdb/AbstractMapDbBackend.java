@@ -162,7 +162,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         checkNotNull(id);
 
         delete(containers, id);
@@ -202,7 +202,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void unsetValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         delete(singleFeatures, key);

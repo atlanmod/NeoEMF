@@ -103,8 +103,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Override
-    public void unsetContainer(Id id) {
-        next.unsetContainer(id);
+    public void removeContainer(Id id) {
+        next.removeContainer(id);
     }
 
     @Override
@@ -152,8 +152,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void unsetValue(SingleFeatureBean key) {
-        next.unsetValue(key);
+    public <V> void removeValue(SingleFeatureBean key) {
+        next.removeValue(key);
     }
 
     @Override
@@ -178,8 +178,8 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void unsetReference(SingleFeatureBean key) {
-        next.unsetReference(key);
+    public void removeReference(SingleFeatureBean key) {
+        next.removeReference(key);
     }
 
     @Override

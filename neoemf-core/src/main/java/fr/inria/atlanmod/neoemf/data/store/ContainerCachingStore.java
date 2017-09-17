@@ -51,8 +51,8 @@ public class ContainerCachingStore extends AbstractCachingStore<Id, Optional<Sin
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         cache.put(id, Optional.empty());
-        super.unsetContainer(id);
+        super.removeContainer(id);
     }
 }

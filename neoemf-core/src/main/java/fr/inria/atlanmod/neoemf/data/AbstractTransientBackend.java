@@ -136,7 +136,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         checkNotNull(id);
 
         containers().remove(id);
@@ -176,7 +176,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         checkKey(key);
 
         features().remove(key);

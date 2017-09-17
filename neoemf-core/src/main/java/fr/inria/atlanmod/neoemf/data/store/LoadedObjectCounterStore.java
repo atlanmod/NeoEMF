@@ -69,9 +69,9 @@ public class LoadedObjectCounterStore extends AbstractStore {
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         register(id);
-        super.unsetContainer(id);
+        super.removeContainer(id);
     }
 
     @Nonnull
@@ -102,9 +102,9 @@ public class LoadedObjectCounterStore extends AbstractStore {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         register(key);
-        super.unsetValue(key);
+        super.removeValue(key);
     }
 
     @Override
@@ -128,9 +128,9 @@ public class LoadedObjectCounterStore extends AbstractStore {
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
+    public void removeReference(SingleFeatureBean key) {
         register(key);
-        super.unsetReference(key);
+        super.removeReference(key);
     }
 
     @Override

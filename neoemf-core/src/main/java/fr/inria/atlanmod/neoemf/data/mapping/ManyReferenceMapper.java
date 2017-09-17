@@ -195,7 +195,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     default void removeAllReferences(SingleFeatureBean key) {
-        unsetReference(key);
+        removeReference(key);
     }
 
     /**

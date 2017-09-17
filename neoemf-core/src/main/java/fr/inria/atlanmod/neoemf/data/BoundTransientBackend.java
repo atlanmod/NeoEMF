@@ -136,8 +136,8 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
-        super.<V>unsetValue(key);
+    public <V> void removeValue(SingleFeatureBean key) {
+        super.<V>removeValue(key);
 
         dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())

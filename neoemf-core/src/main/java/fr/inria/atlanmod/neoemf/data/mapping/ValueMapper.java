@@ -54,14 +54,14 @@ public interface ValueMapper {
     <V> Optional<V> valueFor(SingleFeatureBean key, V value);
 
     /**
-     * Unsets the value of the specified {@code key}.
+     * Removes the value of the specified {@code key}.
      *
      * @param key the key identifying the value
      * @param <V> the type of value
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> void unsetValue(SingleFeatureBean key);
+    <V> void removeValue(SingleFeatureBean key);
 
     /**
      * Checks whether the specified {@code key} has a defined value.

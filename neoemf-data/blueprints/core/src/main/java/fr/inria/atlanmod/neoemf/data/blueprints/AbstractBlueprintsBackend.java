@@ -264,7 +264,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         checkNotNull(id);
 
         Optional<Vertex> containmentVertex = get(id);

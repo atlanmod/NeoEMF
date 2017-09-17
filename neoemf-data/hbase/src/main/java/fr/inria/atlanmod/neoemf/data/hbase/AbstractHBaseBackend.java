@@ -147,7 +147,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void unsetContainer(Id id) {
+    public void removeContainer(Id id) {
         checkNotNull(id);
 
         try {
@@ -242,7 +242,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public void unsetValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         try {

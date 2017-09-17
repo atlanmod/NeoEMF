@@ -60,7 +60,7 @@ public interface ContainerMapper {
      *
      * @throws NullPointerException if the {@code id} is {@code null}
      */
-    void unsetContainer(Id id);
+    void removeContainer(Id id);
 
     /**
      * Checks whether the specified {@code id} has a defined container.

@@ -97,8 +97,8 @@ public class LoggingStore extends AbstractStore {
     }
 
     @Override
-    public void unsetContainer(Id id) {
-        call(super::unsetContainer, id);
+    public void removeContainer(Id id) {
+        call(super::removeContainer, id);
     }
 
     @Override
@@ -135,8 +135,8 @@ public class LoggingStore extends AbstractStore {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
-        call(super::unsetValue, key);
+    public <V> void removeValue(SingleFeatureBean key) {
+        call(super::removeValue, key);
     }
 
     @Override
@@ -157,8 +157,8 @@ public class LoggingStore extends AbstractStore {
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
-        call(super::unsetReference, key);
+    public void removeReference(SingleFeatureBean key) {
+        call(super::removeReference, key);
     }
 
     @Override

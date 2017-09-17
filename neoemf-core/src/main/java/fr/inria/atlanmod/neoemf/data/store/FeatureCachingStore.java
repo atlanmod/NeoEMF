@@ -61,10 +61,10 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         cache.invalidate(key);
 
-        super.unsetValue(key);
+        super.removeValue(key);
     }
 
     @Nonnull
@@ -83,10 +83,10 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
+    public void removeReference(SingleFeatureBean key) {
         cache.invalidate(key);
 
-        super.unsetReference(key);
+        super.removeReference(key);
     }
 
     @Nonnull

@@ -86,7 +86,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
+    public <V> void removeValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         get(key.owner()).ifPresent(v -> v.<V>removeProperty(formatLabel(key.id())));
@@ -147,7 +147,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
+    public void removeReference(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.owner());

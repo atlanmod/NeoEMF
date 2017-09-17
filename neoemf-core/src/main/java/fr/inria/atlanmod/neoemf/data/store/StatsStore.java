@@ -72,8 +72,8 @@ public class StatsStore extends AbstractStore {
     }
 
     @Override
-    public void unsetContainer(Id id) {
-        record(() -> super.unsetContainer(id));
+    public void removeContainer(Id id) {
+        record(() -> super.removeContainer(id));
     }
 
     @Override
@@ -110,8 +110,8 @@ public class StatsStore extends AbstractStore {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
-        record(() -> super.unsetValue(key));
+    public <V> void removeValue(SingleFeatureBean key) {
+        record(() -> super.removeValue(key));
     }
 
     @Override
@@ -132,8 +132,8 @@ public class StatsStore extends AbstractStore {
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
-        record(() -> super.unsetReference(key));
+    public void removeReference(SingleFeatureBean key) {
+        record(() -> super.removeReference(key));
     }
 
     @Override

@@ -99,7 +99,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSetSameContainer() {
+    public void testGetSet_Container_Same() {
         Id containerId0 = StringId.of("ContainerId0");
 
         SingleFeatureBean container = SingleFeatureBean.of(containerId0, "Container0");
@@ -113,8 +113,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.containerFor(id1, container);
         assertThat(mapper.containerOf(id1)).contains(container);
 
-        mapper.unsetContainer(id0);
-        mapper.unsetContainer(id1);
+        mapper.removeContainer(id0);
+        mapper.removeContainer(id1);
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSetDifferentContainer() {
+    public void testGetSet_Container_Different() {
         Id containerId0 = StringId.of("ContainerId0");
 
         SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
@@ -141,35 +141,15 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.containerFor(id0, container1);
         assertThat(mapper.containerOf(id0)).contains(container1);
 
-        mapper.unsetContainer(id0);
-        mapper.unsetContainer(id1);
-    }
-
-    /**
-     * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
-     */
-    @Test
-    public void testUnsetContainer() {
-        Id containerId0 = StringId.of("ContainerId0");
-
-        SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
-
-        // Define the containers
-        mapper.containerFor(id0, container0);
-        assertThat(mapper.containerOf(id0)).contains(container0);
-
-        // Replace the existing container
-        mapper.unsetContainer(id0);
-        assertThat(mapper.containerOf(id0)).isNotPresent();
-
-        mapper.unsetContainer(id0);
+        mapper.removeContainer(id0);
+        mapper.removeContainer(id1);
     }
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} when the element doesn't exist.
      */
     @Test
-    public void testGetInexistingContainer() {
+    public void testGet_Container_NotDefined() {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.containerOf(id0)).isNotPresent()
         )).isNull();
@@ -179,11 +159,31 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testSetNullContainer() {
+    public void testSet_Container_Null() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
                 mapper.containerFor(id0, null)
         )).isInstanceOf(NullPointerException.class);
+    }
+
+    /**
+     * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
+     */
+    @Test
+    public void testRemove_Container() {
+        Id containerId0 = StringId.of("ContainerId0");
+
+        SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
+
+        // Define the containers
+        mapper.containerFor(id0, container0);
+        assertThat(mapper.containerOf(id0)).contains(container0);
+
+        // Replace the existing container
+        mapper.removeContainer(id0);
+        assertThat(mapper.containerOf(id0)).isNotPresent();
+
+        mapper.removeContainer(id0);
     }
 
     //endregion
@@ -194,7 +194,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSetSameMetaclass() {
+    public void testGetSet_Metaclass_Same() {
         ClassBean metaClass = ClassBean.of("Metaclass0", "Uri0");
 
         Id id1 = StringId.of("Id1");
@@ -211,7 +211,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSetDifferentMetaclass() {
+    public void testGetSet_Metaclass_Different() {
         ClassBean metaClass0 = ClassBean.of("Metaclass0", "Uri0");
         ClassBean metaClass1 = ClassBean.of("Metaclass1", "Uri1");
 
@@ -228,10 +228,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} when the element doesn't exist..
      */
     @Test
-    public void testGetInexistingMetaclass() {
+    public void testGet_Metaclass_NotDefined() {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.metaClassOf(id0)).isNotPresent()
         )).isNull();
+    }
+
+    /**
+     * Checks the behavior of {@link ClassMapper#metaClassFor(Id, ClassBean)} with a {@code null} value.
+     */
+    @Test
+    public void testSet_Metaclass_Null() {
+        //noinspection ConstantConditions
+        assertThat(catchThrowable(() ->
+                mapper.metaClassFor(id0, null)
+        )).isInstanceOf(NullPointerException.class);
     }
 
     //endregion
@@ -239,22 +250,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     //region Single-value attributes
 
     /**
-     * Checks the behavior of {@link ClassMapper#metaClassFor(Id, ClassBean)} with a {@code null} value.
-     */
-    @Test
-    public void testSetNullMetaclass() {
-        //noinspection ConstantConditions
-        assertThat(catchThrowable(() ->
-                mapper.metaClassFor(id0, null)
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)} and {@link
      * ValueMapper#valueFor(SingleFeatureBean, Object)}.
      */
     @Test
-    public void testGetSetValue() {
+    public void testGetSet_Value() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -273,7 +273,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)}.
      */
     @Test
-    public void testGetInexistingValue() {
+    public void testGet_Value_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -285,7 +285,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#valueFor(SingleFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSetNullValue() {
+    public void testSet_Value_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         //noinspection ConstantConditions
@@ -296,10 +296,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ValueMapper#hasValue(SingleFeatureBean)} and {@link
-     * ValueMapper#unsetValue(SingleFeatureBean)}.
+     * ValueMapper#removeValue(SingleFeatureBean)}.
      */
     @Test
-    public void testIsSetUnsetValue() {
+    public void testHasRemove_Value() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -309,7 +309,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.valueOf(key)).isPresent();
         assertThat(mapper.hasValue(key)).isTrue();
 
-        mapper.unsetValue(key);
+        mapper.removeValue(key);
 
         assertThat(mapper.valueOf(key)).isNotPresent();
         assertThat(mapper.hasValue(key)).isFalse();
@@ -319,7 +319,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#hasValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testIsSetInexistingValue() {
+    public void testHas_Value_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -328,14 +328,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ValueMapper#unsetValue(SingleFeatureBean)} when the value doesn't exist.
+     * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testUnsetInexistingValue() {
+    public void testRemove_Value_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                mapper.unsetValue(key)
+                mapper.removeValue(key)
         )).isNull();
     }
 
@@ -348,7 +348,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * ManyValueMapper#valueFor(ManyFeatureBean, Object)}.
      */
     @Test
-    public void testGetSetManyValue() {
+    public void testGetSet_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -372,7 +372,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testGetInexistingManyValue() {
+    public void testGet_ManyValue_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
@@ -384,7 +384,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSetInexistingManyValue() {
+    public void testSet_ManyValue_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -397,7 +397,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSetNullManyValue() {
+    public void testSet_ManyValue_Null() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -410,7 +410,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureBean)}.
      */
     @Test
-    public void testAllValuesOf() {
+    public void testGetAll_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -438,7 +438,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * any element.
      */
     @Test
-    public void testAllValuesEmpty() {
+    public void testGetAll_Empty() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -450,7 +450,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#hasAnyValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testIsSetInexistingManyValue() {
+    public void testHasAny_ManyValue_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
@@ -462,7 +462,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)}.
      */
     @Test
-    public void testAddValue() {
+    public void testAdd_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -484,7 +484,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)}.
      */
     @Test
-    public void testAnyOrderAddValue() {
+    public void testAdd_ManyValue_AnyOrder() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value2 = "Value2";
@@ -499,7 +499,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testAddNullValue() {
+    public void testAdd_ManyValue_Null() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -512,7 +512,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)}.
      */
     @Test
-    public void testAppendValue() {
+    public void testAppend_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -534,7 +534,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testAppendNullValue() {
+    public void testAppend_ManyValue_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         //noinspection ConstantConditions
@@ -548,7 +548,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * defined yet.
      */
     @Test
-    public void testAddAllValuesFromStart() {
+    public void testAddAll_ManyValue_FromStart() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -565,7 +565,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * defined yet.
      */
     @Test
-    public void testAddAllValuesWithOffset() {
+    public void testAddAll_ManyValue_WithOffset() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -581,7 +581,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * values.
      */
     @Test
-    public void testAddAllValuesFromMiddle() {
+    public void testAddAll_ManyValue_FromMiddle() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -606,7 +606,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * values.
      */
     @Test
-    public void testAddAllValuesFromEnd() {
+    public void testAddAll_ManyValue_FromEnd() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -627,7 +627,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty collection.
      */
     @Test
-    public void testAddAllValuesEmpty() {
+    public void testAddAll_ManyValue_Empty() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         mapper.addAllValues(key, Collections.emptyList());
@@ -637,10 +637,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a collection that
-     * contains {@code null}.
+     * contains a {@code null} element.
      */
     @Test
-    public void testAddAllValuesContainsNull() {
+    public void testAddAll_ManyValue_WithNull() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         String value0 = "Value0";
@@ -655,7 +655,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAllNullValues() {
+    public void testAddAll_ManyValue_Null() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -669,7 +669,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * defined yet.
      */
     @Test
-    public void testAppendAllValuesFromStart() {
+    public void testAppendAll_ManyValue_FromStart() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -689,7 +689,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * has values.
      */
     @Test
-    public void testAppendAllValuesFromEnd() {
+    public void testAppendAll_ManyValue_FromEnd() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -715,7 +715,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAllValuesEmpty() {
+    public void testAppendAll_ManyValue_Empty() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         mapper.appendAllValues(key, Collections.emptyList());
@@ -725,10 +725,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with a collection that
-     * contains {@code null}.
+     * contains a {@code null} element.
      */
     @Test
-    public void testAppendAllValuesContainsNull() {
+    public void testAppendAll_ManyValue_WithNull() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -743,7 +743,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAllNullValues() {
+    public void testAppendAll_ManyValue_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         //noinspection ConstantConditions
@@ -756,7 +756,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @Test
-    public void testRemoveValue() {
+    public void testRemove_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         // Initialize values
@@ -779,7 +779,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @Test
-    public void testRemoveValueBefore() {
+    public void testRemove_ManyValue_Before() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -803,7 +803,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @Test
-    public void testRemoveValueAfter() {
+    public void testRemove_ManyValue_After() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -827,7 +827,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testRemoveInexistingValue() {
+    public void testRemove_ManyValue_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
@@ -840,7 +840,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * ManyValueMapper#hasAnyValue(SingleFeatureBean)}.
      */
     @Test
-    public void testRemoveAllValues() {
+    public void testRemoveAll_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -873,7 +873,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testRemoveAllInexistingValues() {
+    public void testRemoveAll_ManyValue_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -885,7 +885,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureBean, ManyFeatureBean)}.
      */
     @Test
-    public void testMoveValueBefore() {
+    public void testMove_ManyValue_Before() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -912,7 +912,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#moveValue(ManyFeatureBean, ManyFeatureBean)}.
      */
     @Test
-    public void testMoveValueAfter() {
+    public void testMove_ManyValue_After() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -940,7 +940,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testMoveInexistingValue() {
+    public void testMove_ManyValue_NotDefined() {
         ManyFeatureBean key0 = ManyFeatureBean.of(id0, "Feature0", 0);
         ManyFeatureBean key1 = key0.withPosition(1);
 
@@ -953,7 +953,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#containsValue(SingleFeatureBean, Object)}.
      */
     @Test
-    public void testContainsValue() {
+    public void testContains_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -978,7 +978,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testContainsInexistingValue() {
+    public void testContains_ManyValue_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -991,7 +991,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * null}.
      */
     @Test
-    public void testContainsNullValue() {
+    public void testContains_ManyValue_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1003,7 +1003,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#indexOfValue(SingleFeatureBean, Object)}.
      */
     @Test
-    public void testIndexOfValue() {
+    public void testIndexOf_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -1030,7 +1030,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testIndexOfInexistingValue() {
+    public void testIndexOf_ManyValue_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1043,7 +1043,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * null}.
      */
     @Test
-    public void testIndexOfNullValue() {
+    public void testIndexOf_ManyValue_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1055,7 +1055,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#lastIndexOfValue(SingleFeatureBean, Object)}.
      */
     @Test
-    public void testLastIndexOfValue() {
+    public void testLastIndexOf_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         String value0 = "Value0";
@@ -1082,7 +1082,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testLastIndexOfInexistingValue() {
+    public void testLastIndexOf_ManyValue_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1095,7 +1095,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * {@code null}.
      */
     @Test
-    public void testLastIndexOfNullValue() {
+    public void testLastIndexOf_ManyValue_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1107,7 +1107,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)}.
      */
     @Test
-    public void testSizeOfValue() {
+    public void testSize_ManyValue() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         // Initialize values
@@ -1129,7 +1129,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testSizeOfInexistingValue() {
+    public void testSize_ManyValue_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1146,7 +1146,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * ReferenceMapper#referenceFor(SingleFeatureBean, Id)}.
      */
     @Test
-    public void testGetSetReference() {
+    public void testGetSet_Reference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1165,7 +1165,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ReferenceMapper#referenceOf(SingleFeatureBean)}.
      */
     @Test
-    public void testGetInexistingReference() {
+    public void testGet_Reference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1178,7 +1178,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSetNullReference() {
+    public void testSet_Reference_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         //noinspection ConstantConditions
@@ -1189,10 +1189,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ReferenceMapper#hasReference(SingleFeatureBean)} and {@link
-     * ReferenceMapper#unsetReference(SingleFeatureBean)}.
+     * ReferenceMapper#removeReference(SingleFeatureBean)}.
      */
     @Test
-    public void testIsSetUnsetReference() {
+    public void testHasRemove_Reference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1202,7 +1202,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.referenceOf(key)).isPresent();
         assertThat(mapper.hasReference(key)).isTrue();
 
-        mapper.unsetReference(key);
+        mapper.removeReference(key);
 
         assertThat(mapper.referenceOf(key)).isNotPresent();
         assertThat(mapper.hasReference(key)).isFalse();
@@ -1212,7 +1212,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ReferenceMapper#hasReference(SingleFeatureBean)} when the reference doesn't exist.
      */
     @Test
-    public void testIsSetInexistingReference() {
+    public void testHas_Reference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1221,15 +1221,15 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ReferenceMapper#unsetReference(SingleFeatureBean)} when the reference doesn't
+     * Checks the behavior of {@link ReferenceMapper#removeReference(SingleFeatureBean)} when the reference doesn't
      * exist.
      */
     @Test
-    public void testUnsetInexistingReference() {
+    public void testRemove_Reference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                mapper.unsetReference(key)
+                mapper.removeReference(key)
         )).isNull();
     }
 
@@ -1242,7 +1242,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * ManyReferenceMapper#referenceFor(ManyFeatureBean, Id)}.
      */
     @Test
-    public void testGetSetManyReference() {
+    public void testGetSet_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1267,7 +1267,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testGetInexistingManyReference() {
+    public void testGet_ManyReference_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
@@ -1280,7 +1280,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSetInexistingManyReference() {
+    public void testSet_ManyReference_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -1294,7 +1294,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSetNullManyReference() {
+    public void testSet_ManyReference_Null() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -1307,7 +1307,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(SingleFeatureBean)}.
      */
     @Test
-    public void testAllReferencesOf() {
+    public void testGetAll_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1335,7 +1335,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * contain any element.
      */
     @Test
-    public void testAllReferencesEmpty() {
+    public void testGetAll_ManyReference_Empty() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1348,7 +1348,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testIsSetInexistingManyReference() {
+    public void testHasAny_ManyReference_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
@@ -1360,7 +1360,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureBean, Id)}.
      */
     @Test
-    public void testAddReference() {
+    public void testAdd_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1382,7 +1382,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureBean, Id)}.
      */
     @Test
-    public void testAnyOrderAddReference() {
+    public void testAdd_ManyReference_AnyOrder() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref2 = StringId.of("Ref2");
@@ -1398,7 +1398,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testAddNullReference() {
+    public void testAdd_ManyReference_Null() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -1411,7 +1411,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#appendReference(SingleFeatureBean, Id)}.
      */
     @Test
-    public void testAppendReference() {
+    public void testAppend_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1434,7 +1434,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testAppendNullReference() {
+    public void testAppend_ManyReference_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         //noinspection ConstantConditions
@@ -1448,7 +1448,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * not defined yet.
      */
     @Test
-    public void testAddAllReferencesFromStart() {
+    public void testAddAll_ManyReference_FromStart() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1465,7 +1465,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * not defined yet.
      */
     @Test
-    public void testAddAllReferencesWithOffset() {
+    public void testAddAll_ManyReference_WithOffset() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1481,7 +1481,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * already has values.
      */
     @Test
-    public void testAddAllReferencesFromMiddle() {
+    public void testAddAll_ManyReference_FromMiddle() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1506,7 +1506,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * already has values.
      */
     @Test
-    public void testAddAllReferencesFromEnd() {
+    public void testAddAll_ManyReference_FromEnd() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1528,7 +1528,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAllReferencesEmpty() {
+    public void testAddAll_ManyReference_Empty() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         mapper.addAllReferences(key, Collections.emptyList());
@@ -1538,10 +1538,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a collection that
-     * contains {@code null}.
+     * contains a {@code null} element.
      */
     @Test
-    public void testAddAllReferencesContainsNull() {
+    public void testAddAll_ManyReference_WithNull() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         Id ref0 = StringId.of("Ref0");
@@ -1556,7 +1556,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAllNullReferences() {
+    public void testAddAll_ManyReference_Null() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         //noinspection ConstantConditions
@@ -1570,7 +1570,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * is not defined yet.
      */
     @Test
-    public void testAppendAllReferencesFromStart() {
+    public void testAppendAll_ManyReference_FromStart() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1590,7 +1590,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * already has values.
      */
     @Test
-    public void testAppendAllReferencesFromEnd() {
+    public void testAppendAll_ManyReference_FromEnd() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1616,7 +1616,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAllReferencesEmpty() {
+    public void testAppendAll_ManyReference_Empty() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         mapper.appendAllReferences(key, Collections.emptyList());
@@ -1626,10 +1626,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} with a collection
-     * that contains {@code null}.
+     * that contains a {@code null} element.
      */
     @Test
-    public void testAppendAllReferencesContainsNull() {
+    public void testAppendAll_ManyReference_WithNull() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1644,7 +1644,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * null} collection.
      */
     @Test
-    public void testAppendAllNullReferences() {
+    public void testAppendAll_ManyReference_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         //noinspection ConstantConditions
@@ -1657,7 +1657,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
      */
     @Test
-    public void testRemoveReference() {
+    public void testRemove_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         // Initialize references
@@ -1680,7 +1680,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
      */
     @Test
-    public void testRemoveReferenceBefore() {
+    public void testRemove_ManyReference_Before() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1704,7 +1704,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
      */
     @Test
-    public void testRemoveReferenceAfter() {
+    public void testRemove_ManyReference_After() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1729,7 +1729,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testRemoveInexistingReference() {
+    public void testRemove_ManyReference_NotDefined() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
         assertThat(catchThrowable(() ->
@@ -1742,7 +1742,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * ManyReferenceMapper#hasAnyReference(SingleFeatureBean)}.
      */
     @Test
-    public void testRemoveAllReferences() {
+    public void testRemoveAll_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1776,7 +1776,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * doesn't exist.
      */
     @Test
-    public void testRemoveAllInexistingReferences() {
+    public void testRemoveAll_ManyReference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1788,7 +1788,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureBean, ManyFeatureBean)}.
      */
     @Test
-    public void testMoveReferenceBefore() {
+    public void testMove_ManyReference_Before() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1815,7 +1815,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#moveReference(ManyFeatureBean, ManyFeatureBean)}.
      */
     @Test
-    public void testMoveReferenceAfter() {
+    public void testMove_ManyReference_After() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1843,7 +1843,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference doesn't exist.
      */
     @Test
-    public void testMoveInexistingReference() {
+    public void testMove_ManyReference_NotDefined() {
         ManyFeatureBean key0 = ManyFeatureBean.of(id0, "Feature0", 0);
         ManyFeatureBean key1 = key0.withPosition(1);
 
@@ -1856,7 +1856,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#containsReference(SingleFeatureBean, Id)}.
      */
     @Test
-    public void testContainsReference() {
+    public void testContains_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1881,7 +1881,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * doesn't exist.
      */
     @Test
-    public void testContainsInexistingReference() {
+    public void testContains_ManyReference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1894,7 +1894,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * {@code null}.
      */
     @Test
-    public void testContainsNullReference() {
+    public void testContains_ManyReference_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1906,7 +1906,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#indexOfReference(SingleFeatureBean, Id)}.
      */
     @Test
-    public void testIndexOfReference() {
+    public void testIndexOf_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1933,7 +1933,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * doesn't exist.
      */
     @Test
-    public void testIndexOfInexistingReference() {
+    public void testIndexOf_ManyReference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1946,7 +1946,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * {@code null}.
      */
     @Test
-    public void testIndexOfNullReference() {
+    public void testIndexOf_ManyReference_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1958,7 +1958,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#lastIndexOfReference(SingleFeatureBean, Id)}.
      */
     @Test
-    public void testLastIndexOfReference() {
+    public void testLastIndexOf_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         Id ref0 = StringId.of("Ref0");
@@ -1985,7 +1985,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * doesn't exist.
      */
     @Test
-    public void testLastIndexOfInexistingReference() {
+    public void testLastIndexOf_ManyReference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -1998,7 +1998,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * is {@code null}.
      */
     @Test
-    public void testLastIndexOfNullReference() {
+    public void testLastIndexOf_ManyReference_Null() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
@@ -2010,7 +2010,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyReferenceMapper#sizeOfReference(SingleFeatureBean)}.
      */
     @Test
-    public void testSizeOfReference() {
+    public void testSize_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         // Initialize references
@@ -2033,7 +2033,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testSizeOfInexistingReference() {
+    public void testSize_ManyReference_NotDefined() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->

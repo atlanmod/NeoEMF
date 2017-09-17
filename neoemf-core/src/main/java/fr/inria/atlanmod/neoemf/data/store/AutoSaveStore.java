@@ -88,8 +88,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     @Override
-    public void unsetContainer(Id id) {
-        thenIncrementAndSave(() -> super.unsetContainer(id), 1);
+    public void removeContainer(Id id) {
+        thenIncrementAndSave(() -> super.removeContainer(id), 1);
     }
 
     @Override
@@ -104,8 +104,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     @Override
-    public <V> void unsetValue(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.unsetValue(key), 1);
+    public <V> void removeValue(SingleFeatureBean key) {
+        thenIncrementAndSave(() -> super.removeValue(key), 1);
     }
 
     @Nonnull
@@ -115,8 +115,8 @@ public class AutoSaveStore extends AbstractStore {
     }
 
     @Override
-    public void unsetReference(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.unsetReference(key), 1);
+    public void removeReference(SingleFeatureBean key) {
+        thenIncrementAndSave(() -> super.removeReference(key), 1);
     }
 
     @Nonnull
