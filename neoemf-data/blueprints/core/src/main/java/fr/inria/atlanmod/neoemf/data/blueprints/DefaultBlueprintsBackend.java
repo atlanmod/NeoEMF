@@ -618,7 +618,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 previousId = Optional.of(StringId.from(referencedVertex.getId()));
                 edge.remove();
 
-                referencedVertex.getEdges(Direction.OUT, KEY_CONTAINER).forEach(Element::remove);
+                Iterable<Edge> containerEdge = referencedVertex.query()
+                        .labels(KEY_CONTAINER)
+                        .direction(Direction.OUT)
+                        .limit(1)
+                        .edges();
+
+                containerEdge.forEach(Element::remove);
             }
         }
 

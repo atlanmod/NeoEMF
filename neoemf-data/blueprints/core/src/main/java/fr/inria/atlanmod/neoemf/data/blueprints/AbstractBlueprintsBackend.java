@@ -409,6 +409,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     /**
      * An {@link IdGraph} that automatically removes unused {@link Vertex}.
      */
+    @ParametersAreNonnullByDefault
     private static class InternalIdGraph extends IdGraph<KeyIndexableGraph> {
 
         /**
@@ -447,6 +448,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         /**
          * An {@link IdEdge} that automatically removes {@link Vertex} that are no longer referenced.
          */
+        @ParametersAreNonnullByDefault
         private class AutoCleanerIdEdge extends IdEdge {
 
             /**
@@ -469,7 +471,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
                 Vertex referencedVertex = getVertex(Direction.IN);
                 super.remove();
 
-                Iterable<Edge> edges = referencedVertex.getEdges(Direction.IN);
+                Iterable<Edge> edges = referencedVertex.query()
+                        .direction(Direction.IN)
+                        .limit(1)
+                        .edges();
 
                 if (MoreIterables.isEmpty(edges)) {
                     // If the Vertex has no more incoming edges remove it from the DB
