@@ -15,11 +15,11 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.PhysicalNode;
 import fr.inria.atlanmod.neoemf.tests.sample.RemoteNode;
+import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 import fr.inria.atlanmod.neoemf.tests.sample.VirtualNode;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -191,19 +191,19 @@ public class AllInstancesTest extends AbstractBackendTest {
      * @param physicalNodeCount the expected number of {@link PhysicalNode}
      */
     private void assertAllInstancesHas(PersistentResource resource, boolean strict, int nodeCount, int physicalNodeCount) {
-        Iterable<EObject> trees = resource.allInstancesOf(EPACKAGE.getTree(), strict);
+        Iterable<Tree> trees = resource.allInstancesOf(EPACKAGE.getTree(), strict);
         assertThat(trees).hasSize(TREE_COUNT);
 
-        Iterable<EObject> abstractNodes = resource.allInstancesOf(EPACKAGE.getNode(), strict);
+        Iterable<Node> abstractNodes = resource.allInstancesOf(EPACKAGE.getNode(), strict);
         assertThat(abstractNodes).hasSize(nodeCount);
 
-        Iterable<EObject> physicalNodes = resource.allInstancesOf(EPACKAGE.getPhysicalNode(), strict);
+        Iterable<PhysicalNode> physicalNodes = resource.allInstancesOf(EPACKAGE.getPhysicalNode(), strict);
         assertThat(physicalNodes).hasSize(physicalNodeCount);
 
-        Iterable<EObject> remoteNodes = resource.allInstancesOf(EPACKAGE.getRemoteNode(), strict);
+        Iterable<SamplePackage> remoteNodes = resource.allInstancesOf(EPACKAGE.getRemoteNode(), strict);
         assertThat(remoteNodes).hasSize(REMOTE_NODE_COUNT);
 
-        Iterable<EObject> virtualNodes = resource.allInstancesOf(EPACKAGE.getVirtualNode(), strict);
+        Iterable<VirtualNode> virtualNodes = resource.allInstancesOf(EPACKAGE.getVirtualNode(), strict);
         assertThat(virtualNodes).hasSize(VIRTUAL_NODE_COUNT);
     }
 }

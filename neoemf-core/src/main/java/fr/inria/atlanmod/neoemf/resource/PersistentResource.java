@@ -68,7 +68,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      * @see #allInstancesOf(EClass, boolean)
      */
     @Nonnull
-    default Iterable<EObject> allInstancesOf(EClass eClass) {
+    default <T extends EObject> Iterable<T> allInstancesOf(EClass eClass) {
         return allInstancesOf(eClass, false);
     }
 
@@ -82,5 +82,5 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      * it also returns the instances of the sub-types of {@code eClass}.
      */
     @Nonnull
-    Iterable<EObject> allInstancesOf(EClass eClass, boolean strict);
+    <T extends EObject> Iterable<T> allInstancesOf(EClass eClass, boolean strict);
 }

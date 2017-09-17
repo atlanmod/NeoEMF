@@ -198,14 +198,14 @@ public class PersistentResourceDecorator implements PersistentResource {
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<EObject> allInstancesOf(EClass eClass) {
+    public <T extends EObject> Iterable<T> allInstancesOf(EClass eClass) {
         return resource.allInstancesOf(eClass);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
+    public <T extends EObject> Iterable<T> allInstancesOf(EClass eClass, boolean strict) {
         return resource.allInstancesOf(eClass, strict);
     }
 

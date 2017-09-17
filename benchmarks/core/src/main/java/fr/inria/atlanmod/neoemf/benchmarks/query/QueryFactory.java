@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -39,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -269,17 +273,17 @@ public class QueryFactory {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected static <T> Iterable<T> allInstancesOf(Resource resource, EClass type) {
-        List<T> resultList = new BasicEList<>();
-
-        Iterable<EObject> allContents = resource::getAllContents;
-        for (EObject o : allContents) {
-            if (type.isInstance(o)) {
-                resultList.add((T) o);
-            }
+    protected static <T extends EObject> Iterable<T> allInstancesOf(Resource resource, EClass type) {
+        if (PersistentResource.class.isInstance(resource)) {
+            return PersistentResource.class.cast(resource).allInstancesOf(type);
         }
-
-        return resultList;
+        else {
+            Iterable<EObject> allContents = resource::getAllContents;
+            return MoreIterables.stream(allContents)
+                    .filter(type::isInstance)
+                    .map(o -> (T) o)
+                    .collect(Collectors.toList());
+        }
     }
 
     /**

@@ -44,12 +44,15 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -250,21 +253,30 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
-    public Iterable<EObject> allInstancesOf(EClass eClass, boolean strict) {
+    @SuppressWarnings("unchecked")
+    public <T extends EObject> Iterable<T> allInstancesOf(EClass eClass, boolean strict) {
+        // There is no strict instance of an abstract class
+        if ((eClass.isAbstract() || eClass.isInterface()) && strict) {
+            return Collections.emptyList();
+        }
+
+        Stream<EObject> allInstancesOf;
+
         try {
-            return MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict))
-                    .map(id -> eStore.resolve(id))
-                    .collect(Collectors.toList());
+            allInstancesOf = MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict))
+                    .map(id -> eStore.resolve(id));
         }
         catch (UnsupportedOperationException e) {
             Log.debug(e.getMessage() + ": using standard EMF API instead");
 
-            return MoreIterables.stream(this::getAllContents)
+            allInstancesOf = MoreIterables.stream(this::getAllContents)
                     .filter(eClass::isInstance)
-                    .map(o -> !strict || Objects.equals(o.eClass(), eClass) ? o : null)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                    .filter(o -> !strict || Objects.equals(o.eClass(), eClass));
         }
+
+        return allInstancesOf
+                .map(o -> (T) o)
+                .collect(Collectors.toSet());
     }
 
     @Nonnull
@@ -492,13 +504,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * @return the content of {@code rootObject}
          */
         @Nonnull
-        private List<PersistentEObject> hardAllContents(PersistentEObject rootObject) {
-            List<PersistentEObject> allContents = new ArrayList<>();
+        private Iterable<PersistentEObject> hardAllContents(PersistentEObject rootObject) {
+            Collection<PersistentEObject> allContents = new ArrayDeque<>();
             allContents.add(rootObject);
 
             MoreIterables.stream(rootObject::eAllContents)
                     .map(PersistentEObject::from)
-                    .forEach(allContents::add);
+                    .collect(Collectors.toCollection(() -> allContents));
 
             return allContents;
         }

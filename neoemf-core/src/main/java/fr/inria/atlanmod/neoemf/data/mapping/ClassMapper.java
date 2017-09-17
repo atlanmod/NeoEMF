@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -77,6 +78,11 @@ public interface ClassMapper {
      */
     @Nonnull
     default Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        // There is no strict instance of an abstract class
+        if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
+            return Collections.emptyList();
+        }
+
         throw new UnsupportedOperationException("This mapper doesn't support the lookup of all instances");
     }
 }

@@ -347,22 +347,21 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Override
     public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         // There is no strict instance of an abstract class
-        if (metaClass.isAbstract() && strict) {
+        if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
             return Collections.emptyList();
         }
-        else {
-            Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();
-            allInstances.add(metaClass);
 
-            // Get all vertices that are indexed with one of the meta-class
-            return allInstances.stream()
-                    .map(mc -> metaClassIndex.get(KEY_NAME, mc.name()))
-                    .flatMap(MoreIterables::stream)
-                    .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
-                    .flatMap(MoreIterables::stream)
-                    .map(v -> StringId.from(v.getId()))
-                    .collect(Collectors.toList());
-        }
+        Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();
+        allInstances.add(metaClass);
+
+        // Get all vertices that are indexed with one of the meta-class
+        return allInstances.stream()
+                .map(mc -> metaClassIndex.get(KEY_NAME, mc.name()))
+                .flatMap(MoreIterables::stream)
+                .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
+                .flatMap(MoreIterables::stream)
+                .map(v -> StringId.from(v.getId()))
+                .collect(Collectors.toList());
     }
 
     /**
