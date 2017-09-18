@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.LazyObject;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
@@ -66,7 +67,13 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * The cached container of this object.
      */
     @Nonnull
-    private final transient LazyReference<InternalEObject> lazyContainer = LazyReference.soft(super::eInternalContainer);
+    private final LazyReference<InternalEObject> lazyContainer = LazyReference.soft(super::eInternalContainer);
+
+    /**
+     * The {@link StoreAdapter} where this object is stored.
+     */
+    @Nonnull
+    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
 
     /**
      * The identifier of this object.
@@ -79,11 +86,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nullable
     private Resource.Internal resource;
-
-    /**
-     * The {@link StoreAdapter} where this object is stored.
-     */
-    private StoreAdapter eStore;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with an undefined {@link Id}.
@@ -209,10 +211,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     @Override
     public StoreAdapter eStore() {
-        if (isNull(eStore)) {
-            eStore = getOrCreateStore(resource);
-        }
-        return eStore;
+        return lazyStore.get();
     }
 
     @Nullable
@@ -272,14 +271,15 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nonnull
     private StoreAdapter getOrCreateStore(@Nullable Resource.Internal resource) {
-        if (isNull(eStore) || PersistentResource.class.isInstance(eStore.resource())) {
+        if (!lazyStore.isLoaded() || PersistentResource.class.isInstance(lazyStore.get().resource())) {
             TransientBackend backend = new BoundTransientBackend(id());
             Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
             return new TransientStoreAdapter(baseStore, resource);
         }
         else {
-            eStore.resource(resource);
-            return eStore;
+            StoreAdapter currentStore = lazyStore.get();
+            currentStore.resource(resource);
+            return currentStore;
         }
     }
 
@@ -293,21 +293,23 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private void eStore(StoreAdapter newStore) {
         checkNotNull(newStore);
 
-        if (!Objects.equals(eStore, newStore)) {
-            if (nonNull(eStore)) {
+        if (lazyStore.isLoaded()) {
+            StoreAdapter currentStore = lazyStore.get();
+
+            if (!Objects.equals(currentStore, newStore)) {
                 // Copy if the resource is not being unloaded
                 if (nonNull(resource)) {
-                    new ContentsCopier(this).copy(eStore, newStore);
+                    new ContentsCopier(this).copy(currentStore, newStore);
                 }
 
                 // If the resource is persistent, it will close its store
-                if (!PersistentResource.class.isInstance(eStore.resource())) {
-                    eStore.close();
+                if (!PersistentResource.class.isInstance(currentStore.resource())) {
+                    currentStore.close();
                 }
             }
-
-            eStore = newStore;
         }
+
+        lazyStore.update(newStore);
     }
 
     @Override

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.commons.LazyObject;
 import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
@@ -47,12 +48,14 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     /**
      * The scheme to identify the {@link BackendFactory} to use.
      */
-    private String scheme;
+    @Nonnull
+    private final LazyObject<String> scheme;
 
     /**
      * Constructs a new default {@code AbstractUriBuilder}.
      */
     protected AbstractUriBuilder() {
+        scheme = LazyObject.with(() -> Bindings.schemeOf(getClass()));
     }
 
     /**
@@ -61,7 +64,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      * @param scheme the scheme to identify the {@link BackendFactory} to use
      */
     protected AbstractUriBuilder(String scheme) {
-        this.scheme = checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        this.scheme = LazyObject.of(checkNotNull(scheme, "Cannot create URI without a valid scheme"));
     }
 
     /**
@@ -96,11 +99,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     private String scheme() {
-        if (isNull(scheme)) {
-            scheme = Bindings.schemeOf(getClass());
-        }
-
-        return checkNotNull(scheme, "Cannot create URI without a valid scheme");
+        return scheme.get();
     }
 
     /**
