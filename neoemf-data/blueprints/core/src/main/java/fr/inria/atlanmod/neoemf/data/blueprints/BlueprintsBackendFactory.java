@@ -215,6 +215,10 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
         if (segments.length >= 2) {
             String graphName = segments[segments.length - 2];
+            if (graphName.equals("neo4j2")) { // Remove the tailing '2'
+                graphName = "neo4j";
+            }
+
             String configClassName = String.format("Blueprints%sConfig", Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1));
 
             String configClassQualifiedName = String.format("%s.%s.%s",

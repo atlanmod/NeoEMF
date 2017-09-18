@@ -16,9 +16,9 @@
     <description>Blueprints extension using Neo4j.</description>
 
     <properties>
-        <neo4j.version>1.9.6</neo4j.version>
+        <neo4j.version>2.1.8</neo4j.version><!-- 2.2.0+ no longer use `javax.transaction` -->
         <lucene.version>3.6.2</lucene.version>
-        <jta.version>1.1</jta.version>
+        <jta.version>1.1.1</jta.version>
     </properties>
 
     <dependencies>
@@ -27,7 +27,13 @@
 
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
-            <artifactId>blueprints-neo4j-graph</artifactId>
+            <artifactId>blueprints-neo4j2-graph</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
+            <type>pom</type>
         </dependency>
 
         <!-- Test -->
@@ -67,14 +73,33 @@
 
             <dependency>
                 <groupId>com.tinkerpop.blueprints</groupId>
-                <artifactId>blueprints-neo4j-graph</artifactId>
+                <artifactId>blueprints-neo4j2-graph</artifactId>
                 <version>${blueprints.version}</version>
                 <exclusions>
+                    <exclusion>
+                        <groupId>org.neo4j</groupId>
+                        <artifactId>neo4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.neo4j</groupId>
+                        <artifactId>neo4j-ha</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.neo4j</groupId>
+                        <artifactId>neo4j-management</artifactId>
+                    </exclusion>
                     <exclusion>
                         <groupId>ch.qos.logback</groupId>
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j</artifactId>
+                <version>${neo4j.version}</version>
+                <type>pom</type>
             </dependency>
 
         </dependencies>
@@ -103,9 +128,8 @@
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
                         <_exportcontents>
-                            com.tinkerpop.blueprints.impls.neo4j.*;version="${blueprints.version}"
+                            com.tinkerpop.blueprints.impls.neo4j2.*;version="${blueprints.version}"
                         </_exportcontents>
-                        <Embed-Transitive>false</Embed-Transitive>
                         <Require-Bundle>
                             ${project.groupId}.core;visibility:=reexport,
                             ${project.groupId}.data.blueprints.core
