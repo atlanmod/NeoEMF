@@ -46,9 +46,6 @@ public class BlueprintsImporter {
 
         Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .autoSave()
-                .cacheContainers()
-                .cacheMetaclasses()
-                .weakCache()
                 .asMap();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {

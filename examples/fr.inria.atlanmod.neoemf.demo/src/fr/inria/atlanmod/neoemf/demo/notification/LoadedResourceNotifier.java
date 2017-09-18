@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neoemf.demo.notification;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.demo.importer.DirectBlueprintsImporter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -21,7 +22,7 @@ import java.util.Map;
  * top-level element.
  * <p>
  * This class needs to load an existing NeoEMF/Graph model to work, run {@link fr.inria.atlanmod.neoemf.demo.importer.BlueprintsImporter}
- * and {@link fr.inria.atlanmod.neoemf.demo.importer.EfficientBlueprintsImporter} to create the instance of the model.
+ * and {@link DirectBlueprintsImporter} to create the instance of the model.
  */
 public class LoadedResourceNotifier {
 

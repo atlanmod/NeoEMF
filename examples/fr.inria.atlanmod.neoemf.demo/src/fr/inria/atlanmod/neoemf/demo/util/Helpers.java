@@ -32,7 +32,7 @@ public final class Helpers {
 
     /**
      * Checks that NeoEMF model contains the same elements as the input XMI.
-     *
+     * <p>
      * This operation can take some time for large models because both input and output models have to be entirely
      * traversed. This step is presented for the demonstration purpose and can be ignored in real-world applications:
      * NeoEMF ensures that created models from input XMI files contains all the input elements.

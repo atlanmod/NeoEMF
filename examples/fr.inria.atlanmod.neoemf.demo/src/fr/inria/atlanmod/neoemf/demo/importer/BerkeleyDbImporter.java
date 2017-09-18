@@ -45,11 +45,7 @@ public class BerkeleyDbImporter {
         URI targetUri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
 
         Map<String, Object> options = BerkeleyDbOptions.builder()
-        		.autoSave()
-                .cacheContainers()
-                .cacheMetaclasses()
-                .cacheIsSet()
-                .cacheSizes()
+                .autoSave()
                 .asMap();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {

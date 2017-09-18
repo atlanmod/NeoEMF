@@ -34,14 +34,13 @@ import java.util.Map;
  * Imports an existing model stored in a XMI files into a Blueprints-based {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
  * using a scalable XMI parser that bypasses the EMF API to improve performances and enable large XMI imports.
  */
-public class EfficientBlueprintsImporter {
+public class DirectBlueprintsImporter {
 
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
         Map<String, Object> options = BlueprintsNeo4jOptions.builder()
                 .autoSave()
-                .noCache() // Can slow down the import that is write-only
                 .asMap();
 
         BackendFactory factory = BlueprintsBackendFactory.getInstance();
