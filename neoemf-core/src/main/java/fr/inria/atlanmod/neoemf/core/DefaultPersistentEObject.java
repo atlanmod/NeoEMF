@@ -45,7 +45,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -70,12 +69,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private final LazyReference<InternalEObject> lazyContainer = LazyReference.soft(super::eInternalContainer);
 
     /**
-     * The {@link StoreAdapter} where this object is stored.
-     */
-    @Nonnull
-    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
-
-    /**
      * The identifier of this object.
      */
     @Nonnull
@@ -86,6 +79,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nullable
     private Resource.Internal resource;
+
+    /**
+     * The {@link StoreAdapter} where this object is stored.
+     */
+    @Nonnull
+    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with an undefined {@link Id}.

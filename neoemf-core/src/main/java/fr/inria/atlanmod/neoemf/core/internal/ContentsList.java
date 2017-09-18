@@ -4,11 +4,13 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.util.EContentsEList;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -110,6 +112,16 @@ public class ContentsList<E> extends EContentsEList<E> {
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
     }
 
+    @Override
+    protected ListIterator<E> newResolvingListIterator() {
+        return new FeatureListIteratorResolver<>(owner, eStructuralFeatures);
+    }
+
+    @Override
+    protected ListIterator<E> newNonResolvingListIterator() {
+        return new FeatureListIterator<>(owner, eStructuralFeatures);
+    }
+
     /**
      * An empty {@code ContentsList}.
      *
@@ -129,6 +141,57 @@ public class ContentsList<E> extends EContentsEList<E> {
         @Override
         public List<E> basicList() {
             return this;
+        }
+    }
+
+    /**
+     * A {@link ListIterator} that iterates over all the content of a {@link PersistentEObject}.
+     *
+     * @param <E> the type of elements in this iterator
+     *
+     * @see PersistentEObject#eContents()
+     * @see PersistentEObject#eAllContents()
+     */
+    @ParametersAreNonnullByDefault
+    private static class FeatureListIterator<E> extends FeatureIteratorImpl<E> {
+
+        /**
+         * Constructs a new {@code FeatureListIterator} for the given {@code owner}.
+         *
+         * @param owner    the owner of this iterator
+         * @param features the containment features that are handled by this iterator
+         */
+        public FeatureListIterator(EObject owner, EStructuralFeature[] features) {
+            super(owner, features);
+        }
+
+        @Override
+        protected boolean useIsSet() {
+            return false;
+        }
+    }
+
+    /**
+     * A {@link FeatureListIterator} that resolves proxies.
+     *
+     * @param <E> the type of elements in this iterator
+     */
+    @ParametersAreNonnullByDefault
+    private static class FeatureListIteratorResolver<E> extends FeatureListIterator<E> {
+
+        /**
+         * Constructs a new {@code FeatureListIteratorResolver} for the given {@code owner}.
+         *
+         * @param owner    the owner of this iterator
+         * @param features the containment features that are handled by this iterator
+         */
+        public FeatureListIteratorResolver(EObject owner, EStructuralFeature[] features) {
+            super(owner, features);
+        }
+
+        @Override
+        protected boolean resolve() {
+            return true;
         }
     }
 }
