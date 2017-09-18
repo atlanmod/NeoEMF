@@ -23,8 +23,6 @@
     </modules>
 
     <properties>
-        <neo4j.version>1.9.6</neo4j.version>
-
         <cdo.version>4.6.0.v20170210-0100</cdo.version>
 
         <jmh.version>1.19</jmh.version>
