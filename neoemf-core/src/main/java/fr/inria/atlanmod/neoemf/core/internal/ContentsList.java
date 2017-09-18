@@ -122,6 +122,11 @@ public class ContentsList<E> extends EContentsEList<E> {
         return new FeatureListIterator<>(owner, eStructuralFeatures);
     }
 
+    @Override
+    protected final boolean useIsSet() {
+        return false;
+    }
+
     /**
      * An empty {@code ContentsList}.
      *
@@ -166,7 +171,7 @@ public class ContentsList<E> extends EContentsEList<E> {
         }
 
         @Override
-        protected boolean useIsSet() {
+        protected final boolean useIsSet() {
             return false;
         }
     }
