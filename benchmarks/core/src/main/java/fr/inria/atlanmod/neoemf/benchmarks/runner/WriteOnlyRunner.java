@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Runner that provides benchmark methods for the initialization of resources and data stores.
+ * A {@link Runner} that provides benchmark methods for the initialization of resources and data stores.
  */
-public class RunnerCreation extends Runner {
+public class WriteOnlyRunner extends Runner {
 
     /**
      * Creates a new resource according to the current {@code state}. If the resource already exists, then this method
