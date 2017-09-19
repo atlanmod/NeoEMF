@@ -26,7 +26,7 @@
     <properties>
         <neo4j.version>2.1.8</neo4j.version>
         <lucene.version>3.6.2</lucene.version>
-        <jta.version>1.1.1</jta.version>
+        <jta.version>1.1</jta.version>
     </properties>
 
     <dependencies>
