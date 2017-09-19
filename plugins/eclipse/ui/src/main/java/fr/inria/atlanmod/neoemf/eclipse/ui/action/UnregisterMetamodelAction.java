@@ -19,12 +19,12 @@ import org.eclipse.ui.IActionDelegate;
 import java.util.function.Consumer;
 
 /**
- * A {@link IActionDelegate} that registers metamodels.
+ * A {@link IActionDelegate} that unregisters metamodels.
  */
-public class RegisterMetamodelAction extends AbstractMetamodelAction {
+public class UnregisterMetamodelAction extends AbstractMetamodelAction {
 
     @Override
     protected Consumer<String> consume() {
-        return fn -> MetamodelRegistry.getInstance().register(fn);
+        return fn -> MetamodelRegistry.getInstance().unregister(fn);
     }
 }

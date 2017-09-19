@@ -218,7 +218,9 @@ public class ClassBean implements Serializable {
      */
     @Nonnull
     public EClass get() {
-        return checkNotNull(lazyClass.get(), "Unable to find EPackage for URI: %s", uri);
+        return checkNotNull(lazyClass.get(),
+                "Unable to find the EPackage associated with URI: %s. " +
+                        "Make sure it is registered in EPackage.Registry.", uri);
     }
 
     @Override

@@ -83,6 +83,10 @@
                     icon="icons/full/obj16/register.png"
                     id="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
                     label="Register EPackages" />
+            <action class="fr.inria.atlanmod.neoemf.eclipse.ui.action.UnregisterMetamodelAction"
+                    icon="icons/full/obj16/register.png"
+                    id="fr.inria.atlanmod.neoemf.eclipse.ui.action.UnregisterMetamodelAction"
+                    label="Unregister EPackages" />
         </objectContribution>
     </extension>
 

@@ -53,27 +53,29 @@ public class NeoEditor extends EcoreEditor {
 
     @Override
     public void createModel() {
-        URI uri = EditUIUtil.getURI(getEditorInput());
-        uri = UriBuilder.forScheme(uri.scheme()).fromUri(uri);
-
-        ResourceSet resourceSet = getEditingDomain().getResourceSet();
-        Resource resource = resourceSet.createResource(uri);
-        resourceSet.eAdapters().add(problemIndicationAdapter);
-
-        // Create the store options depending of the backend
-        Map<String, Object> options = PersistenceOptions.forScheme(resource.getURI().scheme())
-                .cacheContainers()
-                .cacheMetaClasses()
-                .autoSave()
-//                .log(Level.INFO)
-                .asMap();
-
         try {
+            URI uri = EditUIUtil.getURI(getEditorInput());
+            uri = UriBuilder.forScheme(uri.scheme()).fromUri(uri);
+
+            ResourceSet resourceSet = getEditingDomain().getResourceSet();
+            resourceSet.eAdapters().add(problemIndicationAdapter);
+
+            Resource resource = resourceSet.createResource(uri);
+
+            // Create the store options depending of the backend
+            Map<String, Object> options = PersistenceOptions.forScheme(resource.getURI().scheme())
+                    .cacheContainers()
+                    .cacheMetaClasses()
+                    .autoSave()
+//                    .log(Level.INFO)
+                    .asMap();
+
             resource.load(options);
         }
-        catch (IOException e) {
-            Log.error(e, "Unable to create model for the editor");
+        catch (Exception e) {
+            Log.error(e, "Unable to create model");
             closeAll();
+            throw new IllegalStateException(e);
         }
     }
 
@@ -121,7 +123,7 @@ public class NeoEditor extends EcoreEditor {
 
         Instant end = Instant.now();
 
-        Log.info("NeoEMF editor opened in {0}", Duration.between(begin, end));
+        Log.debug("NeoEMF editor opened in {0}", Duration.between(begin, end));
     }
 
     @Override
@@ -137,7 +139,7 @@ public class NeoEditor extends EcoreEditor {
 
     @Override
     public void dispose() {
-        Log.info("Disposing NeoEMF editor");
+        Log.debug("Disposing NeoEMF editor");
 
         closeAll();
         super.dispose();

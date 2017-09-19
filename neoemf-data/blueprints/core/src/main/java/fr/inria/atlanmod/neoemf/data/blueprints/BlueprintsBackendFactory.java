@@ -131,7 +131,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
             processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
-            throw new InvalidBackendException(e);
+            throw new InvalidBackendException("Unable to open the Blueprints database", e);
         }
 
         return backend;

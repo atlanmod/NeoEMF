@@ -131,7 +131,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                     new ConstructorParameter(table, Table.class));
         }
         catch (Exception e) {
-            throw new InvalidBackendException(e);
+            throw new InvalidBackendException("Unable to open the HBase database", e);
         }
 
         return backend;

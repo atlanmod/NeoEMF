@@ -115,7 +115,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
             processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
-            throw new InvalidBackendException(e);
+            throw new InvalidBackendException("Unable to open the BerkeleyDB database", e);
         }
 
         return backend;

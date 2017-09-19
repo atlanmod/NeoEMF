@@ -109,7 +109,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
             processGlobalConfiguration(baseDirectory, mapping);
         }
         catch (Exception e) {
-            throw new InvalidBackendException(e);
+            throw new InvalidBackendException("Unable to open the MapDB database", e);
         }
 
         return backend;
