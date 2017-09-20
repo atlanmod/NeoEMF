@@ -59,6 +59,9 @@ public class DirectExportTest extends AbstractMigrationTest {
         EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+        actual.eResource().unload();
+        expected.eResource().unload();
     }
 
     /**
@@ -87,5 +90,8 @@ public class DirectExportTest extends AbstractMigrationTest {
         EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+        actual.eResource().unload();
+        expected.eResource().unload();
     }
 }

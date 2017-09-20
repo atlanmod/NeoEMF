@@ -48,6 +48,9 @@ public class CopyTest extends AbstractTest {
         EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+        actual.eResource().unload();
+        expected.eResource().unload();
     }
 
     /**
@@ -72,6 +75,9 @@ public class CopyTest extends AbstractTest {
         EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+        actual.eResource().unload();
+        expected.eResource().unload();
     }
 
     /**
@@ -96,6 +102,9 @@ public class CopyTest extends AbstractTest {
         EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+        actual.eResource().unload();
+        expected.eResource().unload();
     }
 
     /**
@@ -120,5 +129,8 @@ public class CopyTest extends AbstractTest {
         EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+        actual.eResource().unload();
+        expected.eResource().unload();
     }
 }
