@@ -16,6 +16,8 @@ import fr.inria.atlanmod.commons.annotation.Static;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.impl.JavaPackageImpl;
 
 import java.net.URL;
@@ -31,6 +33,11 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @Static
 @ParametersAreNonnullByDefault
 public final class IOResourceManager {
+
+    static {
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+    }
 
     @SuppressWarnings("JavaDoc")
     private IOResourceManager() {

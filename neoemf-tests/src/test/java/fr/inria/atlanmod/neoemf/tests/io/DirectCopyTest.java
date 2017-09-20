@@ -4,6 +4,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
+import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
@@ -53,7 +54,7 @@ public class DirectCopyTest extends AbstractMigrationTest {
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
         // Comparing with EMF
-        expected = loadWithEMF(expectedUri);
+        expected = IOTestUtils.loadWithEMF(expectedUri);
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
 }

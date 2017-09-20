@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests.io;
 
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
+import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
@@ -36,8 +37,8 @@ public class DirectImportTest extends AbstractMigrationTest {
     public void testCompareStandard() throws IOException {
         URI uri = IOResourceManager.xmiStandard();
 
-        EObject actual = loadWithNeoEMF(uri);
-        EObject expected = loadWithEMF(uri);
+        EObject actual = IOTestUtils.loadWithNeoEMF(uri, context(), file());
+        EObject expected = IOTestUtils.loadWithEMF(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
@@ -53,8 +54,8 @@ public class DirectImportTest extends AbstractMigrationTest {
     public void testCompareStandardCompressed() throws IOException {
         URI uri = IOResourceManager.zxmiStandard();
 
-        EObject actual = loadWithNeoEMF(uri);
-        EObject expected = loadWithEMF(uri);
+        EObject actual = IOTestUtils.loadWithNeoEMF(uri, context(), file());
+        EObject expected = IOTestUtils.loadWithEMF(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
@@ -70,8 +71,8 @@ public class DirectImportTest extends AbstractMigrationTest {
     public void testCompareWithId() throws IOException {
         URI uri = IOResourceManager.xmiWithId();
 
-        EObject actual = loadWithNeoEMF(uri);
-        EObject expected = loadWithEMF(uri);
+        EObject actual = IOTestUtils.loadWithNeoEMF(uri, context(), file());
+        EObject expected = IOTestUtils.loadWithEMF(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
@@ -87,8 +88,8 @@ public class DirectImportTest extends AbstractMigrationTest {
     public void testCompareWithIdCompressed() throws IOException {
         URI uri = IOResourceManager.zxmiWithId();
 
-        EObject actual = loadWithNeoEMF(uri);
-        EObject expected = loadWithEMF(uri);
+        EObject actual = IOTestUtils.loadWithNeoEMF(uri, context(), file());
+        EObject expected = IOTestUtils.loadWithEMF(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }

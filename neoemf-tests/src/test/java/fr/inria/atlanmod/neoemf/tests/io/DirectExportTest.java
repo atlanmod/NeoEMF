@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
+import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
@@ -54,8 +55,8 @@ public class DirectExportTest extends AbstractMigrationTest {
                     .migrate();
         }
 
-        final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = loadWithEMF(expectedUri);
+        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
+        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
@@ -82,8 +83,8 @@ public class DirectExportTest extends AbstractMigrationTest {
                     .migrate();
         }
 
-        final EObject actual = loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = loadWithEMF(expectedUri);
+        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
+        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
     }
