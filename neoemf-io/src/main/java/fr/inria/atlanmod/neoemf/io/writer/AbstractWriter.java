@@ -58,7 +58,7 @@ public abstract class AbstractWriter<T> implements Writer {
      *
      * @see #flushCurrentElement()
      */
-    private Map<BasicAttribute, List<String>> manyAttributesAccumulator;
+    private Map<BasicAttribute, List<Object>> manyAttributesAccumulator;
 
     /**
      * Constructs a new {@code AbstractWriter} with the given {@code target}.
@@ -133,7 +133,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @param values    the ordered values of the attribute; when the {@code attribute} is single-valued, this parameter
      *                  is a {@link Collections#singletonList(Object)}
      */
-    public abstract void onAttribute(BasicAttribute attribute, List<String> values);
+    public abstract void onAttribute(BasicAttribute attribute, List<Object> values);
 
     /**
      * Handles a reference in the current element.

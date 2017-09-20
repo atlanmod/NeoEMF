@@ -11,11 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import org.eclipse.emf.ecore.EAttribute;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link AbstractBasicFeature} representing an attribute, with a value.
  */
 @ParametersAreNonnullByDefault
-public class BasicAttribute extends AbstractBasicFeature<String> {
+public class BasicAttribute extends AbstractBasicFeature<EAttribute, Object> {
 }

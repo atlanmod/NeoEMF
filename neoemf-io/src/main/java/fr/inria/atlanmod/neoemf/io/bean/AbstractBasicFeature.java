@@ -13,16 +13,21 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
+import org.eclipse.emf.ecore.EStructuralFeature;
+
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicFeature<V> extends AbstractNamedElement {
+public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> extends AbstractNamedElement {
 
     /**
      * The identifier of element that owns this feature.
@@ -38,6 +43,11 @@ public abstract class AbstractBasicFeature<V> extends AbstractNamedElement {
      * The value of this feature.
      */
     private V value;
+
+    /**
+     * The {@link EStructuralFeature} associated to this feature.
+     */
+    private F eFeature;
 
     /**
      * Returns the identifier of the element that owns this feature.
@@ -93,6 +103,25 @@ public abstract class AbstractBasicFeature<V> extends AbstractNamedElement {
         this.value = value;
     }
 
+    /**
+     * Returns the {@link EStructuralFeature} associated to this meta-class.
+     *
+     * @return the {@link EStructuralFeature}
+     */
+    @Nonnull
+    public F eFeature() {
+        return checkNotNull(eFeature);
+    }
+
+    /**
+     * Defines the {@link EStructuralFeature} associated to this meta-class.
+     *
+     * @param eFeature the {@link EStructuralFeature}
+     */
+    public void eFeature(F eFeature) {
+        this.eFeature = checkNotNull(eFeature);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), owner);
@@ -110,7 +139,7 @@ public abstract class AbstractBasicFeature<V> extends AbstractNamedElement {
             return false;
         }
 
-        AbstractBasicFeature<?> that = AbstractBasicFeature.class.cast(o);
+        AbstractBasicFeature<?, ?> that = AbstractBasicFeature.class.cast(o);
         return Objects.equals(owner, that.owner);
     }
 }

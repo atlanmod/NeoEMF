@@ -47,16 +47,10 @@ import static java.util.Objects.nonNull;
 public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     /**
-     * A LIFO that holds the current {@link EClass} chain. It contains the current meta-class and the previous.
+     * A LIFO that holds the current {@link BasicElement} chain. It contains the current element and the previous.
      */
     @Nonnull
-    private final Deque<EClass> previousMetaClasses = new ArrayDeque<>();
-
-    /**
-     * A LIFO that holds the current {@link Id} chain. It contains the current identifier and the previous.
-     */
-    @Nonnull
-    private final Deque<Id> previousIds = new ArrayDeque<>();
+    private final Deque<BasicElement> previousElements = new ArrayDeque<>();
 
     /**
      * An attribute that is waiting for a value.
@@ -83,7 +77,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     @Override
     public void onStartElement(BasicElement element) {
         // Is root
-        if (previousMetaClasses.isEmpty()) {
+        if (previousElements.isEmpty()) {
             processElementAsRoot(element);
         }
         // Is a feature of parent
@@ -94,7 +88,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        EStructuralFeature eFeature = previousMetaClasses.getLast().getEStructuralFeature(attribute.name());
+        EStructuralFeature eFeature = previousElements.getLast().metaClass().eClass().getEStructuralFeature(attribute.name());
 
         if (EObjects.isAttribute(eFeature)) {
             // The attribute is well a attribute
@@ -104,7 +98,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             // Otherwise redirect to the reference handler
             BasicReference reference = new BasicReference();
             reference.name(attribute.name());
-            reference.value(StringId.of(attribute.value()));
+            reference.value(StringId.of(String.class.cast(attribute.value())));
 
             processReference(reference, EObjects.asReference(eFeature));
         }
@@ -112,7 +106,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(BasicReference reference) {
-        EStructuralFeature eFeature = previousMetaClasses.getLast().getEStructuralFeature(reference.name());
+        EStructuralFeature eFeature = previousElements.getLast().metaClass().eClass().getEStructuralFeature(reference.name());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
@@ -121,7 +115,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     public void onCharacters(String characters) {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(waitingAttribute)) {
-            waitingAttribute.value(characters);
+            waitingAttribute.value(ValueConverter.INSTANCE.convert(characters, waitingAttribute.eFeature()));
             onAttribute(waitingAttribute);
 
             waitingAttribute = null;
@@ -134,8 +128,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     @Override
     public void onEndElement() {
         if (!previousWasAttribute) {
-            previousMetaClasses.removeLast();
-            previousIds.removeLast();
+            previousElements.removeLast();
 
             notifyEndElement();
         }
@@ -156,18 +149,18 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private void processElementAsRoot(BasicElement element) {
         checkNotNull(element.metaClass(), "The root element must have a namespace");
 
-        BasicNamespace ns = element.metaClass().ns();
-
         // Retrieve the EPackage from the NS prefix
-        EPackage ePackage = EPackage.class.cast(EPackage.Registry.INSTANCE.get(ns.uri()));
-        checkNotNull(ePackage, "EPackage %s is not registered.", ns.uri());
+        BasicNamespace ns = element.metaClass().ns();
+        EPackage ePackage = ns.ePackage();
 
         // Retrieve the current EClass
         EClass eClass = EClass.class.cast(ePackage.getEClassifier(element.name()));
         checkNotNull(eClass, "Cannot retrieve EClass %s from the EPackage %s", element.name(), ePackage);
 
         // Define the meta-class of the current element if not present
-        element.metaClass().name(eClass.getName());
+        BasicMetaclass metaClass = element.metaClass();
+        metaClass.name(eClass.getName());
+        metaClass.eClass(eClass);
 
         // Define the element as root node
         element.isRoot(true);
@@ -175,9 +168,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Notify next handlers
         notifyStartElement(element);
 
-        // Save the current EClass, and the identifier of the element created by next handlers
-        previousMetaClasses.addLast(eClass);
-        previousIds.addLast(element.id());
+        // Save the current element
+        previousElements.addLast(element);
     }
 
     /**
@@ -191,7 +183,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processElementAsFeature(BasicElement element) {
         // Retrieve the parent EClass
-        EClass parentEClass = previousMetaClasses.getLast();
+        EClass parentEClass = previousElements.getLast().metaClass().eClass();
 
         // Retrieve the structural feature from the parent, according the its local name (the attr/ref name)
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
@@ -208,20 +200,21 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
             if (nonNull(element.metaClass())) {
                 ns = element.metaClass().ns();
-                ePackage = EPackage.Registry.INSTANCE.getEPackage(ns.uri());
+                ePackage = ns.ePackage();
             }
             else {
                 ePackage = parentEClass.getEPackage();
                 ns = BasicNamespace.Registry.getInstance().getFromUri(ePackage.getNsURI());
+                ns.ePackage(ePackage);
                 element.metaClass(new BasicMetaclass(ns));
             }
 
             // Retrieve the type the reference or gets the type from the registered meta-class
             EClass eClass = resolveInstanceOf(element.metaClass(), EClass.class.cast(eReference.getEType()), ePackage);
-            element.metaClass().name(eClass.getName());
 
-            // Save the original meta-class
-            previousMetaClasses.addLast(eClass);
+            BasicMetaclass metaClass = element.metaClass();
+            metaClass.name(eClass.getName());
+            metaClass.eClass(eClass);
 
             processElementAsReference(element, eReference);
         }
@@ -241,7 +234,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Waiting a plain text value
         BasicAttribute attribute = new BasicAttribute();
         attribute.name(eAttribute.getName());
-        attribute.owner(previousIds.getLast());
+        attribute.owner(previousElements.getLast().id());
+        attribute.eFeature(eAttribute);
         attribute.isMany(eAttribute.isMany());
 
         // The attribute waiting for a value
@@ -271,8 +265,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             processReference(reference, eReference);
         }
 
-        // Save the identifier
-        previousIds.addLast(currentId);
+        // Save the current element
+        previousElements.addLast(element);
     }
 
     /**
@@ -282,8 +276,10 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eAttribute the associated EMF attribute
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
-        attribute.owner(previousIds.getLast());
+        attribute.owner(previousElements.getLast().id());
+        attribute.eFeature(eAttribute);
         attribute.isMany(eAttribute.isMany());
+        attribute.value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
 
         notifyAttribute(attribute);
     }
@@ -295,7 +291,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eReference the associated EMF reference
      */
     private void processReference(BasicReference reference, EReference eReference) {
-        reference.owner(previousIds.getLast());
+        reference.owner(previousElements.getLast().id());
+        reference.eFeature(eReference);
         reference.isMany(eReference.isMany());
         reference.isContainment(eReference.isContainment());
 
@@ -308,6 +305,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                     newRef.name(reference.name());
                     newRef.owner(reference.owner());
                     newRef.value(StringId.of(s));
+                    newRef.eFeature(eReference);
                     newRef.isMany(reference.isMany());
                     newRef.isContainment(reference.isContainment());
 

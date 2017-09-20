@@ -13,13 +13,15 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
+import org.eclipse.emf.ecore.EReference;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link AbstractBasicFeature} representing a reference, which links several {@link BasicElement}s.
  */
 @ParametersAreNonnullByDefault
-public class BasicReference extends AbstractBasicFeature<Id> {
+public class BasicReference extends AbstractBasicFeature<EReference, Id> {
 
     /**
      * Whether this reference is a containment.

@@ -19,8 +19,11 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
+
+import org.eclipse.emf.ecore.EAttribute;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -110,16 +113,17 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     }
 
     @Override
-    public final void onAttribute(BasicAttribute attribute, List<String> values) {
+    public final void onAttribute(BasicAttribute attribute, List<Object> values) {
         try {
+            EAttribute eAttribute = attribute.eFeature();
             if (!attribute.isMany()) {
-                writeAttribute(attribute.name(), values.get(0));
+                writeAttribute(attribute.name(), ValueConverter.INSTANCE.revert(values.get(0), eAttribute));
             }
             else {
                 // TODO Check the behavior of multi-valued attributes
-                for (String v : values) {
+                for (Object v : values) {
                     writeStartElement(attribute.name());
-                    writeCharacters(v);
+                    writeCharacters(ValueConverter.INSTANCE.revert(v, eAttribute));
                     writeEndElement();
                 }
             }

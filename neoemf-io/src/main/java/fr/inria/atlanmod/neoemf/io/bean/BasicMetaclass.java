@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import org.eclipse.emf.ecore.EClass;
+
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -18,6 +20,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -37,6 +40,11 @@ public class BasicMetaclass extends AbstractNamedElement {
      */
     @Nonnull
     private final BasicNamespace ns;
+
+    /**
+     * The {@link EClass} associated to this meta-class.
+     */
+    private EClass eClass;
 
     /**
      * Constructs a new {@code BasicMetaclass} with the given {@code ns}.
@@ -79,6 +87,28 @@ public class BasicMetaclass extends AbstractNamedElement {
     @Nonnull
     public BasicNamespace ns() {
         return ns;
+    }
+
+    /**
+     * Returns the {@link EClass} associated to this meta-class.
+     *
+     * @return the {@link EClass}
+     */
+    @Nonnull
+    public EClass eClass() {
+        if (isNull(eClass)) {
+            eClass = checkNotNull(EClass.class.cast(ns().ePackage().getEClassifier(name())));
+        }
+        return eClass;
+    }
+
+    /**
+     * Defines the {@link EClass} associated to this meta-class.
+     *
+     * @param eClass the {@link EClass}
+     */
+    public void eClass(EClass eClass) {
+        this.eClass = checkNotNull(eClass);
     }
 
     @Override

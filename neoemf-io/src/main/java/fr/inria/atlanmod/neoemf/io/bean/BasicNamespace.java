@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.io.bean;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 
+import org.eclipse.emf.ecore.EPackage;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,9 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * A simple representation of a namespace with a prefix and an URI.
@@ -47,6 +52,11 @@ public class BasicNamespace {
      */
     @Nonnull
     private final String uri;
+
+    /**
+     * The {@link EPackage} associated to this namespace.
+     */
+    private EPackage ePackage;
 
     /**
      * Constructs a new {@code BasicNamespace} with the given {@code prefix} and {@code uri}.
@@ -87,6 +97,29 @@ public class BasicNamespace {
     @Nonnull
     public String uri() {
         return uri;
+    }
+
+    /**
+     * Returns the {@link EPackage} associated to this namespace.
+     *
+     * @return the {@link EPackage}
+     */
+    @Nonnull
+    public EPackage ePackage() {
+        if (isNull(ePackage)) {
+            ePackage = checkNotNull(EPackage.Registry.INSTANCE.getEPackage(uri),
+                    "EPackage %s is not registered.", uri);
+        }
+        return ePackage;
+    }
+
+    /**
+     * Defines the {@link EPackage} associated to this namespace.
+     *
+     * @param ePackage the {@link EPackage}
+     */
+    public void ePackage(EPackage ePackage) {
+        this.ePackage = checkNotNull(ePackage);
     }
 
     @Override

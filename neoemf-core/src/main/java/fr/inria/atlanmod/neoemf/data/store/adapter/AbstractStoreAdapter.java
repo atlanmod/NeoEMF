@@ -62,7 +62,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      * The converter used to transform the value of {@link EAttribute}s.
      */
     @Nonnull
-    private final AttributeConverter attrConverter = new AttributeConverter(this);
+    private final AttributeConverter attrConverter = new AttributeConverter(new FeatureMapConverter(this));
 
     /**
      * The adapted store.
@@ -150,7 +150,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            Optional<String> value;
+            Optional<Object> value;
             if (!feature.isMany()) {
                 value = store.valueOf(key);
             }
@@ -199,7 +199,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            Optional<String> previousValue;
+            Optional<Object> previousValue;
             if (!feature.isMany()) {
                 previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
@@ -448,7 +448,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         ManyFeatureBean key = ManyFeatureBean.from(object, feature, index);
 
         if (EObjects.isAttribute(feature)) {
-            return store.<String>removeValue(key)
+            return store.removeValue(key)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
@@ -478,7 +478,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         ManyFeatureBean targetKey = sourceKey.withPosition(targetIndex);
 
         if (EObjects.isAttribute(feature)) {
-            return store.<String>moveValue(sourceKey, targetKey)
+            return store.moveValue(sourceKey, targetKey)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
@@ -570,9 +570,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            List<String> values;
+            List<Object> values;
             if (!feature.isMany()) {
-                values = store.<String>valueOf(key)
+                values = store.valueOf(key)
                         .map(Collections::singletonList)
                         .orElseGet(Collections::emptyList);
             }
@@ -634,7 +634,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         if (EObjects.isAttribute(feature)) {
             EAttribute attribute = EObjects.asAttribute(feature);
 
-            List<String> valuesToAdd = values.stream()
+            List<Object> valuesToAdd = values.stream()
                     .map(v -> attrConverter.convert(v, attribute))
                     .collect(Collectors.toList());
 

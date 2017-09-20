@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.data.store.adapter;
+package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.commons.BiConverter;
 import fr.inria.atlanmod.commons.primitive.Primitives;
@@ -6,7 +6,6 @@ import fr.inria.atlanmod.commons.primitive.Primitives;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import javax.annotation.Nonnull;
@@ -19,21 +18,18 @@ import static java.util.Objects.isNull;
  * A {@link BiConverter} that transforms the value of {@link EAttribute} instances.
  */
 @ParametersAreNonnullByDefault
-public class AttributeConverter implements BiConverter<Object, EAttribute, Object> {
+public class ValueConverter implements BiConverter<String, EAttribute, Object> {
 
     /**
-     * The converter for {@link FeatureMap.Entry} instances.
+     * The singleton instance of this class.
      */
     @Nonnull
-    private final FeatureMapConverter featureMapConverter;
+    public static final ValueConverter INSTANCE = new ValueConverter();
 
     /**
-     * Constructs a new {@code AttributeConverter} for the given {@code store}.
-     *
-     * @param featureMapConverter the converter for {@link FeatureMap.Entry} instances
+     * Constructs a new {@code ValueConverter}.
      */
-    public AttributeConverter(FeatureMapConverter featureMapConverter) {
-        this.featureMapConverter = featureMapConverter;
+    private ValueConverter() {
     }
 
     /**
@@ -48,22 +44,22 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
      * @see EcoreUtil#convertToString(EDataType, Object)
      */
     @Override
-    public Object convert(@Nullable Object value, EAttribute attribute) {
+    public Object convert(@Nullable String value, EAttribute attribute) {
         if (isNull(value)) {
             return null;
         }
 
         final EDataType dataType = attribute.getEAttributeType();
 
-        if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
-            return value;
-        }
-
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            return featureMapConverter.convert(FeatureMap.Entry.class.cast(value), attribute);
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet");
         }
 
-        return EcoreUtil.convertToString(dataType, value);
+        if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+            return EcoreUtil.createFromString(dataType, value);
+        }
+
+        return value;
     }
 
 
@@ -75,25 +71,25 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
      *
      * @return the value of the attribute, or {@code null} if the {@code value} is {@code null}
      *
-     * @see #convert(Object, EAttribute)
+     * @see #convert(String, EAttribute)
      * @see EcoreUtil#createFromString(EDataType, String)
      */
     @Override
-    public Object revert(@Nullable Object value, EAttribute attribute) {
+    public String revert(@Nullable Object value, EAttribute attribute) {
         if (isNull(value)) {
             return null;
         }
 
         final EDataType dataType = attribute.getEAttributeType();
 
-        if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
-            return value;
-        }
-
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            return featureMapConverter.revert(String.class.cast(value), attribute);
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet");
         }
 
-        return EcoreUtil.createFromString(dataType, String.class.cast(value));
+        if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+            return EcoreUtil.convertToString(dataType, value);
+        }
+
+        return String.class.cast(value);
     }
 }

@@ -64,7 +64,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute, List<String> values) {
+    public void onAttribute(BasicAttribute attribute, List<Object> values) {
         SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.name());
 
         if (!attribute.isMany()) {

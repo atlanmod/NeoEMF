@@ -208,7 +208,7 @@ public abstract class AbstractImportTest extends AbstractTest {
      * @param name      the expected name
      * @param value     the expected value
      */
-    protected void assertValidAttribute(BasicAttribute attribute, String name, String value) {
+    protected void assertValidAttribute(BasicAttribute attribute, String name, Object value) {
         assertThat(attribute.name()).isEqualTo(name);
         assertThat(attribute.value()).isEqualTo(value);
     }
@@ -359,7 +359,7 @@ public abstract class AbstractImportTest extends AbstractTest {
             attributes = o.attributes();
             assertThat(attributes).hasSize(2);
             assertValidAttribute(attributes.get(0), "name", "java");
-            assertValidAttribute(attributes.get(1), "proxy", "true");
+            assertValidAttribute(attributes.get(1), "proxy", true);
 
             //@Model/@orphanTypes.5
             o = childFrom(root, 8);
