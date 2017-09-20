@@ -72,4 +72,7 @@ public interface PersistentEObject extends InternalEObject, Storable {
      * @param newResource the containing resource
      */
     void resource(@Nullable Resource.Internal newResource);
+
+    @Override
+    PersistentEObject eInternalContainer();
 }

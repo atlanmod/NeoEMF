@@ -103,7 +103,7 @@ public class AllInstancesTest extends AbstractBackendTest {
         fillResource(resource);
 
         resource.save(context().optionsBuilder().asMap());
-        resource.close();
+        resource.unload();
         resource.load(context().optionsBuilder().asMap());
 
         assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
@@ -122,7 +122,7 @@ public class AllInstancesTest extends AbstractBackendTest {
         fillResource(resource);
 
         resource.save(context().optionsBuilder().asMap());
-        resource.close();
+        resource.unload();
         resource.load(context().optionsBuilder().asMap());
 
         assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);

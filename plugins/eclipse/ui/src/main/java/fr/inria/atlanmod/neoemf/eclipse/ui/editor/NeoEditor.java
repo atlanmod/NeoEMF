@@ -149,14 +149,7 @@ public class NeoEditor extends EcoreEditor {
      * Closes all opened resources.
      */
     private void closeAll() {
-        for (Resource resource : getEditingDomain().getResourceSet().getResources()) {
-            if (PersistentResource.class.isInstance(resource)) {
-                PersistentResource.class.cast(resource).close();
-            }
-            else {
-                resource.unload();
-            }
-        }
+        getEditingDomain().getResourceSet().getResources().forEach(Resource::unload);
     }
 
     /**

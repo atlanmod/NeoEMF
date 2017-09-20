@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
@@ -93,12 +92,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     @Override
     public void unload(Resource resource) {
         if (resource.isLoaded()) {
-            if (PersistentResource.class.isInstance(resource)) {
-                PersistentResource.class.cast(resource).close();
-            }
-            else {
-                resource.unload();
-            }
+            resource.unload();
         }
     }
 }

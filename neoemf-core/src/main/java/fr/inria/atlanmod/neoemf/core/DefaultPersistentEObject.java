@@ -63,10 +63,16 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
+     * The {@link StoreAdapter} where this object is stored.
+     */
+    @Nonnull
+    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
+
+    /**
      * The cached container of this object.
      */
     @Nonnull
-    private final LazyReference<InternalEObject> lazyContainer = LazyReference.soft(super::eInternalContainer);
+    private final LazyReference<PersistentEObject> lazyContainer = LazyReference.soft(() -> eStore().getContainer(this));
 
     /**
      * The identifier of this object.
@@ -81,10 +87,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Resource.Internal resource;
 
     /**
-     * The {@link StoreAdapter} where this object is stored.
+     * {@code true} if this object is being attached to a resource. This avoids an infinite loop when copying a fully
+     * transient backend to a persistent one.
+     * <p>
+     * When {@code true}, all calls to {@link #resource(Resource.Internal)} will be rejected.
+     *
+     * @see #resource(Resource.Internal)
      */
-    @Nonnull
-    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
+    private boolean locked;
 
     /**
      * Constructs a new {@code DefaultPersistentEObject} with an undefined {@link Id}.
@@ -129,22 +139,23 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void resource(@Nullable Resource.Internal newResource) {
-        StoreAdapter newStore = null;
-
-        if (PersistentResource.class.isInstance(newResource)) {
-            // The resource store may have been changed (persistent <-> transient)
-            newStore = PersistentResource.class.cast(newResource).eStore();
-        }
-        else if (resource != newResource) {
-            newStore = getOrCreateStore(newResource);
+        if (locked || resource == newResource) {
+            return;
         }
 
+        locked = true;
         resource = newResource;
 
-        // The store may have been modified
-        if (nonNull(newStore)) {
-            eStore(newStore);
+        // Refresh the container if necessary
+        if (lazyStore.isLoaded()) {
+            lazyContainer.get();
         }
+
+        // Define and copy the store if necessary
+        StoreAdapter newStore = getOrCreateStore(newResource);
+        eStore(newStore);
+
+        locked = false;
     }
 
     @Nullable
@@ -254,7 +265,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public InternalEObject eInternalContainer() {
+    public PersistentEObject eInternalContainer() {
         return lazyContainer.get();
     }
 
@@ -270,15 +281,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Nonnull
     private StoreAdapter getOrCreateStore(@Nullable Resource.Internal resource) {
-        if (!lazyStore.isLoaded() || PersistentResource.class.isInstance(lazyStore.get().resource())) {
-            TransientBackend backend = new BoundTransientBackend(id());
-            Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
-            return new TransientStoreAdapter(baseStore, resource);
+        // Use the store of the resource
+        if (PersistentResource.class.isInstance(resource)) {
+            return PersistentResource.class.cast(resource).eStore();
         }
-        else {
+        // Adapt the current store
+        else if (lazyStore.isLoaded()) {
             StoreAdapter currentStore = lazyStore.get();
             currentStore.resource(resource);
             return currentStore;
+        }
+        // Create a new transient store
+        else {
+            TransientBackend backend = new BoundTransientBackend(id());
+            Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
+            return new TransientStoreAdapter(baseStore, resource);
         }
     }
 

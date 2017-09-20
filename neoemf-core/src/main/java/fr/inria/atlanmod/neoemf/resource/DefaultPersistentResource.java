@@ -116,13 +116,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public DefaultPersistentResource(URI uri) {
         super(uri);
 
-        rootObject = new RootObject(this);
-
         factory = BackendFactoryRegistry.getInstance().getFactoryProvider(uri.scheme());
 
         Backend backend = factory.createTransientBackend();
         Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
         eStore = new PersistentStoreAdapter(baseStore, this);
+
+        rootObject = new RootObject(this);
 
         Log.info("PersistentResource created: {0}", uri);
     }
@@ -150,27 +150,29 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) throws IOException {
-        innerSave((Map<String, Object>) options);
+        doSave((Map<String, Object>) options);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
-        innerLoad((Map<String, Object>) options);
+        doLoad((Map<String, Object>) options);
+    }
+
+    @Override
+    protected List<EObject> getUnloadingContents() {
+        // Content is created on demand
+        return Collections.emptyList();
     }
 
     @Override
     protected void doUnload() {
-        Iterable<EObject> allContents = () -> getAllProperContents(unloadingContents);
-
         getErrors().clear();
         getWarnings().clear();
 
-        MoreIterables.stream(allContents)
-                .map(InternalEObject.class::cast)
-                .forEach(this::unloaded);
+        eStore.close();
 
-        close();
+        Log.info("PersistentResource closed:  {0}", uri);
     }
 
     /**
@@ -183,7 +185,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      *
      * @throws IOException if an I/O error occurs during the save
      */
-    protected void innerSave(Map<String, Object> options) throws IOException {
+    protected void doSave(Map<String, Object> options) throws IOException {
         checkOptions(options);
 
         if (!isLoaded || !eStore.store().backend().isPersistent()) {
@@ -216,7 +218,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      *
      * @throws IOException if an I/O error occurs during the load
      */
-    protected void innerLoad(Map<String, Object> options) throws IOException {
+    protected void doLoad(Map<String, Object> options) throws IOException {
         try {
             isLoading = true;
 
@@ -244,11 +246,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void close() {
-        eStore.close();
-
-        isLoaded = false;
-
-        Log.info("PersistentResource closed:  {0}", uri);
+        unload();
     }
 
     @Nonnull

@@ -24,6 +24,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
 import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -62,7 +63,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
      * A list that holds the resources that should be closed at the end of the tests.
      */
     @Nonnull
-    private final List<PersistentResource> loadedResources = new ArrayList<>();
+    private final List<Resource> loadedResources = new ArrayList<>();
 
     /**
      * The current context.
@@ -205,7 +206,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     @After
     public final void cleanWorkspace() {
         if (context.isInitialized()) {
-            loadedResources.forEach(PersistentResource::close);
+            loadedResources.forEach(Resource::unload);
             loadedResources.clear();
         }
     }

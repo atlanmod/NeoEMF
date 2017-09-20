@@ -123,7 +123,7 @@ public class LoadResourceTest extends AbstractBackendTest {
         resource.getContents().add(primary);
 
         resource.save(context().optionsBuilder().asMap());
-        resource.close();
+        resource.unload();
 
         PersistentResource newResource = context().loadResource(EPACKAGE, file());
         return closeAtExit(newResource);

@@ -32,7 +32,7 @@ final class DirectStoreCreator implements StoreCreator {
 
         adapter.initAndGetEPackage();
 
-        Log.info("Importing resource content...");
+        Log.info("Migrating resource content...");
 
         try (DataMapper mapper = adapter.createMapper(targetFile, options)) {
             Migrator.fromXmi(file)

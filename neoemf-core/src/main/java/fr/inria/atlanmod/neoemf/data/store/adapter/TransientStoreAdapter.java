@@ -16,6 +16,7 @@ import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -69,6 +70,11 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
+        if (holder.resource == resource || PersistentResource.class.isInstance(resource)) {
+            // A transient store cannot be attached to a persistent resource
+            return;
+        }
+
         this.holder.close();
 
         this.holder = SharedHolder.forResource(resource);

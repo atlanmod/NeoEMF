@@ -40,7 +40,7 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
 
     @Override
     public void copy(StoreAdapter source, StoreAdapter target) {
-        PersistentEObject container = source.getContainer(object);
+        PersistentEObject container = object.eInternalContainer();
         if (nonNull(container)) {
             target.updateContainment(object, source.getContainingFeature(object), container);
         }
@@ -48,25 +48,25 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
             target.removeContainment(object);
         }
 
-        object.eClass().getEAllStructuralFeatures().forEach(feature -> {
-            if (!feature.isMany()) {
-                Object value = source.get(object, feature, InternalEObject.EStore.NO_INDEX);
+        object.eClass().getEAllStructuralFeatures().forEach(f -> {
+            if (!f.isMany()) {
+                Object value = source.get(object, f, InternalEObject.EStore.NO_INDEX);
                 if (nonNull(value)) {
-                    if (requireAttachment(feature)) {
+                    if (requireAttachment(f)) {
                         value = attach(value);
                     }
 
-                    target.set(object, feature, InternalEObject.EStore.NO_INDEX, value);
+                    target.set(object, f, InternalEObject.EStore.NO_INDEX, value);
                 }
             }
             else {
-                List<Object> values = source.getAll(object, feature);
+                List<Object> values = source.getAll(object, f);
                 if (!values.isEmpty()) {
-                    if (requireAttachment(feature)) {
+                    if (requireAttachment(f)) {
                         values = values.stream().map(this::attach).collect(Collectors.toList());
                     }
 
-                    target.setAll(object, feature, values);
+                    target.setAll(object, f, values);
                 }
             }
         });

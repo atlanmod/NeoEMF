@@ -54,21 +54,17 @@ public final class StandardStoreCreator implements StoreCreator {
         }
         sourceResource.load(loadOpts);
 
-        Log.info("Copying resource content...");
-
-        Collection<EObject> targetRoot = EcoreUtil.copyAll(sourceResource.getContents());
-        sourceResource.unload();
-
         Log.info("Migrating resource content...");
 
         Resource targetResource = adapter.createResource(targetFile, resourceSet);
         adapter.save(targetResource, options);
 
-        targetResource.getContents().addAll(targetRoot);
+        targetResource.getContents().addAll(sourceResource.getContents());
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
         adapter.save(targetResource, options);
 
+        sourceResource.unload();
         adapter.unload(targetResource);
 
         return targetFile;
