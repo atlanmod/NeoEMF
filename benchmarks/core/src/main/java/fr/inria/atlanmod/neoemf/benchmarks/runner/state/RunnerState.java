@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
@@ -32,12 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.RegEx;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
@@ -158,130 +153,6 @@ public class RunnerState {
      */
     @Nonnull
     public PersistenceOptions options() {
-        return Options.parse(o);
-    }
-
-    /**
-     * A class that handles options that can be used as benchmarks parameters.
-     */
-    @ParametersAreNonnullByDefault
-    private final static class Options {
-
-        /**
-         * The regex of a number argument, as {@code {0189}}.
-         */
-        @RegEx
-        private static final String ARG_NUMBER = "\\{(-?[0-9]+)\\}";
-
-        /**
-         * The regex of a text argument, as {@code {ABYZ}}.
-         */
-        @RegEx
-        private static final String ARG_TEXT = "\\{([A-Z]+)\\}";
-
-        /**
-         * The option for caching features.
-         */
-        private static final String CACHE_FEATURES = "F";
-
-        /**
-         * The option for presence caching.
-         */
-        private static final String CACHE_IS_SET = "P";
-
-        /**
-         * The option for size caching.
-         */
-        private static final String CACHE_SIZES = "S";
-
-        /**
-         * The option for metaclass caching.
-         */
-        private static final String CACHE_METACLASSES = "M";
-
-        /**
-         * The option for container caching.
-         */
-        private static final String CACHE_CONTAINERS = "C";
-
-        /**
-         * The option for recording stats.
-         */
-        private static final String RECORD_STATS = "R";
-
-        /**
-         * The option for logging database calls.
-         */
-        private static final String LOG = "L";
-
-        /**
-         * The option for auto-saving.
-         */
-        private static final String AUTO_SAVE = "A";
-
-        /**
-         * The pattern for auto-saving, with a specified chunk.
-         */
-        private static final Pattern AUTO_SAVE_CHUCK = Pattern.compile(AUTO_SAVE + ARG_NUMBER, Pattern.CASE_INSENSITIVE);
-
-        /**
-         * Parses the given {@code text} and returns the associated {@link PersistenceOptions}.
-         *
-         * @param text the text containg the options to define
-         *
-         * @return a {@link PersistenceOptions}
-         */
-        @Nonnull
-        public static PersistenceOptions parse(String text) {
-            PersistenceOptions options = CommonOptions.builder();
-
-            String upperText = text.toUpperCase();
-
-            // Cache features
-            if (upperText.contains(Options.CACHE_FEATURES)) {
-                options.cacheFeatures();
-            }
-
-            // Cache presence
-            if (upperText.contains(Options.CACHE_IS_SET)) {
-                options.cacheIsSet();
-            }
-
-            // Cache sizes
-            if (upperText.contains(Options.CACHE_SIZES)) {
-                options.cacheSizes();
-            }
-
-            // Cache metaclasses (Defined by default)
-            if (upperText.contains(Options.CACHE_METACLASSES)) {
-                options.cacheMetaClasses();
-            }
-
-            // Cache containers (Defined by default)
-            if (upperText.contains(Options.CACHE_CONTAINERS)) {
-                options.cacheContainers();
-            }
-
-            // Stats recording
-            if (upperText.contains(Options.RECORD_STATS)) {
-                options.recordStats();
-            }
-
-            // Logging
-            if (upperText.contains(Options.LOG)) {
-                options.log();
-            }
-
-            // Auto-saving
-            Matcher chuckMatcher = Options.AUTO_SAVE_CHUCK.matcher(upperText);
-            if (chuckMatcher.find()) {
-                options.autoSave(Long.parseLong(chuckMatcher.group(1)));
-            }
-            else if (upperText.contains(AUTO_SAVE)) {
-                options.autoSave();
-            }
-
-            return options;
-        }
+        return PersistenceOptionsParser.parse(o);
     }
 }

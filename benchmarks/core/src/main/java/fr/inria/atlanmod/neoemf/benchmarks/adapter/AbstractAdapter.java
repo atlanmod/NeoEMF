@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 
 /**
  * The abstract implementation of an {@link Adapter.Internal}.
@@ -132,10 +133,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
             storeFile = Stores.getOrCreateStore(file, options, this, useDirectImport);
         }
 
-        if (!storeFile.exists()) {
-            throw new IllegalArgumentException("'" + file.getName() + "' does not exist in resource directory");
-        }
-
+        checkState(storeFile.exists(), "'%s' does not exist in resource directory", file.getName());
         return storeFile;
     }
 }
