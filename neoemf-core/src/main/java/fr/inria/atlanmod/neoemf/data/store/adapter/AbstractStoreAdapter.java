@@ -15,7 +15,6 @@ import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -25,15 +24,11 @@ import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.FeatureMap;
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -67,7 +62,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      * The converter used to transform the value of {@link EAttribute}s.
      */
     @Nonnull
-    private final AttributeConverter attrConverter = new AttributeConverter();
+    private final AttributeConverter attrConverter = new AttributeConverter(this);
 
     /**
      * The adapted store.
@@ -164,7 +159,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             }
 
             return value
-                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -206,14 +201,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         if (EObjects.isAttribute(feature)) {
             Optional<String> previousValue;
             if (!feature.isMany()) {
-                previousValue = store.valueFor(key, attrConverter.convert(EObjects.asAttribute(feature), value));
+                previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
             else {
-                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(EObjects.asAttribute(feature), value));
+                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
 
             return previousValue
-                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -340,7 +335,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            return store.containsValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
+            return store.containsValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
             return store.containsReference(key, PersistentEObject.from(value).id());
@@ -365,7 +360,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = store.indexOfValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
+            index = store.indexOfValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
             index = store.indexOfReference(key, PersistentEObject.from(value).id());
@@ -391,7 +386,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = store.lastIndexOfValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
+            index = store.lastIndexOfValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
             index = store.lastIndexOfReference(key, PersistentEObject.from(value).id());
@@ -418,10 +413,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
-                store.appendValue(key, attrConverter.convert(EObjects.asAttribute(feature), value));
+                store.appendValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
             else {
-                store.addValue(key.withPosition(index), attrConverter.convert(EObjects.asAttribute(feature), value));
+                store.addValue(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
         }
         else {
@@ -454,7 +449,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             return store.<String>removeValue(key)
-                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -484,7 +479,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             return store.<String>moveValue(sourceKey, targetKey)
-                    .map(v -> attrConverter.revert(EObjects.asAttribute(feature), v))
+                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -588,7 +583,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             EAttribute attribute = EObjects.asAttribute(feature);
 
             return values.stream()
-                    .map(v -> attrConverter.revert(attribute, v))
+                    .map(v -> attrConverter.revert(v, attribute))
                     .collect(Collectors.toList());
         }
         else {
@@ -640,7 +635,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             EAttribute attribute = EObjects.asAttribute(feature);
 
             List<String> valuesToAdd = values.stream()
-                    .map(v -> attrConverter.convert(attribute, v))
+                    .map(v -> attrConverter.convert(v, attribute))
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
@@ -693,6 +688,29 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         store.removeContainer(object.id());
     }
 
+    @Nonnull
+    @Override
+    public Optional<EClass> resolveInstanceOf(Id id) {
+        Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
+
+        if (!instanceOf.isPresent()) {
+            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id));
+        }
+
+        return instanceOf;
+    }
+
+    @Override
+    public void updateInstanceOf(PersistentEObject object) {
+        // If the object is already present in the cache, then the meta-class is defined
+        if (cache().contains(object.id())) {
+            return;
+        }
+
+        store.metaClassFor(object.id(), ClassBean.from(object));
+        refresh(object);
+    }
+
     @Override
     public void copyTo(StoreAdapter target) {
         store.copyTo(target.store());
@@ -705,41 +723,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     @Nonnull
     protected abstract Cache<Id, PersistentEObject> cache();
-
-    /**
-     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
-     *
-     * @param id the {@link Id} of the model element to compute the {@link EClass} from
-     *
-     * @return an {@link EClass} representing the meta-class of the element
-     */
-    @Nonnull
-    private Optional<EClass> resolveInstanceOf(Id id) {
-        Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
-
-        if (!instanceOf.isPresent()) {
-            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id));
-        }
-
-        return instanceOf;
-    }
-
-    /**
-     * Creates the instance of the {@code object} in a {@link ClassBean} object and persists it in the database.
-     * <p>
-     * <b>Note:</b> The type is not updated if {@code object} was previously mapped to another type.
-     *
-     * @param object the object to store the instance-of information from
-     */
-    private void updateInstanceOf(PersistentEObject object) {
-        // If the object is already present in the cache, then the meta-class is defined
-        if (cache().contains(object.id())) {
-            return;
-        }
-
-        store.metaClassFor(object.id(), ClassBean.from(object));
-        refresh(object);
-    }
 
     @Override
     public int hashCode() {
@@ -766,135 +749,5 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     private void refresh(PersistentEObject object) {
         cache().putIfAbsent(object.id(), object);
-    }
-
-    /**
-     * A converter that transforms the value of {@link EAttribute}s.
-     */
-    @ParametersAreNonnullByDefault
-    private class AttributeConverter {
-
-        /**
-         * The delimiter used to separate the feature from its value in a serialized {@link FeatureMap.Entry}.
-         */
-        @Nonnull
-        private static final String FEATURE_MAP_DELIMITER = "#";
-
-        /**
-         * Converts an instance of the {@code attribute} to a string literal representation.
-         *
-         * @param attribute the attribute to instantiate
-         * @param value     the value of the attribute
-         *
-         * @return the string literal representation of the value
-         *
-         * @see #revert(EAttribute, String)
-         * @see EcoreUtil#convertToString(EDataType, Object)
-         */
-        public String convert(EAttribute attribute, @Nullable Object value) {
-            if (isNull(value)) {
-                return null;
-            }
-
-            final EDataType dataType = attribute.getEAttributeType();
-
-            if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-                return convertEntry(attribute, FeatureMap.Entry.class.cast(value));
-            }
-
-            return EcoreUtil.convertToString(dataType, value);
-        }
-
-        /**
-         * Converts an instance of {@link FeatureMap.Entry} to a string literal representation.
-         * <p>
-         * The {@code entry} is serialized as {@code featureName#value}, where {@code value} is the string
-         * representation of the {@link FeatureMap.Entry#getValue() value} for an attribute, or the string
-         * representation of the {@link Id} for a reference.
-         *
-         * @param attribute the attribute to instantiate
-         * @param entry     the entry of the attribute
-         *
-         * @return the string literal representation of the entry
-         *
-         * @see #revertEntry(EAttribute, String)
-         * @see EcoreUtil#convertToString(EDataType, Object)
-         */
-        @Nonnull
-        private String convertEntry(@SuppressWarnings("unused") EAttribute attribute, FeatureMap.Entry entry) {
-            EStructuralFeature innerFeature = entry.getEStructuralFeature();
-            String value;
-
-            if (EObjects.isAttribute(innerFeature)) {
-                EAttribute innerAttribute = EObjects.asAttribute(innerFeature);
-                value = EcoreUtil.convertToString(innerAttribute.getEAttributeType(), entry.getValue());
-            }
-            else {
-                PersistentEObject referencedObject = PersistentEObject.from(entry.getValue());
-                updateInstanceOf(referencedObject);
-
-                value = referencedObject.id().toString();
-            }
-
-            return innerFeature.getName() + FEATURE_MAP_DELIMITER + value;
-        }
-
-        /**
-         * Creates an instance of the {@code attribute} from a string literal representation.
-         *
-         * @param attribute the attribute to instantiate
-         * @param value     the string literal representation of the value
-         *
-         * @return the value of the attribute
-         *
-         * @see #convert(EAttribute, Object)
-         * @see EcoreUtil#createFromString(EDataType, String)
-         */
-        public Object revert(EAttribute attribute, @Nullable String value) {
-            if (isNull(value)) {
-                return null;
-            }
-
-            final EDataType dataType = attribute.getEAttributeType();
-
-            if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-                return revertEntry(attribute, value);
-            }
-
-            return EcoreUtil.createFromString(dataType, value);
-        }
-
-        /**
-         * Creates an instance of {@link FeatureMap.Entry} from a string literal representation.
-         * <p>
-         * The {@code entry} must be serialized as {@code featureName#value}.
-         *
-         * @param attribute the attribute to instantiate
-         * @param entry     the string literal representation of the entry
-         *
-         * @return the entry of the attribute
-         *
-         * @see #convertEntry(EAttribute, FeatureMap.Entry)
-         * @see EcoreUtil#createFromString(EDataType, String)
-         */
-        @Nonnull
-        private FeatureMap.Entry revertEntry(EAttribute attribute, String entry) {
-            String[] splitValues = entry.split(FEATURE_MAP_DELIMITER, 2);
-
-            EClass metaClass = attribute.getEContainingClass();
-            EStructuralFeature innerFeature = metaClass.getEStructuralFeature(splitValues[0]);
-
-            Object value;
-
-            if (EObjects.isAttribute(innerFeature)) {
-                EAttribute innerAttribute = EObjects.asAttribute(innerFeature);
-                value = EcoreUtil.createFromString(innerAttribute.getEAttributeType(), splitValues[1]);
-            }
-            else {
-                value = resolve(StringId.of(splitValues[1]));
-            }
-
-            return FeatureMapUtil.createEntry(innerFeature, value);
-        }
     }
 }

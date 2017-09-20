@@ -15,6 +15,7 @@ import fr.inria.atlanmod.commons.Copiable;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.DataManager;
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.eclipse.emf.ecore.EClass;
@@ -25,6 +26,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -207,4 +209,23 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
      * @param object the object to remove from the containment list of its actual container
      */
     void removeContainment(PersistentEObject object);
+
+    /**
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
+     *
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
+     *
+     * @return an {@link EClass} representing the meta-class of the element
+     */
+    @Nonnull
+    Optional<EClass> resolveInstanceOf(Id id);
+
+    /**
+     * Creates the instance of the {@code object} in a {@link ClassBean} object and persists it in the database.
+     * <p>
+     * <b>Note:</b> The type is not updated if {@code object} was previously mapped to another type.
+     *
+     * @param object the object to store the instance-of information from
+     */
+    void updateInstanceOf(PersistentEObject object);
 }
