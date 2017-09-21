@@ -42,7 +42,7 @@ public class StringId implements Id {
      * @see #generate(String)
      */
     @Nonnull
-    private static final Hasher HASHER = Hashers.murmur128();
+    private static final Hasher HASHER = Hashers.murmur64();
 
     /**
      * The literal representation of this {@code Id} as a {@link String}.
@@ -93,7 +93,7 @@ public class StringId implements Id {
      */
     @Nonnull
     public static Id generate() {
-        return new StringId(EcoreUtil.generateUUID());
+        return generate(EcoreUtil.generateUUID());
     }
 
     @Nonnull

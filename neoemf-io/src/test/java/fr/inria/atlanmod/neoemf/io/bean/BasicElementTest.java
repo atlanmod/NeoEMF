@@ -45,8 +45,8 @@ public class BasicElementTest extends AbstractTest {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.id()).isNull();
 
-        Id id0 = StringId.of("id0");
-        Id id1 = StringId.of("id1");
+        Id id0 = StringId.generate("id0");
+        Id id1 = StringId.generate("id1");
 
         elt0.id(id0);
         assertThat(elt0.id()).isEqualTo(id0);

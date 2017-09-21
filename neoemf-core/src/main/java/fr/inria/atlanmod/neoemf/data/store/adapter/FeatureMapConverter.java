@@ -56,7 +56,7 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
      *
      * @return the string literal representation of the entry
      *
-     * @see AttributeConverter#revert(String, EAttribute)
+     * @see AttributeConverter#revert(Object, EAttribute)
      * @see EcoreUtil#convertToString(EDataType, Object)
      */
     @Nonnull
