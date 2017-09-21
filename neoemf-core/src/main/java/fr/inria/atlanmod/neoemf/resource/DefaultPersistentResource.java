@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.resource;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
@@ -144,7 +144,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return eStore.resolve(StringId.of(uriFragment));
+        return eStore.resolve(IdProvider.create(uriFragment));
     }
 
     @Override

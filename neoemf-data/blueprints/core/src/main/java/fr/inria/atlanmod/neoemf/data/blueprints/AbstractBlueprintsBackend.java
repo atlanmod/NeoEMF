@@ -24,7 +24,7 @@ import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -141,7 +141,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     private static Id idFor(ClassBean metaClass) {
-        return StringId.generate(metaClass.name() + metaClass.uri());
+        return IdProvider.generate(metaClass.name() + metaClass.uri());
     }
 
     /**
@@ -238,7 +238,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         return MoreIterables.onlyElement(edges)
                 .map(e -> SingleFeatureBean.of(
-                        StringId.from(e.getVertex(Direction.IN).getId()),
+                        IdProvider.create(e.getVertex(Direction.IN).getId().toString()),
                         e.getProperty(KEY_CONTAINING_FEATURE)));
     }
 
@@ -350,7 +350,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(v -> StringId.from(v.getId()))
+                .map(v -> IdProvider.create(v.getId().toString()))
                 .collect(Collectors.toSet());
     }
 

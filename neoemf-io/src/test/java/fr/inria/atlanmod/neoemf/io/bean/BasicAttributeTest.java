@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 
 import org.junit.Test;
 
@@ -46,8 +46,8 @@ public class BasicAttributeTest extends AbstractTest {
         attr0.name("attribute0");
         assertThat(attr0.owner()).isNull();
 
-        Id id0 = StringId.generate("id0");
-        Id id1 = StringId.generate("id1");
+        Id id0 = IdProvider.generate("id0");
+        Id id1 = IdProvider.generate("id1");
 
         attr0.owner(id0);
         assertThat(attr0.owner()).isEqualTo(id0);

@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -43,7 +43,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     /**
      * The default {@link Id} used to store features.
      */
-    protected static final Id id0 = StringId.generate("Id0");
+    protected static final Id id0 = IdProvider.generate("Id0");
 
     /**
      * The {@link DataMapper} used for this test case.
@@ -100,11 +100,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Container_Same() {
-        Id containerId0 = StringId.generate("ContainerId0");
+        Id containerId0 = IdProvider.generate("ContainerId0");
 
         SingleFeatureBean container = SingleFeatureBean.of(containerId0, "Container0");
 
-        Id id1 = StringId.generate("Id1");
+        Id id1 = IdProvider.generate("Id1");
 
         // Define the containers
         mapper.containerFor(id0, container);
@@ -123,12 +123,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Container_Different() {
-        Id containerId0 = StringId.generate("ContainerId0");
+        Id containerId0 = IdProvider.generate("ContainerId0");
 
         SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
         SingleFeatureBean container1 = SingleFeatureBean.of(containerId0, "Container1");
 
-        Id id1 = StringId.generate("Id1");
+        Id id1 = IdProvider.generate("Id1");
 
         // Define the containers
         mapper.containerFor(id0, container0);
@@ -171,7 +171,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_Container() {
-        Id containerId0 = StringId.generate("ContainerId0");
+        Id containerId0 = IdProvider.generate("ContainerId0");
 
         SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
 
@@ -197,7 +197,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSet_Metaclass_Same() {
         ClassBean metaClass = ClassBean.of("Metaclass0", "Uri0");
 
-        Id id1 = StringId.generate("Id1");
+        Id id1 = IdProvider.generate("Id1");
 
         // Define the meta-classes
         mapper.metaClassFor(id0, metaClass);
@@ -1149,8 +1149,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSet_Reference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
 
         // Define references
         mapper.referenceFor(key, ref0);
@@ -1195,7 +1195,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testHasRemove_Reference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
+        Id ref0 = IdProvider.generate("Ref0");
 
         mapper.referenceFor(key, ref0);
 
@@ -1245,10 +1245,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSet_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
-        Id ref3 = StringId.generate("Ref3");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
+        Id ref3 = IdProvider.generate("Ref3");
 
         // Initialize the references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1285,7 +1285,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, StringId.generate("Ref0"))).isNotPresent()
+                assertThat(mapper.referenceFor(key, IdProvider.generate("Ref0"))).isNotPresent()
         )).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -1310,9 +1310,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetAll_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         // Add references in natural order
         mapper.appendReference(key, ref0);
@@ -1363,9 +1363,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAdd_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         // Add references in natural order
         mapper.addReference(key.withPosition(0), ref0);
@@ -1385,7 +1385,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAdd_ManyReference_AnyOrder() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref2 = StringId.generate("Ref2");
+        Id ref2 = IdProvider.generate("Ref2");
 
         // Add references in any order
         assertThat(catchThrowable(() ->
@@ -1414,8 +1414,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAppend_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
 
         int index;
 
@@ -1451,8 +1451,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddAll_ManyReference_FromStart() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
 
         mapper.addAllReferences(key.withPosition(0), Arrays.asList(ref0, ref1));
 
@@ -1468,8 +1468,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddAll_ManyReference_WithOffset() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
 
         assertThat(catchThrowable(() ->
                 mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref0, ref1))
@@ -1484,10 +1484,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddAll_ManyReference_FromMiddle() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
-        Id ref3 = StringId.generate("Ref3");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
+        Id ref3 = IdProvider.generate("Ref3");
 
         // Append references
         mapper.appendReference(key, ref0);
@@ -1509,9 +1509,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddAll_ManyReference_FromEnd() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         mapper.appendReference(key, ref0);
         assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
@@ -1544,7 +1544,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAddAll_ManyReference_WithNull() {
         ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
 
-        Id ref0 = StringId.generate("Ref0");
+        Id ref0 = IdProvider.generate("Ref0");
 
         assertThat(catchThrowable(() ->
                 mapper.addAllReferences(key, Arrays.asList(ref0, null))
@@ -1573,8 +1573,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAppendAll_ManyReference_FromStart() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
 
         int index;
 
@@ -1593,9 +1593,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAppendAll_ManyReference_FromEnd() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         int index;
 
@@ -1632,7 +1632,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testAppendAll_ManyReference_WithNull() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
+        Id ref0 = IdProvider.generate("Ref0");
 
         assertThat(catchThrowable(() ->
                 mapper.appendAllReferences(key, Arrays.asList(ref0, null))
@@ -1661,8 +1661,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         // Initialize references
-        mapper.addReference(key.withPosition(0), StringId.generate("aaa"));
-        mapper.addReference(key.withPosition(1), StringId.generate("bbb"));
+        mapper.addReference(key.withPosition(0), IdProvider.generate("aaa"));
+        mapper.addReference(key.withPosition(1), IdProvider.generate("bbb"));
         assertThat(mapper.sizeOfReference(key)).contains(2);
         assertThat(mapper.hasAnyReference(key)).isTrue();
 
@@ -1683,9 +1683,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemove_ManyReference_Before() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1707,9 +1707,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemove_ManyReference_After() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1745,9 +1745,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testRemoveAll_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
 
         // Initialize references
         mapper.appendReference(key, ref0);
@@ -1791,10 +1791,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testMove_ManyReference_Before() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
-        Id ref3 = StringId.generate("Ref3");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
+        Id ref3 = IdProvider.generate("Ref3");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1818,10 +1818,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testMove_ManyReference_After() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
-        Id ref1 = StringId.generate("Ref1");
-        Id ref2 = StringId.generate("Ref2");
-        Id ref3 = StringId.generate("Ref3");
+        Id ref0 = IdProvider.generate("Ref0");
+        Id ref1 = IdProvider.generate("Ref1");
+        Id ref2 = IdProvider.generate("Ref2");
+        Id ref3 = IdProvider.generate("Ref3");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
@@ -1859,12 +1859,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testContains_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
+        Id ref0 = IdProvider.generate("Ref0");
 
         // Initialize references
-        mapper.appendReference(key, StringId.generate("aaa"));
+        mapper.appendReference(key, IdProvider.generate("aaa"));
         mapper.appendReference(key, ref0);
-        mapper.appendReference(key, StringId.generate("zzz"));
+        mapper.appendReference(key, IdProvider.generate("zzz"));
 
         // Check that contains
         assertThat(mapper.containsReference(key, ref0)).isTrue();
@@ -1885,7 +1885,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsReference(key, StringId.generate("aaa"))).isFalse()
+                assertThat(mapper.containsReference(key, IdProvider.generate("aaa"))).isFalse()
         )).isNull();
     }
 
@@ -1909,14 +1909,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testIndexOf_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
+        Id ref0 = IdProvider.generate("Ref0");
 
         // Initialize references
         mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), StringId.generate("aaa"));
-        mapper.addReference(key.withPosition(2), StringId.generate("bbb"));
+        mapper.addReference(key.withPosition(1), IdProvider.generate("aaa"));
+        mapper.addReference(key.withPosition(2), IdProvider.generate("bbb"));
         mapper.addReference(key.withPosition(3), ref0);
-        mapper.addReference(key.withPosition(4), StringId.generate("ccc"));
+        mapper.addReference(key.withPosition(4), IdProvider.generate("ccc"));
 
         // Check first index
         assertThat(mapper.indexOfReference(key, ref0)).contains(0);
@@ -1937,7 +1937,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfReference(key, StringId.generate("aaa"))).isNotPresent()
+                assertThat(mapper.indexOfReference(key, IdProvider.generate("aaa"))).isNotPresent()
         )).isNull();
     }
 
@@ -1961,13 +1961,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testLastIndexOf_ManyReference() {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
-        Id ref0 = StringId.generate("Ref0");
+        Id ref0 = IdProvider.generate("Ref0");
 
         // Initialize references
-        mapper.addReference(key.withPosition(0), StringId.generate("aaa"));
+        mapper.addReference(key.withPosition(0), IdProvider.generate("aaa"));
         mapper.addReference(key.withPosition(1), ref0);
-        mapper.addReference(key.withPosition(2), StringId.generate("bbb"));
-        mapper.addReference(key.withPosition(3), StringId.generate("ccc"));
+        mapper.addReference(key.withPosition(2), IdProvider.generate("bbb"));
+        mapper.addReference(key.withPosition(3), IdProvider.generate("ccc"));
         mapper.addReference(key.withPosition(4), ref0);
 
         // Check last index
@@ -1989,7 +1989,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfReference(key, StringId.generate("aaa"))).isNotPresent()
+                assertThat(mapper.lastIndexOfReference(key, IdProvider.generate("aaa"))).isNotPresent()
         )).isNull();
     }
 
@@ -2014,9 +2014,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
 
         // Initialize references
-        mapper.appendReference(key, StringId.generate("aaa"));
-        mapper.appendReference(key, StringId.generate("bbb"));
-        mapper.appendReference(key, StringId.generate("ccc"));
+        mapper.appendReference(key, IdProvider.generate("aaa"));
+        mapper.appendReference(key, IdProvider.generate("bbb"));
+        mapper.appendReference(key, IdProvider.generate("ccc"));
 
         // Check the size
         assertThat(mapper.sizeOfReference(key)).contains(3);

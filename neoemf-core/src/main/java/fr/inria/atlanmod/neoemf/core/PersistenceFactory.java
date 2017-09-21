@@ -51,7 +51,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     @Nonnull
     @Override
     public PersistentEObject create(EClass eClass) {
-        return create(eClass, StringId.generate());
+        return create(eClass, IdProvider.generate());
     }
 
     /**

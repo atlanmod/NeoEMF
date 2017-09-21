@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.Optional;
@@ -40,7 +40,7 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
      * The default converter to use {@link String} instead of {@link Id}.
      */
     @Nonnull
-    Converter<Id, String> DEFAULT_CONVERTER = Converter.from(Id::toString, StringId::of);
+    Converter<Id, String> DEFAULT_CONVERTER = Converter.from(Id::toString, IdProvider::create);
 
     @Nonnull
     @Override

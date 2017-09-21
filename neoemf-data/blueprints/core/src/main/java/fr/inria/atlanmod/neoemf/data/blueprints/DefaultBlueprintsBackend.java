@@ -19,7 +19,7 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
@@ -114,7 +114,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .vertices();
 
         return MoreIterables.onlyElement(referencedVertices)
-                .map(v -> StringId.from(v.getId()));
+                .map(v -> IdProvider.create(v.getId().toString()));
     }
 
     @Nonnull
@@ -136,7 +136,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
             Vertex previousVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(StringId.from(previousVertex.getId()));
+            previousId = Optional.of(IdProvider.create(previousVertex.getId().toString()));
             referenceEdge.get().remove();
         }
 
@@ -438,7 +438,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .vertices();
 
         return MoreIterables.onlyElement(referencedVertices)
-                .map(v -> StringId.from(v.getId()));
+                .map(v -> IdProvider.create(v.getId().toString()));
     }
 
     @Nonnull
@@ -461,7 +461,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         return MoreIterables.stream(edges)
                 .sorted(byPosition)
-                .map(e -> StringId.from(e.getVertex(Direction.IN).getId()))
+                .map(e -> IdProvider.create(e.getVertex(Direction.IN).getId().toString()))
                 .collect(Collectors.toList());
     }
 
@@ -489,7 +489,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Optional<Id> previousId = Optional.empty();
         if (previousEdge.isPresent()) {
             Vertex referencedVertex = previousEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(StringId.from(referencedVertex.getId()));
+            previousId = Optional.of(IdProvider.create(referencedVertex.getId().toString()));
             previousEdge.get().remove();
         }
 
@@ -615,7 +615,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
             else {
                 Vertex referencedVertex = edge.getVertex(Direction.IN);
-                previousId = Optional.of(StringId.from(referencedVertex.getId()));
+                previousId = Optional.of(IdProvider.create(referencedVertex.getId().toString()));
                 edge.remove();
 
                 Iterable<Edge> containerEdge = referencedVertex.query()

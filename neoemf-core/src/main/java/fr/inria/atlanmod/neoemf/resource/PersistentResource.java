@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
 
 import org.eclipse.emf.ecore.EClass;
@@ -40,7 +40,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
     /**
      * The identifier of the root element in a {@code PersistentResource}.
      */
-    Id ROOT_ID = StringId.of("ROOT");
+    Id ROOT_ID = IdProvider.create("ROOT");
 
     /**
      * The name of the property used by the {@link #ROOT_ID} element to define its content.

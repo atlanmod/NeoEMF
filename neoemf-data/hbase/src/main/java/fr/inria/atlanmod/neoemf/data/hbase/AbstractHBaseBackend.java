@@ -15,7 +15,7 @@ import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.primitive.Bytes;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -124,7 +124,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                     byte[] byteId = r.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = r.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return SingleFeatureBean.of(StringId.of(Bytes.toString(byteId)), Bytes.toString(byteName));
+                        return SingleFeatureBean.of(IdProvider.create(Bytes.toString(byteId)), Bytes.toString(byteName));
                     }
                     return null;
                 });

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.bean;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class SingleFeatureBeanTest extends AbstractTest {
      */
     @Test
     public void testCompareEqualTo() {
-        Id id0 = StringId.of("id0");
+        Id id0 = IdProvider.create("id0");
 
         SingleFeatureBean key0 = SingleFeatureBean.of(id0, "aaa");
         SingleFeatureBean key1 = SingleFeatureBean.of(id0, "aaa");
@@ -42,7 +42,7 @@ public class SingleFeatureBeanTest extends AbstractTest {
      */
     @Test
     public void testCompareLowerThan() {
-        Id id0 = StringId.of("id0");
+        Id id0 = IdProvider.create("id0");
 
         SingleFeatureBean key0 = SingleFeatureBean.of(id0, "aaa");
         SingleFeatureBean key1 = SingleFeatureBean.of(id0, "bbb");
@@ -55,8 +55,8 @@ public class SingleFeatureBeanTest extends AbstractTest {
      */
     @Test
     public void testCompareGreaterThan() {
-        SingleFeatureBean key0 = SingleFeatureBean.of(StringId.of("AAA"), "aaa");
-        SingleFeatureBean key1 = SingleFeatureBean.of(StringId.of("BBB"), "zzz");
+        SingleFeatureBean key0 = SingleFeatureBean.of(IdProvider.create("AAA"), "aaa");
+        SingleFeatureBean key1 = SingleFeatureBean.of(IdProvider.create("BBB"), "zzz");
 
         assertThat(key0.compareTo(key1)).isGreaterThan(0);
     }

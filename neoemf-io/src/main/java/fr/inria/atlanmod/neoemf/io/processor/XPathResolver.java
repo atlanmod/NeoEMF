@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -140,7 +140,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         // An element has no identifier if it's not resolved
         if (ignore || nonNull(rawId)) {
             checkState(nonNull(rawId), "raw id must be set");
-            element.id(StringId.of(rawId));
+            element.id(IdProvider.create(rawId));
         }
         else {
             // Processes the raw identifier from the path of the element in XML tree
@@ -158,7 +158,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Defines the new identifier of the element
-            element.id(StringId.generate(path));
+            element.id(IdProvider.generate(path));
         }
 
         element.rawId(null);
@@ -178,7 +178,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         checkState(nonNull(rawValue), "raw value must be set");
 
         if (ignore || !rawValue.startsWith(START_EXPR) && !rawValue.startsWith(START_ELT)) {
-            reference.value(StringId.of(rawValue));
+            reference.value(IdProvider.create(rawValue));
         }
         else {
             // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
@@ -196,7 +196,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Defines the new identifier of the reference
-            reference.value(StringId.generate(path));
+            reference.value(IdProvider.generate(path));
         }
 
         reference.rawValue(null);

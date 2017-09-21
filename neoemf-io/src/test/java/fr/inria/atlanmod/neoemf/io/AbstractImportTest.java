@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -153,8 +153,8 @@ public abstract class AbstractImportTest extends AbstractTest {
      */
     protected Id getId(String path) {
         Id id = useIds()
-                ? StringId.of(MAPPING.get(path))
-                : StringId.generate(path);
+                ? IdProvider.create(MAPPING.get(path))
+                : IdProvider.generate(path);
 
         return checkNotNull(id, "Undefined path: %s", path);
     }

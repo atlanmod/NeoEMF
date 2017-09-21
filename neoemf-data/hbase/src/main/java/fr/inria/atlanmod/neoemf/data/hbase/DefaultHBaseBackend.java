@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceMergedAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
@@ -51,7 +51,7 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
     @Nonnull
     private static final Converter<Id, String> SINGLE_CONVERTER = Converter.from(
             Id::toString,
-            StringId::of);
+            IdProvider::create);
 
     /**
      * The {@link Converter} used to convert multi-valued references.
