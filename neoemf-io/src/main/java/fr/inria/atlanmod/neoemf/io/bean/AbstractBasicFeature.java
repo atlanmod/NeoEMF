@@ -120,6 +120,8 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      */
     public void eFeature(F eFeature) {
         this.eFeature = checkNotNull(eFeature);
+        name(eFeature.getName());
+        isMany(eFeature.isMany());
     }
 
     @Override

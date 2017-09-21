@@ -109,6 +109,7 @@ public class BasicMetaclass extends AbstractNamedElement {
      */
     public void eClass(EClass eClass) {
         this.eClass = checkNotNull(eClass);
+        name(eClass.getName());
     }
 
     @Override

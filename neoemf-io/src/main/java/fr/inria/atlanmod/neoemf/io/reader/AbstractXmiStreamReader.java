@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
@@ -57,7 +56,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
                 BasicReference reference = new BasicReference();
                 reference.name(getCurrentElement().name());
                 reference.owner(getPreviousId());
-                reference.value(StringId.of(value));
+                reference.rawValue(value);
                 notifyReference(reference);
 
                 ignoreCurrentElement();
@@ -65,7 +64,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             }
 
             if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // The identifier of the current element
-                getCurrentElement().id(StringId.of(value));
+                getCurrentElement().rawId(value);
 
                 return true;
             }

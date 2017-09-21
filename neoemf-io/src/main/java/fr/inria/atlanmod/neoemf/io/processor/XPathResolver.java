@@ -11,15 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.util.XPathConstants;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -36,6 +33,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.RegEx;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.END_EXPR;
+import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.INDEX_SEPARATOR;
+import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_ELT;
+import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_EXPR;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -59,11 +61,6 @@ public class XPathResolver extends AbstractProcessor<Handler> {
      */
     @Nonnull
     private static final Pattern PATTERN_NO_INDEX = Pattern.compile(REGEX_NO_INDEX, Pattern.UNICODE_CASE);
-
-    /**
-     * In-memory cache that holds the recently hashed {@link Id}s, identified by their XPath value.
-     */
-    private Cache<String, Id> idCache;
 
     /**
      * The XPath structure.
@@ -94,11 +91,6 @@ public class XPathResolver extends AbstractProcessor<Handler> {
 
     @Override
     public void onInitialize() {
-        idCache = CacheBuilder.builder()
-                .maximumSize(Runtime.getRuntime().maxMemory() / (long) Math.pow(2, 18))
-                .softValues()
-                .build();
-
         paths = new XPathTree();
 
         notifyInitialize();
@@ -108,21 +100,17 @@ public class XPathResolver extends AbstractProcessor<Handler> {
     public void onStartElement(BasicElement element) {
         // If the first element has an identifier, we assume that the file is ID-based.
         if (isNull(ignore)) {
-            ignore = nonNull(element.id());
+            ignore = nonNull(element.rawId());
         }
 
-        if (!ignore) {
-            resolve(element);
-        }
+        resolve(element);
 
         notifyStartElement(element);
     }
 
     @Override
     public void onReference(BasicReference reference) {
-        if (!ignore) {
-            resolve(reference);
-        }
+        resolve(reference);
 
         notifyReference(reference);
     }
@@ -137,43 +125,43 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         notifyEndElement();
     }
 
-    @Override
-    public void onComplete() {
-        idCache.invalidateAll();
-        idCache.cleanUp();
-
-        notifyComplete();
-    }
-
     /**
      * Resolves the {@link BasicElement#id() identifier} of the specified {@code element}.
      *
      * @param element the element to resolve
      */
     private void resolve(BasicElement element) {
-        Id id = element.id();
-        boolean isResolved = ignore || nonNull(id);
+        if (nonNull(element.id())) {
+            return;
+        }
+
+        String rawId = element.rawId();
 
         // An element has no identifier if it's not resolved
-        if (!isResolved) {
-            // Processes the id from the path of the element in XML tree
+        if (ignore || nonNull(rawId)) {
+            checkState(nonNull(rawId), "raw id must be set");
+            element.id(StringId.of(rawId));
+        }
+        else {
+            // Processes the raw identifier from the path of the element in XML tree
             String path = paths.path(element.name());
 
             // Increments the number of occurrence for this path
             int count = paths.createOrIncrement(element.name());
 
-            // Defines the id as '<path>.<index>'
-            path = path + XPathConstants.INDEX_SEPARATOR + count;
+            // Defines the raw identifier as '<path>.<index>'
+            path = path + INDEX_SEPARATOR + count;
 
             // Defines the XPath start of all elements from the root element
             if (isNull(expressionStart)) {
-                expressionStart = path + XPathConstants.START_ELT;
+                expressionStart = path + START_ELT;
             }
 
             // Defines the new identifier of the element
-            Id generatedId = generateId(path);
-            element.id(generatedId);
+            element.id(StringId.generate(path));
         }
+
+        element.rawId(null);
     }
 
     /**
@@ -182,14 +170,19 @@ public class XPathResolver extends AbstractProcessor<Handler> {
      * @param reference the reference to resolve
      */
     private void resolve(BasicReference reference) {
-        Id id = reference.value();
-        boolean isResolved = ignore || nonNull(id)
-                && !id.toString().startsWith(XPathConstants.START_EXPR) // Standard node
-                && !id.toString().startsWith(XPathConstants.START_ELT); // Root node
+        if (nonNull(reference.value())) {
+            return;
+        }
 
-        if (!isResolved) {
+        String rawValue = reference.rawValue();
+        checkState(nonNull(rawValue), "raw value must be set");
+
+        if (ignore || !rawValue.startsWith(START_EXPR) && !rawValue.startsWith(START_ELT)) {
+            reference.value(StringId.of(rawValue));
+        }
+        else {
             // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
-            String path = id.toString().replaceFirst(XPathConstants.START_EXPR, expressionStart);
+            String path = rawValue.replaceFirst(START_EXPR, expressionStart);
 
             // Replace elements which has not index : all elements must have an index (default = 0)
             Matcher matcher = PATTERN_NO_INDEX.matcher(path);
@@ -198,26 +191,15 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Remove the latest '/' character if present
-            if (path.endsWith(XPathConstants.END_EXPR)) {
-                path = path.substring(0, path.length() - XPathConstants.END_EXPR.length());
+            if (path.endsWith(END_EXPR)) {
+                path = path.substring(0, path.length() - END_EXPR.length());
             }
 
             // Defines the new identifier of the reference
-            Id generatedId = generateId(path);
-            reference.value(generatedId);
+            reference.value(StringId.generate(path));
         }
-    }
 
-    /**
-     * Generates a new {@link Id} from the specifiec {@code path}.
-     *
-     * @param path the path used to identify the identifier
-     *
-     * @return a new instance of {@link Id}
-     */
-    @Nonnull
-    private Id generateId(String path) {
-        return idCache.get(path, StringId::generate);
+        reference.rawValue(null);
     }
 
     /**
@@ -255,16 +237,16 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         public String path(String name) {
             checkNotNull(name);
 
-            StringBuilder str = new StringBuilder(XPathConstants.START_ELT);
+            StringBuilder str = new StringBuilder(START_ELT);
             boolean first = true;
             for (XPathNode node : currentPath) {
                 if (!first) {
-                    str.append(XPathConstants.START_ELT);
+                    str.append(START_ELT);
                 }
-                str.append(node.name()).append(XPathConstants.INDEX_SEPARATOR).append(node.index());
+                str.append(node.name()).append(INDEX_SEPARATOR).append(node.index());
                 first = false;
             }
-            str.append(first ? Strings.EMPTY : XPathConstants.START_ELT).append(name);
+            str.append(first ? Strings.EMPTY : START_ELT).append(name);
             return str.toString();
         }
 

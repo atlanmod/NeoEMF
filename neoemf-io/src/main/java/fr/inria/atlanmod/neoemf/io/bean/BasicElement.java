@@ -30,6 +30,11 @@ public class BasicElement extends AbstractNamedElement {
     private Id id;
 
     /**
+     * The string representation of the identifier.
+     */
+    private String rawId;
+
+    /**
      * The meta-class of this element.
      */
     private BasicMetaclass metaClass;
@@ -55,6 +60,24 @@ public class BasicElement extends AbstractNamedElement {
      */
     public void id(Id id) {
         this.id = id;
+    }
+
+    /**
+     * Returns the string representation of the identifier.
+     *
+     * @return the string representation of the identifier
+     */
+    public String rawId() {
+        return rawId;
+    }
+
+    /**
+     * Defines the string representation of the identifier.
+     *
+     * @param rawId the string representation of the identifier
+     */
+    public void rawId(@Nullable String rawId) {
+        this.rawId = rawId;
     }
 
     /**

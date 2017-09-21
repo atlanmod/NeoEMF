@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -98,7 +99,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         element.id(id);
         element.isRoot(isRoot);
 
-        BasicMetaclass metaClass = new BasicMetaclass(ns, eClass.getName());
+        BasicMetaclass metaClass = new BasicMetaclass(ns);
         metaClass.eClass(eClass);
         element.metaClass(metaClass);
 
@@ -139,13 +140,13 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                         boolean isContainment = eReference.isContainment();
 
                         if (!f.isMany()) {
-                            Optional<Id> r = readReference(key, eReference, isContainment);
+                            Optional<Id> r = readReference(key, eReference);
                             if (isContainment) {
                                 containmentStream = r.map(Stream::of).orElseGet(Stream::empty);
                             }
                         }
                         else {
-                            List<Id> rs = readAllReferences(key, eReference, isContainment);
+                            List<Id> rs = readAllReferences(key, eReference);
                             if (isContainment) {
                                 containmentStream = rs.stream();
                             }
@@ -168,15 +169,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param key the key identifying the attribute
      */
     private void readValue(SingleFeatureBean key, EAttribute eAttribute) {
-        mapper.valueOf(key).ifPresent(value -> {
-            BasicAttribute attribute = new BasicAttribute();
-            attribute.name(key.id());
-            attribute.owner(key.owner());
-            attribute.eFeature(eAttribute);
-            attribute.value(value);
-
-            notifyAttribute(attribute);
-        });
+        mapper.valueOf(key).ifPresent(v -> createAttribute(key.owner(), eAttribute, v));
     }
 
     /**
@@ -185,71 +178,72 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param key the key identifying the attributes
      */
     private void readAllValues(SingleFeatureBean key, EAttribute eAttribute) {
-        mapper.allValuesOf(key)
-                .forEach(value -> {
-                    BasicAttribute attribute = new BasicAttribute();
-                    attribute.name(key.id());
-                    attribute.owner(key.owner());
-                    attribute.value(value);
-                    attribute.eFeature(eAttribute);
-                    attribute.isMany(true);
-
-                    notifyAttribute(attribute);
-                });
+        mapper.allValuesOf(key).forEach(v -> createAttribute(key.owner(), eAttribute, v));
     }
 
     /**
      * Reads the single-valued reference of the specified {@code key}.
      *
-     * @param key           the key identifying the reference
-     * @param isContainment {@code true} if the reference is a containment
+     * @param key the key identifying the reference
      *
      * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the reference is not defined
      * or if {@code isContainment == false}
      */
     @Nonnull
-    private Optional<Id> readReference(SingleFeatureBean key, EReference eReference, boolean isContainment) {
-        return mapper.referenceOf(key)
-                .map(id -> {
-                    BasicReference reference = new BasicReference();
-                    reference.name(key.id());
-                    reference.owner(key.owner());
-                    reference.value(id);
-                    reference.eFeature(eReference);
-                    reference.isContainment(isContainment);
-
-                    notifyReference(reference);
-
-                    return isContainment ? id : null;
-                });
+    private Optional<Id> readReference(SingleFeatureBean key, EReference eReference) {
+        return mapper.referenceOf(key).map(r -> createReference(key.owner(), eReference, r));
     }
 
     /**
      * Reads the multi-valued reference of the specified {@code key}.
      *
-     * @param key           the key identifying the reference
-     * @param isContainment {@code true} if the reference is a containment
+     * @param key the key identifying the reference
      *
      * @return a list of all references, or an empty list if the reference is not defined or if {@code isContainment ==
      * false}
      */
     @Nonnull
-    private List<Id> readAllReferences(SingleFeatureBean key, EReference eReference, boolean isContainment) {
+    private List<Id> readAllReferences(SingleFeatureBean key, EReference eReference) {
         return mapper.allReferencesOf(key).stream()
-                .map(id -> {
-                    BasicReference reference = new BasicReference();
-                    reference.name(key.id());
-                    reference.owner(key.owner());
-                    reference.value(id);
-                    reference.eFeature(eReference);
-                    reference.isMany(true);
-                    reference.isContainment(isContainment);
-
-                    notifyReference(reference);
-
-                    return isContainment ? id : null;
-                })
+                .map(r -> createReference(key.owner(), eReference, r))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Creates and notifies a new attribute.
+     *
+     * @param owner      the owner of the attribute
+     * @param eAttribute the associated EMF attribute
+     * @param value      the value of the attribute
+     */
+    private void createAttribute(Id owner, EAttribute eAttribute, Object value) {
+        BasicAttribute attribute = new BasicAttribute();
+        attribute.owner(owner);
+        attribute.eFeature(eAttribute);
+        attribute.value(value);
+
+        notifyAttribute(attribute);
+    }
+
+    /**
+     * Creates and notify a new reference.
+     *
+     * @param owner      the owner of the reference
+     * @param eReference the associated EMF reference
+     * @param value      the value of the reference
+     *
+     * @return the identifier of the referenced element if the reference is a containment, {@code null} otherwise
+     */
+    @Nullable
+    private Id createReference(Id owner, EReference eReference, Id value) {
+        BasicReference reference = new BasicReference();
+        reference.owner(owner);
+        reference.eFeature(eReference);
+        reference.value(value);
+
+        notifyReference(reference);
+
+        return eReference.isContainment() ? value : null;
     }
 }

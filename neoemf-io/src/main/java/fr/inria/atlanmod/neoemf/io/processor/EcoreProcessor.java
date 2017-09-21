@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
@@ -97,8 +96,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         else {
             // Otherwise redirect to the reference handler
             BasicReference reference = new BasicReference();
-            reference.name(attribute.name());
-            reference.value(StringId.of(String.class.cast(attribute.value())));
+            reference.rawValue(String.class.cast(attribute.value()));
 
             processReference(reference, EObjects.asReference(eFeature));
         }
@@ -159,7 +157,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
         // Define the meta-class of the current element if not present
         BasicMetaclass metaClass = element.metaClass();
-        metaClass.name(eClass.getName());
         metaClass.eClass(eClass);
 
         // Define the element as root node
@@ -213,7 +210,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             EClass eClass = resolveInstanceOf(element.metaClass(), EClass.class.cast(eReference.getEType()), ePackage);
 
             BasicMetaclass metaClass = element.metaClass();
-            metaClass.name(eClass.getName());
             metaClass.eClass(eClass);
 
             processElementAsReference(element, eReference);
@@ -233,10 +229,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
         // Waiting a plain text value
         BasicAttribute attribute = new BasicAttribute();
-        attribute.name(eAttribute.getName());
         attribute.owner(previousElements.getLast().id());
         attribute.eFeature(eAttribute);
-        attribute.isMany(eAttribute.isMany());
 
         // The attribute waiting for a value
         waitingAttribute = attribute;
@@ -259,7 +253,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Create a reference from the parent to this element, with the given local name
         if (eReference.isContainment()) {
             BasicReference reference = new BasicReference();
-            reference.name(eReference.getName());
             reference.value(currentId);
 
             processReference(reference, eReference);
@@ -278,7 +271,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
         attribute.owner(previousElements.getLast().id());
         attribute.eFeature(eAttribute);
-        attribute.isMany(eAttribute.isMany());
         attribute.value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
 
         notifyAttribute(attribute);
@@ -293,21 +285,32 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private void processReference(BasicReference reference, EReference eReference) {
         reference.owner(previousElements.getLast().id());
         reference.eFeature(eReference);
-        reference.isMany(eReference.isMany());
-        reference.isContainment(eReference.isContainment());
 
-        // Split a multi-valued reference
-        Arrays.stream(reference.value().toString().split(Strings.SPACE))
+        // The unique identifier is already set
+        if (nonNull(reference.value())) {
+            notifyReference(reference);
+        }
+        else {
+            processRawReference(reference, eReference);
+        }
+    }
+
+    /**
+     * Process one or several references from the raw value of the {@code reference}. If the reference is a multi-valued
+     * reference, each raw identifier will be delimited by a space.
+     *
+     * @param reference  the reference to process
+     * @param eReference the associated EMF reference
+     */
+    private void processRawReference(BasicReference reference, EReference eReference) {
+        Arrays.stream(reference.rawValue().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .map(s -> {
                     BasicReference newRef = new BasicReference();
-                    newRef.name(reference.name());
                     newRef.owner(reference.owner());
-                    newRef.value(StringId.of(s));
                     newRef.eFeature(eReference);
-                    newRef.isMany(reference.isMany());
-                    newRef.isContainment(reference.isContainment());
+                    newRef.rawValue(s);
 
                     return newRef;
                 })
