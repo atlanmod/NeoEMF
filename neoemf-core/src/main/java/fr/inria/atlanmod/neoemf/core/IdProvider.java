@@ -2,7 +2,6 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.hash.Hasher;
 import fr.inria.atlanmod.commons.hash.Hashers;
-import fr.inria.atlanmod.commons.primitive.Strings;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -21,7 +20,7 @@ public final class IdProvider {
      * @see #generate(String)
      */
     @Nonnull
-    private static final Hasher HASHER = Hashers.murmur64();
+    private static final Hasher HASHER = Hashers.xx();
 
     /**
      * Creates a new {@link Id} with its original representation.
@@ -61,6 +60,6 @@ public final class IdProvider {
      */
     @Nonnull
     public static Id generate(String value) {
-        return create(HASHER.hash(Strings.toBytes(value)).toHexString());
+        return create(HASHER.hash(value).toHexString());
     }
 }
