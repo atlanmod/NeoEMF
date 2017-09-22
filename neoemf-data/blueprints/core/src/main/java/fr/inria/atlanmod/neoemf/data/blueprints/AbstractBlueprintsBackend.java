@@ -56,44 +56,35 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             o -> Id.getProvider().fromLong(Long.class.cast(o)));
 
     /**
+     * The property key used to define the name the metaclass and the opposite containing feature in container {@link
+     * Edge}s.
+     */
+    protected static final String PROPERTY_NAME = "n";
+
+    /**
      * The property key used to define the index of an edge.
      */
-    protected static final String KEY_POSITION = "p";
-
-    /**
-     * The label used to define container {@link Edge}s.
-     */
-    protected static final String KEY_CONTAINER = "c";
-
-    /**
-     * The property key used to define the opposite containing feature in container {@link Edge}s.
-     */
-    protected static final String KEY_CONTAINING_FEATURE = "f";
+    protected static final String PROPERTY_INDEX = "p";
 
     /**
      * The property key used to define the number of edges with a specific label.
      */
-    protected static final String KEY_SIZE = "s";
-
-    /**
-     * The label of type conformance {@link Edge}s.
-     */
-    private static final String KEY_INSTANCE_OF = "i";
-
-    /**
-     * The name of the index entry holding meta-class {@link Vertex}s.
-     */
-    private static final String KEY_METACLASSES = "m";
-
-    /**
-     * The index key used to retrieve meta-class {@link Vertex}s.
-     */
-    private static final String KEY_NAME = "n";
+    protected static final String PROPERTY_SIZE = "s";
 
     /**
      * The property key used to set the namespace URI of meta-class {@link Vertex}s.
      */
-    private static final String KEY_NS_URI = "u";
+    protected static final String PROPERTY_URI = "u";
+
+    /**
+     * The label used to define container {@link Edge}s.
+     */
+    protected static final String EDGE_CONTAINER = "c";
+
+    /**
+     * The label of type conformance {@link Edge}s.
+     */
+    protected static final String EDGE_INSTANCE_OF = "i";
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -137,7 +128,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         graph = new InternalIdGraph(baseGraph);
 
         metaClassSet = new HashSet<>();
-        metaClassIndex = getOrCreateIndex(KEY_METACLASSES);
+        metaClassIndex = getOrCreateIndex("instances");
     }
 
     /**
@@ -153,16 +144,16 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     /**
-     * Formats a property as {@code prefix:suffix}.
+     * Formats a property as {@code label:suffix}.
      *
-     * @param prefix the prefix of the property
+     * @param label  the label of the property
      * @param suffix the suffix of the property
      *
      * @return the formatted property
      */
     @Nonnull
-    protected static String formatProperty(Object prefix, Object suffix) {
-        return String.valueOf(prefix) + ':' + String.valueOf(suffix);
+    protected static String formatProperty(Object label, Object suffix) {
+        return formatLabel(label) + ':' + String.valueOf(suffix);
     }
 
     /**
@@ -223,7 +214,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         metaClassSet.forEach(m -> {
             Id id = generateClassId(m);
             Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
-            to.metaClassIndex.put(KEY_NAME, m.name(), vertex);
+            to.metaClassIndex.put(PROPERTY_NAME, m.name(), vertex);
         });
     }
 
@@ -239,7 +230,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
 
         Iterable<Edge> edges = containmentVertex.get().query()
-                .labels(KEY_CONTAINER)
+                .labels(EDGE_CONTAINER)
                 .direction(Direction.OUT)
                 .limit(1)
                 .edges();
@@ -247,7 +238,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         return MoreIterables.onlyElement(edges)
                 .map(e -> SingleFeatureBean.of(
                         ID_CONVERTER.revert(e.getVertex(Direction.IN).getId()),
-                        e.getProperty(KEY_CONTAINING_FEATURE)));
+                        e.getProperty(PROPERTY_NAME)));
     }
 
     @Override
@@ -259,15 +250,15 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Vertex containerVertex = getOrCreate(container.owner());
 
         Iterable<Edge> containmentEdges = containmentVertex.query()
-                .labels(KEY_CONTAINER)
+                .labels(EDGE_CONTAINER)
                 .direction(Direction.OUT)
                 .limit(1)
                 .edges();
 
         containmentEdges.forEach(Edge::remove);
 
-        Edge edge = containmentVertex.addEdge(KEY_CONTAINER, containerVertex);
-        edge.setProperty(KEY_CONTAINING_FEATURE, container.id());
+        Edge edge = containmentVertex.addEdge(EDGE_CONTAINER, containerVertex);
+        edge.setProperty(PROPERTY_NAME, container.id());
     }
 
     @Override
@@ -281,7 +272,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
 
         Iterable<Edge> containmentEdges = containmentVertex.get().query()
-                .labels(KEY_CONTAINER)
+                .labels(EDGE_CONTAINER)
                 .direction(Direction.OUT)
                 .limit(1)
                 .edges();
@@ -301,15 +292,15 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
 
         Iterable<Vertex> metaClassVertices = vertex.get().query()
-                .labels(KEY_INSTANCE_OF)
+                .labels(EDGE_INSTANCE_OF)
                 .direction(Direction.OUT)
                 .limit(1)
                 .vertices();
 
         return MoreIterables.onlyElement(metaClassVertices)
                 .map(v -> ClassBean.of(
-                        v.getProperty(KEY_NAME),
-                        v.getProperty(KEY_NS_URI)));
+                        v.getProperty(PROPERTY_NAME),
+                        v.getProperty(PROPERTY_URI)));
     }
 
     @Override
@@ -321,7 +312,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         // Check the presence of a meta-class
         Iterable<Edge> instanceEdges = vertex.query()
-                .labels(KEY_INSTANCE_OF)
+                .labels(EDGE_INSTANCE_OF)
                 .direction(Direction.OUT)
                 .limit(1)
                 .edges();
@@ -331,21 +322,21 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> instanceVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
+        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_NAME, metaClass.name());
 
         Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
             Vertex mcv = graph.addVertex(ID_CONVERTER.convert(generateClassId(metaClass)));
-            mcv.setProperty(KEY_NAME, metaClass.name());
-            mcv.setProperty(KEY_NS_URI, metaClass.uri());
+            mcv.setProperty(PROPERTY_NAME, metaClass.name());
+            mcv.setProperty(PROPERTY_URI, metaClass.uri());
 
-            metaClassIndex.put(KEY_NAME, metaClass.name(), mcv);
+            metaClassIndex.put(PROPERTY_NAME, metaClass.name(), mcv);
             metaClassSet.add(metaClass);
 
             return mcv;
         });
 
         // Defines the meta-class
-        vertex.addEdge(KEY_INSTANCE_OF, metaClassVertex);
+        vertex.addEdge(EDGE_INSTANCE_OF, metaClassVertex);
 
         return true;
     }
@@ -354,9 +345,9 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return metaClasses.stream()
-                .map(mc -> metaClassIndex.get(KEY_NAME, mc.name()))
+                .map(mc -> metaClassIndex.get(PROPERTY_NAME, mc.name()))
                 .flatMap(MoreIterables::stream)
-                .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
+                .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
                 .map(v -> ID_CONVERTER.revert(v.getId()))
                 .collect(Collectors.toSet());

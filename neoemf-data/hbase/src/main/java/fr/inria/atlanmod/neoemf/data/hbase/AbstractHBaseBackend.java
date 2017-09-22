@@ -50,37 +50,37 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     /**
      * The column family holding properties.
      */
-    protected static final byte[] PROPERTY_FAMILY = Strings.toBytes("p");
+    protected static final byte[] FAMILY_PROPERTY = Strings.toBytes("p");
 
     /**
      * The column family holding instances.
      */
-    protected static final byte[] TYPE_FAMILY = Strings.toBytes("t");
+    protected static final byte[] FAMILY_TYPE = Strings.toBytes("t");
 
     /**
      * The column family holding containments.
      */
-    protected static final byte[] CONTAINMENT_FAMILY = Strings.toBytes("c");
+    protected static final byte[] FAMILY_CONTAINMENT = Strings.toBytes("c");
 
     /**
      * The column qualifier holding the URI of meta-models.
      */
-    private static final byte[] METAMODEL_QUALIFIER = Strings.toBytes("m");
+    private static final byte[] QUALIFIER_CLASS_URI = Strings.toBytes("m");
 
     /**
      * The column qualifier holding the name of classes.
      */
-    private static final byte[] ECLASS_QUALIFIER = Strings.toBytes("e");
+    private static final byte[] QUALIFIER_CLASS_NAME = Strings.toBytes("e");
 
     /**
      * The column qualifier holding the identifier of containers.
      */
-    private static final byte[] CONTAINER_QUALIFIER = Strings.toBytes("n");
+    private static final byte[] QUALIFIER_CONTAINER = Strings.toBytes("n");
 
     /**
      * The column qualifier holding the name of the feature used to retrieve the containment.
      */
-    private static final byte[] CONTAINING_FEATURE_QUALIFIER = Strings.toBytes("g");
+    private static final byte[] QUALIFIER_CONTAINING_FEATURE = Strings.toBytes("g");
 
     /**
      * The HBase table used to access the model.
@@ -120,12 +120,11 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         return resultFrom(id)
                 .map(r -> {
-                    byte[] byteId = r.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
-                    byte[] byteName = r.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
-                    if (nonNull(byteId) && nonNull(byteName)) {
-                        return SingleFeatureBean.of(Id.getProvider().fromHexString(Bytes.toString(byteId)), Bytes.toString(byteName));
-                    }
-                    return null;
+                    byte[] byteId = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
+                    byte[] byteName = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
+                    return nonNull(byteId) && nonNull(byteName)
+                            ? SingleFeatureBean.of(Id.getProvider().fromHexString(Bytes.toString(byteId)), Bytes.toString(byteName))
+                            : null;
                 });
     }
 
@@ -136,8 +135,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Put put = new Put(Strings.toBytes(id.toHexString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Strings.toBytes(container.owner().toHexString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Strings.toBytes(container.id()));
+                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, Strings.toBytes(container.owner().toHexString()))
+                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Strings.toBytes(container.id()));
 
             table.put(put);
         }
@@ -152,8 +151,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Delete delete = new Delete(Strings.toBytes(id.toHexString()))
-                    .addColumns(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER)
-                    .addColumns(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
+                    .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER)
+                    .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
 
             table.delete(delete);
         }
@@ -169,8 +168,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         return resultFrom(id)
                 .map(result -> {
-                    byte[] byteName = result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER);
-                    byte[] byteUri = result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER);
+                    byte[] byteName = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
+                    byte[] byteUri = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
 
                     return nonNull(byteName) && nonNull(byteUri)
                             ? ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri))
@@ -186,14 +185,14 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         try {
             byte[] row = Strings.toBytes(id.toHexString());
 
-            Get get = new Get(row).addColumn(TYPE_FAMILY, ECLASS_QUALIFIER);
+            Get get = new Get(row).addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
             if (table.exists(get)) {
                 return false;
             }
 
             Put put = new Put(row)
-                    .addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Strings.toBytes(metaClass.name()))
-                    .addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Strings.toBytes(metaClass.uri()));
+                    .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME, Strings.toBytes(metaClass.name()))
+                    .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_URI, Strings.toBytes(metaClass.uri()));
 
             table.put(put);
             return true;
@@ -216,7 +215,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         return resultFrom(key.owner())
-                .map(r -> r.getValue(PROPERTY_FAMILY, Strings.toBytes(key.id())))
+                .map(r -> r.getValue(FAMILY_PROPERTY, Strings.toBytes(key.id())))
                 .map(v -> {
                     try {
                         return SERIALIZER_FACTORY.<V>forAny().deserialize(v);
@@ -238,7 +237,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Put put = new Put(Strings.toBytes(key.owner().toHexString()))
-                    .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
+                    .addColumn(FAMILY_PROPERTY, Strings.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
 
             table.put(put);
         }
@@ -255,7 +254,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Delete delete = new Delete(Strings.toBytes(key.owner().toHexString()))
-                    .addColumns(PROPERTY_FAMILY, Strings.toBytes(key.id()));
+                    .addColumns(FAMILY_PROPERTY, Strings.toBytes(key.id()));
 
             table.delete(delete);
         }

@@ -87,7 +87,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        EStructuralFeature eFeature = previousElements.getLast().metaClass().eClass().getEStructuralFeature(attribute.name());
+        BasicElement parentElement = previousElements.getLast();
+        EStructuralFeature eFeature = parentElement.metaClass().eClass().getEStructuralFeature(attribute.name());
 
         if (EObjects.isAttribute(eFeature)) {
             // The attribute is well a attribute
@@ -104,7 +105,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(BasicReference reference) {
-        EStructuralFeature eFeature = previousElements.getLast().metaClass().eClass().getEStructuralFeature(reference.name());
+        BasicElement parentElement = previousElements.getLast();
+        EStructuralFeature eFeature = parentElement.metaClass().eClass().getEStructuralFeature(reference.name());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
@@ -180,7 +182,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processElementAsFeature(BasicElement element) {
         // Retrieve the parent EClass
-        EClass parentEClass = previousElements.getLast().metaClass().eClass();
+        BasicElement parentElement = previousElements.getLast();
+        EClass parentEClass = parentElement.metaClass().eClass();
 
         // Retrieve the structural feature from the parent, according the its local name (the attr/ref name)
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
@@ -227,9 +230,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             Log.warn("An attribute still waiting for a value : it will be ignored");
         }
 
+        BasicElement parentElement = previousElements.getLast();
+
         // Waiting a plain text value
         BasicAttribute attribute = new BasicAttribute();
-        attribute.owner(previousElements.getLast().id());
+        attribute.owner(parentElement.id());
         attribute.eFeature(eAttribute);
 
         // The attribute waiting for a value
@@ -269,7 +274,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eAttribute the associated EMF attribute
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
-        attribute.owner(previousElements.getLast().id());
+        BasicElement parentElement = previousElements.getLast();
+
+        attribute.owner(parentElement.id());
         attribute.eFeature(eAttribute);
         attribute.value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
 
@@ -283,7 +290,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eReference the associated EMF reference
      */
     private void processReference(BasicReference reference, EReference eReference) {
-        reference.owner(previousElements.getLast().id());
+        BasicElement parentElement = previousElements.getLast();
+
+        reference.owner(parentElement.id());
         reference.eFeature(eReference);
 
         // The unique identifier is already set

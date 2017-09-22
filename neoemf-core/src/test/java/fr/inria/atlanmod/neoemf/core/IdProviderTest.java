@@ -48,9 +48,9 @@ public class IdProviderTest extends AbstractTest {
 
     @Test
     public void testCompareTo() throws Exception {
-        Id id0 = Id.getProvider().fromLong(0);
-        Id id0Bis = Id.getProvider().fromLong(0);
-        Id id1 = Id.getProvider().fromLong(1);
+        Id id0 = Id.getProvider().fromLong(42);
+        Id id0Bis = Id.getProvider().fromLong(42);
+        Id id1 = Id.getProvider().fromLong(44);
 
         assertThat(id0).isEqualByComparingTo(id0Bis);
         assertThat(id0).isLessThan(id1);
@@ -68,9 +68,9 @@ public class IdProviderTest extends AbstractTest {
 
     @Test
     public void testHashCode() throws Exception {
-        Id id0 = Id.getProvider().fromLong(0);
-        Id id0Bis = Id.getProvider().fromLong(0);
-        Id id1 = Id.getProvider().fromLong(1);
+        Id id0 = Id.getProvider().fromLong(42);
+        Id id0Bis = Id.getProvider().fromLong(42);
+        Id id1 = Id.getProvider().fromLong(44);
 
         assertThat(id0.hashCode()).isEqualTo(id0Bis.hashCode());
         assertThat(id1.hashCode()).isNotEqualTo(id0Bis.hashCode());
@@ -79,9 +79,9 @@ public class IdProviderTest extends AbstractTest {
 
     @Test
     public void testEquals() throws Exception {
-        Id id0 = Id.getProvider().fromLong(0);
-        Id id0Bis = Id.getProvider().fromLong(0);
-        Id id1 = Id.getProvider().fromLong(1);
+        Id id0 = Id.getProvider().fromLong(42);
+        Id id0Bis = Id.getProvider().fromLong(42);
+        Id id1 = Id.getProvider().fromLong(44);
 
         assertThat(id0).isEqualTo(id0Bis);
         assertThat(id1).isNotEqualTo(id0Bis);
@@ -106,5 +106,15 @@ public class IdProviderTest extends AbstractTest {
 
         Id id1 = Id.getProvider().fromHexString(hexValue);
         assertThat(id0.toLong()).isEqualTo(id1.toLong());
+    }
+
+    @Test
+    public void testRoot() {
+        String value = "ROOT";
+
+        Id id = Id.getProvider().generate(value);
+
+        assertThat(id.toHexString()).isEqualTo("a5c969fb2da0c7ea");
+        assertThat(id.toLong()).isEqualTo(-6500548059609380886L);
     }
 }

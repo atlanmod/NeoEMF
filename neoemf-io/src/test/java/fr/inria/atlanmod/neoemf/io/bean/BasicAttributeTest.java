@@ -45,8 +45,8 @@ public class BasicAttributeTest extends AbstractTest {
         attr0.name("attribute0");
         assertThat(attr0.owner()).isNull();
 
-        Id id0 = Id.getProvider().fromLong(0);
-        Id id1 = Id.getProvider().fromLong(1);
+        Id id0 = Id.getProvider().fromLong(42);
+        Id id1 = Id.getProvider().fromLong(44);
 
         attr0.owner(id0);
         assertThat(attr0.owner()).isEqualTo(id0);

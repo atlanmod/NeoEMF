@@ -116,9 +116,9 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
             // Initialize
             if (!admin.tableExists(tableName) && !isReadOnly) {
                 HTableDescriptor desc = new HTableDescriptor(tableName);
-                HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.PROPERTY_FAMILY);
-                HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.TYPE_FAMILY);
-                HColumnDescriptor containmentFamily = new HColumnDescriptor(AbstractHBaseBackend.CONTAINMENT_FAMILY);
+                HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY);
+                HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE);
+                HColumnDescriptor containmentFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_CONTAINMENT);
                 desc.addFamily(propertyFamily);
                 desc.addFamily(typeFamily);
                 desc.addFamily(containmentFamily);

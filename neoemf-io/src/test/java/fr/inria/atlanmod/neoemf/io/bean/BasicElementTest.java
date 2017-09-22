@@ -44,8 +44,8 @@ public class BasicElementTest extends AbstractTest {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.id()).isNull();
 
-        Id id0 = Id.getProvider().fromLong(0);
-        Id id1 = Id.getProvider().fromLong(1);
+        Id id0 = Id.getProvider().fromLong(42);
+        Id id1 = Id.getProvider().fromLong(44);
 
         elt0.id(id0);
         assertThat(elt0.id()).isEqualTo(id0);
@@ -86,13 +86,13 @@ public class BasicElementTest extends AbstractTest {
     @Test
     public void testHashCode() {
         BasicElement elt0 = new BasicElement();
-        elt0.id(Id.getProvider().fromLong(0));
+        elt0.id(Id.getProvider().fromLong(42));
 
         BasicElement elt0Bis = new BasicElement();
-        elt0Bis.id(Id.getProvider().fromLong(0));
+        elt0Bis.id(Id.getProvider().fromLong(42));
 
         BasicElement elt1 = new BasicElement();
-        elt1.id(Id.getProvider().fromLong(1));
+        elt1.id(Id.getProvider().fromLong(44));
 
         assertThat(elt0.hashCode()).isEqualTo(elt0Bis.hashCode());
         assertThat(elt0.hashCode()).isNotEqualTo(elt1.hashCode());
@@ -102,13 +102,13 @@ public class BasicElementTest extends AbstractTest {
     @Test
     public void testEquals() {
         BasicElement elt0 = new BasicElement();
-        elt0.id(Id.getProvider().fromLong(0));
+        elt0.id(Id.getProvider().fromLong(42));
 
         BasicElement elt0Bis = new BasicElement();
-        elt0Bis.id(Id.getProvider().fromLong(0));
+        elt0Bis.id(Id.getProvider().fromLong(42));
 
         BasicElement elt1 = new BasicElement();
-        elt1.id(Id.getProvider().fromLong(1));
+        elt1.id(Id.getProvider().fromLong(44));
 
         assertThat(elt0).isEqualTo(elt0Bis);
         assertThat(elt0).isNotEqualTo(elt1);

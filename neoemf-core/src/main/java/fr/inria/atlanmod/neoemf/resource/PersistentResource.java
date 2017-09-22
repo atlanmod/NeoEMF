@@ -22,6 +22,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,11 +40,19 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
     /**
      * The identifier of the root element in a {@code PersistentResource}.
      */
+    @Nonnull
     Id ROOT_ID = Id.getProvider().generate("ROOT");
 
     /**
      * The name of the property used by the {@link #ROOT_ID} element to define its content.
      */
+    @Nonnegative
+    int ROOT_REFERENCE_ID = RESOURCE__CONTENTS;
+
+    /**
+     * The name of the property used by the {@link #ROOT_ID} element to define its content.
+     */
+    @Nonnull
     String ROOT_REFERENCE_NAME = "eContents";
 
     @Override

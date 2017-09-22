@@ -211,7 +211,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         /**
          * The estimated size of an {@link Id}.
          */
-        long ID = (long) Math.pow(2, 6);
+        long ID = (long) Long.BYTES;
 
         /**
          * The estimated size of a {@link ClassBean}.
@@ -221,10 +221,10 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         /**
          * The estimated size of a {@link FeatureBean}.
          */
-        long FEATURE = (long) Math.pow(2, 6);
+        long FEATURE = Long.BYTES + (long) Math.pow(2, 4);
 
         /**
-         * The estimated size of a feature value.
+         * The estimated size of a feature value. Can be a simple value or an array for multi-valued features.
          */
         long FEATURE_VALUE = (long) Math.pow(2, 12);
     }

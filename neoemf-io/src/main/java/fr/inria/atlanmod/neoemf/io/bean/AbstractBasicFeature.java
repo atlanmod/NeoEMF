@@ -68,7 +68,7 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
     }
 
     /**
-     * Sets whether this feature is multi-valued, or not.
+     * Returns {@code true} if this feature is multi-valued.
      *
      * @return {@code true} if this feature is multi-valued
      */

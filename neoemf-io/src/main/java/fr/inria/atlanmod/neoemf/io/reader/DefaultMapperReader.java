@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -129,10 +128,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                         EAttribute eAttribute = EObjects.asAttribute(f);
 
                         if (!f.isMany()) {
-                            readValue(key, eAttribute);
+                            mapper.valueOf(key).ifPresent(v -> createAttribute(key, eAttribute, v));
                         }
                         else {
-                            readAllValues(key, eAttribute);
+                            mapper.allValuesOf(key).forEach(v -> createAttribute(key, eAttribute, v));
                         }
                     }
                     else {
@@ -140,15 +139,21 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                         boolean isContainment = eReference.isContainment();
 
                         if (!f.isMany()) {
-                            Optional<Id> r = readReference(key, eReference);
+                            Optional<Id> reference = mapper.referenceOf(key)
+                                    .map(r -> createReference(key, eReference, r));
+
                             if (isContainment) {
-                                containmentStream = r.map(Stream::of).orElseGet(Stream::empty);
+                                containmentStream = reference.map(Stream::of).orElseGet(Stream::empty);
                             }
                         }
                         else {
-                            List<Id> rs = readAllReferences(key, eReference);
+                            List<Id> references = mapper.allReferencesOf(key).stream()
+                                    .map(r -> createReference(key, eReference, r))
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList());
+
                             if (isContainment) {
-                                containmentStream = rs.stream();
+                                containmentStream = references.stream();
                             }
                         }
                     }
@@ -164,62 +169,15 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     }
 
     /**
-     * Reads the single-valued attribute of the specified {@code key}.
-     *
-     * @param key the key identifying the attribute
-     */
-    private void readValue(SingleFeatureBean key, EAttribute eAttribute) {
-        mapper.valueOf(key).ifPresent(v -> createAttribute(key.owner(), eAttribute, v));
-    }
-
-    /**
-     * Reads the multi-valued attribute of the specified {@code key}.
-     *
-     * @param key the key identifying the attributes
-     */
-    private void readAllValues(SingleFeatureBean key, EAttribute eAttribute) {
-        mapper.allValuesOf(key).forEach(v -> createAttribute(key.owner(), eAttribute, v));
-    }
-
-    /**
-     * Reads the single-valued reference of the specified {@code key}.
-     *
-     * @param key the key identifying the reference
-     *
-     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the reference is not defined
-     * or if {@code isContainment == false}
-     */
-    @Nonnull
-    private Optional<Id> readReference(SingleFeatureBean key, EReference eReference) {
-        return mapper.referenceOf(key).map(r -> createReference(key.owner(), eReference, r));
-    }
-
-    /**
-     * Reads the multi-valued reference of the specified {@code key}.
-     *
-     * @param key the key identifying the reference
-     *
-     * @return a list of all references, or an empty list if the reference is not defined or if {@code isContainment ==
-     * false}
-     */
-    @Nonnull
-    private List<Id> readAllReferences(SingleFeatureBean key, EReference eReference) {
-        return mapper.allReferencesOf(key).stream()
-                .map(r -> createReference(key.owner(), eReference, r))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Creates and notifies a new attribute.
      *
-     * @param owner      the owner of the attribute
+     * @param key        the owner of the attribute
      * @param eAttribute the associated EMF attribute
      * @param value      the value of the attribute
      */
-    private void createAttribute(Id owner, EAttribute eAttribute, Object value) {
+    private void createAttribute(SingleFeatureBean key, EAttribute eAttribute, Object value) {
         BasicAttribute attribute = new BasicAttribute();
-        attribute.owner(owner);
+        attribute.owner(key.owner());
         attribute.eFeature(eAttribute);
         attribute.value(value);
 
@@ -229,16 +187,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     /**
      * Creates and notify a new reference.
      *
-     * @param owner      the owner of the reference
+     * @param key        the owner of the reference
      * @param eReference the associated EMF reference
      * @param value      the value of the reference
      *
      * @return the identifier of the referenced element if the reference is a containment, {@code null} otherwise
      */
     @Nullable
-    private Id createReference(Id owner, EReference eReference, Id value) {
+    private Id createReference(SingleFeatureBean key, EReference eReference, Id value) {
         BasicReference reference = new BasicReference();
-        reference.owner(owner);
+        reference.owner(key.owner());
         reference.eFeature(eReference);
         reference.value(value);
 

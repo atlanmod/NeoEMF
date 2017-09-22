@@ -335,7 +335,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * Constructs a new {@code RootContentsReference}.
          */
         public RootContentsReference() {
-            setFeatureID(RESOURCE__CONTENTS);
+            setFeatureID(ROOT_REFERENCE_ID);
             setName(ROOT_REFERENCE_NAME);
             setLowerBound(0);
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
@@ -376,7 +376,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         public int getFeatureID() {
-            return RESOURCE__CONTENTS;
+            return ROOT_REFERENCE_ID;
         }
 
         @Override

@@ -35,7 +35,7 @@ public class BasicReference extends AbstractBasicFeature<EReference, Id> {
     private String rawValue;
 
     /**
-     * Returns whether this reference is a containment.
+     * Returns {@code true} if this reference is a containment.
      *
      * @return {@code true} if this reference is a containment
      */

@@ -105,7 +105,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         boolean success = target.metaClassFor(element.id(), ClassBean.of(metaClass.name(), metaClass.ns().uri()));
 
         if (!success && !ignoreFailure) {
-            throw new IllegalArgumentException("An element with the same Id (" + element.id() + ") is already defined");
+            throw new IllegalArgumentException(String.format("An element with the same Id (%s) is already defined", element.id().toHexString()));
         }
 
         // Add the current element as content of the 'ROOT' node
