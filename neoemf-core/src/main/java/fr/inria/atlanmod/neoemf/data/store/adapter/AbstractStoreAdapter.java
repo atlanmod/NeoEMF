@@ -694,7 +694,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
 
         if (!instanceOf.isPresent()) {
-            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id));
+            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString()));
         }
 
         return instanceOf;

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -140,7 +139,14 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         // An element has no identifier if it's not resolved
         if (ignore || nonNull(rawId)) {
             checkState(nonNull(rawId), "raw id must be set");
-            element.id(IdProvider.create(rawId));
+            Id id;
+            try {
+                id = Id.getProvider().fromHexString(rawId);
+            }
+            catch (IllegalArgumentException e) {
+                id = Id.getProvider().generate(rawId);
+            }
+            element.id(id);
         }
         else {
             // Processes the raw identifier from the path of the element in XML tree
@@ -158,7 +164,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Defines the new identifier of the element
-            element.id(IdProvider.generate(path));
+            element.id(Id.getProvider().generate(path));
         }
 
         element.rawId(null);
@@ -178,7 +184,14 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         checkState(nonNull(rawValue), "raw value must be set");
 
         if (ignore || !rawValue.startsWith(START_EXPR) && !rawValue.startsWith(START_ELT)) {
-            reference.value(IdProvider.create(rawValue));
+            Id value;
+            try {
+                value = Id.getProvider().fromHexString(rawValue);
+            }
+            catch (IllegalArgumentException e) {
+                value = Id.getProvider().generate(rawValue);
+            }
+            reference.value(value);
         }
         else {
             // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
@@ -196,7 +209,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Defines the new identifier of the reference
-            reference.value(IdProvider.generate(path));
+            reference.value(Id.getProvider().generate(path));
         }
 
         reference.rawValue(null);

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -33,12 +32,12 @@ final class IdSerializer implements Serializer<Id> {
 
     @Override
     public void serialize(Id id, DataOutput out) throws IOException {
-        out.writeUTF(id.toString());
+        out.writeLong(id.toLong());
     }
 
     @Nonnull
     @Override
     public Id deserialize(DataInput in) throws IOException {
-        return IdProvider.create(in.readUTF());
+        return Id.getProvider().fromLong(in.readLong());
     }
 }

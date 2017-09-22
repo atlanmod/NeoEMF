@@ -159,6 +159,6 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         /**
          * The instance of the outer class.
          */
-        private static final BackendFactory INSTANCE = new BerkeleyDbBackendFactory();
+        static final BackendFactory INSTANCE = new BerkeleyDbBackendFactory();
     }
 }

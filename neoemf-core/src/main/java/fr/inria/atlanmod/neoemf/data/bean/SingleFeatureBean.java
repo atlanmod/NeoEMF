@@ -107,6 +107,6 @@ public class SingleFeatureBean extends AbstractFeatureBean {
 
     @Override
     public String toString() {
-        return String.format("SingleFeatureBean {%s # %s}", owner, id);
+        return String.format("SingleFeatureBean {%s # %s}", owner.toHexString(), id);
     }
 }

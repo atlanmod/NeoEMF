@@ -137,6 +137,6 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
         /**
          * The instance of the outer class.
          */
-        private static final BackendFactory INSTANCE = new MapDbBackendFactory();
+        static final BackendFactory INSTANCE = new MapDbBackendFactory();
     }
 }

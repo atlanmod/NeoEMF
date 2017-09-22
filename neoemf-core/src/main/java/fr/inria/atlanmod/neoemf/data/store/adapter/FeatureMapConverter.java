@@ -2,7 +2,6 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.BiConverter;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
@@ -73,7 +72,7 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
             PersistentEObject referencedObject = PersistentEObject.from(entry.getValue());
             store.updateInstanceOf(referencedObject);
 
-            value = referencedObject.id().toString();
+            value = referencedObject.id().toHexString();
         }
 
         return innerFeature.getName() + FEATURE_MAP_DELIMITER + value;
@@ -107,7 +106,7 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
             value = EcoreUtil.createFromString(innerAttribute.getEAttributeType(), splitValues[1]);
         }
         else {
-            value = store.resolve(IdProvider.create(splitValues[1]));
+            value = store.resolve(Id.getProvider().fromHexString(splitValues[1]));
         }
 
         return FeatureMapUtil.createEntry(innerFeature, value);

@@ -39,16 +39,31 @@ public interface Id extends Comparable<Id>, Serializable {
         }
 
         @Override
+        @Nonnull
+        public String toHexString() {
+            throw new IllegalStateException("Undefined identifier");
+        }
+
+        @Override
         public int compareTo(@Nonnull Id o) {
             throw new IllegalStateException("Undefined identifier");
         }
 
-        @Nonnull
         @Override
         public String toString() {
-            throw new IllegalStateException("Undefined identifier");
+            return "Id {UNDEFINED}";
         }
     };
+
+    /**
+     * Returns the instance of the default {@link IdProvider}.
+     *
+     * @return the instance
+     */
+    @Nonnull
+    static IdProvider getProvider() {
+        return LongIdProvider.getInstance();
+    }
 
     /**
      * Returns the {@link Long} representation of this {@code Id}.
@@ -58,11 +73,10 @@ public interface Id extends Comparable<Id>, Serializable {
     long toLong();
 
     /**
-     * Returns the {@link String} representation of this {@code Id}.
+     * Returns the {@link String} representation of this {@code Id}, as an hexadecimal value.
      *
-     * @return a string
+     * @return a hexadecimal string
      */
     @Nonnull
-    @Override
-    String toString();
+    String toHexString();
 }

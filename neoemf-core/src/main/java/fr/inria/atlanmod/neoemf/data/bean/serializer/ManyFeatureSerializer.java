@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 
 import java.io.DataInput;
@@ -33,7 +33,7 @@ final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
 
     @Override
     public void serialize(ManyFeatureBean key, DataOutput out) throws IOException {
-        out.writeUTF(key.owner().toString());
+        out.writeLong(key.owner().toLong());
         out.writeUTF(key.id());
         out.writeInt(key.position());
     }
@@ -42,7 +42,7 @@ final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
     @Override
     public ManyFeatureBean deserialize(DataInput in) throws IOException {
         return ManyFeatureBean.of(
-                IdProvider.create(in.readUTF()),
+                Id.getProvider().fromLong(in.readLong()),
                 in.readUTF(),
                 in.readInt()
         );

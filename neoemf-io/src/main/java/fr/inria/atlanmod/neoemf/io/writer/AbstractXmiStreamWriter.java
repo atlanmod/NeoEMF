@@ -93,7 +93,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             // TODO Write the meta-class only if EReference#getEType() != EClass
             writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaClass.ns().prefix(), metaClass.name()));
 
-            writeAttribute(XmiConstants.XMI_ID, element.id().toString());
+            writeAttribute(XmiConstants.XMI_ID, element.id().toHexString());
         }
         catch (IOException e) {
             handleException(e);
@@ -141,10 +141,10 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
         try {
             if (!reference.isMany()) {
-                writeAttribute(reference.name(), values.get(0).toString());
+                writeAttribute(reference.name(), values.get(0).toHexString());
             }
             else {
-                writeAttribute(reference.name(), values.stream().map(Id::toString).collect(Collectors.joining(Strings.SPACE)));
+                writeAttribute(reference.name(), values.stream().map(Id::toHexString).collect(Collectors.joining(Strings.SPACE)));
             }
         }
         catch (IOException e) {

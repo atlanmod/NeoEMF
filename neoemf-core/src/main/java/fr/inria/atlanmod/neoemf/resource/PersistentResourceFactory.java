@@ -71,6 +71,6 @@ public class PersistentResourceFactory implements Resource.Factory {
         /**
          * The instance of the outer class.
          */
-        private static final PersistentResourceFactory INSTANCE = new PersistentResourceFactory();
+        static final PersistentResourceFactory INSTANCE = new PersistentResourceFactory();
     }
 }

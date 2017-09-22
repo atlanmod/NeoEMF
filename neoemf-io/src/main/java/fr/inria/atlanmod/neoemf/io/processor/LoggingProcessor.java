@@ -74,7 +74,7 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
         Log.log(level, "[E] {0} : {1} = {2}",
                 element.metaClass(),
                 element.name(),
-                element.id());
+                element.id().toHexString());
 
         currentId = element.id();
 
@@ -96,9 +96,9 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
         Log.log(level, "[R]    {0}{1} = {2} -{3}> {4}",
                 reference.name(),
                 reference.isMany() ? " many[-1]" : Strings.EMPTY,
-                Objects.isNull(reference.owner()) ? "this" : reference.owner(),
+                Objects.isNull(reference.owner()) ? "this" : reference.owner().toHexString(),
                 reference.isContainment() ? 'C' : '-',
-                Objects.equals(reference.value(), currentId) ? "this" : reference.value());
+                Objects.equals(reference.value(), currentId) ? "this" : reference.value().toHexString());
 
         notifyReference(reference);
     }

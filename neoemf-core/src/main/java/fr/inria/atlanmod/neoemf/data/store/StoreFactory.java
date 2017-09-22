@@ -140,6 +140,6 @@ public final class StoreFactory extends AbstractMapperFactory {
         /**
          * The instance of the outer class.
          */
-        private static final StoreFactory INSTANCE = new StoreFactory();
+        static final StoreFactory INSTANCE = new StoreFactory();
     }
 }

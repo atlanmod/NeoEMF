@@ -16,38 +16,41 @@ import fr.inria.atlanmod.commons.AbstractTest;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case about {@link IdProvider} and {@link StringId}.
+ * A test-case about {@link IdProvider} and {@link Id} implementations.
  */
 public class IdProviderTest extends AbstractTest {
 
     @Test
     public void testCreate() throws Exception {
-        String value = "thisIsAnId";
+        String value0 = "123456789a"; // Hexadecimal form
 
-        Id id = IdProvider.create(value);
+        Id id0 = Id.getProvider().fromHexString(value0);
+        assertThat(id0.toHexString()).isEqualTo("000000123456789a"); // Hexadecimal form
 
-        assertThat(id.toString()).isEqualTo(value);
+        long value1 = 123456789;
+
+        Id id1 = Id.getProvider().fromLong(value1);
+        assertThat(id1.toLong()).isEqualTo(value1);
     }
 
     @Test
     public void testGenerate() throws Exception {
-        Id id0 = IdProvider.generate();
-        Id id1 = IdProvider.generate();
+        Id id0 = Id.getProvider().generate();
+        Id id1 = Id.getProvider().generate();
 
-        assertThat(id0.toString().trim()).isNotEmpty();
-        assertThat(id1.toString().trim()).isNotEmpty();
+        assertThat(id0.toHexString().trim()).isNotEmpty();
+        assertThat(id1.toHexString().trim()).isNotEmpty();
 
         assertThat(id0).isNotEqualTo(id1);
     }
 
     @Test
     public void testCompareTo() throws Exception {
-        Id id0 = IdProvider.create("aaa");
-        Id id0Bis = IdProvider.create("aaa");
-        Id id1 = IdProvider.create("ZZZ");
+        Id id0 = Id.getProvider().fromLong(0);
+        Id id0Bis = Id.getProvider().fromLong(0);
+        Id id1 = Id.getProvider().fromLong(1);
 
         assertThat(id0).isEqualByComparingTo(id0Bis);
         assertThat(id0).isLessThan(id1);
@@ -56,16 +59,18 @@ public class IdProviderTest extends AbstractTest {
 
     @Test
     public void testToLong() throws Exception {
-        assertThat(catchThrowable(() ->
-                IdProvider.generate().toLong()
-        )).isExactlyInstanceOf(UnsupportedOperationException.class);
+        long value = 123456789;
+
+        Id id = Id.getProvider().fromLong(value);
+
+        assertThat(id.toLong()).isEqualTo(value);
     }
 
     @Test
     public void testHashCode() throws Exception {
-        Id id0 = IdProvider.create("aaa");
-        Id id0Bis = IdProvider.create("aaa");
-        Id id1 = IdProvider.create("ZZZ");
+        Id id0 = Id.getProvider().fromLong(0);
+        Id id0Bis = Id.getProvider().fromLong(0);
+        Id id1 = Id.getProvider().fromLong(1);
 
         assertThat(id0.hashCode()).isEqualTo(id0Bis.hashCode());
         assertThat(id1.hashCode()).isNotEqualTo(id0Bis.hashCode());
@@ -74,9 +79,9 @@ public class IdProviderTest extends AbstractTest {
 
     @Test
     public void testEquals() throws Exception {
-        Id id0 = IdProvider.create("aaa");
-        Id id0Bis = IdProvider.create("aaa");
-        Id id1 = IdProvider.create("ZZZ");
+        Id id0 = Id.getProvider().fromLong(0);
+        Id id0Bis = Id.getProvider().fromLong(0);
+        Id id1 = Id.getProvider().fromLong(1);
 
         assertThat(id0).isEqualTo(id0Bis);
         assertThat(id1).isNotEqualTo(id0Bis);
@@ -84,11 +89,22 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() throws Exception {
-        String value = "thisIsAnId";
+    public void testToHexString() throws Exception {
+        String value = "123456789a"; // Hexadecimal form
 
-        Id id = IdProvider.create(value);
+        Id id = Id.getProvider().fromHexString(value);
 
-        assertThat(id).hasToString(value);
+        assertThat(id.toHexString()).isEqualTo("000000123456789a"); // Hexadecimal form
+    }
+
+    @Test
+    public void testConversion() {
+        long value = 123456789;
+
+        Id id0 = Id.getProvider().fromLong(value);
+        String hexValue = id0.toHexString();
+
+        Id id1 = Id.getProvider().fromHexString(hexValue);
+        assertThat(id0.toLong()).isEqualTo(id1.toLong());
     }
 }

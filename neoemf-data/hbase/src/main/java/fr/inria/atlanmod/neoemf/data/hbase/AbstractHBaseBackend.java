@@ -15,7 +15,6 @@ import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.primitive.Bytes;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -124,7 +123,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                     byte[] byteId = r.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER);
                     byte[] byteName = r.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
                     if (nonNull(byteId) && nonNull(byteName)) {
-                        return SingleFeatureBean.of(IdProvider.create(Bytes.toString(byteId)), Bytes.toString(byteName));
+                        return SingleFeatureBean.of(Id.getProvider().fromHexString(Bytes.toString(byteId)), Bytes.toString(byteName));
                     }
                     return null;
                 });
@@ -136,8 +135,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(container);
 
         try {
-            Put put = new Put(Strings.toBytes(id.toString()))
-                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Strings.toBytes(container.owner().toString()))
+            Put put = new Put(Strings.toBytes(id.toHexString()))
+                    .addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Strings.toBytes(container.owner().toHexString()))
                     .addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Strings.toBytes(container.id()));
 
             table.put(put);
@@ -152,7 +151,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(id);
 
         try {
-            Delete delete = new Delete(Strings.toBytes(id.toString()))
+            Delete delete = new Delete(Strings.toBytes(id.toHexString()))
                     .addColumns(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER)
                     .addColumns(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER);
 
@@ -185,7 +184,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(metaClass);
 
         try {
-            byte[] row = Strings.toBytes(id.toString());
+            byte[] row = Strings.toBytes(id.toHexString());
 
             Get get = new Get(row).addColumn(TYPE_FAMILY, ECLASS_QUALIFIER);
             if (table.exists(get)) {
@@ -238,7 +237,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         Optional<V> previousValue = valueOf(key);
 
         try {
-            Put put = new Put(Strings.toBytes(key.owner().toString()))
+            Put put = new Put(Strings.toBytes(key.owner().toHexString()))
                     .addColumn(PROPERTY_FAMILY, Strings.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
 
             table.put(put);
@@ -255,7 +254,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         try {
-            Delete delete = new Delete(Strings.toBytes(key.owner().toString()))
+            Delete delete = new Delete(Strings.toBytes(key.owner().toHexString()))
                     .addColumns(PROPERTY_FAMILY, Strings.toBytes(key.id()));
 
             table.delete(delete);
@@ -275,7 +274,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
      */
     private Optional<Result> resultFrom(Id id) {
         try {
-            Get get = new Get(Strings.toBytes(id.toString()));
+            Get get = new Get(Strings.toBytes(id.toHexString()));
 
             Result result = table.get(get);
             return !result.isEmpty() ? Optional.of(result) : Optional.empty();

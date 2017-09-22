@@ -128,7 +128,7 @@ public final class IOResourceManager {
             /**
              * The instance of the outer class.
              */
-            private static final ResourceLoader INSTANCE = new ResourceLoader();
+            static final ResourceLoader INSTANCE = new ResourceLoader();
         }
     }
 }

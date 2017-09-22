@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 
 import org.junit.Test;
 
@@ -46,8 +45,8 @@ public class BasicReferenceTest extends AbstractTest {
         ref0.name("reference0");
         assertThat(ref0.owner()).isNull();
 
-        Id id0 = IdProvider.create("id0");
-        Id id1 = IdProvider.create("id1");
+        Id id0 = Id.getProvider().fromLong(0);
+        Id id1 = Id.getProvider().fromLong(1);
 
         ref0.owner(id0);
         assertThat(ref0.owner()).isEqualTo(id0);
@@ -75,8 +74,8 @@ public class BasicReferenceTest extends AbstractTest {
         ref0.name("reference0");
         assertThat(ref0.value()).isNull();
 
-        Id idRef0 = IdProvider.create("idRef0");
-        Id idRef1 = IdProvider.create("idRef1");
+        Id idRef0 = Id.getProvider().fromLong(0);
+        Id idRef1 = Id.getProvider().fromLong(1);
 
         ref0.value(idRef0);
         assertThat(ref0.value()).isEqualTo(idRef0);

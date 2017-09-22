@@ -46,7 +46,7 @@ import static java.util.Objects.isNull;
  * An abstract {@link TransientBackend} that provides the default behavior of containers and meta-classes management.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithLists, AllReferenceAs<String> {
+public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithLists, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
@@ -193,7 +193,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
 
     @Nonnull
     @Override
-    public Converter<Id, String> referenceConverter() {
+    public Converter<Id, Long> referenceConverter() {
         return ReferenceAs.DEFAULT_CONVERTER;
     }
 

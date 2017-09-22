@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -43,7 +42,32 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     /**
      * The default {@link Id} used to store features.
      */
-    protected static final Id id0 = IdProvider.generate("Id0");
+    protected static Id idBase = Id.getProvider().fromLong(42);
+
+    /**
+     * The default single-valued feature bean.
+     */
+    private final SingleFeatureBean sfBase = SingleFeatureBean.of(idBase, "Feature0");
+
+    /**
+     * The default multi-valued feature bean.
+     */
+    private final ManyFeatureBean mfBase = sfBase.withPosition(0);
+
+    // Variables initialization
+
+    private final Id id0 = Id.getProvider().fromLong(0);
+    private final Id id1 = Id.getProvider().fromLong(1);
+
+    private final String value0 = "Value0";
+    private final String value1 = "Value1";
+    private final String value2 = "Value2";
+    private final String value3 = "Value3";
+
+    private final Id ref0 = Id.getProvider().fromLong(10);
+    private final Id ref1 = Id.getProvider().fromLong(11);
+    private final Id ref2 = Id.getProvider().fromLong(12);
+    private final Id ref3 = Id.getProvider().fromLong(13);
 
     /**
      * The {@link DataMapper} used for this test case.
@@ -100,20 +124,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Container_Same() {
-        Id containerId0 = IdProvider.generate("ContainerId0");
-
-        SingleFeatureBean container = SingleFeatureBean.of(containerId0, "Container0");
-
-        Id id1 = IdProvider.generate("Id1");
+        SingleFeatureBean container = SingleFeatureBean.of(id0, "Container0");
 
         // Define the containers
-        mapper.containerFor(id0, container);
-        assertThat(mapper.containerOf(id0)).contains(container);
+        mapper.containerFor(idBase, container);
+        assertThat(mapper.containerOf(idBase)).contains(container);
 
         mapper.containerFor(id1, container);
         assertThat(mapper.containerOf(id1)).contains(container);
 
-        mapper.removeContainer(id0);
+        mapper.removeContainer(idBase);
         mapper.removeContainer(id1);
     }
 
@@ -123,25 +143,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Container_Different() {
-        Id containerId0 = IdProvider.generate("ContainerId0");
-
-        SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
-        SingleFeatureBean container1 = SingleFeatureBean.of(containerId0, "Container1");
-
-        Id id1 = IdProvider.generate("Id1");
+        SingleFeatureBean container0 = SingleFeatureBean.of(id0, "Container0");
+        SingleFeatureBean container1 = SingleFeatureBean.of(id0, "Container1");
 
         // Define the containers
-        mapper.containerFor(id0, container0);
-        assertThat(mapper.containerOf(id0)).contains(container0);
+        mapper.containerFor(idBase, container0);
+        assertThat(mapper.containerOf(idBase)).contains(container0);
 
         mapper.containerFor(id1, container1);
         assertThat(mapper.containerOf(id1)).contains(container1);
 
         // Replace the existing container
-        mapper.containerFor(id0, container1);
-        assertThat(mapper.containerOf(id0)).contains(container1);
+        mapper.containerFor(idBase, container1);
+        assertThat(mapper.containerOf(idBase)).contains(container1);
 
-        mapper.removeContainer(id0);
+        mapper.removeContainer(idBase);
         mapper.removeContainer(id1);
     }
 
@@ -151,7 +167,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Test
     public void testGet_Container_NotDefined() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containerOf(id0)).isNotPresent()
+                assertThat(mapper.containerOf(idBase)).isNotPresent()
         )).isNull();
     }
 
@@ -162,7 +178,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testSet_Container_Null() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.containerFor(id0, null)
+                mapper.containerFor(idBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -171,19 +187,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_Container() {
-        Id containerId0 = IdProvider.generate("ContainerId0");
-
-        SingleFeatureBean container0 = SingleFeatureBean.of(containerId0, "Container0");
+        SingleFeatureBean container0 = SingleFeatureBean.of(id0, "Container0");
 
         // Define the containers
-        mapper.containerFor(id0, container0);
-        assertThat(mapper.containerOf(id0)).contains(container0);
+        mapper.containerFor(idBase, container0);
+        assertThat(mapper.containerOf(idBase)).contains(container0);
 
         // Replace the existing container
-        mapper.removeContainer(id0);
-        assertThat(mapper.containerOf(id0)).isNotPresent();
+        mapper.removeContainer(idBase);
+        assertThat(mapper.containerOf(idBase)).isNotPresent();
 
-        mapper.removeContainer(id0);
+        mapper.removeContainer(idBase);
     }
 
     //endregion
@@ -197,11 +211,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetSet_Metaclass_Same() {
         ClassBean metaClass = ClassBean.of("Metaclass0", "Uri0");
 
-        Id id1 = IdProvider.generate("Id1");
-
         // Define the meta-classes
-        mapper.metaClassFor(id0, metaClass);
-        assertThat(mapper.metaClassOf(id0)).contains(metaClass);
+        mapper.metaClassFor(idBase, metaClass);
+        assertThat(mapper.metaClassOf(idBase)).contains(metaClass);
 
         mapper.metaClassFor(id1, metaClass);
         assertThat(mapper.metaClassOf(id1)).contains(metaClass);
@@ -216,12 +228,12 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         ClassBean metaClass1 = ClassBean.of("Metaclass1", "Uri1");
 
         // Define the meta-classes
-        assertThat(mapper.metaClassFor(id0, metaClass0)).isTrue();
-        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
+        assertThat(mapper.metaClassFor(idBase, metaClass0)).isTrue();
+        assertThat(mapper.metaClassOf(idBase)).contains(metaClass0);
 
         // Replace the existing meta-class
-        assertThat(mapper.metaClassFor(id0, metaClass1)).isFalse();
-        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
+        assertThat(mapper.metaClassFor(idBase, metaClass1)).isFalse();
+        assertThat(mapper.metaClassOf(idBase)).contains(metaClass0);
     }
 
     /**
@@ -230,7 +242,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Test
     public void testGet_Metaclass_NotDefined() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.metaClassOf(id0)).isNotPresent()
+                assertThat(mapper.metaClassOf(idBase)).isNotPresent()
         )).isNull();
     }
 
@@ -241,7 +253,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testSet_Metaclass_Null() {
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.metaClassFor(id0, null)
+                mapper.metaClassFor(idBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -255,18 +267,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Value() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-
         // Define values
-        mapper.valueFor(key, value0);
-        assertThat(mapper.valueOf(key)).contains(value0);
+        mapper.valueFor(sfBase, value0);
+        assertThat(mapper.valueOf(sfBase)).contains(value0);
 
         // Replace the existing value
-        assertThat(mapper.valueFor(key, value1)).contains(value0);
-        assertThat(mapper.valueOf(key)).contains(value1);
+        assertThat(mapper.valueFor(sfBase, value1)).contains(value0);
+        assertThat(mapper.valueOf(sfBase)).contains(value1);
     }
 
     /**
@@ -274,10 +281,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGet_Value_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(key)).isNotPresent()
+                assertThat(mapper.valueOf(sfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -286,11 +291,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_Value_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(key, null)).isNotPresent()
+                assertThat(mapper.valueFor(sfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -300,19 +303,15 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testHasRemove_Value() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.valueFor(sfBase, value0);
 
-        String value0 = "Value0";
+        assertThat(mapper.valueOf(sfBase)).isPresent();
+        assertThat(mapper.hasValue(sfBase)).isTrue();
 
-        mapper.valueFor(key, value0);
+        mapper.removeValue(sfBase);
 
-        assertThat(mapper.valueOf(key)).isPresent();
-        assertThat(mapper.hasValue(key)).isTrue();
-
-        mapper.removeValue(key);
-
-        assertThat(mapper.valueOf(key)).isNotPresent();
-        assertThat(mapper.hasValue(key)).isFalse();
+        assertThat(mapper.valueOf(sfBase)).isNotPresent();
+        assertThat(mapper.hasValue(sfBase)).isFalse();
     }
 
     /**
@@ -320,10 +319,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testHas_Value_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasValue(key)).isFalse()
+                assertThat(mapper.hasValue(sfBase)).isFalse()
         )).isNull();
     }
 
@@ -332,10 +329,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_Value_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                mapper.removeValue(key)
+                mapper.removeValue(sfBase)
         )).isNull();
     }
 
@@ -349,23 +344,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-        String value3 = "Value3";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
 
         // Replace the existing values
-        assertThat(mapper.valueFor(key.withPosition(0), value2)).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value2);
+        assertThat(mapper.valueFor(sfBase.withPosition(0), value2)).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value2);
 
-        assertThat(mapper.valueFor(key.withPosition(1), value3)).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value3);
+        assertThat(mapper.valueFor(sfBase.withPosition(1), value3)).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value3);
     }
 
     /**
@@ -373,10 +361,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGet_ManyValue_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(key)).isNotPresent()
+                assertThat(mapper.valueOf(mfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -385,11 +371,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_ManyValue_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
-        //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(key, "Value0")).isNotPresent()
+                assertThat(mapper.valueFor(mfBase, value0)).isNotPresent()
         )).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -398,11 +381,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_ManyValue_Null() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(key, null)).isNotPresent()
+                assertThat(mapper.valueFor(mfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -411,19 +392,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetAll_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
         // Add values in natural order
-        mapper.appendValue(key, value0);
-        mapper.appendValue(key, value1);
-        mapper.appendValue(key, value2);
+        mapper.appendValue(sfBase, value0);
+        mapper.appendValue(sfBase, value1);
+        mapper.appendValue(sfBase, value2);
 
         // Post-process the returned Iterable
-        List<String> actualValues = mapper.allValuesOf(key);
+        List<String> actualValues = mapper.allValuesOf(sfBase);
 
         assertThat(actualValues).hasSize(3);
 
@@ -439,10 +414,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetAll_Empty() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.allValuesOf(key)).isNotNull().isEmpty()
+                assertThat(mapper.allValuesOf(sfBase)).isNotNull().isEmpty()
         )).isNull();
     }
 
@@ -451,10 +424,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testHasAny_ManyValue_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyValue(key.withoutPosition())).isFalse()
+                assertThat(mapper.hasAnyValue(sfBase)).isFalse()
         )).isNull();
     }
 
@@ -463,21 +434,15 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAdd_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
         // Add values in natural order
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
-        mapper.addValue(key.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
 
         // Check all values
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).contains(value2);
     }
 
     /**
@@ -485,13 +450,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAdd_ManyValue_AnyOrder() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value2 = "Value2";
-
         // Add values in any order
         assertThat(catchThrowable(() ->
-                mapper.addValue(key.withPosition(2), value2)
+                mapper.addValue(sfBase.withPosition(2), value2)
         )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -500,11 +461,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAdd_ManyValue_Null() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.addValue(key, null)
+                mapper.addValue(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -513,21 +472,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppend_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-
         int index;
 
         // Append values
-        index = mapper.appendValue(key, value0);
+        index = mapper.appendValue(sfBase, value0);
         assertThat(index).isEqualTo(0);
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
 
-        index = mapper.appendValue(key, value1);
+        index = mapper.appendValue(sfBase, value1);
         assertThat(index).isEqualTo(1);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value1);
     }
 
     /**
@@ -535,11 +489,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppend_ManyValue_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.appendValue(key, null)
+                mapper.appendValue(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -549,15 +501,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_FromStart() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.addAllValues(sfBase.withPosition(0), Arrays.asList(value0, value1));
 
-        String value0 = "Value0";
-        String value1 = "Value1";
-
-        mapper.addAllValues(key.withPosition(0), Arrays.asList(value0, value1));
-
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value1);
     }
 
     /**
@@ -566,13 +513,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_WithOffset() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-
         assertThat(catchThrowable(() ->
-                mapper.addAllValues(key.withPosition(1), Arrays.asList(value0, value1))
+                mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value0, value1))
         )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -582,23 +524,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_FromMiddle() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-        String value3 = "Value3";
-
         // Append values
-        mapper.appendValue(key, value0);
-        mapper.appendValue(key, value1);
+        mapper.appendValue(sfBase, value0);
+        mapper.appendValue(sfBase, value1);
 
-        mapper.addAllValues(key.withPosition(1), Arrays.asList(value2, value3));
+        mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value2, value3));
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value3);
-        assertThat(mapper.valueOf(key.withPosition(3))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).contains(value3);
+        assertThat(mapper.valueOf(sfBase.withPosition(3))).contains(value1);
     }
 
     /**
@@ -607,20 +542,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_FromEnd() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.appendValue(sfBase, value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
 
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
+        mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value1, value2));
 
-        mapper.appendValue(key, value0);
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-
-        mapper.addAllValues(key.withPosition(1), Arrays.asList(value1, value2));
-
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).contains(value2);
     }
 
     /**
@@ -628,11 +557,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_Empty() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
+        mapper.addAllValues(mfBase, Collections.emptyList());
 
-        mapper.addAllValues(key, Collections.emptyList());
-
-        assertThat(mapper.sizeOfValue(key.withoutPosition())).isNotPresent();
+        assertThat(mapper.sizeOfValue(mfBase.withoutPosition())).isNotPresent();
     }
 
     /**
@@ -641,12 +568,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_WithNull() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
-        String value0 = "Value0";
-
         assertThat(catchThrowable(() ->
-                mapper.addAllValues(key, Arrays.asList(value0, null))
+                mapper.addAllValues(mfBase, Arrays.asList(value0, null))
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -656,11 +579,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyValue_Null() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.addAllValues(key, null)
+                mapper.addAllValues(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -670,18 +591,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyValue_FromStart() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-
         int index;
 
-        index = mapper.appendAllValues(key, Arrays.asList(value0, value1));
+        index = mapper.appendAllValues(sfBase, Arrays.asList(value0, value1));
         assertThat(index).isEqualTo(0);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value1);
     }
 
     /**
@@ -690,24 +606,18 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyValue_FromEnd() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
         int index;
 
-        index = mapper.appendValue(key, value0);
+        index = mapper.appendValue(sfBase, value0);
         assertThat(index).isEqualTo(0);
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
 
-        index = mapper.appendAllValues(key, Arrays.asList(value1, value2));
+        index = mapper.appendAllValues(sfBase, Arrays.asList(value1, value2));
         assertThat(index).isEqualTo(1);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).contains(value2);
     }
 
     /**
@@ -716,11 +626,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyValue_Empty() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.appendAllValues(sfBase, Collections.emptyList());
 
-        mapper.appendAllValues(key, Collections.emptyList());
-
-        assertThat(mapper.sizeOfValue(key)).isNotPresent();
+        assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
     }
 
     /**
@@ -729,12 +637,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyValue_WithNull() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-
         assertThat(catchThrowable(() ->
-                mapper.appendAllValues(key, Arrays.asList(value0, null))
+                mapper.appendAllValues(sfBase, Arrays.asList(value0, null))
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -744,11 +648,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyValue_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.appendAllValues(key, null)
+                mapper.appendAllValues(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -757,22 +659,20 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), "aaa");
-        mapper.addValue(key.withPosition(1), "bbb");
-        assertThat(mapper.sizeOfValue(key)).contains(2);
-        assertThat(mapper.hasAnyValue(key)).isTrue();
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        assertThat(mapper.hasAnyValue(sfBase)).isTrue();
 
         // Remove values
-        mapper.removeValue(key.withPosition(0));
-        assertThat(mapper.sizeOfValue(key)).contains(1);
-        assertThat(mapper.hasAnyValue(key)).isTrue();
+        mapper.removeValue(sfBase.withPosition(0));
+        assertThat(mapper.sizeOfValue(sfBase)).contains(1);
+        assertThat(mapper.hasAnyValue(sfBase)).isTrue();
 
-        mapper.removeValue(key.withPosition(0));
-        assertThat(mapper.sizeOfValue(key)).isNotPresent();
-        assertThat(mapper.hasAnyValue(key)).isFalse();
+        mapper.removeValue(sfBase.withPosition(0));
+        assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
+        assertThat(mapper.hasAnyValue(sfBase)).isFalse();
     }
 
     /**
@@ -780,23 +680,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyValue_Before() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
-        mapper.addValue(key.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
 
         // Remove value, and check the removed value
-        assertThat(mapper.removeValue(key.withPosition(0))).contains(value0);
+        assertThat(mapper.removeValue(sfBase.withPosition(0))).contains(value0);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).isNotPresent();
     }
 
     /**
@@ -804,23 +698,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyValue_After() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
-        mapper.addValue(key.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
 
         // Remove value, and check the removed value
-        assertThat(mapper.removeValue(key.withPosition(1))).contains(value1);
+        assertThat(mapper.removeValue(sfBase.withPosition(1))).contains(value1);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).isNotPresent();
     }
 
     /**
@@ -828,10 +716,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyValue_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeValue(key)).isNotPresent()
+                assertThat(mapper.removeValue(mfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -841,32 +727,26 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveAll_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-
         // Initialize values
-        mapper.appendValue(key, value0);
-        mapper.appendValue(key, value1);
-        mapper.appendValue(key, value2);
+        mapper.appendValue(sfBase, value0);
+        mapper.appendValue(sfBase, value1);
+        mapper.appendValue(sfBase, value2);
 
         // Check the values
-        assertThat(mapper.hasAnyValue(key)).isTrue();
-        assertThat(mapper.sizeOfValue(key)).contains(3);
+        assertThat(mapper.hasAnyValue(sfBase)).isTrue();
+        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
 
         // Remove all values
-        mapper.removeAllValues(key);
+        mapper.removeAllValues(sfBase);
 
         // Check that all element doesn't exist
-        assertThat(mapper.valueOf(key.withPosition(0))).isNotPresent();
-        assertThat(mapper.valueOf(key.withPosition(1))).isNotPresent();
-        assertThat(mapper.valueOf(key.withPosition(2))).isNotPresent();
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).isNotPresent();
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).isNotPresent();
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).isNotPresent();
 
         // Check the values
-        assertThat(mapper.hasAnyValue(key)).isFalse();
-        assertThat(mapper.sizeOfValue(key)).isNotPresent();
+        assertThat(mapper.hasAnyValue(sfBase)).isFalse();
+        assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
     }
 
     /**
@@ -874,10 +754,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveAll_ManyValue_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                mapper.removeAllValues(key)
+                mapper.removeAllValues(sfBase)
         )).isNull();
     }
 
@@ -886,26 +764,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testMove_ManyValue_Before() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-        String value3 = "Value3";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
-        mapper.addValue(key.withPosition(2), value2);
-        mapper.addValue(key.withPosition(3), value3);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(3), value3);
 
         // Move value, and check the moved value
-        assertThat(mapper.moveValue(key.withPosition(0), key.withPosition(1))).contains(value0);
+        assertThat(mapper.moveValue(sfBase.withPosition(0), sfBase.withPosition(1))).contains(value0);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(3))).contains(value3);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(3))).contains(value3);
     }
 
     /**
@@ -913,26 +784,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testMove_ManyValue_After() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-        String value1 = "Value1";
-        String value2 = "Value2";
-        String value3 = "Value3";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), value1);
-        mapper.addValue(key.withPosition(2), value2);
-        mapper.addValue(key.withPosition(3), value3);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(3), value3);
 
         // Move value, and check the moved value
-        assertThat(mapper.moveValue(key.withPosition(2), key.withPosition(0))).contains(value2);
+        assertThat(mapper.moveValue(sfBase.withPosition(2), sfBase.withPosition(0))).contains(value2);
 
-        assertThat(mapper.valueOf(key.withPosition(0))).contains(value2);
-        assertThat(mapper.valueOf(key.withPosition(1))).contains(value0);
-        assertThat(mapper.valueOf(key.withPosition(2))).contains(value1);
-        assertThat(mapper.valueOf(key.withPosition(3))).contains(value3);
+        assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value2);
+        assertThat(mapper.valueOf(sfBase.withPosition(1))).contains(value0);
+        assertThat(mapper.valueOf(sfBase.withPosition(2))).contains(value1);
+        assertThat(mapper.valueOf(sfBase.withPosition(3))).contains(value3);
     }
 
     /**
@@ -941,11 +805,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testMove_ManyValue_NotDefined() {
-        ManyFeatureBean key0 = ManyFeatureBean.of(id0, "Feature0", 0);
-        ManyFeatureBean key1 = key0.withPosition(1);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.moveValue(key0, key1)).isNotPresent()
+                assertThat(mapper.moveValue(sfBase.withPosition(0), sfBase.withPosition(1))).isNotPresent()
         )).isNull();
     }
 
@@ -954,23 +815,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContains_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-
         // Initialize values
-        mapper.appendValue(key, "aaa");
-        mapper.appendValue(key, value0);
-        mapper.appendValue(key, "zzz");
+        mapper.appendValue(sfBase, value0);
+        mapper.appendValue(sfBase, value1);
+        mapper.appendValue(sfBase, value2);
 
         // Check that contains
-        assertThat(mapper.containsValue(key, value0)).isTrue();
+        assertThat(mapper.containsValue(sfBase, value1)).isTrue();
 
         // Remove all values
-        mapper.removeAllValues(key);
+        mapper.removeAllValues(sfBase);
 
         // Check that doesn't contain
-        assertThat(mapper.containsValue(key, value0)).isFalse();
+        assertThat(mapper.containsValue(sfBase, value1)).isFalse();
     }
 
     /**
@@ -979,10 +836,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContains_ManyValue_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsValue(key, "aaa")).isFalse()
+                assertThat(mapper.containsValue(sfBase, value0)).isFalse()
         )).isNull();
     }
 
@@ -992,10 +847,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContains_ManyValue_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsValue(key, null)).isFalse()
+                assertThat(mapper.containsValue(sfBase, null)).isFalse()
         )).isNull();
     }
 
@@ -1004,25 +857,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOf_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), value0);
-        mapper.addValue(key.withPosition(1), "aaa");
-        mapper.addValue(key.withPosition(2), "bbb");
-        mapper.addValue(key.withPosition(3), value0);
-        mapper.addValue(key.withPosition(4), "ccc");
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(3), value0);
+        mapper.addValue(sfBase.withPosition(4), value3);
 
         // Check first index
-        assertThat(mapper.indexOfValue(key, value0)).contains(0);
+        assertThat(mapper.indexOfValue(sfBase, value0)).contains(0);
 
         // Remove the first value
-        assertThat(mapper.removeValue(key.withPosition(0))).contains(value0);
+        assertThat(mapper.removeValue(sfBase.withPosition(0))).contains(value0);
 
         // Check first index
-        assertThat(mapper.indexOfValue(key, value0)).contains(3 - 1);
+        assertThat(mapper.indexOfValue(sfBase, value0)).contains(3 - 1);
     }
 
     /**
@@ -1031,10 +880,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOf_ManyValue_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfValue(key, "aaa")).isNotPresent()
+                assertThat(mapper.indexOfValue(sfBase, value0)).isNotPresent()
         )).isNull();
     }
 
@@ -1044,10 +891,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOf_ManyValue_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfValue(key, null)).isNotPresent()
+                assertThat(mapper.indexOfValue(sfBase, null)).isNotPresent()
         )).isNull();
     }
 
@@ -1056,25 +901,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOf_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        String value0 = "Value0";
-
         // Initialize values
-        mapper.addValue(key.withPosition(0), "aaa");
-        mapper.addValue(key.withPosition(1), value0);
-        mapper.addValue(key.withPosition(2), "bbb");
-        mapper.addValue(key.withPosition(3), "ccc");
-        mapper.addValue(key.withPosition(4), value0);
+        mapper.addValue(sfBase.withPosition(0), value0);
+        mapper.addValue(sfBase.withPosition(1), value1);
+        mapper.addValue(sfBase.withPosition(2), value2);
+        mapper.addValue(sfBase.withPosition(3), value3);
+        mapper.addValue(sfBase.withPosition(4), value1);
 
         // Check last index
-        assertThat(mapper.lastIndexOfValue(key, value0)).contains(4);
+        assertThat(mapper.lastIndexOfValue(sfBase, value1)).contains(4);
 
         // Remove the last value
-        assertThat(mapper.removeValue(key.withPosition(4))).contains(value0);
+        assertThat(mapper.removeValue(sfBase.withPosition(4))).contains(value1);
 
         // Check last index
-        assertThat(mapper.lastIndexOfValue(key, value0)).contains(1);
+        assertThat(mapper.lastIndexOfValue(sfBase, value1)).contains(1);
     }
 
     /**
@@ -1083,10 +924,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOf_ManyValue_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfValue(key, "aaa")).isNotPresent()
+                assertThat(mapper.lastIndexOfValue(sfBase, value0)).isNotPresent()
         )).isNull();
     }
 
@@ -1096,10 +935,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOf_ManyValue_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfValue(key, null)).isNotPresent()
+                assertThat(mapper.lastIndexOfValue(sfBase, null)).isNotPresent()
         )).isNull();
     }
 
@@ -1108,21 +945,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSize_ManyValue() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         // Initialize values
-        mapper.appendValue(key, "aaa");
-        mapper.appendValue(key, "bbb");
-        mapper.appendValue(key, "ccc");
+        mapper.appendValue(sfBase, value0);
+        mapper.appendValue(sfBase, value1);
+        mapper.appendValue(sfBase, value2);
 
         // Check the size
-        assertThat(mapper.sizeOfValue(key)).contains(3);
+        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
 
         // Remove a value
-        mapper.removeValue(key.withPosition(1));
+        mapper.removeValue(sfBase.withPosition(1));
 
         // Check the size
-        assertThat(mapper.sizeOfValue(key)).contains(2);
+        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
     }
 
     /**
@@ -1130,10 +965,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSize_ManyValue_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfValue(key)).isNotPresent()
+                assertThat(mapper.sizeOfValue(sfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -1147,18 +980,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Reference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-
         // Define references
-        mapper.referenceFor(key, ref0);
-        assertThat(mapper.referenceOf(key)).contains(ref0);
+        mapper.referenceFor(sfBase, ref0);
+        assertThat(mapper.referenceOf(sfBase)).contains(ref0);
 
         // Replace the existing reference
-        assertThat(mapper.referenceFor(key, ref1)).contains(ref0);
-        assertThat(mapper.referenceOf(key)).contains(ref1);
+        assertThat(mapper.referenceFor(sfBase, ref1)).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase)).contains(ref1);
     }
 
     /**
@@ -1166,10 +994,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGet_Reference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceOf(key)).isNotPresent()
+                assertThat(mapper.referenceOf(sfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -1179,11 +1005,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_Reference_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, null)).isNotPresent()
+                assertThat(mapper.referenceFor(sfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1193,19 +1017,15 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testHasRemove_Reference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.referenceFor(sfBase, ref0);
 
-        Id ref0 = IdProvider.generate("Ref0");
+        assertThat(mapper.referenceOf(sfBase)).isPresent();
+        assertThat(mapper.hasReference(sfBase)).isTrue();
 
-        mapper.referenceFor(key, ref0);
+        mapper.removeReference(sfBase);
 
-        assertThat(mapper.referenceOf(key)).isPresent();
-        assertThat(mapper.hasReference(key)).isTrue();
-
-        mapper.removeReference(key);
-
-        assertThat(mapper.referenceOf(key)).isNotPresent();
-        assertThat(mapper.hasReference(key)).isFalse();
+        assertThat(mapper.referenceOf(sfBase)).isNotPresent();
+        assertThat(mapper.hasReference(sfBase)).isFalse();
     }
 
     /**
@@ -1213,10 +1033,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testHas_Reference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasReference(key)).isFalse()
+                assertThat(mapper.hasReference(sfBase)).isFalse()
         )).isNull();
     }
 
@@ -1226,10 +1044,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_Reference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                mapper.removeReference(key)
+                mapper.removeReference(sfBase)
         )).isNull();
     }
 
@@ -1243,23 +1059,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-        Id ref3 = IdProvider.generate("Ref3");
-
         // Initialize the references
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
 
         // Replace the existing references
-        assertThat(mapper.referenceFor(key.withPosition(0), ref2)).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref2);
+        assertThat(mapper.referenceFor(sfBase.withPosition(0), ref2)).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref2);
 
-        assertThat(mapper.referenceFor(key.withPosition(1), ref3)).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref3);
+        assertThat(mapper.referenceFor(sfBase.withPosition(1), ref3)).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref3);
     }
 
     /**
@@ -1268,10 +1077,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGet_ManyReference_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceOf(key)).isNotPresent()
+                assertThat(mapper.referenceOf(mfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -1281,11 +1088,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_ManyReference_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, IdProvider.generate("Ref0"))).isNotPresent()
+                assertThat(mapper.referenceFor(mfBase, ref0)).isNotPresent()
         )).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -1295,11 +1100,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_ManyReference_Null() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(key, null)).isNotPresent()
+                assertThat(mapper.referenceFor(mfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1308,19 +1111,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetAll_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-
         // Add references in natural order
-        mapper.appendReference(key, ref0);
-        mapper.appendReference(key, ref1);
-        mapper.appendReference(key, ref2);
+        mapper.appendReference(sfBase, ref0);
+        mapper.appendReference(sfBase, ref1);
+        mapper.appendReference(sfBase, ref2);
 
         // Post-process the returned Iterable
-        List<Id> actualReferences = MoreIterables.stream(mapper.<String>allReferencesOf(key)).collect(Collectors.toList());
+        List<Id> actualReferences = MoreIterables.stream(mapper.<String>allReferencesOf(sfBase)).collect(Collectors.toList());
 
         assertThat(actualReferences).hasSize(3);
 
@@ -1336,10 +1133,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetAll_ManyReference_Empty() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.allReferencesOf(key)).isNotNull().isEmpty()
+                assertThat(mapper.allReferencesOf(sfBase)).isNotNull().isEmpty()
         )).isNull();
     }
 
@@ -1349,10 +1144,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testHasAny_ManyReference_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyReference(key.withoutPosition())).isFalse()
+                assertThat(mapper.hasAnyReference(sfBase)).isFalse()
         )).isNull();
     }
 
@@ -1361,21 +1154,15 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAdd_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-
         // Add references in natural order
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
-        mapper.addReference(key.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
 
         // Check all references
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).contains(ref2);
     }
 
     /**
@@ -1383,13 +1170,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAdd_ManyReference_AnyOrder() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref2 = IdProvider.generate("Ref2");
-
         // Add references in any order
         assertThat(catchThrowable(() ->
-                mapper.addReference(key.withPosition(2), ref2)
+                mapper.addReference(sfBase.withPosition(2), ref2)
         )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -1399,11 +1182,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAdd_ManyReference_Null() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.addReference(key, null)
+                mapper.addReference(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1412,21 +1193,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppend_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-
         int index;
 
         // Append references
-        index = mapper.appendReference(key, ref0);
+        index = mapper.appendReference(sfBase, ref0);
         assertThat(index).isEqualTo(0);
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
 
-        index = mapper.appendReference(key, ref1);
+        index = mapper.appendReference(sfBase, ref1);
         assertThat(index).isEqualTo(1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref1);
     }
 
     /**
@@ -1435,11 +1211,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppend_ManyReference_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.appendReference(key, null)
+                mapper.appendReference(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1449,15 +1223,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_FromStart() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.addAllReferences(sfBase.withPosition(0), Arrays.asList(ref0, ref1));
 
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-
-        mapper.addAllReferences(key.withPosition(0), Arrays.asList(ref0, ref1));
-
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref1);
     }
 
     /**
@@ -1466,13 +1235,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_WithOffset() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-
         assertThat(catchThrowable(() ->
-                mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref0, ref1))
+                mapper.addAllReferences(sfBase.withPosition(1), Arrays.asList(ref0, ref1))
         )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -1482,23 +1246,16 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_FromMiddle() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-        Id ref3 = IdProvider.generate("Ref3");
-
         // Append references
-        mapper.appendReference(key, ref0);
-        mapper.appendReference(key, ref1);
+        mapper.appendReference(sfBase, ref0);
+        mapper.appendReference(sfBase, ref1);
 
-        mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref2, ref3));
+        mapper.addAllReferences(sfBase.withPosition(1), Arrays.asList(ref2, ref3));
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref3);
-        assertThat(mapper.referenceOf(key.withPosition(3))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).contains(ref3);
+        assertThat(mapper.referenceOf(sfBase.withPosition(3))).contains(ref1);
     }
 
     /**
@@ -1507,20 +1264,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_FromEnd() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.appendReference(sfBase, ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
 
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
+        mapper.addAllReferences(sfBase.withPosition(1), Arrays.asList(ref1, ref2));
 
-        mapper.appendReference(key, ref0);
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-
-        mapper.addAllReferences(key.withPosition(1), Arrays.asList(ref1, ref2));
-
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).contains(ref2);
     }
 
     /**
@@ -1529,11 +1280,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_Empty() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
+        mapper.addAllReferences(mfBase, Collections.emptyList());
 
-        mapper.addAllReferences(key, Collections.emptyList());
-
-        assertThat(mapper.sizeOfReference(key.withoutPosition())).isNotPresent();
+        assertThat(mapper.sizeOfReference(mfBase.withoutPosition())).isNotPresent();
     }
 
     /**
@@ -1542,12 +1291,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_WithNull() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
-        Id ref0 = IdProvider.generate("Ref0");
-
         assertThat(catchThrowable(() ->
-                mapper.addAllReferences(key, Arrays.asList(ref0, null))
+                mapper.addAllReferences(mfBase, Arrays.asList(ref0, null))
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1557,11 +1302,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAddAll_ManyReference_Null() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.addAllReferences(key, null)
+                mapper.addAllReferences(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1571,18 +1314,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyReference_FromStart() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-
         int index;
 
-        index = mapper.appendAllReferences(key, Arrays.asList(ref0, ref1));
+        index = mapper.appendAllReferences(sfBase, Arrays.asList(ref0, ref1));
         assertThat(index).isEqualTo(0);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref1);
     }
 
     /**
@@ -1591,24 +1329,18 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyReference_FromEnd() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-
         int index;
 
-        index = mapper.appendReference(key, ref0);
+        index = mapper.appendReference(sfBase, ref0);
         assertThat(index).isEqualTo(0);
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
 
-        index = mapper.appendAllReferences(key, Arrays.asList(ref1, ref2));
+        index = mapper.appendAllReferences(sfBase, Arrays.asList(ref1, ref2));
         assertThat(index).isEqualTo(1);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).contains(ref2);
     }
 
     /**
@@ -1617,11 +1349,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyReference_Empty() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        mapper.appendAllReferences(sfBase, Collections.emptyList());
 
-        mapper.appendAllReferences(key, Collections.emptyList());
-
-        assertThat(mapper.sizeOfReference(key)).isNotPresent();
+        assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
     }
 
     /**
@@ -1630,12 +1360,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyReference_WithNull() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-
         assertThat(catchThrowable(() ->
-                mapper.appendAllReferences(key, Arrays.asList(ref0, null))
+                mapper.appendAllReferences(sfBase, Arrays.asList(ref0, null))
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1645,11 +1371,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testAppendAll_ManyReference_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.appendAllReferences(key, null)
+                mapper.appendAllReferences(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -1658,22 +1382,20 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), IdProvider.generate("aaa"));
-        mapper.addReference(key.withPosition(1), IdProvider.generate("bbb"));
-        assertThat(mapper.sizeOfReference(key)).contains(2);
-        assertThat(mapper.hasAnyReference(key)).isTrue();
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        assertThat(mapper.hasAnyReference(sfBase)).isTrue();
 
         // Remove references
-        mapper.removeReference(key.withPosition(0));
-        assertThat(mapper.sizeOfReference(key)).contains(1);
-        assertThat(mapper.hasAnyReference(key)).isTrue();
+        mapper.removeReference(sfBase.withPosition(0));
+        assertThat(mapper.sizeOfReference(sfBase)).contains(1);
+        assertThat(mapper.hasAnyReference(sfBase)).isTrue();
 
-        mapper.removeReference(key.withPosition(0));
-        assertThat(mapper.sizeOfReference(key)).isNotPresent();
-        assertThat(mapper.hasAnyReference(key)).isFalse();
+        mapper.removeReference(sfBase.withPosition(0));
+        assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
+        assertThat(mapper.hasAnyReference(sfBase)).isFalse();
     }
 
     /**
@@ -1681,23 +1403,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyReference_Before() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
-        mapper.addReference(key.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
 
         // Remove reference, and check the removed reference
-        assertThat(mapper.removeReference(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.removeReference(sfBase.withPosition(0))).contains(ref0);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).isNotPresent();
     }
 
     /**
@@ -1705,23 +1421,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyReference_After() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
-        mapper.addReference(key.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
 
         // Remove reference, and check the removed reference
-        assertThat(mapper.removeReference(key.withPosition(1))).contains(ref1);
+        assertThat(mapper.removeReference(sfBase.withPosition(1))).contains(ref1);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).isNotPresent();
     }
 
     /**
@@ -1730,10 +1440,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_ManyReference_NotDefined() {
-        ManyFeatureBean key = ManyFeatureBean.of(id0, "Feature0", 0);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.removeReference(key)).isNotPresent()
+                assertThat(mapper.removeReference(mfBase)).isNotPresent()
         )).isNull();
     }
 
@@ -1743,32 +1451,26 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveAll_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-
         // Initialize references
-        mapper.appendReference(key, ref0);
-        mapper.appendReference(key, ref1);
-        mapper.appendReference(key, ref2);
+        mapper.appendReference(sfBase, ref0);
+        mapper.appendReference(sfBase, ref1);
+        mapper.appendReference(sfBase, ref2);
 
         // Check the references
-        assertThat(mapper.hasAnyReference(key)).isTrue();
-        assertThat(mapper.sizeOfReference(key)).contains(3);
+        assertThat(mapper.hasAnyReference(sfBase)).isTrue();
+        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
 
         // Remove all references
-        mapper.removeAllReferences(key);
+        mapper.removeAllReferences(sfBase);
 
         // Check that all element doesn't exist
-        assertThat(mapper.referenceOf(key.withPosition(0))).isNotPresent();
-        assertThat(mapper.referenceOf(key.withPosition(1))).isNotPresent();
-        assertThat(mapper.referenceOf(key.withPosition(2))).isNotPresent();
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).isNotPresent();
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).isNotPresent();
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).isNotPresent();
 
         // Check the references
-        assertThat(mapper.hasAnyReference(key)).isFalse();
-        assertThat(mapper.sizeOfReference(key)).isNotPresent();
+        assertThat(mapper.hasAnyReference(sfBase)).isFalse();
+        assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
     }
 
     /**
@@ -1777,10 +1479,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemoveAll_ManyReference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                mapper.removeAllReferences(key)
+                mapper.removeAllReferences(sfBase)
         )).isNull();
     }
 
@@ -1789,26 +1489,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testMove_ManyReference_Before() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-        Id ref3 = IdProvider.generate("Ref3");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
-        mapper.addReference(key.withPosition(2), ref2);
-        mapper.addReference(key.withPosition(3), ref3);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(3), ref3);
 
         // Move reference, and check the moved reference
-        assertThat(mapper.moveReference(key.withPosition(0), key.withPosition(1))).contains(ref0);
+        assertThat(mapper.moveReference(sfBase.withPosition(0), sfBase.withPosition(1))).contains(ref0);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(3))).contains(ref3);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(3))).contains(ref3);
     }
 
     /**
@@ -1816,26 +1509,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testMove_ManyReference_After() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-        Id ref1 = IdProvider.generate("Ref1");
-        Id ref2 = IdProvider.generate("Ref2");
-        Id ref3 = IdProvider.generate("Ref3");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), ref1);
-        mapper.addReference(key.withPosition(2), ref2);
-        mapper.addReference(key.withPosition(3), ref3);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(3), ref3);
 
         // Move reference, and check the moved reference
-        assertThat(mapper.moveReference(key.withPosition(2), key.withPosition(0))).contains(ref2);
+        assertThat(mapper.moveReference(sfBase.withPosition(2), sfBase.withPosition(0))).contains(ref2);
 
-        assertThat(mapper.referenceOf(key.withPosition(0))).contains(ref2);
-        assertThat(mapper.referenceOf(key.withPosition(1))).contains(ref0);
-        assertThat(mapper.referenceOf(key.withPosition(2))).contains(ref1);
-        assertThat(mapper.referenceOf(key.withPosition(3))).contains(ref3);
+        assertThat(mapper.referenceOf(sfBase.withPosition(0))).contains(ref2);
+        assertThat(mapper.referenceOf(sfBase.withPosition(1))).contains(ref0);
+        assertThat(mapper.referenceOf(sfBase.withPosition(2))).contains(ref1);
+        assertThat(mapper.referenceOf(sfBase.withPosition(3))).contains(ref3);
     }
 
     /**
@@ -1844,11 +1530,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testMove_ManyReference_NotDefined() {
-        ManyFeatureBean key0 = ManyFeatureBean.of(id0, "Feature0", 0);
-        ManyFeatureBean key1 = key0.withPosition(1);
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.moveReference(key0, key1)).isNotPresent()
+                assertThat(mapper.moveReference(sfBase.withPosition(0), sfBase.withPosition(1))).isNotPresent()
         )).isNull();
     }
 
@@ -1857,23 +1540,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContains_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-
         // Initialize references
-        mapper.appendReference(key, IdProvider.generate("aaa"));
-        mapper.appendReference(key, ref0);
-        mapper.appendReference(key, IdProvider.generate("zzz"));
+        mapper.appendReference(sfBase, ref0);
+        mapper.appendReference(sfBase, ref1);
+        mapper.appendReference(sfBase, ref2);
 
         // Check that contains
-        assertThat(mapper.containsReference(key, ref0)).isTrue();
+        assertThat(mapper.containsReference(sfBase, ref1)).isTrue();
 
         // Remove all references
-        mapper.removeAllReferences(key);
+        mapper.removeAllReferences(sfBase);
 
         // Check that doesn't contain
-        assertThat(mapper.containsReference(key, ref0)).isFalse();
+        assertThat(mapper.containsReference(sfBase, ref1)).isFalse();
     }
 
     /**
@@ -1882,10 +1561,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContains_ManyReference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsReference(key, IdProvider.generate("aaa"))).isFalse()
+                assertThat(mapper.containsReference(sfBase, ref0)).isFalse()
         )).isNull();
     }
 
@@ -1895,10 +1572,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testContains_ManyReference_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.containsReference(key, null)).isFalse()
+                assertThat(mapper.containsReference(sfBase, null)).isFalse()
         )).isNull();
     }
 
@@ -1907,25 +1582,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOf_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), ref0);
-        mapper.addReference(key.withPosition(1), IdProvider.generate("aaa"));
-        mapper.addReference(key.withPosition(2), IdProvider.generate("bbb"));
-        mapper.addReference(key.withPosition(3), ref0);
-        mapper.addReference(key.withPosition(4), IdProvider.generate("ccc"));
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(3), ref0);
+        mapper.addReference(sfBase.withPosition(4), ref3);
 
         // Check first index
-        assertThat(mapper.indexOfReference(key, ref0)).contains(0);
+        assertThat(mapper.indexOfReference(sfBase, ref0)).contains(0);
 
         // Remove the first reference
-        assertThat(mapper.removeReference(key.withPosition(0))).contains(ref0);
+        assertThat(mapper.removeReference(sfBase.withPosition(0))).contains(ref0);
 
         // Check first index
-        assertThat(mapper.indexOfReference(key, ref0)).contains(3 - 1);
+        assertThat(mapper.indexOfReference(sfBase, ref0)).contains(3 - 1);
     }
 
     /**
@@ -1934,10 +1605,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOf_ManyReference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfReference(key, IdProvider.generate("aaa"))).isNotPresent()
+                assertThat(mapper.indexOfReference(sfBase, ref0)).isNotPresent()
         )).isNull();
     }
 
@@ -1947,10 +1616,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testIndexOf_ManyReference_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.indexOfReference(key, null)).isNotPresent()
+                assertThat(mapper.indexOfReference(sfBase, null)).isNotPresent()
         )).isNull();
     }
 
@@ -1959,25 +1626,21 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOf_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
-        Id ref0 = IdProvider.generate("Ref0");
-
         // Initialize references
-        mapper.addReference(key.withPosition(0), IdProvider.generate("aaa"));
-        mapper.addReference(key.withPosition(1), ref0);
-        mapper.addReference(key.withPosition(2), IdProvider.generate("bbb"));
-        mapper.addReference(key.withPosition(3), IdProvider.generate("ccc"));
-        mapper.addReference(key.withPosition(4), ref0);
+        mapper.addReference(sfBase.withPosition(0), ref0);
+        mapper.addReference(sfBase.withPosition(1), ref1);
+        mapper.addReference(sfBase.withPosition(2), ref2);
+        mapper.addReference(sfBase.withPosition(3), ref3);
+        mapper.addReference(sfBase.withPosition(4), ref1);
 
         // Check last index
-        assertThat(mapper.lastIndexOfReference(key, ref0)).contains(4);
+        assertThat(mapper.lastIndexOfReference(sfBase, ref1)).contains(4);
 
         // Remove the last reference
-        assertThat(mapper.removeReference(key.withPosition(4))).contains(ref0);
+        assertThat(mapper.removeReference(sfBase.withPosition(4))).contains(ref1);
 
         // Check last index
-        assertThat(mapper.lastIndexOfReference(key, ref0)).contains(1);
+        assertThat(mapper.lastIndexOfReference(sfBase, ref1)).contains(1);
     }
 
     /**
@@ -1986,10 +1649,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOf_ManyReference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfReference(key, IdProvider.generate("aaa"))).isNotPresent()
+                assertThat(mapper.lastIndexOfReference(sfBase, ref0)).isNotPresent()
         )).isNull();
     }
 
@@ -1999,10 +1660,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testLastIndexOf_ManyReference_Null() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.lastIndexOfReference(key, null)).isNotPresent()
+                assertThat(mapper.lastIndexOfReference(sfBase, null)).isNotPresent()
         )).isNull();
     }
 
@@ -2011,21 +1670,19 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSize_ManyReference() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         // Initialize references
-        mapper.appendReference(key, IdProvider.generate("aaa"));
-        mapper.appendReference(key, IdProvider.generate("bbb"));
-        mapper.appendReference(key, IdProvider.generate("ccc"));
+        mapper.appendReference(sfBase, ref0);
+        mapper.appendReference(sfBase, ref1);
+        mapper.appendReference(sfBase, ref2);
 
         // Check the size
-        assertThat(mapper.sizeOfReference(key)).contains(3);
+        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
 
         // Remove a reference
-        mapper.removeReference(key.withPosition(1));
+        mapper.removeReference(sfBase.withPosition(1));
 
         // Check the size
-        assertThat(mapper.sizeOfReference(key)).contains(2);
+        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
     }
 
     /**
@@ -2034,10 +1691,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSize_ManyReference_NotDefined() {
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
-
         assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfReference(key)).isNotPresent()
+                assertThat(mapper.sizeOfReference(sfBase)).isNotPresent()
         )).isNull();
     }
 

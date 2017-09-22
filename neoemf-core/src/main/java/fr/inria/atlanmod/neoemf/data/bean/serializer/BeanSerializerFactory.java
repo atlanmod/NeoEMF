@@ -115,6 +115,6 @@ public class BeanSerializerFactory extends SerializerFactory {
         /**
          * The instance of the outer class.
          */
-        private static final BeanSerializerFactory INSTANCE = new BeanSerializerFactory();
+        static final BeanSerializerFactory INSTANCE = new BeanSerializerFactory();
     }
 }

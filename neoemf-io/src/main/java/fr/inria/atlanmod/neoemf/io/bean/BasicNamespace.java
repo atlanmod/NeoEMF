@@ -258,7 +258,7 @@ public class BasicNamespace {
             /**
              * The instance of the outer class.
              */
-            private static final Registry INSTANCE = new Registry();
+            static final Registry INSTANCE = new Registry();
         }
     }
 }

@@ -48,7 +48,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 // TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
-abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend, AllReferenceAs<String> {
+abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
@@ -218,7 +218,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Nonnull
     @Override
-    public Converter<Id, String> referenceConverter() {
+    public Converter<Id, Long> referenceConverter() {
         return ReferenceAs.DEFAULT_CONVERTER;
     }
 

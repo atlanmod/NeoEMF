@@ -225,6 +225,6 @@ public final class BackendFactoryRegistry {
         /**
          * The instance of the outer class.
          */
-        private static final BackendFactoryRegistry INSTANCE = new BackendFactoryRegistry();
+        static final BackendFactoryRegistry INSTANCE = new BackendFactoryRegistry();
     }
 }

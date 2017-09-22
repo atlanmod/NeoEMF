@@ -121,7 +121,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public Id id() {
         if (id == Id.UNDEFINED) { // Id#UNDEFINED is immutable
-            id(IdProvider.generate());
+            id(Id.getProvider().generate());
         }
         return id;
     }

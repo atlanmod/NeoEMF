@@ -146,6 +146,6 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
         /**
          * The instance of the outer class.
          */
-        private static final BackendFactory INSTANCE = new HBaseBackendFactory();
+        static final BackendFactory INSTANCE = new HBaseBackendFactory();
     }
 }

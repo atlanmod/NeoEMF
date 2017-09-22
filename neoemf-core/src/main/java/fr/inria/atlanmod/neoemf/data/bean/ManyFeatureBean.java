@@ -133,6 +133,6 @@ public class ManyFeatureBean extends AbstractFeatureBean {
 
     @Override
     public String toString() {
-        return String.format("ManyFeatureBean {%s # %s [%d]}", owner, id, position);
+        return String.format("ManyFeatureBean {%s # %s [%d]}", owner.toHexString(), id, position);
     }
 }

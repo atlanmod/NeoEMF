@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.io.DataInput;
@@ -33,7 +33,7 @@ final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
 
     @Override
     public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
-        out.writeUTF(key.owner().toString());
+        out.writeLong(key.owner().toLong());
         out.writeUTF(key.id());
     }
 
@@ -41,7 +41,7 @@ final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
     @Override
     public SingleFeatureBean deserialize(DataInput in) throws IOException {
         return SingleFeatureBean.of(
-                IdProvider.create(in.readUTF()),
+                Id.getProvider().fromLong(in.readLong()),
                 in.readUTF()
         );
     }

@@ -74,7 +74,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
      * @param owner the identifier of the owner of this back-end
      */
     public BoundTransientBackend(Id owner) {
-        super(owner.toString());
+        super(owner.toHexString());
 
         if (dataHolder.isClosed()) {
             INSTANCES.set(0L);
@@ -290,7 +290,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
             /**
              * The instance of the outer class.
              */
-            private static final DataHolder INSTANCE = new DataHolder();
+            static final DataHolder INSTANCE = new DataHolder();
         }
     }
 }

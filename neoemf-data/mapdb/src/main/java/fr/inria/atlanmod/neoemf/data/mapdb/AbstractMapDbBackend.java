@@ -45,7 +45,7 @@ import static java.util.Objects.isNull;
  */
 @ParametersAreNonnullByDefault
 // TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
-abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend, AllReferenceAs<String> {
+abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.Serializer}
@@ -221,7 +221,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
     @Nonnull
     @Override
-    public Converter<Id, String> referenceConverter() {
+    public Converter<Id, Long> referenceConverter() {
         return ReferenceAs.DEFAULT_CONVERTER;
     }
 

@@ -20,11 +20,11 @@ import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
+import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -46,6 +46,14 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend implements BlueprintsBackend {
+
+    /**
+     * The default converter to use {@link Long} instead of {@link Id}.
+     */
+    @Nonnull
+    protected static final Converter<Id, Object> ID_CONVERTER = Converter.from(
+            Id::toLong,
+            o -> Id.getProvider().fromLong(Long.class.cast(o)));
 
     /**
      * The property key used to define the index of an edge.
@@ -140,8 +148,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the create {@link Id}
      */
     @Nonnull
-    private static Id idFor(ClassBean metaClass) {
-        return IdProvider.generate(metaClass.name() + metaClass.uri());
+    private static Id generateClassId(ClassBean metaClass) {
+        return Id.getProvider().generate(metaClass.name() + metaClass.uri());
     }
 
     /**
@@ -213,7 +221,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         GraphHelper.copyGraph(graph, to.graph);
 
         metaClassSet.forEach(m -> {
-            Id id = idFor(m);
+            Id id = generateClassId(m);
             Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
             to.metaClassIndex.put(KEY_NAME, m.name(), vertex);
         });
@@ -238,7 +246,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         return MoreIterables.onlyElement(edges)
                 .map(e -> SingleFeatureBean.of(
-                        IdProvider.create(e.getVertex(Direction.IN).getId().toString()),
+                        ID_CONVERTER.revert(e.getVertex(Direction.IN).getId()),
                         e.getProperty(KEY_CONTAINING_FEATURE)));
     }
 
@@ -326,7 +334,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Iterable<Vertex> instanceVertices = metaClassIndex.get(KEY_NAME, metaClass.name());
 
         Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(idFor(metaClass).toString());
+            Vertex mcv = graph.addVertex(ID_CONVERTER.convert(generateClassId(metaClass)));
             mcv.setProperty(KEY_NAME, metaClass.name());
             mcv.setProperty(KEY_NS_URI, metaClass.uri());
 
@@ -350,7 +358,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, KEY_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(v -> IdProvider.create(v.getId().toString()))
+                .map(v -> ID_CONVERTER.revert(v.getId()))
                 .collect(Collectors.toSet());
     }
 
@@ -363,7 +371,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(i.toString())));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(ID_CONVERTER.convert(i))));
     }
 
     /**
@@ -377,8 +385,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     protected Vertex getOrCreate(Id id) {
         return verticesCache.get(id, i ->
-                Optional.ofNullable(graph.getVertex(i.toString()))
-                        .orElseGet(() -> graph.addVertex(i.toString())));
+                Optional.ofNullable(graph.getVertex(ID_CONVERTER.convert(i)))
+                        .orElseGet(() -> graph.addVertex(ID_CONVERTER.convert(i))));
     }
 
     /**

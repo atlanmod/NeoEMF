@@ -31,7 +31,7 @@ public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 
             @Override
             public Backend createMapper(File file) {
-                return new BoundTransientBackend(id0);
+                return new BoundTransientBackend(idBase);
             }
         };
     }
