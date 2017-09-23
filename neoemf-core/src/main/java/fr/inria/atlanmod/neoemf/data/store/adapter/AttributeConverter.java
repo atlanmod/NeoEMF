@@ -90,6 +90,8 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
             return value;
         }
 
+        // From this point, the value is considered as a String.
+
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
             return featureMapConverter.revert(String.class.cast(value), attribute);
         }

@@ -54,6 +54,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     private final ManyFeatureBean mfBase = sfBase.withPosition(0);
 
+    /**
+     * The default meta-class bean.
+     */
+    private final ClassBean cBase = ClassBean.of("Metaclass0", "Uri0");
+
     // Variables initialization
 
     private final Id id0 = Id.getProvider().fromLong(0);
@@ -82,6 +87,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     @Before
     public void createMapper() throws IOException {
         mapper = context().createMapper(file());
+
+        // Defines the meta-classes
+        mapper.metaClassFor(idBase, cBase);
+        mapper.metaClassFor(ref0, cBase);
+        mapper.metaClassFor(ref1, cBase);
+        mapper.metaClassFor(ref2, cBase);
+        mapper.metaClassFor(ref3, cBase);
     }
 
     /**
@@ -209,11 +221,14 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Metaclass_Same() {
-        ClassBean metaClass = ClassBean.of("Metaclass0", "Uri0");
+        Id id0 = Id.getProvider().fromLong(40);
+        Id id1 = Id.getProvider().fromLong(41);
+
+        ClassBean metaClass = ClassBean.of("Metaclass1", "Uri1");
 
         // Define the meta-classes
-        mapper.metaClassFor(idBase, metaClass);
-        assertThat(mapper.metaClassOf(idBase)).contains(metaClass);
+        mapper.metaClassFor(id0, metaClass);
+        assertThat(mapper.metaClassOf(id0)).contains(metaClass);
 
         mapper.metaClassFor(id1, metaClass);
         assertThat(mapper.metaClassOf(id1)).contains(metaClass);
@@ -224,16 +239,18 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Metaclass_Different() {
-        ClassBean metaClass0 = ClassBean.of("Metaclass0", "Uri0");
-        ClassBean metaClass1 = ClassBean.of("Metaclass1", "Uri1");
+        Id id0 = Id.getProvider().fromLong(40);
+
+        ClassBean metaClass0 = ClassBean.of("Metaclass1", "Uri1");
+        ClassBean metaClass1 = ClassBean.of("Metaclass2", "Uri2");
 
         // Define the meta-classes
-        assertThat(mapper.metaClassFor(idBase, metaClass0)).isTrue();
-        assertThat(mapper.metaClassOf(idBase)).contains(metaClass0);
+        assertThat(mapper.metaClassFor(id0, metaClass0)).isTrue();
+        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
 
         // Replace the existing meta-class
-        assertThat(mapper.metaClassFor(idBase, metaClass1)).isFalse();
-        assertThat(mapper.metaClassOf(idBase)).contains(metaClass0);
+        assertThat(mapper.metaClassFor(id0, metaClass1)).isFalse();
+        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
     }
 
     /**
@@ -241,8 +258,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGet_Metaclass_NotDefined() {
+        Id id0 = Id.getProvider().fromLong(40);
+
         assertThat(catchThrowable(() ->
-                assertThat(mapper.metaClassOf(idBase)).isNotPresent()
+                assertThat(mapper.metaClassOf(id0)).isNotPresent()
         )).isNull();
     }
 
@@ -251,9 +270,11 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_Metaclass_Null() {
+        Id id0 = Id.getProvider().fromLong(40);
+
         //noinspection ConstantConditions
         assertThat(catchThrowable(() ->
-                mapper.metaClassFor(idBase, null)
+                mapper.metaClassFor(id0, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -367,7 +388,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
+     * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} when the reference doesn't
+     * exist.
      */
     @Test
     public void testSet_ManyValue_NotDefined() {
@@ -1083,8 +1105,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#referenceFor(ManyFeatureBean, Id)} with a {@code null}
-     * reference.
+     * Checks the behavior of {@link ManyReferenceMapper#referenceFor(ManyFeatureBean, Id)} when the reference doesn't
+     * exist.
      */
     @Test
     public void testSet_ManyReference_NotDefined() {

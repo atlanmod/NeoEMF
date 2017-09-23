@@ -13,10 +13,13 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.GraphHelper;
+import com.tinkerpop.blueprints.util.wrappers.WrapperGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
@@ -28,6 +31,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
@@ -59,35 +63,39 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             o -> IdProvider.AS_LONG.revert(Long.class.cast(o)));
 
     /**
-     * The property key used to define the name the metaclass and the opposite containing feature in container {@link
-     * Edge}s.
-     */
-    protected static final String PROPERTY_NAME = "n";
-
-    /**
-     * The property key used to define the index of an edge.
-     */
-    protected static final String PROPERTY_INDEX = "p";
-
-    /**
-     * The property key used to define the number of edges with a specific label.
-     */
-    protected static final String PROPERTY_SIZE = "s";
-
-    /**
-     * The property key used to set the namespace URI of meta-class {@link Vertex}s.
-     */
-    protected static final String PROPERTY_URI = "u";
-
-    /**
      * The label used to define container {@link Edge}s.
      */
-    protected static final String EDGE_CONTAINER = "c";
+    protected static final String EDGE_CONTAINER = "_c";
 
     /**
      * The label of type conformance {@link Edge}s.
      */
-    protected static final String EDGE_INSTANCE_OF = "i";
+    protected static final String EDGE_INSTANCE_OF = "_i";
+
+    /**
+     * The property key used to define the index of an edge.
+     */
+    protected static final String PROPERTY_INDEX = "_p";
+
+    /**
+     * The property key used to define the number of edges with a specific label.
+     */
+    protected static final String PROPERTY_SIZE = "_s";
+
+    /**
+     * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
+     */
+    protected static final String PROPERTY_FEATURE_NAME = "_cn";
+
+    /**
+     * The property key used to define the name of meta-class {@link Vertex}s.
+     */
+    protected static final String PROPERTY_CLASS_NAME = "_in";
+
+    /**
+     * The property key used to define the URI of meta-class {@link Vertex}s.
+     */
+    protected static final String PROPERTY_CLASS_URI = "_iu";
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -119,6 +127,15 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     private final IdGraph<KeyIndexableGraph> graph;
 
     /**
+     * {@code true} if the base {@link Graph} requires unique labels and properties.
+     * <p>
+     * Some {@link Graph} implementations, as {@link TinkerGraph}, associates each label and property with a type, even
+     * if it appears in a different Vertex/Edge. A simple {@link Integer} cause some troubles because they appear in
+     * different {@link com.tinkerpop.blueprints.Element} but don't represent the same thing.
+     */
+    private final boolean requireUniqueLabels;
+
+    /**
      * Constructs a new {@code AbstractBlueprintsBackend} wrapping the provided {@code baseGraph}.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
@@ -129,6 +146,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         checkNotNull(baseGraph);
 
         graph = new InternalIdGraph(baseGraph);
+
+        requireUniqueLabels = TinkerGraph.class.isInstance(getOrigin(baseGraph));
 
         metaClassSet = new HashSet<>();
         metaClassIndex = getOrCreateIndex("instances");
@@ -147,28 +166,47 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     /**
+     * Retrieves the base graph of the {@code graph}.
+     *
+     * @param graph the graph from which to retrieve the base graph
+     *
+     * @return the base graph of the {@code graph}, or {@code graph} is it is not a wrapper.
+     *
+     * @see com.tinkerpop.blueprints.Features#isWrapper
+     * @see WrapperGraph
+     */
+    @Nonnull
+    private Graph getOrigin(Graph graph) {
+        return graph.getFeatures().isWrapper
+                ? getOrigin(WrapperGraph.class.cast(graph).getBaseGraph())
+                : graph;
+    }
+
+    /**
      * Formats a property as {@code label:suffix}.
      *
-     * @param label  the label of the property
-     * @param suffix the suffix of the property
+     * @param feature the feature associated with the property
+     * @param suffix  the suffix of the property
      *
      * @return the formatted property
      */
     @Nonnull
-    protected static String formatProperty(int label, Object suffix) {
-        return formatLabel(label) + ':' + String.valueOf(suffix);
+    protected String formatProperty(FeatureBean feature, Object suffix) {
+        return formatLabel(feature) + ':' + String.valueOf(suffix);
     }
 
     /**
      * Formats a label.
      *
-     * @param label the label to format
+     * @param feature the feature associated with the label
      *
      * @return the formatted label
      */
     @Nonnull
-    protected static String formatLabel(int label) {
-        return Integer.toString(label);
+    protected String formatLabel(FeatureBean feature) {
+        return requireUniqueLabels
+                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id()) // TODO Can cause a massive overhead
+                : Integer.toString(feature.id());
     }
 
     /**
@@ -217,7 +255,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         metaClassSet.forEach(m -> {
             Id id = generateClassId(m);
             Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
-            to.metaClassIndex.put(PROPERTY_NAME, m.name(), vertex);
+            to.metaClassIndex.put(PROPERTY_CLASS_NAME, m.name(), vertex);
         });
     }
 
@@ -241,7 +279,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         return MoreIterables.onlyElement(edges)
                 .map(e -> SingleFeatureBean.of(
                         AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()),
-                        e.getProperty(PROPERTY_NAME)));
+                        e.getProperty(PROPERTY_FEATURE_NAME)));
     }
 
     @Override
@@ -261,7 +299,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         containmentEdges.forEach(Edge::remove);
 
         Edge edge = containmentVertex.addEdge(EDGE_CONTAINER, containerVertex);
-        edge.setProperty(PROPERTY_NAME, container.id());
+        edge.setProperty(PROPERTY_FEATURE_NAME, container.id());
     }
 
     @Override
@@ -302,8 +340,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         return MoreIterables.onlyElement(metaClassVertices)
                 .map(v -> ClassBean.of(
-                        v.getProperty(PROPERTY_NAME),
-                        v.getProperty(PROPERTY_URI)));
+                        v.getProperty(PROPERTY_CLASS_NAME),
+                        v.getProperty(PROPERTY_CLASS_URI)));
     }
 
     @Override
@@ -325,14 +363,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_NAME, metaClass.name());
+        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name());
 
         Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
             Vertex mcv = graph.addVertex(AS_LONG_OBJECT.convert(generateClassId(metaClass)));
-            mcv.setProperty(PROPERTY_NAME, metaClass.name());
-            mcv.setProperty(PROPERTY_URI, metaClass.uri());
+            mcv.setProperty(PROPERTY_CLASS_NAME, metaClass.name());
+            mcv.setProperty(PROPERTY_CLASS_URI, metaClass.uri());
 
-            metaClassIndex.put(PROPERTY_NAME, metaClass.name(), mcv);
+            metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), mcv);
             metaClassSet.add(metaClass);
 
             return mcv;
@@ -348,12 +386,25 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return metaClasses.stream()
-                .map(mc -> metaClassIndex.get(PROPERTY_NAME, mc.name()))
+                .map(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
                 .map(v -> AS_LONG_OBJECT.revert(v.getId()))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns the name of the meta-class of the specified {@code id}.
+     *
+     * @param id the identifier
+     *
+     * @return the name of the meta-class
+     */
+    @Nonnull
+    private String metaClassNameOf(Id id) {
+        // If the meta-class is not defined, the identifier represents the 'ROOT' element
+        return metaClassOf(id).map(ClassBean::name).orElse(":");
     }
 
     /**
