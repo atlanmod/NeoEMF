@@ -1,5 +1,7 @@
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.Converter;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -8,6 +10,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface IdProvider {
+
+    /**
+     * The {@link Converter} to use a long representation instead of {@link Id}.
+     *
+     * @see Id#toLong()
+     * @see IdProvider#fromLong(long)
+     */
+    @Nonnull
+    Converter<Id, Long> AS_LONG = Converter.from(
+            Id::toLong,
+            Id.getProvider()::fromLong);
+
+    /**
+     * The {@link Converter} to use a hexadecimal representation instead of {@link Id}.
+     *
+     * @see Id#toHexString()
+     * @see IdProvider#fromHexString(String)
+     */
+    @Nonnull
+    Converter<Id, String> AS_HEXA = Converter.from(
+            Id::toHexString,
+            Id.getProvider()::fromHexString);
 
     /**
      * Creates a new {@link Id} from a long representation.
@@ -24,15 +48,15 @@ public interface IdProvider {
     /**
      * Creates a new {@link Id} from an hexadecimal representation.
      *
-     * @param value the hexadecimal representation of the new identifier
+     * @param hexValue the hexadecimal representation of the new identifier
      *
      * @return a new instance of an {@link Id}
      *
-     * @throws IllegalArgumentException if the {@code value} does not represent an hexadecimal value
+     * @throws IllegalArgumentException if the {@code hexValue} does not represent an hexadecimal value
      * @see Id#toHexString()
      */
     @Nonnull
-    Id fromHexString(String value);
+    Id fromHexString(String hexValue);
 
     /**
      * Generates a new instance of an {@link Id} initialized with a random value.
@@ -43,14 +67,14 @@ public interface IdProvider {
     Id generate();
 
     /**
-     * Generates a new instance of an {@link Id} from a base {@code value}.
+     * Generates a new instance of an {@link Id} from a {@code baseValue}.
      * <p>
-     * Several calls to this method with the same {@code value} should return the same identifier.
+     * Several calls to this method with the same {@code baseValue} should return the same identifier.
      *
-     * @param value the base value of the identifier
+     * @param baseValue the base value of the identifier
      *
      * @return a new instance of an {@link Id}
      */
     @Nonnull
-    Id generate(String value);
+    Id generate(String baseValue);
 }

@@ -11,11 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.primitive.Bytes;
 import fr.inria.atlanmod.commons.primitive.Ints;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -35,18 +37,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements HBaseBackend {
-
-    /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
-     */
-    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
      * The column family holding properties.
@@ -84,8 +81,23 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     private static final byte[] QUALIFIER_CONTAINING_FEATURE = Strings.toBytes("g");
 
     /**
+     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+     */
+    @Nonnull
+    private static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
+
+    /**
+     * A converter to use {@code byte[]} instead of {@link Id}.
+     */
+    @Nonnull
+    private static final Converter<Id, byte[]> AS_BYTES = Converter.from(
+            id -> Strings.toBytes(IdProvider.AS_HEXA.convert(id)),
+            bs -> IdProvider.AS_HEXA.revert(Bytes.toString(bs)));
+
+    /**
      * The HBase table used to access the model.
      */
+    @Nonnull
     protected final Table table;
 
     /**
@@ -119,14 +131,27 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id);
 
-        return resultFrom(id)
-                .map(r -> {
-                    byte[] byteId = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
-                    byte[] byteName = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
-                    return nonNull(byteId) && nonNull(byteName)
-                            ? SingleFeatureBean.of(Id.getProvider().fromHexString(Bytes.toString(byteId)), Bytes.toInt(byteName))
-                            : null;
-                });
+        try {
+            Get get = new Get(AS_BYTES.convert(id));
+            Result result = table.get(get);
+
+            if (result.isEmpty()) {
+                return Optional.empty();
+            }
+
+            byte[] byteId = result.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
+            byte[] byteName = result.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
+
+            if (isNull(byteId) || isNull(byteName)) {
+                return Optional.empty();
+            }
+
+            return Optional.of(SingleFeatureBean.of(AS_BYTES.revert(byteId), Bytes.toInt(byteName)));
+        }
+        catch (IOException e) {
+            handleException(e);
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -135,8 +160,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(container);
 
         try {
-            Put put = new Put(Strings.toBytes(id.toHexString()))
-                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, Strings.toBytes(container.owner().toHexString()))
+            Put put = new Put(AS_BYTES.convert(id))
+                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, AS_BYTES.convert(container.owner()))
                     .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Ints.toBytes(container.id()));
 
             table.put(put);
@@ -151,7 +176,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(id);
 
         try {
-            Delete delete = new Delete(Strings.toBytes(id.toHexString()))
+            Delete delete = new Delete(AS_BYTES.convert(id))
                     .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER)
                     .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
 
@@ -167,15 +192,27 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id);
 
-        return resultFrom(id)
-                .map(result -> {
-                    byte[] byteName = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
-                    byte[] byteUri = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
+        try {
+            Get get = new Get(AS_BYTES.convert(id));
+            Result result = table.get(get);
 
-                    return nonNull(byteName) && nonNull(byteUri)
-                            ? ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri))
-                            : null;
-                });
+            if (result.isEmpty()) {
+                return Optional.empty();
+            }
+
+            byte[] byteName = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
+            byte[] byteUri = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
+
+            if (isNull(byteName) || isNull(byteUri)) {
+                return Optional.empty();
+            }
+
+            return Optional.of(ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
+        }
+        catch (IOException e) {
+            handleException(e);
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -184,7 +221,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(metaClass);
 
         try {
-            byte[] row = Strings.toBytes(id.toHexString());
+            byte[] row = AS_BYTES.convert(id);
 
             Get get = new Get(row).addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
             if (table.exists(get)) {
@@ -215,17 +252,26 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key);
 
-        return resultFrom(key.owner())
-                .map(r -> r.getValue(FAMILY_PROPERTY, Ints.toBytes(key.id())))
-                .map(v -> {
-                    try {
-                        return SERIALIZER_FACTORY.<V>forAny().deserialize(v);
-                    }
-                    catch (IOException e) {
-                        handleException(e);
-                        return null;
-                    }
-                });
+        try {
+            Get get = new Get(AS_BYTES.convert(key.owner()));
+            Result result = table.get(get);
+
+            if (result.isEmpty()) {
+                return Optional.empty();
+            }
+
+            byte[] byteValue = result.getValue(FAMILY_PROPERTY, Ints.toBytes(key.id()));
+
+            if (isNull(byteValue)) {
+                return Optional.empty();
+            }
+
+            return Optional.of(SERIALIZER_FACTORY.<V>forAny().deserialize(byteValue));
+        }
+        catch (IOException e) {
+            handleException(e);
+            return Optional.empty();
+        }
     }
 
     @Nonnull
@@ -237,7 +283,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         Optional<V> previousValue = valueOf(key);
 
         try {
-            Put put = new Put(Strings.toBytes(key.owner().toHexString()))
+            Put put = new Put(AS_BYTES.convert(key.owner()))
                     .addColumn(FAMILY_PROPERTY, Ints.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
 
             table.put(put);
@@ -254,34 +300,13 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         try {
-            Delete delete = new Delete(Strings.toBytes(key.owner().toHexString()))
+            Delete delete = new Delete(AS_BYTES.convert(key.owner()))
                     .addColumns(FAMILY_PROPERTY, Ints.toBytes(key.id()));
 
             table.delete(delete);
         }
         catch (IOException e) {
             handleException(e);
-        }
-    }
-
-    /**
-     * Retrieves a raw value from the {@link Table} according to the given {@code id}.
-     *
-     * @param id the identifier of the {@link Result} to retrieve
-     *
-     * @return on {@link Optional} containing the {@link Result}, or an empty {@link Optional} if the element has not
-     * been found
-     */
-    private Optional<Result> resultFrom(Id id) {
-        try {
-            Get get = new Get(Strings.toBytes(id.toHexString()));
-
-            Result result = table.get(get);
-            return !result.isEmpty() ? Optional.of(result) : Optional.empty();
-        }
-        catch (IOException e) {
-            handleException(e);
-            return Optional.empty();
         }
     }
 

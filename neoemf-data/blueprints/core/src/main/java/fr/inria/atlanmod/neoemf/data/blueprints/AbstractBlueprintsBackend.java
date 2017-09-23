@@ -25,6 +25,7 @@ import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -48,12 +49,14 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend implements BlueprintsBackend {
 
     /**
-     * The default converter to use {@link Long} instead of {@link Id}.
+     * The {@link Converter} to use a long representation instead of {@link Id}.
+     * <p>
+     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
      */
     @Nonnull
-    protected static final Converter<Id, Object> ID_CONVERTER = Converter.from(
-            Id::toLong,
-            o -> Id.getProvider().fromLong(Long.class.cast(o)));
+    protected static final Converter<Id, Object> AS_LONG_OBJECT = Converter.from(
+            IdProvider.AS_LONG::convert,
+            o -> IdProvider.AS_LONG.revert(Long.class.cast(o)));
 
     /**
      * The property key used to define the name the metaclass and the opposite containing feature in container {@link
@@ -237,7 +240,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
         return MoreIterables.onlyElement(edges)
                 .map(e -> SingleFeatureBean.of(
-                        ID_CONVERTER.revert(e.getVertex(Direction.IN).getId()),
+                        AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()),
                         e.getProperty(PROPERTY_NAME)));
     }
 
@@ -325,7 +328,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_NAME, metaClass.name());
 
         Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(ID_CONVERTER.convert(generateClassId(metaClass)));
+            Vertex mcv = graph.addVertex(AS_LONG_OBJECT.convert(generateClassId(metaClass)));
             mcv.setProperty(PROPERTY_NAME, metaClass.name());
             mcv.setProperty(PROPERTY_URI, metaClass.uri());
 
@@ -349,7 +352,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(v -> ID_CONVERTER.revert(v.getId()))
+                .map(v -> AS_LONG_OBJECT.revert(v.getId()))
                 .collect(Collectors.toSet());
     }
 
@@ -362,7 +365,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(ID_CONVERTER.convert(i))));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(AS_LONG_OBJECT.convert(i))));
     }
 
     /**
@@ -376,8 +379,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     protected Vertex getOrCreate(Id id) {
         return verticesCache.get(id, i ->
-                Optional.ofNullable(graph.getVertex(ID_CONVERTER.convert(i)))
-                        .orElseGet(() -> graph.addVertex(ID_CONVERTER.convert(i))));
+                Optional.ofNullable(graph.getVertex(AS_LONG_OBJECT.convert(i)))
+                        .orElseGet(() -> graph.addVertex(AS_LONG_OBJECT.convert(i))));
     }
 
     /**

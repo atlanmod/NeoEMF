@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceMergedAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
@@ -44,25 +45,17 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
     private static final String DELIMITER = ";";
 
     /**
-     * The {@link Converter} used to convert single-valued references.
-     */
-    @Nonnull
-    private static final Converter<Id, String> SINGLE_CONVERTER = Converter.from(
-            Id::toHexString,
-            Id.getProvider()::fromHexString);
-
-    /**
      * The {@link Converter} used to convert multi-valued references.
      */
     @Nonnull
-    private static final Converter<List<Id>, String> MANY_CONVERTER = Converter.from(
+    private static final Converter<List<Id>, String> MANY_AS_HEXAS = Converter.from(
             rs -> rs.stream()
-                    .map(r -> Optional.ofNullable(r).map(SINGLE_CONVERTER::convert).orElse(null))
+                    .map(r -> Optional.ofNullable(r).map(IdProvider.AS_HEXA::convert).orElse(null))
                     .map(Strings::nullToEmpty)
                     .collect(Collectors.joining(DELIMITER)),
             r -> Arrays.stream(r.split(DELIMITER))
                     .map(Strings::emptyToNull)
-                    .map(SINGLE_CONVERTER::revert)
+                    .map(IdProvider.AS_HEXA::revert)
                     .collect(Collectors.toList()));
 
     /**
@@ -77,12 +70,12 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
     @Nonnull
     @Override
     public Converter<Id, String> referenceConverter() {
-        return SINGLE_CONVERTER;
+        return IdProvider.AS_HEXA;
     }
 
     @Nonnull
     @Override
     public Converter<List<Id>, String> manyReferenceMerger() {
-        return MANY_CONVERTER;
+        return MANY_AS_HEXAS;
     }
 }

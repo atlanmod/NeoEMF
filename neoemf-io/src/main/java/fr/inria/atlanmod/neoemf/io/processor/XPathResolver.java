@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.Handler;
@@ -29,7 +31,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.RegEx;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
@@ -47,19 +48,20 @@ import static java.util.Objects.nonNull;
 public class XPathResolver extends AbstractProcessor<Handler> {
 
     /**
-     * Regular expression for detecting nodes which have no index in their path.
-     */
-    @RegEx
-    @Nonnull
-    private static final String REGEX_NO_INDEX = "((@\\w+)(?!\\.\\d+)(/|\\z))";
-
-    /**
      * Pattern for detecting nodes which have no index in their path.
      * <p>
      * <b>Example:</b> {@code .../@name/...} instead of {@code .../@name.0/...}
      */
     @Nonnull
-    private static final Pattern PATTERN_NO_INDEX = Pattern.compile(REGEX_NO_INDEX, Pattern.UNICODE_CASE);
+    private static final Pattern PATTERN_NO_INDEX = Pattern.compile("((@\\w+)(?!\\.\\d+)(/|\\z))", Pattern.UNICODE_CASE);
+
+    /**
+     * A cache that holds recently generated {@link Id}s.
+     */
+    @Nonnull
+    private final Cache<String, Id> hashCache = CacheBuilder.builder()
+            .softValues()
+            .build();
 
     /**
      * The XPath structure.
@@ -124,6 +126,14 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         notifyEndElement();
     }
 
+    @Override
+    public void onComplete() {
+        hashCache.invalidateAll();
+        hashCache.cleanUp();
+
+        notifyComplete();
+    }
+
     /**
      * Resolves the {@link BasicElement#id() identifier} of the specified {@code element}.
      *
@@ -144,7 +154,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
                 id = Id.getProvider().fromHexString(rawId);
             }
             catch (IllegalArgumentException e) {
-                id = Id.getProvider().generate(rawId);
+                id = generateId(rawId);
             }
             element.id(id);
         }
@@ -164,7 +174,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Defines the new identifier of the element
-            element.id(Id.getProvider().generate(path));
+            element.id(generateId(path));
         }
 
         element.rawId(null);
@@ -189,7 +199,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
                 value = Id.getProvider().fromHexString(rawValue);
             }
             catch (IllegalArgumentException e) {
-                value = Id.getProvider().generate(rawValue);
+                value = generateId(rawValue);
             }
             reference.value(value);
         }
@@ -209,10 +219,22 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             }
 
             // Defines the new identifier of the reference
-            reference.value(Id.getProvider().generate(path));
+            reference.value(generateId(path));
         }
 
         reference.rawValue(null);
+    }
+
+    /**
+     * Generates a new {@link Id} from a {@code baseValue}.
+     *
+     * @param baseValue the base value of the generated {@link Id}
+     *
+     * @return a new instance of {@link Id}
+     */
+    @Nonnull
+    private Id generateId(String baseValue) {
+        return hashCache.get(baseValue, v -> Id.getProvider().generate(v));
     }
 
     /**

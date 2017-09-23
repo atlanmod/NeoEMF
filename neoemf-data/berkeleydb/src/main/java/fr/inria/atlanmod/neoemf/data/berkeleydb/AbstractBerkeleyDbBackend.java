@@ -22,13 +22,13 @@ import com.sleepycat.je.OperationStatus;
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -219,7 +219,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     @Nonnull
     @Override
     public Converter<Id, Long> referenceConverter() {
-        return ReferenceAs.DEFAULT_CONVERTER;
+        return IdProvider.AS_LONG;
     }
 
     /**

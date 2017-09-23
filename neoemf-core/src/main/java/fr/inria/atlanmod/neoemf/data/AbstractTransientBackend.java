@@ -14,13 +14,13 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.hash.serialization.BytesReader;
@@ -194,7 +194,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     @Override
     public Converter<Id, Long> referenceConverter() {
-        return ReferenceAs.DEFAULT_CONVERTER;
+        return IdProvider.AS_LONG;
     }
 
     /**

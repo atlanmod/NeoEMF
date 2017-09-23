@@ -113,7 +113,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .vertices();
 
         return MoreIterables.onlyElement(referencedVertices)
-                .map(v -> ID_CONVERTER.revert(v.getId()));
+                .map(v -> AS_LONG_OBJECT.revert(v.getId()));
     }
 
     @Nonnull
@@ -135,7 +135,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
             Vertex previousVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(ID_CONVERTER.revert(previousVertex.getId()));
+            previousId = Optional.of(AS_LONG_OBJECT.revert(previousVertex.getId()));
             referenceEdge.get().remove();
         }
 
@@ -437,7 +437,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .vertices();
 
         return MoreIterables.onlyElement(referencedVertices)
-                .map(v -> ID_CONVERTER.revert(v.getId()));
+                .map(v -> AS_LONG_OBJECT.revert(v.getId()));
     }
 
     @Nonnull
@@ -460,7 +460,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         return MoreIterables.stream(edges)
                 .sorted(byPosition)
-                .map(e -> ID_CONVERTER.revert(e.getVertex(Direction.IN).getId()))
+                .map(e -> AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()))
                 .collect(Collectors.toList());
     }
 
@@ -488,7 +488,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Optional<Id> previousId = Optional.empty();
         if (previousEdge.isPresent()) {
             Vertex referencedVertex = previousEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(ID_CONVERTER.revert(referencedVertex.getId()));
+            previousId = Optional.of(AS_LONG_OBJECT.revert(referencedVertex.getId()));
             previousEdge.get().remove();
         }
 
@@ -614,7 +614,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
             else {
                 Vertex referencedVertex = edge.getVertex(Direction.IN);
-                previousId = Optional.of(ID_CONVERTER.revert(referencedVertex.getId()));
+                previousId = Optional.of(AS_LONG_OBJECT.revert(referencedVertex.getId()));
                 edge.remove();
 
                 Iterable<Edge> containerEdge = referencedVertex.query()

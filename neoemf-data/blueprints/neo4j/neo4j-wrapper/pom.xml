@@ -88,12 +88,13 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.data.blueprints.neo4j.wrapper</Bundle-SymbolicName>
-                        <_exportcontents>
-                            org.neo4j.*.impl.*;x-internal:=true;version="${neo4j.version}",
+                        <Export-Package>
+                            !org.neo4j.*.impl.*,
+                            !org.neo4j.*.internal.*,
                             org.neo4j.*;version="${neo4j.version}",
                             org.apache.lucene.*;version="${lucene.version}",
                             javax.transaction.*;version="${jta.version}"
-                        </_exportcontents>
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -13,13 +13,13 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.commons.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
@@ -222,7 +222,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     @Nonnull
     @Override
     public Converter<Id, Long> referenceConverter() {
-        return ReferenceAs.DEFAULT_CONVERTER;
+        return IdProvider.AS_LONG;
     }
 
     /**

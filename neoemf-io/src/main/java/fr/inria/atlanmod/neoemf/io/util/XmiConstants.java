@@ -60,9 +60,4 @@ public interface XmiConstants extends XmlConstants {
      * The default XMI version.
      */
     String XMI_VERSION = "2.0";
-
-    /**
-     * The attribute key representing a name of an element.
-     */
-    String NAME = "name";
 }

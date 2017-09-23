@@ -47,11 +47,11 @@ class LongIdProvider implements IdProvider {
 
     @Nonnull
     @Override
-    public Id fromHexString(String value) {
-        checkNotNull(value);
+    public Id fromHexString(String hexValue) {
+        checkNotNull(hexValue);
 
         try {
-            return fromLong(Long.parseUnsignedLong(value, 16));
+            return fromLong(Long.parseUnsignedLong(hexValue, 16));
         }
         catch (NumberFormatException e) {
             throw new IllegalArgumentException(e);
@@ -66,10 +66,10 @@ class LongIdProvider implements IdProvider {
 
     @Nonnull
     @Override
-    public Id generate(String value) {
-        checkNotNull(value);
+    public Id generate(String baseValue) {
+        checkNotNull(baseValue);
 
-        return fromLong(DEFAULT_HASHER.hash(value).toLong());
+        return fromLong(DEFAULT_HASHER.hash(baseValue).toLong());
     }
 
     /**

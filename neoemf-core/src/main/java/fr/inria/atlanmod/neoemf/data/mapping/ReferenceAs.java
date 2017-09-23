@@ -29,20 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
 
-    /**
-     * The default converter that simply returns the original {@link Id}.
-     */
-    @Nonnull
-    Converter<Id, Id> IDENTITY_CONVERTER = Converter.identity();
-
-    /**
-     * The default converter to use {@link Long} instead of {@link Id}.
-     */
-    @Nonnull
-    Converter<Id, Long> DEFAULT_CONVERTER = Converter.from(
-            Id::toLong,
-            Id.getProvider()::fromLong);
-
     @Nonnull
     @Override
     default Optional<Id> referenceOf(SingleFeatureBean key) {
