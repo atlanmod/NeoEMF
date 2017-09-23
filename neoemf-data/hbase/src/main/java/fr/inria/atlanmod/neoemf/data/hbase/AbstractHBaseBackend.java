@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.primitive.Bytes;
+import fr.inria.atlanmod.commons.primitive.Ints;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
@@ -123,7 +124,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
                     byte[] byteId = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
                     byte[] byteName = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
                     return nonNull(byteId) && nonNull(byteName)
-                            ? SingleFeatureBean.of(Id.getProvider().fromHexString(Bytes.toString(byteId)), Bytes.toString(byteName))
+                            ? SingleFeatureBean.of(Id.getProvider().fromHexString(Bytes.toString(byteId)), Bytes.toInt(byteName))
                             : null;
                 });
     }
@@ -136,7 +137,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         try {
             Put put = new Put(Strings.toBytes(id.toHexString()))
                     .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, Strings.toBytes(container.owner().toHexString()))
-                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Strings.toBytes(container.id()));
+                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Ints.toBytes(container.id()));
 
             table.put(put);
         }
@@ -215,7 +216,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
         checkNotNull(key);
 
         return resultFrom(key.owner())
-                .map(r -> r.getValue(FAMILY_PROPERTY, Strings.toBytes(key.id())))
+                .map(r -> r.getValue(FAMILY_PROPERTY, Ints.toBytes(key.id())))
                 .map(v -> {
                     try {
                         return SERIALIZER_FACTORY.<V>forAny().deserialize(v);
@@ -237,7 +238,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Put put = new Put(Strings.toBytes(key.owner().toHexString()))
-                    .addColumn(FAMILY_PROPERTY, Strings.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
+                    .addColumn(FAMILY_PROPERTY, Ints.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
 
             table.put(put);
         }
@@ -254,7 +255,7 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
 
         try {
             Delete delete = new Delete(Strings.toBytes(key.owner().toHexString()))
-                    .addColumns(FAMILY_PROPERTY, Strings.toBytes(key.id()));
+                    .addColumns(FAMILY_PROPERTY, Ints.toBytes(key.id()));
 
             table.delete(delete);
         }

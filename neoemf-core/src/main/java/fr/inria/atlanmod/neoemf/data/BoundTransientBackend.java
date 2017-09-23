@@ -191,7 +191,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
         /**
          * An in-memory map that stores all features created for an {@link Id}.
          */
-        private Map<Id, Set<String>> featuresById;
+        private Map<Id, Set<Integer>> featuresById;
 
         /**
          * Constructs a new {@code DataHolder}.

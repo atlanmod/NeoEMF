@@ -73,7 +73,7 @@ public class BeanSerializerTest extends AbstractSerializerTest {
     public void testSerializeDeserializeFeatureKey() throws IOException {
         Serializer<SingleFeatureBean> serializer = BeanSerializerFactory.getInstance().forSingleFeature();
 
-        SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), "Feature0");
+        SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), 10);
         SingleFeatureBean result = process(object, serializer);
 
         assertThat(result).isEqualTo(result);
@@ -83,7 +83,7 @@ public class BeanSerializerTest extends AbstractSerializerTest {
     public void testSerializeDeserializeFeatureKeyWithStream() throws IOException {
         Serializer<SingleFeatureBean> serializer = BeanSerializerFactory.getInstance().forSingleFeature();
 
-        SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), "Feature0");
+        SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), 10);
         SingleFeatureBean result = processWithStream(object, serializer);
 
         assertThat(result).isEqualTo(result);
@@ -93,7 +93,7 @@ public class BeanSerializerTest extends AbstractSerializerTest {
     public void testSerializeDeserializeManyFeatureKey() throws IOException {
         Serializer<ManyFeatureBean> serializer = BeanSerializerFactory.getInstance().forManyFeature();
 
-        ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), "Feature0", 0);
+        ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), 10, 0);
         ManyFeatureBean result = process(object, serializer);
 
         assertThat(result).isEqualTo(result);
@@ -103,7 +103,7 @@ public class BeanSerializerTest extends AbstractSerializerTest {
     public void testSerializeDeserializeManyFeatureKeyWithStream() throws IOException {
         Serializer<ManyFeatureBean> serializer = BeanSerializerFactory.getInstance().forManyFeature();
 
-        ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), "Feature0", 44);
+        ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), 10, 44);
         ManyFeatureBean result = processWithStream(object, serializer);
 
         assertThat(result).isEqualTo(result);

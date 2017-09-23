@@ -30,7 +30,7 @@ public class ManyFeatureBeanTest extends AbstractTest {
     public void testCompareEqualTo() {
         Id id0 = Id.getProvider().fromLong(42);
 
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        SingleFeatureBean key = SingleFeatureBean.of(id0, 10);
         ManyFeatureBean key0 = key.withPosition(0);
         ManyFeatureBean key1 = key.withPosition(0);
 
@@ -44,7 +44,7 @@ public class ManyFeatureBeanTest extends AbstractTest {
     public void testCompareLowerThan() {
         Id id0 = Id.getProvider().fromLong(42);
 
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        SingleFeatureBean key = SingleFeatureBean.of(id0, 10);
         ManyFeatureBean key0 = key.withPosition(0);
         ManyFeatureBean key1 = key.withPosition(1);
 
@@ -57,7 +57,7 @@ public class ManyFeatureBeanTest extends AbstractTest {
     @Test
     public void testCompareGreaterThan() {
         Id id0 = Id.getProvider().fromLong(42);
-        SingleFeatureBean key = SingleFeatureBean.of(id0, "Feature0");
+        SingleFeatureBean key = SingleFeatureBean.of(id0, 10);
 
         ManyFeatureBean key0 = key.withPosition(1);
         ManyFeatureBean key1 = key.withPosition(0);

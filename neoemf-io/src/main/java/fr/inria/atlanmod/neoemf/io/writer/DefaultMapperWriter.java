@@ -65,7 +65,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
     @Override
     public void onAttribute(BasicAttribute attribute, List<Object> values) {
-        SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.name());
+        SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.id());
 
         if (!attribute.isMany()) {
             target.valueFor(key, values.get(0));
@@ -77,7 +77,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
     @Override
     public void onReference(BasicReference reference, List<Id> values) {
-        SingleFeatureBean key = SingleFeatureBean.of(reference.owner(), reference.name());
+        SingleFeatureBean key = SingleFeatureBean.of(reference.owner(), reference.id());
 
         // Update the containment reference if needed
         if (reference.isContainment()) {
@@ -113,6 +113,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
             BasicReference reference = new BasicReference();
             reference.owner(PersistentResource.ROOT_ID);
             reference.name(PersistentResource.ROOT_REFERENCE_NAME);
+            reference.id(-1); // TODO
             reference.isMany(true);
 
             onReference(reference, Collections.singletonList(element.id()));

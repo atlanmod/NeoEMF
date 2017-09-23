@@ -35,6 +35,11 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
     private Id owner;
 
     /**
+     * The identifier of the feature for the owner element.
+     */
+    private int id = -1;
+
+    /**
      * Whether this feature is multi-valued.
      */
     private boolean isMany = false;
@@ -65,6 +70,24 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      */
     public void owner(Id ownerId) {
         this.owner = ownerId;
+    }
+
+    /**
+     * Returns the identifier of the feature for the owner element.
+     *
+     * @return the feature's identifier
+     */
+    public int id() {
+        return id;
+    }
+
+    /**
+     * Defines the identifier of the feature for the owner element.
+     *
+     * @param id the feature's identifier
+     */
+    public void id(int id) {
+        this.id = id;
     }
 
     /**

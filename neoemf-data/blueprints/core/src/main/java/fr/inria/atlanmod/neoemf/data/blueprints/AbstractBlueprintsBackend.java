@@ -152,7 +152,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the formatted property
      */
     @Nonnull
-    protected static String formatProperty(Object label, Object suffix) {
+    protected static String formatProperty(int label, Object suffix) {
         return formatLabel(label) + ':' + String.valueOf(suffix);
     }
 
@@ -164,8 +164,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the formatted label
      */
     @Nonnull
-    protected static String formatLabel(Object label) {
-        return String.valueOf(label);
+    protected static String formatLabel(int label) {
+        return Integer.toString(label);
     }
 
     /**

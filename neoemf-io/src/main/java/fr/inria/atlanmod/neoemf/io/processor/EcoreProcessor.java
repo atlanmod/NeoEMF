@@ -231,10 +231,12 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
 
         BasicElement parentElement = previousElements.getLast();
+        EClass parentEClass = parentElement.metaClass().eClass();
 
         // Waiting a plain text value
         BasicAttribute attribute = new BasicAttribute();
         attribute.owner(parentElement.id());
+        attribute.id(parentEClass.getFeatureID(eAttribute));
         attribute.eFeature(eAttribute);
 
         // The attribute waiting for a value
@@ -275,8 +277,10 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
         BasicElement parentElement = previousElements.getLast();
+        EClass parentEClass = parentElement.metaClass().eClass();
 
         attribute.owner(parentElement.id());
+        attribute.id(parentEClass.getFeatureID(eAttribute));
         attribute.eFeature(eAttribute);
         attribute.value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
 
@@ -291,8 +295,10 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processReference(BasicReference reference, EReference eReference) {
         BasicElement parentElement = previousElements.getLast();
+        EClass parentEClass = parentElement.metaClass().eClass();
 
         reference.owner(parentElement.id());
+        reference.id(parentEClass.getFeatureID(eReference));
         reference.eFeature(eReference);
 
         // The unique identifier is already set
@@ -318,6 +324,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                 .map(s -> {
                     BasicReference newRef = new BasicReference();
                     newRef.owner(reference.owner());
+                    newRef.id(reference.id());
                     newRef.eFeature(eReference);
                     newRef.rawValue(s);
 
@@ -330,7 +337,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * Returns the {@link EClass} associated with the given {@code element}.
      *
      * @param metaClass  the element representing the class
-     * @param superClass the super-type of the sought class
+     * @param superClass the super-type of the class
      * @param ePackage   the package where to find the class
      *
      * @return a class

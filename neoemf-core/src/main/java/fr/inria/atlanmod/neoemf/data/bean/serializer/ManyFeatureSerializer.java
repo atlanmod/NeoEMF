@@ -34,7 +34,7 @@ final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
     @Override
     public void serialize(ManyFeatureBean key, DataOutput out) throws IOException {
         out.writeLong(key.owner().toLong());
-        out.writeUTF(key.id());
+        out.writeInt(key.id());
         out.writeInt(key.position());
     }
 
@@ -43,7 +43,7 @@ final class ManyFeatureSerializer implements Serializer<ManyFeatureBean> {
     public ManyFeatureBean deserialize(DataInput in) throws IOException {
         return ManyFeatureBean.of(
                 Id.getProvider().fromLong(in.readLong()),
-                in.readUTF(),
+                in.readInt(),
                 in.readInt()
         );
     }

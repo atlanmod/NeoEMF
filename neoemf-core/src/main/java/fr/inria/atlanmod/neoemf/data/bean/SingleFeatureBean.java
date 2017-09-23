@@ -40,7 +40,7 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    protected SingleFeatureBean(Id owner, String id) {
+    protected SingleFeatureBean(Id owner, int id) {
         super(owner, id);
     }
 
@@ -75,13 +75,13 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * @return a new {@code SingleFeatureBean}
      *
      * @throws NullPointerException if any argument is {@code null}
-     * @see #of(Id, String)
+     * @see #of(Id, int)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
     @Nonnull
     public static SingleFeatureBean from(PersistentEObject owner, EStructuralFeature feature) {
-        return of(owner.id(), feature.getName());
+        return of(owner.id(), owner.eClass().getFeatureID(feature));
     }
 
     /**
@@ -96,7 +96,7 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
-    public static SingleFeatureBean of(Id owner, String id) {
+    public static SingleFeatureBean of(Id owner, int id) {
         return new SingleFeatureBean(owner, id);
     }
 

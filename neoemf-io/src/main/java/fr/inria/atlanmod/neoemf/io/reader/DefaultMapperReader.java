@@ -28,13 +28,17 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -44,6 +48,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
+    /**
+     * A LIFO that holds the current {@link EClass} chain. It contains the current element and the previous.
+     */
+    @Nonnull
+    private final Deque<EClass> previousClasses = new ArrayDeque<>();
     /**
      * The mapper to read.
      */
@@ -64,7 +73,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
         notifyInitialize();
 
-        SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, PersistentResource.ROOT_REFERENCE_NAME);
+        SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, -1); // TODO
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();
@@ -87,9 +96,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         ns.ePackage(ePackage);
 
         // Retrieve the name of the element
-        // If root it's the name of the meta-class, otherwise the name of the containing feature
+        // If root it's the name of the meta-class, otherwise the name of the containing feature from the previous class
         String name = isRoot ? eClass.getName() : mapper.containerOf(id)
                 .map(SingleFeatureBean::id)
+                .map(previousClasses.getLast()::getEStructuralFeature)
+                .map(EStructuralFeature::getName)
                 .<IllegalStateException>orElseThrow(IllegalStateException::new);
 
         // Create the element
@@ -103,10 +114,12 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         element.metaClass(metaClass);
 
         notifyStartElement(element);
+        previousClasses.addLast(eClass);
 
         // Process all features
         readAllFeatures(id, eClass);
 
+        previousClasses.removeLast();
         notifyEndElement();
     }
 
@@ -122,7 +135,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .flatMap(f -> {
                     Stream<Id> containmentStream = Stream.empty();
 
-                    SingleFeatureBean key = SingleFeatureBean.of(id, f.getName());
+                    SingleFeatureBean key = SingleFeatureBean.of(id, eClass.getFeatureID(f));
 
                     if (EObjects.isAttribute(f)) {
                         EAttribute eAttribute = EObjects.asAttribute(f);
@@ -178,6 +191,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     private void createAttribute(SingleFeatureBean key, EAttribute eAttribute, Object value) {
         BasicAttribute attribute = new BasicAttribute();
         attribute.owner(key.owner());
+        attribute.id(key.id());
         attribute.eFeature(eAttribute);
         attribute.value(value);
 
@@ -197,6 +211,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     private Id createReference(SingleFeatureBean key, EReference eReference, Id value) {
         BasicReference reference = new BasicReference();
         reference.owner(key.owner());
+        reference.id(key.id());
         reference.eFeature(eReference);
         reference.value(value);
 

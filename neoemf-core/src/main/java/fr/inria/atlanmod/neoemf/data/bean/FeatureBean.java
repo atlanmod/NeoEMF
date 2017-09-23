@@ -37,8 +37,7 @@ public interface FeatureBean extends Comparable<FeatureBean>, Serializable {
      *
      * @return the name
      */
-    @Nonnull
-    String id();
+    int id();
 
     /**
      * Returns the position of the feature in the {@link #owner()}. If {@code isMany() == false}, then returns {@code

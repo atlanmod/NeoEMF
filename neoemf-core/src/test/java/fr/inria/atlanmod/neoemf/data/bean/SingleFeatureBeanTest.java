@@ -30,8 +30,8 @@ public class SingleFeatureBeanTest extends AbstractTest {
     public void testCompareEqualTo() {
         Id id0 = Id.getProvider().fromLong(42);
 
-        SingleFeatureBean key0 = SingleFeatureBean.of(id0, "Feature0");
-        SingleFeatureBean key1 = SingleFeatureBean.of(id0, "Feature0");
+        SingleFeatureBean key0 = SingleFeatureBean.of(id0, 10);
+        SingleFeatureBean key1 = SingleFeatureBean.of(id0, 10);
 
         assertThat(key0).isEqualByComparingTo(key1);
     }
@@ -43,8 +43,8 @@ public class SingleFeatureBeanTest extends AbstractTest {
     public void testCompareLowerThan() {
         Id id0 = Id.getProvider().fromLong(42);
 
-        SingleFeatureBean key0 = SingleFeatureBean.of(id0, "Feature0");
-        SingleFeatureBean key1 = SingleFeatureBean.of(id0, "Feature1");
+        SingleFeatureBean key0 = SingleFeatureBean.of(id0, 10);
+        SingleFeatureBean key1 = SingleFeatureBean.of(id0, 11);
 
         assertThat(key0).isLessThan(key1);
     }
@@ -54,8 +54,8 @@ public class SingleFeatureBeanTest extends AbstractTest {
      */
     @Test
     public void testCompareGreaterThan() {
-        SingleFeatureBean key0 = SingleFeatureBean.of(Id.getProvider().fromLong(44), "Feature0");
-        SingleFeatureBean key1 = SingleFeatureBean.of(Id.getProvider().fromLong(42), "Feature1");
+        SingleFeatureBean key0 = SingleFeatureBean.of(Id.getProvider().fromLong(44), 10);
+        SingleFeatureBean key1 = SingleFeatureBean.of(Id.getProvider().fromLong(42), 11);
 
         assertThat(key0).isGreaterThan(key1);
     }

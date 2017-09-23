@@ -45,7 +45,7 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * @throws NullPointerException     if any argument is {@code null}
      * @throws IllegalArgumentException if the {@code position} is negative
      */
-    protected ManyFeatureBean(Id owner, String id, @Nonnegative int position) {
+    protected ManyFeatureBean(Id owner, int id, @Nonnegative int position) {
         super(owner, id, position);
     }
 
@@ -85,13 +85,13 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      *
      * @throws NullPointerException     if any argument is {@code null}
      * @throws IllegalArgumentException if the {@code position} is negative
-     * @see #of(Id, String, int)
+     * @see #of(Id, int, int)
      * @see PersistentEObject#id()
      * @see EStructuralFeature#getName()
      */
     @Nonnull
     public static ManyFeatureBean from(PersistentEObject owner, EStructuralFeature feature, @Nonnegative int position) {
-        return of(owner.id(), feature.getName(), position);
+        return of(owner.id(), owner.eClass().getFeatureID(feature), position);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * @throws IllegalArgumentException if the {@code position} is negative
      */
     @Nonnull
-    public static ManyFeatureBean of(Id owner, String id, @Nonnegative int position) {
+    public static ManyFeatureBean of(Id owner, int id, @Nonnegative int position) {
         return new ManyFeatureBean(owner, id, position);
     }
 
@@ -119,7 +119,7 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      *
      * @return a new {@link SingleFeatureBean}
      *
-     * @see SingleFeatureBean#of(Id, String)
+     * @see SingleFeatureBean#of(Id, int)
      */
     @Nonnull
     public SingleFeatureBean withoutPosition() {

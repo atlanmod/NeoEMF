@@ -47,7 +47,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     /**
      * The default single-valued feature bean.
      */
-    private final SingleFeatureBean sfBase = SingleFeatureBean.of(idBase, "Feature0");
+    private final SingleFeatureBean sfBase = SingleFeatureBean.of(idBase, 10);
 
     /**
      * The default multi-valued feature bean.
@@ -124,7 +124,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Container_Same() {
-        SingleFeatureBean container = SingleFeatureBean.of(id0, "Container0");
+        SingleFeatureBean container = SingleFeatureBean.of(id0, 20);
 
         // Define the containers
         mapper.containerFor(idBase, container);
@@ -143,8 +143,8 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testGetSet_Container_Different() {
-        SingleFeatureBean container0 = SingleFeatureBean.of(id0, "Container0");
-        SingleFeatureBean container1 = SingleFeatureBean.of(id0, "Container1");
+        SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
+        SingleFeatureBean container1 = SingleFeatureBean.of(id0, 21);
 
         // Define the containers
         mapper.containerFor(idBase, container0);
@@ -187,7 +187,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testRemove_Container() {
-        SingleFeatureBean container0 = SingleFeatureBean.of(id0, "Container0");
+        SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
 
         // Define the containers
         mapper.containerFor(idBase, container0);

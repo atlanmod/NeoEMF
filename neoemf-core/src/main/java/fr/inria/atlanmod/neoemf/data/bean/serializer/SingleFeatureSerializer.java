@@ -34,7 +34,7 @@ final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
     @Override
     public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
         out.writeLong(key.owner().toLong());
-        out.writeUTF(key.id());
+        out.writeInt(key.id());
     }
 
     @Nonnull
@@ -42,7 +42,7 @@ final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
     public SingleFeatureBean deserialize(DataInput in) throws IOException {
         return SingleFeatureBean.of(
                 Id.getProvider().fromLong(in.readLong()),
-                in.readUTF()
+                in.readInt()
         );
     }
 }

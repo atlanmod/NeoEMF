@@ -46,8 +46,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
     /**
      * The identifier of the feature.
      */
-    @Nonnull
-    protected final String id;
+    protected final int id;
 
     /**
      * The position of the feature in its {@code owner}.
@@ -63,7 +62,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    protected AbstractFeatureBean(Id owner, String id) {
+    protected AbstractFeatureBean(Id owner, int id) {
         this(owner, id, NO_POSITION);
     }
 
@@ -79,9 +78,9 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      * @throws NullPointerException     if any argument is {@code null}
      * @throws IllegalArgumentException if the {@code position} is negative when {@code isMany() == true}
      */
-    protected AbstractFeatureBean(Id owner, String id, int position) {
+    protected AbstractFeatureBean(Id owner, int id, int position) {
         this.owner = checkNotNull(owner);
-        this.id = checkNotNull(id);
+        this.id = id;
 
         if (isMany()) {
             checkArgument(position >= 0, "position must be >= 0");
@@ -95,9 +94,8 @@ public abstract class AbstractFeatureBean implements FeatureBean {
         return owner;
     }
 
-    @Nonnull
     @Override
-    public String id() {
+    public int id() {
         return id;
     }
 
@@ -116,7 +114,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      * @return a new {@link ManyFeatureBean}
      *
      * @throws IllegalArgumentException if the {@code position} is negative
-     * @see ManyFeatureBean#of(Id, String, int)
+     * @see ManyFeatureBean#of(Id, int, int)
      */
     @Nonnull
     public ManyFeatureBean withPosition(@Nonnegative int position) {
@@ -136,7 +134,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
         }
 
         if (comparison == 0) {
-            comparison = id.compareTo(o.id());
+            comparison = Integer.compare(id, o.id());
         }
 
         if (comparison == 0 && isMany()) {
