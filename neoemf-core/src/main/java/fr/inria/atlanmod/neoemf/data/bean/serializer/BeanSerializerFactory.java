@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link Serializer} instances that uses the standard Java serialization.
+ * The factory that creates {@link Serializer} instances.
  */
 @Singleton
 @ParametersAreNonnullByDefault

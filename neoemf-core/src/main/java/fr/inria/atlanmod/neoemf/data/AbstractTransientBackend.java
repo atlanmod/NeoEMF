@@ -257,7 +257,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         @Override
         public T read(@SuppressWarnings("rawtypes") Bytes in, @Nullable T using) {
             try {
-                return delegate.deserialize(new DataInputStream(in.inputStream()));
+                return delegate.deserialize(in.inputStream());
             }
             catch (IOException e) {
                 throw new IllegalStateException(e); // Should never happen
@@ -267,7 +267,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
         @Override
         public void write(@SuppressWarnings("rawtypes") Bytes out, @Nonnull T value) {
             try {
-                delegate.serialize(value, new DataOutputStream(out.outputStream()));
+                delegate.serialize(value, out.outputStream());
             }
             catch (IOException e) {
                 throw new IllegalStateException(e); // Should never happen

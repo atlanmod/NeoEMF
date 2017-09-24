@@ -27,6 +27,7 @@ import org.mapdb.DataOutput2;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
+import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -315,7 +316,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
 
         @Override
         public void serialize(DataOutput2 out, T value) throws IOException {
-            delegate.serialize(value, out);
+            delegate.serialize(value, DataOutput.class.cast(out));
         }
 
         @Nonnull

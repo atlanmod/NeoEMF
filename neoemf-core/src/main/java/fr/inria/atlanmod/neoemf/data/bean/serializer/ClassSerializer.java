@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
+import fr.inria.atlanmod.commons.io.serializer.AbstractSerializer;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 
@@ -25,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Serializer} for {@link ClassBean}s.
  */
 @ParametersAreNonnullByDefault
-final class ClassSerializer implements Serializer<ClassBean> {
+final class ClassSerializer extends AbstractSerializer<ClassBean> {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 2381621024821659111L;

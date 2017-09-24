@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
+import fr.inria.atlanmod.commons.io.serializer.AbstractSerializer;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -26,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Serializer} for {@link SingleFeatureBean}s.
  */
 @ParametersAreNonnullByDefault
-final class SingleFeatureSerializer implements Serializer<SingleFeatureBean> {
+final class SingleFeatureSerializer extends AbstractSerializer<SingleFeatureBean> {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -6425763366179041775L;
