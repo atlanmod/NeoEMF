@@ -73,6 +73,7 @@ public final class BackendFactoryRegistry {
      *
      * @return the instance of this class
      */
+    @Nonnull
     public static BackendFactoryRegistry getInstance() {
         return Holder.INSTANCE;
     }

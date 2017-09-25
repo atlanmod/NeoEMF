@@ -100,6 +100,15 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
+        <!-- OSGi -->
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Test -->
 
         <dependency>
@@ -231,6 +240,7 @@
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional
                         </Require-Bundle>
+                        <Bundle-Activator>fr.inria.atlanmod.neoemf.util.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

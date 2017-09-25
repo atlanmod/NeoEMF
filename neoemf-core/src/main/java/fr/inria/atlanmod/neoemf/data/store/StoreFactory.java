@@ -48,6 +48,7 @@ public final class StoreFactory extends AbstractMapperFactory {
      *
      * @return the instance of this class
      */
+    @Nonnull
     public static StoreFactory getInstance() {
         return Holder.INSTANCE;
     }

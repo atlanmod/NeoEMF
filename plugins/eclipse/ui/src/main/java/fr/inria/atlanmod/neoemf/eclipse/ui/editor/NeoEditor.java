@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -34,7 +33,6 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Tree;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;

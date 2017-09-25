@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
+import org.osgi.framework.BundleContext;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -34,9 +35,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -61,13 +59,7 @@ public final class Bindings {
      * The concurrent pool.
      */
     @Nonnull
-    private static final ExecutorService POOL = MoreExecutors.newFixedThreadPool();
-
-    /**
-     * A set that holds the {@link URL} of the classpath to explore.
-     */
-    @Nonnull
-    private static final Set<URL> URLS = new HashSet<>();
+    private static final ExecutorService SHARED_POOL = MoreExecutors.newFixedThreadPool();
 
     /**
      * A cache that holds the result of recent queries on types.
@@ -79,8 +71,8 @@ public final class Bindings {
 
     static {
         // Add the default URLs for scanning
-        addUrls(ClasspathHelper.forJavaClassPath());
-        addUrls(ClasspathHelper.forManifest());
+        ClasspathAnalyzer.getInstance().register(ClasspathHelper::forJavaClassPath);
+        ClasspathAnalyzer.getInstance().register(ClasspathHelper::forManifest);
     }
 
     /**
@@ -93,35 +85,30 @@ public final class Bindings {
     }
 
     /**
-     * Adds {@code urls} to be scanned for binding. Theses {@link URL}s will be used to retrieves types, fields or any
-     * kind of reflective element at runtime.
-     * <p>
-     * All {@link URL}s are filtered to keep only those that can be related to NeoEMF. The {@link FactoryBinding}
-     * annotation is used to determine this relation.
+     * Returns the shared {@link ExecutorService} for asynchronous tasks related to binding.
      *
-     * @param urls the {@link URL}s to add for scanning
-     *
-     * @throws NullPointerException if {@code urls} is {@code null}
+     * @return an immutable {@link ExecutorService}
      */
-    public static void addUrls(Collection<URL> urls) {
-        checkNotNull(urls);
+    @Nonnull
+    static ExecutorService getSharedPool() {
+        return SHARED_POOL;
+    }
 
-        ConfigurationBuilder baseConfig = new ConfigurationBuilder()
-                .setExecutorService(POOL)
-                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
+    /**
+     * Adds a {@link BundleContext} to be scanned for binding.
+     * <p>
+     * <b>NOTE/</b> This method is intended for internal use and should not be call in standard use.
+     *
+     * @param context the OSGi context to add for scanning
+     *
+     * @throws NullPointerException if the {@code context} is {@code null}
+     * @see fr.inria.atlanmod.neoemf.util.Activator#start(BundleContext)
+     */
+    public static void withContext(BundleContext context) {
+        checkNotNull(context);
 
-        // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
-        urls.stream().filter(url -> {
-            try {
-                Set<Class<?>> relatedClasses = new Reflections(baseConfig.setUrls(url))
-                        .getTypesAnnotatedWith(FactoryBinding.class);
-
-                return !relatedClasses.isEmpty();
-            }
-            catch (RuntimeException e) {
-                return false;
-            }
-        }).collect(Collectors.toCollection(() -> URLS));
+        ClasspathAnalyzer.getInstance().register(() ->
+                new BundleContextAnalyzer(context).getDependentBundles(context.getBundle()));
 
         // Refresh the cache: annotations stay the same, but the result may have been changed
         ANNOTATED_TYPES.invalidateAll();
@@ -141,8 +128,8 @@ public final class Bindings {
     @Nonnull
     public static Set<Class<?>> typesAnnotatedWith(Class<? extends Annotation> annotation) {
         return new Reflections(new ConfigurationBuilder()
-                .setExecutorService(POOL)
-                .setUrls(URLS)
+                .setExecutorService(getSharedPool())
+                .setUrls(ClasspathAnalyzer.getInstance().registeredUrls())
                 .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()))
                 .getTypesAnnotatedWith(annotation);
     }

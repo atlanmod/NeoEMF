@@ -99,6 +99,7 @@ public final class IOResourceManager {
     @Singleton
     private static final class ResourceLoader {
 
+        @Nonnull
         @SuppressWarnings("JavaDoc")
         public static ResourceLoader getInstance() {
             return Holder.INSTANCE;
