@@ -108,7 +108,7 @@ public final class StoreFactory extends AbstractMapperFactory {
         checkNotNull(options);
 
         // The tail of the store chain
-        Store store = new DirectWriteStore(backend);
+        Store currentStore = new DirectWriteStore(backend);
 
         try {
             for (PersistentStoreOptions opt : getStores(options).stream().sorted().collect(Collectors.toList())) {
@@ -119,17 +119,17 @@ public final class StoreFactory extends AbstractMapperFactory {
                         .collect(Collectors.toList());
 
                 // Each store has a store as first argument
-                parameters.add(0, new ConstructorParameter(store, Store.class));
+                parameters.add(0, new ConstructorParameter(currentStore, Store.class));
 
                 ConstructorParameter[] parametersArray = parameters.toArray(new ConstructorParameter[parameters.size()]);
-                store = newInstanceOf(opt.className(), parametersArray);
+                currentStore = newInstanceOf(opt.className(), parametersArray);
             }
         }
         catch (Exception e) {
             throw new InvalidStoreException(e);
         }
 
-        return store;
+        return currentStore;
     }
 
     /**

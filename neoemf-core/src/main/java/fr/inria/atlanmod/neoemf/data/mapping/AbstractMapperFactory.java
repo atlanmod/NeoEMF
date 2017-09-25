@@ -19,9 +19,7 @@ import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,20 +67,17 @@ public abstract class AbstractMapperFactory {
     @Nonnull
     @SuppressWarnings("unchecked")
     protected final <T> T newInstanceOf(String className, ConstructorParameter... parameters) {
-        Class<?> type;
-
         try {
-            type = Class.forName(className, false, getClass().getClassLoader());
+            ClassLoader currentClassLoader = getClass().getClassLoader();
+            Class<? extends DataMapper> type = (Class<? extends DataMapper>) Class.forName(className, true, currentClassLoader);
+
+            return newInstanceOf(type, parameters);
+        }
+        catch (ClassCastException e) {
+            throw new IllegalArgumentException(String.format("%s is not assignable from %s", className, DataMapper.class.getName()));
         }
         catch (ClassNotFoundException e) {
             throw new BindingException(e);
-        }
-
-        if (DataMapper.class.isAssignableFrom(type)) {
-            return newInstanceOf((Class<? extends DataMapper>) type, parameters);
-        }
-        else {
-            throw new IllegalArgumentException(String.format("%s is not assignable from %s", className, DataMapper.class.getName()));
         }
     }
 
@@ -99,19 +94,19 @@ public abstract class AbstractMapperFactory {
     @Nonnull
     @SuppressWarnings({"unchecked", "JavaReflectionMemberAccess"})
     protected final <T> T newInstanceOf(Class<? extends DataMapper> mapperClass, ConstructorParameter... parameters) {
-        List<Class<?>> types = Arrays.stream(parameters)
+        Class<?>[] types = Arrays.stream(parameters)
                 .map(p -> p.type)
-                .collect(Collectors.toList());
+                .toArray(Class<?>[]::new);
 
-        List<Object> values = Arrays.stream(parameters)
+        Object[] values = Arrays.stream(parameters)
                 .map(p -> p.value)
-                .collect(Collectors.toList());
+                .toArray();
 
         try {
-            Constructor<?> constructor = mapperClass.getDeclaredConstructor(types.toArray(new Class<?>[types.size()]));
+            Constructor<?> constructor = mapperClass.getDeclaredConstructor(types);
             constructor.setAccessible(true);
 
-            return (T) constructor.newInstance(values.toArray());
+            return (T) constructor.newInstance(values);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new BindingException(e);
