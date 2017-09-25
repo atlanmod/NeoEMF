@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.counter;
 
+import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
@@ -23,8 +24,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Map;
 
 /**
@@ -38,11 +37,11 @@ public class MapDbCounter {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        Instant start = Instant.now();
-
         URI uri = MapDbUri.builder().fromFile("models/sample.mapdb");
 
         Map<String, Object> options = MapDbOptions.noOption();
+
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
             resource.load(options);
@@ -51,7 +50,7 @@ public class MapDbCounter {
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 
-        Instant end = Instant.now();
-        Log.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
+        stopwatch.stop();
+        Log.info("Query computed in {0} ms", stopwatch.elapsed().toMillis());
     }
 }

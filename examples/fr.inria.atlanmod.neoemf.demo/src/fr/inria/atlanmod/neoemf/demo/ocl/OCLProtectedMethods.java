@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.ocl;
 
+import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
@@ -33,8 +34,6 @@ import org.eclipse.ocl.ecore.OCL;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,38 +50,36 @@ public class OCLProtectedMethods {
 
         JavaPackage.eINSTANCE.eClass();
 
-        Instant start, end;
-
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BlueprintsUri.builder().fromFile("models/sample.graphdb"))) {
             resource.load(BlueprintsNeo4jOptions.noOption());
-            start = Instant.now();
+            Stopwatch stopwatch = Stopwatch.createStarted();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = Instant.now();
-            Log.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(MapDbUri.builder().fromFile("models/sample.mapdb"))) {
             resource.load(MapDbOptions.noOption());
-            start = Instant.now();
+            Stopwatch stopwatch = Stopwatch.createStarted();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = Instant.now();
-            Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb"))) {
             resource.load(BerkeleyDbOptions.noOption());
-            start = Instant.now();
+            Stopwatch stopwatch = Stopwatch.createStarted();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = Instant.now();
-            Log.info("[ProtectedMethods - BerkeleyDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("[ProtectedMethods - BerkeleyDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
 //        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase"))) {
 //            resource.load(HBaseOptions.noOption());
-//            start = Instant.now();
+//            Stopwatch stopwatch = Stopwatch.createStarted();
 //            List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-//            end = Instant.now();
-//            Log.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+//            stopwatch.stop();
+//            Log.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
 //        }
     }
 

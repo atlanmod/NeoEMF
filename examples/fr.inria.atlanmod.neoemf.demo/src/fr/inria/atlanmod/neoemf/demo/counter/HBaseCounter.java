@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.counter;
 
+import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
@@ -23,8 +24,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Map;
 
 /**
@@ -37,12 +36,11 @@ public class HBaseCounter {
         JavaPackage.eINSTANCE.eClass();
 
         ResourceSet resourceSet = new ResourceSetImpl();
-
-        Instant start = Instant.now();
-
         URI uri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
 
         Map<String, Object> options = HBaseOptions.noOption();
+
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
             resource.load(options);
@@ -51,7 +49,7 @@ public class HBaseCounter {
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);
         }
 
-        Instant end = Instant.now();
-        Log.info("Query computed in {0} ms", Duration.between(start, end).getSeconds());
+        stopwatch.stop();
+        Log.info("Query computed in {0} ms", stopwatch.elapsed().toMillis());
     }
 }

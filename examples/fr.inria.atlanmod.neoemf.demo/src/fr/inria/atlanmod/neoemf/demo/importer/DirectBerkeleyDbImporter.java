@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.io.Migrator;
@@ -28,22 +28,22 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * Imports an existing model stored in a XMI files into a Blueprints-based {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
+ * Imports an existing model stored in a XMI files into a BerkeleyDB-based {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
  * using a scalable XMI parser that bypasses the EMF API to improve performances and enable large XMI imports.
  */
-public class DirectBlueprintsImporter {
+public class DirectBerkeleyDbImporter {
 
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
+        Map<String, Object> options = BerkeleyDbOptions.builder()
                 .autoSave()
                 .asMap();
 
-        BackendFactory factory = BlueprintsBackendFactory.getInstance();
+        BackendFactory factory = BerkeleyDbBackendFactory.getInstance();
 
         File sourceFile = new File("models/sample.xmi");
-        URI targetUri = BlueprintsUri.builder().fromFile("models/sample2.graphdb");
+        URI targetUri = BerkeleyDbUri.builder().fromFile("models/sample2.berkeleydb");
 
         try (Backend backend = factory.createPersistentBackend(targetUri, options); DataMapper mapper = StoreFactory.getInstance().createStore(backend, options)) {
             Migrator.fromXmi(sourceFile)

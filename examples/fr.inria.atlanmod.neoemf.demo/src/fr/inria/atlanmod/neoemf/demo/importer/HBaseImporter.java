@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
+import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
@@ -25,8 +26,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class HBaseImporter {
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(options);
 
-            Instant start = Instant.now();
+            Stopwatch stopwatch = Stopwatch.createStarted();
 
             Resource sourceResource = resourceSet.createResource(sourceUri);
             sourceResource.load(Collections.emptyMap());
@@ -57,8 +56,8 @@ public class HBaseImporter {
             targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
             targetResource.save(options);
 
-            Instant end = Instant.now();
-            Log.info("Model created in {0} seconds", Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("Model created in {0} seconds", stopwatch.elapsed().getSeconds());
 
 //            Helpers.compare(sourceResource, targetResource);
         }
