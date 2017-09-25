@@ -319,30 +319,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ValueMapper#hasValue(SingleFeatureBean)} and {@link
-     * ValueMapper#removeValue(SingleFeatureBean)}.
+     * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)}.
      */
     @Test
-    public void testHasRemove_Value() {
+    public void testRemove_Value() {
         mapper.valueFor(sfBase, value0);
 
         assertThat(mapper.valueOf(sfBase)).isPresent();
-        assertThat(mapper.hasValue(sfBase)).isTrue();
 
         mapper.removeValue(sfBase);
 
         assertThat(mapper.valueOf(sfBase)).isNotPresent();
-        assertThat(mapper.hasValue(sfBase)).isFalse();
-    }
-
-    /**
-     * Checks the behavior of {@link ValueMapper#hasValue(SingleFeatureBean)} when the value doesn't exist.
-     */
-    @Test
-    public void testHas_Value_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.hasValue(sfBase)).isFalse()
-        )).isNull();
     }
 
     /**
@@ -438,16 +425,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetAll_Empty() {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.allValuesOf(sfBase)).isNotNull().isEmpty()
-        )).isNull();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyValueMapper#hasAnyValue(SingleFeatureBean)} when the value doesn't exist.
-     */
-    @Test
-    public void testHasAny_ManyValue_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyValue(sfBase)).isFalse()
         )).isNull();
     }
 
@@ -685,16 +662,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
         assertThat(mapper.sizeOfValue(sfBase)).contains(2);
-        assertThat(mapper.hasAnyValue(sfBase)).isTrue();
 
         // Remove values
         mapper.removeValue(sfBase.withPosition(0));
         assertThat(mapper.sizeOfValue(sfBase)).contains(1);
-        assertThat(mapper.hasAnyValue(sfBase)).isTrue();
 
         mapper.removeValue(sfBase.withPosition(0));
         assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
-        assertThat(mapper.hasAnyValue(sfBase)).isFalse();
     }
 
     /**
@@ -744,8 +718,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} and {@link
-     * ManyValueMapper#hasAnyValue(SingleFeatureBean)}.
+     * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)}.
      */
     @Test
     public void testRemoveAll_ManyValue() {
@@ -755,7 +728,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendValue(sfBase, value2);
 
         // Check the values
-        assertThat(mapper.hasAnyValue(sfBase)).isTrue();
         assertThat(mapper.sizeOfValue(sfBase)).contains(3);
 
         // Remove all values
@@ -767,7 +739,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.valueOf(sfBase.withPosition(2))).isNotPresent();
 
         // Check the values
-        assertThat(mapper.hasAnyValue(sfBase)).isFalse();
         assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
     }
 
@@ -1034,30 +1005,17 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ReferenceMapper#hasReference(SingleFeatureBean)} and {@link
-     * ReferenceMapper#removeReference(SingleFeatureBean)}.
+     * Checks the behavior of {@link ReferenceMapper#removeReference(SingleFeatureBean)}.
      */
     @Test
-    public void testHasRemove_Reference() {
+    public void testRemove_Reference() {
         mapper.referenceFor(sfBase, ref0);
 
         assertThat(mapper.referenceOf(sfBase)).isPresent();
-        assertThat(mapper.hasReference(sfBase)).isTrue();
 
         mapper.removeReference(sfBase);
 
         assertThat(mapper.referenceOf(sfBase)).isNotPresent();
-        assertThat(mapper.hasReference(sfBase)).isFalse();
-    }
-
-    /**
-     * Checks the behavior of {@link ReferenceMapper#hasReference(SingleFeatureBean)} when the reference doesn't exist.
-     */
-    @Test
-    public void testHas_Reference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.hasReference(sfBase)).isFalse()
-        )).isNull();
     }
 
     /**
@@ -1157,17 +1115,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     public void testGetAll_ManyReference_Empty() {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.allReferencesOf(sfBase)).isNotNull().isEmpty()
-        )).isNull();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#hasAnyReference(SingleFeatureBean)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testHasAny_ManyReference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.hasAnyReference(sfBase)).isFalse()
         )).isNull();
     }
 
@@ -1408,16 +1355,13 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.addReference(sfBase.withPosition(0), ref0);
         mapper.addReference(sfBase.withPosition(1), ref1);
         assertThat(mapper.sizeOfReference(sfBase)).contains(2);
-        assertThat(mapper.hasAnyReference(sfBase)).isTrue();
 
         // Remove references
         mapper.removeReference(sfBase.withPosition(0));
         assertThat(mapper.sizeOfReference(sfBase)).contains(1);
-        assertThat(mapper.hasAnyReference(sfBase)).isTrue();
 
         mapper.removeReference(sfBase.withPosition(0));
         assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
-        assertThat(mapper.hasAnyReference(sfBase)).isFalse();
     }
 
     /**
@@ -1468,8 +1412,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)} and {@link
-     * ManyReferenceMapper#hasAnyReference(SingleFeatureBean)}.
+     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)}.
      */
     @Test
     public void testRemoveAll_ManyReference() {
@@ -1479,7 +1422,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         mapper.appendReference(sfBase, ref2);
 
         // Check the references
-        assertThat(mapper.hasAnyReference(sfBase)).isTrue();
         assertThat(mapper.sizeOfReference(sfBase)).contains(3);
 
         // Remove all references
@@ -1491,7 +1433,6 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         assertThat(mapper.referenceOf(sfBase.withPosition(2))).isNotPresent();
 
         // Check the references
-        assertThat(mapper.hasAnyReference(sfBase)).isFalse();
         assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
     }
 

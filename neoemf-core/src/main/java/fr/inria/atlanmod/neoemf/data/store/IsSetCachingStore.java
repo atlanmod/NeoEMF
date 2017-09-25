@@ -61,12 +61,6 @@ public class IsSetCachingStore extends AbstractCachingStore<SingleFeatureBean, B
         super.removeValue(key);
     }
 
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> boolean hasValue(SingleFeatureBean key) {
-        return cache.get(key, super::hasValue);
-    }
-
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean key) {
@@ -88,12 +82,6 @@ public class IsSetCachingStore extends AbstractCachingStore<SingleFeatureBean, B
         super.removeReference(key);
     }
 
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public boolean hasReference(SingleFeatureBean key) {
-        return cache.get(key, super::hasReference);
-    }
-
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
@@ -107,12 +95,6 @@ public class IsSetCachingStore extends AbstractCachingStore<SingleFeatureBean, B
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
         cache.put(key.withoutPosition(), true);
         return super.valueFor(key, value);
-    }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> boolean hasAnyValue(SingleFeatureBean key) {
-        return cache.get(key, super::hasAnyValue);
     }
 
     @Override
@@ -176,12 +158,6 @@ public class IsSetCachingStore extends AbstractCachingStore<SingleFeatureBean, B
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         cache.put(key.withoutPosition(), true);
         return super.referenceFor(key, reference);
-    }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public boolean hasAnyReference(SingleFeatureBean key) {
-        return cache.get(key, super::hasAnyReference);
     }
 
     @Override

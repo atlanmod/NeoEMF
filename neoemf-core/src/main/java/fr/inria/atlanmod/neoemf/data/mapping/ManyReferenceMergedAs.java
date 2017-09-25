@@ -33,10 +33,9 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of a set of {@link Id} for
- * multi-valued references. This behavior is specified by the {@link #manyReferenceMerger()} method.
+ * multi-valued references.
  * <p>
- * This mapper merges the multi-valued references in a single-value., unlike {@link ManyReferenceAs} that converts each
- * reference.
+ * This mapper merges the multi-valued references into a single value.
  *
  * @param <M> the type of the multi-valued reference after mapping
  */
@@ -205,6 +204,11 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
                 .filter(s -> s != 0);
     }
 
+    /**
+     * Returns the converter used to transform a ordered list of references to the desired type.
+     *
+     * @return the conveter
+     */
     @Nonnull
     Converter<List<Id>, M> manyReferenceMerger();
 }

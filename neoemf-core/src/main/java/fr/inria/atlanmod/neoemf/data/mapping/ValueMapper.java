@@ -62,18 +62,4 @@ public interface ValueMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     <V> void removeValue(SingleFeatureBean key);
-
-    /**
-     * Checks whether the specified {@code key} has a defined value.
-     *
-     * @param key the key identifying the value
-     * @param <V> the type of value
-     *
-     * @return {@code true} if the {@code key} has a value, {@code false} otherwise
-     *
-     * @throws NullPointerException if any parameter is {@code null}
-     */
-    default <V> boolean hasValue(SingleFeatureBean key) {
-        return valueOf(key).isPresent();
-    }
 }

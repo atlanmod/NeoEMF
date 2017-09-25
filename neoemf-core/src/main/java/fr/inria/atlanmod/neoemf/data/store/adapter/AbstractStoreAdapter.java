@@ -241,18 +241,18 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
-                return store.hasValue(key);
+                return store.valueOf(key).isPresent();
             }
             else {
-                return store.hasAnyValue(key);
+                return store.sizeOfValue(key).isPresent();
             }
         }
         else {
             if (!feature.isMany()) {
-                return store.hasReference(key);
+                return store.referenceOf(key).isPresent();
             }
             else {
-                return store.hasAnyReference(key);
+                return store.sizeOfReference(key).isPresent();
             }
         }
     }

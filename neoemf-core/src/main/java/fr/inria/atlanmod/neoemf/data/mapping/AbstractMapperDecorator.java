@@ -164,12 +164,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.removeValue(key);
     }
 
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public <V> boolean hasValue(SingleFeatureBean key) {
-        return next.hasValue(key);
-    }
-
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -188,12 +182,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public void removeReference(SingleFeatureBean key) {
         next.removeReference(key);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean hasReference(SingleFeatureBean key) {
-        return next.hasReference(key);
     }
 
     @Nonnull
@@ -215,12 +203,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
         return next.valueFor(key, value);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public <V> boolean hasAnyValue(SingleFeatureBean key) {
-        return next.hasAnyValue(key);
     }
 
     @Override
@@ -317,12 +299,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         return next.referenceFor(key, reference);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean hasAnyReference(SingleFeatureBean key) {
-        return next.hasAnyReference(key);
     }
 
     @Override

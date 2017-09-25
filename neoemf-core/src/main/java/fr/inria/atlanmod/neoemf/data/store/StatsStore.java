@@ -114,11 +114,6 @@ public class StatsStore extends AbstractStore {
         record(() -> super.removeValue(key));
     }
 
-    @Override
-    public <V> boolean hasValue(SingleFeatureBean key) {
-        return record(() -> super.hasValue(key));
-    }
-
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean key) {
@@ -134,11 +129,6 @@ public class StatsStore extends AbstractStore {
     @Override
     public void removeReference(SingleFeatureBean key) {
         record(() -> super.removeReference(key));
-    }
-
-    @Override
-    public boolean hasReference(SingleFeatureBean key) {
-        return record(() -> super.hasReference(key));
     }
 
     @Nonnull
@@ -157,11 +147,6 @@ public class StatsStore extends AbstractStore {
     @Override
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
         return record(() -> super.valueFor(key, value));
-    }
-
-    @Override
-    public <V> boolean hasAnyValue(SingleFeatureBean key) {
-        return record(() -> super.hasAnyValue(key));
     }
 
     @Override
@@ -245,11 +230,6 @@ public class StatsStore extends AbstractStore {
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         return record(() -> super.referenceFor(key, reference));
-    }
-
-    @Override
-    public boolean hasAnyReference(SingleFeatureBean key) {
-        return record(() -> super.hasAnyReference(key));
     }
 
     @Override

@@ -53,7 +53,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an immutable {@link List} containing all references
+     * @return an immutable ordered {@link List} containing all references
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
@@ -76,19 +76,6 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      */
     @Nonnull
     Optional<Id> referenceFor(ManyFeatureBean key, Id reference);
-
-    /**
-     * Checks whether the specified {@code key} has at least one defined reference.
-     *
-     * @param key the key identifying the multi-valued reference
-     *
-     * @return {@code true} if the {@code key} has a reference, {@code false} otherwise
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    default boolean hasAnyReference(SingleFeatureBean key) {
-        return sizeOfReference(key).isPresent();
-    }
 
     /**
      * Adds the {@code reference} to the specified {@code key} at a defined position.

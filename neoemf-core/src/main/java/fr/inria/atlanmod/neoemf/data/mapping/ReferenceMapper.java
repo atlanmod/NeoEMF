@@ -60,17 +60,4 @@ public interface ReferenceMapper {
      * @throws NullPointerException if any parameter is {@code null}
      */
     void removeReference(SingleFeatureBean key);
-
-    /**
-     * Checks whether the specified {@code key} has a defined reference.
-     *
-     * @param key the key identifying the reference
-     *
-     * @return {@code true} if the {@code key} has a reference, {@code false} otherwise
-     *
-     * @throws NullPointerException if any parameter is {@code null}
-     */
-    default boolean hasReference(SingleFeatureBean key) {
-        return referenceOf(key).isPresent();
-    }
 }

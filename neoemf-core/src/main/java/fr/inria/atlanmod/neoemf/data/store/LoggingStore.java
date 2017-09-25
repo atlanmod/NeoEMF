@@ -132,11 +132,6 @@ public class LoggingStore extends AbstractStore {
         call(super::removeValue, key);
     }
 
-    @Override
-    public <V> boolean hasValue(SingleFeatureBean key) {
-        return callAndReturn(super::hasValue, key);
-    }
-
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean key) {
@@ -152,11 +147,6 @@ public class LoggingStore extends AbstractStore {
     @Override
     public void removeReference(SingleFeatureBean key) {
         call(super::removeReference, key);
-    }
-
-    @Override
-    public boolean hasReference(SingleFeatureBean key) {
-        return callAndReturn(super::hasReference, key);
     }
 
     @Nonnull
@@ -175,11 +165,6 @@ public class LoggingStore extends AbstractStore {
     @Override
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
         return callAndReturn(super::valueFor, key, value);
-    }
-
-    @Override
-    public <V> boolean hasAnyValue(SingleFeatureBean key) {
-        return callAndReturn(super::hasAnyValue, key);
     }
 
     @Override
@@ -263,11 +248,6 @@ public class LoggingStore extends AbstractStore {
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         return callAndReturn(super::referenceFor, key, reference);
-    }
-
-    @Override
-    public boolean hasAnyReference(SingleFeatureBean key) {
-        return callAndReturn(super::hasAnyReference, key);
     }
 
     @Override

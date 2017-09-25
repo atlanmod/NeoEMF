@@ -107,11 +107,6 @@ public final class InvalidTransientBackend implements TransientBackend {
         throw EXCEPTION;
     }
 
-    @Override
-    public <V> boolean hasValue(SingleFeatureBean key) {
-        throw EXCEPTION;
-    }
-
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean key) {
@@ -126,11 +121,6 @@ public final class InvalidTransientBackend implements TransientBackend {
 
     @Override
     public void removeReference(SingleFeatureBean key) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public boolean hasReference(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 
@@ -149,11 +139,6 @@ public final class InvalidTransientBackend implements TransientBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public <V> boolean hasAnyValue(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 
@@ -237,11 +222,6 @@ public final class InvalidTransientBackend implements TransientBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public boolean hasAnyReference(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 

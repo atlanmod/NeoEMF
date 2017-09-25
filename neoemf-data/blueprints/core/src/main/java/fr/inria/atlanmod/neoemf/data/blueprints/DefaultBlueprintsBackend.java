@@ -164,25 +164,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         edges.forEach(Edge::remove);
     }
 
-    @Override
-    public boolean hasReference(SingleFeatureBean key) {
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.owner());
-
-        if (!vertex.isPresent()) {
-            return false;
-        }
-
-        Iterable<Vertex> referencedVertices = vertex.get().query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .limit(1)
-                .vertices();
-
-        return MoreIterables.notEmpty(referencedVertices);
-    }
-
     //endregion
 
     //region Multi-valued attributes

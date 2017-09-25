@@ -90,11 +90,6 @@ public final class ClosedStore implements Store {
         throw EXCEPTION;
     }
 
-    @Override
-    public <V> boolean hasValue(SingleFeatureBean key) {
-        throw EXCEPTION;
-    }
-
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
@@ -146,11 +141,6 @@ public final class ClosedStore implements Store {
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public <V> boolean hasAnyValue(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 
@@ -231,11 +221,6 @@ public final class ClosedStore implements Store {
         throw EXCEPTION;
     }
 
-    @Override
-    public boolean hasReference(SingleFeatureBean key) {
-        throw EXCEPTION;
-    }
-
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureBean key) {
@@ -251,11 +236,6 @@ public final class ClosedStore implements Store {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public boolean hasAnyReference(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 

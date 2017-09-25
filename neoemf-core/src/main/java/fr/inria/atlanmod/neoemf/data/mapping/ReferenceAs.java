@@ -22,7 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link ReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for references.
- * This behavior is specified by the {@link #referenceConverter()} method.
  *
  * @param <M> the type of the reference after mapping
  */
@@ -52,11 +51,11 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
         this.<M>removeValue(key);
     }
 
-    @Override
-    default boolean hasReference(SingleFeatureBean key) {
-        return this.<M>hasValue(key);
-    }
-
+    /**
+     * Returns the converter used to transform a reference to the desired type.
+     *
+     * @return the converter
+     */
     @Nonnull
     Converter<Id, M> referenceConverter();
 }

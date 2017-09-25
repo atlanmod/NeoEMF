@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
- * multi-valued references. This behavior is specified by the {@link #manyReferenceConverter()} method.
+ * multi-valued references.
  *
  * @param <M> the type of the references after mapping
  */
@@ -50,11 +50,6 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
         return this.<M>valueFor(key, converter.convert(reference))
                 .map(converter::revert);
-    }
-
-    @Override
-    default boolean hasAnyReference(SingleFeatureBean key) {
-        return this.<M>hasAnyValue(key);
     }
 
     @Override
@@ -137,6 +132,11 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
         return this.<M>sizeOfValue(key);
     }
 
+    /**
+     * Returns the converter used to transform a multi-valued reference to the desired type.
+     *
+     * @return the converter
+     */
     @Nonnull
     Converter<Id, M> manyReferenceConverter();
 }

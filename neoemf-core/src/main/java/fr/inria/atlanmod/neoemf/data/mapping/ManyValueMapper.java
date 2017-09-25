@@ -52,7 +52,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an immutable {@link List} containing all values
+     * @return an immutable ordered {@link List} containing all values
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
@@ -76,20 +76,6 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     <V> Optional<V> valueFor(ManyFeatureBean key, V value);
-
-    /**
-     * Checks whether the specified {@code key} has at least one defined value.
-     *
-     * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of value
-     *
-     * @return {@code true} if the {@code key} has a value, {@code false} otherwise
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    default <V> boolean hasAnyValue(SingleFeatureBean key) {
-        return sizeOfValue(key).isPresent();
-    }
 
     /**
      * Adds the {@code value} to the specified {@code key} at a defined position.
