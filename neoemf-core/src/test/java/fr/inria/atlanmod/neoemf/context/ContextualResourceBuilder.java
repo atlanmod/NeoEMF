@@ -26,18 +26,22 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A builder that manages the assembly and the construction of {@link PersistentResource}.
  */
+@ParametersAreNonnullByDefault
 final class ContextualResourceBuilder {
 
     /**
      * The {@link Context} of this helper.
      */
+    @Nonnull
     private final Context context;
 
     /**
@@ -79,6 +83,7 @@ final class ContextualResourceBuilder {
      *
      * @return a map of options
      */
+    @Nonnull
     private Map<String, Object> allOptions() {
         return context.optionsBuilder()
                 .log(Level.DEBUG)
@@ -99,7 +104,9 @@ final class ContextualResourceBuilder {
      *
      * @return this builder (for chaining)
      */
+    @Nonnull
     public ContextualResourceBuilder uri(URI uri) {
+        checkNotNull(uri);
         this.uri = context.createUri(uri);
         return this;
     }
@@ -111,7 +118,9 @@ final class ContextualResourceBuilder {
      *
      * @return this builder (for chaining)
      */
+    @Nonnull
     public ContextualResourceBuilder file(File file) {
+        checkNotNull(file);
         this.uri = context.createUri(file);
         return this;
     }
@@ -121,6 +130,7 @@ final class ContextualResourceBuilder {
      *
      * @return this builder (for chaining)
      */
+    @Nonnull
     public final ContextualResourceBuilder persistent() {
         isPersistent = true;
         return this;
@@ -133,6 +143,7 @@ final class ContextualResourceBuilder {
      *
      * @throws IOException if an I/O error occurs
      */
+    @Nonnull
     public PersistentResource createResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         if (isPersistent) {
@@ -151,6 +162,7 @@ final class ContextualResourceBuilder {
      *
      * @throws IOException if an I/O error occurs
      */
+    @Nonnull
     public PersistentResource loadResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         resource.load(allOptions());
@@ -165,6 +177,7 @@ final class ContextualResourceBuilder {
      *
      * @return a new {@link DataMapper}
      */
+    @Nonnull
     public DataMapper createPersistentMapper() {
         Backend backend = context.factory().createPersistentBackend(uri, allOptions());
         return StoreFactory.getInstance().createStore(backend, allOptions());

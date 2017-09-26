@@ -15,14 +15,17 @@ import fr.inria.atlanmod.neoemf.data.BackendConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A test-case about {@link BlueprintsNeo4jOptions}.
  */
+@ParametersAreNonnullByDefault
 public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
     /**

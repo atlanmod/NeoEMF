@@ -16,15 +16,18 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link BlueprintsBackendFactory}.
  */
+@ParametersAreNonnullByDefault
 public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest implements BlueprintsTest {
 
     @Override

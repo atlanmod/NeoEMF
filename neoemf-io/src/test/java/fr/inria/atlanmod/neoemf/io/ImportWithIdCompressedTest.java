@@ -16,7 +16,9 @@ import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class ImportWithIdCompressedTest extends AbstractImportTest {
 
     @Nonnull

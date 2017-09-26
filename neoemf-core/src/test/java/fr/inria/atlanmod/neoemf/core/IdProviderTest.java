@@ -13,13 +13,16 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link IdProvider} and {@link Id} implementations.
  */
+@ParametersAreNonnullByDefault
 public class IdProviderTest extends AbstractTest {
 
     @Test

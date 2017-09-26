@@ -14,13 +14,16 @@ package fr.inria.atlanmod.neoemf.data.bean;
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link SingleFeatureBean}.
  */
+@ParametersAreNonnullByDefault
 public class SingleFeatureBeanTest extends AbstractTest {
 
     /**

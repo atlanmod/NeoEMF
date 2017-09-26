@@ -16,10 +16,12 @@ import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about {@link DefaultHBaseBackend}.
  */
+@ParametersAreNonnullByDefault
 public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
 
     @Nonnull

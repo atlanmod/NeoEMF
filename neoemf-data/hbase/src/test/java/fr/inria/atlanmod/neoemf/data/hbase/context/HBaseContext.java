@@ -11,58 +11,75 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A specific {@link Context} for the HBase implementation.
  */
-@FunctionalInterface
-public interface HBaseContext extends Context {
+@ParametersAreNonnullByDefault
+public abstract class HBaseContext extends AbstractContext {
 
     /**
      * Creates a new {@code HBaseContext} with a mapping with arrays and strings.
      *
      * @return a new context.
      */
-    static Context getWithArraysAndStrings() {
-        return (HBaseContext) () -> HBaseOptions.builder().withArraysAndStrings();
+    @Nonnull
+    public static Context getWithArraysAndStrings() {
+        return new HBaseContext() {
+            @Nonnull
+            @Override
+            public PersistenceOptions optionsBuilder() {
+                return HBaseOptions.builder().withArraysAndStrings();
+            }
+        };
     }
 
     @Override
-    default boolean isInitialized() {
+    public boolean isInitialized() {
         return HBaseCluster.isInitialized();
     }
 
     @Override
-    default void init() {
+    public Context init() {
         HBaseCluster.init();
+        return this;
     }
 
+    @Nonnull
     @Override
-    default String name() {
+    public String name() {
         return "HBase";
     }
 
+    @Nonnull
     @Override
-    default BackendFactory factory() {
+    public BackendFactory factory() {
         return HBaseBackendFactory.getInstance();
     }
 
+    @Nonnull
     @Override
-    default URI createUri(URI uri) {
+    public URI createUri(URI uri) {
         return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), uri);
     }
 
+    @Nonnull
     @Override
-    default URI createUri(File file) {
+    public URI createUri(File file) {
         return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), file.getName());
     }
 }

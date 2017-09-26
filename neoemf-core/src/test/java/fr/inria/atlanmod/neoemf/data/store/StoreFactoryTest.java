@@ -18,10 +18,13 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -30,6 +33,7 @@ import static org.mockito.Mockito.mock;
 /**
  * A test-case about {@link StoreFactory}.
  */
+@ParametersAreNonnullByDefault
 public class StoreFactoryTest extends AbstractTest {
 
     /**
@@ -49,6 +53,7 @@ public class StoreFactoryTest extends AbstractTest {
      *
      * @return the value
      */
+    @Nonnull
     private static <I, O> O getValue(Object object, String fieldName, Class<I> in, Class<O> out) {
         if (!in.isInstance(object)) {
             throw new IllegalArgumentException();

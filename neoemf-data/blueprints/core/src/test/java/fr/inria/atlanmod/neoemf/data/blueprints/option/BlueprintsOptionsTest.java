@@ -18,18 +18,21 @@ import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link BlueprintsOptions}.
  */
+@ParametersAreNonnullByDefault
 public class BlueprintsOptionsTest extends AbstractUnitTest implements BlueprintsTest {
 
     /**
@@ -40,7 +43,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     /**
      * Initializes the {@link #resource}.
      */
-    @Before
+    @BeforeEach
     public final void initResource() {
         resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile(file()));
     }
@@ -48,7 +51,7 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     /**
      * Cleanly closes the {@link #resource}.
      */
-    @After
+    @AfterEach
     public final void closeResource() {
         resource.unload();
     }

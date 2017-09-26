@@ -16,15 +16,18 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link MapDbBackendFactory}.
  */
+@ParametersAreNonnullByDefault
 public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implements MapDbTest {
 
     @Override

@@ -16,10 +16,12 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about {@link BerkeleyDbBackendLists}.
  */
+@ParametersAreNonnullByDefault
 public class BerkeleyDbListsTest extends AbstractPersistenceMapperTest {
 
     @Nonnull

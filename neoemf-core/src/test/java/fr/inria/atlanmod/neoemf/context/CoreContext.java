@@ -28,6 +28,10 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,14 +39,16 @@ import static org.mockito.Mockito.when;
 /**
  * A specific {@link Context} for the core.
  */
-public interface CoreContext extends Context {
+@ParametersAreNonnullByDefault
+public abstract class CoreContext extends AbstractContext {
 
     /**
      * Returns the instance of this class.
      *
      * @return the instance of this class.
      */
-    static Context get() {
+    @Nonnull
+    public static Context get() {
         Context c = new CoreContext() {
         };
 
@@ -52,13 +58,15 @@ public interface CoreContext extends Context {
         return c;
     }
 
+    @Nonnull
     @Override
-    default String name() {
+    public String name() {
         return "Core";
     }
 
+    @Nonnull
     @Override
-    default BackendFactory factory() {
+    public BackendFactory factory() {
         AbstractBackendFactory factory = mock(AbstractBackendFactory.class);
 
         when(factory.name()).thenReturn("mock");
@@ -70,29 +78,33 @@ public interface CoreContext extends Context {
         return factory;
     }
 
+    @Nonnull
     @Override
-    default PersistenceOptions optionsBuilder() {
+    public PersistenceOptions optionsBuilder() {
         return CommonOptions.builder();
     }
 
+    @Nonnull
     @Override
-    default String uriScheme() {
+    public String uriScheme() {
         return "mock";
     }
 
     /**
      * @see #uriScheme()
      */
+    @Nonnull
     @Override
-    default URI createUri(URI uri) {
+    public URI createUri(URI uri) {
         return AbstractUriBuilder.builder(uriScheme()).fromUri(uri);
     }
 
     /**
      * @see #uriScheme()
      */
+    @Nonnull
     @Override
-    default URI createUri(File file) {
+    public URI createUri(File file) {
         return AbstractUriBuilder.builder(uriScheme()).fromFile(file);
     }
 
@@ -103,8 +115,9 @@ public interface CoreContext extends Context {
      *
      * @throws UnsupportedOperationException every time
      */
+    @Nonnull
     @Override
-    default PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
+    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -115,8 +128,9 @@ public interface CoreContext extends Context {
      *
      * @throws UnsupportedOperationException every time
      */
+    @Nonnull
     @Override
-    default PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
+    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -127,13 +141,15 @@ public interface CoreContext extends Context {
      *
      * @throws UnsupportedOperationException every time
      */
+    @Nonnull
     @Override
-    default PersistentResource loadResource(EPackage ePackage, File file) throws IOException {
+    public PersistentResource loadResource(@Nullable EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    @Nonnull
     @Override
-    default Backend createMapper(File file) {
+    public Backend createMapper(File file) {
         return new DefaultTransientBackend();
     }
 }

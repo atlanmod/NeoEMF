@@ -11,16 +11,21 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -29,7 +34,8 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case for the contains method, related to performance issue descibed in #30 <a
  * href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
-public class EContentTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class EContentTest extends AllContextTest {
 
     /**
      * The expected number of {@link Tree} contained in {@link #tree}.
@@ -56,9 +62,10 @@ public class EContentTest extends AbstractBackendTest {
      */
     private List<Node> treeNodes;
 
-    @Test
-    public void testEObjectEContents() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testEObjectEContents(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         List<EObject> eContents = tree.eContents();
@@ -73,21 +80,26 @@ public class EContentTest extends AbstractBackendTest {
         );
     }
 
-    @Test
-    public void testEObjectEmptyEContentsSize() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testEObjectEmptyEContentsSize(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResourceWithEmpty(resource);
 
         List<EObject> eContents = tree.eContents();
         assertThat(eContents).isEmpty();
     }
 
-    @Test
-    public void testEObjectEmptyEContentsGet() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testEObjectEmptyEContentsGet(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResourceWithEmpty(resource);
 
-        assertThat(catchThrowable(() -> tree.eContents().get(0))).isInstanceOf(IndexOutOfBoundsException.class);
+        //noinspection ResultOfMethodCallIgnored
+        assertThat(
+                catchThrowable(() -> tree.eContents().get(0))
+        ).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**

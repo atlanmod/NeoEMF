@@ -22,9 +22,9 @@ import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -43,6 +44,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * An abstract test-case about the import of a model.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractImportTest extends AbstractTest {
 
     /**
@@ -105,12 +107,12 @@ public abstract class AbstractImportTest extends AbstractTest {
         return checkNotNull(child);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void registerPackages() {
         IOResourceManager.registerAllPackages();
     }
 
-    @Before
+    @BeforeEach
     public void readResource() throws IOException {
         DummyWriter writer = new DummyWriter();
 

@@ -12,10 +12,12 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case that needs a {@link Context}.
  */
+@ParametersAreNonnullByDefault
 public interface ContextualTest {
 
     /**

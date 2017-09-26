@@ -17,12 +17,17 @@ import fr.inria.atlanmod.commons.log.Log;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
 /**
  * An object that holds the HBase mini-cluster instance.
  */
+@ParametersAreNonnullByDefault
 final class HBaseCluster {
 
     /**
@@ -128,6 +133,7 @@ final class HBaseCluster {
      *
      * @return the host
      */
+    @Nonnull
     public static String host() {
         checkState(isInitialized(), "The mini-cluster has not been initialized");
 
@@ -139,6 +145,7 @@ final class HBaseCluster {
      *
      * @return the port
      */
+    @Nonnegative
     public static int port() {
         checkState(isInitialized(), "The mini-cluster has not been initialized");
 

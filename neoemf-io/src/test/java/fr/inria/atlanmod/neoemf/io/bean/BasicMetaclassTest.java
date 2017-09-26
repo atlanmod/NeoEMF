@@ -13,13 +13,16 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link BasicMetaclass}.
  */
+@ParametersAreNonnullByDefault
 public class BasicMetaclassTest extends AbstractTest {
 
     @Test

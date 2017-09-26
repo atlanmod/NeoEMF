@@ -20,7 +20,8 @@
     </description>
 
     <properties>
-        <chronicle.version>3.14.1</chronicle.version>
+        <chronicle-map.version>3.14.1</chronicle-map.version>
+        <chronicle-bytes.version>1.9.3</chronicle-bytes.version>
 
         <cglib.version>3.2.5</cglib.version>
         <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility (15.0) -->
@@ -47,6 +48,11 @@
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-map</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-bytes</artifactId>
         </dependency>
 
         <!-- Reflection -->
@@ -126,8 +132,13 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
         </dependency>
 
         <dependency>
@@ -160,7 +171,13 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-map</artifactId>
-                <version>${chronicle.version}</version>
+                <version>${chronicle-map.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-bytes</artifactId>
+                <version>${chronicle-bytes.version}</version>
             </dependency>
 
             <!-- Reflection -->

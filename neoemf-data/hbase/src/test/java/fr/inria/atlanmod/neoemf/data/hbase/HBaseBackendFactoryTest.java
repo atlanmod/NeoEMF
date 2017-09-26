@@ -17,16 +17,19 @@ import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link HBaseBackendFactory}.
  */
+@ParametersAreNonnullByDefault
 public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implements HBaseTest {
 
     @Override
@@ -41,7 +44,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest implemen
         assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 
-    @Ignore("Not supported")
+    @Disabled("Not supported")
     @Override
     public void testCopyBackend() {
     }

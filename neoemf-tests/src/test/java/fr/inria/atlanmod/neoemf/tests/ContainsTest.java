@@ -11,15 +11,21 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,54 +33,22 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case for the contains method, related to performance issue described in the issue <a
  * href="https://github.com/atlanmod/NeoEMF/issues/30">#30</a>.
  */
-public class ContainsTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class ContainsTest extends AllContextTest {
 
-    @Test
-    public void testContainsPersistent3Elements() {
-        PersistentResource resource = newPersistentStore();
-        List<TargetObject> content = fillResource(resource, 3);
+    @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
+    @ArgumentsSource(ContextProvider.WithBooleansAndIntegers.class)
+    public void testContainsElements(Context context, Boolean isPersistent, Integer count) {
+        PersistentResource resource = isPersistent
+                ? newPersistentResource(context)
+                : newTransientResource(context);
 
-        assertContainsExactly(resource, content);
-    }
+        List<TargetObject> content = fillResource(resource, count);
 
-    @Test
-    public void testContainsPersistent4Elements() {
-        PersistentResource resource = newPersistentStore();
-        List<TargetObject> content = fillResource(resource, 4);
+        PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
 
-        assertContainsExactly(resource, content);
-    }
-
-    @Test
-    public void testContainsPersistent5Elements() {
-        PersistentResource resource = newPersistentStore();
-        List<TargetObject> content = fillResource(resource, 5);
-
-        assertContainsExactly(resource, content);
-    }
-
-    @Test
-    public void testContainsTransient3Elements() {
-        PersistentResource resource = newTransientStore();
-        List<TargetObject> content = fillResource(resource, 3);
-
-        assertContainsExactly(resource, content);
-    }
-
-    @Test
-    public void testContainsTransient4Elements() {
-        PersistentResource resource = newTransientStore();
-        List<TargetObject> content = fillResource(resource, 4);
-
-        assertContainsExactly(resource, content);
-    }
-
-    @Test
-    public void testContainsTransient5Elements() {
-        PersistentResource resource = newTransientStore();
-        List<TargetObject> content = fillResource(resource, 5);
-
-        assertContainsExactly(resource, content);
+        assertThat(primary.getManyContainmentReferences()).hasSize(content.size());
+        assertThat(primary.getManyContainmentReferences()).containsExactlyElementsOf(content);
     }
 
     /**
@@ -85,6 +59,7 @@ public class ContainsTest extends AbstractBackendTest {
      *
      * @return a list of all created {@link TargetObject}s
      */
+    @Nonnull
     private List<TargetObject> fillResource(PersistentResource resource, int count) {
         List<TargetObject> targets = new ArrayList<>();
 
@@ -101,11 +76,5 @@ public class ContainsTest extends AbstractBackendTest {
         resource.getContents().add(primary);
 
         return targets;
-    }
-
-    private void assertContainsExactly(PersistentResource resource, List<TargetObject> addedContent) {
-        PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
-        assertThat(primary.getManyContainmentReferences()).hasSize(addedContent.size());
-        assertThat(primary.getManyContainmentReferences()).containsExactlyElementsOf(addedContent);
     }
 }

@@ -11,24 +11,42 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link Context} for the MapDB implementation.
  */
-@FunctionalInterface
-public interface MapDbContext extends Context {
+@ParametersAreNonnullByDefault
+public abstract class MapDbContext extends AbstractContext {
 
     /**
      * Creates a new {@code MapDbContext} with a mapping with indices.
      *
      * @return a new context.
      */
-    static Context getWithIndices() {
-        return (MapDbContext) () -> MapDbOptions.builder().withIndices();
+    @Nonnull
+    public static Context getWithIndices() {
+        return new MapDbContext() {
+            @Nonnull
+            @Override
+            public String name() {
+                return super.name() + "-Indices";
+            }
+
+            @Nonnull
+            @Override
+            public PersistenceOptions optionsBuilder() {
+                return MapDbOptions.builder().withIndices();
+            }
+        };
     }
 
     /**
@@ -36,8 +54,21 @@ public interface MapDbContext extends Context {
      *
      * @return a new context.
      */
-    static Context getWithArrays() {
-        return (MapDbContext) () -> MapDbOptions.builder().withArrays();
+    @Nonnull
+    public static Context getWithArrays() {
+        return new MapDbContext() {
+            @Nonnull
+            @Override
+            public String name() {
+                return super.name() + "-Arrays";
+            }
+
+            @Nonnull
+            @Override
+            public PersistenceOptions optionsBuilder() {
+                return MapDbOptions.builder().withArrays();
+            }
+        };
     }
 
     /**
@@ -45,17 +76,32 @@ public interface MapDbContext extends Context {
      *
      * @return a new context.
      */
-    static Context getWithLists() {
-        return (MapDbContext) () -> MapDbOptions.builder().withLists();
+    @Nonnull
+    public static Context getWithLists() {
+        return new MapDbContext() {
+            @Nonnull
+            @Override
+            public String name() {
+                return super.name() + "-Lists";
+            }
+
+            @Nonnull
+            @Override
+            public PersistenceOptions optionsBuilder() {
+                return MapDbOptions.builder().withLists();
+            }
+        };
     }
 
+    @Nonnull
     @Override
-    default String name() {
+    public String name() {
         return "MapDb";
     }
 
+    @Nonnull
     @Override
-    default BackendFactory factory() {
+    public BackendFactory factory() {
         return MapDbBackendFactory.getInstance();
     }
 }

@@ -14,7 +14,9 @@ package fr.inria.atlanmod.neoemf.util;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -22,6 +24,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * An abstract test-case about {@link AbstractUriBuilder} and its implementations.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractUriTest extends AbstractUnitTest {
 
     /**

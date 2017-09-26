@@ -14,9 +14,11 @@ package fr.inria.atlanmod.neoemf.util;
 import fr.inria.atlanmod.neoemf.context.CoreTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -24,6 +26,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case about {@link UriBuilder}.
  */
+@ParametersAreNonnullByDefault
 public class UriBuilderTest extends AbstractUriTest implements CoreTest {
 
     private static final String SCHEME = "scheme";

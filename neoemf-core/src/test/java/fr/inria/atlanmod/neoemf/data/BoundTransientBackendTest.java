@@ -18,10 +18,12 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about {@link BoundTransientBackend}.
  */
+@ParametersAreNonnullByDefault
 public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
@@ -29,6 +31,7 @@ public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
     public Context context() {
         return new CoreContext() {
 
+            @Nonnull
             @Override
             public Backend createMapper(File file) {
                 return new BoundTransientBackend(idBase);

@@ -11,28 +11,35 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.Iterator;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case that checks the behavior of a saved {@link PersistentResource}.
  */
-public class SaveResourceTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class SaveResourceTest extends AllContextTest {
 
     private PrimaryObject primary;
     private TargetObject target;
 
-    @Test
-    public void testEContainer() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testContainer(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         assertThat(primary.eContainer()).isNull();
@@ -42,9 +49,10 @@ public class SaveResourceTest extends AbstractBackendTest {
         assertThat(target.eInternalContainer()).isEqualTo(primary);
     }
 
-    @Test
-    public void testGetAllContentsContainer() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testAllContentsContainer(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();
@@ -58,18 +66,20 @@ public class SaveResourceTest extends AbstractBackendTest {
         assertThat(target.eInternalContainer()).isEqualTo(primary);
     }
 
-    @Test
-    public void testEResource() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testResource(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         assertThat(primary.eResource()).isSameAs(resource);
         assertThat(target.eResource()).isSameAs(resource);
     }
 
-    @Test
-    public void testGetAllContentsEResource() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testAllContentsResource(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();
@@ -81,18 +91,20 @@ public class SaveResourceTest extends AbstractBackendTest {
         assertThat(target.eResource()).isSameAs(resource);
     }
 
-    @Test
-    public void testEDirectResource() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testDirectResource(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         assertThat(primary.eDirectResource()).isSameAs(resource);
         assertThat(target.eDirectResource()).isNull();
     }
 
-    @Test
-    public void testGetAllContentsEDirectResource() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testAllContentsDirectResource(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
         Iterator<EObject> it = resource.getAllContents();

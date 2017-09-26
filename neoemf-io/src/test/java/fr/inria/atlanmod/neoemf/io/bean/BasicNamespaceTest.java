@@ -13,17 +13,20 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link BasicNamespace}.
  */
+@ParametersAreNonnullByDefault
 public class BasicNamespaceTest extends AbstractTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         BasicNamespace.Registry.getInstance().clean();
     }

@@ -8,20 +8,23 @@ import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A test-case about the copy from a file to another.
  */
+@ParametersAreNonnullByDefault
 public class CopyTest extends AbstractTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void registerPackages() {
         IOResourceManager.registerAllPackages();
     }
@@ -33,7 +36,7 @@ public class CopyTest extends AbstractTest {
      */
     @Test
     public void testCopyStandard() throws IOException {
-        final File targetFile = new File(workspace.newFile("io") + ".xmi");
+        final File targetFile = new File(newFile("io") + ".xmi");
         Log.info("Exporting to {0}", targetFile);
 
         URI expectedUri = IOResourceManager.xmiStandard();
@@ -60,7 +63,7 @@ public class CopyTest extends AbstractTest {
      */
     @Test
     public void testCopyStandardCompressed() throws IOException {
-        final File targetFile = new File(workspace.newFile("io") + ".zxmi");
+        final File targetFile = new File(newFile("io") + ".zxmi");
         Log.info("Exporting to {0}", targetFile);
 
         URI expectedUri = IOResourceManager.xmiStandard();
@@ -87,7 +90,7 @@ public class CopyTest extends AbstractTest {
      */
     @Test
     public void testCopyWithId() throws IOException {
-        final File targetFile = new File(workspace.newFile("io") + ".xmi");
+        final File targetFile = new File(newFile("io") + ".xmi");
         Log.info("Exporting to {0}", targetFile);
 
         URI expectedUri = IOResourceManager.xmiWithId();
@@ -114,7 +117,7 @@ public class CopyTest extends AbstractTest {
      */
     @Test
     public void testCopyWithIdCompressed() throws IOException {
-        final File targetFile = new File(workspace.newFile("io") + ".zxmi");
+        final File targetFile = new File(newFile("io") + ".zxmi");
         Log.info("Exporting to {0}", targetFile);
 
         URI expectedUri = IOResourceManager.zxmiWithId();

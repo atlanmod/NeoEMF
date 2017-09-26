@@ -20,9 +20,12 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A {@link BasicElement} wrapper that stores all elements in different {@link List}.
  */
+@ParametersAreNonnullByDefault
 public class DummyElement {
 
     /**

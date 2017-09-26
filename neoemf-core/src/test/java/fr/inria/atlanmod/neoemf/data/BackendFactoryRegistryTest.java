@@ -13,8 +13,10 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.mock;
 /**
  * A test-case about {@link BackendFactoryRegistry}.
  */
+@ParametersAreNonnullByDefault
 public class BackendFactoryRegistryTest extends AbstractTest {
 
     /**
@@ -52,7 +55,7 @@ public class BackendFactoryRegistryTest extends AbstractTest {
     /**
      * Unregisters all factories in the {@link BackendFactoryRegistry}.
      */
-    @Before
+    @BeforeEach
     public void unregisterFactories() {
         REGISTRY.unregisterAll();
     }

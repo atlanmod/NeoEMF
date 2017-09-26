@@ -16,13 +16,16 @@ import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract test-cases about {@link BackendFactory} and its implementations.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
 
     /**

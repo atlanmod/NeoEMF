@@ -14,23 +14,36 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link Context} for the Blueprints Neo4j implementation.
  */
-public interface BlueprintsNeo4jContext extends BlueprintsContext {
+@ParametersAreNonnullByDefault
+public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
 
     /**
      * Creates a new {@code BlueprintsContext} with a mapping with indices.
      *
      * @return a new context.
      */
-    static Context getWithIndices() {
-        return (BlueprintsNeo4jContext) () -> BlueprintsNeo4jOptions.builder().withIndices();
+    @Nonnull
+    public static Context getWithIndices() {
+        return new BlueprintsNeo4jContext() {
+            @Nonnull
+            @Override
+            public PersistenceOptions optionsBuilder() {
+                return BlueprintsNeo4jOptions.builder().withIndices();
+            }
+        };
     }
 
+    @Nonnull
     @Override
-    default String name() {
+    public String name() {
         return "Neo4j";
     }
 }

@@ -11,27 +11,33 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.ecore.EObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about the copy from a {@link fr.inria.atlanmod.neoemf.data.Backend} to another.
  */
-public class CopyContentTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class CopyContentTest extends AllContextTest {
 
     /**
      * The name of the {@link PrimaryObject}.
@@ -48,7 +54,7 @@ public class CopyContentTest extends AbstractBackendTest {
      */
     private static final String TARGET1_NAME = "Content2";
 
-    @BeforeClass
+    @BeforeAll
     public static void registerPackages() {
         IOResourceManager.registerAllPackages();
     }
@@ -59,12 +65,13 @@ public class CopyContentTest extends AbstractBackendTest {
      *
      * @throws IOException if an I/O error occurs during {@link PersistentResource#save(Map)}
      */
-    @Test
-    public void testCopyResource() throws IOException {
-        PersistentResource resource = newTransientStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testCopyTransientToPersistentResource(Context sourceContext) throws IOException {
+        PersistentResource resource = newTransientResource(sourceContext);
         fillResource(resource);
 
-        resource.save(context.optionsBuilder().asMap());
+        resource.save(sourceContext.optionsBuilder().asMap());
         assertThat(resource.getContents()).isNotEmpty();
         assertThat(resource.getContents().get(0)).isInstanceOf(PrimaryObject.class);
 
@@ -82,26 +89,15 @@ public class CopyContentTest extends AbstractBackendTest {
         assertThat(targets.get(1).eContainer()).isEqualTo(primary);
     }
 
-    @Test
-    public void testCopyResourceToTransientResource() throws IOException {
+    @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
+    @ArgumentsSource(ContextProvider.WithBooleans.class)
+    public void testCopyStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
         EObject sourceObject = IOTestUtils.loadWithEMF(IOResourceManager.xmiStandard());
 
-        PersistentResource resource = newTransientStore();
-        resource.getContents().add(sourceObject);
-        resource.save(context.optionsBuilder().asMap());
+        PersistentResource resource = isPersistent
+                ? newPersistentResource(context)
+                : newTransientResource(context);
 
-        EObject targetObject = resource.getContents().get(0);
-
-        ModelComparisonUtils.assertEObjectAreEqual(targetObject, sourceObject);
-
-        sourceObject.eResource().unload();
-    }
-
-    @Test
-    public void testCopyResourceToPersistentResource() throws IOException {
-        EObject sourceObject = IOTestUtils.loadWithEMF(IOResourceManager.xmiStandard());
-
-        PersistentResource resource = newPersistentStore();
         resource.getContents().add(sourceObject);
         resource.save(context.optionsBuilder().asMap());
 

@@ -15,10 +15,12 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case that uses a {@link BlueprintsNeo4jContext}.
  */
+@ParametersAreNonnullByDefault
 public interface BlueprintsNeo4jTest extends BlueprintsTest {
 
     @Nonnull

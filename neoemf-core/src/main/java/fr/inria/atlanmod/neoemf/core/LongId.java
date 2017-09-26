@@ -84,6 +84,6 @@ class LongId implements Id {
     @Nonnull
     @Override
     public String toString() {
-        return String.format("LongId {%s}", toHexString());
+        return String.format("Id {%s}", toHexString());
     }
 }

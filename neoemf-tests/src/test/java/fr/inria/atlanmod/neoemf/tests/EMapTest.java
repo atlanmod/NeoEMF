@@ -11,20 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.ETypes;
 import fr.inria.atlanmod.neoemf.tests.sample.Type;
 import fr.inria.atlanmod.neoemf.tests.sample.Value;
 
 import org.eclipse.emf.common.util.EMap;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case that checks the support of {@link EMap}.
  */
-public class EMapTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class EMapTest extends AllContextTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
@@ -32,9 +38,10 @@ public class EMapTest extends AbstractBackendTest {
     private static final String VALUE1 = "value1";
     private static final String VALUE2 = "value2";
 
-    @Test
-    public void testGetMapStringStringEmpty() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testGetMapStringStringEmpty(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         resource.getContents().add(EFACTORY.createETypes());
 
         ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
@@ -44,9 +51,10 @@ public class EMapTest extends AbstractBackendTest {
         assertThat(map).isEmpty();
     }
 
-    @Test
-    public void testPutMapStringString() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testPutMapStringString(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         resource.getContents().add(EFACTORY.createETypes());
 
         ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
@@ -61,9 +69,10 @@ public class EMapTest extends AbstractBackendTest {
         assertThat(map.get(KEY2)).isEqualTo(VALUE2);
     }
 
-    @Test
-    public void testGetMapKVEmpty() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testGetMapKVEmpty(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         resource.getContents().add(EFACTORY.createETypes());
 
         ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
@@ -73,9 +82,10 @@ public class EMapTest extends AbstractBackendTest {
         assertThat(map).isEmpty();
     }
 
-    @Test
-    public void testPutMapKV() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testPutMapKV(Context context) {
+        PersistentResource resource = newPersistentResource(context);
         resource.getContents().add(EFACTORY.createETypes());
 
         ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));

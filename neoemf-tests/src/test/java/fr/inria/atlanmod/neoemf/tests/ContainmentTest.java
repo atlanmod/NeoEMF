@@ -11,12 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.Comment;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,11 +29,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks that adding a transient containment sub-tree to an existing {@link PersistentResource} add
  * all its elements to the {@link org.eclipse.emf.ecore.resource.Resource}.
  */
-public class ContainmentTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class ContainmentTest extends AllContextTest {
 
-    @Test
-    public void testAddContainmentSubtree() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testContainment(Context context) {
+        PersistentResource resource = newPersistentResource(context);
 
         Tree tree0 = EFACTORY.createTree();
         tree0.setName("Tree0");
@@ -68,9 +75,10 @@ public class ContainmentTest extends AbstractBackendTest {
         assertThat(node0.resource()).isSameAs(resource);
     }
 
-    @Test
-    public void testSetContainmentAfterNonContainment() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testContainmentAfterNonContainment(Context context) {
+        PersistentResource resource = newPersistentResource(context);
 
         Tree tree0 = EFACTORY.createTree();
         tree0.setName("Tree0");

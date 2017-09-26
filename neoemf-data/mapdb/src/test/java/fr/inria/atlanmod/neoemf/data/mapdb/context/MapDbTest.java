@@ -15,10 +15,12 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case that uses a {@link MapDbContext}.
  */
+@ParametersAreNonnullByDefault
 public interface MapDbTest extends ContextualTest {
 
     @Nonnull

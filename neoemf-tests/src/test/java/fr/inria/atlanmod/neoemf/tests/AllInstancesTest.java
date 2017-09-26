@@ -11,7 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.PhysicalNode;
 import fr.inria.atlanmod.neoemf.tests.sample.RemoteNode;
@@ -20,18 +22,22 @@ import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 import fr.inria.atlanmod.neoemf.tests.sample.VirtualNode;
 
 import org.eclipse.emf.ecore.EClass;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.stream.IntStream;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
  */
-public class AllInstancesTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class AllInstancesTest extends AllContextTest {
 
     /**
      * The expected number of {@link Tree} in the resulting list.
@@ -69,85 +75,44 @@ public class AllInstancesTest extends AbstractBackendTest {
     private static final int PHYSICAL_NODE_STRICT_COUNT = 50;
 
     /**
-     * Checks the content with a persistent store, and {@code strict = false}.
+     * Checks the content.
      */
-    @Test
-    public void testAllInstancesPersistent() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; isStrict = {2}")
+    @ArgumentsSource(ContextProvider.WithBiBooleans.class)
+    public void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) {
+        PersistentResource resource = isPersistent
+                ? newPersistentResource(context)
+                : newTransientResource(context);
+
         fillResource(resource);
 
-        assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
+        if (!isStrict) {
+            assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
+        }
+        else {
+            assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+        }
     }
 
     /**
-     * Checks the content with a persistent store, and {@code strict = true}.
+     * Checks the content after calling {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}.
      */
-    @Test
-    public void testAllInstancesStrictPersistent() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest(name = "[{index}] {0}: isStrict = {2}")
+    @ArgumentsSource(ContextProvider.WithBooleans.class)
+    public void testAllInstancesLoaded(Context context, Boolean isStrict) throws IOException {
+        PersistentResource resource = newPersistentResource(context);
         fillResource(resource);
 
-        assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
-    }
-
-    /**
-     * Checks the content after calling {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)},
-     * with {@code strict = false}.
-     *
-     * @throws IOException if a I/O error occurs during {@link PersistentResource#save(Map)} or {@link
-     *                     PersistentResource#load(Map)}
-     */
-    @Test
-    public void testAllInstancesPersistentLoaded() throws IOException {
-        PersistentResource resource = newPersistentStore();
-        fillResource(resource);
-
-        resource.save(context().optionsBuilder().asMap());
+        resource.save(context.optionsBuilder().asMap());
         resource.unload();
-        resource.load(context().optionsBuilder().asMap());
+        resource.load(context.optionsBuilder().asMap());
 
-        assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
-    }
-
-    /**
-     * Checks the content after calling {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)},
-     * with {@code strict = true}.
-     *
-     * @throws IOException if a I/O error occurs during {@link PersistentResource#save(Map)} or {@link
-     *                     PersistentResource#load(Map)}
-     */
-    @Test
-    public void testAllInstancesStrictPersistentLoaded() throws IOException {
-        PersistentResource resource = newPersistentStore();
-        fillResource(resource);
-
-        resource.save(context().optionsBuilder().asMap());
-        resource.unload();
-        resource.load(context().optionsBuilder().asMap());
-
-        assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
-    }
-
-    /**
-     * Checks the content with a transient store, and {@code strict = false}.
-     */
-    @Test
-    public void testAllInstancesTransient() {
-        PersistentResource resource = newTransientStore();
-        fillResource(resource);
-
-        assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
-    }
-
-    /**
-     * Checks the content with a transient store, and {@code strict = true}.
-     */
-    @Test
-    public void testAllInstancesStrictTransient() {
-        PersistentResource resource = newTransientStore();
-        fillResource(resource);
-
-        assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+        if (!isStrict) {
+            assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
+        }
+        else {
+            assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+        }
     }
 
     /**
@@ -178,6 +143,7 @@ public class AllInstancesTest extends AbstractBackendTest {
                 tree.getNodes().add(virtualNode);
             });
         });
+
         resource.getContents().add(rootTree);
     }
 

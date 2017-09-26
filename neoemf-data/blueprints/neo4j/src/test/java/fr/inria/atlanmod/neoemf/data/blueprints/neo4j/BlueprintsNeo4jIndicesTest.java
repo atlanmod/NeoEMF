@@ -11,20 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jTest;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
-
-import javax.annotation.Nonnull;
 
 /**
  * A test-case about {@code DefaultBlueprintsBackend} with a Neo4j implementation.
  */
-public class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest {
-
-    @Nonnull
-    @Override
-    public Context context() {
-        return BlueprintsNeo4jContext.getWithIndices();
-    }
+public class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest implements BlueprintsNeo4jTest {
 }

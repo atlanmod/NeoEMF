@@ -16,10 +16,12 @@ import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about {@link MapDbBackendIndices}.
  */
+@ParametersAreNonnullByDefault
 public class MapDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull

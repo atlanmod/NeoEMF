@@ -14,12 +14,6 @@
                     pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %msg%n" />
         </Console>
 
-        <!-- A console appender without any format -->
-        <Console name="ConsoleVoid" target="SYSTEM_OUT">
-            <PatternLayout
-                    pattern="%msg%n" />
-        </Console>
-
     </Appenders>
 
     <Loggers>
@@ -33,11 +27,6 @@
         <!-- Logger for testing -->
         <Logger name="test" level="ALL" additivity="false">
             <AppenderRef ref="ConsoleTest" />
-        </Logger>
-
-        <!-- Unformatted logger -->
-        <Logger name="void" level="ALL" additivity="false">
-            <AppenderRef ref="ConsoleVoid" />
         </Logger>
 
         <!-- Reflections -->

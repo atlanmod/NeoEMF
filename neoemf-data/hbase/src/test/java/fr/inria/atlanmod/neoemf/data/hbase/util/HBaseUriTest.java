@@ -15,10 +15,12 @@ import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -26,9 +28,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case about {@link HBaseUri}.
  */
+@ParametersAreNonnullByDefault
 public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 
-    @Ignore("Not supported because of the mini-cluster")
+    @Disabled("Not supported because of the mini-cluster")
     @Override
     public void testCreateUriFromStandardUriInvalidScheme() {
     }

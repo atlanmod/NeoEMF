@@ -4,7 +4,9 @@ import fr.inria.atlanmod.commons.AbstractTest;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -12,6 +14,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case about dynamic {@link PersistentEObject}, accross a proxy.
  */
+@ParametersAreNonnullByDefault
 public class DynamicPersistentEObjectTest extends AbstractTest {
 
     @Test

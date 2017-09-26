@@ -14,17 +14,20 @@ package fr.inria.atlanmod.neoemf;
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.ContextualTest;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assume.assumeTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * An abstract {@link ContextualTest} that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and holds
  * the temporary file.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
 
     /**
@@ -46,11 +49,11 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
      *
      * @throws IOException if an I/O error occurs
      */
-    @Before
+    @BeforeEach
     public final void initContext() throws IOException {
         context().init();
-        assumeTrue("The context has not been initialized", context().isInitialized());
+        assumeTrue(context().isInitialized(), "The context has not been initialized");
 
-        file = workspace.newFile(context().name());
+        file = newFile(context().name());
     }
 }

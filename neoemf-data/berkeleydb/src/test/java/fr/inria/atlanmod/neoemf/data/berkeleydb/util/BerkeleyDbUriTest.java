@@ -15,7 +15,9 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -23,6 +25,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case about {@link BerkeleyDbUri}.
  */
+@ParametersAreNonnullByDefault
 public class BerkeleyDbUriTest extends AbstractUriTest implements BerkeleyDbTest {
 
     /**

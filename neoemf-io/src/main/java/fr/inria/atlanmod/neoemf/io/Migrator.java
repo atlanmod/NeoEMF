@@ -167,6 +167,7 @@ public final class Migrator<T> {
      *
      * @return the adapted {@code stream}
      */
+    @Nonnull
     private static InputStream adaptStream(@WillNotClose InputStream stream) throws IOException {
         final PushbackInputStream pbis = new PushbackInputStream(stream, 4);
 

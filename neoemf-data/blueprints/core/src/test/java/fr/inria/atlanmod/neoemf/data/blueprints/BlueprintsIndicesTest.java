@@ -16,10 +16,12 @@ import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about {@link DefaultBlueprintsBackend} with a TinkerGraph implementation.
  */
+@ParametersAreNonnullByDefault
 public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull

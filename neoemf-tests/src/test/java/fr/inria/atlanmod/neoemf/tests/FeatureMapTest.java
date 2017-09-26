@@ -1,13 +1,19 @@
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
 import org.eclipse.emf.ecore.util.FeatureMap;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,14 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks the support of {@link FeatureMap}.
  */
 // TODO Add tests on FeatureMap.size(), ...indexOf(), ...contains(), ...
-public class FeatureMapTest extends AbstractBackendTest {
+@ParametersAreNonnullByDefault
+public class FeatureMapTest extends AllContextTest {
 
     /**
      * Checks that the {@link FeatureMap}s are correctly detected and created.
      */
-    @Test
-    public void testNewInstance() {
-        PersistentResource resource = newPersistentStore();
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testNewInstance(Context context) {
+        PersistentResource resource = newPersistentResource(context);
 
         PrimaryObject primary = EFACTORY.createPrimaryObject();
         resource.getContents().add(primary);
@@ -36,14 +44,15 @@ public class FeatureMapTest extends AbstractBackendTest {
 
     // region Attributes
 
-    @Test
-    public void testAddAttributes() {
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testAddAttributes(Context context) {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
         String value3 = "Value3";
 
-        PrimaryObject primary = createResource();
+        PrimaryObject primary = createResource(context);
 
         FeatureMap featureMapAttributes = primary.getFeatureMapAttributeCollection();
         List<String> attributes1 = primary.getFeatureMapAttributeType1();
@@ -60,14 +69,15 @@ public class FeatureMapTest extends AbstractBackendTest {
         assertThat(featureMapAttributes.getValue(3)).isEqualTo(value3);
     }
 
-    @Test
-    public void testRemoveAttributes() {
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testRemoveAttributes(Context context) {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
         String value3 = "Value3";
 
-        PrimaryObject primary = createResource();
+        PrimaryObject primary = createResource(context);
 
         FeatureMap featureMapAttributes = primary.getFeatureMapAttributeCollection();
         List<String> attributes1 = primary.getFeatureMapAttributeType1();
@@ -90,14 +100,15 @@ public class FeatureMapTest extends AbstractBackendTest {
         assertThat(featureMapAttributes.getValue(1)).isEqualTo(value3);
     }
 
-    @Test
-    public void testSetAttributes() {
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testSetAttributes(Context context) {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
         String value3 = "Value3";
 
-        PrimaryObject primary = createResource();
+        PrimaryObject primary = createResource(context);
 
         FeatureMap featureMapAttributes = primary.getFeatureMapAttributeCollection();
         List<String> attributes1 = primary.getFeatureMapAttributeType1();
@@ -121,8 +132,10 @@ public class FeatureMapTest extends AbstractBackendTest {
     // endregion
 
     // region References
-    @Test
-    public void testAddReferences() {
+
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testAddReferences(Context context) {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -135,7 +148,7 @@ public class FeatureMapTest extends AbstractBackendTest {
         TargetObject target3 = EFACTORY.createTargetObject();
         target2.setName("Target3");
 
-        PrimaryObject primary = createResource();
+        PrimaryObject primary = createResource(context);
 
         FeatureMap featureMapReferences = primary.getFeatureMapReferenceCollection();
         List<TargetObject> references1 = primary.getFeatureMapReferenceType1();
@@ -152,8 +165,9 @@ public class FeatureMapTest extends AbstractBackendTest {
         assertThat(featureMapReferences.getValue(3)).isEqualTo(target3);
     }
 
-    @Test
-    public void testRemoveReferences() {
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testRemoveReferences(Context context) {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -166,7 +180,7 @@ public class FeatureMapTest extends AbstractBackendTest {
         TargetObject target3 = EFACTORY.createTargetObject();
         target2.setName("Target3");
 
-        PrimaryObject primary = createResource();
+        PrimaryObject primary = createResource(context);
 
         FeatureMap featureMapReferences = primary.getFeatureMapReferenceCollection();
         List<TargetObject> references1 = primary.getFeatureMapReferenceType1();
@@ -189,8 +203,9 @@ public class FeatureMapTest extends AbstractBackendTest {
         assertThat(featureMapReferences.getValue(1)).isEqualTo(target3);
     }
 
-    @Test
-    public void testSetReferences() {
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
+    public void testSetReferences(Context context) {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -203,7 +218,7 @@ public class FeatureMapTest extends AbstractBackendTest {
         TargetObject target3 = EFACTORY.createTargetObject();
         target2.setName("Target3");
 
-        PrimaryObject primary = createResource();
+        PrimaryObject primary = createResource(context);
 
         FeatureMap featureMapReferences = primary.getFeatureMapReferenceCollection();
         List<TargetObject> references1 = primary.getFeatureMapReferenceType1();
@@ -226,8 +241,9 @@ public class FeatureMapTest extends AbstractBackendTest {
 
     // endregion
 
-    private PrimaryObject createResource() {
-        PersistentResource resource = newPersistentStore();
+    @Nonnull
+    private PrimaryObject createResource(Context context) {
+        PersistentResource resource = newPersistentResource(context);
 
         PrimaryObject primary = EFACTORY.createPrimaryObject();
         resource.getContents().add(primary);
