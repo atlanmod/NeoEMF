@@ -90,6 +90,10 @@ public class BasicNamespaceTest extends AbstractTest {
         assertThat(ns0).isSameAs(ns0Bis);
         assertThat(ns0).isNotSameAs(ns1).isNotEqualTo(ns1);
         assertThat(ns1).isNotSameAs(ns0Bis).isNotEqualTo(ns0Bis);
+
+        assertThat(ns0).isEqualTo(ns0);
+        assertThat(ns0).isNotEqualTo(null);
+        assertThat(ns0).isNotEqualTo(0);
     }
 
     @Test

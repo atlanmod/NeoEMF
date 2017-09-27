@@ -2,6 +2,7 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
 import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
@@ -9,12 +10,17 @@ import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,23 +38,23 @@ public class CopyTest extends AbstractTest {
     /**
      * Checks the copy from a XMI file to another.
      *
-     * @throws IOException if an I/O error occurs
+     * @param uri            the URI of the file to copy
+     * @param useCompression {@code true} if the target file must be compressed
      */
-    @Test
-    public void testCopyStandard() throws IOException {
-        final File targetFile = new File(newFile("io") + ".xmi");
+    @ParameterizedTest(name = "[{index}] source = {0} ; useCompression = {1}")
+    @ArgumentsSource(UriProvider.class)
+    public void testCopy(URI uri, Boolean useCompression) throws IOException {
+        final File targetFile = new File(newFile("io") + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to {0}", targetFile);
 
-        URI expectedUri = IOResourceManager.xmiStandard();
-
-        try (InputStream in = new URL(expectedUri.toString()).openStream()) {
+        try (InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in)
-                    .toXmi(targetFile)
+                    .toXmi(targetFile, useCompression)
                     .migrate();
         }
 
         final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
+        EObject expected = IOTestUtils.loadWithEMF(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
@@ -57,83 +63,20 @@ public class CopyTest extends AbstractTest {
     }
 
     /**
-     * Checks the copy from a compressed XMI file to another.
-     *
-     * @throws IOException if an I/O error occurs
+     * An {@link ArgumentsProvider} with all {@link URI}s managed by {@link IOResourceManager}, associated with all
+     * {@link Boolean} variants.
      */
-    @Test
-    public void testCopyStandardCompressed() throws IOException {
-        final File targetFile = new File(newFile("io") + ".zxmi");
-        Log.info("Exporting to {0}", targetFile);
+    @ParametersAreNonnullByDefault
+    public static class UriProvider implements ArgumentsProvider {
 
-        URI expectedUri = IOResourceManager.xmiStandard();
-
-        try (InputStream in = new URL(expectedUri.toString()).openStream()) {
-            Migrator.fromXmi(in)
-                    .toZXmi(targetFile)
-                    .migrate();
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+            return Stream.of(
+                    IOResourceManager.xmiStandard(),
+                    IOResourceManager.xmiWithId(),
+                    IOResourceManager.zxmiStandard(),
+                    IOResourceManager.zxmiWithId()
+            ).flatMap(u -> Stream.of(false, true).map(b -> Arguments.of(u, b)));
         }
-
-        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
-
-        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
-
-        actual.eResource().unload();
-        expected.eResource().unload();
-    }
-
-    /**
-     * Checks the copy from a XMI file to another.
-     *
-     * @throws IOException if an I/O error occurs
-     */
-    @Test
-    public void testCopyWithId() throws IOException {
-        final File targetFile = new File(newFile("io") + ".xmi");
-        Log.info("Exporting to {0}", targetFile);
-
-        URI expectedUri = IOResourceManager.xmiWithId();
-
-        try (InputStream in = new URL(expectedUri.toString()).openStream()) {
-            Migrator.fromXmi(in)
-                    .toXmi(targetFile)
-                    .migrate();
-        }
-
-        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
-
-        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
-
-        actual.eResource().unload();
-        expected.eResource().unload();
-    }
-
-    /**
-     * Checks the copy from a compressed XMI file to another.
-     *
-     * @throws IOException if an I/O error occurs
-     */
-    @Test
-    public void testCopyWithIdCompressed() throws IOException {
-        final File targetFile = new File(newFile("io") + ".zxmi");
-        Log.info("Exporting to {0}", targetFile);
-
-        URI expectedUri = IOResourceManager.zxmiWithId();
-
-        try (InputStream in = new URL(expectedUri.toString()).openStream()) {
-            Migrator.fromXmi(in)
-                    .toZXmi(targetFile)
-                    .migrate();
-        }
-
-        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
-
-        ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
-
-        actual.eResource().unload();
-        expected.eResource().unload();
     }
 }

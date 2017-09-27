@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A simple representation of a structural feature, which can be either a reference or an attribute.
+ * A simple representation of a {@link EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> extends AbstractNamedElement {

@@ -32,4 +32,9 @@ public abstract class AbstractStreamWriter extends AbstractWriter<OutputStream> 
     protected AbstractStreamWriter(OutputStream stream) {
         super(stream);
     }
+
+    @Override
+    protected boolean requireEndBeforeFlush() {
+        return true;
+    }
 }

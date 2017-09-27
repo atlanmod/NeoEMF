@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link AbstractBasicFeature} representing a reference, which links several {@link BasicElement}s.
+ * A simple representation of a {@link EReference}.
  */
 @ParametersAreNonnullByDefault
 public class BasicReference extends AbstractBasicFeature<EReference, Id> {

@@ -30,7 +30,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * A simple representation of a namespace with a prefix and an URI.
+ * A simple representation of a {@link EPackage}.
  */
 @ParametersAreNonnullByDefault
 public class BasicNamespace {

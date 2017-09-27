@@ -113,5 +113,9 @@ public class BasicAttributeTest extends AbstractTest {
         assertThat(attr0).isEqualTo(attr0Bis);
         assertThat(attr0).isNotEqualTo(attr1);
         assertThat(attr1).isNotEqualTo(attr0Bis);
+
+        assertThat(attr0).isEqualTo(attr0);
+        assertThat(attr0).isNotEqualTo(null);
+        assertThat(attr0).isNotEqualTo(0);
     }
 }

@@ -24,7 +24,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A simple representation of a meta-class.
+ * A simple representation of a {@link EClass}.
  */
 @ParametersAreNonnullByDefault
 public class BasicMetaclass extends AbstractNamedElement {

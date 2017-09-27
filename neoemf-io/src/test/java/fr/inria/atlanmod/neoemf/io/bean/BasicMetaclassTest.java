@@ -99,6 +99,10 @@ public class BasicMetaclassTest extends AbstractTest {
         assertThat(mc0).isEqualTo(mc0Bis);
         assertThat(mc0).isNotEqualTo(mc1);
         assertThat(mc1).isNotEqualTo(mc0Bis);
+
+        assertThat(mc0).isEqualTo(mc0);
+        assertThat(mc0).isNotEqualTo(null);
+        assertThat(mc0).isNotEqualTo(0);
     }
 
     @Test

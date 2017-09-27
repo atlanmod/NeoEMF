@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -59,6 +60,7 @@ public class DirectMigrationTest extends AllContextTest {
     @ArgumentsSource(ContextProvider.WithUris.class)
     public void testDirectImport(Context context, URI uri) throws IOException {
         final File sourceFile = file();
+        Log.info("Importing from file... [{0}]", sourceFile);
 
         try (DataMapper mapper = context.createMapper(sourceFile); InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in).toMapper(mapper).migrate();
@@ -81,20 +83,16 @@ public class DirectMigrationTest extends AllContextTest {
     @ArgumentsSource(ContextProvider.WithBooleans.class)
     public void testDirectExport(Context context, Boolean useCompression) throws IOException {
         final File targetFile = new File(file() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
+        Log.info("Exporting to file... [{0}]", targetFile);
 
         URI expectedUri = IOResourceManager.xmiWithId();
 
         try (DataMapper mapper = context.createMapper(file()); InputStream in = new URL(expectedUri.toString()).openStream()) {
             Migrator.fromXmi(in).toMapper(mapper).migrate();
 
-            Migrator<DataMapper> migrator = Migrator.fromMapper(mapper);
-            if (!useCompression) {
-                migrator.toXmi(targetFile);
-            }
-            else {
-                migrator.toZXmi(targetFile);
-            }
-            migrator.migrate();
+            Migrator.fromMapper(mapper)
+                    .toXmi(targetFile, useCompression)
+                    .migrate();
         }
 
         // Comparing with EMF
@@ -133,6 +131,8 @@ public class DirectMigrationTest extends AllContextTest {
             Migrator.fromXmi(in)
                     .toMapper(sourceMapper)
                     .migrate();
+
+            Log.info("Copying backends...");
 
             try (DataMapper targetMapper = targetContext.createMapper(targetFile)) {
                 Migrator.fromMapper(sourceMapper)

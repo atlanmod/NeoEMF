@@ -116,5 +116,17 @@ public class BasicElementTest extends AbstractTest {
         assertThat(elt0).isEqualTo(elt0Bis);
         assertThat(elt0).isNotEqualTo(elt1);
         assertThat(elt1).isNotEqualTo(elt0Bis);
+
+        assertThat(elt0).isEqualTo(elt0);
+        assertThat(elt0).isNotEqualTo(null);
+        assertThat(elt0).isNotEqualTo(0);
+    }
+
+    @Test
+    public void testToString() {
+        BasicElement elt0 = new BasicElement();
+        elt0.name("Element0");
+
+        assertThat(elt0).hasToString("Element0");
     }
 }

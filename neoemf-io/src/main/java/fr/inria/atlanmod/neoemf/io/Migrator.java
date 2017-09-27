@@ -132,7 +132,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * Creates a {@code Migrator} that reads XMI content from an {@link InputStream}.
+     * Creates a {@code Migrator} that reads XMI content from an {@link InputStream}. The content can be compressed.
      *
      * @param stream the stream of the XMI content to read
      *
@@ -227,24 +227,6 @@ public final class Migrator<T> {
     }
 
     /**
-     * Specifies the compressed XMI {@code file} where to write the data.
-     *
-     * @param file the file where to write
-     *
-     * @return this migrator (for chaining)
-     *
-     * @throws IOException if an I/O error occurs during the creation
-     */
-    @Nonnull
-    public Migrator<T> toZXmi(File file) throws IOException {
-        ZipOutputStream output = new ZipOutputStream(new FileOutputStream(file));
-        output.putNextEntry(new ZipEntry(ZXMI_CONTENT));
-        streamsToClose.add(output);
-
-        return toXmi(output);
-    }
-
-    /**
      * Specifies the XMI {@code file} where to write the data.
      *
      * @param file the file where to write
@@ -252,13 +234,37 @@ public final class Migrator<T> {
      * @return this migrator (for chaining)
      *
      * @throws IOException if an I/O error occurs during the creation
+     * @see #toXmi(File, boolean)
      */
     @Nonnull
     public Migrator<T> toXmi(File file) throws IOException {
-        OutputStream output = new FileOutputStream(file);
-        streamsToClose.add(output);
+        return toXmi(file, false);
+    }
 
-        return toXmi(output);
+    /**
+     * Specifies the XMI {@code file} where to write the data.
+     *
+     * @param file           the file where to write
+     * @param useCompression {@code true} if the XMI file must be compressed
+     *
+     * @return this migrator (for chaining)
+     *
+     * @throws IOException if an I/O error occurs during the creation
+     */
+    @Nonnull
+    public Migrator<T> toXmi(File file, boolean useCompression) throws IOException {
+        OutputStream out = new FileOutputStream(file);
+        streamsToClose.add(out);
+
+        if (useCompression) {
+            ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(file));
+            zipOut.putNextEntry(new ZipEntry(ZXMI_CONTENT));
+            streamsToClose.add(zipOut);
+
+            out = zipOut;
+        }
+
+        return toXmi(out);
     }
 
     //endregion
@@ -325,6 +331,7 @@ public final class Migrator<T> {
     /**
      * Runs the migration.
      */
+    // TODO Handle constructor parameters
     @SuppressWarnings("JavaReflectionMemberAccess")
     public void migrate() throws IOException {
         checkNotNull(writers);

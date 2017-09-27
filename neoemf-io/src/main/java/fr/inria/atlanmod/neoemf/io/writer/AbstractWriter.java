@@ -21,8 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link Writer} that acts as an accumulator of multi-value features in order to notify them once. This
@@ -47,18 +45,26 @@ public abstract class AbstractWriter<T> implements Writer {
     private final Deque<Id> previousId = new ArrayDeque<>();
 
     /**
-     * A FIFO that holds multi-valued references of the current element, waiting to be written.
+     * A map that holds multi-valued references of the current element, waiting to be written.
      *
-     * @see #flushCurrentElement()
+     * @see #flushAllFeatures()
      */
-    private Map<BasicReference, List<Id>> manyReferencesAccumulator;
+    @Nonnull
+    private final Map<BasicReference, List<Id>> manyReferencesAccumulator = new HashMap<>();
 
     /**
-     * A FIFO that holds multi-valued attributes of the current element, waiting to be written.
+     * A map that holds multi-valued attributes of the current element, waiting to be written.
      *
-     * @see #flushCurrentElement()
+     * @see #flushAllFeatures()
      */
-    private Map<BasicAttribute, List<Object>> manyAttributesAccumulator;
+    @Nonnull
+    private final Map<BasicAttribute, List<Object>> manyAttributesAccumulator = new HashMap<>();
+
+    /**
+     * The last multi-valued feature identifier processed by {@link #onAttribute(BasicAttribute)} or {@link
+     * #onReference(BasicReference)}.
+     */
+    private int lastManyFeatureId = -1;
 
     /**
      * Constructs a new {@code AbstractWriter} with the given {@code target}.
@@ -74,7 +80,7 @@ public abstract class AbstractWriter<T> implements Writer {
     @Override
     @OverridingMethodsMustInvokeSuper
     public void onStartElement(BasicElement element) {
-        flushCurrentElement();
+        flushAllFeatures();
 
         previousId.addLast(element.id());
     }
@@ -88,9 +94,7 @@ public abstract class AbstractWriter<T> implements Writer {
             onAttribute(attribute, Collections.singletonList(attribute.value()));
         }
         else {
-            if (isNull(manyAttributesAccumulator)) {
-                manyAttributesAccumulator = new HashMap<>();
-            }
+            flushLastFeature(attribute.id());
             manyAttributesAccumulator.computeIfAbsent(attribute, a -> new ArrayList<>()).add(attribute.value());
         }
     }
@@ -106,9 +110,7 @@ public abstract class AbstractWriter<T> implements Writer {
             onReference(reference, Collections.singletonList(reference.value()));
         }
         else {
-            if (isNull(manyReferencesAccumulator)) {
-                manyReferencesAccumulator = new HashMap<>();
-            }
+            flushLastFeature(reference.id());
             manyReferencesAccumulator.computeIfAbsent(reference, r -> new ArrayList<>()).add(reference.value());
         }
     }
@@ -121,7 +123,7 @@ public abstract class AbstractWriter<T> implements Writer {
     @Override
     @OverridingMethodsMustInvokeSuper
     public void onEndElement() {
-        flushCurrentElement();
+        flushAllFeatures();
 
         previousId.removeLast();
     }
@@ -145,19 +147,45 @@ public abstract class AbstractWriter<T> implements Writer {
     public abstract void onReference(BasicReference reference, List<Id> values);
 
     /**
-     * Flushes the current element, and writes all delayed multi-valued features.
+     * Returns {@code true} if this writer requires the end of the current element before flushing all features,
+     * otherwise, all features will be flushed as soon as another feature is intercepted. This is typically used when
+     * writing a structured file with streams.
+     *
+     * @return {@code true} if this writer requires the end of the current element before flushing all features
      */
-    private void flushCurrentElement() {
-        if (nonNull(manyReferencesAccumulator)) {
+    protected boolean requireEndBeforeFlush() {
+        return false;
+    }
+
+    /**
+     * Flushes the last delayed multi-valued feature.
+     *
+     * @param currentManyFeatureId the identifier of the current feature
+     *
+     * @see #lastManyFeatureId
+     * @see #requireEndBeforeFlush()
+     */
+    private void flushLastFeature(int currentManyFeatureId) {
+        if (!requireEndBeforeFlush() && lastManyFeatureId != -1 && currentManyFeatureId != lastManyFeatureId) {
+            flushAllFeatures();
+        }
+        lastManyFeatureId = currentManyFeatureId;
+    }
+
+    /**
+     * Flushes all delayed multi-valued features.
+     */
+    private void flushAllFeatures() {
+        if (!manyReferencesAccumulator.isEmpty()) {
             manyReferencesAccumulator.forEach(this::onReference);
-
-            manyReferencesAccumulator = null;
+            manyReferencesAccumulator.clear();
         }
 
-        if (nonNull(manyAttributesAccumulator)) {
+        if (!manyAttributesAccumulator.isEmpty()) {
             manyAttributesAccumulator.forEach(this::onAttribute);
-
-            manyAttributesAccumulator = null;
+            manyAttributesAccumulator.clear();
         }
+
+        lastManyFeatureId = -1;
     }
 }

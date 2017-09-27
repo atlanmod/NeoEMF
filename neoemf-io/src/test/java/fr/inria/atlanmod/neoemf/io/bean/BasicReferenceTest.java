@@ -126,5 +126,9 @@ public class BasicReferenceTest extends AbstractTest {
         assertThat(ref0).isEqualTo(ref0Bis);
         assertThat(ref0).isNotEqualTo(ref1);
         assertThat(ref1).isNotEqualTo(ref0Bis);
+
+        assertThat(ref0).isEqualTo(ref0);
+        assertThat(ref0).isNotEqualTo(null);
+        assertThat(ref0).isNotEqualTo(0);
     }
 }

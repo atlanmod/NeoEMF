@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A simple representation of an identifiable element, typed with a meta-class.
+ * A simple representation of a {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
 public class BasicElement extends AbstractNamedElement {

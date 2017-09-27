@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @param <H> the type of notified {@link Handler}
  */
 @ParametersAreNonnullByDefault
-public class AbstractProcessor<H extends Handler> extends AbstractNotifier<H> implements Processor {
+public abstract class AbstractProcessor<H extends Handler> extends AbstractNotifier<H> implements Processor {
 
     /**
      * Constructs a new {@code AbstractProcessor} with the given {@code handlers}.
