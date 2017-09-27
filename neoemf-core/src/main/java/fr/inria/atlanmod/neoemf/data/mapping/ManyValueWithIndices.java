@@ -11,15 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -29,7 +30,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" directly with their
@@ -45,10 +45,31 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(SingleFeatureBean key) {
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> this.<V>valueOf(key.withPosition(i)).orElse(null))
-                .collect(Collectors.toList());
+    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+        final Iterator<V> iter = new Iterator<V>() {
+
+            /**
+             * The size of the iterator.
+             */
+            final int size = sizeOfValue(key).orElse(0);
+
+            /**
+             * The current position.
+             */
+            int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size;
+            }
+
+            @Override
+            public V next() {
+                return ManyValueWithIndices.this.<V>valueOf(key.withPosition(currentIndex++)).orElse(null);
+            }
+        };
+
+        return MoreIterables.stream(() -> iter);
     }
 
     @Nonnull
@@ -82,6 +103,21 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         sizeForValue(key.withoutPosition(), size + 1);
 
         innerValueFor(key, value);
+    }
+
+    @Override
+    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
+        checkNotNull(key);
+        checkNotNull(collection);
+
+        if (collection.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        int firstPosition = key.position();
+
+        IntStream.range(0, collection.size())
+                .forEach(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
     }
 
     @Nonnull
@@ -118,47 +154,11 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfValue(key).orElse(0);
-        for (int i = 0; i < size; i++) {
-            if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
-                return Optional.of(i);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    default <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfValue(key).orElse(0);
-        for (int i = size - 1; i >= 0; i--) {
-            if (valueOf(key.withPosition(i)).filter(v -> Objects.equals(v, value)).isPresent()) {
-                return Optional.of(i);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
     default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         return this.<Integer>valueOf(key)
-                .filter(s -> s != 0);
+                .filter(s -> s > 0);
     }
 
     /**

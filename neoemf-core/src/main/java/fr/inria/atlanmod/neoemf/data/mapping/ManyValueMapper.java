@@ -16,17 +16,14 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An object capable of mapping multi-valued attributes represented as a set of key/value pair.
@@ -52,12 +49,12 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an immutable ordered {@link List} containing all values
+     * @return an immutable ordered {@link Stream} containing all values
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> List<V> allValuesOf(SingleFeatureBean key);
+    <V> Stream<V> allValuesOf(SingleFeatureBean key);
 
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
@@ -99,19 +96,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException      if any parameter is {@code null}
      * @throws IndexOutOfBoundsException if {@code key#position() > size}
      */
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
-        }
-
-        int firstPosition = key.position();
-
-        IntStream.range(0, collection.size())
-                .forEach(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
-    }
+    <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection);
 
     /**
      * Adds the {@code value} to the specified {@code key} at the last position.
@@ -184,93 +169,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    default <V> void removeAllValues(SingleFeatureBean key) {
-        removeValue(key);
-    }
-
-    /**
-     * Moves the value of the specified {@code source} key to the {@code target} key.
-     *
-     * @param source the key identifying the multi-valued attribute to move
-     * @param target the key identifying the multi-valued attribute where to move the value to
-     * @param <V>    the type of value
-     *
-     * @return an {@link Optional} containing the moved value, or {@link Optional#empty()} if no value has been moved
-     */
-    @Nonnull
-    default <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        checkNotNull(source);
-        checkNotNull(target);
-
-        if (Objects.equals(source, target)) {
-            return Optional.empty();
-        }
-
-        Optional<V> movedValue = removeValue(source);
-        movedValue.ifPresent(v -> addValue(target, v));
-        return movedValue;
-    }
-
-    /**
-     * Checks whether the specified {@code key} has the given {@code value}.
-     *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to look for
-     * @param <V>   the type of value
-     *
-     * @return {@code true} if the {@code key} has the {@code value}, {@code false} otherwise
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    default <V> boolean containsValue(SingleFeatureBean key, @Nullable V value) {
-        return indexOfValue(key, value).isPresent();
-    }
-
-    /**
-     * Retrieves the first position of the {@code value} of the specified {@code key}.
-     *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to look for
-     * @param <V>   the type of value
-     *
-     * @return an {@link Optional} containing the first position of the {@code value}, or {@link Optional#empty()} if
-     * the {@code key} hasn't the {@code value}
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    @Nonnull
-    @Nonnegative
-    default <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        return Optional.of(allValuesOf(key).indexOf(value))
-                .filter(i -> i >= 0);
-    }
-
-    /**
-     * Retrieves the last position of the {@code value} of the specified {@code key}.
-     *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to look for
-     * @param <V>   the type of value
-     *
-     * @return an {@link Optional} containing the last position of the {@code value}, or {@link Optional#empty()} if the
-     * {@code key} hasn't the {@code value}
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
-     */
-    @Nonnull
-    @Nonnegative
-    default <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        return Optional.of(allValuesOf(key).lastIndexOf(value))
-                .filter(i -> i >= 0);
-    }
+    <V> void removeAllValues(SingleFeatureBean key);
 
     /**
      * Returns the number of value of the specified {@code key}.
@@ -285,8 +184,5 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return Optional.of(allValuesOf(key).size())
-                .filter(s -> s != 0);
-    }
+    <V> Optional<Integer> sizeOfValue(SingleFeatureBean key);
 }

@@ -160,7 +160,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                             }
                         }
                         else {
-                            List<Id> references = mapper.allReferencesOf(key).stream()
+                            List<Id> references = mapper.allReferencesOf(key)
                                     .map(r -> createReference(key, eReference, r))
                                     .filter(Objects::nonNull)
                                     .collect(Collectors.toList());

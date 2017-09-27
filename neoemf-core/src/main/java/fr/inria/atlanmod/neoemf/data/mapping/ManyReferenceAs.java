@@ -8,12 +8,10 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
@@ -35,12 +33,11 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default List<Id> allReferencesOf(SingleFeatureBean key) {
+    default Stream<Id> allReferencesOf(SingleFeatureBean key) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>allValuesOf(key).stream()
-                .map(converter::revert)
-                .collect(Collectors.toList());
+        return this.<M>allValuesOf(key)
+                .map(converter::revert);
     }
 
     @Nonnull
@@ -92,38 +89,6 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     @Override
     default void removeAllReferences(SingleFeatureBean key) {
         this.<M>removeAllValues(key);
-    }
-
-    @Nonnull
-    @Override
-    default Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        Converter<Id, M> converter = manyReferenceConverter();
-
-        return this.<M>moveValue(source, target)
-                .map(converter::revert);
-    }
-
-    @Override
-    default boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
-        Converter<Id, M> converter = manyReferenceConverter();
-
-        return this.<M>containsValue(key, isNull(reference) ? null : converter.convert(reference));
-    }
-
-    @Nonnull
-    @Override
-    default Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        Converter<Id, M> converter = manyReferenceConverter();
-
-        return this.<M>indexOfValue(key, isNull(reference) ? null : converter.convert(reference));
-    }
-
-    @Nonnull
-    @Override
-    default Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        Converter<Id, M> converter = manyReferenceConverter();
-
-        return this.<M>lastIndexOfValue(key, isNull(reference) ? null : converter.convert(reference));
     }
 
     @Nonnull

@@ -133,12 +133,6 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         throw EXCEPTION;
     }
@@ -173,12 +167,6 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
         throw EXCEPTION;
     }
 }

@@ -20,10 +20,10 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -194,7 +194,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> List<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         return next.allValuesOf(key);
     }
 
@@ -244,35 +244,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     }
 
     @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        return next.moveValue(source, target);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public <V> boolean containsValue(SingleFeatureBean key, @Nullable V value) {
-        return next.containsValue(key, value);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        return next.indexOfValue(key, value);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        return next.lastIndexOfValue(key, value);
-    }
-
-    @Nonnull
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -290,7 +261,7 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public List<Id> allReferencesOf(SingleFeatureBean key) {
+    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         return next.allReferencesOf(key);
     }
 
@@ -337,35 +308,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @OverridingMethodsMustInvokeSuper
     public void removeAllReferences(SingleFeatureBean key) {
         next.removeAllReferences(key);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        return next.moveReference(source, target);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
-        return next.containsReference(key, reference);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        return next.indexOfReference(key, reference);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        return next.lastIndexOfReference(key, reference);
     }
 
     @Nonnull

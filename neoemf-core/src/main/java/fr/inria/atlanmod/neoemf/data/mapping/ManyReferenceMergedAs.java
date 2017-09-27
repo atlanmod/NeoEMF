@@ -17,14 +17,13 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -55,12 +54,13 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
 
     @Nonnull
     @Override
-    default List<Id> allReferencesOf(SingleFeatureBean key) {
+    default Stream<Id> allReferencesOf(SingleFeatureBean key) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
                 .map(converter::revert)
-                .orElseGet(Collections::emptyList);
+                .map(List::stream)
+                .orElseGet(Stream::empty);
     }
 
     @Nonnull
@@ -160,36 +160,9 @@ public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReference
         return previousId;
     }
 
-    @Nonnull
-    @Nonnegative
     @Override
-    default Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return Optional.empty();
-        }
-
-        Converter<List<Id>, M> converter = manyReferenceMerger();
-
-        return this.<M>valueOf(key)
-                .map(converter::revert)
-                .map(ids -> ids.indexOf(reference))
-                .filter(i -> i >= 0);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    default Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return Optional.empty();
-        }
-
-        Converter<List<Id>, M> converter = manyReferenceMerger();
-
-        return this.<M>valueOf(key)
-                .map(converter::revert)
-                .map(ids -> ids.lastIndexOf(reference))
-                .filter(i -> i >= 0);
+    default void removeAllReferences(SingleFeatureBean key) {
+        removeReference(key);
     }
 
     @Nonnull

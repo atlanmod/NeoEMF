@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -31,12 +32,12 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -335,10 +336,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            return store.containsValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
+            return store.allValuesOf(key).anyMatch(attrConverter.convert(value, EObjects.asAttribute(feature))::equals);
         }
         else {
-            return store.containsReference(key, PersistentEObject.from(value).id());
+            return store.allReferencesOf(key).anyMatch(PersistentEObject.from(value).id()::equals);
         }
     }
 
@@ -360,10 +361,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = store.indexOfValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
+            index = MoreStreams.indexOf(store.allValuesOf(key), attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
-            index = store.indexOfReference(key, PersistentEObject.from(value).id());
+            index = MoreStreams.indexOf(store.allReferencesOf(key), PersistentEObject.from(value).id());
         }
         return index.orElse(EStore.NO_INDEX);
     }
@@ -386,10 +387,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = store.lastIndexOfValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
+            index = MoreStreams.lastIndexOf(store.allValuesOf(key), attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
-            index = store.lastIndexOfReference(key, PersistentEObject.from(value).id());
+            index = MoreStreams.lastIndexOf(store.allReferencesOf(key), PersistentEObject.from(value).id());
         }
         return index.orElse(EStore.NO_INDEX);
     }
@@ -462,31 +463,12 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nullable
     @Override
     public final Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-
-        checkArgument(feature.isMany(), "Cannot compute move() of a single-valued feature");
-
-        int size = size(internalObject, feature);
-        checkElementIndex(sourceIndex, size);
-        checkPositionIndex(targetIndex, size);
-
-        PersistentEObject object = PersistentEObject.from(internalObject);
-        refresh(object);
-
-        ManyFeatureBean sourceKey = ManyFeatureBean.from(object, feature, sourceIndex);
-        ManyFeatureBean targetKey = sourceKey.withPosition(targetIndex);
-
-        if (EObjects.isAttribute(feature)) {
-            return store.moveValue(sourceKey, targetKey)
-                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
-                    .orElse(null);
+        Object moved = remove(internalObject, feature, sourceIndex);
+        if (nonNull(moved)) { // Nothing has been removed
+            add(internalObject, feature, targetIndex, moved);
         }
-        else {
-            return store.moveReference(sourceKey, targetKey)
-                    .map(this::resolve)
-                    .orElse(null);
-        }
+
+        return moved;
     }
 
     @Override
@@ -570,34 +552,34 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            List<Object> values;
+            Stream<Object> stream;
             if (!feature.isMany()) {
-                values = store.valueOf(key)
-                        .map(Collections::singletonList)
-                        .orElseGet(Collections::emptyList);
+                stream = store.valueOf(key)
+                        .map(Stream::of)
+                        .orElseGet(Stream::empty);
             }
             else {
-                values = store.allValuesOf(key);
+                stream = store.allValuesOf(key);
             }
 
             EAttribute attribute = EObjects.asAttribute(feature);
 
-            return values.stream()
+            return stream
                     .map(v -> attrConverter.revert(v, attribute))
                     .collect(Collectors.toList());
         }
         else {
-            List<Id> references;
+            Stream<Id> stream;
             if (!feature.isMany()) {
-                references = store.referenceOf(key)
-                        .map(Collections::singletonList)
-                        .orElseGet(Collections::emptyList);
+                stream = store.referenceOf(key)
+                        .map(Stream::of)
+                        .orElseGet(Stream::empty);
             }
             else {
-                references = store.allReferencesOf(key);
+                stream = store.allReferencesOf(key);
             }
 
-            return references.stream()
+            return stream
                     .map(this::resolve)
                     .collect(Collectors.toList());
         }

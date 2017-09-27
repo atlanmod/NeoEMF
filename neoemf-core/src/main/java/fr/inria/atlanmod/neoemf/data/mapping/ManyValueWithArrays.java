@@ -19,7 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -46,11 +48,12 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(SingleFeatureBean key) {
-        V[] values = this.<V[]>valueOf(key)
-                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
+    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+        checkNotNull(key);
 
-        return Arrays.asList(values);
+        return this.<V[]>valueOf(key)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty);
     }
 
     @Nonnull
@@ -138,5 +141,19 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         }
 
         return previousValue;
+    }
+
+    @Override
+    default <V> void removeAllValues(SingleFeatureBean key) {
+        removeValue(key);
+    }
+
+    @Nonnull
+    @Nonnegative
+    @Override
+    default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+        return this.<V[]>valueOf(key)
+                .map(a -> a.length)
+                .filter(s -> s > 0);
     }
 }

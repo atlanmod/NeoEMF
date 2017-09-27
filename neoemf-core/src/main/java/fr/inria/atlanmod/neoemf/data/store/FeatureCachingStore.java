@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -167,24 +166,6 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
 
     @Nonnull
     @Override
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        if (Objects.equals(source.withoutPosition(), target.withoutPosition())) {
-            int first = Math.min(source.position(), target.position());
-            int last = Math.max(source.position(), target.position()) + 1;
-
-            IntStream.range(first, last)
-                    .forEach(i -> cache.invalidate(source.withPosition(i)));
-        }
-        else {
-            // TODO Implement this case
-            throw new UnsupportedOperationException();
-        }
-
-        return super.moveValue(source, target);
-    }
-
-    @Nonnull
-    @Override
     @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(ManyFeatureBean key) {
         return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(ManyFeatureBean.class.cast(k)).orElse(null))));
@@ -257,23 +238,5 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllReferences(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        if (Objects.equals(source.withoutPosition(), target.withoutPosition())) {
-            int first = Math.min(source.position(), target.position());
-            int last = Math.max(source.position(), target.position()) + 1;
-
-            IntStream.range(first, last)
-                    .forEach(i -> cache.invalidate(source.withPosition(i)));
-        }
-        else {
-            // TODO Implement this case
-            throw new UnsupportedOperationException();
-        }
-
-        return super.moveReference(source, target);
     }
 }

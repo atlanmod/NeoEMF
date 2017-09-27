@@ -25,10 +25,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -139,7 +139,7 @@ public class StatsStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         return record(() -> super.allValuesOf(key));
     }
 
@@ -183,31 +183,6 @@ public class StatsStore extends AbstractStore {
     }
 
     @Nonnull
-    @Override
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        return record(() -> super.moveValue(source, target));
-    }
-
-    @Override
-    public <V> boolean containsValue(SingleFeatureBean key, @Nullable V value) {
-        return record(() -> super.containsValue(key, value));
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        return record(() -> super.indexOfValue(key, value));
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        return record(() -> super.lastIndexOfValue(key, value));
-    }
-
-    @Nonnull
     @Nonnegative
     @Override
     public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
@@ -222,7 +197,7 @@ public class StatsStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(SingleFeatureBean key) {
+    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         return record(() -> super.allReferencesOf(key));
     }
 
@@ -263,31 +238,6 @@ public class StatsStore extends AbstractStore {
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
         record(() -> super.removeAllReferences(key));
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        return record(() -> super.moveReference(source, target));
-    }
-
-    @Override
-    public boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
-        return record(() -> super.containsReference(key, reference));
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        return record(() -> super.indexOfReference(key, reference));
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        return record(() -> super.lastIndexOfReference(key, reference));
     }
 
     @Nonnull

@@ -167,12 +167,6 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        return thenIncrementAndSave(() -> super.moveValue(source, target), 2);
-    }
-
-    @Nonnull
-    @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
     }
@@ -208,12 +202,6 @@ public class AutoSaveStore extends AbstractStore {
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
         thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        return thenIncrementAndSave(() -> super.moveReference(source, target), 2);
     }
 
     /**

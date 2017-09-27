@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,9 +49,10 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> List<V> allValuesOf(SingleFeatureBean key) {
+    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         return this.<List<V>>valueOf(key)
-                .orElseGet(Collections::<V>emptyList);
+                .map(List::stream)
+                .orElseGet(Stream::empty);
     }
 
     @Nonnull
@@ -135,6 +136,19 @@ public interface ManyValueWithLists extends ManyValueMapper {
         }
 
         return previousValue;
+    }
+
+    @Override
+    default <V> void removeAllValues(SingleFeatureBean key) {
+        removeValue(key);
+    }
+
+    @Nonnull
+    @Override
+    default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+        return this.<List<V>>valueOf(key)
+                .map(List::size)
+                .filter(s -> s > 0);
     }
 
     /**

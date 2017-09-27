@@ -26,6 +26,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -157,7 +159,7 @@ public class LoggingStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         return callAndReturn(super::allValuesOf, key);
     }
 
@@ -201,31 +203,6 @@ public class LoggingStore extends AbstractStore {
     }
 
     @Nonnull
-    @Override
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        return callAndReturn(super::moveValue, source, target);
-    }
-
-    @Override
-    public <V> boolean containsValue(SingleFeatureBean key, @Nullable V value) {
-        return callAndReturn(super::containsValue, key, value);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        return callAndReturn(super::indexOfValue, key, value);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        return callAndReturn(super::lastIndexOfValue, key, value);
-    }
-
-    @Nonnull
     @Nonnegative
     @Override
     public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
@@ -240,7 +217,7 @@ public class LoggingStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(SingleFeatureBean key) {
+    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         return callAndReturn(super::allReferencesOf, key);
     }
 
@@ -281,31 +258,6 @@ public class LoggingStore extends AbstractStore {
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
         call(super::removeAllReferences, key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        return callAndReturn(super::moveReference, source, target);
-    }
-
-    @Override
-    public boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
-        return callAndReturn(super::containsReference, key, reference);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        return callAndReturn(super::indexOfReference, key, reference);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        return callAndReturn(super::lastIndexOfReference, key, reference);
     }
 
     @Nonnull
@@ -389,10 +341,25 @@ public class LoggingStore extends AbstractStore {
      *
      * @return the result of the call
      */
+    @SuppressWarnings("unchecked")
     private <K, V, R> R callAndReturn(BiFunction<K, V, R> function, K key, @Nullable V value) {
         try {
             R result = function.apply(key, value);
-            logSuccess(key, value, result);
+            R resultToLog;
+
+            if (Stream.class.isInstance(result)) {
+                // Clone the stream
+                Stream<?> stream = Stream.class.cast(result);
+                List<?> list = stream.collect(Collectors.toList());
+
+                result = (R) list.stream();
+                resultToLog = (R) list.stream();
+            }
+            else {
+                resultToLog = result;
+            }
+
+            logSuccess(key, value, resultToLog);
             return result;
         }
         catch (RuntimeException e) {

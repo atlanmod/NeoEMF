@@ -21,9 +21,9 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -134,7 +134,7 @@ public final class ClosedStore implements Store {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 
@@ -177,29 +177,6 @@ public final class ClosedStore implements Store {
 
     @Nonnull
     @Override
-    public <V> Optional<V> moveValue(ManyFeatureBean source, ManyFeatureBean target) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public <V> boolean containsValue(SingleFeatureBean key, @Nullable V value) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
     public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         throw EXCEPTION;
     }
@@ -229,7 +206,7 @@ public final class ClosedStore implements Store {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(SingleFeatureBean key) {
+    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 
@@ -267,29 +244,6 @@ public final class ClosedStore implements Store {
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> moveReference(ManyFeatureBean source, ManyFeatureBean target) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public boolean containsReference(SingleFeatureBean key, @Nullable Id reference) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        throw EXCEPTION;
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
         throw EXCEPTION;
     }
 

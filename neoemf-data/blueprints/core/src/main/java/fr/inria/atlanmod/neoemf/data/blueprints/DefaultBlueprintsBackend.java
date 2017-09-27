@@ -22,24 +22,21 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
 
 /**
  * The default {@link BlueprintsBackend} mapping.
@@ -178,18 +175,41 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> List<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.owner());
 
         if (!vertex.isPresent()) {
-            return Collections.emptyList();
+            return Stream.empty();
         }
 
-        return IntStream.range(0, sizeOfValue(key).orElse(0))
-                .mapToObj(i -> vertex.get().<V>getProperty(formatProperty(key, i)))
-                .collect(Collectors.toList());
+        final Iterator<V> iter = new Iterator<V>() {
+
+            /**
+             * The size of the iterator.
+             */
+            @Nonnegative
+            final int size = sizeOfValue(key).orElse(0);
+
+            /**
+             * The current position.
+             */
+            @Nonnegative
+            int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size;
+            }
+
+            @Override
+            public V next() {
+                return vertex.get().getProperty(formatProperty(key, currentIndex++));
+            }
+        };
+
+        return MoreIterables.stream(() -> iter);
     }
 
     @Nonnull
@@ -313,58 +333,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Nonnull
-    @Override
-    public <V> Optional<Integer> indexOfValue(SingleFeatureBean key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.owner());
-
-        if (!vertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfValue(key).orElse(0);
-        for (int i = 0; i < size; i++) {
-            V v = vertex.get().<V>getProperty(formatProperty(key, i));
-            if (Objects.equals(v, value)) {
-                return Optional.of(i);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<Integer> lastIndexOfValue(SingleFeatureBean key, @Nullable V value) {
-        if (isNull(value)) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.owner());
-
-        if (!vertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfValue(key).orElse(0);
-        for (int i = size - 1; i >= 0; i--) {
-            V v = vertex.get().<V>getProperty(formatProperty(key, i));
-            if (Objects.equals(v, value)) {
-                return Optional.of(i);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @Nonnull
     @Nonnegative
     @Override
     public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
@@ -372,7 +340,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         return get(key.owner())
                 .map(v -> v.<Integer>getProperty(formatProperty(key, PROPERTY_SIZE)))
-                .filter(s -> s != 0);
+                .filter(s -> s > 0);
     }
 
     /**
@@ -428,13 +396,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public List<Id> allReferencesOf(SingleFeatureBean key) {
+    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.owner());
 
         if (!vertex.isPresent()) {
-            return Collections.emptyList();
+            return Stream.empty();
         }
 
         Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.<Integer>getProperty(PROPERTY_INDEX));
@@ -444,10 +412,24 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .direction(Direction.OUT)
                 .edges();
 
-        return MoreIterables.stream(edges)
+        Iterator<Edge> sortedEdges = MoreIterables.stream(edges)
                 .sorted(byPosition)
-                .map(e -> AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()))
-                .collect(Collectors.toList());
+                .iterator();
+
+        final Iterator<Id> iter = new Iterator<Id>() {
+
+            @Override
+            public boolean hasNext() {
+                return sortedEdges.hasNext();
+            }
+
+            @Override
+            public Id next() {
+                return AS_LONG_OBJECT.revert(sortedEdges.next().getVertex(Direction.IN).getId());
+            }
+        };
+
+        return MoreIterables.stream(() -> iter);
     }
 
     @Nonnull
@@ -637,84 +619,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         edges.forEach(Element::remove);
 
         sizeForReference(key, 0);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Integer> indexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfReference(key).orElse(0);
-        if (size == 0) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.owner());
-        Optional<Vertex> referencedVertex = get(reference);
-
-        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        Iterable<Edge> edges = referencedVertex.get().query()
-                .labels(formatLabel(key))
-                .direction(Direction.IN)
-                .edges();
-
-        for (Edge e : edges) {
-            Vertex v = e.getVertex(Direction.OUT);
-            if (Objects.equals(v, vertex.get())) {
-                int position = e.getProperty(PROPERTY_INDEX);
-                return Optional.of(position);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Integer> lastIndexOfReference(SingleFeatureBean key, @Nullable Id reference) {
-        if (isNull(reference)) {
-            return Optional.empty();
-        }
-
-        int size = sizeOfReference(key).orElse(0);
-        if (size == 0) {
-            return Optional.empty();
-        }
-
-        checkNotNull(key);
-
-        Optional<Vertex> vertex = get(key.owner());
-        Optional<Vertex> referencedVertex = get(reference);
-
-        if (!vertex.isPresent() || !referencedVertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        Iterable<Edge> edges = referencedVertex.get().query()
-                .labels(formatLabel(key))
-                .direction(Direction.IN)
-                .edges();
-
-        Optional<Integer> lastIndex = Optional.empty();
-
-        for (Edge e : edges) {
-            Vertex v = e.getVertex(Direction.OUT);
-            if (Objects.equals(v, vertex.get())) {
-                int position = e.getProperty(PROPERTY_INDEX);
-                if (!lastIndex.isPresent() || position > lastIndex.get()) {
-                    lastIndex = Optional.of(position);
-                }
-            }
-        }
-
-        return lastIndex;
     }
 
     @Nonnull
