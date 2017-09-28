@@ -126,27 +126,17 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCacheStore
      */
     @Nonnull
     PersistenceOptions cacheFeatures();
-
-    /**
-     * Adds the {@code cache-is-set} feature in the created options.
-     *
-     * @return this builder (for chaining)
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore
-     */
-    @Nonnull
-    PersistenceOptions cacheIsSet();
 
     /**
      * Adds the {@code cache-containers} feature in the created options.
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCacheStore
      */
     @Nonnull
     PersistenceOptions cacheContainers();
@@ -156,7 +146,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ClassCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.ClassCacheStore
      */
     @Nonnull
     PersistenceOptions cacheMetaClasses();
@@ -166,7 +156,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCacheStore
      */
     @Nonnull
     PersistenceOptions cacheSizes();
@@ -211,7 +201,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.LogStore
      */
     @Nonnull
     PersistenceOptions log();
@@ -224,7 +214,7 @@ public interface PersistenceOptions {
      * @return this builder (for chaining)
      *
      * @throws NullPointerException if the {@code level} is {@code null}
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.LogStore
      */
     @Nonnull
     PersistenceOptions log(Level level);
@@ -234,7 +224,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatsStore
+     * @see fr.inria.atlanmod.neoemf.data.store.StatRecordStore
      */
     @Nonnull
     PersistenceOptions recordStats();

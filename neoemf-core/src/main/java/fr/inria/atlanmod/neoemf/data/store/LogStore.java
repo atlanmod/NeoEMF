@@ -37,35 +37,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
+ * A {@link Store} wrapper that logs every calls in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
-public class LoggingStore extends AbstractStore {
+public class LogStore extends AbstractStore {
 
     /**
      * The default {@link Level} for logging.
      */
+    @Nonnull
     private final Level level;
 
     /**
-     * Constructs a new {@code LoggingStore}.
+     * Constructs a new {@code LogStore}.
      *
      * @param store the inner store
      */
     @VisibleForReflection
-    public LoggingStore(Store store) {
+    public LogStore(Store store) {
         this(store, Level.INFO);
     }
 
     /**
-     * Constructs a new {@code LoggingStore} with the given logging {@code level}.
+     * Constructs a new {@code LogStore} with the given logging {@code level}.
      *
      * @param store the underlying store
      * @param level the logging level to use
      */
     @VisibleForReflection
-    public LoggingStore(Store store, Level level) {
+    public LogStore(Store store, Level level) {
         super(store);
         this.level = level;
     }

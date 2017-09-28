@@ -32,24 +32,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} wrapper that logs every call to its methods in the {@link Log}.
+ * A {@link Store} wrapper that records every calls to build usage statistics.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
-public class StatsStore extends AbstractStore {
+public class StatRecordStore extends AbstractStore {
 
     /**
      * A map that holds the different calls made on the {@link Store} chain.
      */
+    @Nonnull
     private final Map<String, AtomicLong> calls = new HashMap<>();
 
     /**
-     * Constructs a new {@code LoggingStore}.
+     * Constructs a new {@code LogStore}.
      *
      * @param store the inner store
      */
     @VisibleForReflection
-    public StatsStore(Store store) {
+    public StatRecordStore(Store store) {
         super(store);
     }
 

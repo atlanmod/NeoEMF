@@ -90,23 +90,7 @@ public class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the {@link IsSetCachingStore}.
-     */
-    @Test
-    public void testIsSetCachingOption() {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheIsSet()
-                .asMap();
-
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(IsSetCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    /**
-     * Checks the setup of the {@link LoggingStore}.
+     * Checks the setup of the {@link LogStore}.
      */
     @Test
     public void testLoggingOption() {
@@ -115,14 +99,14 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(LoggingStore.class);
+        assertThat(store).isInstanceOf(LogStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link SizeCachingStore}.
+     * Checks the setup of the {@link SizeCacheStore}.
      */
     @Test
     public void testSizeCachingOption() {
@@ -131,14 +115,14 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(SizeCachingStore.class);
+        assertThat(store).isInstanceOf(SizeCacheStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link FeatureCachingStore}.
+     * Checks the setup of the {@link FeatureCacheStore}.
      */
     @Test
     public void testFeatureCachingOption() {
@@ -147,14 +131,14 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(FeatureCachingStore.class);
+        assertThat(store).isInstanceOf(FeatureCacheStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link ContainerCachingStore}.
+     * Checks the setup of the {@link ContainerCacheStore}.
      */
     @Test
     public void testContainerCachingOption() {
@@ -163,14 +147,14 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(ContainerCachingStore.class);
+        assertThat(store).isInstanceOf(ContainerCacheStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link ClassCachingStore}.
+     * Checks the setup of the {@link ClassCacheStore}.
      */
     @Test
     public void testMetaclassCachingOption() {
@@ -179,14 +163,14 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(ClassCachingStore.class);
+        assertThat(store).isInstanceOf(ClassCacheStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
     }
 
     /**
-     * Checks the setup of the {@link StatsStore}.
+     * Checks the setup of the {@link StatRecordStore}.
      */
     @Test
     public void testStatsCachingOption() {
@@ -195,7 +179,7 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(StatsStore.class);
+        assertThat(store).isInstanceOf(StatRecordStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -248,79 +232,13 @@ public class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
-     * <li>{@link IsSetCachingStore}</li> <li>{@link LoggingStore}</li> </ul>
-     */
-    @Test
-    public void testIsSetCachingLoggingOptions() {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheIsSet()
-                .log()
-                .asMap();
-
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(LoggingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(IsSetCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
-     * <li>{@link IsSetCachingStore}</li> <li>{@link SizeCachingStore}</li> </ul>
-     */
-    @Test
-    public void testIsSetCachingSizeCachingOptions() {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheIsSet()
-                .cacheSizes()
-                .asMap();
-
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(IsSetCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
-     * <li>{@link SizeCachingStore}</li> <li>{@link FeatureCachingStore}</li> </ul>
-     */
-    @Test
-    public void testSizeCachingFeatureCachingOptions() {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheSizes()
-                .cacheFeatures()
-                .asMap();
-
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    /**
-     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}. <ul>
-     * <li>{@link IsSetCachingStore}</li> <li>{@link SizeCachingStore}</li> <li>{@link FeatureCachingStore}</li>
-     * <li>{@link LoggingStore}</li> <li>{@link AutoSaveStore}</li> </ul>
+     * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      */
     @Test
     public void testAllOptions() {
         long expectedChunk = 12_345;
 
         Map<String, Object> options = CommonOptions.builder()
-                .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()
                 .log()
@@ -331,10 +249,10 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(StatsStore.class);
+        assertThat(store).isExactlyInstanceOf(StatRecordStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(LoggingStore.class);
+        assertThat(store).isExactlyInstanceOf(LogStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStore.class);
@@ -343,19 +261,16 @@ public class StoreFactoryTest extends AbstractTest {
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ClassCachingStore.class);
+        assertThat(store).isExactlyInstanceOf(ClassCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ContainerCachingStore.class);
+        assertThat(store).isExactlyInstanceOf(ContainerCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
+        assertThat(store).isExactlyInstanceOf(SizeCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(IsSetCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStore.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCacheStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);

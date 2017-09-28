@@ -29,37 +29,30 @@ public enum PersistentStoreOptions {
     /**
      * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCacheStore
      */
-    CACHE_STRUCTURAL_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore"),
-
-    /**
-     * Caches the presence of a value.
-     *
-     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore
-     */
-    CACHE_IS_SET("fr.inria.atlanmod.neoemf.data.store.IsSetCachingStore"),
+    CACHE_FEATURE("fr.inria.atlanmod.neoemf.data.store.FeatureCacheStore"),
 
     /**
      * Caches the size data.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCacheStore
      */
-    CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCachingStore"),
+    CACHE_SIZE("fr.inria.atlanmod.neoemf.data.store.SizeCacheStore"),
 
     /**
      * Caches containers.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.ContainerCacheStore
      */
-    CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore"),
+    CACHE_CONTAINER("fr.inria.atlanmod.neoemf.data.store.ContainerCacheStore"),
 
     /**
      * Caches meta-classes.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.ClassCachingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.ClassCacheStore
      */
-    CACHE_METACLASS("fr.inria.atlanmod.neoemf.data.store.ClassCachingStore"),
+    CACHE_METACLASS("fr.inria.atlanmod.neoemf.data.store.ClassCacheStore"),
 
     /**
      * Automatically saves modifications as calls are made.
@@ -78,16 +71,16 @@ public enum PersistentStoreOptions {
     /**
      * Logs every call to a methods.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStore
+     * @see fr.inria.atlanmod.neoemf.data.store.LogStore
      */
-    LOG("fr.inria.atlanmod.neoemf.data.store.LoggingStore", PersistentResourceOptions.LOG_LEVEL),
+    LOG("fr.inria.atlanmod.neoemf.data.store.LogStore", PersistentResourceOptions.LOG_LEVEL),
 
     /**
      * Records several stats.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatsStore
+     * @see fr.inria.atlanmod.neoemf.data.store.StatRecordStore
      */
-    STATS("fr.inria.atlanmod.neoemf.data.store.StatsStore");
+    STATS("fr.inria.atlanmod.neoemf.data.store.StatRecordStore");
 
     /**
      * The type of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}.

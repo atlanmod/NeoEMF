@@ -25,15 +25,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class ClassCachingStore extends AbstractCachingStore<Id, Optional<ClassBean>> {
+public class ClassCacheStore extends AbstractCacheStore<Id, Optional<ClassBean>> {
 
     /**
-     * Constructs a new {@code ClassCachingStore} on the given {@code store}.
+     * Constructs a new {@code ClassCacheStore} on the given {@code store}.
      *
      * @param store the inner store
      */
     @VisibleForReflection
-    protected ClassCachingStore(Store store) {
+    protected ClassCacheStore(Store store) {
         super(store);
     }
 

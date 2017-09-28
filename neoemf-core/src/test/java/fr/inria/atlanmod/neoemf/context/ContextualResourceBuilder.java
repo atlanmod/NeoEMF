@@ -88,7 +88,6 @@ final class ContextualResourceBuilder {
         return context.optionsBuilder()
                 .log(Level.DEBUG)
                 .autoSave(100)
-                .cacheIsSet()
                 .cacheSizes()
                 .cacheFeatures()
                 .cacheContainers()

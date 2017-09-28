@@ -113,13 +113,7 @@ public abstract class AbstractPersistenceOptions<B extends AbstractPersistenceOp
     @Nonnull
     @Override
     public B cacheFeatures() {
-        return withStore(PersistentStoreOptions.CACHE_STRUCTURAL_FEATURE);
-    }
-
-    @Nonnull
-    @Override
-    public B cacheIsSet() {
-        return withStore(PersistentStoreOptions.CACHE_IS_SET);
+        return withStore(PersistentStoreOptions.CACHE_FEATURE);
     }
 
     @Nonnull
