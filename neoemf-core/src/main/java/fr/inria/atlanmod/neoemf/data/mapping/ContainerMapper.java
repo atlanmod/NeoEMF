@@ -61,17 +61,4 @@ public interface ContainerMapper {
      * @throws NullPointerException if the {@code id} is {@code null}
      */
     void removeContainer(Id id);
-
-    /**
-     * Checks whether the specified {@code id} has a defined container.
-     *
-     * @param id the {@link Id} of the contained element
-     *
-     * @return {@code true} if the {@code id} has a container, {@code false} otherwise
-     *
-     * @throws NullPointerException if the {@code id} is {@code null}
-     */
-    default boolean hasContainer(Id id) {
-        return containerOf(id).isPresent();
-    }
 }

@@ -96,11 +96,6 @@ public class LoggingStore extends AbstractStore {
         call(super::removeContainer, id);
     }
 
-    @Override
-    public boolean hasContainer(Id id) {
-        return callAndReturn(super::hasContainer, id);
-    }
-
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
@@ -110,11 +105,6 @@ public class LoggingStore extends AbstractStore {
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
         return callAndReturn(super::metaClassFor, id, metaClass);
-    }
-
-    @Override
-    public boolean hasMetaclass(Id id) {
-        return callAndReturn(super::hasMetaclass, id);
     }
 
     @Nonnull

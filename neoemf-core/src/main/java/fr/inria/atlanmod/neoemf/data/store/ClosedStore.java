@@ -56,11 +56,6 @@ public final class ClosedStore implements Store {
         throw EXCEPTION;
     }
 
-    @Override
-    public boolean hasMetaclass(Id id) {
-        throw EXCEPTION;
-    }
-
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
@@ -103,11 +98,6 @@ public final class ClosedStore implements Store {
 
     @Override
     public void removeContainer(Id id) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public boolean hasContainer(Id id) {
         throw EXCEPTION;
     }
 

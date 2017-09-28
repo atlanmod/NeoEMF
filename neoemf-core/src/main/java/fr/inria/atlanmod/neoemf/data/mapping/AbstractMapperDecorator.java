@@ -35,7 +35,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * @param <M> the type of the inner {@link DataMapper}
  */
 @ParametersAreNonnullByDefault
-public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper {
+public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataMapper {
 
     /**
      * The inner mapper.
@@ -108,11 +108,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
         next.removeContainer(id);
     }
 
-    @Override
-    public boolean hasContainer(Id id) {
-        return next.hasContainer(id);
-    }
-
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
@@ -123,11 +118,6 @@ public class AbstractMapperDecorator<M extends DataMapper> implements DataMapper
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
         return next.metaClassFor(id, metaClass);
-    }
-
-    @Override
-    public boolean hasMetaclass(Id id) {
-        return next.hasMetaclass(id);
     }
 
     @Nonnull

@@ -76,11 +76,6 @@ public class StatsStore extends AbstractStore {
         record(() -> super.removeContainer(id));
     }
 
-    @Override
-    public boolean hasContainer(Id id) {
-        return record(() -> super.hasContainer(id));
-    }
-
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
@@ -90,11 +85,6 @@ public class StatsStore extends AbstractStore {
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
         return record(() -> super.metaClassFor(id, metaClass));
-    }
-
-    @Override
-    public boolean hasMetaclass(Id id) {
-        return record(() -> super.hasMetaclass(id));
     }
 
     @Nonnull

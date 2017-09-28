@@ -20,6 +20,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.nonNull;
+
 /**
  * A {@link Store} wrapper that caches containers.
  */
@@ -46,6 +48,11 @@ public class ContainerCachingStore extends AbstractCachingStore<Id, Optional<Sin
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
+        Optional<SingleFeatureBean> currentContainer = cache.get(id);
+        if (nonNull(currentContainer) && currentContainer.filter(container::equals).isPresent()) {
+            return;
+        }
+
         cache.put(id, Optional.of(container));
         super.containerFor(id, container);
     }

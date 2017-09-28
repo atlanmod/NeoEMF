@@ -54,19 +54,6 @@ public interface ClassMapper {
     boolean metaClassFor(Id id, ClassBean metaClass);
 
     /**
-     * Checks whether the specified {@code id} has a defined meta-class.
-     *
-     * @param id the {@link Id} of the element
-     *
-     * @return {@code true} if the {@code id} has a meta-class, {@code false} otherwise
-     *
-     * @throws NullPointerException if the {@code id} is {@code null}
-     */
-    default boolean hasMetaclass(Id id) {
-        return metaClassOf(id).isPresent();
-    }
-
-    /**
      * Retrieves all instances of the given {@code metaClass}.
      *
      * @param metaClass the meta-class to compute the instances of

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -34,7 +35,7 @@ import static java.util.Objects.isNull;
  * An abstract {@link Backend} that provides a global behavior about the closure.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBackend implements Backend {
+public abstract class AbstractBackend extends AbstractDataMapper implements Backend {
 
     /**
      * A set that holds all active {@link Backend} instances.

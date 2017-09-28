@@ -9,22 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.store;
-
-import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
-
-import javax.annotation.Nonnull;
+package fr.inria.atlanmod.neoemf.data.mapping;
 
 /**
- * An object that can be stored in a {@link Store}.
+ * An abstract {@link DataMapper}.
  */
-public interface Storable {
-
-    /**
-     * Returns the store used to store the model.
-     *
-     * @return the store
-     */
-    @Nonnull
-    StoreAdapter eStore();
+public abstract class AbstractDataMapper implements DataMapper {
 }
