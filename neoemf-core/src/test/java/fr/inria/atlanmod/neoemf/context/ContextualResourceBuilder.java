@@ -24,10 +24,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -57,23 +55,19 @@ final class ContextualResourceBuilder {
     /**
      * Constructs a new {@code ContextualResourceBuilder} with the given {@code ePackage}.
      *
-     * @param context  the context of this builder
-     * @param ePackage the {@link EPackage} associated to the built {@link PersistentResource}
+     * @param context the context of this builder
      *
      * @see EPackage.Registry
      */
-    public ContextualResourceBuilder(Context context, @Nullable EPackage ePackage) {
+    public ContextualResourceBuilder(Context context) {
         this.context = checkNotNull(context);
-
-        initBuilder();
-
-        Optional.ofNullable(ePackage).ifPresent(p -> EPackage.Registry.INSTANCE.put(p.getNsURI(), p));
+        reset();
     }
 
     /**
-     * Initializes this builder.
+     * Resets this builder.
      */
-    private void initBuilder() {
+    private void reset() {
         isPersistent = false;
         uri = null;
     }
@@ -84,7 +78,7 @@ final class ContextualResourceBuilder {
      * @return a map of options
      */
     @Nonnull
-    private Map<String, Object> allOptions() {
+    private Map<String, Object> defaultOptions() {
         return context.optionsBuilder()
                 .log(Level.DEBUG)
                 .autoSave(100)
@@ -139,17 +133,15 @@ final class ContextualResourceBuilder {
      * Creates a {@link PersistentResource} according to the specified options.
      *
      * @return a new {@link PersistentResource}
-     *
-     * @throws IOException if an I/O error occurs
      */
     @Nonnull
     public PersistentResource createResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         if (isPersistent) {
-            resource.save(allOptions());
+            resource.save(defaultOptions());
         }
 
-        initBuilder();
+        reset();
 
         return resource;
     }
@@ -158,15 +150,13 @@ final class ContextualResourceBuilder {
      * Loads an existing {@link PersistentResource} according to the specified options.
      *
      * @return a new {@link PersistentResource}
-     *
-     * @throws IOException if an I/O error occurs
      */
     @Nonnull
     public PersistentResource loadResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
-        resource.load(allOptions());
+        resource.load(defaultOptions());
 
-        initBuilder();
+        reset();
 
         return resource;
     }
@@ -177,8 +167,8 @@ final class ContextualResourceBuilder {
      * @return a new {@link DataMapper}
      */
     @Nonnull
-    public DataMapper createPersistentMapper() {
-        Backend backend = context.factory().createPersistentBackend(uri, allOptions());
-        return StoreFactory.getInstance().createStore(backend, allOptions());
+    public DataMapper createMapper() {
+        Backend backend = context.factory().createPersistentBackend(uri, defaultOptions());
+        return StoreFactory.getInstance().createStore(backend, defaultOptions());
     }
 }

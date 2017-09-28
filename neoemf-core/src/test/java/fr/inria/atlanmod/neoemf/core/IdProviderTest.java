@@ -101,7 +101,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testConversion() {
+    public void testConversion() throws Exception {
         long value = 123456789;
 
         Id id0 = Id.getProvider().fromLong(value);
@@ -112,7 +112,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testRoot() {
+    public void testRoot() throws Exception {
         String value = "ROOT";
 
         Id id = Id.getProvider().generate(value);

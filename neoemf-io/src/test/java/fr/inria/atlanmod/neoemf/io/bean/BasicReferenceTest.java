@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasicReferenceTest extends AbstractTest {
 
     @Test
-    public void testName() {
+    public void testName() throws Exception {
         String name0 = "reference0";
         String name1 = "reference1";
 
@@ -43,7 +43,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testId() {
+    public void testId() throws Exception {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.owner()).isNull();
@@ -59,7 +59,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testMany() {
+    public void testMany() throws Exception {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.isMany()).isFalse();
@@ -72,7 +72,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testIdReference() {
+    public void testIdReference() throws Exception {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.value()).isNull();
@@ -88,7 +88,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testContainment() {
+    public void testContainment() throws Exception {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.isContainment()).isFalse();
@@ -101,7 +101,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws Exception {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         BasicReference ref0Bis = new BasicReference();
@@ -115,7 +115,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws Exception {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         BasicReference ref0Bis = new BasicReference();

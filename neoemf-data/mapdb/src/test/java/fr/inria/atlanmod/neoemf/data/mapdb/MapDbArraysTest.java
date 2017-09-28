@@ -26,7 +26,7 @@ public class MapDbArraysTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
-    public Context context() {
+    protected Context context() {
         return MapDbContext.getWithArrays();
     }
 }

@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultPersistentEObjectTest extends AbstractTest {
 
     @Test
-    public void testIdGeneration() {
+    public void testIdGeneration() throws Exception {
         // Created without an undefined Id
         PersistentEObject object = new DefaultPersistentEObject();
 
@@ -36,7 +36,7 @@ public class DefaultPersistentEObjectTest extends AbstractTest {
     }
 
     @Test
-    public void testStoreGeneration() {
+    public void testStoreGeneration() throws Exception {
         // Created without any store
         PersistentEObject object = new DefaultPersistentEObject();
 

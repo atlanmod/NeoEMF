@@ -11,49 +11,37 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.commons.AbstractTest;
-import fr.inria.atlanmod.neoemf.context.ContextualTest;
+import fr.inria.atlanmod.commons.AbstractFileBasedTest;
+import fr.inria.atlanmod.neoemf.context.Context;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.File;
-import java.io.IOException;
-
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * An abstract {@link ContextualTest} that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and holds
- * the temporary file.
+ * An abstract contextual test-case that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and holds the
+ * temporary file.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
+public abstract class AbstractUnitTest extends AbstractFileBasedTest {
 
     /**
-     * The current temporary file.
-     */
-    private File file;
-
-    /**
-     * Returns the current temporary file.
+     * Returns the current {@link Context}.
      *
-     * @return a {@link File}
+     * @return the current {@link Context}.
      */
-    protected File file() {
-        return file;
-    }
+    @Nonnull
+    protected abstract Context context();
 
     /**
-     * Initialize the current context and the {@link #file}.
-     *
-     * @throws IOException if an I/O error occurs
+     * Initialize the current context.
      */
     @BeforeEach
-    public final void initContext() throws IOException {
+    void initContext() throws Exception {
         context().init();
         assumeTrue(context().isInitialized(), "The context has not been initialized");
-
-        file = newFile(context().name());
     }
 }

@@ -11,14 +11,22 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.context.CoreTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about {@link DefaultTransientBackend}.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackendTest extends AbstractPersistenceMapperTest implements CoreTest {
+public class DefaultTransientBackendTest extends AbstractPersistenceMapperTest {
+
+    @Nonnull
+    @Override
+    protected Context context() {
+        return CoreContext.get();
+    }
 }

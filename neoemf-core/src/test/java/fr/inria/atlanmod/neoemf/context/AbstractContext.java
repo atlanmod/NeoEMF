@@ -17,13 +17,11 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -52,37 +50,28 @@ public abstract class AbstractContext implements Context {
 
     @Nonnull
     @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new ContextualResourceBuilder(this, ePackage).persistent().file(file).createResource();
+    public PersistentResource createPersistentResource(File file) throws IOException {
+        return new ContextualResourceBuilder(this).persistent().file(file).createResource();
     }
 
     @Nonnull
     @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        if (!factory().supportsTransient()) {
-            return createPersistentResource(ePackage, file);
-        }
-        else {
-            return new ContextualResourceBuilder(this, ePackage).file(file).createResource();
-        }
+    public PersistentResource createTransientResource(File file) throws IOException {
+        return factory().supportsTransient()
+                ? new ContextualResourceBuilder(this).file(file).createResource()
+                : createPersistentResource(file);
     }
 
     @Nonnull
     @Override
     public PersistentResource loadResource(File file) throws IOException {
-        return loadResource(null, file);
-    }
-
-    @Nonnull
-    @Override
-    public PersistentResource loadResource(@Nullable EPackage ePackage, File file) throws IOException {
-        return new ContextualResourceBuilder(this, ePackage).file(file).loadResource();
+        return new ContextualResourceBuilder(this).file(file).loadResource();
     }
 
     @Nonnull
     @Override
     public DataMapper createMapper(File file) {
-        return new ContextualResourceBuilder(this, null).file(file).createPersistentMapper();
+        return new ContextualResourceBuilder(this).file(file).createMapper();
     }
 
     @Nonnull

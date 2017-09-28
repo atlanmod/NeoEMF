@@ -15,12 +15,18 @@ import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.impl.JavaPackageImpl;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +38,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Static
 @ParametersAreNonnullByDefault
-public final class IOResourceManager {
+public final class ResourceManager {
 
     static {
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
@@ -40,7 +46,7 @@ public final class IOResourceManager {
     }
 
     @SuppressWarnings("JavaDoc")
-    private IOResourceManager() {
+    private ResourceManager() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 
@@ -89,6 +95,26 @@ public final class IOResourceManager {
      */
     public static void registerAllPackages() {
         JavaPackageImpl.init();
+    }
+
+    /**
+     * Loads the {@code uri} with standard EMF.
+     *
+     * @param uri the URI to load
+     *
+     * @return the the loaded content
+     */
+    @Nonnull
+    public static EObject load(URI uri) throws IOException {
+        Map<String, Object> options = new HashMap<>();
+        if (uri.fileExtension().endsWith("zxmi")) {
+            options.put(XMIResource.OPTION_ZIP, true);
+        }
+
+        Resource resource = new ResourceSetImpl().createResource(uri);
+        resource.load(options);
+
+        return resource.getContents().get(0);
     }
 
     /**

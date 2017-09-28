@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
@@ -34,21 +35,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  * href="https://github.com/atlanmod/NeoEMF/issues/30">#30</a>.
  */
 @ParametersAreNonnullByDefault
-public class ContainsTest extends AllContextTest {
+public class ContainsTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
     @ArgumentsSource(ContextProvider.WithBooleansAndIntegers.class)
-    public void testContainsElements(Context context, Boolean isPersistent, Integer count) {
-        PersistentResource resource = isPersistent
-                ? newPersistentResource(context)
-                : newTransientResource(context);
+    public void testContainsElements(Context context, Boolean isPersistent, Integer count) throws Exception {
+        try (PersistentResource resource = createResource(context, isPersistent)) {
+            List<TargetObject> content = fillResource(resource, count);
 
-        List<TargetObject> content = fillResource(resource, count);
+            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
 
-        PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
-
-        assertThat(primary.getManyContainmentReferences()).hasSize(content.size());
-        assertThat(primary.getManyContainmentReferences()).containsExactlyElementsOf(content);
+            assertThat(primary.getManyContainmentReferences()).hasSize(content.size());
+            assertThat(primary.getManyContainmentReferences()).containsExactlyElementsOf(content);
+        }
     }
 
     /**
@@ -60,7 +59,7 @@ public class ContainsTest extends AllContextTest {
      * @return a list of all created {@link TargetObject}s
      */
     @Nonnull
-    private List<TargetObject> fillResource(PersistentResource resource, int count) {
+    private List<TargetObject> fillResource(Resource resource, int count) {
         List<TargetObject> targets = new ArrayList<>();
 
         PrimaryObject primary = EFACTORY.createPrimaryObject();

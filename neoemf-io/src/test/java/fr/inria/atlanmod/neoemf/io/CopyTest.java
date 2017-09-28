@@ -11,11 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
-import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
-import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
+import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
@@ -28,7 +27,6 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.stream.Stream;
@@ -39,11 +37,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about the copy from a file to another.
  */
 @ParametersAreNonnullByDefault
-public class CopyTest extends AbstractTest {
+public class CopyTest extends AbstractFileBasedTest {
 
     @BeforeAll
-    public static void registerPackages() {
-        IOResourceManager.registerAllPackages();
+    static void registerPackages() throws Exception {
+        ResourceManager.registerAllPackages();
     }
 
     /**
@@ -54,8 +52,8 @@ public class CopyTest extends AbstractTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0} ; useCompression = {1}")
     @ArgumentsSource(UriProvider.class)
-    public void testCopy(URI uri, Boolean useCompression) throws IOException {
-        final File targetFile = new File(newFile("io") + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
+    public void testCopy(URI uri, Boolean useCompression) throws Exception {
+        final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to {0}", targetFile);
 
         try (InputStream in = new URL(uri.toString()).openStream()) {
@@ -64,8 +62,8 @@ public class CopyTest extends AbstractTest {
                     .migrate();
         }
 
-        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = IOTestUtils.loadWithEMF(uri);
+        EObject actual = ResourceManager.load(URI.createFileURI(targetFile.toString()));
+        EObject expected = ResourceManager.load(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
@@ -74,8 +72,8 @@ public class CopyTest extends AbstractTest {
     }
 
     /**
-     * An {@link ArgumentsProvider} with all {@link URI}s managed by {@link IOResourceManager}, associated with all
-     * {@link Boolean} variants.
+     * An {@link ArgumentsProvider} with all {@link URI}s managed by {@link ResourceManager}, associated with all {@link
+     * Boolean} variants.
      */
     @ParametersAreNonnullByDefault
     public static class UriProvider implements ArgumentsProvider {
@@ -83,10 +81,10 @@ public class CopyTest extends AbstractTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    IOResourceManager.xmiStandard(),
-                    IOResourceManager.xmiWithId(),
-                    IOResourceManager.zxmiStandard(),
-                    IOResourceManager.zxmiWithId()
+                    ResourceManager.xmiStandard(),
+                    ResourceManager.xmiWithId(),
+                    ResourceManager.zxmiStandard(),
+                    ResourceManager.zxmiWithId()
             ).flatMap(u -> Stream.of(false, true).map(b -> Arguments.of(u, b)));
         }
     }

@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasicAttributeTest extends AbstractTest {
 
     @Test
-    public void testName() {
+    public void testName() throws Exception {
         String name0 = "attribute0";
         String name1 = "attribute1";
 
@@ -43,7 +43,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testId() {
+    public void testId() throws Exception {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         assertThat(attr0.owner()).isNull();
@@ -59,7 +59,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testMany() {
+    public void testMany() throws Exception {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         assertThat(attr0.isMany()).isFalse();
@@ -88,7 +88,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws Exception {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         BasicAttribute attr0Bis = new BasicAttribute();
@@ -102,7 +102,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws Exception {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         BasicAttribute attr0Bis = new BasicAttribute();

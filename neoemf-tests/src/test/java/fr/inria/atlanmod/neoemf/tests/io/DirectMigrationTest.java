@@ -16,9 +16,8 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
-import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
-import fr.inria.atlanmod.neoemf.io.util.IOTestUtils;
-import fr.inria.atlanmod.neoemf.tests.AllContextTest;
+import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
+import fr.inria.atlanmod.neoemf.tests.AbstractResourceBasedTest;
 import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
@@ -32,7 +31,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -43,14 +41,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case that checks the behavior of direct I/O methods, by using the `neoemf-io` module.
  */
 @ParametersAreNonnullByDefault
-public class DirectMigrationTest extends AllContextTest {
+public class DirectMigrationTest extends AbstractResourceBasedTest {
 
     /**
      * Registers all {@link org.eclipse.emf.ecore.EPackage}s associated with this test-case.
      */
     @BeforeAll
-    public static void registerPackages() {
-        IOResourceManager.registerAllPackages();
+    static void registerPackages() throws Exception {
+        ResourceManager.registerAllPackages();
     }
 
     /**
@@ -58,8 +56,8 @@ public class DirectMigrationTest extends AllContextTest {
      */
     @ParameterizedTest(name = "[{index}] {0} <- {1}")
     @ArgumentsSource(ContextProvider.WithUris.class)
-    public void testDirectImport(Context context, URI uri) throws IOException {
-        final File sourceFile = file();
+    public void testDirectImport(Context context, URI uri) throws Exception {
+        final File sourceFile = currentTempFile();
         Log.info("Importing from file... [{0}]", sourceFile);
 
         try (DataMapper mapper = context.createMapper(sourceFile); InputStream in = new URL(uri.toString()).openStream()) {
@@ -67,8 +65,8 @@ public class DirectMigrationTest extends AllContextTest {
         }
 
         // Comparing with EMF
-        final EObject actual = context.loadResource(sourceFile).getContents().get(0);
-        EObject expected = IOTestUtils.loadWithEMF(uri);
+        EObject actual = context.loadResource(sourceFile).getContents().get(0);
+        EObject expected = ResourceManager.load(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
@@ -81,13 +79,13 @@ public class DirectMigrationTest extends AllContextTest {
      */
     @ParameterizedTest(name = "[{index}] {0}: useCompression = {1}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
-    public void testDirectExport(Context context, Boolean useCompression) throws IOException {
-        final File targetFile = new File(file() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
+    public void testDirectExport(Context context, Boolean useCompression) throws Exception {
+        final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to file... [{0}]", targetFile);
 
-        URI expectedUri = IOResourceManager.xmiWithId();
+        URI expectedUri = ResourceManager.xmiWithId();
 
-        try (DataMapper mapper = context.createMapper(file()); InputStream in = new URL(expectedUri.toString()).openStream()) {
+        try (DataMapper mapper = context.createMapper(currentTempFile()); InputStream in = new URL(expectedUri.toString()).openStream()) {
             Migrator.fromXmi(in).toMapper(mapper).migrate();
 
             Migrator.fromMapper(mapper)
@@ -96,8 +94,8 @@ public class DirectMigrationTest extends AllContextTest {
         }
 
         // Comparing with EMF
-        final EObject actual = IOTestUtils.loadWithEMF(URI.createFileURI(targetFile.toString()));
-        EObject expected = IOTestUtils.loadWithEMF(expectedUri);
+        EObject actual = ResourceManager.load(URI.createFileURI(targetFile.toString()));
+        EObject expected = ResourceManager.load(expectedUri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
@@ -111,7 +109,7 @@ public class DirectMigrationTest extends AllContextTest {
     @Tag("slow")
     @ParameterizedTest(name = "[{index}] {0} -> {0}")
     @ArgumentsSource(ContextProvider.All.class)
-    public void testDirectCopy(Context context) throws IOException {
+    public void testDirectCopy(Context context) throws Exception {
         testDirectCrossCopy(context, context);
     }
 
@@ -121,11 +119,11 @@ public class DirectMigrationTest extends AllContextTest {
     @Disabled("Very slow and expensive test")
     @ParameterizedTest(name = "[{index}] {0} -> {1}")
     @ArgumentsSource(ContextProvider.WithContexts.class)
-    public void testDirectCrossCopy(Context sourceContext, Context targetContext) throws IOException {
-        final File sourceFile = file();
-        final File targetFile = Paths.get(file() + "-copy").toFile();
+    public void testDirectCrossCopy(Context sourceContext, Context targetContext) throws Exception {
+        final File sourceFile = currentTempFile();
+        final File targetFile = Paths.get(currentTempFile() + "-copy").toFile();
 
-        URI expectedUri = IOResourceManager.xmiStandard();
+        URI expectedUri = ResourceManager.xmiStandard();
 
         try (DataMapper sourceMapper = sourceContext.createMapper(sourceFile); InputStream in = new URL(expectedUri.toString()).openStream()) {
             Migrator.fromXmi(in)
@@ -141,14 +139,14 @@ public class DirectMigrationTest extends AllContextTest {
             }
         }
 
-        final EObject actual = closeAtExit(targetContext.loadResource(targetFile)).getContents().get(0);
+        EObject actual = targetContext.loadResource(targetFile).getContents().get(0);
 
         // Comparing PersistentBackend
-        EObject expected = closeAtExit(sourceContext.loadResource(sourceFile)).getContents().get(0);
+        EObject expected = sourceContext.loadResource(sourceFile).getContents().get(0);
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
         // Comparing with EMF
-        expected = IOTestUtils.loadWithEMF(expectedUri);
+        expected = ResourceManager.load(expectedUri);
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
         actual.eResource().unload();

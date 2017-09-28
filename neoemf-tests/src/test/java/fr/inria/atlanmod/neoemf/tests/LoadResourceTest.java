@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -34,88 +33,94 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks the behavior of a loaded {@link PersistentResource}.
  */
 @ParametersAreNonnullByDefault
-public class LoadResourceTest extends AllContextTest {
+public class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testElementsContainer(Context context) throws IOException {
-        PersistentResource resource = createResource(context);
+    public void testElementsContainer(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-        PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
-        assertThat(primary.eContainer()).isNull();
-        assertThat(primary.eInternalContainer()).isNull();
+            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            assertThat(primary.eContainer()).isNull();
+            assertThat(primary.eInternalContainer()).isNull();
 
-        TargetObject target = primary.getManyContainmentReferences().get(0);
-        assertThat(target.eContainer()).isEqualTo(primary);
-        assertThat(target.eInternalContainer()).isEqualTo(primary);
+            TargetObject target = primary.getManyContainmentReferences().get(0);
+            assertThat(target.eContainer()).isEqualTo(primary);
+            assertThat(target.eInternalContainer()).isEqualTo(primary);
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsContainer(Context context) throws IOException {
-        PersistentResource resource = createResource(context);
+    public void testAllContentsContainer(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-        Iterator<EObject> it = resource.getAllContents();
+            Iterator<EObject> it = resource.getAllContents();
 
-        PrimaryObject primary = PrimaryObject.class.cast(it.next());
-        assertThat(primary.eContainer()).isNull();
-        assertThat(primary.eInternalContainer()).isNull();
+            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            assertThat(primary.eContainer()).isNull();
+            assertThat(primary.eInternalContainer()).isNull();
 
-        TargetObject target = TargetObject.class.cast(it.next());
-        assertThat(target.eContainer()).isEqualTo(primary);
-        assertThat(target.eInternalContainer()).isEqualTo(primary);
+            TargetObject target = TargetObject.class.cast(it.next());
+            assertThat(target.eContainer()).isEqualTo(primary);
+            assertThat(target.eInternalContainer()).isEqualTo(primary);
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testElementsResource(Context context) throws IOException {
-        PersistentResource resource = createResource(context);
+    public void testElementsResource(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-        PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
-        assertThat(primary.eResource()).isSameAs(resource);
+            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            assertThat(primary.eResource()).isSameAs(resource);
 
-        TargetObject target = primary.getManyContainmentReferences().get(0);
-        assertThat(target.eResource()).isSameAs(resource);
+            TargetObject target = primary.getManyContainmentReferences().get(0);
+            assertThat(target.eResource()).isSameAs(resource);
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsResource(Context context) throws IOException {
-        PersistentResource resource = createResource(context);
+    public void testAllContentsResource(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-        Iterator<EObject> it = resource.getAllContents();
+            Iterator<EObject> it = resource.getAllContents();
 
-        PrimaryObject primary = PrimaryObject.class.cast(it.next());
-        assertThat(primary.eResource()).isSameAs(resource);
+            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            assertThat(primary.eResource()).isSameAs(resource);
 
-        TargetObject target = TargetObject.class.cast(it.next());
-        assertThat(target.eResource()).isSameAs(resource);
+            TargetObject target = TargetObject.class.cast(it.next());
+            assertThat(target.eResource()).isSameAs(resource);
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testElementsDirectResource(Context context) throws IOException {
-        PersistentResource resource = createResource(context);
+    public void testElementsDirectResource(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-        PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
-        assertThat(primary.eDirectResource()).isNull();
+            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            assertThat(primary.eDirectResource()).isNull();
 
-        TargetObject target = primary.getManyContainmentReferences().get(0);
-        assertThat(target.eDirectResource()).isNull();
+            TargetObject target = primary.getManyContainmentReferences().get(0);
+            assertThat(target.eDirectResource()).isNull();
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsDirectResource(Context context) throws IOException {
-        PersistentResource resource = createResource(context);
+    public void testAllContentsDirectResource(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-        Iterator<EObject> it = resource.getAllContents();
+            Iterator<EObject> it = resource.getAllContents();
 
-        PrimaryObject primary = PrimaryObject.class.cast(it.next());
-        assertThat(primary.eDirectResource()).isNull();
+            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            assertThat(primary.eDirectResource()).isNull();
 
-        TargetObject target = TargetObject.class.cast(it.next());
-        assertThat(target.eDirectResource()).isNull();
+            TargetObject target = TargetObject.class.cast(it.next());
+            assertThat(target.eDirectResource()).isNull();
+        }
     }
 
     /**
@@ -123,23 +128,19 @@ public class LoadResourceTest extends AllContextTest {
      *
      * @return the resulting {@link PersistentResource} after calling {@link PersistentResource#save(Map)} and {@link
      * PersistentResource#load(Map)}
-     *
-     * @throws IOException if an I/O error occurs during {@link PersistentResource#save(Map)} or {@link
-     *                     PersistentResource#load(Map)}
      */
     @Nonnull
-    private PersistentResource createResource(Context context) throws IOException {
-        PersistentResource resource = newPersistentResource(context);
+    private PersistentResource createPersistentLoadedResource(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            PrimaryObject primary = EFACTORY.createPrimaryObject();
+            TargetObject target = EFACTORY.createTargetObject();
+            primary.getManyContainmentReferences().add(target);
 
-        PrimaryObject primary = EFACTORY.createPrimaryObject();
-        TargetObject target = EFACTORY.createTargetObject();
-        primary.getManyContainmentReferences().add(target);
-        resource.getContents().add(primary);
+            resource.getContents().add(primary);
 
-        resource.save(context.optionsBuilder().asMap());
-        resource.unload();
+            resource.save(context.optionsBuilder().asMap());
+        }
 
-        PersistentResource newResource = context.loadResource(EPACKAGE, file());
-        return closeAtExit(newResource);
+        return context.loadResource(currentTempFile());
     }
 }

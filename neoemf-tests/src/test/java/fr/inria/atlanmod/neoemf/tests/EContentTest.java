@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
@@ -34,8 +35,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case for the contains method, related to performance issue descibed in #30 <a
  * href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 @ParametersAreNonnullByDefault
-public class EContentTest extends AllContextTest {
+public class EContentTest extends AbstractResourceBasedTest {
 
     /**
      * The expected number of {@link Tree} contained in {@link #tree}.
@@ -64,42 +66,44 @@ public class EContentTest extends AllContextTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testEObjectEContents(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        fillResource(resource);
+    public void testEObjectEContents(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            fillResource(resource);
 
-        List<EObject> eContents = tree.eContents();
-        assertThat(eContents).hasSize(TREES_COUNT + NODES_COUNT);
+            List<EObject> eContents = tree.eContents();
+            assertThat(eContents).hasSize(TREES_COUNT + NODES_COUNT);
 
-        IntStream.range(0, NODES_COUNT).forEach(i ->
-                assertThat(eContents.get(i)).isEqualTo(treeNodes.get(i))
-        );
+            IntStream.range(0, NODES_COUNT).forEach(i ->
+                    assertThat(eContents.get(i)).isEqualTo(treeNodes.get(i))
+            );
 
-        IntStream.range(0, TREES_COUNT).forEach(i ->
-                assertThat(eContents.get(i + NODES_COUNT)).isEqualTo(treeChildren.get(i))
-        );
+            IntStream.range(0, TREES_COUNT).forEach(i ->
+                    assertThat(eContents.get(i + NODES_COUNT)).isEqualTo(treeChildren.get(i))
+            );
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testEObjectEmptyEContentsSize(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        fillResourceWithEmpty(resource);
+    public void testEObjectEmptyEContentsSize(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            fillResourceWithEmpty(resource);
 
-        List<EObject> eContents = tree.eContents();
-        assertThat(eContents).isEmpty();
+            List<EObject> eContents = tree.eContents();
+            assertThat(eContents).isEmpty();
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testEObjectEmptyEContentsGet(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        fillResourceWithEmpty(resource);
+    public void testEObjectEmptyEContentsGet(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            fillResourceWithEmpty(resource);
 
-        //noinspection ResultOfMethodCallIgnored
-        assertThat(
-                catchThrowable(() -> tree.eContents().get(0))
-        ).isInstanceOf(IndexOutOfBoundsException.class);
+            assertThat(
+                    catchThrowable(() -> tree.eContents().get(0))
+            ).isInstanceOf(IndexOutOfBoundsException.class);
+        }
     }
 
     /**
@@ -107,32 +111,33 @@ public class EContentTest extends AllContextTest {
      *
      * @param resource the resource to fill
      */
-    private void fillResource(PersistentResource resource) {
+    private void fillResource(Resource resource) {
         treeChildren = new ArrayList<>();
         treeNodes = new ArrayList<>();
 
         Tree rootTree = EFACTORY.createTree();
         rootTree.setName("RootTree");
 
-        this.tree = EFACTORY.createTree();
-        this.tree.setName("Tree0");
-        this.tree.setParent(rootTree);
+        tree = EFACTORY.createTree();
+        tree.setName("Tree0");
+        tree.setParent(rootTree);
 
         IntStream.range(0, NODES_COUNT).forEach(i -> {
             Node node = EFACTORY.createPhysicalNode();
             node.setLabel("Node0-" + i);
-            this.tree.getNodes().add(node);
+            tree.getNodes().add(node);
             treeNodes.add(node);
         });
 
         IntStream.range(0, TREES_COUNT).forEach(i -> {
             Tree subTree = EFACTORY.createTree();
             subTree.setName("Tree0-" + i);
-            this.tree.getChildren().add(subTree);
+            tree.getChildren().add(subTree);
             treeChildren.add(subTree);
         });
 
-        resource.getContents().add(this.tree);
+        // FIXME Fail with TinkerGraph & Neo4j (without container-caching)
+        resource.getContents().add(tree);
     }
 
     /**
@@ -140,7 +145,7 @@ public class EContentTest extends AllContextTest {
      *
      * @param resource the resource to fill
      */
-    private void fillResourceWithEmpty(PersistentResource resource) {
+    private void fillResourceWithEmpty(Resource resource) {
         tree = EFACTORY.createTree();
         tree.setName("EmptyTree");
         resource.getContents().add(tree);

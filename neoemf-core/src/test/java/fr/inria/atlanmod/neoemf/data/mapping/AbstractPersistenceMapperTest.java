@@ -27,7 +27,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -84,12 +83,10 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Creates the {@link DataMapper} to test.
-     *
-     * @throws IOException if an I/O error occurs
      */
     @BeforeEach
-    public void createMapper() throws IOException {
-        mapper = context().createMapper(file());
+    void createMapper() throws Exception {
+        mapper = context().createMapper(currentTempFile());
 
         mapper.metaClassFor(idBase, cBase);
     }
@@ -105,11 +102,9 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
 
     /**
      * Closes the {@link DataMapper}.
-     *
-     * @throws IOException if an I/O error occurs
      */
     @AfterEach
-    public void closeMapper() throws IOException {
+    void closeMapper() throws Exception {
         if (nonNull(mapper)) {
             mapper.close();
         }
@@ -120,7 +115,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * DataMapper} should do nothing.
      */
     @Test
-    public void testCloseThenClose() {
+    public void testCloseThenClose() throws Exception {
         // First close
         mapper.close();
 
@@ -142,7 +137,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSet_Container_Same() {
+    public void testGetSet_Container_Same() throws Exception {
         SingleFeatureBean container = SingleFeatureBean.of(id0, 20);
 
         mapper.containerFor(idBase, container);
@@ -160,7 +155,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSet_Container_Different() {
+    public void testGetSet_Container_Different() throws Exception {
         SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
         SingleFeatureBean container1 = SingleFeatureBean.of(id0, 21);
 
@@ -181,7 +176,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} when the element doesn't exist.
      */
     @Test
-    public void testGet_Container_NotDefined() {
+    public void testGet_Container_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.containerOf(idBase)).isNotPresent()
         )).isNull();
@@ -191,7 +186,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testSet_Container_Null() {
+    public void testSet_Container_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.containerFor(idBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -201,7 +196,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testRemove_Container() {
+    public void testRemove_Container() throws Exception {
         SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
 
         mapper.containerFor(idBase, container0);
@@ -221,7 +216,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSet_Metaclass_Same() {
+    public void testGetSet_Metaclass_Same() throws Exception {
         Id id0 = Id.getProvider().fromLong(40);
         Id id1 = Id.getProvider().fromLong(41);
 
@@ -238,7 +233,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSet_Metaclass_Different() {
+    public void testGetSet_Metaclass_Different() throws Exception {
         Id id0 = Id.getProvider().fromLong(40);
 
         ClassBean metaClass0 = ClassBean.of("Metaclass1", "Uri1");
@@ -255,7 +250,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} when the element doesn't exist..
      */
     @Test
-    public void testGet_Metaclass_NotDefined() {
+    public void testGet_Metaclass_NotDefined() throws Exception {
         Id id0 = Id.getProvider().fromLong(40);
 
         assertThat(catchThrowable(() ->
@@ -267,7 +262,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassFor(Id, ClassBean)} with a {@code null} value.
      */
     @Test
-    public void testSet_Metaclass_Null() {
+    public void testSet_Metaclass_Null() throws Exception {
         Id id0 = Id.getProvider().fromLong(40);
 
         assertThat(catchThrowable(() ->
@@ -285,7 +280,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testGetSet_Value(Object value0, Object value1) {
+    public void testGetSet_Value(Object value0, Object value1) throws Exception {
         mapper.valueFor(sfBase, value0);
         assertThat(mapper.valueOf(sfBase)).contains(value0);
 
@@ -297,7 +292,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)}.
      */
     @Test
-    public void testGet_Value_NotDefined() {
+    public void testGet_Value_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.valueOf(sfBase)).isNotPresent()
         )).isNull();
@@ -307,7 +302,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#valueFor(SingleFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSet_Value_Null() {
+    public void testSet_Value_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.valueFor(sfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
@@ -318,7 +313,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_Value(Object value0) {
+    public void testRemove_Value(Object value0) throws Exception {
         mapper.valueFor(sfBase, value0);
 
         assertThat(mapper.valueOf(sfBase)).isPresent();
@@ -332,7 +327,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testRemove_Value_NotDefined() {
+    public void testRemove_Value_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.removeValue(sfBase)
         )).isNull();
@@ -348,7 +343,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testGetSet_ManyValue(Object value0, Object value1, Object value2, Object value3) {
+    public void testGetSet_ManyValue(Object value0, Object value1, Object value2, Object value3) throws Exception {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
 
@@ -363,7 +358,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testGet_ManyValue_NotDefined() {
+    public void testGet_ManyValue_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.valueOf(mfBase)).isNotPresent()
         )).isNull();
@@ -374,7 +369,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testSet_ManyValue_NotDefined() {
+    public void testSet_ManyValue_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.valueFor(mfBase, valueDummy)).isNotPresent()
         )).isInstanceOf(NoSuchElementException.class);
@@ -384,7 +379,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSet_ManyValue_Null() {
+    public void testSet_ManyValue_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.valueFor(mfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
@@ -395,7 +390,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testGetAll_ManyValue(Object value0, Object value1, Object value2) {
+    public void testGetAll_ManyValue(Object value0, Object value1, Object value2) throws Exception {
         mapper.appendValue(sfBase, value0);
         mapper.appendValue(sfBase, value1);
         mapper.appendValue(sfBase, value2);
@@ -413,7 +408,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * any element.
      */
     @Test
-    public void testGetAll_Empty() {
+    public void testGetAll_Empty() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.allValuesOf(sfBase)).isNotNull().isEmpty()
         )).isNull();
@@ -424,7 +419,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAdd_ManyValue(Object value0, Object value1, Object value2) {
+    public void testAdd_ManyValue(Object value0, Object value1, Object value2) throws Exception {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
         mapper.addValue(sfBase.withPosition(2), value2);
@@ -441,7 +436,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAdd_ManyValue_OverSize(@SuppressWarnings("unused") Object value0, @SuppressWarnings("unused") Object value1, Object value2) {
+    public void testAdd_ManyValue_OverSize(@SuppressWarnings("unused") Object value0, @SuppressWarnings("unused") Object value1, Object value2) throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addValue(sfBase.withPosition(2), value2)
         )).isInstanceOf(IndexOutOfBoundsException.class);
@@ -451,7 +446,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testAdd_ManyValue_Null() {
+    public void testAdd_ManyValue_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addValue(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -462,7 +457,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAppend_ManyValue(Object value0, Object value1) {
+    public void testAppend_ManyValue(Object value0, Object value1) throws Exception {
         int index;
 
         index = mapper.appendValue(sfBase, value0);
@@ -478,7 +473,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testAppend_ManyValue_Null() {
+    public void testAppend_ManyValue_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.appendValue(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -490,7 +485,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_FromStart(Object value0, Object value1) {
+    public void testAddAll_ManyValue_FromStart(Object value0, Object value1) throws Exception {
         mapper.addAllValues(sfBase.withPosition(0), Arrays.asList(value0, value1));
 
         assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
@@ -505,7 +500,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_WithOffset(Object value0, Object value1) {
+    public void testAddAll_ManyValue_WithOffset(Object value0, Object value1) throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value0, value1))
         )).isInstanceOf(IndexOutOfBoundsException.class);
@@ -517,7 +512,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_FromMiddle(Object value0, Object value1, Object value2, Object value3) {
+    public void testAddAll_ManyValue_FromMiddle(Object value0, Object value1, Object value2, Object value3) throws Exception {
         mapper.appendValue(sfBase, value0);
         mapper.appendValue(sfBase, value1);
 
@@ -537,7 +532,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_FromEnd(Object value0, Object value1, Object value2) {
+    public void testAddAll_ManyValue_FromEnd(Object value0, Object value1, Object value2) throws Exception {
         mapper.appendValue(sfBase, value0);
         assertThat(mapper.valueOf(sfBase.withPosition(0))).contains(value0);
 
@@ -554,7 +549,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty collection.
      */
     @Test
-    public void testAddAll_ManyValue_Empty() {
+    public void testAddAll_ManyValue_Empty() throws Exception {
         mapper.addAllValues(mfBase, Collections.emptyList());
 
         assertThat(mapper.sizeOfValue(mfBase.withoutPosition())).isNotPresent();
@@ -565,7 +560,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * contains a {@code null} element.
      */
     @Test
-    public void testAddAll_ManyValue_WithNull() {
+    public void testAddAll_ManyValue_WithNull() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addAllValues(mfBase, Arrays.asList(valueDummy, null))
         )).isInstanceOf(NullPointerException.class);
@@ -576,7 +571,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAll_ManyValue_Null() {
+    public void testAddAll_ManyValue_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addAllValues(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -588,7 +583,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAppendAll_ManyValue_FromStart(Object value0, Object value1) {
+    public void testAppendAll_ManyValue_FromStart(Object value0, Object value1) throws Exception {
         int index;
 
         index = mapper.appendAllValues(sfBase, Arrays.asList(value0, value1));
@@ -606,7 +601,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testAppendAll_ManyValue_FromEnd(Object value0, Object value1, Object value2) {
+    public void testAppendAll_ManyValue_FromEnd(Object value0, Object value1, Object value2) throws Exception {
         int index;
 
         index = mapper.appendValue(sfBase, value0);
@@ -628,7 +623,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAll_ManyValue_Empty() {
+    public void testAppendAll_ManyValue_Empty() throws Exception {
         mapper.appendAllValues(sfBase, Collections.emptyList());
 
         assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
@@ -639,7 +634,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * contains a {@code null} element.
      */
     @Test
-    public void testAppendAll_ManyValue_WithNull() {
+    public void testAppendAll_ManyValue_WithNull() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.appendAllValues(sfBase, Arrays.asList(valueDummy, null))
         )).isInstanceOf(NullPointerException.class);
@@ -650,7 +645,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAll_ManyValue_Null() {
+    public void testAppendAll_ManyValue_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.appendAllValues(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -661,7 +656,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue(Object value0, Object value1) {
+    public void testRemove_ManyValue(Object value0, Object value1) throws Exception {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
         assertThat(mapper.sizeOfValue(sfBase)).contains(2);
@@ -678,7 +673,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue_Before(Object value0, Object value1, Object value2) {
+    public void testRemove_ManyValue_Before(Object value0, Object value1, Object value2) throws Exception {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
         mapper.addValue(sfBase.withPosition(2), value2);
@@ -697,7 +692,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue_After(Object value0, Object value1, Object value2) {
+    public void testRemove_ManyValue_After(Object value0, Object value1, Object value2) throws Exception {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
         mapper.addValue(sfBase.withPosition(2), value2);
@@ -716,7 +711,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue_Last(Object value0, Object value1, Object value2) {
+    public void testRemove_ManyValue_Last(Object value0, Object value1, Object value2) throws Exception {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
         mapper.addValue(sfBase.withPosition(2), value2);
@@ -734,7 +729,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testRemove_ManyValue_NotDefined() {
+    public void testRemove_ManyValue_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.removeValue(mfBase)).isNotPresent()
         )).isNull();
@@ -745,7 +740,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemoveAll_ManyValue(Object value0, Object value1, Object value2) {
+    public void testRemoveAll_ManyValue(Object value0, Object value1, Object value2) throws Exception {
         mapper.appendValue(sfBase, value0);
         mapper.appendValue(sfBase, value1);
         mapper.appendValue(sfBase, value2);
@@ -765,7 +760,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testRemoveAll_ManyValue_NotDefined() {
+    public void testRemoveAll_ManyValue_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.removeAllValues(sfBase)
         )).isNull();
@@ -776,7 +771,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testSize_ManyValue(Object value0, Object value1, Object value2) {
+    public void testSize_ManyValue(Object value0, Object value1, Object value2) throws Exception {
         mapper.appendValue(sfBase, value0);
         mapper.appendValue(sfBase, value1);
         mapper.appendValue(sfBase, value2);
@@ -792,7 +787,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testSize_ManyValue_NotDefined() {
+    public void testSize_ManyValue_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.sizeOfValue(sfBase)).isNotPresent()
         )).isNull();
@@ -808,7 +803,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testGetSet_Reference(Id ref0, Id ref1) {
+    public void testGetSet_Reference(Id ref0, Id ref1) throws Exception {
         updateInstanceOf(ref0, ref1);
 
         mapper.referenceFor(sfBase, ref0);
@@ -822,7 +817,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ReferenceMapper#referenceOf(SingleFeatureBean)}.
      */
     @Test
-    public void testGet_Reference_NotDefined() {
+    public void testGet_Reference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.referenceOf(sfBase)).isNotPresent()
         )).isNull();
@@ -833,7 +828,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSet_Reference_Null() {
+    public void testSet_Reference_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.referenceFor(sfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
@@ -844,7 +839,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_Reference(Id ref0) {
+    public void testRemove_Reference(Id ref0) throws Exception {
         updateInstanceOf(ref0);
 
         mapper.referenceFor(sfBase, ref0);
@@ -861,7 +856,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testRemove_Reference_NotDefined() {
+    public void testRemove_Reference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.removeReference(sfBase)
         )).isNull();
@@ -877,7 +872,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testGetSet_ManyReference(Id ref0, Id ref1, Id ref2, Id ref3) {
+    public void testGetSet_ManyReference(Id ref0, Id ref1, Id ref2, Id ref3) throws Exception {
         updateInstanceOf(ref0, ref1, ref2, ref3);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
@@ -895,7 +890,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testGet_ManyReference_NotDefined() {
+    public void testGet_ManyReference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.referenceOf(mfBase)).isNotPresent()
         )).isNull();
@@ -906,7 +901,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testSet_ManyReference_NotDefined() {
+    public void testSet_ManyReference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.referenceFor(mfBase, refDummy)).isNotPresent()
         )).isInstanceOf(NoSuchElementException.class);
@@ -917,7 +912,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSet_ManyReference_Null() {
+    public void testSet_ManyReference_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.referenceFor(mfBase, null)).isNotPresent()
         )).isInstanceOf(NullPointerException.class);
@@ -928,7 +923,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testGetAll_ManyReference(Id ref0, Id ref1, Id ref2) {
+    public void testGetAll_ManyReference(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.appendReference(sfBase, ref0);
@@ -948,7 +943,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * contain any element.
      */
     @Test
-    public void testGetAll_ManyReference_Empty() {
+    public void testGetAll_ManyReference_Empty() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.allReferencesOf(sfBase)).isNotNull().isEmpty()
         )).isNull();
@@ -959,7 +954,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAdd_ManyReference(Id ref0, Id ref1, Id ref2) {
+    public void testAdd_ManyReference(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
@@ -978,7 +973,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAdd_ManyReference_OverSize(@SuppressWarnings("unused") Id ref0, @SuppressWarnings("unused") Id ref1, Id ref2) {
+    public void testAdd_ManyReference_OverSize(@SuppressWarnings("unused") Id ref0, @SuppressWarnings("unused") Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref2);
 
         assertThat(catchThrowable(() ->
@@ -991,7 +986,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testAdd_ManyReference_Null() {
+    public void testAdd_ManyReference_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addReference(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -1002,7 +997,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAppend_ManyReference(Id ref0, Id ref1) {
+    public void testAppend_ManyReference(Id ref0, Id ref1) throws Exception {
         updateInstanceOf(ref0, ref1);
 
         int index;
@@ -1023,7 +1018,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testAppend_ManyReference_Null() {
+    public void testAppend_ManyReference_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.appendReference(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -1035,7 +1030,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_FromStart(Id ref0, Id ref1) {
+    public void testAddAll_ManyReference_FromStart(Id ref0, Id ref1) throws Exception {
         updateInstanceOf(ref0, ref1);
 
         mapper.addAllReferences(sfBase.withPosition(0), Arrays.asList(ref0, ref1));
@@ -1052,7 +1047,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_WithOffset(Id ref0, Id ref1) {
+    public void testAddAll_ManyReference_WithOffset(Id ref0, Id ref1) throws Exception {
         updateInstanceOf(ref0, ref1);
 
         assertThat(catchThrowable(() ->
@@ -1066,7 +1061,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_FromMiddle(Id ref0, Id ref1, Id ref2, Id ref3) {
+    public void testAddAll_ManyReference_FromMiddle(Id ref0, Id ref1, Id ref2, Id ref3) throws Exception {
         updateInstanceOf(ref0, ref1, ref2, ref3);
 
         mapper.appendReference(sfBase, ref0);
@@ -1088,7 +1083,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_FromEnd(Id ref0, Id ref1, Id ref2) {
+    public void testAddAll_ManyReference_FromEnd(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.appendReference(sfBase, ref0);
@@ -1108,7 +1103,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAll_ManyReference_Empty() {
+    public void testAddAll_ManyReference_Empty() throws Exception {
         mapper.addAllReferences(mfBase, Collections.emptyList());
 
         assertThat(mapper.sizeOfReference(mfBase.withoutPosition())).isNotPresent();
@@ -1119,7 +1114,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * contains a {@code null} element.
      */
     @Test
-    public void testAddAll_ManyReference_WithNull() {
+    public void testAddAll_ManyReference_WithNull() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addAllReferences(mfBase, Arrays.asList(refDummy, null))
         )).isInstanceOf(NullPointerException.class);
@@ -1130,7 +1125,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAll_ManyReference_Null() {
+    public void testAddAll_ManyReference_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.addAllReferences(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -1142,7 +1137,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAppendAll_ManyReference_FromStart(Id ref0, Id ref1) {
+    public void testAppendAll_ManyReference_FromStart(Id ref0, Id ref1) throws Exception {
         updateInstanceOf(ref0, ref1);
 
         int index;
@@ -1162,7 +1157,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testAppendAll_ManyReference_FromEnd(Id ref0, Id ref1, Id ref2) {
+    public void testAppendAll_ManyReference_FromEnd(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         int index;
@@ -1186,7 +1181,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAll_ManyReference_Empty() {
+    public void testAppendAll_ManyReference_Empty() throws Exception {
         mapper.appendAllReferences(sfBase, Collections.emptyList());
 
         assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
@@ -1197,7 +1192,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * that contains a {@code null} element.
      */
     @Test
-    public void testAppendAll_ManyReference_WithNull() {
+    public void testAppendAll_ManyReference_WithNull() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.appendAllReferences(sfBase, Arrays.asList(refDummy, null))
         )).isInstanceOf(NullPointerException.class);
@@ -1208,7 +1203,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * null} collection.
      */
     @Test
-    public void testAppendAll_ManyReference_Null() {
+    public void testAppendAll_ManyReference_Null() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.appendAllReferences(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
@@ -1219,7 +1214,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference(Id ref0, Id ref1) {
+    public void testRemove_ManyReference(Id ref0, Id ref1) throws Exception {
         updateInstanceOf(ref0, ref1);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
@@ -1238,7 +1233,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference_Before(Id ref0, Id ref1, Id ref2) {
+    public void testRemove_ManyReference_Before(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
@@ -1259,7 +1254,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference_After(Id ref0, Id ref1, Id ref2) {
+    public void testRemove_ManyReference_After(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
@@ -1280,7 +1275,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference_Last(Id ref0, Id ref1, Id ref2) {
+    public void testRemove_ManyReference_Last(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
@@ -1301,7 +1296,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testRemove_ManyReference_NotDefined() {
+    public void testRemove_ManyReference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.removeReference(mfBase)).isNotPresent()
         )).isNull();
@@ -1312,7 +1307,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemoveAll_ManyReference(Id ref0, Id ref1, Id ref2) {
+    public void testRemoveAll_ManyReference(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.appendReference(sfBase, ref0);
@@ -1335,7 +1330,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * doesn't exist.
      */
     @Test
-    public void testRemoveAll_ManyReference_NotDefined() {
+    public void testRemoveAll_ManyReference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 mapper.removeAllReferences(sfBase)
         )).isNull();
@@ -1346,7 +1341,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testSize_ManyReference(Id ref0, Id ref1, Id ref2) {
+    public void testSize_ManyReference(Id ref0, Id ref1, Id ref2) throws Exception {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.appendReference(sfBase, ref0);
@@ -1365,7 +1360,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testSize_ManyReference_NotDefined() {
+    public void testSize_ManyReference_NotDefined() throws Exception {
         assertThat(catchThrowable(() ->
                 assertThat(mapper.sizeOfReference(sfBase)).isNotPresent()
         )).isNull();

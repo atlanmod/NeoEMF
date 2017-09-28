@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,11 +29,9 @@ public class BlueprintsNeo4jOptionsTest extends BlueprintsOptionsTest {
 
     /**
      * Checks the definition of the {@link BlueprintsResourceOptions#GRAPH_TYPE} option, with the Neo4j type.
-     *
-     * @throws IOException if an I/O error occurs during the saving of the resource
      */
     @Test
-    public void testNeo4jGraphTypeOption() throws IOException {
+    public void testNeo4jGraphTypeOption() throws Exception {
         Map<String, Object> options = BlueprintsNeo4jOptions.noOption();
 
         resource.save(options);

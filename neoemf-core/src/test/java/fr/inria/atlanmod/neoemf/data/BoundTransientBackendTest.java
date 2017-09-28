@@ -28,7 +28,7 @@ public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
-    public Context context() {
+    protected Context context() {
         return new CoreContext() {
 
             @Nonnull

@@ -20,12 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class XmlConstantsTest extends AbstractTest {
 
     @Test
-    public void formatWithPrefix() {
+    public void testFormatWithPrefix() throws Exception {
         assertThat(XmlConstants.format("prefix", "value")).isEqualTo("prefix:value");
     }
 
     @Test
-    public void formatWithoutPrefix() {
+    public void testFormatWithoutPrefix() throws Exception {
         assertThat(XmlConstants.format(null, "value")).isEqualTo("value");
     }
 }

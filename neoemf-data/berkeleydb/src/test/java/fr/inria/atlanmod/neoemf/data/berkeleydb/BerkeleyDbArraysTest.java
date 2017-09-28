@@ -26,7 +26,7 @@ public class BerkeleyDbArraysTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
-    public Context context() {
+    protected Context context() {
         return BerkeleyDbContext.getWithArrays();
     }
 }

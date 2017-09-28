@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class DynamicPersistentEObjectTest extends AbstractTest {
 
     @Test
-    public void testProxyCreation() {
+    public void testProxyCreation() throws Exception {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 
@@ -38,7 +38,7 @@ public class DynamicPersistentEObjectTest extends AbstractTest {
     }
 
     @Test
-    public void testCallCommonMethod() {
+    public void testCallCommonMethod() throws Exception {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 
@@ -48,7 +48,7 @@ public class DynamicPersistentEObjectTest extends AbstractTest {
     }
 
     @Test
-    public void testCallDynamicMethod() {
+    public void testCallDynamicMethod() throws Exception {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 

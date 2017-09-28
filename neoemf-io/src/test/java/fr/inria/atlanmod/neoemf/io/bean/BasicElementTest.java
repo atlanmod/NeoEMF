@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasicElementTest extends AbstractTest {
 
     @Test
-    public void testName() {
+    public void testName() throws Exception {
         String name0 = "element0";
         String name1 = "element1";
 
@@ -43,7 +43,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testId() {
+    public void testId() throws Exception {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.id()).isNull();
 
@@ -58,7 +58,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testMetaclass() {
+    public void testMetaclass() throws Exception {
         BasicNamespace ns = BasicNamespace.getDefault();
 
         BasicElement elt0 = new BasicElement();
@@ -75,7 +75,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testRoot() {
+    public void testRoot() throws Exception {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.isRoot()).isFalse();
 
@@ -87,7 +87,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws Exception {
         BasicElement elt0 = new BasicElement();
         elt0.id(Id.getProvider().fromLong(42));
 
@@ -103,7 +103,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws Exception {
         BasicElement elt0 = new BasicElement();
         elt0.id(Id.getProvider().fromLong(42));
 
@@ -123,7 +123,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() {
+    public void testToString() throws Exception {
         BasicElement elt0 = new BasicElement();
         elt0.name("Element0");
 

@@ -32,7 +32,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Check the creation of chaining between the default {@link Store}s and a {@link TransientBackend}.
      */
     @Test
-    public void testCreateTransientStore() {
+    public void testCreateTransientStore() throws Exception {
         Backend backend = context().factory().createTransientBackend();
 
         Store store = StoreFactory.getInstance().createStore(backend, context().optionsBuilder().asMap());
@@ -45,8 +45,8 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Check the creation of chaining between the default {@link Store}s and a {@link PersistentBackend}.
      */
     @Test
-    public void testCreatePersistentStore() {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), context().optionsBuilder().asMap());
+    public void testCreatePersistentStore() throws Exception {
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), context().optionsBuilder().asMap());
 
         Store store = StoreFactory.getInstance().createStore(backend, context().optionsBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
@@ -58,17 +58,17 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Checks the creation of a {@link TransientBackend}, specific for each implementation.
      */
     @Test
-    public abstract void testCreateTransientBackend();
+    public abstract void testCreateTransientBackend() throws Exception;
 
     /**
      * Checks the creation of the default {@link PersistentBackend}, specific for each implementation.
      */
     @Test
-    public abstract void testCreateDefaultPersistentBackend();
+    public abstract void testCreateDefaultPersistentBackend() throws Exception;
 
     /**
      * Checks the copy of a {@link Backend} to another.
      */
     @Test
-    public abstract void testCopyBackend();
+    public abstract void testCopyBackend() throws Exception;
 }

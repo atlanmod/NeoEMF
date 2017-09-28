@@ -11,15 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,26 +30,32 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link MapDbBackendFactory}.
  */
 @ParametersAreNonnullByDefault
-public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implements MapDbTest {
+public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
+
+    @Nonnull
+    @Override
+    protected Context context() {
+        return MapDbContext.getWithIndices();
+    }
 
     @Override
-    public void testCreateTransientBackend() {
+    public void testCreateTransientBackend() throws Exception {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(MapDbBackend.class);
     }
 
     @Override
-    public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
+    public void testCreateDefaultPersistentBackend() throws Exception {
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), MapDbOptions.noOption());
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
     @Override
-    public void testCopyBackend() {
+    public void testCopyBackend() throws Exception {
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), MapDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), MapDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);
@@ -59,12 +67,12 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      * The mapping {@code indices} is declared explicitly.
      */
     @Test
-    public void testCreateIndicesPersistentBackend() {
+    public void testCreateIndicesPersistentBackend() throws Exception {
         Map<String, Object> options = MapDbOptions.builder()
                 .withIndices()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
@@ -74,12 +82,12 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      * The mapping {@code arrays} is declared explicitly.
      */
     @Test
-    public void testCreateArraysPersistentBackend() {
+    public void testCreateArraysPersistentBackend() throws Exception {
         Map<String, Object> options = MapDbOptions.builder()
                 .withArrays()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
         assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
     }
 
@@ -89,12 +97,12 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest implemen
      * The mapping {@code lists} is declared explicitly.
      */
     @Test
-    public void testCreateListsPersistentBackend() {
+    public void testCreateListsPersistentBackend() throws Exception {
         Map<String, Object> options = MapDbOptions.builder()
                 .withLists()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
         assertThat(backend).isInstanceOf(MapDbBackendLists.class);
     }
 }

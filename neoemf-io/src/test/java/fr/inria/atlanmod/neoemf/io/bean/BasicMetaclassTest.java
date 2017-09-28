@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasicMetaclassTest extends AbstractTest {
 
     @Test
-    public void testGetDefault() {
+    public void testGetDefault() throws Exception {
         BasicMetaclass mc0 = BasicMetaclass.getDefault();
         assertThat(mc0).isNotNull();
         assertThat(mc0.name()).isEqualTo("EObject");
@@ -37,7 +37,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testName() {
+    public void testName() throws Exception {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -53,7 +53,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testNs() {
+    public void testNs() throws Exception {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -70,7 +70,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws Exception {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -86,7 +86,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws Exception {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -106,7 +106,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() {
+    public void testToString() throws Exception {
         String name0 = "mc0";
         String prefix0 = "uri0";
 

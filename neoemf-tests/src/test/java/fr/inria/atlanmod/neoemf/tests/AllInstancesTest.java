@@ -22,10 +22,10 @@ import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 import fr.inria.atlanmod.neoemf.tests.sample.VirtualNode;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
  */
 @ParametersAreNonnullByDefault
-public class AllInstancesTest extends AllContextTest {
+public class AllInstancesTest extends AbstractResourceBasedTest {
 
     /**
      * The expected number of {@link Tree} in the resulting list.
@@ -79,18 +79,16 @@ public class AllInstancesTest extends AllContextTest {
      */
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; isStrict = {2}")
     @ArgumentsSource(ContextProvider.WithBiBooleans.class)
-    public void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) {
-        PersistentResource resource = isPersistent
-                ? newPersistentResource(context)
-                : newTransientResource(context);
+    public void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) throws Exception {
+        try (PersistentResource resource = createResource(context, isPersistent)) {
+            fillResource(resource);
 
-        fillResource(resource);
-
-        if (!isStrict) {
-            assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
-        }
-        else {
-            assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+            if (!isStrict) {
+                assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
+            }
+            else {
+                assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+            }
         }
     }
 
@@ -99,19 +97,20 @@ public class AllInstancesTest extends AllContextTest {
      */
     @ParameterizedTest(name = "[{index}] {0}: isStrict = {2}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
-    public void testAllInstancesLoaded(Context context, Boolean isStrict) throws IOException {
-        PersistentResource resource = newPersistentResource(context);
-        fillResource(resource);
+    public void testAllInstancesLoaded(Context context, Boolean isStrict) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            fillResource(resource);
 
-        resource.save(context.optionsBuilder().asMap());
-        resource.unload();
-        resource.load(context.optionsBuilder().asMap());
+            resource.save(context.optionsBuilder().asMap());
+            resource.unload();
+            resource.load(context.optionsBuilder().asMap());
 
-        if (!isStrict) {
-            assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
-        }
-        else {
-            assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+            if (!isStrict) {
+                assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);
+            }
+            else {
+                assertAllInstancesHas(resource, true, NODE_STRICT_COUNT, PHYSICAL_NODE_STRICT_COUNT);
+            }
         }
     }
 
@@ -120,7 +119,7 @@ public class AllInstancesTest extends AllContextTest {
      *
      * @param resource the resource to fill
      */
-    private void fillResource(PersistentResource resource) {
+    private void fillResource(Resource resource) {
         Tree rootTree = EFACTORY.createTree();
         rootTree.setName("RootTree");
 

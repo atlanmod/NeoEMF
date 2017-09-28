@@ -73,7 +73,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
      */
     @Test
-    public void testNoOption() {
+    public void testNoOption() throws Exception {
         Map<String, Object> options = CommonOptions.noOption();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
@@ -84,7 +84,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
      */
     @Test
-    public void testAlreadyDefinedOption() {
+    public void testAlreadyDefinedOption() throws Exception {
         assertThat(catchThrowable(() -> CommonOptions.builder().autoSave().autoSave()))
                 .isExactlyInstanceOf(InvalidOptionException.class);
     }
@@ -93,7 +93,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link LogStore}.
      */
     @Test
-    public void testLoggingOption() {
+    public void testLoggingOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .log()
                 .asMap();
@@ -109,7 +109,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link SizeCacheStore}.
      */
     @Test
-    public void testSizeCachingOption() {
+    public void testSizeCachingOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .cacheSizes()
                 .asMap();
@@ -125,7 +125,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link FeatureCacheStore}.
      */
     @Test
-    public void testFeatureCachingOption() {
+    public void testFeatureCachingOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .cacheFeatures()
                 .asMap();
@@ -141,7 +141,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link ContainerCacheStore}.
      */
     @Test
-    public void testContainerCachingOption() {
+    public void testContainerCachingOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .cacheContainers()
                 .asMap();
@@ -157,7 +157,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link ClassCacheStore}.
      */
     @Test
-    public void testMetaclassCachingOption() {
+    public void testMetaclassCachingOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .cacheMetaClasses()
                 .asMap();
@@ -173,7 +173,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link StatRecordStore}.
      */
     @Test
-    public void testStatsCachingOption() {
+    public void testStatsCachingOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .recordStats()
                 .asMap();
@@ -189,7 +189,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} without chunk.
      */
     @Test
-    public void testAutoSaveOption() {
+    public void testAutoSaveOption() throws Exception {
         Map<String, Object> options = CommonOptions.builder()
                 .autoSave()
                 .asMap();
@@ -205,7 +205,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} with chunk.
      */
     @Test
-    public void testAutoSaveWithChunkOption() {
+    public void testAutoSaveWithChunkOption() throws Exception {
         final long expectedChunk = 12_345;
 
         Map<String, Object> options = CommonOptions.builder()
@@ -226,7 +226,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} with negative chunk.
      */
     @Test
-    public void testAutoSaveWithNegativeChunkOption() {
+    public void testAutoSaveWithNegativeChunkOption() throws Exception {
         assertThat(catchThrowable(() -> CommonOptions.builder().autoSave(-2)))
                 .isExactlyInstanceOf(InvalidOptionException.class);
     }
@@ -235,7 +235,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      */
     @Test
-    public void testAllOptions() {
+    public void testAllOptions() throws Exception {
         long expectedChunk = 12_345;
 
         Map<String, Object> options = CommonOptions.builder()

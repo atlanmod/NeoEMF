@@ -11,7 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,11 +31,17 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case about {@link HBaseUri}.
  */
 @ParametersAreNonnullByDefault
-public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
+public class HBaseUriTest extends AbstractUriTest {
+
+    @Nonnull
+    @Override
+    protected Context context() {
+        return HBaseContext.getWithArraysAndStrings();
+    }
 
     @Disabled("Not supported because of the mini-cluster")
     @Override
-    public void testCreateUriFromStandardUriInvalidScheme() {
+    public void testCreateUriFromStandardUriInvalidScheme() throws Exception {
     }
 
     /**
@@ -42,7 +50,7 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
      * HBase does not support file-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromUri() {
+    public void testCreateUriFromUri() throws Exception {
         assertThat(catchThrowable(() -> HBaseUri.builder().fromUri(URI.createURI("uri0"))))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
@@ -53,7 +61,7 @@ public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
      * HBase does not support file-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromFile() {
+    public void testCreateUriFromFile() throws Exception {
         assertThat(catchThrowable(() -> HBaseUri.builder().fromFile("file0")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }

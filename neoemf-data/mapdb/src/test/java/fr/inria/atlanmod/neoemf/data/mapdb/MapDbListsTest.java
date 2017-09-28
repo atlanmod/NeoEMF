@@ -26,7 +26,7 @@ public class MapDbListsTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
-    public Context context() {
+    protected Context context() {
         return MapDbContext.getWithLists();
     }
 }

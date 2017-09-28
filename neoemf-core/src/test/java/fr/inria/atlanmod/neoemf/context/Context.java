@@ -17,13 +17,11 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -108,30 +106,26 @@ public interface Context {
     /**
      * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.
      *
-     * @param ePackage the {@link EPackage} associated to the resource
-     * @param file     the file from which to load/save data
+     * @param file the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
      *
-     * @throws IOException if an I/O error occurs
      * @see ContextualResourceBuilder
      */
     @Nonnull
-    PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
+    PersistentResource createPersistentResource(File file) throws IOException;
 
     /**
      * Creates a new transient resource from the given {@code ePackage} on the given {@code file}.
      *
-     * @param ePackage the {@link EPackage} associated to the resource
-     * @param file     the file from which to load/save data
+     * @param file the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
      *
-     * @throws IOException if an I/O error occurs
      * @see ContextualResourceBuilder
      */
     @Nonnull
-    PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
+    PersistentResource createTransientResource(File file) throws IOException;
 
     /**
      * Loads an existing resource from the given {@code file}.
@@ -140,25 +134,10 @@ public interface Context {
      *
      * @return a new {@link PersistentResource}
      *
-     * @throws IOException if an I/O error occurs
      * @see ContextualResourceBuilder
      */
     @Nonnull
     PersistentResource loadResource(File file) throws IOException;
-
-    /**
-     * Loads an existing resource from the given {@code ePackage} on the given {@code file}.
-     *
-     * @param ePackage the {@link EPackage} associated to the resource
-     * @param file     the file from which to load/save data
-     *
-     * @return a new {@link PersistentResource}
-     *
-     * @throws IOException if an I/O error occurs
-     * @see ContextualResourceBuilder
-     */
-    @Nonnull
-    PersistentResource loadResource(@Nullable EPackage ePackage, File file) throws IOException;
 
     /**
      * Creates a new {@link DataMapper} on the given {@code uri}.

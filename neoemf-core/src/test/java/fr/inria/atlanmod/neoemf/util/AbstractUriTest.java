@@ -31,7 +31,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      * Checks the creation of a {@link URI} from another.
      */
     @Test
-    public void testCreateUriFromStandardUri() {
+    public void testCreateUriFromStandardUri() throws Exception {
         URI validUri = URI.createURI(context().uriScheme() + ":/test");
         URI persistenceUri = context().createUri(validUri);
         assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
@@ -41,8 +41,8 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      * Checks the creation of a {@link URI} from another file {@link URI}.
      */
     @Test
-    public void testCreateUriFromFileUri() {
-        URI fileUri = URI.createFileURI(file().getAbsolutePath());
+    public void testCreateUriFromFileUri() throws Exception {
+        URI fileUri = URI.createFileURI(currentTempFile().getAbsolutePath());
         URI persistenceUri = context().createUri(fileUri);
         assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
     }
@@ -51,8 +51,8 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      * Checks the creation of a {@link URI} from a {@link java.io.File}.
      */
     @Test
-    public void testCreateFileUriFromFile() {
-        URI persistenceUri = context().createUri(file());
+    public void testCreateFileUriFromFile() throws Exception {
+        URI persistenceUri = context().createUri(currentTempFile());
         assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      * Checks the creation of a {@link URI} with an invalid scheme.
      */
     @Test
-    public void testCreateUriFromStandardUriInvalidScheme() {
+    public void testCreateUriFromStandardUriInvalidScheme() throws Exception {
         URI invalidURI = URI.createURI("invalid:/test");
 
         assertThat(catchThrowable(() -> context().createUri(invalidURI)))

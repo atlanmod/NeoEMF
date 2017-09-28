@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
-import fr.inria.atlanmod.neoemf.io.util.IOResourceManager;
+import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -59,10 +59,10 @@ public class ContextProvider {
     @Nonnull
     public static Stream<URI> allUris() {
         return Stream.of(
-                IOResourceManager.xmiStandard(),
-                IOResourceManager.xmiWithId(),
-                IOResourceManager.zxmiStandard(),
-                IOResourceManager.zxmiWithId()
+                ResourceManager.xmiStandard(),
+                ResourceManager.xmiWithId(),
+                ResourceManager.zxmiStandard(),
+                ResourceManager.zxmiWithId()
         );
     }
 
@@ -93,7 +93,7 @@ public class ContextProvider {
 
     /**
      * An {@link ArgumentsProvider} with all  {@link Context}s associated with all {@link URI}s managed by {@link
-     * IOResourceManager}.
+     * ResourceManager}.
      */
     @ParametersAreNonnullByDefault
     public static class WithUris implements ArgumentsProvider {

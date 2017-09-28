@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTest;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -22,9 +23,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,36 +34,40 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BlueprintsOptions}.
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsOptionsTest extends AbstractUnitTest implements BlueprintsTest {
+public class BlueprintsOptionsTest extends AbstractUnitTest {
 
     /**
      * The {@link Resource} used for this test-case.
      */
     protected Resource resource;
 
+    @Nonnull
+    @Override
+    protected Context context() {
+        return BlueprintsContext.getWithIndices();
+    }
+
     /**
      * Initializes the {@link #resource}.
      */
     @BeforeEach
-    public final void initResource() {
-        resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile(file()));
+    void initResource() throws Exception {
+        resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile(currentTempFile()));
     }
 
     /**
      * Cleanly closes the {@link #resource}.
      */
     @AfterEach
-    public final void closeResource() {
+    void closeResource() throws Exception {
         resource.unload();
     }
 
     /**
      * Checks the definition of the {@link BlueprintsResourceOptions#GRAPH_TYPE} option, with the default type.
-     *
-     * @throws IOException if an I/O error occurs during the saving of the resource
      */
     @Test
-    public void testDefaultGraphTypeOption() throws IOException {
+    public void testDefaultGraphTypeOption() throws Exception {
         resource.save(BlueprintsOptions.noOption());
 
         BackendConfig config = getConfig();
@@ -71,20 +76,15 @@ public class BlueprintsOptionsTest extends AbstractUnitTest implements Blueprint
     }
 
     /**
-     * Retrieves the {@link BackendConfig} according to the current {@link #file()}.
+     * Retrieves the {@link BackendConfig} according to the current {@link #currentTempFile()}.
      *
      * @return the current configuration
      */
-    protected BackendConfig getConfig() {
-        Path configFile = file().toPath().resolve("config.properties");
+    protected BackendConfig getConfig() throws Exception {
+        Path configFile = currentTempFile().toPath().resolve("config.properties");
         assertThat(configFile).exists();
 
-        try {
-            return BackendConfig.load(configFile);
-        }
-        catch (IOException e) {
-            throw new IllegalStateException(e); // Should never happen
-        }
+        return BackendConfig.load(configFile);
     }
 
     /**

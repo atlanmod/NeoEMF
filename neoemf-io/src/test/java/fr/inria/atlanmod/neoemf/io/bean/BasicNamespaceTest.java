@@ -27,12 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasicNamespaceTest extends AbstractTest {
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         BasicNamespace.Registry.getInstance().clean();
     }
 
     @Test
-    public void testGetDefault() {
+    public void testGetDefault() throws Exception {
         BasicNamespace ns0 = BasicNamespace.getDefault();
         assertThat(ns0).isNotNull();
         assertThat(ns0.prefix()).isEqualTo("ecore");
@@ -42,7 +42,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testPrefixAndUri() {
+    public void testPrefixAndUri() throws Exception {
         String prefix0 = "prefix0";
         String prefix1 = "prefix1";
 
@@ -59,7 +59,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws Exception {
         String prefix0 = "prefix0";
         String prefix1 = "prefix1";
 
@@ -76,7 +76,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws Exception {
         String prefix0 = "prefix0";
         String prefix1 = "prefix1";
 
@@ -97,7 +97,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() {
+    public void testToString() throws Exception {
         String prefix0 = "prefix0";
         String uri0 = "uri0";
 

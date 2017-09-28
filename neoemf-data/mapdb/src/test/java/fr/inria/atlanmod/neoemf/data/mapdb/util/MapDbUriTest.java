@@ -11,12 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +28,13 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case about {@link MapDbUri}.
  */
 @ParametersAreNonnullByDefault
-public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
+public class MapDbUriTest extends AbstractUriTest {
+
+    @Nonnull
+    @Override
+    protected Context context() {
+        return MapDbContext.getWithIndices();
+    }
 
     /**
      * Checks the creation of a server-based {@link URI}.
@@ -34,7 +42,7 @@ public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
      * MapDB does not support server-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromServer() {
+    public void testCreateUriFromServer() throws Exception {
         assertThat(catchThrowable(() -> MapDbUri.builder().fromServer("host", 0, "segments")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }

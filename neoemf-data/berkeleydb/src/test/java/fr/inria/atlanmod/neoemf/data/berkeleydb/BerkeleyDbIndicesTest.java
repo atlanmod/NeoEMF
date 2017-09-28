@@ -26,7 +26,7 @@ public class BerkeleyDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
-    public Context context() {
+    protected Context context() {
         return BerkeleyDbContext.getWithIndices();
     }
 }

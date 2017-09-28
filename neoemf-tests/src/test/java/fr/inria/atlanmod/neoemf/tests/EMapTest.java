@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks the support of {@link EMap}.
  */
 @ParametersAreNonnullByDefault
-public class EMapTest extends AllContextTest {
+public class EMapTest extends AbstractResourceBasedTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
@@ -40,76 +40,80 @@ public class EMapTest extends AllContextTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testGetMapStringStringEmpty(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        resource.getContents().add(EFACTORY.createETypes());
+    public void testGetMapStringStringEmpty(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            resource.getContents().add(EFACTORY.createETypes());
 
-        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
-        assertThat(eTypes.getStringValues()).isInstanceOf(EMap.class);
+            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            assertThat(eTypes.getStringValues()).isInstanceOf(EMap.class);
 
-        EMap<String, String> map = eTypes.getStringValues();
-        assertThat(map).isEmpty();
+            EMap<String, String> map = eTypes.getStringValues();
+            assertThat(map).isEmpty();
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testPutMapStringString(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        resource.getContents().add(EFACTORY.createETypes());
+    public void testPutMapStringString(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            resource.getContents().add(EFACTORY.createETypes());
 
-        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
-        EMap<String, String> map = eTypes.getStringValues();
-        map.put(KEY1, VALUE1);
-        map.put(KEY2, VALUE2);
+            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            EMap<String, String> map = eTypes.getStringValues();
+            map.put(KEY1, VALUE1);
+            map.put(KEY2, VALUE2);
 
-        assertThat(map.containsKey(KEY1)).isTrue();
-        assertThat(map.containsKey(KEY2)).isTrue();
+            assertThat(map.containsKey(KEY1)).isTrue();
+            assertThat(map.containsKey(KEY2)).isTrue();
 
-        assertThat(map.get(KEY1)).isEqualTo(VALUE1);
-        assertThat(map.get(KEY2)).isEqualTo(VALUE2);
+            assertThat(map.get(KEY1)).isEqualTo(VALUE1);
+            assertThat(map.get(KEY2)).isEqualTo(VALUE2);
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testGetMapKVEmpty(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        resource.getContents().add(EFACTORY.createETypes());
+    public void testGetMapKVEmpty(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            resource.getContents().add(EFACTORY.createETypes());
 
-        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
-        assertThat(eTypes.getValues()).isInstanceOf(EMap.class);
+            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            assertThat(eTypes.getValues()).isInstanceOf(EMap.class);
 
-        EMap<Type, Value> map = eTypes.getValues();
-        assertThat(map).isEmpty();
+            EMap<Type, Value> map = eTypes.getValues();
+            assertThat(map).isEmpty();
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testPutMapKV(Context context) {
-        PersistentResource resource = newPersistentResource(context);
-        resource.getContents().add(EFACTORY.createETypes());
+    public void testPutMapKV(Context context) throws Exception {
+        try (PersistentResource resource = createPersistentResource(context)) {
+            resource.getContents().add(EFACTORY.createETypes());
 
-        ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
-        EMap<Type, Value> map = eTypes.getValues();
+            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            EMap<Type, Value> map = eTypes.getValues();
 
-        Type k1 = EFACTORY.createType();
-        k1.setName(KEY1);
+            Type k1 = EFACTORY.createType();
+            k1.setName(KEY1);
 
-        Type k2 = EFACTORY.createType();
-        k2.setName(KEY2);
+            Type k2 = EFACTORY.createType();
+            k2.setName(KEY2);
 
-        Value v1 = EFACTORY.createValue();
-        v1.setValue(1);
+            Value v1 = EFACTORY.createValue();
+            v1.setValue(1);
 
-        Value v2 = EFACTORY.createValue();
-        v2.setValue(2);
+            Value v2 = EFACTORY.createValue();
+            v2.setValue(2);
 
-        map.put(k1, v1);
-        map.put(k2, v2);
+            map.put(k1, v1);
+            map.put(k2, v2);
 
-        assertThat(map.containsKey(k1)).isTrue();
-        assertThat(map.containsKey(k2)).isTrue();
+            assertThat(map.containsKey(k1)).isTrue();
+            assertThat(map.containsKey(k2)).isTrue();
 
-        assertThat(map.get(k1)).isEqualTo(v1);
-        assertThat(map.get(k2)).isEqualTo(v2);
+            assertThat(map.get(k1)).isEqualTo(v1);
+            assertThat(map.get(k2)).isEqualTo(v2);
+        }
     }
 }

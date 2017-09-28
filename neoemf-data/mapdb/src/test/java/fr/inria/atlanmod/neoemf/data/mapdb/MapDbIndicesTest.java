@@ -26,7 +26,7 @@ public class MapDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
-    public Context context() {
+    protected Context context() {
         return MapDbContext.getWithIndices();
     }
 }

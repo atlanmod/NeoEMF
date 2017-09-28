@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.mock;
+package fr.inria.atlanmod.neoemf.io.util;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link BasicElement} wrapper that stores all elements in different {@link List}.
  */
 @ParametersAreNonnullByDefault
-public class DummyElement {
+public final class InMemoryElement {
 
     /**
      * The original {@link BasicElement}.
@@ -46,14 +46,14 @@ public class DummyElement {
     /**
      * A list that holds all children of this element.
      */
-    private final List<DummyElement> children;
+    private final List<InMemoryElement> children;
 
     /**
-     * Constructs a new {@code DummyElement} from the given {@code element}.
+     * Constructs a new {@code InMemoryElement} from the given {@code element}.
      *
      * @param element the element to wrap
      */
-    public DummyElement(BasicElement element) {
+    public InMemoryElement(BasicElement element) {
         this.element = element;
 
         this.attributes = new ArrayList<>();
@@ -111,7 +111,7 @@ public class DummyElement {
      *
      * @return a mutable list
      */
-    public List<DummyElement> children() {
+    public List<InMemoryElement> children() {
         return children;
     }
 }

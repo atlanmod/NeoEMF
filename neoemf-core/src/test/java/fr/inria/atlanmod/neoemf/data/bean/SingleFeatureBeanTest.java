@@ -30,7 +30,7 @@ public class SingleFeatureBeanTest extends AbstractTest {
      * Checks the comparison of 2 {@link SingleFeatureBean}s. In this case, they are equal.
      */
     @Test
-    public void testCompareEqualTo() {
+    public void testCompareEqualTo() throws Exception {
         Id id0 = Id.getProvider().fromLong(42);
 
         SingleFeatureBean key0 = SingleFeatureBean.of(id0, 10);
@@ -43,7 +43,7 @@ public class SingleFeatureBeanTest extends AbstractTest {
      * Checks the comparison of 2 {@link SingleFeatureBean}s. In this case, the first is lower than the second.
      */
     @Test
-    public void testCompareLowerThan() {
+    public void testCompareLowerThan() throws Exception {
         Id id0 = Id.getProvider().fromLong(42);
 
         SingleFeatureBean key0 = SingleFeatureBean.of(id0, 10);
@@ -56,7 +56,7 @@ public class SingleFeatureBeanTest extends AbstractTest {
      * Checks the comparison of 2 {@link SingleFeatureBean}s. In this case, the first is greater than the second.
      */
     @Test
-    public void testCompareGreaterThan() {
+    public void testCompareGreaterThan() throws Exception {
         SingleFeatureBean key0 = SingleFeatureBean.of(Id.getProvider().fromLong(44), 10);
         SingleFeatureBean key1 = SingleFeatureBean.of(Id.getProvider().fromLong(42), 11);
 

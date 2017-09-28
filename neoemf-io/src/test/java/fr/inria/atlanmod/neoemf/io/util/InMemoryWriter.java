@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.mock;
+package fr.inria.atlanmod.neoemf.io.util;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
@@ -33,27 +33,27 @@ import static java.util.Objects.nonNull;
  * A {@link Writer} that stores all elements in {@link java.util.Collection}s.
  */
 @ParametersAreNonnullByDefault
-public class DummyWriter implements Writer {
+public final class InMemoryWriter implements Writer {
 
     /**
      * A map that holds the identifier of all elements.
      */
-    private final Map<Id, DummyElement> identifiers;
+    private final Map<Id, InMemoryElement> identifiers;
 
     /**
      * A LIFO that holds the current path, from the root to the current element.
      */
-    private final Deque<DummyElement> previousElements;
+    private final Deque<InMemoryElement> previousElements;
 
     /**
      * The root element.
      */
-    private DummyElement root;
+    private InMemoryElement root;
 
     /**
-     * Constructs a new {@code DummyWriter}.
+     * Constructs a new {@code InMemoryWriter}.
      */
-    public DummyWriter() {
+    public InMemoryWriter() {
         this.identifiers = new HashMap<>();
         this.previousElements = new ArrayDeque<>();
     }
@@ -63,7 +63,7 @@ public class DummyWriter implements Writer {
      *
      * @return the root element
      */
-    public DummyElement getRoot() {
+    public InMemoryElement getRoot() {
         return root;
     }
 
@@ -74,18 +74,18 @@ public class DummyWriter implements Writer {
 
     @Override
     public void onStartElement(BasicElement element) {
-        DummyElement mock = new DummyElement(element);
+        InMemoryElement e = new InMemoryElement(element);
 
         if (previousElements.isEmpty()) {
-            root = mock;
+            root = e;
         }
         else {
-            previousElements.getLast().children().add(mock);
+            previousElements.getLast().children().add(e);
         }
 
-        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id(), mock));
+        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id(), e));
 
-        previousElements.addLast(mock);
+        previousElements.addLast(e);
     }
 
     @Override
@@ -94,9 +94,9 @@ public class DummyWriter implements Writer {
             previousElements.getLast().attributes().add(attribute);
         }
         else {
-            DummyElement mock = identifiers.get(attribute.owner());
-            if (nonNull(mock) && Objects.equals(mock.id(), attribute.owner())) {
-                mock.attributes().add(attribute);
+            InMemoryElement e = identifiers.get(attribute.owner());
+            if (nonNull(e) && Objects.equals(e.id(), attribute.owner())) {
+                e.attributes().add(attribute);
             }
             else {
                 throw new IllegalArgumentException();
@@ -110,9 +110,9 @@ public class DummyWriter implements Writer {
             previousElements.getLast().references().add(reference);
         }
         else {
-            DummyElement mock = identifiers.get(reference.owner());
-            if (nonNull(mock) && Objects.equals(mock.id(), reference.owner())) {
-                mock.references().add(reference);
+            InMemoryElement e = identifiers.get(reference.owner());
+            if (nonNull(e) && Objects.equals(e.id(), reference.owner())) {
+                e.references().add(reference);
             }
             else {
                 throw new IllegalArgumentException();

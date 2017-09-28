@@ -11,15 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbTest;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,26 +30,32 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BerkeleyDbBackendFactory}.
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest implements BerkeleyDbTest {
+public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
+
+    @Nonnull
+    @Override
+    protected Context context() {
+        return BerkeleyDbContext.getWithIndices();
+    }
 
     @Override
-    public void testCreateTransientBackend() {
+    public void testCreateTransientBackend() throws Exception {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
     }
 
     @Override
-    public void testCreateDefaultPersistentBackend() {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
+    public void testCreateDefaultPersistentBackend() throws Exception {
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BerkeleyDbOptions.noOption());
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
     @Override
-    public void testCopyBackend() {
+    public void testCopyBackend() throws Exception {
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(file()), BerkeleyDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BerkeleyDbOptions.noOption());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);
@@ -59,12 +67,12 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      * The mapping {@code indices} is declared explicitly.
      */
     @Test
-    public void testCreateIndicesPersistentBackend() {
+    public void testCreateIndicesPersistentBackend() throws Exception {
         Map<String, Object> options = BerkeleyDbOptions.builder()
                 .withIndices()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
@@ -74,12 +82,12 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      * The mapping {@code arrays} is declared explicitly.
      */
     @Test
-    public void testCreateArraysPersistentBackend() {
+    public void testCreateArraysPersistentBackend() throws Exception {
         Map<String, Object> options = BerkeleyDbOptions.builder()
                 .withArrays()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
     }
 
@@ -89,12 +97,12 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest imp
      * The mapping {@code lists} is declared explicitly.
      */
     @Test
-    public void testCreateListsPersistentBackend() {
+    public void testCreateListsPersistentBackend() throws Exception {
         Map<String, Object> options = BerkeleyDbOptions.builder()
                 .withLists()
                 .asMap();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(file()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
     }
 }

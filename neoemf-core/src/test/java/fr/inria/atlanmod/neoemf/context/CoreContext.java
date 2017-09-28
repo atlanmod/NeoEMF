@@ -23,13 +23,11 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -117,7 +115,7 @@ public abstract class CoreContext extends AbstractContext {
      */
     @Nonnull
     @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
+    public PersistentResource createPersistentResource(File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -130,7 +128,7 @@ public abstract class CoreContext extends AbstractContext {
      */
     @Nonnull
     @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
+    public PersistentResource createTransientResource(File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -143,7 +141,7 @@ public abstract class CoreContext extends AbstractContext {
      */
     @Nonnull
     @Override
-    public PersistentResource loadResource(@Nullable EPackage ePackage, File file) throws IOException {
+    public PersistentResource loadResource(File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
