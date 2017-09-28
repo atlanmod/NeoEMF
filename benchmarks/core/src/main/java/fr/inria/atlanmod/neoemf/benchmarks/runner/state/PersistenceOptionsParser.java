@@ -34,11 +34,6 @@ final class PersistenceOptionsParser {
     private static final String CACHE_FEATURES = "F";
 
     /**
-     * The option for presence caching.
-     */
-    private static final String CACHE_IS_SET = "P";
-
-    /**
      * The option for size caching.
      */
     private static final String CACHE_SIZES = "S";
@@ -89,11 +84,6 @@ final class PersistenceOptionsParser {
         // Cache features
         if (upperText.contains(PersistenceOptionsParser.CACHE_FEATURES)) {
             options.cacheFeatures();
-        }
-
-        // Cache presence
-        if (upperText.contains(PersistenceOptionsParser.CACHE_IS_SET)) {
-            options.cacheIsSet();
         }
 
         // Cache sizes
