@@ -170,7 +170,7 @@ public class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the {@link StatRecordStore}.
+     * Checks the setup of the {@link StatsRecordStore}.
      */
     @Test
     public void testStatsCachingOption() throws Exception {
@@ -179,7 +179,7 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isInstanceOf(StatRecordStore.class);
+        assertThat(store).isInstanceOf(StatsRecordStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
@@ -249,7 +249,7 @@ public class StoreFactoryTest extends AbstractTest {
                 .asMap();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
-        assertThat(store).isExactlyInstanceOf(StatRecordStore.class);
+        assertThat(store).isExactlyInstanceOf(StatsRecordStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(LogStore.class);

@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
@@ -33,16 +32,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link Store} wrapper that records every calls to build usage statistics.
+ *
+ * @see StoreStats
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
-public class StatRecordStore extends AbstractStore {
+public class StatsRecordStore extends AbstractStore {
 
     /**
-     * A map that holds the different calls made on the {@link Store} chain.
+     * A map that accumulates the different calls made on the {@link Store} chain.
      */
     @Nonnull
-    private final Map<String, AtomicLong> calls = new HashMap<>();
+    private final Map<String, AtomicLong> methodCallsAccumulator = new HashMap<>();
 
     /**
      * Constructs a new {@code LogStore}.
@@ -50,7 +51,7 @@ public class StatRecordStore extends AbstractStore {
      * @param store the inner store
      */
     @VisibleForReflection
-    public StatRecordStore(Store store) {
+    public StatsRecordStore(Store store) {
         super(store);
     }
 
@@ -59,6 +60,11 @@ public class StatRecordStore extends AbstractStore {
         Log.info("Statistics for {0}: {1}", backend().getClass().getSimpleName() + '@' + backend().hashCode(), formatAsString());
 
         super.close();
+    }
+
+    @Override
+    public void save() {
+        record(super::save);
     }
 
     @Nonnull
@@ -238,6 +244,12 @@ public class StatRecordStore extends AbstractStore {
         return record(() -> super.sizeOfReference(key));
     }
 
+    @Nonnull
+    @Override
+    public StoreStats stats() {
+        return new StoreStats(methodCallsAccumulator);
+    }
+
     /**
      * Records the call of a method.
      *
@@ -264,7 +276,7 @@ public class StatRecordStore extends AbstractStore {
      * Records the call of a method with a value.
      */
     private void record() {
-        calls.computeIfAbsent(getCallingMethod(), s -> new AtomicLong()).incrementAndGet();
+        methodCallsAccumulator.computeIfAbsent(getCallingMethod(), s -> new AtomicLong()).incrementAndGet();
     }
 
     /**
@@ -273,15 +285,9 @@ public class StatRecordStore extends AbstractStore {
      * @return a formatted string
      */
     private String formatAsString() {
-        if (calls.isEmpty()) {
-            return "Nothing has been recorded";
-        }
-        else {
-            return "\n" + calls.entrySet().stream()
-                    .sorted((e1, e2) -> Long.compare(e2.getValue().get(), e1.getValue().get())) // Descending order
-                    .map(e -> e.getKey() + " = " + e.getValue())
-                    .collect(Collectors.joining("\n"));
-        }
+        return methodCallsAccumulator.isEmpty()
+                ? "Nothing has been recorded"
+                : "\n" + new StoreStats(methodCallsAccumulator);
     }
 
     /**

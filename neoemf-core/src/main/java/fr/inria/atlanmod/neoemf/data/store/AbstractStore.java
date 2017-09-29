@@ -41,6 +41,12 @@ public abstract class AbstractStore extends AbstractMapperDecorator<Store> imple
         return next().backend();
     }
 
+    @Nonnull
+    @Override
+    public StoreStats stats() {
+        return next().stats();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(backend());

@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.data.store.StatsRecordStore;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,9 +80,9 @@ public enum PersistentStoreOptions {
     /**
      * Records several stats.
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatRecordStore
+     * @see StatsRecordStore
      */
-    STATS("fr.inria.atlanmod.neoemf.data.store.StatRecordStore");
+    STATS("fr.inria.atlanmod.neoemf.data.store.StatsRecordStore");
 
     /**
      * The type of the represented {@link fr.inria.atlanmod.neoemf.data.store.Store}.

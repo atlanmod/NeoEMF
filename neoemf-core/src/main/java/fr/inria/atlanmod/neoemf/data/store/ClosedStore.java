@@ -47,6 +47,12 @@ public final class ClosedStore implements Store {
 
     @Nonnull
     @Override
+    public StoreStats stats() {
+        throw EXCEPTION;
+    }
+
+    @Nonnull
+    @Override
     public Optional<ClassBean> metaClassOf(Id id) {
         throw EXCEPTION;
     }

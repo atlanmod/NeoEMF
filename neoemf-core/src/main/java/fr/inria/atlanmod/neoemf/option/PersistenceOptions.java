@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.option;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.store.StatsRecordStore;
 
 import java.util.Map;
 
@@ -224,7 +225,7 @@ public interface PersistenceOptions {
      *
      * @return this builder (for chaining)
      *
-     * @see fr.inria.atlanmod.neoemf.data.store.StatRecordStore
+     * @see StatsRecordStore
      */
     @Nonnull
     PersistenceOptions recordStats();

@@ -14,11 +14,17 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 
+import java.util.Collections;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link Store} that translates model-level operations into datastore calls.
+ * <p>
+ * This store corresponds to the tail of a {@link Store} chain and sets the default result for each method. These
+ * methods are handled if the {@link Store} that is supposed to handle them has not been configured during the store
+ * chain configuration.
  */
 @ParametersAreNonnullByDefault
 public class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
@@ -36,5 +42,11 @@ public class DirectWriteStore extends AbstractMapperDecorator<Backend> implement
     @Override
     public Backend backend() {
         return next();
+    }
+
+    @Nonnull
+    @Override
+    public StoreStats stats() {
+        return new StoreStats(Collections.emptyMap());
     }
 }

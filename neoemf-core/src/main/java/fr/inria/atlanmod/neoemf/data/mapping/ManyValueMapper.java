@@ -68,6 +68,8 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @throws NoSuchElementException if the {@code key} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
+     * @implSpec This method is intended to modify an existing value. If the {@code key} is not defined, implementations
+     * should not add the value, but throw a {@link NoSuchElementException}.
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
