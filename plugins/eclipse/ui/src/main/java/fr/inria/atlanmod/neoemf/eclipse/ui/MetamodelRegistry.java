@@ -196,19 +196,19 @@ public final class MetamodelRegistry {
             managedMetamodels.put(file, packages);
 
             Log.info("{0,number,#} EPackages registered from {1}", packages.size(), file);
+
+            if (save) {
+                Set<String> metamodels = load();
+                if (metamodels.add(file)) {
+                    save(metamodels);
+                }
+            }
         }
-        catch (IOException e) {
+        catch (Exception e) {
             Log.warn("Failed to register EPackages from {0}", file);
 
             // Clean the registry: the resource probably no longer exist
             unregister(file);
-        }
-
-        if (save) {
-            Set<String> metamodels = load();
-            if (metamodels.add(file)) {
-                save(metamodels);
-            }
         }
     }
 
