@@ -136,7 +136,6 @@ public class EContentTest extends AbstractResourceBasedTest {
             treeChildren.add(subTree);
         });
 
-        // FIXME Fail with TinkerGraph & Neo4j (without container-caching)
         resource.getContents().add(tree);
     }
 

@@ -585,14 +585,6 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 Vertex referencedVertex = edge.getVertex(Direction.IN);
                 previousId = Optional.of(AS_LONG_OBJECT.revert(referencedVertex.getId()));
                 edge.remove();
-
-                Iterable<Edge> containerEdge = referencedVertex.query()
-                        .labels(EDGE_CONTAINER)
-                        .direction(Direction.OUT)
-                        .limit(1)
-                        .edges();
-
-                containerEdge.forEach(Element::remove);
             }
         }
 

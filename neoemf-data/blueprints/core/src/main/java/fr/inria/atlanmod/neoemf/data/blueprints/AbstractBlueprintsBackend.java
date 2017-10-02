@@ -63,16 +63,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
             o -> IdProvider.AS_LONG.revert(Long.class.cast(o)));
 
     /**
-     * The label used to define container {@link Edge}s.
-     */
-    protected static final String EDGE_CONTAINER = "_c";
-
-    /**
-     * The label of type conformance {@link Edge}s.
-     */
-    protected static final String EDGE_INSTANCE_OF = "_i";
-
-    /**
      * The property key used to define the index of an edge.
      */
     protected static final String PROPERTY_INDEX = "_p";
@@ -83,19 +73,29 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     protected static final String PROPERTY_SIZE = "_s";
 
     /**
+     * The label used to define container {@link Edge}s.
+     */
+    private static final String EDGE_CONTAINER = "_c";
+
+    /**
+     * The label of type conformance {@link Edge}s.
+     */
+    private static final String EDGE_INSTANCE_OF = "_i";
+
+    /**
      * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
      */
-    protected static final String PROPERTY_FEATURE_NAME = "_cn";
+    private static final String PROPERTY_FEATURE_NAME = "_cn";
 
     /**
      * The property key used to define the name of meta-class {@link Vertex}s.
      */
-    protected static final String PROPERTY_CLASS_NAME = "_in";
+    private static final String PROPERTY_CLASS_NAME = "_in";
 
     /**
      * The property key used to define the URI of meta-class {@link Vertex}s.
      */
-    protected static final String PROPERTY_CLASS_URI = "_iu";
+    private static final String PROPERTY_CLASS_URI = "_iu";
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -145,7 +145,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
         checkNotNull(baseGraph);
 
-        graph = new InternalIdGraph(baseGraph);
+        graph = new SmartIdGraph(baseGraph);
 
         requireUniqueLabels = TinkerGraph.class.isInstance(getOrigin(baseGraph));
 
@@ -452,14 +452,14 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * An {@link IdGraph} that automatically removes unused {@link Vertex}.
      */
     @ParametersAreNonnullByDefault
-    private static class InternalIdGraph extends IdGraph<KeyIndexableGraph> {
+    private static class SmartIdGraph extends IdGraph<KeyIndexableGraph> {
 
         /**
-         * Constructs a new {@code InternalIdGraph} on the specified {@code baseGraph}.
+         * Constructs a new {@code SmartIdGraph} on the specified {@code baseGraph}.
          *
          * @param baseGraph the base graph
          */
-        public InternalIdGraph(KeyIndexableGraph baseGraph) {
+        public SmartIdGraph(KeyIndexableGraph baseGraph) {
             super(baseGraph, true, false);
             enforceUniqueIds(false);
         }
@@ -475,15 +475,15 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         }
 
         /**
-         * Creates a new {@link AutoCleanerIdEdge} from another {@link Edge}.
+         * Creates a new {@link SmartIdEdge} from another {@link Edge}.
          *
          * @param edge the base edge
          *
-         * @return an {@link AutoCleanerIdEdge}
+         * @return an {@link SmartIdEdge}
          */
         private Edge createFrom(@Nullable Edge edge) {
             return Optional.ofNullable(edge)
-                    .map(AutoCleanerIdEdge::new)
+                    .map(SmartIdEdge::new)
                     .orElse(null);
         }
 
@@ -491,15 +491,15 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
          * An {@link IdEdge} that automatically removes {@link Vertex} that are no longer referenced.
          */
         @ParametersAreNonnullByDefault
-        private class AutoCleanerIdEdge extends IdEdge {
+        private class SmartIdEdge extends IdEdge {
 
             /**
-             * Constructs a new {@code AutoCleanerIdEdge} on the specified {@code edge}.
+             * Constructs a new {@code SmartIdEdge} on the specified {@code edge}.
              *
              * @param edge the base edge
              */
-            public AutoCleanerIdEdge(Edge edge) {
-                super(edge, InternalIdGraph.this);
+            public SmartIdEdge(Edge edge) {
+                super(edge, SmartIdGraph.this);
             }
 
             /**
