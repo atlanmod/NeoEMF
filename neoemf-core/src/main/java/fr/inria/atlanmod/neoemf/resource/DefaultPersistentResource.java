@@ -35,7 +35,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.ETypedElement;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EClassifierImpl;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
@@ -356,19 +355,19 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         public NotificationChain inverseAdd(E object, NotificationChain notifications) {
-            InternalEObject internalObject = InternalEObject.class.cast(object);
-            notifications = internalObject.eSetResource(DefaultPersistentResource.this, notifications);
-            attached(internalObject);
+            PersistentEObject eObject = PersistentEObject.from(object);
+            notifications = eObject.eSetResource(DefaultPersistentResource.this, notifications);
+            attached(eObject);
             return notifications;
         }
 
         @Override
         public NotificationChain inverseRemove(E object, NotificationChain notifications) {
-            InternalEObject internalObject = InternalEObject.class.cast(object);
+            PersistentEObject eObject = PersistentEObject.from(object);
             if (isLoaded || nonNull(unloadingContents)) {
-                detached(internalObject);
+                detached(eObject);
             }
-            return internalObject.eSetResource(null, notifications);
+            return eObject.eSetResource(null, notifications);
         }
 
         @Override
@@ -436,7 +435,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
 
         @Override
-        protected InternalEObject.EStore eStore() {
+        protected StoreAdapter eStore() {
             return DefaultPersistentResource.this.eStore();
         }
 
