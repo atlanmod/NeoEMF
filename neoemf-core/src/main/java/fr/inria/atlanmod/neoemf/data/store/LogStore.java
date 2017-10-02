@@ -317,10 +317,25 @@ public class LogStore extends AbstractStore {
      *
      * @return the result of the call
      */
+    @SuppressWarnings("unchecked")
     private <K, R> R callAndReturn(Function<K, R> function, K key) {
         try {
             R result = function.apply(key);
-            logSuccess(key, null, result);
+            Object resultToLog;
+
+            if (Stream.class.isInstance(result)) {
+                // Clone the stream
+                Stream<?> stream = Stream.class.cast(result);
+                List<?> list = stream.collect(Collectors.toList());
+
+                result = (R) list.stream();
+                resultToLog = list.stream();
+            }
+            else {
+                resultToLog = result;
+            }
+
+            logSuccess(key, null, resultToLog);
             return result;
         }
         catch (RuntimeException e) {
@@ -342,7 +357,7 @@ public class LogStore extends AbstractStore {
     private <K, V, R> R callAndReturn(BiFunction<K, V, R> function, K key, @Nullable V value) {
         try {
             R result = function.apply(key, value);
-            R resultToLog;
+            Object resultToLog;
 
             if (Stream.class.isInstance(result)) {
                 // Clone the stream
@@ -350,7 +365,7 @@ public class LogStore extends AbstractStore {
                 List<?> list = stream.collect(Collectors.toList());
 
                 result = (R) list.stream();
-                resultToLog = (R) list.stream();
+                resultToLog = list.stream();
             }
             else {
                 resultToLog = result;
