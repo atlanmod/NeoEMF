@@ -58,7 +58,7 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
 
         @Nonnull
         @Override
-        public Map<String, Object> getOptions() {
+        public Map<String, ?> getOptions() {
             return BlueprintsTinkerConfig.newConfig()
                     .toMap();
         }
@@ -80,7 +80,7 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
 
         @Nonnull
         @Override
-        public Map<String, Object> getOptions() {
+        public Map<String, ?> getOptions() {
             return BlueprintsNeo4jConfig.newConfig()
                     .toMap();
         }

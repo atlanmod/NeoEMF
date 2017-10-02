@@ -56,7 +56,7 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
 
         @Nonnull
         @Override
-        public Map<String, Object> getOptions() {
+        public Map<String, ?> getOptions() {
             return MapDbConfig.newConfig()
                     .withIndices()
                     .toMap();
@@ -78,7 +78,7 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
 
         @Nonnull
         @Override
-        public Map<String, Object> getOptions() {
+        public Map<String, ?> getOptions() {
             return MapDbConfig.newConfig()
                     .withArrays()
                     .toMap();
@@ -100,7 +100,7 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
 
         @Nonnull
         @Override
-        public Map<String, Object> getOptions() {
+        public Map<String, ?> getOptions() {
             return MapDbConfig.newConfig()
                     .withLists()
                     .toMap();

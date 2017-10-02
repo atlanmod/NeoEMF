@@ -151,7 +151,7 @@ public interface Adapter {
          * @return the {@link Map} options
          */
         @Nonnull
-        default Map<String, Object> getOptions() {
+        default Map<String, ?> getOptions() {
             return Collections.emptyMap();
         }
     }

@@ -89,7 +89,7 @@ public class CdoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Map<String, Object> getOptions() {
+    public Map<String, ?> getOptions() {
         checkState(nonNull(server), "The CDO server has not been initialized");
 
         Map<String, Object> saveOpts = new HashMap<>();
