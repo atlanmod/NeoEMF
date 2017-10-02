@@ -232,6 +232,12 @@ public class StoreFactoryTest extends AbstractTest {
                 .recordStats();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
+        assertThat(store).isInstanceOf(AutoSaveStore.class);
+
+        long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
+        assertThat(actualChunk).isEqualTo(expectedChunk);
+
+        store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(StatsRecordStore.class);
 
         store = getInnerStore(store);
@@ -239,12 +245,6 @@ public class StoreFactoryTest extends AbstractTest {
 
         Level actualLevel = getValue(store, "level", LogStore.class, Level.class);
         assertThat(actualLevel).isEqualTo(Level.DEBUG);
-
-        store = getInnerStore(store);
-        assertThat(store).isInstanceOf(AutoSaveStore.class);
-
-        long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
-        assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(ClassCacheStore.class);
