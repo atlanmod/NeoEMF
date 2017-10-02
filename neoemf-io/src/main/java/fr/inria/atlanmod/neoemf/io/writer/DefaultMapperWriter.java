@@ -113,7 +113,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
             BasicReference reference = new BasicReference();
             reference.owner(PersistentResource.ROOT_ID);
             reference.name(PersistentResource.ROOT_REFERENCE_NAME);
-            reference.id(-1); // TODO
+            reference.id(-1); // TODO Calculates the feature identifier
             reference.isMany(true);
 
             onReference(reference, Collections.singletonList(element.id()));

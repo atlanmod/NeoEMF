@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -27,7 +28,6 @@ import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Imports an existing model stored in a XMI files into a Blueprints-based {@link PersistentResource}.
@@ -43,12 +43,11 @@ public class BlueprintsImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
 
-        Map<String, Object> options = BlueprintsNeo4jOptions.builder()
-                .autoSave()
-                .asMap();
+        Config config = BlueprintsNeo4jConfig.newConfig()
+                .autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
-            targetResource.save(options);
+            targetResource.save(config.toMap());
 
             Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -56,7 +55,7 @@ public class BlueprintsImporter {
             sourceResource.load(Collections.emptyMap());
 
             targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
-            targetResource.save(options);
+            targetResource.save(config.toMap());
 
             stopwatch.stop();
             Log.info("Model created in {0} seconds", stopwatch.elapsed().getSeconds());

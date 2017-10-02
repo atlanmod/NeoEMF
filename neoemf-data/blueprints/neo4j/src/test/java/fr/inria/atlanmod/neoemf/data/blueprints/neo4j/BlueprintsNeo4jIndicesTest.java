@@ -25,6 +25,6 @@ public class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsNeo4jContext.getWithIndices();
+        return BlueprintsNeo4jContext.getDefault();
     }
 }

@@ -35,7 +35,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreateTransientStore() throws Exception {
         Backend backend = context().factory().createTransientBackend();
 
-        Store store = StoreFactory.getInstance().createStore(backend, context().optionsBuilder().asMap());
+        Store store = StoreFactory.getInstance().createStore(backend, context().config());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);
@@ -46,9 +46,9 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreatePersistentStore() throws Exception {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), context().optionsBuilder().asMap());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), context().config());
 
-        Store store = StoreFactory.getInstance().createStore(backend, context().optionsBuilder().asMap());
+        Store store = StoreFactory.getInstance().createStore(backend, context().config());
         assertThat(store).isInstanceOf(DirectWriteStore.class);
 
         assertThat(store.backend()).isSameAs(backend);

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -103,14 +103,14 @@ public final class Stores {
      * @see Workspace#newTempDirectory()
      */
     @Nonnull
-    public static File createTempStore(File resourceFile, PersistenceOptions options, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
+    public static File createTempStore(File resourceFile, Config config, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
         Path dir = Workspace.newTempDirectory();
 
         StoreCreator creator = useDirectImport && adapter.supportsMapper()
                 ? new DirectStoreCreator()
                 : new StandardStoreCreator();
 
-        return creator.getOrCreateStore(resourceFile, options, adapter, dir);
+        return creator.getOrCreateStore(resourceFile, config, adapter, dir);
     }
 
     /**
@@ -127,14 +127,14 @@ public final class Stores {
      * @see Workspace#getStoreDirectory()
      */
     @Nonnull
-    public static File getOrCreateStore(File resourceFile, PersistenceOptions options, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
+    public static File getOrCreateStore(File resourceFile, Config config, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
         Path dir = Workspace.getStoreDirectory();
 
         StoreCreator creator = useDirectImport && adapter.supportsMapper()
                 ? new DirectStoreCreator()
                 : new StandardStoreCreator();
 
-        return creator.getOrCreateStore(resourceFile, options, adapter, dir);
+        return creator.getOrCreateStore(resourceFile, config, adapter, dir);
     }
 
     /**

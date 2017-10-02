@@ -36,7 +36,7 @@ public class HBaseUriTest extends AbstractUriTest {
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getWithArraysAndStrings();
+        return HBaseContext.getDefault();
     }
 
     @Disabled("Not supported because of the mini-cluster")

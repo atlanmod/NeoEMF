@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -27,7 +28,6 @@ import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Imports an existing model stored in a XMI files into a HBase-based {@link PersistentResource}.
@@ -43,10 +43,10 @@ public class HBaseImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
 
-        Map<String, Object> options = HBaseOptions.noOption();
+        Config config = HBaseConfig.newConfig();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
-            targetResource.save(options);
+            targetResource.save(config.toMap());
 
             Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -54,7 +54,7 @@ public class HBaseImporter {
             sourceResource.load(Collections.emptyMap());
 
             targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
-            targetResource.save(options);
+            targetResource.save(config.toMap());
 
             stopwatch.stop();
             Log.info("Model created in {0} seconds", stopwatch.elapsed().getSeconds());

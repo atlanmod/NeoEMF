@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 
 import java.util.Map;
 
@@ -57,9 +57,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return BerkeleyDbOptions.builder()
+            return BerkeleyDbConfig.newConfig()
                     .withIndices()
-                    .asMap();
+                    .toMap();
         }
     }
 
@@ -79,9 +79,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return BerkeleyDbOptions.builder()
+            return BerkeleyDbConfig.newConfig()
                     .withArrays()
-                    .asMap();
+                    .toMap();
         }
     }
 
@@ -101,9 +101,9 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return BerkeleyDbOptions.builder()
+            return BerkeleyDbConfig.newConfig()
                     .withLists()
-                    .asMap();
+                    .toMap();
         }
     }
 }

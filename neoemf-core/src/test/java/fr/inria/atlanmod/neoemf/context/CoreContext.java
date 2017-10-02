@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 
@@ -78,8 +78,8 @@ public abstract class CoreContext extends AbstractContext {
 
     @Nonnull
     @Override
-    public PersistenceOptions optionsBuilder() {
-        return CommonOptions.builder();
+    public Config config() {
+        return BaseConfig.newConfig();
     }
 
     @Nonnull

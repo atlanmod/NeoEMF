@@ -12,14 +12,15 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryName;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ConfigValue;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
@@ -43,7 +44,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
  * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
  *
  * @see MapDbBackend
- * @see fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions
+ * @see fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
  */
 @ParametersAreNonnullByDefault
@@ -52,7 +53,6 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    @FactoryName
     public static final String NAME = "mapdb";
 
     /**
@@ -78,15 +78,21 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
         MapDbBackend backend;
 
-        checkArgument(uri.isFile(), "MapDbBackendFactory only supports file-based URIs");
-
-        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
+
+            // Merge and check conflicts between the two configurations
+            ImmutableConfig mergedConfig = Config.load(baseDirectory)
+                    .orElseGet(MapDbConfig::newConfig)
+                    .merge(baseConfig);
+
+            String mapping = mergedConfig.getMapping();
+            boolean isReadOnly = mergedConfig.isReadOnly();
 
             if (Files.notExists(baseDirectory)) {
                 Files.createDirectories(baseDirectory);
@@ -102,11 +108,10 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
             DB db = dbBuilder.make();
 
-            String mapping = mappingFrom(options);
-            backend = newInstanceOf(mapping,
-                    new ConstructorParameter(db, DB.class));
+            backend = createMapper(mapping,
+                    new ConfigValue<>(db, DB.class));
 
-            processGlobalConfiguration(baseDirectory, mapping);
+            mergedConfig.save(baseDirectory);
         }
         catch (Exception e) {
             throw new InvalidBackendException("Unable to open the MapDB database", e);

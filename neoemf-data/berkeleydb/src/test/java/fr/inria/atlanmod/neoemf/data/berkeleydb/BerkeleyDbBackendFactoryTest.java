@@ -11,15 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,16 +45,20 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Override
     public void testCreateDefaultPersistentBackend() throws Exception {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BerkeleyDbOptions.noOption());
+        ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
+
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
     @Override
     public void testCopyBackend() throws Exception {
+        ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
+
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BerkeleyDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);
@@ -68,11 +71,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateIndicesPersistentBackend() throws Exception {
-        Map<String, Object> options = BerkeleyDbOptions.builder()
-                .withIndices()
-                .asMap();
+        ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
     }
 
@@ -83,11 +84,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateArraysPersistentBackend() throws Exception {
-        Map<String, Object> options = BerkeleyDbOptions.builder()
-                .withArrays()
-                .asMap();
+        ImmutableConfig config = BerkeleyDbConfig.newConfig().withArrays();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
     }
 
@@ -98,11 +97,9 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateListsPersistentBackend() throws Exception {
-        Map<String, Object> options = BerkeleyDbOptions.builder()
-                .withLists()
-                .asMap();
+        ImmutableConfig config = BerkeleyDbConfig.newConfig().withLists();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
     }
 }

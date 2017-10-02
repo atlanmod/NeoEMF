@@ -95,7 +95,6 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
 
     @Override
     public void copyTo(DataMapper target) {
-        // FIXME Copy only the elements related to the owner
         throw new UnsupportedOperationException(String.format("%s does not support copy", getClass().getName()));
     }
 

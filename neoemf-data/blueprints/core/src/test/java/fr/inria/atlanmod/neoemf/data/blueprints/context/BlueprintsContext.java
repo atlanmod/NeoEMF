@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,12 +33,12 @@ public abstract class BlueprintsContext extends AbstractContext {
      * @return a new context.
      */
     @Nonnull
-    public static Context getWithIndices() {
+    public static Context getDefault() {
         return new BlueprintsContext() {
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return BlueprintsOptions.builder().withIndices();
+            public Config config() {
+                return BlueprintsTinkerConfig.newConfig();
             }
         };
     }

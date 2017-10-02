@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
+package fr.inria.atlanmod.neoemf.data.blueprints.config;
+
+import fr.inria.atlanmod.neoemf.AbstractUnitTest;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Path;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * A test-case about {@link BlueprintsTinkerConfig}.
+ */
+@ParametersAreNonnullByDefault
+public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
+
+    /**
+     * The {@link Resource} used for this test-case.
+     */
+    protected Resource resource;
+
+    @Nonnull
+    @Override
+    protected Context context() {
+        return BlueprintsContext.getDefault();
+    }
+
+    /**
+     * Initializes the {@link #resource}.
+     */
+    @BeforeEach
+    void initResource() throws Exception {
+        resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile(currentTempFile()));
+    }
+
+    /**
+     * Cleanly closes the {@link #resource}.
+     */
+    @AfterEach
+    void closeResource() throws Exception {
+        resource.unload();
+    }
+
+    /**
+     * Checks the definition of the {@link BlueprintsTinkerConfig#GRAPH} option, with the default type.
+     */
+    @Test
+    public void testDefaultGraphTypeOption() throws Exception {
+        resource.save(BlueprintsTinkerConfig.newConfig().toMap());
+
+        ImmutableConfig config = loadConfig();
+        assertConfigurationHasEntry(config, BlueprintsTinkerConfig.GRAPH, BlueprintsTinkerConfig.GRAPH_TINKER);
+        assertConfigurationHasSize(config, 5);
+    }
+
+    /**
+     * Retrieves the configuration according to the current {@link #currentTempFile()}.
+     *
+     * @return the current configuration
+     */
+    @Nonnull
+    protected ImmutableConfig loadConfig() throws Exception {
+        Path configPath = currentTempFile().toPath();
+
+        Optional<Config> config = Config.load(configPath);
+        assertThat(config).isNotEmpty();
+
+        return config.<IllegalStateException>orElseThrow(IllegalStateException::new);
+    }
+
+    /**
+     * Checks that the {@code config} has the expected {@code size}.
+     *
+     * @param config       the configuration to check
+     * @param expectedSize the expected size
+     */
+    protected void assertConfigurationHasSize(ImmutableConfig config, int expectedSize) {
+        assertThat(config.toMap()).hasSize(expectedSize + 1);
+    }
+
+    /**
+     * Checks that the {@code config} has the expected {@code value} for the given {@code key}.
+     *
+     * @param config the configuration to check
+     * @param key    the key to look for
+     * @param value  the expected value
+     */
+    protected void assertConfigurationHasEntry(ImmutableConfig config, String key, String value) {
+        assertThat(config.hasOption(key)).isTrue();
+        assertThat(config.<String>getOption(key)).contains(value);
+    }
+}

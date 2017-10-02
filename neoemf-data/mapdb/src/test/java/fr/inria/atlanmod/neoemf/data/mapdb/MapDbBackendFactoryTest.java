@@ -11,15 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,16 +45,20 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Override
     public void testCreateDefaultPersistentBackend() throws Exception {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), MapDbOptions.noOption());
+        ImmutableConfig config = MapDbConfig.newConfig().withIndices();
+
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
     @Override
     public void testCopyBackend() throws Exception {
+        ImmutableConfig config = MapDbConfig.newConfig().withIndices();
+
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), MapDbOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
         transientBackend.copyTo(persistentBackend);
@@ -68,11 +71,9 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateIndicesPersistentBackend() throws Exception {
-        Map<String, Object> options = MapDbOptions.builder()
-                .withIndices()
-                .asMap();
+        ImmutableConfig config = MapDbConfig.newConfig().withIndices();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
     }
 
@@ -83,11 +84,9 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateArraysPersistentBackend() throws Exception {
-        Map<String, Object> options = MapDbOptions.builder()
-                .withArrays()
-                .asMap();
+        ImmutableConfig config = MapDbConfig.newConfig().withArrays();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
     }
 
@@ -98,11 +97,9 @@ public class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateListsPersistentBackend() throws Exception {
-        Map<String, Object> options = MapDbOptions.builder()
-                .withLists()
-                .asMap();
+        ImmutableConfig config = MapDbConfig.newConfig().withLists();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(MapDbBackendLists.class);
     }
 }

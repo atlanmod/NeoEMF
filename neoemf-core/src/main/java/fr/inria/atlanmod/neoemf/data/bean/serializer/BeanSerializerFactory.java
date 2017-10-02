@@ -38,17 +38,17 @@ public class BeanSerializerFactory extends SerializerFactory {
     /**
      * The instance of {@link ClassSerializer}.
      */
-    private final Serializer<ClassBean> classDescriptorSerializer = new ClassSerializer();
+    private final Serializer<ClassBean> classSerializer = new ClassSerializer();
 
     /**
      * The instance of {@link SingleFeatureSerializer}.
      */
-    private final Serializer<SingleFeatureBean> singleFeatureKeySerializer = new SingleFeatureSerializer();
+    private final Serializer<SingleFeatureBean> singleFeatureSerializer = new SingleFeatureSerializer();
 
     /**
      * The instance of {@link ManyFeatureSerializer}.
      */
-    private final Serializer<ManyFeatureBean> manyFeatureKeySerializer = new ManyFeatureSerializer();
+    private final Serializer<ManyFeatureBean> manyFeatureSerializer = new ManyFeatureSerializer();
 
     /**
      * Constructs a new {@code BeanSerializerFactory}.
@@ -83,7 +83,7 @@ public class BeanSerializerFactory extends SerializerFactory {
      */
     @Nonnull
     public Serializer<ClassBean> forClass() {
-        return classDescriptorSerializer;
+        return classSerializer;
     }
 
     /**
@@ -93,7 +93,7 @@ public class BeanSerializerFactory extends SerializerFactory {
      */
     @Nonnull
     public Serializer<SingleFeatureBean> forSingleFeature() {
-        return singleFeatureKeySerializer;
+        return singleFeatureSerializer;
     }
 
     /**
@@ -103,7 +103,7 @@ public class BeanSerializerFactory extends SerializerFactory {
      */
     @Nonnull
     public Serializer<ManyFeatureBean> forManyFeature() {
-        return manyFeatureKeySerializer;
+        return manyFeatureSerializer;
     }
 
     /**

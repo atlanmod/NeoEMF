@@ -19,7 +19,7 @@ public class ReadWriteRunner extends Runner {
         String name = UUID.randomUUID().toString();
         Resource resource = state.resource();
         Integer result = QueryFactory.queryRenameAllMethods(name).apply(resource);
-        state.adapter().save(resource, state.options());
+        state.adapter().save(resource, state.baseConfig());
         return result;
     }
 }

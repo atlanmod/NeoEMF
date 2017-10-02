@@ -73,7 +73,8 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
         notifyInitialize();
 
-        SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, -1); // TODO
+        // TODO Calculates the feature identifier
+        SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, -1);
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
         notifyComplete();

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import java.util.Map;
 
@@ -57,9 +57,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return MapDbOptions.builder()
+            return MapDbConfig.newConfig()
                     .withIndices()
-                    .asMap();
+                    .toMap();
         }
     }
 
@@ -79,9 +79,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return MapDbOptions.builder()
+            return MapDbConfig.newConfig()
                     .withArrays()
-                    .asMap();
+                    .toMap();
         }
     }
 
@@ -101,9 +101,9 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return MapDbOptions.builder()
+            return MapDbConfig.newConfig()
                     .withLists()
-                    .asMap();
+                    .toMap();
         }
     }
 }

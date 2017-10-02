@@ -11,15 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,7 +34,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getWithIndices();
+        return BlueprintsContext.getDefault();
     }
 
     @Override
@@ -46,7 +45,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Override
     public void testCreateDefaultPersistentBackend() throws Exception {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsTinkerConfig.newConfig());
         assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
     }
 
@@ -55,7 +54,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BlueprintsBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsOptions.noOption());
+        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsTinkerConfig.newConfig());
         assertThat(persistentBackend).isInstanceOf(DefaultBlueprintsBackend.class);
 
         transientBackend.copyTo(persistentBackend);
@@ -68,11 +67,9 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateIndicesPersistentBackend() throws Exception {
-        Map<String, Object> options = BlueprintsOptions.builder()
-                .withIndices()
-                .asMap();
+        ImmutableConfig config = BlueprintsTinkerConfig.newConfig();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
     }
 }

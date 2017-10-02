@@ -2,9 +2,9 @@ package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ final class DirectStoreCreator implements StoreCreator {
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file, PersistenceOptions options, Adapter.Internal adapter, Path dir) throws IOException {
+    public File getOrCreateStore(File file, Config config, Adapter.Internal adapter, Path dir) throws IOException {
         File targetFile = dir.resolve(StoreCreator.getTargetFileName(file, adapter)).toFile();
 
         if (targetFile.exists()) {
@@ -34,7 +34,7 @@ final class DirectStoreCreator implements StoreCreator {
 
         Log.info("Migrating resource content...");
 
-        try (DataMapper mapper = adapter.createMapper(targetFile, options)) {
+        try (DataMapper mapper = adapter.createMapper(targetFile, config)) {
             Migrator.fromXmi(file)
                     .toMapper(mapper)
                     .migrate();

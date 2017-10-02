@@ -62,6 +62,6 @@ public class WriteOnlyRunner extends Runner {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     public void create(RunnerState state) throws IOException {
-        state.adapter().createTempStore(state.resourceFile(), state.options(), state.useDirectImport());
+        state.adapter().createTempStore(state.resourceFile(), state.baseConfig(), state.useDirectImport());
     }
 }

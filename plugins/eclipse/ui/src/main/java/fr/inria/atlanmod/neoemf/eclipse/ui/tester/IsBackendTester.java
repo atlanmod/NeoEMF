@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.tester;
 
-import fr.inria.atlanmod.neoemf.data.BackendConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.Path;
 
+import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -26,8 +26,15 @@ public class IsBackendTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        return Objects.equals("isNeoEMFDB", property)
-                && IFolder.class.isInstance(receiver)
-                && IFolder.class.cast(receiver).exists(new Path(BackendConfig.DEFAULT_FILENAME)) == Boolean.class.cast(expectedValue);
+        if (!Objects.equals("isNeoEMFDB", property) || !IFolder.class.isInstance(receiver)) {
+            return false;
+        }
+
+        Path directory = IFolder.class.cast(receiver)
+                .getLocation()
+                .toFile()
+                .toPath();
+
+        return Config.exists(directory) == Boolean.class.cast(expectedValue);
     }
 }

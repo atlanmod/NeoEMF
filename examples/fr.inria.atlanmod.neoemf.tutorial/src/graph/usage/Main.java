@@ -1,10 +1,10 @@
 package graph.usage;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -23,8 +23,7 @@ import graph.Vertice;
  * This class contains the tutorial code and additional examples showing how to instantiate {@link PersistentResource}s
  * relying on Neo4j, MapDB, and HBase.
  * <p>
- * <b>Note:</b> HBase resource creation is presented in this file but not used to perform read/write operations,
- * because
+ * <b>Note:</b> HBase resource creation is presented in this file but not used to perform read/write operations, because
  * HBase needs to be installed separately and started to store a model. To enable HBase storage see the HBase
  * Configuration page on the wiki.
  */
@@ -44,7 +43,7 @@ public class Main {
          * Note using the BlueprintsNeo4jOptions class to create the option map automatically sets Neo4j as the graph
          * backend.
          */
-        resource.save(BlueprintsNeo4jOptions.noOption());
+        resource.save(BlueprintsNeo4jConfig.newConfig().toMap());
         return resource;
     }
 
@@ -53,14 +52,13 @@ public class Main {
      *
      * @return the created resource
      */
-    public static Resource createMapDBResource() {
+    public static Resource createMapDbResource() {
         return new ResourceSetImpl().createResource(MapDbUri.builder().fromFile("databases/myGraph.mapdb"));
     }
 
     /**
-     * Creates a new {@link PersistentResource} using the HBase datastore connected to a HBase server running on
-     * {@code localhost:2181} to perfrom modeling
-     * operations.
+     * Creates a new {@link PersistentResource} using the HBase datastore connected to a HBase server running on {@code
+     * localhost:2181} to perfrom modeling operations.
      *
      * @return the created resource
      */
@@ -76,7 +74,7 @@ public class Main {
      * @throws IOException if an error occurs when loading the resource
      */
     public static void read(Resource resource) throws IOException {
-        resource.load(CommonOptions.noOption());
+        resource.load(BaseConfig.newConfig().toMap());
         Graph graph = (Graph) resource.getContents().get(0);
         for (Edge each : graph.getEdges()) {
             System.out.println(each.getFrom().getLabel() + "--->" + each.getTo().getLabel());
@@ -111,7 +109,7 @@ public class Main {
         }
 
         resource.getContents().add(graph);
-        resource.save(CommonOptions.noOption());
+        resource.save(BaseConfig.newConfig().toMap());
     }
 
     /**
@@ -126,7 +124,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Resource[] resources = {
                 createBlueprintsResource(),
-                createMapDBResource()
+                createMapDbResource()
         };
 
         for (Resource resource : resources) {

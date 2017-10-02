@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -24,7 +25,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A simple example showing how to access an existing BerkeleyDB-based {@link PersistentResource} and traverse its
@@ -39,12 +39,13 @@ public class BerkeleyDbCounter {
 
         URI uri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
 
-        Map<String, Object> options = BerkeleyDbOptions.noOption();
+        Config config = BerkeleyDbConfig.newConfig()
+                .withIndices();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
-            resource.load(options);
+            resource.load(config.toMap());
 
             long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);

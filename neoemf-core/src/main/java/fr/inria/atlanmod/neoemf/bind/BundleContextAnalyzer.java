@@ -77,7 +77,7 @@ final class BundleContextAnalyzer {
     }
 
     /**
-     * Retrieves the {@link URL} of the given {@code bundle}.
+     * Retrieves the {@link URL} of the {@code bundle}.
      * <p>
      * If an error occurs, it will be ignored.
      *

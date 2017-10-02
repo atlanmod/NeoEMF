@@ -68,7 +68,7 @@ public class BackendFactoryRegistryTest extends AbstractTest {
         REGISTRY.register(MOCK_1, factory1);
         assertThat(REGISTRY.getFactories()).hasSize(1);
 
-        BackendFactory registeredFactory = REGISTRY.getFactoryProvider(MOCK_1);
+        BackendFactory registeredFactory = REGISTRY.getFactoryFor(MOCK_1);
         assertThat(registeredFactory).isNotNull().isSameAs(factory1);
     }
 
@@ -81,10 +81,10 @@ public class BackendFactoryRegistryTest extends AbstractTest {
         REGISTRY.register(MOCK_2, factory2);
         assertThat(REGISTRY.getFactories()).hasSize(2);
 
-        BackendFactory registeredFactory1 = REGISTRY.getFactoryProvider(MOCK_1);
+        BackendFactory registeredFactory1 = REGISTRY.getFactoryFor(MOCK_1);
         assertThat(registeredFactory1).isNotNull().isSameAs(factory1);
 
-        BackendFactory registeredFactory2 = REGISTRY.getFactoryProvider(MOCK_2);
+        BackendFactory registeredFactory2 = REGISTRY.getFactoryFor(MOCK_2);
         assertThat(registeredFactory2).isNotNull().isSameAs(factory2);
     }
 }

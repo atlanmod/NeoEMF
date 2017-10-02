@@ -252,7 +252,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
         // TODO: In the future an extension point or reflection should be used to determine the supported graph types
         private static final String[] GRAPH_TYPES = new String[]{
                 "com.tinkerpop.blueprints.impls.tg.TinkerGraph",
-                "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph"
+                "com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph"
         };
 
         private final List<GraphProperty> graphProperties = new ArrayList<>();

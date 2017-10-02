@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -49,7 +49,7 @@ public class XmiAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, PersistenceOptions options) throws IOException {
+    public Resource load(File file, Config config) throws IOException {
         initAndGetEPackage();
 
         ResourceSet resourceSet = new ResourceSetImpl();

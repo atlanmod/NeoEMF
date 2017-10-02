@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -24,7 +25,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A simple example showing how to access an existing Blueprints-based {@link PersistentResource} and traverse its
@@ -39,12 +39,12 @@ public class BlueprintsCounter {
 
         URI uri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
 
-        Map<String, Object> options = BlueprintsOptions.noOption();
+        Config config = BlueprintsNeo4jConfig.newConfig();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
-            resource.load(options);
+            resource.load(config.toMap());
 
             long size = Helpers.countElements(resource);
             Log.info("Resource {0} contains {1} elements", resource.toString(), size);

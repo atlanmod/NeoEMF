@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.data.BackendConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
@@ -35,7 +35,6 @@ import org.eclipse.ui.progress.UIJob;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -83,21 +82,11 @@ public class OpenBackendCommand extends AbstractHandler {
      *                                 {@link UriBuilder}
      */
     private UriBuilder getUriBuilder(Path directory) throws IOException {
-        Path configFile = directory.resolve(BackendConfig.DEFAULT_FILENAME);
-
-        if (Files.notExists(configFile)) {
-            throw new FileNotFoundException(
-                    String.format("Unable to find %s file", BackendConfig.DEFAULT_FILENAME));
-        }
-
-        BackendConfig config = BackendConfig.load(configFile);
-
-        if (!config.has(BackendConfig.BACKEND_PROPERTY)) {
-            throw new InvalidBackendException(
-                    String.format("%s does not contain %s property", configFile, BackendConfig.BACKEND_PROPERTY));
-        }
-
-        return UriBuilder.forName(config.get(BackendConfig.BACKEND_PROPERTY));
+        return Config.load(directory)
+                .map(Config::getName)
+                .map(UriBuilder::forName)
+                .<FileNotFoundException>orElseThrow(() -> new FileNotFoundException(
+                        String.format("Unable to find the configuration from %s", directory)));
     }
 
     /**

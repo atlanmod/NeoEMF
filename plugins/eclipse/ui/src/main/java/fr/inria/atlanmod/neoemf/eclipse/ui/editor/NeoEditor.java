@@ -12,7 +12,8 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -35,7 +36,6 @@ import org.eclipse.swt.widgets.Tree;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -60,15 +60,14 @@ public class NeoEditor extends EcoreEditor {
 
             Resource resource = resourceSet.createResource(uri);
 
-            // Create the store options depending of the backend
-            Map<String, Object> options = PersistenceOptions.forScheme(resource.getURI().scheme())
+            // Create the configuration depending of the backend
+            ImmutableConfig config = Config.forScheme(resource.getURI().scheme())
                     .cacheContainers()
                     .cacheMetaClasses()
-                    .autoSave()
-//                    .log(Level.INFO)
-                    .asMap();
+//                    .log()
+                    .autoSave();
 
-            resource.load(options);
+            resource.load(config.toMap());
         }
         catch (Exception e) {
             Log.error(e, "Unable to create model");

@@ -11,17 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
+import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,7 +36,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getWithArraysAndStrings();
+        return HBaseContext.getDefault();
     }
 
     @Override
@@ -48,7 +47,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Override
     public void testCreateDefaultPersistentBackend() throws Exception {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), HBaseOptions.noOption());
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), HBaseConfig.newConfig());
         assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 
@@ -64,11 +63,9 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
      */
     @Test
     public void testCreateIndicesPersistentBackend() throws Exception {
-        Map<String, Object> options = HBaseOptions.builder()
-                .withArraysAndStrings()
-                .asMap();
+        ImmutableConfig config = HBaseConfig.newConfig();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), options);
+        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
         assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 }

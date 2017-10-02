@@ -1,7 +1,8 @@
 package fr.inria.atlanmod.neoemf.demo.notification;
 
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.demo.importer.DirectBlueprintsImporter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -15,7 +16,6 @@ import org.eclipse.gmt.modisco.java.JavaPackage;
 import org.eclipse.gmt.modisco.java.Model;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * This class shows how to load a NeoEMF/Graph resource and add an {@link org.eclipse.emf.common.notify.Adapter} to its
@@ -32,10 +32,10 @@ public class LoadedResourceNotifier {
         ResourceSet resourceSet = new ResourceSetImpl();
 
         URI uri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
-        Map<String, Object> options = BlueprintsOptions.noOption();
+        Config options = BlueprintsNeo4jConfig.newConfig();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
-            resource.load(options);
+            resource.load(options.toMap());
 
             if (resource.getContents().isEmpty()) {
                 throw new IllegalStateException("The content of the resource is empty, make sure you have created it using (Efficient)BlueprintsImporter");

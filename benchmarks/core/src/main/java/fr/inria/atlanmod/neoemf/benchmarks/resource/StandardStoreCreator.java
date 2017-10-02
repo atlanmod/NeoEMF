@@ -2,19 +2,16 @@ package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +27,7 @@ public final class StandardStoreCreator implements StoreCreator {
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file, PersistenceOptions options, Adapter.Internal adapter, Path dir) throws IOException {
+    public File getOrCreateStore(File file, Config config, Adapter.Internal adapter, Path dir) throws IOException {
         File targetFile = dir.resolve(StoreCreator.getTargetFileName(file, adapter)).toFile();
 
         if (targetFile.exists()) {
@@ -57,12 +54,12 @@ public final class StandardStoreCreator implements StoreCreator {
         Log.info("Migrating resource content...");
 
         Resource targetResource = adapter.createResource(targetFile, resourceSet);
-        adapter.save(targetResource, options);
+        adapter.save(targetResource, config);
 
         targetResource.getContents().addAll(sourceResource.getContents());
 
         Log.info("Saving resource to: {0}", targetResource.getURI());
-        adapter.save(targetResource, options);
+        adapter.save(targetResource, config);
 
         sourceResource.unload();
         adapter.unload(targetResource);

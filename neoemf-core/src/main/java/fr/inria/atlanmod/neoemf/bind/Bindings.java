@@ -18,13 +18,11 @@ import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryName;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleContext;
-import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -32,9 +30,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -178,6 +174,7 @@ public final class Bindings {
             methodName = Optional.of(type.getAnnotation(Builder.class).value());
         }
         else {
+            // Use the default contructor
             methodName = Optional.empty();
         }
 
@@ -199,15 +196,49 @@ public final class Bindings {
      * The {@code type} must be a sub-class of {@link BackendFactory}, or must be annotated with {@link
      * FactoryBinding}.
      *
-     * @param type the type of the factory
+     * @param type the type
      *
      * @return the {@link URI} scheme
      *
      * @throws BindingException if no scheme is defined for this {@code type}
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
     public static String schemeOf(Class<?> type) {
+        return UriBuilder.PREFIX + nameOf(type).toLowerCase();
+    }
+
+    /**
+     * Retrieves the name for the specified {@code type}.
+     * <p>
+     * The {@code type} must be a sub-class of {@link BackendFactory}, or must be annotated with {@link
+     * FactoryBinding}.
+     *
+     * @param type the type
+     *
+     * @return the name
+     *
+     * @throws BindingException if no name is defined for this {@code type}
+     */
+    @Nonnull
+    public static String nameOf(Class<?> type) {
+        return factoryFor(type).name();
+    }
+
+    /**
+     * Retrieves the {@link BackendFactory} associated to the {@code type}.
+     * <p>
+     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
+     *
+     * @param type the type of the instance to look for
+     *
+     * @return a new instance of {@link BackendFactory}
+     *
+     * @throws BindingException if no instance of {@link BackendFactory} is found for the {@code type}, or if an error
+     *                          occurs during the instantiation
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static BackendFactory factoryFor(Class<?> type) {
         Class<? extends BackendFactory> factoryType = null;
 
         if (BackendFactory.class.isAssignableFrom(type)) {
@@ -218,52 +249,11 @@ public final class Bindings {
         }
 
         if (nonNull(factoryType)) {
-            return UriBuilder.PREFIX + nameOf(factoryType).toLowerCase();
+            return newInstance(factoryType);
         }
 
         throw new BindingException(
-                String.format("%s is not annotated with %s: Unable to retrieve the associated scheme", type.getName(), FactoryBinding.class.getSimpleName()));
-    }
-
-    /**
-     * Retrieves the name for the speficied {@code factoryType}.
-     * <p>
-     * The name of a {@link BackendFactory} must be annotated with {@link FactoryName}.
-     *
-     * @param factoryType the type of the factory
-     *
-     * @return the name
-     *
-     * @throws BindingException if no name is defined for this {@code factoryType}
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    public static String nameOf(Class<? extends BackendFactory> factoryType) {
-        Set<Field> boundFields = ReflectionUtils.getFields(factoryType,
-                ReflectionUtils.withAnnotation(FactoryName.class),
-                ReflectionUtils.withType(String.class),
-                ReflectionUtils.withModifier(Modifier.PUBLIC));
-
-        if (boundFields.size() != 1) {
-            throw new BindingException(
-                    String.format("%s must have only one field annotated with %s", factoryType.getName(), FactoryName.class.getName()));
-        }
-
-        Optional<Field> field = boundFields.stream()
-                .filter(f -> factoryType.isAssignableFrom(f.getDeclaringClass()))
-                .findAny();
-
-        if (field.isPresent()) {
-            try {
-                return String.class.cast(field.get().get(factoryType));
-            }
-            catch (ClassCastException | IllegalAccessException e) {
-                throw new BindingException(e);
-            }
-        }
-
-        throw new BindingException(
-                String.format("Unable to find the name of the factory %s", factoryType.getName()));
+                String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class));
     }
 
     /**
@@ -279,13 +269,16 @@ public final class Bindings {
      *
      * @return a new instance of the {@code type}
      *
-     * @throws BindingException if no instance of {@code type} is found for the given {@code value} by using the given
-     *                          {@code valueMapping}, or if an error occurs during the instantiation
+     * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code
+     *                          valueMapping}, or if an error occurs during the instantiation
      */
     @Nonnull
     public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
         for (Class<? extends T> t : typesAnnotatedWith(FactoryBinding.class, type)) {
-            if (Objects.equals(value, valueMapping.apply(t.getAnnotation(FactoryBinding.class).value()))) {
+            FactoryBinding annotation = t.getDeclaredAnnotation(FactoryBinding.class);
+
+            // Annotation can be `null` for types that inherit from an annotated type
+            if (nonNull(annotation) && Objects.equals(value, valueMapping.apply(annotation.value()))) {
                 return newInstance(t);
             }
         }

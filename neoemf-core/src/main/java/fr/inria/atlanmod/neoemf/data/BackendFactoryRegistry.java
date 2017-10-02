@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
@@ -36,6 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * The registry that holds registered {@link URI} schemes with their associated {@link BackendFactory}.
@@ -63,7 +63,7 @@ public final class BackendFactoryRegistry {
     boolean initialized;
 
     /**
-     * Constructs a new {@code BackendFactoryRegistry} and initializes it with {@link #registerAll()}.
+     * Constructs a new {@code BackendFactoryRegistry}.
      */
     private BackendFactoryRegistry() {
     }
@@ -94,20 +94,20 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Returns a specific {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
+     * Returns the {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
      *
      * @param scheme the {@link URI} scheme identifying the factory
      *
      * @return the factory
      *
-     * @throws NullPointerException if {@code scheme} is {@code null}, or ig no factory is registered for the given
-     *                              {@code scheme}
+     * @throws NullPointerException if {@code scheme} is {@code null}, or if no factory is registered for the {@code
+     *                              scheme}
      */
     @Nonnull
-    public BackendFactory getFactoryProvider(String scheme) {
+    public BackendFactory getFactoryFor(String scheme) {
         checkNotNull(scheme);
 
-        if (!initialized || !factories.containsKey(scheme)) {
+        if (!factories.containsKey(scheme) || !initialized) {
             registerAll();
         }
 
@@ -118,18 +118,18 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Defines if a {@link BackendFactory} is registered for the given {@link URI} {@code scheme}.
+     * Checks that a {@link BackendFactory} is registered for the given {@link URI} {@code scheme}.
      *
      * @param scheme the {@link URI} scheme identifying the factory
      *
-     * @return {@code true} if a factory is registered for the given {@code scheme}
+     * @return {@code true} if a factory is registered for the {@code scheme}
      */
     public boolean isRegistered(@Nullable String scheme) {
         if (isNull(scheme)) {
             return false;
         }
 
-        if (!initialized || !factories.containsKey(scheme)) {
+        if (!factories.containsKey(scheme) || !initialized) {
             registerAll();
         }
 
@@ -139,8 +139,7 @@ public final class BackendFactoryRegistry {
     /**
      * Registers a {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
      * <p>
-     * If the given {@link URI} {@code scheme} is already registered, its value will be overridden by the given {@code
-     * factory}.
+     * If the {@link URI} {@code scheme} is already registered, its value will be overridden by the {@code factory}.
      *
      * @param scheme  the {@link URI} scheme identifying the factory
      * @param factory the factory
@@ -151,11 +150,13 @@ public final class BackendFactoryRegistry {
         checkNotNull(scheme);
         checkNotNull(factory);
 
-        factories.putIfAbsent(scheme, factory);
+        if (isNull(factories.putIfAbsent(scheme, factory))) {
+            Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);
 
-        Resource.Factory.Registry.INSTANCE
-                .getProtocolToFactoryMap()
-                .putIfAbsent(scheme, PersistentResourceFactory.getInstance());
+            Resource.Factory.Registry.INSTANCE
+                    .getProtocolToFactoryMap()
+                    .putIfAbsent(scheme, PersistentResourceFactory.getInstance());
+        }
     }
 
     /**
@@ -167,28 +168,16 @@ public final class BackendFactoryRegistry {
     public void registerAll() {
         Log.debug("Registering all factories");
 
-        Set<Class<? extends UriBuilder>> boundClasses = Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class);
-
-        if (boundClasses.isEmpty()) {
-            Log.warn("No factory has been found in the classpath");
-        }
-        else {
-            for (Class<? extends UriBuilder> cls : boundClasses) {
-                Class<? extends BackendFactory> factoryType = cls.getAnnotation(FactoryBinding.class).value();
-
-                BackendFactory factory = Bindings.newInstance(factoryType);
-                String scheme = Bindings.schemeOf(factoryType);
-
-                register(scheme, factory);
-                Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);
-            }
-        }
+        Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
+                .stream()
+                .map(t -> t.getAnnotation(FactoryBinding.class).value())
+                .forEach(t -> register(Bindings.schemeOf(t), Bindings.newInstance(t)));
 
         initialized = true;
     }
 
     /**
-     * Unregisters a {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
+     * Unregisters a {@link BackendFactory} identified by the specified {@link URI} {@code scheme}.
      *
      * @param scheme the {@link URI} scheme identifying the factory
      *
@@ -198,11 +187,11 @@ public final class BackendFactoryRegistry {
     public void unregister(String scheme) {
         checkNotNull(scheme);
 
-        factories.remove(scheme);
-
-        Resource.Factory.Registry.INSTANCE
-                .getProtocolToFactoryMap()
-                .remove(scheme);
+        if (nonNull(factories.remove(scheme))) {
+            Resource.Factory.Registry.INSTANCE
+                    .getProtocolToFactoryMap()
+                    .remove(scheme);
+        }
     }
 
     /**

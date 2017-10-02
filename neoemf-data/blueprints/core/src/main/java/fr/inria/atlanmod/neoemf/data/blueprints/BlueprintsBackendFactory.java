@@ -18,26 +18,21 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryName;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ConfigValue;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendConfig;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.BlueprintsTgConfig;
-import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
 
 import org.eclipse.emf.common.util.URI;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -52,13 +47,10 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
  * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
  * <p>
  * The factory handles transient back-ends by creating an in-memory {@code TinkerGraph} instance. Persistent back-ends
- * are created according to the provided resource options (see {@link BlueprintsResourceOptions}. Default back-end
- * configuration (store directory and graph type) is called dynamically according to the provided Blueprints
- * implementation {@link BlueprintsTgConfig}.
+ * are created according to the provided {@link fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig}.
  *
  * @see BlueprintsBackend
- * @see BlueprintsResourceOptions
- * @see fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions
+ * @see fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
  */
 @ParametersAreNonnullByDefault
@@ -67,16 +59,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    @FactoryName
     public static final String NAME = "blueprints";
-
-    /**
-     * The configuration file name.
-     * <p>
-     * This file stores the metadata information about the underlying graph, i.e., graph type and other configuration
-     * options.
-     */
-    private static final String BLUEPRINTS_CONFIG_FILE = "config.properties";
 
     /**
      * Constructs a new {@code BlueprintsBackendFactory}.
@@ -101,34 +84,36 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
         BlueprintsBackend backend;
 
-        checkArgument(uri.isFile(), "BlueprintsBackendFactory only supports file-based URIs");
-
-        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
 
-            BackendConfig config = getOrCreateBlueprintsConfiguration(baseDirectory, options);
+            // Merge and check conflicts between the two configurations
+            ImmutableConfig mergedConfig = Config.<BaseBlueprintsConfig<?>>load(baseDirectory)
+                    .orElseGet(BaseBlueprintsConfig::newConfig)
+                    .merge(baseConfig)
+                    .setDirectory(baseDirectory);
 
-            Graph graph = GraphFactory.open(config.asMap());
+            String mapping = mergedConfig.getMapping();
+            boolean isReadOnly = mergedConfig.isReadOnly();
+
+            Graph graph = GraphFactory.open(mergedConfig.getOptions(s -> s.startsWith(BaseBlueprintsConfig.BLUEPRINTS_PREFIX)));
             if (!graph.getFeatures().supportsKeyIndices) {
                 throw new InvalidBackendException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
             }
-
-            config.save();
 
             if (isReadOnly) {
                 graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
             }
 
-            String mapping = mappingFrom(options);
-            backend = newInstanceOf(mapping,
-                    new ConstructorParameter(graph, KeyIndexableGraph.class));
+            backend = createMapper(mapping,
+                    new ConfigValue<>(graph, KeyIndexableGraph.class));
 
-            processGlobalConfiguration(baseDirectory, mapping);
+            mergedConfig.save(baseDirectory);
         }
         catch (Exception e) {
             throw new InvalidBackendException("Unable to open the Blueprints database", e);
@@ -146,96 +131,6 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         }
         catch (Exception e) {
             throw new InvalidBackendException(e);
-        }
-    }
-
-    /**
-     * Creates and saves the Blueprints configuration.
-     *
-     * @param directory the directory where the configuration must be stored
-     * @param options   options to define the behavior of Blueprints
-     *
-     * @return the created configuration
-     *
-     * @throws InvalidBackendException if the configuration cannot be created in the {@code directory}, or if some
-     *                                 {@code options} are missing or invalid.
-     */
-    private BackendConfig getOrCreateBlueprintsConfiguration(Path directory, Map<String, Object> options) {
-        Path path = directory.resolve(BLUEPRINTS_CONFIG_FILE);
-
-        BackendConfig config;
-
-        try {
-            config = BackendConfig.load(path);
-        }
-        catch (IOException e) {
-            throw new InvalidBackendException(e);
-        }
-
-        // Initialize value if the configuration file has just been created
-        if (!config.has(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            config.set(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        }
-        else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            // The file already exists, verify that the problem options are not conflicting.
-            String savedGraphType = config.get(BlueprintsResourceOptions.GRAPH_TYPE);
-            String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
-            if (!Objects.equals(savedGraphType, issuedGraphType)) {
-                throw new InvalidBackendException(String.format("Unable to create Graph as %s, expected graph was %s)", issuedGraphType, savedGraphType));
-            }
-        }
-
-        // Copy the Blueprints options to the configuration
-        options.entrySet().stream()
-                .filter(e -> e.getKey().startsWith("blueprints."))
-                .forEach(e -> config.set(e.getKey(), e.getValue().toString()));
-
-        // Check we have a valid graph graphType, it is needed to get the graph name
-        if (!config.has(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            throw new InvalidBackendException(String.format("Graph is undefined for %s", directory));
-        }
-
-        String graphType = config.get(BlueprintsResourceOptions.GRAPH_TYPE);
-
-        configurationFor(graphType).putDefault(config, directory);
-
-        return config;
-    }
-
-    /**
-     * Retrieves the {@link BlueprintsConfig} instance from the {@code graphType}.
-     *
-     * @param graphType the type of the graph to use
-     *
-     * @return a {@link BlueprintsConfig} instance
-     */
-    private BlueprintsConfig configurationFor(String graphType) {
-        // Define the configuration
-        String[] segments = graphType.split("\\.");
-
-        if (segments.length >= 2) {
-            String graphName = segments[segments.length - 2];
-            if (graphName.equals("neo4j2")) { // Remove the tailing '2'
-                graphName = "neo4j";
-            }
-
-            String configClassName = String.format("Blueprints%sConfig", Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1));
-
-            String configClassQualifiedName = String.format("%s.%s.%s",
-                    BlueprintsBackendFactory.class.getPackage().getName(),
-                    graphName,
-                    configClassName);
-
-            try {
-                Class<?> configClass = getClass().getClassLoader().loadClass(configClassQualifiedName);
-                return BlueprintsConfig.class.cast(configClass.newInstance());
-            }
-            catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                throw new IllegalStateException(e); // Should never happen
-            }
-        }
-        else {
-            throw new InvalidOptionException(String.format("Unable to retrieve the Graph name from '%s'", graphType));
         }
     }
 

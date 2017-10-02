@@ -12,13 +12,12 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryName;
+import fr.inria.atlanmod.neoemf.config.ConfigValue;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -53,7 +52,7 @@ import static java.util.Objects.isNull;
  * recommend every HBase resource right after their creation, ensuring the resource is using a persistent back-end.
  *
  * @see HBaseBackend
- * @see fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions
+ * @see fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
  */
 @ParametersAreNonnullByDefault
@@ -62,7 +61,6 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    @FactoryName
     public static final String NAME = "hbase";
 
     /**
@@ -93,14 +91,16 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
         HBaseBackend backend;
 
-        checkArgument(uri.isHierarchical(), "HBaseBackendFactory only supports hierarchical URIs");
-
-        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        checkArgument(uri.isHierarchical(), "%s only supports hierarchical URIs", getClass().getSimpleName());
 
         try {
+            // No file-based configuration
+            String mapping = baseConfig.getMapping();
+            boolean isReadOnly = baseConfig.isReadOnly();
+
             Configuration configuration = HBaseConfiguration.create();
             configuration.set("hbase.zookeeper.quorum", uri.host());
             configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
@@ -113,7 +113,6 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
                             .map(s -> s.replaceAll("-", "_"))
                             .collect(Collectors.joining("_")));
 
-            // Initialize
             if (!admin.tableExists(tableName) && !isReadOnly) {
                 HTableDescriptor desc = new HTableDescriptor(tableName);
                 HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY);
@@ -127,8 +126,8 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
             Table table = connection.getTable(tableName);
 
-            backend = newInstanceOf(mappingFrom(options),
-                    new ConstructorParameter(table, Table.class));
+            backend = createMapper(mapping,
+                    new ConfigValue<>(table, Table.class));
         }
         catch (Exception e) {
             throw new InvalidBackendException("Unable to open the HBase database", e);

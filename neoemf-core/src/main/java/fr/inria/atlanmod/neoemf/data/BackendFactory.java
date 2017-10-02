@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -31,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * For reflection reasons, each instance of {@code BackendFactory} <b>must</b> have a static field {@code NAME},
  * representing the name of the created {@link Backend} instances.
  *
- * @see fr.inria.atlanmod.neoemf.option.PersistenceOptions
+ * @see Config
  */
 @ParametersAreNonnullByDefault
 public interface BackendFactory {
@@ -61,8 +63,6 @@ public interface BackendFactory {
      *
      * @return a new back-end
      *
-     * @throws InvalidBackendException if there is at least one invalid value in {@code options}, or if an option is
-     *                                 missing
      * @see #supportsTransient()
      */
     @Nonnull
@@ -70,16 +70,16 @@ public interface BackendFactory {
     Backend createTransientBackend();
 
     /**
-     * Creates a {@link Backend} by using the given {@code uri}.
+     * Creates a persistent {@link Backend} located by the {@code uri}.
      *
-     * @param uri     the {@link URI} where to store the back-end
-     * @param options the options that defines the behaviour of the back-end
+     * @param uri        the {@link URI} where to store the back-end
+     * @param baseConfig the base configuration that defines the behaviour of the back-end
      *
      * @return a new back-end
      *
-     * @throws InvalidBackendException if there is at least one invalid value in {@code options}, or if an option is
+     * @throws InvalidBackendException if there is at least one invalid value in {@code baseConfig}, or if an option is
      *                                 missing
      */
     @Nonnull
-    PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options);
+    PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig);
 }

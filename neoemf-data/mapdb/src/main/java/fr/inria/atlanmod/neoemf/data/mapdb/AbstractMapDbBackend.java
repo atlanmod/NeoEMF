@@ -227,7 +227,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     /**
-     * Retrieves a value from the {@code database} according to the given {@code key}.
+     * Retrieves the value of the {@code key} from the {@code database}.
      *
      * @param database the database where to looking for
      * @param key      the key of the element to retrieve

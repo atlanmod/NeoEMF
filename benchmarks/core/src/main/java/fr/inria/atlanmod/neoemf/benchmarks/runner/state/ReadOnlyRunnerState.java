@@ -65,10 +65,10 @@ public class ReadOnlyRunnerState extends RunnerState {
     @Setup(Level.Iteration)
     public void loadResource() throws IOException {
         Log.info("Initializing the data store");
-        storeFile = adapter().getOrCreateStore(resourceFile(), options(), useDirectImport());
+        storeFile = adapter().getOrCreateStore(resourceFile(), baseConfig(), useDirectImport());
 
         Log.info("Loading the resource");
-        resource = adapter().load(storeFile(), options());
+        resource = adapter().load(storeFile(), baseConfig());
     }
 
     /**

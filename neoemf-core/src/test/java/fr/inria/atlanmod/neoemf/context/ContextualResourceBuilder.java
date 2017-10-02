@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.commons.log.Level;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -23,7 +24,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A builder that manages the assembly and the construction of {@link PersistentResource}.
+ * A configuration that manages the assembly and the construction of {@link PersistentResource}.
  */
 @ParametersAreNonnullByDefault
 final class ContextualResourceBuilder {
@@ -73,21 +73,19 @@ final class ContextualResourceBuilder {
     }
 
     /**
-     * Returns all options of this helper.
+     * Returns the default configuration of this helper.
      *
-     * @return a map of options
+     * @return a new configuration
      */
     @Nonnull
-    private Map<String, Object> defaultOptions() {
-        return context.optionsBuilder()
+    private Config defaultConfig() {
+        return context.config()
                 .log(Level.DEBUG)
                 .autoSave(100)
                 .cacheSizes()
                 .cacheFeatures()
                 .cacheContainers()
-                .cacheMetaClasses()
-//                .recordStats()
-                .asMap();
+                .cacheMetaClasses();
     }
 
     /**
@@ -133,12 +131,15 @@ final class ContextualResourceBuilder {
      * Creates a {@link PersistentResource} according to the specified options.
      *
      * @return a new {@link PersistentResource}
+     *
+     * @see Context#config()
+     * @see #defaultConfig()
      */
     @Nonnull
     public PersistentResource createResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         if (isPersistent) {
-            resource.save(defaultOptions());
+            resource.save(defaultConfig().toMap());
         }
 
         reset();
@@ -150,11 +151,14 @@ final class ContextualResourceBuilder {
      * Loads an existing {@link PersistentResource} according to the specified options.
      *
      * @return a new {@link PersistentResource}
+     *
+     * @see Context#config()
+     * @see #defaultConfig()
      */
     @Nonnull
     public PersistentResource loadResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
-        resource.load(defaultOptions());
+        resource.load(defaultConfig().toMap());
 
         reset();
 
@@ -165,10 +169,13 @@ final class ContextualResourceBuilder {
      * Creates a new {@link DataMapper} according to the specified options.
      *
      * @return a new {@link DataMapper}
+     *
+     * @see Context#config()
+     * @see #defaultConfig()
      */
     @Nonnull
     public DataMapper createMapper() {
-        Backend backend = context.factory().createPersistentBackend(uri, defaultOptions());
-        return StoreFactory.getInstance().createStore(backend, defaultOptions());
+        Backend backend = context.factory().createPersistentBackend(uri, defaultConfig());
+        return StoreFactory.getInstance().createStore(backend, defaultConfig());
     }
 }

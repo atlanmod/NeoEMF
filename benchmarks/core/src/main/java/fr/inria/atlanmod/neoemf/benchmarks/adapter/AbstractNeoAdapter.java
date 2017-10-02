@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -59,11 +58,11 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     }
 
     @Override
-    public DataMapper createMapper(File file, PersistenceOptions options) {
-        Map<String, Object> mapOptions = options.withOptions(getOptions()).asMap();
+    public DataMapper createMapper(File file, Config config) {
+        Config mergedConfig = config.merge(getOptions());
 
-        Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), mapOptions);
-        return StoreFactory.getInstance().createStore(backend, mapOptions);
+        Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
+        return StoreFactory.getInstance().createStore(backend, mergedConfig);
     }
 
     @Nonnull
@@ -74,17 +73,11 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Map<String, Object> getOptions() {
-        return PersistenceOptions.forName(getFactory().name()).asMap();
-    }
-
-    @Nonnull
-    @Override
-    public Resource load(File file, PersistenceOptions options) throws IOException {
+    public Resource load(File file, Config config) throws IOException {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(options.withOptions(getOptions()).asMap());
+        resource.load(config.merge(getOptions()).toMap());
 
         return resource;
     }

@@ -44,6 +44,12 @@ import static java.util.Objects.nonNull;
 public class LogStore extends AbstractStore {
 
     /**
+     * The default logging level.
+     */
+    @Nonnull
+    public static final Level DEFAULT_LEVEL = Level.INFO;
+
+    /**
      * The default {@link Level} for logging.
      */
     @Nonnull
@@ -56,14 +62,14 @@ public class LogStore extends AbstractStore {
      */
     @VisibleForReflection
     public LogStore(Store store) {
-        this(store, Level.INFO);
+        this(store, DEFAULT_LEVEL);
     }
 
     /**
      * Constructs a new {@code LogStore} with the given logging {@code level}.
      *
      * @param store the underlying store
-     * @param level the logging level to use
+     * @param level the logging level
      */
     @VisibleForReflection
     public LogStore(Store store, Level level) {

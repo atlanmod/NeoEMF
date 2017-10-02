@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.bind.annotation;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
 /**
  * Annotates an element that is bound to a {@link BackendFactory}.
  */
+@Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FactoryBinding {

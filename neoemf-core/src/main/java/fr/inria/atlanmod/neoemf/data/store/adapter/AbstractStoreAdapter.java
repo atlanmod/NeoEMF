@@ -126,7 +126,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                         .map(c -> PersistenceFactory.getInstance().create(c, k))
                         .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
-        // TODO Simply refresh the resource of the object
         Resource.Internal resource = resource();
         if (nonNull(resource)) {
             object.resource(resource);
@@ -586,7 +585,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     @Override
-    // TODO Implement this method
     public void setAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
         checkNotNull(internalObject);
         checkNotNull(feature);
@@ -600,7 +598,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     @Override
-    // TODO Implement this method
     public int addAll(InternalEObject internalObject, EStructuralFeature feature, int index, Collection<?> values) {
         checkNotNull(internalObject);
         checkNotNull(feature);

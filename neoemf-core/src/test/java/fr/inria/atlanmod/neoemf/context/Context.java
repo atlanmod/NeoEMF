@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -66,14 +66,12 @@ public interface Context {
     BackendFactory factory();
 
     /**
-     * Returns the {@link PersistenceOptions} used by this context.
+     * Returns the base configuration used by this context.
      *
-     * @return a new options builder
-     *
-     * @see PersistenceOptions
+     * @return a new configuration
      */
     @Nonnull
-    PersistenceOptions optionsBuilder();
+    Config config();
 
     /**
      * Returns the {@link URI} scheme used by this context.

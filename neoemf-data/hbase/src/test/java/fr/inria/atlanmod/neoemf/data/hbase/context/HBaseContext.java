@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
@@ -38,12 +38,12 @@ public abstract class HBaseContext extends AbstractContext {
      * @return a new context.
      */
     @Nonnull
-    public static Context getWithArraysAndStrings() {
+    public static Context getDefault() {
         return new HBaseContext() {
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return HBaseOptions.builder().withArraysAndStrings();
+            public Config config() {
+                return HBaseConfig.newConfig();
             }
         };
     }

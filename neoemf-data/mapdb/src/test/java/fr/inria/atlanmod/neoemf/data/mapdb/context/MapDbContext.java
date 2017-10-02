@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,8 +43,8 @@ public abstract class MapDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return MapDbOptions.builder().withIndices();
+            public Config config() {
+                return MapDbConfig.newConfig().withIndices();
             }
         };
     }
@@ -65,8 +65,8 @@ public abstract class MapDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return MapDbOptions.builder().withArrays();
+            public Config config() {
+                return MapDbConfig.newConfig().withArrays();
             }
         };
     }
@@ -87,8 +87,8 @@ public abstract class MapDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return MapDbOptions.builder().withLists();
+            public Config config() {
+                return MapDbConfig.newConfig().withLists();
             }
         };
     }

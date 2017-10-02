@@ -13,6 +13,9 @@ package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -24,8 +27,6 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -55,7 +56,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
@@ -103,12 +103,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private StoreAdapter eStore;
 
     /**
-     * The last options used during {@link #load(Map)}.
-     */
-    @Nullable
-    private Map<String, Object> previousOptions;
-
-    /**
      * Constructs a new {@code DefaultPersistentResource} with the given {@code uri}.
      *
      * @param uri the {@link URI} of the resource
@@ -116,10 +110,10 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public DefaultPersistentResource(URI uri) {
         super(uri);
 
-        factory = BackendFactoryRegistry.getInstance().getFactoryProvider(uri.scheme());
+        factory = BackendFactoryRegistry.getInstance().getFactoryFor(uri.scheme());
 
         Backend backend = factory.createTransientBackend();
-        Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
+        Store baseStore = StoreFactory.getInstance().createStore(backend, BaseConfig.newConfig());
         eStore = new PersistentStoreAdapter(baseStore, this);
 
         rootObject = new RootObject(this);
@@ -150,13 +144,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) throws IOException {
-        doSave((Map<String, Object>) options);
+        doSave(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
-        doLoad((Map<String, Object>) options);
+        doLoad(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
     }
 
     @Override
@@ -176,21 +170,16 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     /**
-     * Saves this resource using the specified {@code options}.
-     * <p>
-     * Options are handled generically as feature-to-setting entries; the resource will ignore options it doesn't
-     * recognize.
+     * Saves this resource using the specified {@code config}.
      *
-     * @param options the save options
+     * @param config the save configuration
      *
      * @throws IOException if an I/O error occurs during the save
      */
-    protected void doSave(Map<String, Object> options) throws IOException {
-        checkOptions(options);
-
+    protected void doSave(ImmutableConfig config) throws IOException {
         if (!isLoaded || !eStore.store().backend().isPersistent()) {
-            Backend backend = factory.createPersistentBackend(uri, options);
-            Store baseStore = StoreFactory.getInstance().createStore(backend, options);
+            Backend backend = factory.createPersistentBackend(uri, config);
+            Store baseStore = StoreFactory.getInstance().createStore(backend, config);
             StoreAdapter newStore = new PersistentStoreAdapter(baseStore, this);
 
             // Direct copy
@@ -209,16 +198,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     /**
-     * Loads this resource using the specified {@code options}.
-     * <p>
-     * Options are handled generically as feature-to-setting entries; the resource will ignore options it doesn't
-     * recognize.
+     * Loads this resource using the specified {@code config}.
      *
-     * @param options the load options
+     * @param config the load configuration
      *
      * @throws IOException if an I/O error occurs during the load
      */
-    protected void doLoad(Map<String, Object> options) throws IOException {
+    protected void doLoad(ImmutableConfig config) throws IOException {
         try {
             isLoading = true;
 
@@ -226,15 +212,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 if (uri.isFile() && new File(uri.toFileString()).exists() || uri.hasAuthority()) {
                     eStore.close();
 
-                    Backend backend = factory.createPersistentBackend(uri, options);
-                    Store baseStore = StoreFactory.getInstance().createStore(backend, options);
+                    Backend backend = factory.createPersistentBackend(uri, config);
+                    Store baseStore = StoreFactory.getInstance().createStore(backend, config);
                     eStore = new PersistentStoreAdapter(baseStore, this);
                 }
                 else {
                     throw new FileNotFoundException(uri.toFileString());
                 }
 
-                previousOptions = options;
                 isLoaded = true;
             }
         }
@@ -281,21 +266,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public StoreAdapter eStore() {
         return eStore;
-    }
-
-    /**
-     * Check that the {@code options} do not collide with {@link #previousOptions}.
-     *
-     * @param options the options to check
-     */
-    private void checkOptions(Map<String, Object> options) {
-        if (nonNull(previousOptions)) {
-            for (Map.Entry<String, Object> entry : options.entrySet()) {
-                if (previousOptions.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), previousOptions.get(entry.getKey()))) {
-                    throw new InvalidOptionException(String.format("key = %s; value = %s", entry.getKey(), entry.getValue()));
-                }
-            }
-        }
     }
 
     @Override

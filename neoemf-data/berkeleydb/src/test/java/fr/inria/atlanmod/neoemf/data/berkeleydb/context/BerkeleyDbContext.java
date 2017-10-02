@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,8 +43,8 @@ public abstract class BerkeleyDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return BerkeleyDbOptions.builder().withIndices();
+            public Config config() {
+                return BerkeleyDbConfig.newConfig().withIndices();
             }
         };
     }
@@ -65,8 +65,8 @@ public abstract class BerkeleyDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return BerkeleyDbOptions.builder().withArrays();
+            public Config config() {
+                return BerkeleyDbConfig.newConfig().withArrays();
             }
         };
     }
@@ -87,8 +87,8 @@ public abstract class BerkeleyDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public PersistenceOptions optionsBuilder() {
-                return BerkeleyDbOptions.builder().withLists();
+            public Config config() {
+                return BerkeleyDbConfig.newConfig().withLists();
             }
         };
     }

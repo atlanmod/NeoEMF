@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.LazyObject;
 import fr.inria.atlanmod.commons.LazyReference;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
 import fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap;
@@ -24,7 +25,6 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.TransientStoreAdapter;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
@@ -294,7 +294,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         // Create a new transient store
         else {
             TransientBackend backend = new BoundTransientBackend(id());
-            Store baseStore = StoreFactory.getInstance().createStore(backend, CommonOptions.noOption());
+            Store baseStore = StoreFactory.getInstance().createStore(backend, BaseConfig.newConfig());
             return new TransientStoreAdapter(baseStore, resource);
         }
     }

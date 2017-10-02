@@ -27,6 +27,6 @@ public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getWithIndices();
+        return BlueprintsContext.getDefault();
     }
 }

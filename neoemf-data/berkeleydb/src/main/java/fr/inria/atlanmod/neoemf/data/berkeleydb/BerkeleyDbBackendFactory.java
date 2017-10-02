@@ -16,14 +16,15 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryName;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ConfigValue;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -46,7 +47,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
  * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
  *
  * @see BerkeleyDbBackend
- * @see fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions
+ * @see fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
  */
 @ParametersAreNonnullByDefault
@@ -55,7 +56,6 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    @FactoryName
     public static final String NAME = "berkeleydb";
 
     /**
@@ -81,15 +81,21 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, Map<String, Object> options) {
+    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
         BerkeleyDbBackend backend;
 
-        checkArgument(uri.isFile(), "BerkeleyDbBackendFactory only supports file-based URIs");
-
-        boolean isReadOnly = StoreFactory.isDefined(options, PersistentStoreOptions.READ_ONLY);
+        checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
 
         try {
             Path baseDirectory = Paths.get(uri.toFileString());
+
+            // Merge and check conflicts between the two configurations
+            ImmutableConfig mergedConfig = Config.load(baseDirectory)
+                    .orElseGet(BerkeleyDbConfig::newConfig)
+                    .merge(baseConfig);
+
+            String mapping = mergedConfig.getMapping();
+            boolean isReadOnly = mergedConfig.isReadOnly();
 
             if (Files.notExists(baseDirectory)) {
                 Files.createDirectories(baseDirectory);
@@ -107,12 +113,11 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            String mapping = mappingFrom(options);
-            backend = newInstanceOf(mapping,
-                    new ConstructorParameter(environment, Environment.class),
-                    new ConstructorParameter(databaseConfig, DatabaseConfig.class));
+            backend = createMapper(mapping,
+                    new ConfigValue<>(environment, Environment.class),
+                    new ConfigValue<>(databaseConfig, DatabaseConfig.class));
 
-            processGlobalConfiguration(baseDirectory, mapping);
+            mergedConfig.save(baseDirectory);
         }
         catch (Exception e) {
             throw new InvalidBackendException("Unable to open the BerkeleyDB database", e);

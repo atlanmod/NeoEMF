@@ -27,6 +27,6 @@ public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getWithArraysAndStrings();
+        return HBaseContext.getDefault();
     }
 }

@@ -11,15 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.decorator;
 
-import fr.inria.atlanmod.neoemf.data.BackendConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import java.io.File;
 import java.util.Optional;
 
 /**
@@ -37,8 +39,10 @@ public class BackendDirectoryDecorator extends LabelProvider implements ILabelDe
         return Optional.ofNullable(element)
                 .filter(IFolder.class::isInstance)
                 .map(IFolder.class::cast)
-                .map(f -> f.getFile(BackendConfig.DEFAULT_FILENAME))
-                .filter(IResource::exists)
+                .map(IResource::getLocation)
+                .map(IPath::toFile)
+                .map(File::toPath)
+                .filter(Config::exists)
                 .map(s -> NeoUIPlugin.getImageDescriptor(ICON_PATH).createImage())
                 .orElse(null);
     }

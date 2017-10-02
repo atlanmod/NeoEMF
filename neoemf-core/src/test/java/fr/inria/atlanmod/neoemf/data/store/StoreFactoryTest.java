@@ -12,16 +12,17 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.commons.log.Level;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -73,32 +74,22 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
      */
     @Test
-    public void testNoOption() throws Exception {
-        Map<String, Object> options = CommonOptions.noOption();
+    public void testNoStore() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
-    }
-
-    /**
-     * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
-     */
-    @Test
-    public void testAlreadyDefinedOption() throws Exception {
-        assertThat(catchThrowable(() -> CommonOptions.builder().autoSave().autoSave()))
-                .isExactlyInstanceOf(InvalidOptionException.class);
     }
 
     /**
      * Checks the setup of the {@link LogStore}.
      */
     @Test
-    public void testLoggingOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .log()
-                .asMap();
+    public void testLogging() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .log();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(LogStore.class);
 
         store = getInnerStore(store);
@@ -109,12 +100,11 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link SizeCacheStore}.
      */
     @Test
-    public void testSizeCachingOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheSizes()
-                .asMap();
+    public void testSizeCaching() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .cacheSizes();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(SizeCacheStore.class);
 
         store = getInnerStore(store);
@@ -125,12 +115,11 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link FeatureCacheStore}.
      */
     @Test
-    public void testFeatureCachingOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheFeatures()
-                .asMap();
+    public void testFeatureCaching() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .cacheFeatures();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(FeatureCacheStore.class);
 
         store = getInnerStore(store);
@@ -141,12 +130,11 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link ContainerCacheStore}.
      */
     @Test
-    public void testContainerCachingOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheContainers()
-                .asMap();
+    public void testContainerCaching() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .cacheContainers();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(ContainerCacheStore.class);
 
         store = getInnerStore(store);
@@ -157,12 +145,11 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link ClassCacheStore}.
      */
     @Test
-    public void testMetaclassCachingOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .cacheMetaClasses()
-                .asMap();
+    public void testMetaclassCaching() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .cacheMetaClasses();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(ClassCacheStore.class);
 
         store = getInnerStore(store);
@@ -173,12 +160,11 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link StatsRecordStore}.
      */
     @Test
-    public void testStatsCachingOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .recordStats()
-                .asMap();
+    public void testStatsCaching() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .recordStats();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(StatsRecordStore.class);
 
         store = getInnerStore(store);
@@ -189,12 +175,11 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} without chunk.
      */
     @Test
-    public void testAutoSaveOption() throws Exception {
-        Map<String, Object> options = CommonOptions.builder()
-                .autoSave()
-                .asMap();
+    public void testAutoSave() throws Exception {
+        ImmutableConfig config = BaseConfig.newConfig()
+                .autoSave();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(AutoSaveStore.class);
 
         store = getInnerStore(store);
@@ -205,14 +190,13 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} with chunk.
      */
     @Test
-    public void testAutoSaveWithChunkOption() throws Exception {
+    public void testAutoSaveWithChunk() throws Exception {
         final long expectedChunk = 12_345;
 
-        Map<String, Object> options = CommonOptions.builder()
-                .autoSave(expectedChunk)
-                .asMap();
+        ImmutableConfig config = BaseConfig.newConfig()
+                .autoSave(expectedChunk);
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(AutoSaveStore.class);
 
         long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
@@ -226,33 +210,35 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} with negative chunk.
      */
     @Test
-    public void testAutoSaveWithNegativeChunkOption() throws Exception {
-        assertThat(catchThrowable(() -> CommonOptions.builder().autoSave(-2)))
-                .isExactlyInstanceOf(InvalidOptionException.class);
+    public void testAutoSaveWithNegativeChunk() throws Exception {
+        assertThat(catchThrowable(() -> BaseConfig.newConfig().autoSave(-2)))
+                .isExactlyInstanceOf(InvalidConfigException.class);
     }
 
     /**
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      */
     @Test
-    public void testAllOptions() throws Exception {
+    public void testAllStores() throws Exception {
         long expectedChunk = 12_345;
 
-        Map<String, Object> options = CommonOptions.builder()
+        ImmutableConfig config = BaseConfig.newConfig()
                 .cacheSizes()
                 .cacheFeatures()
-                .log()
+                .log(Level.DEBUG)
                 .autoSave(expectedChunk)
                 .cacheContainers()
                 .cacheMetaClasses()
-                .recordStats()
-                .asMap();
+                .recordStats();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), options);
+        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isExactlyInstanceOf(StatsRecordStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(LogStore.class);
+
+        Level actualLevel = getValue(store, "level", LogStore.class, Level.class);
+        assertThat(actualLevel).isEqualTo(Level.DEBUG);
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(AutoSaveStore.class);
@@ -267,10 +253,10 @@ public class StoreFactoryTest extends AbstractTest {
         assertThat(store).isExactlyInstanceOf(ContainerCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(SizeCacheStore.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCacheStore.class);
+        assertThat(store).isExactlyInstanceOf(SizeCacheStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);

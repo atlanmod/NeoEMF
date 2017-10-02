@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 
 import java.util.Map;
 
@@ -59,8 +59,8 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return BlueprintsOptions.builder()
-                    .asMap();
+            return BlueprintsTinkerConfig.newConfig()
+                    .toMap();
         }
     }
 
@@ -81,8 +81,8 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, Object> getOptions() {
-            return BlueprintsNeo4jOptions.builder()
-                    .asMap();
+            return BlueprintsNeo4jConfig.newConfig()
+                    .toMap();
         }
     }
 }

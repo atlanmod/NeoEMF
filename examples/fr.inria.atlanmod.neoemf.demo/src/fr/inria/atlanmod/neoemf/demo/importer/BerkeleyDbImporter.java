@@ -13,7 +13,8 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -27,7 +28,6 @@ import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Imports an existing model stored in a XMI files into a BerkeleyDB-based {@link PersistentResource}.
@@ -43,12 +43,12 @@ public class BerkeleyDbImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
 
-        Map<String, Object> options = BerkeleyDbOptions.builder()
-                .autoSave()
-                .asMap();
+        Config config = BerkeleyDbConfig.newConfig()
+                .withIndices()
+                .autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
-            targetResource.save(options);
+            targetResource.save(config.toMap());
 
             Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -56,7 +56,7 @@ public class BerkeleyDbImporter {
             sourceResource.load(Collections.emptyMap());
 
             targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
-            targetResource.save(options);
+            targetResource.save(config.toMap());
 
             stopwatch.stop();
             Log.info("Model created in {0} seconds", stopwatch.elapsed().getSeconds());

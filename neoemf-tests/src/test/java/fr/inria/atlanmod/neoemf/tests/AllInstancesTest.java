@@ -101,9 +101,9 @@ public class AllInstancesTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
-            resource.save(context.optionsBuilder().asMap());
+            resource.save(context.config().toMap());
             resource.unload();
-            resource.load(context.optionsBuilder().asMap());
+            resource.load(context.config().toMap());
 
             if (!isStrict) {
                 assertAllInstancesHas(resource, false, NODE_COUNT, PHYSICAL_NODE_COUNT);

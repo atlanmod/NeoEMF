@@ -33,7 +33,7 @@ public class BlueprintsUriTest extends AbstractUriTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getWithIndices();
+        return BlueprintsContext.getDefault();
     }
 
     /**

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.benchmarks.resource.Resources;
 import fr.inria.atlanmod.neoemf.benchmarks.resource.Stores;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -93,19 +93,19 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file, PersistenceOptions options, boolean useDirectImport) throws IOException {
-        return getOrCreateStore(file, options, useDirectImport, false);
+    public File getOrCreateStore(File file, Config config, boolean useDirectImport) throws IOException {
+        return getOrCreateStore(file, config, useDirectImport, false);
     }
 
     @Nonnull
     @Override
-    public File createTempStore(File file, PersistenceOptions options, boolean useDirectImport) throws IOException {
-        return getOrCreateStore(file, options, useDirectImport, true);
+    public File createTempStore(File file, Config config, boolean useDirectImport) throws IOException {
+        return getOrCreateStore(file, config, useDirectImport, true);
     }
 
     @Override
-    public void save(Resource resource, PersistenceOptions options) throws IOException {
-        resource.save(options.withOptions(getOptions()).asMap());
+    public void save(Resource resource, Config config) throws IOException {
+        resource.save(config.merge(getOptions()).toMap());
     }
 
     @Nonnull
@@ -123,14 +123,14 @@ abstract class AbstractAdapter implements Adapter.Internal {
      * @return the resource
      */
     @Nonnull
-    private File getOrCreateStore(File file, PersistenceOptions options, boolean useDirectImport, boolean temporary) throws IOException {
+    private File getOrCreateStore(File file, Config config, boolean useDirectImport, boolean temporary) throws IOException {
         File storeFile;
 
         if (temporary) {
-            storeFile = Stores.createTempStore(file, options, this, useDirectImport);
+            storeFile = Stores.createTempStore(file, config, this, useDirectImport);
         }
         else {
-            storeFile = Stores.getOrCreateStore(file, options, this, useDirectImport);
+            storeFile = Stores.getOrCreateStore(file, config, this, useDirectImport);
         }
 
         checkState(storeFile.exists(), "'%s' does not exist in resource directory", file.getName());

@@ -67,7 +67,7 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
     /**
      * Creates a new {@link PersistentResource} for the {@code context}. The resource will be persistent.
      *
-     * @param context      the current context
+     * @param context the current context
      *
      * @return a new {@link PersistentResource}
      *
@@ -81,7 +81,7 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
     /**
      * Creates a new {@link PersistentResource} for the {@code context}. The resource will be transient.
      *
-     * @param context      the current context
+     * @param context the current context
      *
      * @return a new {@link PersistentResource}
      *

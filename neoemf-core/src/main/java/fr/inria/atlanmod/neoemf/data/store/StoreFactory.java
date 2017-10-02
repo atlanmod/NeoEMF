@@ -13,16 +13,16 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.config.ConfigType;
+import fr.inria.atlanmod.neoemf.config.ConfigValue;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
-import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
-import java.util.Collection;
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -54,75 +54,37 @@ public final class StoreFactory extends AbstractMapperFactory {
     }
 
     /**
-     * Retrieves the stores to use from the {@code options}.
-     *
-     * @param options the options containing the stores declaration
-     *
-     * @return a collection of stores declaration
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private static Collection<PersistentStoreOptions> getStores(Map<String, Object> options) {
-        try {
-            if (options.containsKey(PersistentResourceOptions.STORES)) {
-                return Collection.class.cast(options.get(PersistentResourceOptions.STORES));
-            }
-        }
-        catch (ClassCastException e) {
-            Log.warn(String.format("%s option must be an instance of Collection", PersistentResourceOptions.STORES));
-        }
-
-        return Collections.emptySet();
-    }
-
-    /**
-     * Checks that the {@code storeOption} is defined in the {@code options}.
-     *
-     * @param options     the options where to look for
-     * @param storeOption the option to look for
-     *
-     * @return {@code true} if the {@code storeOption} is defined
-     */
-    public static boolean isDefined(Map<String, Object> options, PersistentStoreOptions storeOption) {
-        return getStores(options).contains(storeOption);
-    }
-
-    /**
-     * Creates a new {@link Store} between the {@code resource} and the {@code backend} according to the specified
-     * {@code options}. If the {@code resource} is {@code null}, then the newly created store will be detached from any
-     * resource.
+     * Creates a new {@link Store} in front of the {@code backend} according to the specified {@code baseConfig}.
      * <p>
      * The returned {@link Store} may be a succession of several {@link Store}.
      *
-     * @param backend the back-end where to store data
-     * @param options the options that defines the behaviour of the store
+     * @param backend    the back-end where to store data
+     * @param baseConfig the configuration that defines the behaviour of the store
      *
      * @return a new store
      *
-     * @throws NullPointerException  if the {@code store} or the {@code options} are {@code null}
+     * @throws NullPointerException  if the {@code store} or the {@code baseConfig} are {@code null}
      * @throws InvalidStoreException if an error occurs during the creation of the store
      */
     @Nonnull
-    public Store createStore(Backend backend, Map<String, Object> options) {
-        checkNotNull(backend);
-        checkNotNull(options);
+    public Store createStore(Backend backend, ImmutableConfig baseConfig) {
+        checkNotNull(baseConfig);
 
         // The tail of the store chain
-        Store currentStore = new DirectWriteStore(backend);
+        Store currentStore = createDefaultStore(backend);
 
         try {
-            for (PersistentStoreOptions opt : getStores(options).stream().sorted().collect(Collectors.toList())) {
-                List<ConstructorParameter> parameters = opt.parameters().stream()
-                        .filter(options::containsKey)
-                        .map(options::get)
-                        .map(ConstructorParameter::new)
-                        .collect(Collectors.toList());
+            List<ConfigType<? extends Store>> storeTypes = baseConfig.getStoreTypes().stream()
+                    .sorted(Collections.reverseOrder())
+                    .collect(Collectors.toList());
+
+            for (ConfigType<? extends Store> st : storeTypes) {
+                Deque<ConfigValue<?>> parameters = findValuesFor(st, baseConfig);
 
                 // Each store has a store as first argument
-                parameters.add(0, new ConstructorParameter(currentStore, Store.class));
+                parameters.addFirst(new ConfigValue<>(currentStore, Store.class));
 
-                ConstructorParameter[] parametersArray = parameters.toArray(new ConstructorParameter[parameters.size()]);
-                currentStore = newInstanceOf(opt.className(), parametersArray);
+                currentStore = createMapper(st.typeName(), parameters.toArray(new ConfigValue[parameters.size()]));
             }
         }
         catch (Exception e) {
@@ -130,6 +92,34 @@ public final class StoreFactory extends AbstractMapperFactory {
         }
 
         return currentStore;
+    }
+
+    /**
+     * Creates the default store in front of the {@code backend}.
+     *
+     * @param backend the back-end where to store data
+     *
+     * @return the default store
+     */
+    @Nonnull
+    protected Store createDefaultStore(Backend backend) {
+        return new DirectWriteStore(backend);
+    }
+
+    /**
+     * Finds the values of all defined parameters of {@code type} in the {@code baseConfig}.
+     *
+     * @param type       the store declaration
+     * @param baseConfig the configuration that defines the behaviour of the store
+     *
+     * @return a set of values
+     */
+    @Nonnull
+    private Deque<ConfigValue<?>> findValuesFor(ConfigType<?> type, ImmutableConfig baseConfig) {
+        return type.parameters().stream()
+                .filter(p -> baseConfig.hasOption(p.name()))
+                .map(p -> p.findValue(baseConfig))
+                .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
     /**

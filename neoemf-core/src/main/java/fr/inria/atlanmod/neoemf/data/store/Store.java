@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,7 +38,7 @@ public interface Store extends DataMapper {
      *
      * @return the current snapshot of the statistics of this store chain
      *
-     * @see PersistenceOptions#recordStats()
+     * @see Config#recordStats()
      */
     @Nonnull
     StoreStats stats();

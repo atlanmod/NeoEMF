@@ -13,11 +13,11 @@ package fr.inria.atlanmod.neoemf.demo.query;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -48,7 +48,7 @@ public class EMFProtectedMethod {
         ResourceSet resourceSet = new ResourceSetImpl();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BlueprintsUri.builder().fromFile("models/sample.graphdb"))) {
-            resource.load(BlueprintsNeo4jOptions.noOption());
+            resource.load(BlueprintsNeo4jConfig.newConfig().toMap());
             Stopwatch stopwatch = Stopwatch.createStarted();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             stopwatch.stop();
@@ -56,7 +56,7 @@ public class EMFProtectedMethod {
         }
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(MapDbUri.builder().fromFile("models/sample.mapdb"))) {
-            resource.load(MapDbOptions.noOption());
+            resource.load(MapDbConfig.newConfig().withIndices().toMap());
             Stopwatch stopwatch = Stopwatch.createStarted();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             stopwatch.stop();
@@ -64,7 +64,7 @@ public class EMFProtectedMethod {
         }
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb"))) {
-            resource.load(BerkeleyDbOptions.noOption());
+            resource.load(BerkeleyDbConfig.newConfig().withIndices().toMap());
             Stopwatch stopwatch = Stopwatch.createStarted();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             stopwatch.stop();
@@ -72,7 +72,7 @@ public class EMFProtectedMethod {
         }
 
 //        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase"))) {
-//            resource.load(HBaseOptions.noOption());
+//            resource.load(HBaseConfig.newConfig().toMap());
 //            Stopwatch stopwatch = Stopwatch.createStarted();
 //            EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
 //            stopwatch.stop();

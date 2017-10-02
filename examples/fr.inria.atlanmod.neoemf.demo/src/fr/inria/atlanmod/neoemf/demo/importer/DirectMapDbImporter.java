@@ -11,10 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptions;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -25,7 +26,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.File;
-import java.util.Map;
 
 /**
  * Imports an existing model stored in a XMI files into a MapDB-based {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
@@ -36,16 +36,16 @@ public class DirectMapDbImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        Map<String, Object> options = MapDbOptions.builder()
-                .autoSave()
-                .asMap();
+        Config config = MapDbConfig.newConfig()
+                .withIndices()
+                .autoSave();
 
         BackendFactory factory = MapDbBackendFactory.getInstance();
 
         File sourceFile = new File("models/sample.xmi");
         URI targetUri = MapDbUri.builder().fromFile("models/sample2.mapdb");
 
-        try (Backend backend = factory.createPersistentBackend(targetUri, options); DataMapper mapper = StoreFactory.getInstance().createStore(backend, options)) {
+        try (Backend backend = factory.createPersistentBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)
                     .toMapper(mapper)
                     .withTimer()

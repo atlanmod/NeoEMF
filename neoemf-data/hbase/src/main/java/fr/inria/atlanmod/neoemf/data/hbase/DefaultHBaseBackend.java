@@ -59,7 +59,7 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
                     .collect(Collectors.toList()));
 
     /**
-     * Constructs a new {@code HBaseBackendArrays} on th given {@code table}.
+     * Constructs a new {@code HBaseBackendArrays} on the given {@code table}.
      *
      * @param table the HBase table
      */

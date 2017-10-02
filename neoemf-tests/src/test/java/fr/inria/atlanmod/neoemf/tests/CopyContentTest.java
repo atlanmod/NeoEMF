@@ -68,7 +68,7 @@ public class CopyContentTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createTransientResource(sourceContext)) {
             fillResource(resource);
 
-            resource.save(sourceContext.optionsBuilder().asMap());
+            resource.save(sourceContext.config().toMap());
             assertThat(resource.getContents()).isNotEmpty();
             assertThat(resource.getContents().get(0)).isInstanceOf(PrimaryObject.class);
 
@@ -94,7 +94,7 @@ public class CopyContentTest extends AbstractResourceBasedTest {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());
 
             resource.getContents().add(expected);
-            resource.save(context.optionsBuilder().asMap());
+            resource.save(context.config().toMap());
 
             EObject actual = resource.getContents().get(0);
 

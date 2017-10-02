@@ -18,8 +18,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
@@ -149,10 +148,10 @@ public class RunnerState {
     }
 
     /**
-     * Returns all existing {@link PersistentStoreOptions} instances.
+     * Returns all existing {@link Config} instances.
      */
     @Nonnull
-    public PersistenceOptions options() {
-        return PersistenceOptionsParser.parse(o);
+    public Config baseConfig() {
+        return ConfigParser.parse(o);
     }
 }
