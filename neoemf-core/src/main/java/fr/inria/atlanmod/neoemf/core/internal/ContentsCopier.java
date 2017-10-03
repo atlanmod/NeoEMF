@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core.internal;
 
-import fr.inria.atlanmod.commons.Copier;
+import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.util.EObjects;

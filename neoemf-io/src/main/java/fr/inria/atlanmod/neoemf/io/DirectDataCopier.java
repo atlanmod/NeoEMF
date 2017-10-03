@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.Copier;
+import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.io.IOException;

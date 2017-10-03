@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.BiConverter;
+import fr.inria.atlanmod.commons.function.BiConverter;
 import fr.inria.atlanmod.commons.primitive.Primitives;
 
 import org.eclipse.emf.ecore.EAttribute;

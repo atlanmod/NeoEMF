@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.Copier;
 import fr.inria.atlanmod.commons.concurrent.MoreThreads;
+import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;

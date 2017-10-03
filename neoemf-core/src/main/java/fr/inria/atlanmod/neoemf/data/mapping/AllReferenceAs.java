@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.commons.Converter;
+import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 
 import javax.annotation.Nonnull;
