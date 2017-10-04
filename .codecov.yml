@@ -1,7 +1,3 @@
-comment: false
-
-branch: master
-
 coverage:
   precision: 2
   round: down
@@ -20,3 +16,5 @@ coverage:
 
   # Ignore logging
     - "**/log/.*"
+
+comment: false
