@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -57,6 +59,12 @@ final class ClasspathAnalyzer {
      */
     @Nonnegative
     private static final int READY = 0;
+
+    /**
+     * The concurrent pool for managing classpath analysis tasks.
+     */
+    @Nonnull
+    private final ExecutorService POOL = MoreExecutors.newFixedThreadPool();
 
     /**
      * A phaser representing the number of classpath analysis in progress. When {@code phaser.getPhase() > 0}, at least
@@ -116,7 +124,7 @@ final class ClasspathAnalyzer {
         phaser.register();
         Log.info("Registered {0}", phaser.getRegisteredParties());
 
-        Bindings.getSharedPool().submit(() -> {
+        POOL.submit(() -> {
             try {
                 // One configuration for one task
                 ConfigurationBuilder baseConfig = new ConfigurationBuilder()

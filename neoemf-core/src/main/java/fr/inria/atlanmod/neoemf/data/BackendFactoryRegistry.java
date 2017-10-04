@@ -60,7 +60,7 @@ public final class BackendFactoryRegistry {
     /**
      * Whether this registry has been initialized at least once.
      */
-    boolean initialized;
+    private boolean initialized;
 
     /**
      * Constructs a new {@code BackendFactoryRegistry}.
@@ -107,7 +107,7 @@ public final class BackendFactoryRegistry {
     public BackendFactory getFactoryFor(String scheme) {
         checkNotNull(scheme);
 
-        if (!factories.containsKey(scheme) || !initialized) {
+        if (!factories.containsKey(scheme) && !initialized) {
             registerAll();
         }
 
@@ -129,7 +129,7 @@ public final class BackendFactoryRegistry {
             return false;
         }
 
-        if (!factories.containsKey(scheme) || !initialized) {
+        if (!factories.containsKey(scheme) && !initialized) {
             registerAll();
         }
 
