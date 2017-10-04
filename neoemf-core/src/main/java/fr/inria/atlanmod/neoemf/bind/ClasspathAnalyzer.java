@@ -31,8 +31,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Phaser;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
@@ -64,7 +62,7 @@ final class ClasspathAnalyzer {
      * The concurrent pool for managing classpath analysis tasks.
      */
     @Nonnull
-    private final ExecutorService POOL = MoreExecutors.newFixedThreadPool();
+    private final ExecutorService analysisPool = MoreExecutors.newFixedThreadPool();
 
     /**
      * A phaser representing the number of classpath analysis in progress. When {@code phaser.getPhase() > 0}, at least
@@ -96,17 +94,8 @@ final class ClasspathAnalyzer {
      */
     @Nonnull
     public Collection<URL> registeredUrls() {
-        try {
-            Log.info("Waiting for classpath analysis... {0}", READY);
-
-            // Waiting for classpath analysis
-            phaser.awaitAdvanceInterruptibly(READY, 30, TimeUnit.SECONDS);
-        }
-        catch (TimeoutException e) {
-            Log.warn("Timed out waiting for classpath analysis");
-        }
-        catch (InterruptedException ignored) {
-        }
+        // Waiting for classpath analysis
+        phaser.awaitAdvance(READY);
 
         return Collections.unmodifiableSet(registeredUrls);
     }
@@ -122,13 +111,12 @@ final class ClasspathAnalyzer {
         checkNotNull(callable);
 
         phaser.register();
-        Log.info("Registered {0}", phaser.getRegisteredParties());
 
-        POOL.submit(() -> {
+        analysisPool.submit(() -> {
             try {
                 // One configuration for one task
                 ConfigurationBuilder baseConfig = new ConfigurationBuilder()
-                        .setExecutorService(Bindings.getSharedPool())
+                        .setExecutorService(Bindings.getBindingPool())
                         .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
@@ -142,7 +130,6 @@ final class ClasspathAnalyzer {
             }
             finally {
                 phaser.arriveAndDeregister();
-                Log.info("Unregistered {0}", phaser.getRegisteredParties());
             }
         });
     }

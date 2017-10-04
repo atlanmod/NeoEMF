@@ -52,10 +52,12 @@ import static java.util.Objects.nonNull;
 public final class Bindings {
 
     /**
-     * The concurrent pool.
+     * The shared concurrent pool for the scanning of elements in the classpath.
+     *
+     * @see ConfigurationBuilder#setExecutorService(ExecutorService)
      */
     @Nonnull
-    private static final ExecutorService SHARED_POOL = MoreExecutors.newFixedThreadPool();
+    private static final ExecutorService BINDING_POOL = MoreExecutors.newFixedThreadPool();
 
     /**
      * A cache that holds the result of recent queries on types.
@@ -86,8 +88,8 @@ public final class Bindings {
      * @return an immutable {@link ExecutorService}
      */
     @Nonnull
-    static ExecutorService getSharedPool() {
-        return SHARED_POOL;
+    static ExecutorService getBindingPool() {
+        return BINDING_POOL;
     }
 
     /**
@@ -124,7 +126,7 @@ public final class Bindings {
     @Nonnull
     public static Set<Class<?>> typesAnnotatedWith(Class<? extends Annotation> annotation) {
         return new Reflections(new ConfigurationBuilder()
-                .setExecutorService(getSharedPool())
+                .setExecutorService(getBindingPool())
                 .setUrls(ClasspathAnalyzer.getInstance().registeredUrls())
                 .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()))
                 .getTypesAnnotatedWith(annotation);
