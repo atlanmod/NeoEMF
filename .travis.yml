@@ -44,3 +44,4 @@ notifications:
     on_success: always
     on_failure: always
     on_pull_requests: true
+  webhook: https://fleep.io/hook/i9BxYue3TZW1EZI5qgPe4w
