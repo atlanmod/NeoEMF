@@ -9,16 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase;
-
-import fr.inria.atlanmod.neoemf.data.DistributedPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+package fr.inria.atlanmod.neoemf.data;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} that is responsible of low-level access to a HBase database.
+ * A {@link PersistentBackend} that stores in a distributed database, or a server. Concurrent modifications are possible.
  */
 @ParametersAreNonnullByDefault
-public interface HBaseBackend extends DistributedPersistentBackend {
+public interface DistributedPersistentBackend extends PersistentBackend {
+
+    @Override
+    default boolean isDistributed() {
+        return true;
+    }
 }

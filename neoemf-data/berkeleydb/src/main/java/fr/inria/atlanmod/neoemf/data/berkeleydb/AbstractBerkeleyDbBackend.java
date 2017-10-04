@@ -109,11 +109,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
     protected void innerClose() {
         activeDatabases().forEach(Database::close);
         environment.close();

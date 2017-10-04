@@ -117,11 +117,6 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public boolean isDistributed() {
-        return true;
-    }
-
-    @Override
     protected void innerClose() throws IOException {
         table.close();
     }

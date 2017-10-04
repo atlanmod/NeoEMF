@@ -120,11 +120,6 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
     }
 
     @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
     protected void innerClose() {
         database.close();
     }

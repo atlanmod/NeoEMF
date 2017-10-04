@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.data.LocalPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,5 +27,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see MapDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-public interface MapDbBackend extends PersistentBackend {
+public interface MapDbBackend extends LocalPersistentBackend {
 }

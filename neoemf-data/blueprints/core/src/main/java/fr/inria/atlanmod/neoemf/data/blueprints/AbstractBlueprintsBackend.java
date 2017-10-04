@@ -233,11 +233,6 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     }
 
     @Override
-    public boolean isDistributed() {
-        return false;
-    }
-
-    @Override
     protected void innerClose() {
         try {
             graph.shutdown();

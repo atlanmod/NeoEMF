@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
+import fr.inria.atlanmod.neoemf.data.LocalPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,5 +25,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public interface BlueprintsBackend extends PersistentBackend {
+public interface BlueprintsBackend extends LocalPersistentBackend {
 }

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import fr.inria.atlanmod.neoemf.data.LocalPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,5 +27,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-public interface BerkeleyDbBackend extends PersistentBackend {
+public interface BerkeleyDbBackend extends LocalPersistentBackend {
 }
