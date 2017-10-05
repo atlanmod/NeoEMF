@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -50,13 +49,6 @@ public class StatsRecordStore extends AbstractStore {
     @VisibleForReflection
     public StatsRecordStore(Store store) {
         super(store);
-    }
-
-    @Override
-    public void close() {
-        Log.info("Statistics for {0}: {1}", backend().getClass().getSimpleName() + '@' + backend().hashCode(), formatAsString());
-
-        super.close();
     }
 
     @Override
@@ -274,17 +266,6 @@ public class StatsRecordStore extends AbstractStore {
      */
     private void record() {
         methodCallsAccumulator.computeIfAbsent(getCallingMethod(), s -> new AtomicLong()).incrementAndGet();
-    }
-
-    /**
-     * Formats the results as a string.
-     *
-     * @return a formatted string
-     */
-    private String formatAsString() {
-        return methodCallsAccumulator.isEmpty()
-                ? "Nothing has been recorded"
-                : "\n" + new StoreStats(methodCallsAccumulator);
     }
 
     /**

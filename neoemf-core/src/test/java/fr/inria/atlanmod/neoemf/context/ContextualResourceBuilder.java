@@ -79,6 +79,7 @@ final class ContextualResourceBuilder {
         return context.config()
                 .log(Level.DEBUG)
                 .autoSave(100)
+                .recordStats()
                 .cacheSizes()
                 .cacheFeatures()
                 .cacheContainers()
