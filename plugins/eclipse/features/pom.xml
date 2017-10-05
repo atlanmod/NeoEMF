@@ -24,7 +24,6 @@
         <!-- Graph-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</module>
         <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</module>
-        <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature</module>
 
         <!-- Map-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.mapdb.feature</module>

@@ -15,6 +15,7 @@
     <name>NeoEMF Eclipse Update-Site</name>
 
     <dependencies>
+
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
@@ -24,6 +25,12 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -47,21 +54,10 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.io.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

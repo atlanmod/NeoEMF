@@ -48,6 +48,21 @@
             <type>pom</type>
         </dependency>
 
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-cypher</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-lucene-index</artifactId>
+        </dependency>
+
         <!-- Internal -->
 
         <dependency>
@@ -102,6 +117,27 @@
                 <type>pom</type>
             </dependency>
 
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-kernel</artifactId>
+                <version>${neo4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-cypher</artifactId>
+                <version>${neo4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-lucene-index</artifactId>
+                <version>${neo4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -118,19 +154,17 @@
                             com.tinkerpop.blueprints;version="${blueprints.version}",
                             org.apache.commons.configuration;version="${commons-configuration.version}"
                         </Import-Package>
-                        <DynamicImport-Package>
+                        <Export-Package>
+                            !org.neo4j.*.impl.*,
+                            !org.neo4j.*.internal.*,
                             org.neo4j.*;version="${neo4j.version}",
                             org.apache.lucene.*;version="${lucene.version}",
                             javax.transaction.*;version="${jta.version}",
-                            *
-                        </DynamicImport-Package>
-                        <Export-Package>
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
                         <_exportcontents>
                             com.tinkerpop.blueprints.impls.neo4j2.*;version="${blueprints.version}"
                         </_exportcontents>
-                        <Embed-Transitive>false</Embed-Transitive>
                         <Require-Bundle>
                             ${project.groupId}.core;visibility:=reexport,
                             ${project.groupId}.data.blueprints.core
