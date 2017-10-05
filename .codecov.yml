@@ -1,9 +1,7 @@
 coverage:
   precision: 2
   round: down
-  range:
-    - 40.0
-    - 70.0
+  range: 50...70
 
   status:
     changes: false
@@ -11,10 +9,7 @@ coverage:
     project: true
 
   ignore:
-  # Ignore tests
     - "**/tests/.*"
-
-  # Ignore `Exception` instances
     - "**/*Exception.java"
 
 comment: false
