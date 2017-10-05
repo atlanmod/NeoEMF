@@ -14,7 +14,7 @@ coverage:
   # Ignore tests
     - "**/tests/.*"
 
-  # Ignore logging
-    - "**/log/.*"
+  # Ignore `Exception` instances
+    - "**/*Exception.java"
 
 comment: false
