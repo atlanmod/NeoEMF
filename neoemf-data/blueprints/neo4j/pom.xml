@@ -15,6 +15,18 @@
     <name>NeoEMF Data Blueprints Neo4j</name>
     <description>Blueprints extension using Neo4j.</description>
 
+    <licenses>
+        <license>
+            <name>Eclipse Public License v2.0</name>
+            <url>https://www.eclipse.org/legal/epl-2.0/</url>
+            <comments>
+                This Source Code may also be made available under the following Secondary Licenses when the conditions
+                for such availability set forth in the Eclipse Public License, v. 2.0 are satisfied: GNU General Public
+                License, version 3.
+            </comments>
+        </license>
+    </licenses>
+
     <properties>
         <neo4j.version>2.1.8</neo4j.version><!-- 2.2.0+ no longer use `javax.transaction` -->
         <lucene.version>3.6.2</lucene.version>

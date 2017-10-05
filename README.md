@@ -5,7 +5,7 @@ NeoEMF
 [![CodeCov](https://codecov.io/gh/atlanmod/NeoEMF/branch/backend-abstraction/graph/badge.svg)](https://codecov.io/gh/atlanmod/NeoEMF/branch/backend-abstraction)
 [![Codacy](https://api.codacy.com/project/badge/Grade/82af9c0b0354424f93e1044cbdc85a9e)](https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade)
 [![Javadoc](https://img.shields.io/badge/javadoc--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
-[![Licence](https://img.shields.io/badge/licence-EPL--1.0-blue.svg)](https://www.eclipse.org/legal/epl-v10.html)
+[![Licence](https://img.shields.io/badge/licence-EPL--2.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0/)
 
 ## What is NeoEMF?
 

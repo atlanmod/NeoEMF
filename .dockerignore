@@ -124,7 +124,7 @@
 .gitignore
 CHANGELOG.md
 README.md
-LICENCE
+LICENCE.md
 .travis.yml
 .codecov.yml
 

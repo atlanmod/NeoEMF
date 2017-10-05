@@ -11,7 +11,7 @@ Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.examples.NeoEMFExamplesPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: fr.inria.atlanmod.neoemf.eclipse.examples
-Bundle-Vendor: Atlanmod INRIA LINA Mines Nantes
+Bundle-Vendor: Atlanmod, Inria, LS2N, and IMT Nantes
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui,

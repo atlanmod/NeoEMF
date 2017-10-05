@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Utils P2
-Bundle-Vendor: Atlanmod INRIA LINA Mines Nantes
+Bundle-Vendor: Atlanmod, Inria, LS2N, and IMT Nantes
 Bundle-SymbolicName: neoemf-utils.p2
 Bundle-Version: 1.0.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
