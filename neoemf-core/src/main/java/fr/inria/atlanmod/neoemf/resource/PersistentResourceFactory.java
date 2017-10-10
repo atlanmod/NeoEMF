@@ -51,7 +51,7 @@ public class PersistentResourceFactory implements Resource.Factory {
      */
     @Nullable
     @Override
-    public Resource createResource(URI uri) {
+    public PersistentResource createResource(URI uri) {
         checkNotNull(uri);
 
         return BackendFactoryRegistry.getInstance().isRegistered(uri.scheme())

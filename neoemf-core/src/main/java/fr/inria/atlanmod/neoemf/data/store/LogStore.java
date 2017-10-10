@@ -314,6 +314,7 @@ public class LogStore extends AbstractStore {
      *
      * @return the result of the call
      */
+    @Nonnull
     @SuppressWarnings("unchecked")
     private <K, R> R callAndReturn(Function<K, R> function, K key) {
         try {
@@ -350,6 +351,7 @@ public class LogStore extends AbstractStore {
      *
      * @return the result of the call
      */
+    @Nonnull
     @SuppressWarnings("unchecked")
     private <K, V, R> R callAndReturn(BiFunction<K, V, R> function, K key, @Nullable V value) {
         try {

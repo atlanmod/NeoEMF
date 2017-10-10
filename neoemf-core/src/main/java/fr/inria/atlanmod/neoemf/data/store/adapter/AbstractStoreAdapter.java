@@ -46,6 +46,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkElementIndex;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -456,13 +457,15 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public final Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex) {
+        checkElementIndex(targetIndex, size(internalObject, feature));
+
         Object moved = remove(internalObject, feature, sourceIndex);
-        if (nonNull(moved)) { // Nothing has been removed
-            add(internalObject, feature, targetIndex, moved);
-        }
+        checkState(nonNull(moved), "inconsistency issue");
+
+        add(internalObject, feature, targetIndex, moved);
 
         return moved;
     }

@@ -256,6 +256,7 @@ public class StatsRecordStore extends AbstractStore {
      *
      * @return the result of the call
      */
+    @Nonnull
     private <R> R record(Supplier<R> supplier) {
         record();
         return supplier.get();
@@ -273,6 +274,7 @@ public class StatsRecordStore extends AbstractStore {
      *
      * @return the name
      */
+    @Nonnull
     private String getCallingMethod() {
         return Thread.currentThread().getStackTrace()[4].getMethodName();
     }

@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.LazyObject;
 import fr.inria.atlanmod.commons.LazyReference;
+import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
@@ -55,6 +56,7 @@ import static java.util.Objects.nonNull;
  *
  * @see TransientStoreAdapter
  * @see BoundTransientBackend
+ * @see PersistenceFactory
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
@@ -101,7 +103,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @see Id#UNDEFINED
      */
-    protected DefaultPersistentEObject() {
+    @VisibleForTesting
+    public DefaultPersistentEObject() {
         this(Id.UNDEFINED);
     }
 
@@ -110,7 +113,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param id the identifier of this object
      */
-    protected DefaultPersistentEObject(Id id) {
+    @VisibleForTesting
+    public DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id);
     }
 
@@ -166,7 +170,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         StringBuilder sb = new StringBuilder();
 
         // Display the identifier of this object instead of its hashCode
-        sb.append(getClass().getName()).append('#').append(id());
+        sb.append(getClass().getName()).append('#').append(id().toHexString());
 
         if (eIsProxy()) {
             sb.append(" (eProxyURI: ").append(eProxyURI());

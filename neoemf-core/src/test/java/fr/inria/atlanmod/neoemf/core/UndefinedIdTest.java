@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.AbstractTest;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.ParametersAreNonnullByDefault;

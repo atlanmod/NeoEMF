@@ -37,7 +37,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     /**
      * The inner mapper.
      */
-    private M next;
+    private final M next;
 
     /**
      * Constructs a new {@code AbstractStore} on the given {@code mapper}.
@@ -58,15 +58,6 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     protected final M next() {
         return next;
-    }
-
-    /**
-     * Defines the inner mapper.
-     *
-     * @param mapper the inner mapper
-     */
-    protected final void next(M mapper) {
-        this.next = mapper;
     }
 
     @Override
