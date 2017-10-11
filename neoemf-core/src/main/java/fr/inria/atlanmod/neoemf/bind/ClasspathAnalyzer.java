@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.bind;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 
@@ -20,6 +21,9 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +46,30 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @Singleton
 @ParametersAreNonnullByDefault
 final class ClasspathAnalyzer {
+
+    /**
+     * The {@link Converter} used to manipulate {@link URI}s instead of {@link URL}s.
+     * <p>
+     * Prefer to store {@link URI}s because of the {@link URL#equals(Object)} method.
+     */
+    @Nonnull
+    private static final Converter<URL, URI> URL_CONVERTER = Converter.from(
+            url -> {
+                try {
+                    return url.toURI();
+                }
+                catch (URISyntaxException e) {
+                    throw new IllegalStateException(e);
+                }
+            },
+            uri -> {
+                try {
+                    return uri.toURL();
+                }
+                catch (MalformedURLException e) {
+                    throw new IllegalStateException(e);
+                }
+            });
 
     /**
      * The annotation used to determine the relation with NeoEMF.
@@ -72,7 +100,7 @@ final class ClasspathAnalyzer {
      * A set that holds the registered {@link URL}s.
      */
     @Nonnull
-    private final Set<URL> registeredUrls = Collections.synchronizedSet(new HashSet<>());
+    private final Set<URI> registeredUrls = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * Returns the instance of this class.
@@ -94,7 +122,9 @@ final class ClasspathAnalyzer {
         // Waiting for classpath analysis
         phaser.awaitAdvance(READY);
 
-        return Collections.unmodifiableSet(registeredUrls);
+        return registeredUrls.stream()
+                .map(URL_CONVERTER::revert)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -120,6 +150,7 @@ final class ClasspathAnalyzer {
                 checkNotNull(callable.call())
                         .stream()
                         .filter(url -> isRelated(url, baseConfig))
+                        .map(URL_CONVERTER::convert)
                         .collect(Collectors.toCollection(() -> registeredUrls));
             }
             catch (Exception e) {

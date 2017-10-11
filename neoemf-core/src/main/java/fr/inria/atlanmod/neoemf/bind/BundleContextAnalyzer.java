@@ -93,7 +93,7 @@ final class BundleContextAnalyzer {
         catch (IOException ignored) {
         }
         catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("Unable to find Eclipse runtime", e);
         }
 
         return Optional.ofNullable(url);
@@ -113,7 +113,7 @@ final class BundleContextAnalyzer {
                         .getMethod("getBundleFile", Bundle.class);
             }
             catch (NoSuchMethodException | ClassNotFoundException e) {
-                throw new RuntimeException("Unable to find org.eclipse.core.runtime.FileLocator#getBundleFile(Bundle) method", e);
+                throw new IllegalStateException("Unable to find Eclipse runtime", e);
             }
         }
 

@@ -36,16 +36,6 @@ public final class ConfigValue<T> {
     private final Class<? extends T> type;
 
     /**
-     * Constructs a new {@code ConfigValue} with the {@code value}, and the direct type of the {@code value}.
-     *
-     * @param value the value
-     */
-    @SuppressWarnings("unchecked")
-    public ConfigValue(T value) {
-        this(value, (Class<T>) value.getClass());
-    }
-
-    /**
      * Constructs a new {@code ConfigValue} with the {@code value}, and the declared {@code type}.
      *
      * @param value the value

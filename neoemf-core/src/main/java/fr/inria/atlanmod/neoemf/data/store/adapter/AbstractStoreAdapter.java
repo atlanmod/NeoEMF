@@ -124,9 +124,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                         .map(c -> PersistenceFactory.getInstance().create(c, k))
                         .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
-        Resource.Internal resource = resource();
-        if (nonNull(resource)) {
-            object.resource(resource);
+        Resource.Internal currentResource = resource();
+        if (nonNull(currentResource)) {
+            object.resource(currentResource);
         }
 
         return object;

@@ -238,6 +238,8 @@ public final class Bindings {
     @Nonnull
     @SuppressWarnings("unchecked")
     public static BackendFactory factoryFor(Class<?> type) {
+        checkNotNull(type);
+
         Class<? extends BackendFactory> factoryType = null;
 
         if (BackendFactory.class.isAssignableFrom(type)) {
