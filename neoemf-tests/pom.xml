@@ -357,6 +357,7 @@
                 <version>3.0.0</version>
                 <executions>
                     <execution>
+                        <id>add-gen-source</id>
                         <goals>
                             <goal>add-test-source</goal>
                         </goals>
