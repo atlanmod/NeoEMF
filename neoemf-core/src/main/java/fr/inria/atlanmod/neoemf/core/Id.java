@@ -29,34 +29,7 @@ public interface Id extends Comparable<Id>, Serializable {
      * An immutable undefined {@link Id}.
      */
     @Nonnull
-    Id UNDEFINED = new Id() {
-
-        /**
-         * The message of the exception thrown when accessing an unsupported method.
-         */
-        private final String msg = "Undefined identifier";
-
-        @Override
-        public long toLong() {
-            throw new IllegalStateException(msg);
-        }
-
-        @Override
-        @Nonnull
-        public String toHexString() {
-            throw new IllegalStateException(msg);
-        }
-
-        @Override
-        public int compareTo(@Nonnull Id o) {
-            throw new IllegalStateException(msg);
-        }
-
-        @Override
-        public String toString() {
-            return "Id {UNDEFINED}";
-        }
-    };
+    Id UNDEFINED = new UndefinedId();
 
     /**
      * Returns the instance of the default {@link IdProvider}.

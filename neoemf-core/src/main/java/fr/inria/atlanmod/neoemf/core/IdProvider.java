@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.function.Converter;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -18,28 +16,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface IdProvider {
-
-    /**
-     * The {@link Converter} to use a long representation instead of {@link Id}.
-     *
-     * @see Id#toLong()
-     * @see IdProvider#fromLong(long)
-     */
-    @Nonnull
-    Converter<Id, Long> AS_LONG = Converter.from(
-            Id::toLong,
-            Id.getProvider()::fromLong);
-
-    /**
-     * The {@link Converter} to use a hexadecimal representation instead of {@link Id}.
-     *
-     * @see Id#toHexString()
-     * @see IdProvider#fromHexString(String)
-     */
-    @Nonnull
-    Converter<Id, String> AS_HEXA = Converter.from(
-            Id::toHexString,
-            Id.getProvider()::fromHexString);
 
     /**
      * Creates a new {@link Id} from a long representation.

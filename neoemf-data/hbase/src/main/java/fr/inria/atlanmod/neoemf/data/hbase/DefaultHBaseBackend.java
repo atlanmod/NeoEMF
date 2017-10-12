@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceMergedAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
@@ -47,12 +47,12 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
     @Nonnull
     private static final Converter<List<Id>, String> MANY_AS_HEXAS = Converter.from(
             rs -> rs.stream()
-                    .map(r -> Optional.ofNullable(r).map(IdProvider.AS_HEXA::convert).orElse(null))
+                    .map(r -> Optional.ofNullable(r).map(IdConverters.withHexString()::convert).orElse(null))
                     .map(Strings::nullToEmpty)
                     .collect(Collectors.joining(DELIMITER)),
             r -> Arrays.stream(r.split(DELIMITER))
                     .map(Strings::emptyToNull)
-                    .map(IdProvider.AS_HEXA::revert)
+                    .map(IdConverters.withHexString()::revert)
                     .collect(Collectors.toList()));
 
     /**
@@ -67,7 +67,7 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
     @Nonnull
     @Override
     public Converter<Id, String> referenceConverter() {
-        return IdProvider.AS_HEXA;
+        return IdConverters.withHexString();
     }
 
     @Nonnull

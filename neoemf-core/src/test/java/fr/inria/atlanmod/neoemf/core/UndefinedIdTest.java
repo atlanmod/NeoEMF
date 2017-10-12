@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case about {@link Id#UNDEFINED}.
+ * A test-case about {@link UndefinedId}.
  */
 @ParametersAreNonnullByDefault
 class UndefinedIdTest extends AbstractTest {

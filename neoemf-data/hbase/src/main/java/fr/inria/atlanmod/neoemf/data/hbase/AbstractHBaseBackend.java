@@ -14,7 +14,7 @@ import fr.inria.atlanmod.commons.primitive.Bytes;
 import fr.inria.atlanmod.commons.primitive.Ints;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -88,8 +88,8 @@ abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements
      */
     @Nonnull
     private static final Converter<Id, byte[]> AS_BYTES = Converter.from(
-            id -> Strings.toBytes(IdProvider.AS_HEXA.convert(id)),
-            bs -> IdProvider.AS_HEXA.revert(Bytes.toString(bs)));
+            id -> Strings.toBytes(IdConverters.withHexString().convert(id)),
+            bs -> IdConverters.withHexString().revert(Bytes.toString(bs)));
 
     /**
      * The HBase table used to access the model.

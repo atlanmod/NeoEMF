@@ -25,7 +25,7 @@ import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
@@ -56,8 +56,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected static final Converter<Id, Object> AS_LONG_OBJECT = Converter.from(
-            IdProvider.AS_LONG::convert,
-            o -> IdProvider.AS_LONG.revert(Long.class.cast(o)));
+            IdConverters.withLong()::convert,
+            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * The property key used to define the index of an edge.

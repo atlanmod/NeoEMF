@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -190,7 +190,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @Nonnull
     @Override
     public Converter<Id, Long> referenceConverter() {
-        return IdProvider.AS_LONG;
+        return IdConverters.withLong();
     }
 
     /**

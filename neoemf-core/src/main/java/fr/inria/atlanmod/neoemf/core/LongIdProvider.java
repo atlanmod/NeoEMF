@@ -27,7 +27,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Singleton
 @ParametersAreNonnullByDefault
-class LongIdProvider implements IdProvider {
+final class LongIdProvider implements IdProvider {
 
     /**
      * The default {@link Hasher} used to generate {@link Id} from string.
