@@ -254,6 +254,16 @@
                     </configuration>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <properties>
+                            <excludeTags>slowest</excludeTags>
+                        </properties>
+                    </configuration>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

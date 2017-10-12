@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
@@ -84,6 +85,7 @@ public class CopyContentTest extends AbstractResourceBasedTest {
         }
     }
 
+    @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
     public void testCopyStandardToPersistentResource(Context context, Boolean isPersistent) throws Exception {

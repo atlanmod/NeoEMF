@@ -22,7 +22,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -51,6 +50,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the import from a file to a {@link Backend}.
      */
+    @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0} <- {1}")
     @ArgumentsSource(ContextProvider.WithUris.class)
     public void testDirectImport(Context context, URI uri) throws Exception {
@@ -74,6 +74,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the export from a {@link Backend} to a file.
      */
+    @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: useCompression = {1}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
     public void testDirectExport(Context context, Boolean useCompression) throws Exception {
@@ -103,7 +104,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the copy from a {@link Backend} to another.
      */
-    @Tag("slow")
+    @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0} -> {0}")
     @ArgumentsSource(ContextProvider.All.class)
     public void testDirectCopy(Context context) throws Exception {
@@ -113,7 +114,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the copy from a {@link Backend} to another.
      */
-    @Disabled("Very slow and expensive test")
+    @Tag("slowest")
     @ParameterizedTest(name = "[{index}] {0} -> {1}")
     @ArgumentsSource(ContextProvider.WithContexts.class)
     public void testDirectCrossCopy(Context sourceContext, Context targetContext) throws Exception {
