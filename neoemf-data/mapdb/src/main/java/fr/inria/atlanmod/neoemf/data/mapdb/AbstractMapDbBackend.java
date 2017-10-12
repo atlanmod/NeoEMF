@@ -42,7 +42,6 @@ import static java.util.Objects.isNull;
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
  */
 @ParametersAreNonnullByDefault
-// TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
 abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend, AllReferenceAs<Long> {
 
     /**

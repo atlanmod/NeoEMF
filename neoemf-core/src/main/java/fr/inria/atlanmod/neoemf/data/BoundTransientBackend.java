@@ -164,7 +164,6 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
      */
     @Singleton
     @ParametersAreNonnullByDefault
-    // TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
     private static final class DataHolder {
 
         /**

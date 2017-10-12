@@ -44,7 +44,6 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
  */
 @ParametersAreNonnullByDefault
-// TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
 abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend, AllReferenceAs<Long> {
 
     /**

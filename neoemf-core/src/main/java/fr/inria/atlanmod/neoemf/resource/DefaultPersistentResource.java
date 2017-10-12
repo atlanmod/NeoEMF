@@ -426,13 +426,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         protected void delegateAdd(int index, Object value) {
-            /*
-             * FIXME Maintain a list of hard links to the elements while moving them to the new resource.
-             * If a garbage collection happens while traversing the children elements, some unsaved objects that are
-             * referenced from a saved object may be garbage collected before they have been completely stored in the DB
-             */
             hardAllContents(PersistentEObject.from(value)).forEach(e -> e.resource(DefaultPersistentResource.this));
-
             super.delegateAdd(index, value);
         }
 
@@ -440,9 +434,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         @SuppressWarnings("unchecked")
         protected E delegateRemove(int index) {
             E previousValue = super.delegateRemove(index);
-
             hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));
-
             return previousValue;
         }
 

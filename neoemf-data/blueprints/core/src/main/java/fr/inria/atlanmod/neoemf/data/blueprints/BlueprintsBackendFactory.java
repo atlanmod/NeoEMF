@@ -121,7 +121,6 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    // TODO Remove this implementation
     public Backend createTransientBackend() {
         try {
             return new DefaultBlueprintsBackend(new TinkerGraph());

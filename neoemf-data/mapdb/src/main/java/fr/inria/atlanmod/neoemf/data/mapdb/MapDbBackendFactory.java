@@ -119,7 +119,6 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    // TODO Remove this implementation
     public Backend createTransientBackend() {
         try {
             DB db = DBMaker.memoryDB().make();

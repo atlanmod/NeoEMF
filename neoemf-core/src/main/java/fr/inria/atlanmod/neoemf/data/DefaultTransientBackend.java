@@ -26,7 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link TransientBackend} that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-// TODO Replace the one-to-one relations by a many-to-one relations ('containers' and 'instances')
 public class DefaultTransientBackend extends AbstractTransientBackend {
 
     /**

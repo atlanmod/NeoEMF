@@ -63,7 +63,7 @@ public interface BackendFactory {
      * @see #supportsTransient()
      */
     @Nonnull
-    // TODO Return a `TransientBackend`: need to re-implement a default `DataMapper#copyTo` method
+    // TODO Return a `TransientBackend`: need to re-implement a default `AbstractBackend#copyTo` method
     Backend createTransientBackend();
 
     /**

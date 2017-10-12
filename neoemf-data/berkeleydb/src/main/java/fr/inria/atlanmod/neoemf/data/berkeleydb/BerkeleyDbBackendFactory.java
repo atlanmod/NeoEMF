@@ -125,7 +125,6 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    // TODO Remove this implementation
     public Backend createTransientBackend() {
         BerkeleyDbBackend backend;
 
