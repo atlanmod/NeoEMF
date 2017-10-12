@@ -14,13 +14,24 @@ env:
     # CI_DEPLOY_PASSWORD
     - secure: FbSKxzPkjTrkom1EAjqbOKfSLmeWDfUj6FZks5pmTvdO6bFX641HRPOkWQ7o3p0QnXTWIl3KaT6PLCdRlVmIdepHbHjJt1x1HTuD/j82aOxUl1JUhiG3WFWE2V4tOuvABE8eRyvE1uGJ5Ik0F5BXy1QYwlWpbO9VORA3Kz4Xm6yu/kroH2EQlRxJN4LtM6ufDeimfU3LmbSSPs54Et3e45GNzbAw0KmupOvphfr5sJd3xpS3vQMtdHbVlCoDu0/F9ntEgBzwrOphX7rpo90MOU2j8dakAGGMku1DddPEuOckCkn0KjYfcvBwETJWd09my6L3BFCyto3doaYpjv361/GYc5508eYLmGom+AQVybhXTVOzIDn8gdr7UkvgJgeown8STMiiTKfq7HmJ3vTXpNrAXzS6Oa9la2OFa+wW54hs+nABfsPLNkIuaC9X5FXt8X356OgAOv0GUn3EiofMXH928dIXb3kftnF9Y+oS7OE+mwnbp5SfrOOp3TF8v0E3fOuWs/Wfe1QWuDu3+xa7wXfMLLxBb6HqsUV5A4/DaCqwcH4/tMge3PVWJ56jWIpzL33On7wMuzaRnxjbuO6brL3ywLWgXJnuGv2FVfe3CYpLLgT4zstspM/oftREBQlAQffpYQMiaSRuqm+rMbQuXpH2Fi+AO7jA2ENiQBkOk98=
 
+addons:
+  sonarcloud:
+    organization: atlanmod
+    token:
+      secure: UxzN9mjAfVsvkNu9uMoJyLH6nM5jrAA+ubEWicUJ3TK4PwH/P05V4MG2eiRU6VZmeazBFAIOD9dgEhQjKu8vpsd16T8QMBoowsugP4L/uYXullV5RP+u+0zdrXl78yQL7ndlyvLlEIjQ6cnxPY5Fs8+yTnWXAau2+ls6lJhUlwJtNmQei2aEWEG6RHnGZ16PcGmSuyO2kZVv9bsui47FekkEdx2l0zzNOIxTq6qazl5jaMfnSui0njl2odk2A40BeVdBsdyn6yDLfzH8ScBBXpEMBLuE2KRctNc8IMprCyJ+ZdcNo7C5xw9je90RWG9YGHTcIEhx5OanrejZoBmMa3Xp2pKPDMnn5bG5pK2p6h7pj+6KPfpkR02PiRbO2fluksUypklWTZolwVXS/Z8IEcitN0k1r5pg4VJ2hI7g7P8YkKB3mybUgfPt/u7UxY/z+tjTNPblI6c+kRSXTzwdMSP+vhq0J2Uv/wuP3k/TV0wl37rHF3Rj4yhsU4zrQBx0JUYfeLFtYpg8/DzuZtvPwR1jDBMA1zfhMAoo/Mvzkcu1sj8sFUSZ9DweSUO8RBWt1nFiIBsSQhsVC+oxSiDnM/3gH28CEU+oaGnQhBbt6pc+23IchiTdd5G8szRlwr075hBJMeYBLjC6jwxKZRj8YCvsOrEyOtbsmf7tKUofhVQ=
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+
 install:
   # Resolve all dependencies
   - mvn -B -V -q -DskipTests install
 
 script:
   # Build and test with code coverage
-  - mvn -B jacoco:prepare-agent test jacoco:report jacoco:report-aggregate
+  - mvn -B jacoco:prepare-agent verify sonar:sonar
 
 after_success:
   # Publish code coverage in CodeCov
