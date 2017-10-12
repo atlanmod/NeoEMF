@@ -72,7 +72,7 @@ public class StatsRecordStoreTest extends AbstractTest {
      * Calls the {@code runnable}, and checks the results in the resulting {@link StoreStats}.
      */
     private void assertRecorded(Runnable runnable, String name, long count) {
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             runnable.run();
         }
 

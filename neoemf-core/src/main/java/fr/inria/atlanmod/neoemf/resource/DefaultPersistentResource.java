@@ -169,10 +169,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      * Saves this resource using the specified {@code config}.
      *
      * @param config the save configuration
-     *
-     * @throws IOException if an I/O error occurs during the save
      */
-    protected void doSave(ImmutableConfig config) throws IOException {
+    protected void doSave(ImmutableConfig config) {
         if (!isLoaded || !eStore.store().backend().isPersistent()) {
             Backend backend = factory.createPersistentBackend(uri, config);
             Store baseStore = StoreFactory.getInstance().createStore(backend, config);
@@ -262,16 +260,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public StoreAdapter eStore() {
         return eStore;
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            unload();
-        }
-        finally {
-            super.finalize();
-        }
     }
 
     /**

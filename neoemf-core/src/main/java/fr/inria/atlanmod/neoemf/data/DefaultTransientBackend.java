@@ -30,11 +30,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DefaultTransientBackend extends AbstractTransientBackend {
 
     /**
-     * The number of instances of this class.
+     * The number of instances of this class, used to identify each instance.
      */
     @Nonnull
     @Nonnegative
-    private static final AtomicInteger INSTANCES = new AtomicInteger();
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
     /**
      * An in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
@@ -58,10 +58,11 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
     private final ChronicleMap<SingleFeatureBean, Object> features;
 
     public DefaultTransientBackend() {
-        final int id = INSTANCES.getAndIncrement();
+        final int id = COUNTER.getAndIncrement();
+        final String prefix = "default/";
 
         containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
-                .name("default/" + id + "/containers")
+                .name(prefix + id + "/containers")
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.ID)
                 .averageValueSize(Sizes.FEATURE)
@@ -70,7 +71,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .create();
 
         instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
-                .name("default/" + id + "/instances")
+                .name(prefix + id + "/instances")
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.ID)
                 .averageValueSize(Sizes.CLASS)
@@ -79,7 +80,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
                 .create();
 
         features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
-                .name("default/" + id + "/features")
+                .name(prefix + id + "/features")
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.FEATURE)
                 .averageValueSize(Sizes.FEATURE_VALUE)

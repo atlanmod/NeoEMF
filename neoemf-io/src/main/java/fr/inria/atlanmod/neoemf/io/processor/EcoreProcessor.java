@@ -174,7 +174,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      *
      * @param element the element representing the feature
      *
-     * @see #processElementAsAttribute(BasicElement, EAttribute)
+     * @see #processElementAsAttribute(EAttribute)
      * @see #processElementAsReference(BasicElement, EReference)
      */
     private void processElementAsFeature(BasicElement element) {
@@ -186,7 +186,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
 
         if (EObjects.isAttribute(feature)) {
-            processElementAsAttribute(element, EObjects.asAttribute(feature));
+            processElementAsAttribute(EObjects.asAttribute(feature));
         }
         else {
             EReference eReference = EObjects.asReference(feature);
@@ -219,10 +219,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     /**
      * Processes an element as an attribute.
      *
-     * @param element    the element representing the attribute
      * @param eAttribute the associated EMF attribute
      */
-    private void processElementAsAttribute(@SuppressWarnings("unused") BasicElement element, EAttribute eAttribute) {
+    private void processElementAsAttribute(EAttribute eAttribute) {
         if (nonNull(waitingAttribute)) {
             Log.warn("An attribute still waiting for a value : it will be ignored");
         }

@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class XmlConstantsTest extends AbstractTest {
+public class XmiConstantsTest extends AbstractTest {
 
     @Test
     public void testFormatWithPrefix() throws Exception {
-        assertThat(XmlConstants.format("prefix", "value")).isEqualTo("prefix:value");
+        assertThat(XmiConstants.format("prefix", "value")).isEqualTo("prefix:value");
     }
 
     @Test
     public void testFormatWithoutPrefix() throws Exception {
-        assertThat(XmlConstants.format(null, "value")).isEqualTo("value");
+        assertThat(XmiConstants.format(null, "value")).isEqualTo("value");
     }
 }

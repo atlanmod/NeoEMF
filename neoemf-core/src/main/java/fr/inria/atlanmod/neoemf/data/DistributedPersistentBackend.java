@@ -11,7 +11,8 @@ package fr.inria.atlanmod.neoemf.data;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} that stores in a distributed database, or a server. Concurrent modifications are possible.
+ * A {@link PersistentBackend} that stores in a distributed database, or a server. Concurrent modifications are
+ * possible.
  */
 @ParametersAreNonnullByDefault
 public interface DistributedPersistentBackend extends PersistentBackend {

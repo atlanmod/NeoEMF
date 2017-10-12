@@ -43,7 +43,7 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
      * The owner of this list.
      */
     @Nonnull
-    private final PersistentEObject owner;
+    private final PersistentEObject persistentOwner;
 
     /**
      * Constructs a new {@code LazyStoreList}.
@@ -53,13 +53,13 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
      */
     public LazyStoreList(PersistentEObject owner, EStructuralFeature feature) {
         super(owner, feature);
-        this.owner = owner;
+        this.persistentOwner = owner;
     }
 
     @Nonnull
     @Override
     protected StoreAdapter eStore() {
-        return owner.eStore();
+        return persistentOwner.eStore();
     }
 
     @Override

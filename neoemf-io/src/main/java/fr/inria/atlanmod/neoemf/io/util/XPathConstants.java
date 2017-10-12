@@ -8,28 +8,43 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.commons.annotation.Static;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * A utility class that contains all the constants used in an XPath.
  */
-public interface XPathConstants {
+@Static
+@ParametersAreNonnullByDefault
+public final class XPathConstants {
 
     /**
      * The string representing the start of a XPath expression.
      */
-    String START_EXPR = "//@";
+    public static final String START_EXPR = "//@";
 
     /**
      * The string representing the start of a XPath segment.
      */
-    String START_ELT = "/@";
+    public static final String START_ELT = "/@";
 
     /**
      * The string representing the end of a XPath segment.
      */
-    String END_EXPR = "/";
+    public static final String END_EXPR = "/";
 
     /**
      * The character used as separator between the name and the index of a XPath segment.
      */
-    String INDEX_SEPARATOR = ".";
+    public static final String INDEX_SEPARATOR = ".";
+
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException every time
+     */
+    private XPathConstants() {
+        throw new IllegalStateException("This class should not be instantiated");
+    }
 }

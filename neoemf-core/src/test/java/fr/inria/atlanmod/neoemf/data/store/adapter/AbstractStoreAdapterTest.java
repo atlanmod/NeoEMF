@@ -439,7 +439,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
         store.clear(object, eFeature);
 
-        assertThat(store.isEmpty(object, eFeature));
+        assertThat(store.isEmpty(object, eFeature)).isTrue();
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")

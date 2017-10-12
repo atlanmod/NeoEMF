@@ -100,9 +100,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend imple
 
     @Override
     public void save() {
-//        activeDatabases().stream()
-//                .filter(db -> db.getConfig().getDeferredWrite())
-//                .forEach(Database::sync);
+        // Do nothing: data are automatically saved
     }
 
     @Override

@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -48,6 +49,18 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
 
     @Override
     public void copy(StoreAdapter source, StoreAdapter target) {
+        copyContainer(source, target);
+
+        object.eClass().getEAllStructuralFeatures().forEach(f -> copyFeature(f, source, target));
+    }
+
+    /**
+     * Copies the container of the {@link #object} from the {@code source} to the {@code target}.
+     *
+     * @param source the source where to get the value
+     * @param target the target where to store the value
+     */
+    private void copyContainer(StoreAdapter source, StoreAdapter target) {
         PersistentEObject container = object.eInternalContainer();
         if (nonNull(container)) {
             target.updateContainment(object, source.getContainingFeature(object), container);
@@ -55,29 +68,62 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
         else {
             target.removeContainment(object);
         }
+    }
 
-        object.eClass().getEAllStructuralFeatures().forEach(f -> {
-            if (!f.isMany()) {
-                Object value = source.get(object, f, InternalEObject.EStore.NO_INDEX);
-                if (nonNull(value)) {
-                    if (requireAttachment(f)) {
-                        value = attach(value);
-                    }
+    /**
+     * Copies the value of the {@code feature} from the {@code source} to the {@code target}.
+     *
+     * @param feature the feature of the value to copy
+     * @param source  the source where to get the value
+     * @param target  the target where to store the value
+     */
+    private void copyFeature(EStructuralFeature feature, StoreAdapter source, StoreAdapter target) {
+        if (!feature.isMany()) {
+            copySingleFeature(feature, source, target);
+        }
+        else {
+            copyManyFeature(feature, source, target);
+        }
+    }
 
-                    target.set(object, f, InternalEObject.EStore.NO_INDEX, value);
-                }
+    /**
+     * Copies the value of the single-valued {@code feature} from the {@code source} to the {@code target}.
+     *
+     * @param feature the feature of the value to copy
+     * @param source  the source where to get the value
+     * @param target  the target where to store the value
+     */
+    private void copySingleFeature(EStructuralFeature feature, StoreAdapter source, StoreAdapter target) {
+        checkArgument(!feature.isMany());
+
+        Object value = source.get(object, feature, InternalEObject.EStore.NO_INDEX);
+        if (nonNull(value)) {
+            if (requireAttachment(feature)) {
+                value = attach(value);
             }
-            else {
-                List<Object> values = source.getAll(object, f);
-                if (!values.isEmpty()) {
-                    if (requireAttachment(f)) {
-                        values = values.stream().map(this::attach).collect(Collectors.toList());
-                    }
 
-                    target.setAll(object, f, values);
-                }
+            target.set(object, feature, InternalEObject.EStore.NO_INDEX, value);
+        }
+    }
+
+    /**
+     * Copies the value of the multi-valued {@code feature} from the {@code source} to the {@code target}.
+     *
+     * @param feature the feature of the value to copy
+     * @param source  the source where to get the value
+     * @param target  the target where to store the value
+     */
+    private void copyManyFeature(EStructuralFeature feature, StoreAdapter source, StoreAdapter target) {
+        checkArgument(feature.isMany());
+
+        List<Object> values = source.getAll(object, feature);
+        if (!values.isEmpty()) {
+            if (requireAttachment(feature)) {
+                values = values.stream().map(this::attach).collect(Collectors.toList());
             }
-        });
+
+            target.setAll(object, feature, values);
+        }
     }
 
     /**

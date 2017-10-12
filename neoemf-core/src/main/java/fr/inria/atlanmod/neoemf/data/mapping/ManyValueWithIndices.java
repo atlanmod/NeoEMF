@@ -62,6 +62,10 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
             @Override
             public V next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
                 return ManyValueWithIndices.this.<V>valueOf(key.withPosition(currentIndex++)).orElse(null);
             }
         };

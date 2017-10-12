@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -195,33 +196,43 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     /**
      * Some statistics about the size of key and values.
      */
+    @Static
     @ParametersAreNonnullByDefault
-    protected interface Sizes {
+    protected static final class Sizes {
 
         /**
          * The estimated number of entries in maps.
          */
-        long ENTRIES = (long) Math.pow(2, 20);
+        protected static final long ENTRIES = (long) Math.pow(2, 20);
 
         /**
          * The estimated size of an {@link Id}.
          */
-        long ID = (long) Long.BYTES;
+        protected static final long ID = (long) Long.BYTES;
 
         /**
          * The estimated size of a {@link ClassBean}.
          */
-        long CLASS = (long) Math.pow(2, 6);
+        protected static final long CLASS = (long) Math.pow(2, 6);
 
         /**
          * The estimated size of a {@link FeatureBean}.
          */
-        long FEATURE = Long.BYTES + Integer.BYTES;
+        protected static final long FEATURE = (long) Long.BYTES + (long) Integer.BYTES;
 
         /**
          * The estimated size of a feature value. Can be a simple value or an array for multi-valued features.
          */
-        long FEATURE_VALUE = (long) Math.pow(2, 12);
+        protected static final long FEATURE_VALUE = (long) Math.pow(2, 12);
+
+        /**
+         * This class should not be instantiated.
+         *
+         * @throws IllegalStateException every time
+         */
+        private Sizes() {
+            throw new IllegalStateException("This class should not be instantiated");
+        }
     }
 
     /**

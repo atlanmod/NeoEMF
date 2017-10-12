@@ -30,20 +30,26 @@ public interface Id extends Comparable<Id>, Serializable {
      */
     @Nonnull
     Id UNDEFINED = new Id() {
+
+        /**
+         * The message of the exception thrown when accessing an unsupported method.
+         */
+        private final String msg = "Undefined identifier";
+
         @Override
         public long toLong() {
-            throw new IllegalStateException("Undefined identifier");
+            throw new IllegalStateException(msg);
         }
 
         @Override
         @Nonnull
         public String toHexString() {
-            throw new IllegalStateException("Undefined identifier");
+            throw new IllegalStateException(msg);
         }
 
         @Override
         public int compareTo(@Nonnull Id o) {
-            throw new IllegalStateException("Undefined identifier");
+            throw new IllegalStateException(msg);
         }
 
         @Override

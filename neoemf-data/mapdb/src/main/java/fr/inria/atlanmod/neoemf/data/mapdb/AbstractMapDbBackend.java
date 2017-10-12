@@ -130,7 +130,7 @@ abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements
             Object collection = entry.getValue();
             if (Map.class.isInstance(collection)) {
                 Map fromMap = Map.class.cast(collection);
-                Map toMap = to.database.hashMap(entry.getKey()).createOrOpen();
+                Map toMap = to.database.hashMap(entry.getKey()).open();
 
                 toMap.putAll(fromMap);
             }

@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
-import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import org.eclipse.emf.ecore.EAttribute;
 
@@ -74,7 +73,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
         try {
             if (element.isRoot()) {
-                writeStartElement(XmlConstants.format(ns.prefix(), element.name()));
+                writeStartElement(XmiConstants.format(ns.prefix(), element.name()));
 
                 // Namespaces
                 writeNamespace(ns.prefix(), ns.uri());
@@ -88,7 +87,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             }
 
             // TODO Write the meta-class only if EReference#getEType() != EClass
-            writeAttribute(XmiConstants.XMI_TYPE, XmlConstants.format(metaClass.ns().prefix(), metaClass.name()));
+            writeAttribute(XmiConstants.XMI_TYPE, XmiConstants.format(metaClass.ns().prefix(), metaClass.name()));
 
             writeAttribute(XmiConstants.XMI_ID, element.id().toHexString());
         }

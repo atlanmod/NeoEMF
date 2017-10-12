@@ -97,7 +97,8 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
             save();
             innerClose();
         }
-        catch (Exception ignored) {
+        catch (Exception e) {
+            Log.warn(e.getMessage());
         }
         finally {
             isClosed = true;

@@ -64,7 +64,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
     @VisibleForReflection
     @SuppressWarnings("unused") // Called dynamically
     public static BaseBlueprintsConfig<?> newConfig() {
-        return new BaseBlueprintsConfig();
+        return new BaseBlueprintsConfig<>();
     }
 
     /**

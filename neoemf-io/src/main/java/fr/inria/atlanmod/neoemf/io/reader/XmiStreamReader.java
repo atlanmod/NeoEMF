@@ -13,12 +13,13 @@ import com.ctc.wstx.api.WstxInputProperties;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
-import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
+import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.stream.IntStream;
 
@@ -43,11 +44,16 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
     }
 
     @Override
-    public void run(InputStream stream) throws XMLStreamException {
+    public void run(InputStream stream) throws IOException {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
         configure(factory);
 
-        read((XMLStreamReader2) factory.createXMLStreamReader(new BufferedInputStream(stream), XmlConstants.ENCODING));
+        try (InputStream in = new BufferedInputStream(stream)) {
+            read((XMLStreamReader2) factory.createXMLStreamReader(in, XmiConstants.ENCODING));
+        }
+        catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -58,9 +64,6 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
     private void configure(XMLInputFactory factory) {
         // Use namespace support
         factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
-
-        // Use lazy-parsing
-//        factory.setProperty(XMLInputFactory2.P_LAZY_PARSING, true);
 
         // Remove constraints
         factory.setProperty(WstxInputProperties.P_MAX_CHARACTERS, Integer.MAX_VALUE);

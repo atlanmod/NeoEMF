@@ -457,7 +457,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
     }
 
-    @Nonnull
     @Override
     public final Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex) {
         checkElementIndex(targetIndex, size(internalObject, feature));
@@ -702,24 +701,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     @Nonnull
     protected abstract Cache<Id, PersistentEObject> cache();
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(store);
-    }
-
-    @Override
-    public boolean equals(@Nullable Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || AbstractStoreAdapter.class.isInstance(o)) {
-            return false;
-        }
-
-        AbstractStoreAdapter that = AbstractStoreAdapter.class.cast(o);
-        return Objects.equals(store, that.store);
-    }
 
     /**
      * Refreshes the {@code object} with its {@link Id} in the cache, only it does not already exist.

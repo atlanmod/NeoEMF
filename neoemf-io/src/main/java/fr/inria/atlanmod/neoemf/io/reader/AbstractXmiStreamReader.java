@@ -13,7 +13,6 @@ import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
-import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
 
 import java.util.Objects;
 
@@ -47,7 +46,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
         }
 
         if (nonNull(Strings.emptyToNull(prefix))) {
-            final String prefixedValue = XmlConstants.format(prefix, name);
+            final String prefixedValue = XmiConstants.format(prefix, name);
 
             if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // A reference of the previous element
                 BasicReference reference = new BasicReference();

@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.commons.annotation.Beta;
-import fr.inria.atlanmod.neoemf.io.util.XmlConstants;
+import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.codehaus.stax2.XMLOutputFactory2;
 
@@ -48,7 +48,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
         configure(factory);
 
         try {
-            writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmlConstants.ENCODING);
+            writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmiConstants.ENCODING);
         }
         catch (XMLStreamException e) {
             throw new IOException(e);
@@ -71,7 +71,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
     @Override
     protected void writeStartDocument() throws IOException {
         try {
-            writer.writeStartDocument(XmlConstants.ENCODING, XmlConstants.VERSION);
+            writer.writeStartDocument(XmiConstants.ENCODING, XmiConstants.VERSION);
         }
         catch (XMLStreamException e) {
             throw new IOException(e);

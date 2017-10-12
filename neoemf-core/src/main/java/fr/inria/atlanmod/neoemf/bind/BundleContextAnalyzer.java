@@ -85,18 +85,15 @@ final class BundleContextAnalyzer {
      */
     @Nonnull
     private static Optional<URL> urlOf(Bundle bundle) {
-        URL url = null;
-
         try {
-            url = File.class.cast(getBundleLocatorMethod().invoke(null, bundle)).toURI().toURL();
+            return Optional.of(File.class.cast(getBundleLocatorMethod().invoke(null, bundle)).toURI().toURL());
         }
         catch (IOException ignored) {
+            return Optional.empty();
         }
         catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Unable to find Eclipse runtime", e);
         }
-
-        return Optional.ofNullable(url);
     }
 
     /**

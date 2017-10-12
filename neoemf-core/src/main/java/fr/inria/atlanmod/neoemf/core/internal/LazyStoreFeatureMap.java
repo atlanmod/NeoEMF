@@ -33,7 +33,7 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
      * The owner of this list.
      */
     @Nonnull
-    private final PersistentEObject owner;
+    private final PersistentEObject persistentOwner;
 
     /**
      * Constructs a new {@code LazyStoreFeatureMap}.
@@ -43,13 +43,13 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
      */
     public LazyStoreFeatureMap(PersistentEObject owner, EStructuralFeature feature) {
         super(owner, feature);
-        this.owner = owner;
+        this.persistentOwner = owner;
     }
 
     @Nonnull
     @Override
     protected StoreAdapter eStore() {
-        return owner.eStore();
+        return persistentOwner.eStore();
     }
 
     @Override

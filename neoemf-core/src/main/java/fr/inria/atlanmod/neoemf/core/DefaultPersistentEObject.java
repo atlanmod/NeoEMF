@@ -313,7 +313,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (lazyStore.isLoaded()) {
             StoreAdapter currentStore = lazyStore.get();
 
-            if (!Objects.equals(currentStore, newStore)) {
+            if (!Objects.equals(currentStore.store().backend(), newStore.store().backend())) {
                 // Copy if the resource is not being unloaded
                 if (nonNull(resource)) {
                     new ContentsCopier(this).copy(currentStore, newStore);

@@ -63,23 +63,23 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
          * The owner of this list.
          */
         @Nonnull
-        private final PersistentEObject owner;
+        private final PersistentEObject persistentOwner;
 
         /**
          * Constructs a new {@code EntryList}.
          *
-         * @param owner   the owner the {@code feature}
+         * @param owner   the persistentOwner the {@code feature}
          * @param feature the feature associated with this list
          */
         public EntryList(PersistentEObject owner, EStructuralFeature feature) {
             super(owner, feature);
-            this.owner = owner;
+            this.persistentOwner = owner;
         }
 
         @Nonnull
         @Override
         protected StoreAdapter eStore() {
-            return owner.eStore();
+            return persistentOwner.eStore();
         }
 
         @Override

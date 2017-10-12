@@ -84,8 +84,8 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     public final void read(InputStream source) throws IOException {
         checkNotNull(source);
 
-        try {
-            run(new BufferedInputStream(source));
+        try (InputStream in = new BufferedInputStream(source)) {
+            run(in);
         }
         catch (Exception e) {
             throw new IOException(e);
@@ -100,9 +100,9 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      *
      * @param stream the stream to read
      *
-     * @throws Exception if an error occurred during the I/O process
+     * @throws IOException if an error occurred during the I/O process
      */
-    public abstract void run(InputStream stream) throws Exception;
+    public abstract void run(InputStream stream) throws IOException;
 
     /**
      * Returns the identifier of the previous element.

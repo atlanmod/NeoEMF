@@ -35,6 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link TransientBackend}, bound to a unique {@link Id}, that stores all elements in {@link Map}s.
@@ -51,7 +52,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     @Nonnull
     @Nonnegative
     // FIXME May be inconsistent if a PersistentEObject is released by the garbage collector
-    private final static AtomicLong INSTANCES = new AtomicLong();
+    private static final AtomicLong COUNTER = new AtomicLong();
 
     /**
      * The owner of this back-end.
@@ -74,18 +75,18 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
         super(owner.toHexString());
 
         if (dataHolder.isClosed()) {
-            INSTANCES.set(0L);
+            COUNTER.set(0L);
             dataHolder.init();
         }
 
-        INSTANCES.incrementAndGet();
+        COUNTER.incrementAndGet();
 
         this.owner = owner;
     }
 
     @Override
     protected void innerClose() {
-        INSTANCES.decrementAndGet();
+        COUNTER.decrementAndGet();
 
         dataHolder.close(owner);
     }
@@ -248,10 +249,13 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
             containers.remove(id);
 
             // Unregister the current back-end and clear all features associated with the id
-            featuresById.remove(id).forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
+            Set<Integer> relatedFeatures = featuresById.remove(id);
+            if (nonNull(relatedFeatures)) {
+                relatedFeatures.forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
+            }
 
             // Cleans all shared in-memory maps: they will no longer be used
-            if (INSTANCES.get() == 0L) {
+            if (COUNTER.get() == 0L) {
                 Log.debug("Cleaning BoundTransientBackend");
 
                 containers.clear();

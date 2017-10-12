@@ -180,7 +180,8 @@ public final class Migrator<T> {
         if (header == ZIP_HEADER) {
             ZipInputStream zis = new ZipInputStream(pbis);
 
-            for (ZipEntry e; nonNull(e = zis.getNextEntry()); ) {
+            ZipEntry e;
+            while (nonNull(e = zis.getNextEntry())) {
                 if (Objects.equals(e.getName(), ZXMI_CONTENT)) {
                     return zis;
                 }

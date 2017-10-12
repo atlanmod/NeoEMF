@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -82,7 +83,8 @@ public class AutoSaveStore extends AbstractStore {
         try {
             super.save();
         }
-        catch (Exception ignored) {
+        catch (Exception e) {
+            Log.warn(e);
         }
     }
 

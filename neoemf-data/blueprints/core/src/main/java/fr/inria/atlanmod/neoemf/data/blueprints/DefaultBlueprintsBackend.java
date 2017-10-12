@@ -202,6 +202,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
             @Override
             public V next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
                 return vertex.get().getProperty(formatProperty(key, currentIndex++));
             }
         };

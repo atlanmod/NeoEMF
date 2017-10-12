@@ -110,7 +110,6 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
     @Override
     Object remove(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index);
 
-    @Nonnull
     @Override
     Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex);
 

@@ -200,9 +200,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the formatted label
      */
     @Nonnull
+    // TODO Can cause a massive overhead (metaClassNameOf)
     protected String formatLabel(FeatureBean feature) {
         return requireUniqueLabels
-                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id()) // TODO Can cause a massive overhead
+                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
                 : Integer.toString(feature.id());
     }
 
@@ -231,11 +232,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Override
     protected void innerClose() {
-        try {
-            graph.shutdown();
-        }
-        catch (Exception ignored) {
-        }
+        graph.shutdown();
     }
 
     @Override

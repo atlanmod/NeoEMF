@@ -130,7 +130,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * @return a new configuration
      */
     @Nonnull
-    public static BaseConfig<? extends BaseConfig<?>> newConfig() {
+    public static BaseConfig<?> newConfig() {
         return new BaseConfig<>();
     }
 
