@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case about {@link HBaseUri}.
  */
 @ParametersAreNonnullByDefault
-public class HBaseUriTest extends AbstractUriTest {
+class HBaseUriTest extends AbstractUriTest {
 
     @Nonnull
     @Override
@@ -38,7 +38,7 @@ public class HBaseUriTest extends AbstractUriTest {
 
     @Disabled("Not supported because of the mini-cluster")
     @Override
-    public void testCreateUriFromStandardUriInvalidScheme() throws Exception {
+    public void testCreateUriFromStandardUriInvalidScheme() {
     }
 
     /**
@@ -47,7 +47,7 @@ public class HBaseUriTest extends AbstractUriTest {
      * HBase does not support file-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromUri() throws Exception {
+    void testCreateUriFromUri() {
         assertThat(catchThrowable(() -> HBaseUri.builder().fromUri(URI.createURI("uri0"))))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
@@ -58,7 +58,7 @@ public class HBaseUriTest extends AbstractUriTest {
      * HBase does not support file-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromFile() throws Exception {
+    void testCreateUriFromFile() {
         assertThat(catchThrowable(() -> HBaseUri.builder().fromFile("file0")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      * Initializes the {@link #resource}.
      */
     @BeforeEach
-    void initResource() throws Exception {
+    public void initResource() throws IOException {
         resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile(currentTempFile()));
     }
 
@@ -58,7 +59,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      * Cleanly closes the {@link #resource}.
      */
     @AfterEach
-    void closeResource() throws Exception {
+    public void closeResource() {
         resource.unload();
     }
 
@@ -66,7 +67,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      * Checks the definition of the {@link BlueprintsTinkerConfig#GRAPH} option, with the default type.
      */
     @Test
-    public void testDefaultGraphTypeOption() throws Exception {
+    public void testDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsTinkerConfig.newConfig().toMap());
 
         ImmutableConfig config = loadConfig();
@@ -80,7 +81,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      * @return the current configuration
      */
     @Nonnull
-    protected ImmutableConfig loadConfig() throws Exception {
+    protected ImmutableConfig loadConfig() throws IOException {
         Path configPath = currentTempFile().toPath();
 
         Optional<Config> config = Config.load(configPath);

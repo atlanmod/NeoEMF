@@ -20,10 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link IdProvider} and {@link Id} implementations.
  */
 @ParametersAreNonnullByDefault
-public class IdProviderTest extends AbstractTest {
+class IdProviderTest extends AbstractTest {
 
     @Test
-    public void testCreate() throws Exception {
+    void testCreate() {
         String value0 = "123456789a"; // Hexadecimal form
 
         Id id0 = Id.getProvider().fromHexString(value0);
@@ -36,7 +36,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testGenerate() throws Exception {
+    void testGenerate() {
         Id id0 = Id.getProvider().generate();
         Id id1 = Id.getProvider().generate();
 
@@ -47,7 +47,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testCompareTo() throws Exception {
+    void testCompareTo() {
         Id id0 = Id.getProvider().fromLong(42);
         Id id0Bis = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
@@ -58,7 +58,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testToLong() throws Exception {
+    void testToLong() {
         long value = 123456789;
 
         Id id = Id.getProvider().fromLong(value);
@@ -67,7 +67,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() {
         Id id0 = Id.getProvider().fromLong(42);
         Id id0Bis = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
@@ -78,7 +78,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() {
         Id id0 = Id.getProvider().fromLong(42);
         Id id0Bis = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
@@ -89,7 +89,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testToHexString() throws Exception {
+    void testToHexString() {
         String value = "123456789a"; // Hexadecimal form
 
         Id id = Id.getProvider().fromHexString(value);
@@ -98,7 +98,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testConversion() throws Exception {
+    void testConversion() {
         long value = 123456789;
 
         Id id0 = Id.getProvider().fromLong(value);
@@ -109,7 +109,7 @@ public class IdProviderTest extends AbstractTest {
     }
 
     @Test
-    public void testRoot() throws Exception {
+    void testRoot() {
         String value = "ROOT";
 
         Id id = Id.getProvider().generate(value);

@@ -24,12 +24,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class Activator implements BundleActivator {
 
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) {
         Bindings.withContext(context);
     }
 
     @Override
-    public void stop(BundleContext bundleContext) throws Exception {
+    public void stop(BundleContext bundleContext) {
         // Do nothing
     }
 }

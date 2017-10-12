@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 @SuppressWarnings("ConstantConditions")
 @ParametersAreNonnullByDefault
-public class ImportTest extends AbstractTest {
+class ImportTest extends AbstractTest {
 
     /**
      * A map that holds the mapping between an XPath and its {@code xmi:id} value.
@@ -105,7 +106,7 @@ public class ImportTest extends AbstractTest {
     }
 
     @BeforeAll
-    static void registerPackages() throws Exception {
+    static void registerPackages() {
         ResourceManager.registerAllPackages();
     }
 
@@ -114,7 +115,7 @@ public class ImportTest extends AbstractTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
     @ArgumentsSource(UriProvider.class)
-    public void testElementsAndChildren(URI uri, Boolean withId) throws Exception {
+    void testElementsAndChildren(URI uri, Boolean withId) throws IOException {
         InMemoryElement root = readResource(uri);
 
         InMemoryElement o;
@@ -159,7 +160,7 @@ public class ImportTest extends AbstractTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
     @ArgumentsSource(UriProvider.class)
-    public void testReferences(URI uri, Boolean withId) throws Exception {
+    void testReferences(URI uri, Boolean withId) throws IOException {
         InMemoryElement root = readResource(uri);
 
         InMemoryElement o;
@@ -228,7 +229,7 @@ public class ImportTest extends AbstractTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
     @ArgumentsSource(UriProvider.class)
-    public void testAttributes(URI uri) throws Exception {
+    void testAttributes(URI uri) throws IOException {
         InMemoryElement root = readResource(uri);
 
         InMemoryElement o;
@@ -291,7 +292,7 @@ public class ImportTest extends AbstractTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
     @ArgumentsSource(UriProvider.class)
-    public void testMetaClasses(URI uri) throws Exception {
+    void testMetaClasses(URI uri) throws IOException {
         InMemoryElement root = readResource(uri);
 
         InMemoryElement o;
@@ -335,7 +336,7 @@ public class ImportTest extends AbstractTest {
      * Check if the reader stop its execution if it hasn't any handler.
      */
     @Test
-    public void testReaderWithoutHandler() throws Exception {
+    void testReaderWithoutHandler() {
         assertThat(
                 catchThrowable(() -> new XmiStreamReader(null).read(null))
         ).isInstanceOf(NullPointerException.class);
@@ -349,7 +350,7 @@ public class ImportTest extends AbstractTest {
      * @return the root of the read resource
      */
     @Nonnull
-    private InMemoryElement readResource(URI uri) throws Exception {
+    private InMemoryElement readResource(URI uri) throws IOException {
         InMemoryWriter writer = new InMemoryWriter();
 
         try (InputStream in = new URL(uri.toString()).openStream()) {
@@ -439,10 +440,10 @@ public class ImportTest extends AbstractTest {
      * Boolean} variants.
      */
     @ParametersAreNonnullByDefault
-    public static class UriProvider implements ArgumentsProvider {
+    static class UriProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     Arguments.of(ResourceManager.xmiStandard(), false),
                     Arguments.of(ResourceManager.xmiWithId(), true),

@@ -17,6 +17,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -26,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BlueprintsBackendFactory}.
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
+class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Nonnull
     @Override
@@ -35,19 +37,19 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
     }
 
     @Override
-    public void testCreateTransientBackend() throws Exception {
+    public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BlueprintsBackend.class);
     }
 
     @Override
-    public void testCreateDefaultPersistentBackend() throws Exception {
+    public void testCreateDefaultPersistentBackend() throws IOException {
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsTinkerConfig.newConfig());
         assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
     }
 
     @Override
-    public void testCopyBackend() throws Exception {
+    public void testCopyBackend() throws IOException {
         Backend transientBackend = context().factory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BlueprintsBackend.class);
 
@@ -63,7 +65,7 @@ public class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
      * The mapping {@code indices} is declared explicitly.
      */
     @Test
-    public void testCreateIndicesPersistentBackend() throws Exception {
+    public void testCreateIndicesPersistentBackend() throws IOException {
         ImmutableConfig config = BlueprintsTinkerConfig.newConfig();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);

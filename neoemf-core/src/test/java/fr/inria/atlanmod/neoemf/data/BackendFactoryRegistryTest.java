@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link BackendFactoryRegistry}.
  */
 @ParametersAreNonnullByDefault
-public class BackendFactoryRegistryTest extends AbstractTest {
+class BackendFactoryRegistryTest extends AbstractTest {
 
     /**
      * The instance of the registry.
@@ -53,7 +53,7 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      * Unregisters all factories in the {@link BackendFactoryRegistry}.
      */
     @BeforeEach
-    void unregisterFactories() throws Exception {
+    void unregisterFactories() {
         REGISTRY.unregisterAll();
     }
 
@@ -61,7 +61,7 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      * Checks the registration of one {@link BackendFactory}.
      */
     @Test
-    public void testSingleAdd() throws Exception {
+    void testSingleAdd() {
         REGISTRY.register(MOCK_1, factory1);
         assertThat(REGISTRY.getFactories()).hasSize(1);
 
@@ -73,7 +73,7 @@ public class BackendFactoryRegistryTest extends AbstractTest {
      * Checks the registration of several {@link BackendFactory}s.
      */
     @Test
-    public void testMultipleAdd() throws Exception {
+    void testMultipleAdd() {
         REGISTRY.register(MOCK_1, factory1);
         REGISTRY.register(MOCK_2, factory2);
         assertThat(REGISTRY.getFactories()).hasSize(2);

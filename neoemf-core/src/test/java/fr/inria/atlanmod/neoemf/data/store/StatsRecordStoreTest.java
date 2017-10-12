@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link StatsRecordStore}.
  */
 @ParametersAreNonnullByDefault
-public class StatsRecordStoreTest extends AbstractTest {
+class StatsRecordStoreTest extends AbstractTest {
 
     private static final long CALLS_COUNT = 2L;
 
@@ -81,7 +81,7 @@ public class StatsRecordStoreTest extends AbstractTest {
     }
 
     @Test
-    public void testNoStats() throws Exception {
+    void testNoStats() {
         ImmutableConfig config = BaseConfig.newConfig();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
@@ -95,7 +95,7 @@ public class StatsRecordStoreTest extends AbstractTest {
     }
 
     @Test
-    public void testClose() throws Exception {
+    void testClose() {
         store.close();
 
         StoreStats stats = store.stats();
@@ -103,164 +103,164 @@ public class StatsRecordStoreTest extends AbstractTest {
     }
 
     @Test
-    public void testSave() throws Exception {
+    void testSave() {
         assertRecorded(() -> store.save(), "save", CALLS_COUNT);
     }
 
     @Test
-    public void testContainerOf() throws Exception {
+    void testContainerOf() {
         assertRecorded(() -> store.containerOf(mock(Id.class)), "containerOf", CALLS_COUNT);
     }
 
     @Test
-    public void testContainerFor() throws Exception {
+    void testContainerFor() {
         assertRecorded(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)), "containerFor", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveContainer() throws Exception {
+    void testRemoveContainer() {
         assertRecorded(() -> store.removeContainer(mock(Id.class)), "removeContainer", CALLS_COUNT);
     }
 
     @Test
-    public void testMetaClassOf() throws Exception {
+    void testMetaClassOf() {
         assertRecorded(() -> store.metaClassOf(mock(Id.class)), "metaClassOf", CALLS_COUNT);
     }
 
     @Test
-    public void testmMetaClassFor() throws Exception {
+    void testmMetaClassFor() {
         assertRecorded(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)), "metaClassFor", CALLS_COUNT);
     }
 
     @Test
-    public void testValueOf() throws Exception {
+    void testValueOf() {
         assertRecorded(() -> store.valueOf(mock(SingleFeatureBean.class)), "valueOf", CALLS_COUNT);
     }
 
     @Test
-    public void testValueFor() throws Exception {
+    void testValueFor() {
         assertRecorded(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)), "valueFor", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveValue() throws Exception {
+    void testRemoveValue() {
         assertRecorded(() -> store.removeValue(mock(SingleFeatureBean.class)), "removeValue", CALLS_COUNT);
     }
 
     @Test
-    public void testReferenceOf() throws Exception {
+    void testReferenceOf() {
         assertRecorded(() -> store.referenceOf(mock(SingleFeatureBean.class)), "referenceOf", CALLS_COUNT);
     }
 
     @Test
-    public void testReferenceFor() throws Exception {
+    void testReferenceFor() {
         assertRecorded(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)), "referenceFor", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveReference() throws Exception {
+    void testRemoveReference() {
         assertRecorded(() -> store.removeReference(mock(SingleFeatureBean.class)), "removeReference", CALLS_COUNT);
     }
 
     @Test
-    public void testValueOfMany() throws Exception {
+    void testValueOfMany() {
         assertRecorded(() -> store.valueOf(mock(ManyFeatureBean.class)), "valueOf", CALLS_COUNT);
     }
 
     @Test
-    public void testAllValuesOf() throws Exception {
+    void testAllValuesOf() {
         assertRecorded(() -> store.allValuesOf(mock(SingleFeatureBean.class)), "allValuesOf", CALLS_COUNT);
     }
 
     @Test
-    public void tetsValueForMany() throws Exception {
+    void tetsValueForMany() {
         assertRecorded(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)), "valueFor", CALLS_COUNT);
     }
 
     @Test
-    public void testAddValue() throws Exception {
+    void testAddValue() {
         assertRecorded(() -> store.addValue(mock(ManyFeatureBean.class), mock(Object.class)), "addValue", CALLS_COUNT);
     }
 
     @Test
-    public void testAddAllValues() throws Exception {
+    void testAddAllValues() {
         assertRecorded(() -> store.addAllValues(mock(ManyFeatureBean.class), mock(List.class)), "addAllValues", CALLS_COUNT);
     }
 
     @Test
-    public void testAppendValue() throws Exception {
+    void testAppendValue() {
         assertRecorded(() -> store.appendValue(mock(SingleFeatureBean.class), mock(Object.class)), "appendValue", CALLS_COUNT);
     }
 
     @Test
-    public void testAppendAllValues() throws Exception {
+    void testAppendAllValues() {
         assertRecorded(() -> store.appendAllValues(mock(SingleFeatureBean.class), mock(List.class)), "appendAllValues", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveValueMany() throws Exception {
+    void testRemoveValueMany() {
         assertRecorded(() -> store.removeValue(mock(ManyFeatureBean.class)), "removeValue", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveAllValues() throws Exception {
+    void testRemoveAllValues() {
         assertRecorded(() -> store.removeAllValues(mock(SingleFeatureBean.class)), "removeAllValues", CALLS_COUNT);
     }
 
     @Test
-    public void testSizeOfValue() throws Exception {
+    void testSizeOfValue() {
         assertRecorded(() -> store.sizeOfValue(mock(SingleFeatureBean.class)), "sizeOfValue", CALLS_COUNT);
     }
 
     @Test
-    public void testReferenceOfMany() throws Exception {
+    void testReferenceOfMany() {
         assertRecorded(() -> store.referenceOf(mock(SingleFeatureBean.class)), "referenceOf", CALLS_COUNT);
     }
 
     @Test
-    public void testAllReferencesOf() throws Exception {
+    void testAllReferencesOf() {
         assertRecorded(() -> store.allReferencesOf(mock(SingleFeatureBean.class)), "allReferencesOf", CALLS_COUNT);
     }
 
     @Test
-    public void testReferenceForMany() throws Exception {
+    void testReferenceForMany() {
         assertRecorded(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)), "referenceFor", CALLS_COUNT);
     }
 
     @Test
-    public void testAddReference() throws Exception {
+    void testAddReference() {
         assertRecorded(() -> store.addReference(mock(ManyFeatureBean.class), mock(Id.class)), "addReference", CALLS_COUNT);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAddAllReferences() throws Exception {
+    void testAddAllReferences() {
         assertRecorded(() -> store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)), "addAllReferences", CALLS_COUNT);
     }
 
     @Test
-    public void testAppendReference() throws Exception {
+    void testAppendReference() {
         assertRecorded(() -> store.appendReference(mock(SingleFeatureBean.class), mock(Id.class)), "appendReference", CALLS_COUNT);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAppendAllReferences() throws Exception {
+    void testAppendAllReferences() {
         assertRecorded(() -> store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)), "appendAllReferences", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveReferenceMany() throws Exception {
+    void testRemoveReferenceMany() {
         assertRecorded(() -> store.removeReference(mock(ManyFeatureBean.class)), "removeReference", CALLS_COUNT);
     }
 
     @Test
-    public void testRemoveAllReferences() throws Exception {
+    void testRemoveAllReferences() {
         assertRecorded(() -> store.removeAllReferences(mock(SingleFeatureBean.class)), "removeAllReferences", CALLS_COUNT);
     }
 
     @Test
-    public void testSizeOfReference() throws Exception {
+    void testSizeOfReference() {
         assertRecorded(() -> store.sizeOfReference(mock(SingleFeatureBean.class)), "sizeOfReference", CALLS_COUNT);
     }
 }

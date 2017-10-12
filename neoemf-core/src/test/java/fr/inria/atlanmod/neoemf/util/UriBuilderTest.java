@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 @ParametersAreNonnullByDefault
-public class UriBuilderTest extends AbstractUriTest {
+class UriBuilderTest extends AbstractUriTest {
 
     private static final String SCHEME = "scheme";
 
@@ -38,25 +38,25 @@ public class UriBuilderTest extends AbstractUriTest {
     }
 
     @Test
-    public void testCreateUriWithoutScheme() throws Exception {
+    void testCreateUriWithoutScheme() {
         assertThat(catchThrowable(() -> AbstractUriBuilder.builder(null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    public void testCreateUriFromUriWithNull() throws Exception {
+    void testCreateUriFromUriWithNull() {
         assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromUri(null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    public void testCreateUriFromFileWithNull() throws Exception {
+    void testCreateUriFromFileWithNull() {
         assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromFile((File) null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    public void testCreateUriFromServerWithNull() throws Exception {
+    void testCreateUriFromServerWithNull() {
         assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer(null, 0, URI.createURI("uri0"))))
                 .isInstanceOf(NullPointerException.class);
 

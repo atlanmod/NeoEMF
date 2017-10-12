@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link BoundTransientBackend}.
  */
 @ParametersAreNonnullByDefault
-public class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
+class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

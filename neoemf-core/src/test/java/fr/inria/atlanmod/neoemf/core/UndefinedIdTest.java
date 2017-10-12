@@ -26,31 +26,31 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link Id#UNDEFINED}.
  */
 @ParametersAreNonnullByDefault
-public class UndefinedIdTest extends AbstractTest {
+class UndefinedIdTest extends AbstractTest {
 
     @Test
-    public void testToLong() {
+    void testToLong() {
         assertThat(
                 catchThrowable(Id.UNDEFINED::toLong)
         ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    public void testToHexString() {
+    void testToHexString() {
         assertThat(
                 catchThrowable(Id.UNDEFINED::toHexString)
         ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    public void testCompareTo() {
+    void testCompareTo() {
         assertThat(
                 catchThrowable(() -> Id.UNDEFINED.compareTo(mock(Id.class)))
         ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(Id.UNDEFINED).hasToString("Id {UNDEFINED}");
     }
 }

@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link DefaultTransientBackend}.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackendTest extends AbstractPersistenceMapperTest {
+class DefaultTransientBackendTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

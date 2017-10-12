@@ -18,6 +18,8 @@ import fr.inria.atlanmod.neoemf.tests.sample.Tree;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,11 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * all its elements to the {@link org.eclipse.emf.ecore.resource.Resource}.
  */
 @ParametersAreNonnullByDefault
-public class ContainmentTest extends AbstractResourceBasedTest {
+class ContainmentTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testContainment(Context context) throws Exception {
+    void testContainment(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             Tree tree0 = EFACTORY.createTree();
             tree0.setName("Tree0");
@@ -74,7 +76,7 @@ public class ContainmentTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testContainmentAfterNonContainment(Context context) throws Exception {
+    void testContainmentAfterNonContainment(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             Tree tree0 = EFACTORY.createTree();
             tree0.setName("Tree0");

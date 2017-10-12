@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -30,11 +31,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks the behavior of a loaded {@link PersistentResource}.
  */
 @ParametersAreNonnullByDefault
-public class LoadResourceTest extends AbstractResourceBasedTest {
+class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testElementsContainer(Context context) throws Exception {
+    void testElementsContainer(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
             PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
@@ -49,7 +50,7 @@ public class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsContainer(Context context) throws Exception {
+    void testAllContentsContainer(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
             Iterator<EObject> it = resource.getAllContents();
@@ -66,7 +67,7 @@ public class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testElementsResource(Context context) throws Exception {
+    void testElementsResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
             PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
@@ -79,7 +80,7 @@ public class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsResource(Context context) throws Exception {
+    void testAllContentsResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
             Iterator<EObject> it = resource.getAllContents();
@@ -94,7 +95,7 @@ public class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testElementsDirectResource(Context context) throws Exception {
+    void testElementsDirectResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
             PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
@@ -107,7 +108,7 @@ public class LoadResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsDirectResource(Context context) throws Exception {
+    void testAllContentsDirectResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
             Iterator<EObject> it = resource.getAllContents();
@@ -127,7 +128,7 @@ public class LoadResourceTest extends AbstractResourceBasedTest {
      * PersistentResource#load(Map)}
      */
     @Nonnull
-    private PersistentResource createPersistentLoadedResource(Context context) throws Exception {
+    private PersistentResource createPersistentLoadedResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             PrimaryObject primary = EFACTORY.createPrimaryObject();
             TargetObject target = EFACTORY.createTargetObject();

@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -32,11 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * href="https://github.com/atlanmod/NeoEMF/issues/30">#30</a>.
  */
 @ParametersAreNonnullByDefault
-public class ContainsTest extends AbstractResourceBasedTest {
+class ContainsTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
     @ArgumentsSource(ContextProvider.WithBooleansAndIntegers.class)
-    public void testContainsElements(Context context, Boolean isPersistent, Integer count) throws Exception {
+    void testContainsElements(Context context, Boolean isPersistent, Integer count) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             List<TargetObject> content = fillResource(resource, count);
 

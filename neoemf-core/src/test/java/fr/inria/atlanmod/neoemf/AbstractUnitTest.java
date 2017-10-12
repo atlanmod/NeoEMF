@@ -37,7 +37,7 @@ public abstract class AbstractUnitTest extends AbstractFileBasedTest {
      * Initialize the current context.
      */
     @BeforeEach
-    void initContext() throws Exception {
+    void initContext() {
         context().init();
         assumeTrue(context().isInitialized(), "The context has not been initialized");
     }

@@ -29,10 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link StoreStats}.
  */
 @ParametersAreNonnullByDefault
-public class StoreStatsTest extends AbstractTest {
+class StoreStatsTest extends AbstractTest {
 
     @Test
-    public void testMethodCalls() {
+    void testMethodCalls() {
         Map<String, AtomicLong> rawMap = new HashMap<>();
         rawMap.put("AAA", new AtomicLong(5));
         rawMap.put("BBB", new AtomicLong(2));

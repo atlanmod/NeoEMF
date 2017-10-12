@@ -27,6 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -37,13 +38,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case that checks the behavior of direct I/O methods, by using the `neoemf-io` module.
  */
 @ParametersAreNonnullByDefault
-public class DirectMigrationTest extends AbstractResourceBasedTest {
+class DirectMigrationTest extends AbstractResourceBasedTest {
 
     /**
      * Registers all {@link org.eclipse.emf.ecore.EPackage}s associated with this test-case.
      */
     @BeforeAll
-    static void registerPackages() throws Exception {
+    static void registerPackages() {
         ResourceManager.registerAllPackages();
     }
 
@@ -53,7 +54,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0} <- {1}")
     @ArgumentsSource(ContextProvider.WithUris.class)
-    public void testDirectImport(Context context, URI uri) throws Exception {
+    void testDirectImport(Context context, URI uri) throws IOException {
         final File sourceFile = currentTempFile();
         Log.info("Importing from file... [{0}]", sourceFile);
 
@@ -77,7 +78,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: useCompression = {1}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
-    public void testDirectExport(Context context, Boolean useCompression) throws Exception {
+    void testDirectExport(Context context, Boolean useCompression) throws IOException {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to file... [{0}]", targetFile);
 
@@ -107,7 +108,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0} -> {0}")
     @ArgumentsSource(ContextProvider.All.class)
-    public void testDirectCopy(Context context) throws Exception {
+    void testDirectCopy(Context context) throws IOException {
         testDirectCrossCopy(context, context);
     }
 
@@ -117,7 +118,7 @@ public class DirectMigrationTest extends AbstractResourceBasedTest {
     @Tag("slowest")
     @ParameterizedTest(name = "[{index}] {0} -> {1}")
     @ArgumentsSource(ContextProvider.WithContexts.class)
-    public void testDirectCrossCopy(Context sourceContext, Context targetContext) throws Exception {
+    void testDirectCrossCopy(Context sourceContext, Context targetContext) throws IOException {
         final File sourceFile = currentTempFile();
         final File targetFile = Paths.get(currentTempFile() + "-copy").toFile();
 

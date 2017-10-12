@@ -20,10 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BasicMetaclass}.
  */
 @ParametersAreNonnullByDefault
-public class BasicMetaclassTest extends AbstractTest {
+class BasicMetaclassTest extends AbstractTest {
 
     @Test
-    public void testGetDefault() throws Exception {
+    void testGetDefault() {
         BasicMetaclass mc0 = BasicMetaclass.getDefault();
         assertThat(mc0).isNotNull();
         assertThat(mc0.name()).isEqualTo("EObject");
@@ -34,7 +34,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testName() throws Exception {
+    void testName() {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -50,7 +50,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testNs() throws Exception {
+    void testNs() {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -67,7 +67,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -83,7 +83,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() {
         String name0 = "mc0";
         String name1 = "mc1";
 
@@ -103,7 +103,7 @@ public class BasicMetaclassTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() throws Exception {
+    void testToString() {
         String name0 = "mc0";
         String prefix0 = "uri0";
 

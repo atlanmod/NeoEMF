@@ -31,10 +31,10 @@ import static org.mockito.Mockito.when;
  * A test-case about {@link PersistentResourceFactory}.
  */
 @ParametersAreNonnullByDefault
-public class PersistentResourceFactoryTest extends AbstractTest {
+class PersistentResourceFactoryTest extends AbstractTest {
 
     @Test
-    public void createResourceRegistered() {
+    void createResourceRegistered() {
         PersistentResourceFactory resourceFactory = PersistentResourceFactory.getInstance();
 
         URI uri = mock(URI.class);
@@ -57,7 +57,7 @@ public class PersistentResourceFactoryTest extends AbstractTest {
     }
 
     @Test
-    public void createResourceNotRegistered() {
+    void createResourceNotRegistered() {
         PersistentResourceFactory factory = PersistentResourceFactory.getInstance();
 
         URI uri = mock(URI.class);

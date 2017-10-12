@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link MapDbBackendIndices}.
  */
 @ParametersAreNonnullByDefault
-public class MapDbIndicesTest extends AbstractPersistenceMapperTest {
+class MapDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

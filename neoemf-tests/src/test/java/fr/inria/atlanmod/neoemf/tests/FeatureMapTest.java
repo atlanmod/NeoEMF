@@ -32,14 +32,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 // TODO Add tests on FeatureMap.size(), ...indexOf(), ...contains(), ...
 @ParametersAreNonnullByDefault
-public class FeatureMapTest extends AbstractResourceBasedTest {
+class FeatureMapTest extends AbstractResourceBasedTest {
 
     /**
      * Checks that the {@link FeatureMap}s are correctly detected and created.
      */
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testNewInstance(Context context) throws Exception {
+    void testNewInstance(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             PrimaryObject primary = EFACTORY.createPrimaryObject();
             resource.getContents().add(primary);
@@ -56,7 +56,7 @@ public class FeatureMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAddAttributes(Context context) throws Exception {
+    void testAddAttributes(Context context) throws IOException {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
@@ -83,7 +83,7 @@ public class FeatureMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testRemoveAttributes(Context context) throws Exception {
+    void testRemoveAttributes(Context context) throws IOException {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
@@ -116,7 +116,7 @@ public class FeatureMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testSetAttributes(Context context) throws Exception {
+    void testSetAttributes(Context context) throws IOException {
         String value0 = "Value0";
         String value1 = "Value1";
         String value2 = "Value2";
@@ -151,7 +151,7 @@ public class FeatureMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAddReferences(Context context) throws Exception {
+    void testAddReferences(Context context) throws IOException {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -185,7 +185,7 @@ public class FeatureMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testRemoveReferences(Context context) throws Exception {
+    void testRemoveReferences(Context context) throws IOException {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 
@@ -225,7 +225,7 @@ public class FeatureMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testSetReferences(Context context) throws Exception {
+    void testSetReferences(Context context) throws IOException {
         TargetObject target0 = EFACTORY.createTargetObject();
         target0.setName("Target0");
 

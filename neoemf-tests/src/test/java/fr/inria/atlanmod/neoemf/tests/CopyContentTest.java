@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about the copy from a {@link fr.inria.atlanmod.neoemf.data.Backend} to another.
  */
 @ParametersAreNonnullByDefault
-public class CopyContentTest extends AbstractResourceBasedTest {
+class CopyContentTest extends AbstractResourceBasedTest {
 
     /**
      * The name of the {@link PrimaryObject}.
@@ -52,7 +53,7 @@ public class CopyContentTest extends AbstractResourceBasedTest {
     private static final String TARGET1_NAME = "Content2";
 
     @BeforeAll
-    static void registerPackages() throws Exception {
+    static void registerPackages() {
         ResourceManager.registerAllPackages();
     }
 
@@ -62,7 +63,7 @@ public class CopyContentTest extends AbstractResourceBasedTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testCopyTransientToPersistentResource(Context sourceContext) throws Exception {
+    void testCopyTransientToPersistentResource(Context sourceContext) throws IOException {
         try (PersistentResource resource = createTransientResource(sourceContext)) {
             fillResource(resource);
 
@@ -88,7 +89,7 @@ public class CopyContentTest extends AbstractResourceBasedTest {
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
-    public void testCopyStandardToPersistentResource(Context context, Boolean isPersistent) throws Exception {
+    void testCopyStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());
 

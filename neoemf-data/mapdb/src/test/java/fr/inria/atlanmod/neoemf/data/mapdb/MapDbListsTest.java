@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link MapDbBackendLists}.
  */
 @ParametersAreNonnullByDefault
-public class MapDbListsTest extends AbstractPersistenceMapperTest {
+class MapDbListsTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link DefaultHBaseBackend}.
  */
 @ParametersAreNonnullByDefault
-public class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
+class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

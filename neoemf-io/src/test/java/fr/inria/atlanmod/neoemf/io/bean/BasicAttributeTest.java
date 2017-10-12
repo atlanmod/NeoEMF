@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BasicAttribute}.
  */
 @ParametersAreNonnullByDefault
-public class BasicAttributeTest extends AbstractTest {
+class BasicAttributeTest extends AbstractTest {
 
     @Test
-    public void testName() throws Exception {
+    void testName() {
         String name0 = "attribute0";
         String name1 = "attribute1";
 
@@ -40,7 +40,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    void testId() {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         assertThat(attr0.owner()).isNull();
@@ -56,7 +56,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testMany() throws Exception {
+    void testMany() {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         assertThat(attr0.isMany()).isFalse();
@@ -69,7 +69,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testValue() throws Exception {
+    void testValue() {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         assertThat(attr0.value()).isNull();
@@ -85,7 +85,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         BasicAttribute attr0Bis = new BasicAttribute();
@@ -99,7 +99,7 @@ public class BasicAttributeTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() {
         BasicAttribute attr0 = new BasicAttribute();
         attr0.name("attribute0");
         BasicAttribute attr0Bis = new BasicAttribute();

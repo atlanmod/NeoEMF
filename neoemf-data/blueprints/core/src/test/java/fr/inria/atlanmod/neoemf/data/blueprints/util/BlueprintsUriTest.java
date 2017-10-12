@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case about {@link BlueprintsUri}.
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsUriTest extends AbstractUriTest {
+class BlueprintsUriTest extends AbstractUriTest {
 
     @Nonnull
     @Override
@@ -39,7 +39,7 @@ public class BlueprintsUriTest extends AbstractUriTest {
      * Blueprints does not support server-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromServer() throws Exception {
+    void testCreateUriFromServer() {
         assertThat(catchThrowable(() -> BlueprintsUri.builder().fromServer("host", 0, "segments")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }

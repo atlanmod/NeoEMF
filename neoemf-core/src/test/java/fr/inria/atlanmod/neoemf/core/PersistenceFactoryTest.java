@@ -32,12 +32,12 @@ import static org.mockito.Mockito.when;
  * A test-case about {@link PersistenceFactory}.
  */
 @ParametersAreNonnullByDefault
-public class PersistenceFactoryTest extends AbstractTest {
+class PersistenceFactoryTest extends AbstractTest {
 
     private static EClass eClass;
 
     @BeforeAll
-    public static void initMocks() {
+    static void initMocks() {
         EFactory eFactory = mock(EFactory.class);
         when(eFactory.create(any(EClass.class))).thenAnswer((Answer<PersistentEObject>) i -> {
             PersistentEObject result = new DefaultPersistentEObject();

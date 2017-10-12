@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,14 +30,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks the behavior of a saved {@link PersistentResource}.
  */
 @ParametersAreNonnullByDefault
-public class SaveResourceTest extends AbstractResourceBasedTest {
+class SaveResourceTest extends AbstractResourceBasedTest {
 
     private PrimaryObject primary;
     private TargetObject target;
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testContainer(Context context) throws Exception {
+    void testContainer(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
@@ -50,7 +51,7 @@ public class SaveResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsContainer(Context context) throws Exception {
+    void testAllContentsContainer(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
@@ -68,7 +69,7 @@ public class SaveResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testResource(Context context) throws Exception {
+    void testResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
@@ -79,7 +80,7 @@ public class SaveResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsResource(Context context) throws Exception {
+    void testAllContentsResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
@@ -95,7 +96,7 @@ public class SaveResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testDirectResource(Context context) throws Exception {
+    void testDirectResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
@@ -106,7 +107,7 @@ public class SaveResourceTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testAllContentsDirectResource(Context context) throws Exception {
+    void testAllContentsDirectResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 

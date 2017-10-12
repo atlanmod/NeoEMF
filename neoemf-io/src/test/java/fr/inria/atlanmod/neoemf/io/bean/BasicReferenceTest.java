@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BasicReference}.
  */
 @ParametersAreNonnullByDefault
-public class BasicReferenceTest extends AbstractTest {
+class BasicReferenceTest extends AbstractTest {
 
     @Test
-    public void testName() throws Exception {
+    void testName() {
         String name0 = "reference0";
         String name1 = "reference1";
 
@@ -40,7 +40,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    void testId() {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.owner()).isNull();
@@ -56,7 +56,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testMany() throws Exception {
+    void testMany() {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.isMany()).isFalse();
@@ -69,7 +69,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testIdReference() throws Exception {
+    void testIdReference() {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.value()).isNull();
@@ -85,7 +85,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testContainment() throws Exception {
+    void testContainment() {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         assertThat(ref0.isContainment()).isFalse();
@@ -98,7 +98,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         BasicReference ref0Bis = new BasicReference();
@@ -112,7 +112,7 @@ public class BasicReferenceTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() {
         BasicReference ref0 = new BasicReference();
         ref0.name("reference0");
         BasicReference ref0Bis = new BasicReference();

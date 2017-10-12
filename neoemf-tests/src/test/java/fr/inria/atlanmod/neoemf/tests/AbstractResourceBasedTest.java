@@ -17,6 +17,8 @@ import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 
 import org.junit.jupiter.api.BeforeAll;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -42,7 +44,7 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
      * Registers all {@link fr.inria.atlanmod.neoemf.data.BackendFactory}.
      */
     @BeforeAll
-    static void registerBackendFactories() {
+    protected static void registerBackendFactories() {
         BackendFactoryRegistry.getInstance().registerAll(); // Optional
     }
 
@@ -55,7 +57,7 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
      * @return a new {@link PersistentResource}
      */
     @Nonnull
-    protected PersistentResource createResource(Context context, boolean isPersistent) throws Exception {
+    protected PersistentResource createResource(Context context, boolean isPersistent) throws IOException {
         return isPersistent
                 ? context.createPersistentResource(currentTempFile())
                 : context.createTransientResource(currentTempFile());
@@ -71,7 +73,7 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
      * @see #createResource(Context, boolean)
      */
     @Nonnull
-    protected PersistentResource createPersistentResource(Context context) throws Exception {
+    protected PersistentResource createPersistentResource(Context context) throws IOException {
         return createResource(context, true);
     }
 
@@ -85,7 +87,7 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
      * @see #createResource(Context, boolean)
      */
     @Nonnull
-    protected PersistentResource createTransientResource(Context context) throws Exception {
+    protected PersistentResource createTransientResource(Context context) throws IOException {
         return createResource(context, false);
     }
 }

@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case about dynamic {@link PersistentEObject}, accross a proxy.
  */
 @ParametersAreNonnullByDefault
-public class DynamicPersistentEObjectTest extends AbstractTest {
+class DynamicPersistentEObjectTest extends AbstractTest {
 
     @Test
-    public void testProxyCreation() throws Exception {
+    void testProxyCreation() {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 
@@ -35,7 +35,7 @@ public class DynamicPersistentEObjectTest extends AbstractTest {
     }
 
     @Test
-    public void testCallCommonMethod() throws Exception {
+    void testCallCommonMethod() {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 
@@ -45,7 +45,7 @@ public class DynamicPersistentEObjectTest extends AbstractTest {
     }
 
     @Test
-    public void testCallDynamicMethod() throws Exception {
+    void testCallDynamicMethod() {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 

@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
  */
 @ParametersAreNonnullByDefault
-public class AllInstancesTest extends AbstractResourceBasedTest {
+class AllInstancesTest extends AbstractResourceBasedTest {
 
     /**
      * The expected number of {@link Tree} in the resulting list.
@@ -76,7 +77,7 @@ public class AllInstancesTest extends AbstractResourceBasedTest {
      */
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; isStrict = {2}")
     @ArgumentsSource(ContextProvider.WithBiBooleans.class)
-    public void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) throws Exception {
+    void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             fillResource(resource);
 
@@ -94,7 +95,7 @@ public class AllInstancesTest extends AbstractResourceBasedTest {
      */
     @ParameterizedTest(name = "[{index}] {0}: isStrict = {2}")
     @ArgumentsSource(ContextProvider.WithBooleans.class)
-    public void testAllInstancesLoaded(Context context, Boolean isStrict) throws Exception {
+    void testAllInstancesLoaded(Context context, Boolean isStrict) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 

@@ -65,7 +65,7 @@ import static org.mockito.Mockito.when;
  */
 @ParametersAreNonnullByDefault
 // TODO Add tests for FeatureMaps
-public class AbstractStoreAdapterTest extends AbstractTest {
+class StoreAdapterTest extends AbstractTest {
 
     private static PersistentEObject object;
 
@@ -76,7 +76,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     private AbstractStoreAdapter store;
 
     @BeforeAll
-    public static void initMocks() throws Exception {
+    static void initMocks() {
         String ePackageUri = "http://MyUri";
         String eClassName = "MyClass";
 
@@ -107,7 +107,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     }
 
     @BeforeEach
-    public void initStoreAdapter() {
+    void initStoreAdapter() {
         Store innerStore = StoreFactory.getInstance().createStore(new DefaultTransientBackend(), BaseConfig.newConfig());
 
         store = new AbstractStoreAdapter(innerStore, null) {
@@ -123,14 +123,14 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     }
 
     @AfterEach
-    public void closeStoreAdapter() {
+    void closeStoreAdapter() {
         if (nonNull(store)) {
             store.close();
         }
     }
 
     @Test
-    public void testClose() {
+    void testClose() {
         assertThat(store.store()).isNotInstanceOf(ClosedStore.class);
 
         store.close();
@@ -139,12 +139,12 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     }
 
     @Test
-    public void testSave() {
+    void testSave() {
         // TODO
     }
 
     @Test
-    public void testResolve_NotDefined() {
+    void testResolve_NotDefined() {
         assertThat(
                 catchThrowable(() -> store.resolve(Id.getProvider().generate()))
         ).isExactlyInstanceOf(NoSuchElementException.class);
@@ -152,7 +152,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testGetSet_Single(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testGetSet_Single(EStructuralFeature eFeature, Object value0, Object value1) {
         store.set(object, eFeature, -1, value0);
 
         Object resolvedValue0 = store.get(object, eFeature, -1);
@@ -166,7 +166,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testGetSet_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testGetSet_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(
                 catchThrowable(() -> store.set(object, eFeature, 0, value0))
         ).isExactlyInstanceOf(IndexOutOfBoundsException.class);
@@ -183,7 +183,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testIsSetUnset_Single(EStructuralFeature eFeature, Object value0) {
+    void testIsSetUnset_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(store.isSet(object, eFeature)).isFalse();
 
         store.set(object, eFeature, -1, value0);
@@ -195,7 +195,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testIsSetUnset_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testIsSetUnset_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.isSet(object, eFeature)).isFalse();
 
         store.add(object, eFeature, 0, value0);
@@ -210,7 +210,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testIsEmpty_Single(EStructuralFeature eFeature) {
+    void testIsEmpty_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.isEmpty(object, eFeature))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -218,7 +218,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testIsEmpty_Many(EStructuralFeature eFeature, Object value0) {
+    void testIsEmpty_Many(EStructuralFeature eFeature, Object value0) {
         assertThat(store.isEmpty(object, eFeature)).isTrue();
 
         store.add(object, eFeature, 0, value0);
@@ -230,7 +230,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testSize_Single(EStructuralFeature eFeature) {
+    void testSize_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.size(object, eFeature))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -238,7 +238,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testSize_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testSize_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.size(object, eFeature)).isEqualTo(0);
 
         store.add(object, eFeature, 0, value0);
@@ -256,7 +256,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testContains_Single(EStructuralFeature eFeature, Object value0) {
+    void testContains_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.contains(object, eFeature, value0))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -264,7 +264,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testContains_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testContains_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.contains(object, eFeature, null)).isFalse();
 
         assertThat(store.contains(object, eFeature, value0)).isFalse();
@@ -289,7 +289,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testIndexOf_Single(EStructuralFeature eFeature, Object value0) {
+    void testIndexOf_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.indexOf(object, eFeature, value0))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -297,7 +297,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testIndexOf_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testIndexOf_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.indexOf(object, eFeature, null)).isEqualTo(-1);
 
         assertThat(store.indexOf(object, eFeature, value0)).isEqualTo(-1);
@@ -319,7 +319,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testLastIndexOf_Single(EStructuralFeature eFeature, Object value0) {
+    void testLastIndexOf_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.lastIndexOf(object, eFeature, value0))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -327,7 +327,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testLastIndexOf_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testLastIndexOf_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.lastIndexOf(object, eFeature, null)).isEqualTo(-1);
 
         assertThat(store.lastIndexOf(object, eFeature, value0)).isEqualTo(-1);
@@ -349,7 +349,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testAdd_Single(EStructuralFeature eFeature, Object value0) {
+    void testAdd_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.add(object, eFeature, 0, value0))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -357,7 +357,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testAdd_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testAdd_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.isEmpty(object, eFeature)).isTrue();
 
         assertThat(
@@ -379,7 +379,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testRemove_Single(EStructuralFeature eFeature) {
+    void testRemove_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.remove(object, eFeature, 0))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -387,7 +387,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testRemove_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testRemove_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         store.add(object, eFeature, -1, value0);
         store.add(object, eFeature, -1, value1);
 
@@ -403,7 +403,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testMove_Single(EStructuralFeature eFeature) {
+    void testMove_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.move(object, eFeature, 1, 0))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -411,7 +411,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testMove_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testMove_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         store.add(object, eFeature, -1, value0);
         store.add(object, eFeature, -1, value1);
 
@@ -423,7 +423,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testClear_Single(EStructuralFeature eFeature) {
+    void testClear_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.clear(object, eFeature))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -431,7 +431,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testClear_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testClear_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         store.add(object, eFeature, -1, value0);
         store.add(object, eFeature, -1, value1);
 
@@ -444,7 +444,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testToArray_Single(EStructuralFeature eFeature, Object value0) {
+    void testToArray_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(store.toArray(object, eFeature)).isEmpty();
 
         store.set(object, eFeature, -1, value0);
@@ -456,7 +456,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testToArray_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testToArray_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.toArray(object, eFeature)).isEmpty();
 
         store.addAll(object, eFeature, -1, Arrays.asList(value0, value1));
@@ -475,7 +475,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     }
 
     @Test
-    public void testGetSetContainer() {
+    void testGetSetContainer() {
         EReference eContainingReference = mock(EReference.class);
         when(eClass.getEStructuralFeature(0)).thenReturn(eContainingReference);
         when(eClass.getFeatureID(eContainingReference)).thenReturn(0);
@@ -503,7 +503,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testGetAll_Single(EStructuralFeature eFeature, Object value0) {
+    void testGetAll_Single(EStructuralFeature eFeature, Object value0) {
         store.set(object, eFeature, -1, value0);
 
         List<Object> resolvedList = store.getAll(object, eFeature);
@@ -513,7 +513,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testGetAll_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testGetAll_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         store.add(object, eFeature, -1, value0);
         store.add(object, eFeature, -1, value1);
 
@@ -525,7 +525,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testSetAll_Single(EStructuralFeature eFeature) {
+    void testSetAll_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.setAll(object, eFeature, Collections.emptyList()))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -533,7 +533,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testSetAll_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testSetAll_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         store.add(object, eFeature, -1, value0);
         store.add(object, eFeature, -1, value1);
 
@@ -548,7 +548,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(SingleProvider.class)
-    public void testAddAll_Single(EStructuralFeature eFeature) {
+    void testAddAll_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.addAll(object, eFeature, 0, Collections.emptyList()))
         ).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -556,7 +556,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
 
     @ParameterizedTest(name = "[{index}] With {3}")
     @ArgumentsSource(ManyProvider.class)
-    public void testAddAll_Many(EStructuralFeature eFeature, Object value0, Object value1) {
+    void testAddAll_Many(EStructuralFeature eFeature, Object value0, Object value1) {
         assertThat(store.addAll(object, eFeature, -1, Collections.emptyList())).isEqualTo(0);
 
         assertThat(store.addAll(object, eFeature, -1, Arrays.asList(value0, value1))).isEqualTo(0);
@@ -577,15 +577,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     }
 
     @Test
-    public void testUpdateContainment() {
-    }
-
-    @Test
-    public void testRemoveContainment() {
-    }
-
-    @Test
-    public void testResolveUpdateInstanceOf() {
+    void testResolveUpdateInstanceOf() {
         // Resolve the instance of the object
         Optional<EClass> resolvedClass = store.resolveInstanceOf(id);
         assertThat(resolvedClass).contains(eClass);
@@ -598,7 +590,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
     }
 
     @Test
-    public void testResolveUpdateInstanceOf_NotDefined() {
+    void testResolveUpdateInstanceOf_NotDefined() {
         assertThat(
                 catchThrowable(() -> store.resolve(Id.getProvider().generate()))
         ).isExactlyInstanceOf(NoSuchElementException.class);
@@ -608,7 +600,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
      * An abstract {@link ArgumentsProvider} that initializes values.
      */
     @ParametersAreNonnullByDefault
-    public static abstract class AllProvider implements ArgumentsProvider {
+    static abstract class AllProvider implements ArgumentsProvider {
 
         protected static Object value0 = "MyValue0";
         protected static Object value1 = "MyValue1";
@@ -632,7 +624,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
      * An {@link ArgumentsProvider} with single-valued features.
      */
     @ParametersAreNonnullByDefault
-    public static final class SingleProvider extends AllProvider {
+    static final class SingleProvider extends AllProvider {
 
         private static EAttribute singleAttribute;
         private static EReference singleReference;
@@ -653,7 +645,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
         }
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     Arguments.of(singleAttribute, value0, value1, "EAttribute"),
                     Arguments.of(singleReference, objectRef0, objectRef1, "EReference")
@@ -665,7 +657,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
      * An {@link ArgumentsProvider} with many-valued features.
      */
     @ParametersAreNonnullByDefault
-    public static final class ManyProvider extends AllProvider {
+    static final class ManyProvider extends AllProvider {
 
         private static EAttribute manyAttribute;
         private static EReference manyReference;
@@ -685,7 +677,7 @@ public class AbstractStoreAdapterTest extends AbstractTest {
         }
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
                     Arguments.of(manyAttribute, value0, value1, "EAttribute"),
                     Arguments.of(manyReference, objectRef0, objectRef1, "EReference")

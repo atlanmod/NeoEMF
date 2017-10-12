@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link BerkeleyDbBackendIndices}.
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbIndicesTest extends AbstractPersistenceMapperTest {
+class BerkeleyDbIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

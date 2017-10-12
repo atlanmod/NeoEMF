@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  * A test-case about {@code DefaultBlueprintsBackend} with a Neo4j implementation.
  */
-public class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest {
+class BlueprintsNeo4jIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  * A test-case about {@link MapDbUri}.
  */
 @ParametersAreNonnullByDefault
-public class MapDbUriTest extends AbstractUriTest {
+class MapDbUriTest extends AbstractUriTest {
 
     @Nonnull
     @Override
@@ -39,7 +39,7 @@ public class MapDbUriTest extends AbstractUriTest {
      * MapDB does not support server-based {@link URI}s, so this operation must fail.
      */
     @Test
-    public void testCreateUriFromServer() throws Exception {
+    void testCreateUriFromServer() {
         assertThat(catchThrowable(() -> MapDbUri.builder().fromServer("host", 0, "segments")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }

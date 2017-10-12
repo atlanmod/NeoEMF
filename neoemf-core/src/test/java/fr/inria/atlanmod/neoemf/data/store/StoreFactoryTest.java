@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link StoreFactory}.
  */
 @ParametersAreNonnullByDefault
-public class StoreFactoryTest extends AbstractTest {
+class StoreFactoryTest extends AbstractTest {
 
     /**
      * The field name describing the inner {@link Store} in a {@link AbstractStore}.
@@ -71,7 +71,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
      */
     @Test
-    public void testNoStore() throws Exception {
+    void testNoStore() {
         ImmutableConfig config = BaseConfig.newConfig();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
@@ -82,7 +82,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link LogStore}.
      */
     @Test
-    public void testLogging() throws Exception {
+    void testLogging() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .log();
 
@@ -97,7 +97,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link SizeCacheStore}.
      */
     @Test
-    public void testSizeCaching() throws Exception {
+    void testSizeCaching() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .cacheSizes();
 
@@ -112,7 +112,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link FeatureCacheStore}.
      */
     @Test
-    public void testFeatureCaching() throws Exception {
+    void testFeatureCaching() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .cacheFeatures();
 
@@ -127,7 +127,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link ContainerCacheStore}.
      */
     @Test
-    public void testContainerCaching() throws Exception {
+    void testContainerCaching() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .cacheContainers();
 
@@ -142,7 +142,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link ClassCacheStore}.
      */
     @Test
-    public void testMetaclassCaching() throws Exception {
+    void testMetaclassCaching() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .cacheMetaClasses();
 
@@ -157,7 +157,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link StatsRecordStore}.
      */
     @Test
-    public void testStatsCaching() throws Exception {
+    void testStatsCaching() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .recordStats();
 
@@ -172,7 +172,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} without chunk.
      */
     @Test
-    public void testAutoSave() throws Exception {
+    void testAutoSave() {
         ImmutableConfig config = BaseConfig.newConfig()
                 .autoSave();
 
@@ -187,7 +187,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} with chunk.
      */
     @Test
-    public void testAutoSaveWithChunk() throws Exception {
+    void testAutoSaveWithChunk() {
         final long expectedChunk = 12_345;
 
         ImmutableConfig config = BaseConfig.newConfig()
@@ -207,7 +207,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks the setup of the {@link AutoSaveStore} with negative chunk.
      */
     @Test
-    public void testAutoSaveWithNegativeChunk() throws Exception {
+    void testAutoSaveWithNegativeChunk() {
         assertThat(catchThrowable(() -> BaseConfig.newConfig().autoSave(-2)))
                 .isExactlyInstanceOf(InvalidConfigException.class);
     }
@@ -216,7 +216,7 @@ public class StoreFactoryTest extends AbstractTest {
      * Checks store containment order (depend on the instantiation policy defined in {@link BackendFactory}.
      */
     @Test
-    public void testAllStores() throws Exception {
+    void testAllStores() {
         long expectedChunk = 12_345;
 
         ImmutableConfig config = BaseConfig.newConfig()

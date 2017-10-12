@@ -19,6 +19,8 @@ import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link HBaseBackendFactory}.
  */
 @ParametersAreNonnullByDefault
-public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
+class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Nonnull
     @Override
@@ -37,20 +39,20 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
     }
 
     @Override
-    public void testCreateTransientBackend() throws Exception {
+    public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(InvalidTransientBackend.class);
     }
 
     @Override
-    public void testCreateDefaultPersistentBackend() throws Exception {
+    public void testCreateDefaultPersistentBackend() throws IOException {
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), HBaseConfig.newConfig());
         assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 
     @Disabled("Not supported")
     @Override
-    public void testCopyBackend() throws Exception {
+    public void testCopyBackend() {
     }
 
     /**
@@ -59,7 +61,7 @@ public class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
      * The mapping {@code array-strings} is declared explicitly.
      */
     @Test
-    public void testCreateIndicesPersistentBackend() throws Exception {
+    void testCreateIndicesPersistentBackend() throws IOException {
         ImmutableConfig config = HBaseConfig.newConfig();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);

@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 @ParametersAreNonnullByDefault
-public class EContentTest extends AbstractResourceBasedTest {
+class EContentTest extends AbstractResourceBasedTest {
 
     /**
      * The expected number of {@link Tree} contained in {@link #tree}.
@@ -63,7 +64,7 @@ public class EContentTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testEObjectEContents(Context context) throws Exception {
+    void testEObjectEContents(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
@@ -82,7 +83,7 @@ public class EContentTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testEObjectEmptyEContentsSize(Context context) throws Exception {
+    void testEObjectEmptyEContentsSize(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResourceWithEmpty(resource);
 
@@ -93,7 +94,7 @@ public class EContentTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testEObjectEmptyEContentsGet(Context context) throws Exception {
+    void testEObjectEmptyEContentsGet(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResourceWithEmpty(resource);
 

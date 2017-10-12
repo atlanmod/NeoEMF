@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link DefaultBlueprintsBackend} with a TinkerGraph implementation.
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
+class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override

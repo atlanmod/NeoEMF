@@ -24,6 +24,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.stream.Stream;
@@ -34,10 +35,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about the copy from a file to another.
  */
 @ParametersAreNonnullByDefault
-public class CopyTest extends AbstractFileBasedTest {
+class CopyTest extends AbstractFileBasedTest {
 
     @BeforeAll
-    static void registerPackages() throws Exception {
+    static void registerPackages() {
         ResourceManager.registerAllPackages();
     }
 
@@ -49,7 +50,7 @@ public class CopyTest extends AbstractFileBasedTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0} ; useCompression = {1}")
     @ArgumentsSource(UriProvider.class)
-    public void testCopy(URI uri, Boolean useCompression) throws Exception {
+    void testCopy(URI uri, Boolean useCompression) throws IOException {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to {0}", targetFile);
 
@@ -73,10 +74,10 @@ public class CopyTest extends AbstractFileBasedTest {
      * Boolean} variants.
      */
     @ParametersAreNonnullByDefault
-    public static class UriProvider implements ArgumentsProvider {
+    static class UriProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     ResourceManager.xmiStandard(),
                     ResourceManager.xmiWithId(),

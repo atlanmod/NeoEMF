@@ -70,7 +70,7 @@ public class ContextProvider {
     public static class All implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return allContexts().map(Arguments::of);
         }
     }
@@ -83,7 +83,7 @@ public class ContextProvider {
     public static class WithContexts implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return allContexts().flatMap(c -> allContexts().map(c1 -> Arguments.of(c, c1)));
         }
     }
@@ -96,7 +96,7 @@ public class ContextProvider {
     public static class WithUris implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return allContexts().flatMap(c -> allUris().map(u -> Arguments.of(c, u)));
         }
     }
@@ -108,7 +108,7 @@ public class ContextProvider {
     public static class WithBooleans implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return allContexts().flatMap(c -> Stream.of(false, true).map(b -> Arguments.of(c, b)));
         }
     }
@@ -120,7 +120,7 @@ public class ContextProvider {
     public static final class WithBiBooleans implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return ContextProvider.allContexts()
                     .flatMap(c -> Stream.of(false, true)
                             .flatMap(b1 -> Stream.of(false, true)
@@ -136,7 +136,7 @@ public class ContextProvider {
     public static final class WithBooleansAndIntegers implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return ContextProvider.allContexts()
                     .flatMap(c -> Stream.of(false, true)
                             .flatMap(b -> IntStream.rangeClosed(3, 5)

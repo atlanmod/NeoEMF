@@ -21,15 +21,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BasicNamespace}.
  */
 @ParametersAreNonnullByDefault
-public class BasicNamespaceTest extends AbstractTest {
+class BasicNamespaceTest extends AbstractTest {
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         BasicNamespace.Registry.getInstance().clean();
     }
 
     @Test
-    public void testGetDefault() throws Exception {
+    void testGetDefault() {
         BasicNamespace ns0 = BasicNamespace.getDefault();
         assertThat(ns0).isNotNull();
         assertThat(ns0.prefix()).isEqualTo("ecore");
@@ -39,7 +39,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testPrefixAndUri() throws Exception {
+    void testPrefixAndUri() {
         String prefix0 = "prefix0";
         String prefix1 = "prefix1";
 
@@ -56,7 +56,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() {
         String prefix0 = "prefix0";
         String prefix1 = "prefix1";
 
@@ -73,7 +73,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() {
         String prefix0 = "prefix0";
         String prefix1 = "prefix1";
 
@@ -94,7 +94,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() throws Exception {
+    void testToString() {
         String prefix0 = "prefix0";
         String uri0 = "uri0";
 
@@ -103,7 +103,7 @@ public class BasicNamespaceTest extends AbstractTest {
     }
 
     @Test
-    public void testRegistry() throws Exception {
+    void testRegistry() {
         BasicNamespace.Registry registry = BasicNamespace.Registry.getInstance();
 
         String prefix0 = "prefix0";

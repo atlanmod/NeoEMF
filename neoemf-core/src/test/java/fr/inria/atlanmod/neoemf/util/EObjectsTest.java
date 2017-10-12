@@ -25,10 +25,10 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link EObjects}.
  */
 @ParametersAreNonnullByDefault
-public class EObjectsTest extends AbstractTest {
+class EObjectsTest extends AbstractTest {
 
     @Test
-    public void testIsAttribute() throws Exception {
+    void testIsAttribute() {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
@@ -37,7 +37,7 @@ public class EObjectsTest extends AbstractTest {
     }
 
     @Test
-    public void testIsReference() throws Exception {
+    void testIsReference() {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
@@ -46,7 +46,7 @@ public class EObjectsTest extends AbstractTest {
     }
 
     @Test
-    public void testAsAttribute() throws Exception {
+    void testAsAttribute() {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
@@ -58,7 +58,7 @@ public class EObjectsTest extends AbstractTest {
     }
 
     @Test
-    public void testAsReference() throws Exception {
+    void testAsReference() {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 

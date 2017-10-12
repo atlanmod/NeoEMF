@@ -33,7 +33,7 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link ClosedStore}.
  */
 @ParametersAreNonnullByDefault
-public class ClosedStoreTest extends AbstractTest {
+class ClosedStoreTest extends AbstractTest {
 
     private static final Class<? extends Throwable> CLOSED_EXCEPTION_TYPE = ClosedStoreException.class;
 
@@ -45,189 +45,189 @@ public class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    public void testClose() throws Exception {
+    void testClose() {
         assertThat(
                 catchThrowable(() -> store.close())
         ).isNull();
     }
 
     @Test
-    public void testSave() throws Exception {
+    void testSave() {
         assertThat(
                 catchThrowable(() -> store.save())
         ).isNull();
     }
 
     @Test
-    public void testContainerOf() throws Exception {
+    void testContainerOf() {
         assertThat(
                 catchThrowable(() -> store.containerOf(mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testContainerFor() throws Exception {
+    void testContainerFor() {
         assertThat(
                 catchThrowable(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveContainer() throws Exception {
+    void testRemoveContainer() {
         assertThat(
                 catchThrowable(() -> store.removeContainer(mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testMetaClassOf() throws Exception {
+    void testMetaClassOf() {
         assertThat(
                 catchThrowable(() -> store.metaClassOf(mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testmMetaClassFor() throws Exception {
+    void testmMetaClassFor() {
         assertThat(
                 catchThrowable(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testValueOf() throws Exception {
+    void testValueOf() {
         assertThat(
                 catchThrowable(() -> store.valueOf(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testValueFor() throws Exception {
+    void testValueFor() {
         assertThat(
                 catchThrowable(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveValue() throws Exception {
+    void testRemoveValue() {
         assertThat(
                 catchThrowable(() -> store.removeValue(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testReferenceOf() throws Exception {
+    void testReferenceOf() {
         assertThat(
                 catchThrowable(() -> store.referenceOf(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testReferenceFor() throws Exception {
+    void testReferenceFor() {
         assertThat(
                 catchThrowable(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveReference() throws Exception {
+    void testRemoveReference() {
         assertThat(
                 catchThrowable(() -> store.removeReference(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testValueOfMany() throws Exception {
+    void testValueOfMany() {
         assertThat(
                 catchThrowable(() -> store.valueOf(mock(ManyFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAllValuesOf() throws Exception {
+    void testAllValuesOf() {
         assertThat(
                 catchThrowable(() -> store.allValuesOf(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void tetsValueForMany() throws Exception {
+    void tetsValueForMany() {
         assertThat(
                 catchThrowable(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAddValue() throws Exception {
+    void testAddValue() {
         assertThat(
                 catchThrowable(() -> store.addValue(mock(ManyFeatureBean.class), mock(Object.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAddAllValues() throws Exception {
+    void testAddAllValues() {
         assertThat(
                 catchThrowable(() -> store.addAllValues(mock(ManyFeatureBean.class), mock(List.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAppendValue() throws Exception {
+    void testAppendValue() {
         assertThat(
                 catchThrowable(() -> store.appendValue(mock(SingleFeatureBean.class), mock(Object.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAppendAllValues() throws Exception {
+    void testAppendAllValues() {
         assertThat(
                 catchThrowable(() -> store.appendAllValues(mock(SingleFeatureBean.class), mock(List.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveValueMany() throws Exception {
+    void testRemoveValueMany() {
         assertThat(
                 catchThrowable(() -> store.removeValue(mock(ManyFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveAllValues() throws Exception {
+    void testRemoveAllValues() {
         assertThat(
                 catchThrowable(() -> store.removeAllValues(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testSizeOfValue() throws Exception {
+    void testSizeOfValue() {
         assertThat(
                 catchThrowable(() -> store.sizeOfValue(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testReferenceOfMany() throws Exception {
+    void testReferenceOfMany() {
         assertThat(
                 catchThrowable(() -> store.referenceOf(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAllReferencesOf() throws Exception {
+    void testAllReferencesOf() {
         assertThat(
                 catchThrowable(() -> store.allReferencesOf(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testReferenceForMany() throws Exception {
+    void testReferenceForMany() {
         assertThat(
                 catchThrowable(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAddReference() throws Exception {
+    void testAddReference() {
         assertThat(
                 catchThrowable(() -> store.addReference(mock(ManyFeatureBean.class), mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
@@ -235,14 +235,14 @@ public class ClosedStoreTest extends AbstractTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAddAllReferences() throws Exception {
+    void testAddAllReferences() {
         assertThat(
                 catchThrowable(() -> store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testAppendReference() throws Exception {
+    void testAppendReference() {
         assertThat(
                 catchThrowable(() -> store.appendReference(mock(SingleFeatureBean.class), mock(Id.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
@@ -250,28 +250,28 @@ public class ClosedStoreTest extends AbstractTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAppendAllReferences() throws Exception {
+    void testAppendAllReferences() {
         assertThat(
                 catchThrowable(() -> store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveReferenceMany() throws Exception {
+    void testRemoveReferenceMany() {
         assertThat(
                 catchThrowable(() -> store.removeReference(mock(ManyFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testRemoveAllReferences() throws Exception {
+    void testRemoveAllReferences() {
         assertThat(
                 catchThrowable(() -> store.removeAllReferences(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
-    public void testSizeOfReference() throws Exception {
+    void testSizeOfReference() {
         assertThat(
                 catchThrowable(() -> store.sizeOfReference(mock(SingleFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);

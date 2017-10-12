@@ -15,6 +15,8 @@ import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +31,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Check the creation of chaining between the default {@link Store}s and a {@link TransientBackend}.
      */
     @Test
-    public void testCreateTransientStore() throws Exception {
+    public void testCreateTransientStore() {
         Backend backend = context().factory().createTransientBackend();
 
         Store store = StoreFactory.getInstance().createStore(backend, context().config());
@@ -42,7 +44,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Check the creation of chaining between the default {@link Store}s and a {@link PersistentBackend}.
      */
     @Test
-    public void testCreatePersistentStore() throws Exception {
+    public void testCreatePersistentStore() throws IOException {
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), context().config());
 
         Store store = StoreFactory.getInstance().createStore(backend, context().config());
@@ -55,17 +57,17 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Checks the creation of a {@link TransientBackend}, specific for each implementation.
      */
     @Test
-    public abstract void testCreateTransientBackend() throws Exception;
+    public abstract void testCreateTransientBackend() throws IOException;
 
     /**
      * Checks the creation of the default {@link PersistentBackend}, specific for each implementation.
      */
     @Test
-    public abstract void testCreateDefaultPersistentBackend() throws Exception;
+    public abstract void testCreateDefaultPersistentBackend() throws IOException;
 
     /**
      * Checks the copy of a {@link Backend} to another.
      */
     @Test
-    public abstract void testCopyBackend() throws Exception;
+    public abstract void testCopyBackend() throws IOException;
 }

@@ -19,6 +19,8 @@ import org.eclipse.emf.common.util.EMap;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case that checks the support of {@link EMap}.
  */
 @ParametersAreNonnullByDefault
-public class EMapTest extends AbstractResourceBasedTest {
+class EMapTest extends AbstractResourceBasedTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
@@ -37,7 +39,7 @@ public class EMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testGetMapStringStringEmpty(Context context) throws Exception {
+    void testGetMapStringStringEmpty(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
@@ -51,7 +53,7 @@ public class EMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testPutMapStringString(Context context) throws Exception {
+    void testPutMapStringString(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
@@ -70,7 +72,7 @@ public class EMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testGetMapKVEmpty(Context context) throws Exception {
+    void testGetMapKVEmpty(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
@@ -84,7 +86,7 @@ public class EMapTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    public void testPutMapKV(Context context) throws Exception {
+    void testPutMapKV(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 

@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BasicElement}.
  */
 @ParametersAreNonnullByDefault
-public class BasicElementTest extends AbstractTest {
+class BasicElementTest extends AbstractTest {
 
     @Test
-    public void testName() throws Exception {
+    void testName() {
         String name0 = "element0";
         String name1 = "element1";
 
@@ -40,7 +40,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    void testId() {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.id()).isNull();
 
@@ -55,7 +55,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testMetaclass() throws Exception {
+    void testMetaclass() {
         BasicNamespace ns = BasicNamespace.getDefault();
 
         BasicElement elt0 = new BasicElement();
@@ -72,7 +72,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testRoot() throws Exception {
+    void testRoot() {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.isRoot()).isFalse();
 
@@ -84,7 +84,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() {
         BasicElement elt0 = new BasicElement();
         elt0.id(Id.getProvider().fromLong(42));
 
@@ -100,7 +100,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() {
         BasicElement elt0 = new BasicElement();
         elt0.id(Id.getProvider().fromLong(42));
 
@@ -120,7 +120,7 @@ public class BasicElementTest extends AbstractTest {
     }
 
     @Test
-    public void testToString() throws Exception {
+    void testToString() {
         BasicElement elt0 = new BasicElement();
         elt0.name("Element0");
 

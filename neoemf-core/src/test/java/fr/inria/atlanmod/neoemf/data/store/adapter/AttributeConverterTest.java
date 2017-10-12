@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
  * A test-case about {@link AttributeConverter} and {@link FeatureMapConverter}.
  */
 @ParametersAreNonnullByDefault
-public class AttributeConverterTest extends AbstractTest {
+class AttributeConverterTest extends AbstractTest {
 
     private AttributeConverter converter;
 
@@ -40,12 +40,12 @@ public class AttributeConverterTest extends AbstractTest {
     }
 
     @Test
-    public void testConvertNull() throws Exception {
+    void testConvertNull() {
         assertThat(converter.convert(null, mock(EAttribute.class))).isNull();
     }
 
     @Test
-    public void testConvertPrimitive() throws Exception {
+    void testConvertPrimitive() {
         Class<?> type = Boolean.class;
 
         EDataType dataType = mock(EDataType.class);
@@ -58,22 +58,22 @@ public class AttributeConverterTest extends AbstractTest {
     }
 
     @Test
-    public void testConvertNonPrimitive() throws Exception {
+    void testConvertNonPrimitive() {
         // TODO
     }
 
     @Test
-    public void testConvertFeatureMap() throws Exception {
+    void testConvertFeatureMap() {
         // TODO
     }
 
     @Test
-    public void testRevertNull() throws Exception {
+    void testRevertNull() {
         assertThat(converter.revert(null, mock(EAttribute.class))).isNull();
     }
 
     @Test
-    public void testRevertPrimitive() throws Exception {
+    void testRevertPrimitive() {
         Class<?> type = Boolean.class;
 
         EDataType dataType = mock(EDataType.class);
@@ -86,12 +86,12 @@ public class AttributeConverterTest extends AbstractTest {
     }
 
     @Test
-    public void testtRevertNonPrimitive() throws Exception {
+    void testtRevertNonPrimitive() {
         // TODO
     }
 
     @Test
-    public void testRevertFeatureMap() throws Exception {
+    void testRevertFeatureMap() {
         // TODO
     }
 }

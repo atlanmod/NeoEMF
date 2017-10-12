@@ -24,10 +24,10 @@ import static org.mockito.Mockito.mock;
  * A test-case about {@link DefaultPersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public class DefaultPersistentEObjectTest extends AbstractTest {
+class DefaultPersistentEObjectTest extends AbstractTest {
 
     @Test
-    public void testIdGeneration() throws Exception {
+    void testIdGeneration() {
         // Created without an undefined Id
         PersistentEObject object = new DefaultPersistentEObject();
 
@@ -36,7 +36,7 @@ public class DefaultPersistentEObjectTest extends AbstractTest {
     }
 
     @Test
-    public void testStoreGeneration() throws Exception {
+    void testStoreGeneration() {
         // Created without any store
         PersistentEObject object = new DefaultPersistentEObject();
 

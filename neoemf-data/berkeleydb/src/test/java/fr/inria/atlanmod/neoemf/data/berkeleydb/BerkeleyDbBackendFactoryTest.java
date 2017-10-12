@@ -17,6 +17,8 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -26,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A test-case about {@link BerkeleyDbBackendFactory}.
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
+class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
 
     @Nonnull
     @Override
@@ -35,13 +37,13 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
     }
 
     @Override
-    public void testCreateTransientBackend() throws Exception {
+    public void testCreateTransientBackend() {
         Backend backend = context().factory().createTransientBackend();
         assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
     }
 
     @Override
-    public void testCreateDefaultPersistentBackend() throws Exception {
+    public void testCreateDefaultPersistentBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
@@ -49,7 +51,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
     }
 
     @Override
-    public void testCopyBackend() throws Exception {
+    public void testCopyBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
 
         Backend transientBackend = context().factory().createTransientBackend();
@@ -67,7 +69,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
      * The mapping {@code indices} is declared explicitly.
      */
     @Test
-    public void testCreateIndicesPersistentBackend() throws Exception {
+    void testCreateIndicesPersistentBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
@@ -80,7 +82,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
      * The mapping {@code arrays} is declared explicitly.
      */
     @Test
-    public void testCreateArraysPersistentBackend() throws Exception {
+    void testCreateArraysPersistentBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withArrays();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
@@ -93,7 +95,7 @@ public class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
      * The mapping {@code lists} is declared explicitly.
      */
     @Test
-    public void testCreateListsPersistentBackend() throws Exception {
+    void testCreateListsPersistentBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withLists();
 
         Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
