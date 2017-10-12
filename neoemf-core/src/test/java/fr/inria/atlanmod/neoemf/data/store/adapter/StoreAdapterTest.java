@@ -26,11 +26,17 @@ import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.impl.EAttributeImpl;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+import org.eclipse.emf.ecore.impl.EReferenceImpl;
+import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +63,7 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +71,6 @@ import static org.mockito.Mockito.when;
  * A test-case about {@link AbstractStoreAdapter}.
  */
 @ParametersAreNonnullByDefault
-// TODO Add tests for FeatureMaps
 class StoreAdapterTest extends AbstractTest {
 
     private static PersistentEObject object;
@@ -602,21 +608,21 @@ class StoreAdapterTest extends AbstractTest {
     @ParametersAreNonnullByDefault
     static abstract class AllProvider implements ArgumentsProvider {
 
-        protected static Object value0 = "MyValue0";
-        protected static Object value1 = "MyValue1";
+        protected final Object value0 = "MyValue0";
+        protected final Object value1 = "MyValue1";
 
-        protected static DefaultPersistentEObject objectRef0;
-        protected static DefaultPersistentEObject objectRef1;
+        protected final DefaultPersistentEObject reference0;
+        protected final DefaultPersistentEObject reference1;
 
-        static {
+        AllProvider() {
             // Initialize references
-            objectRef0 = mock(DefaultPersistentEObject.class);
-            when(objectRef0.id()).thenReturn(Id.getProvider().fromLong(44L));
-            when(objectRef0.eClass()).thenReturn(eClass);
+            reference0 = mock(DefaultPersistentEObject.class);
+            when(reference0.id()).thenReturn(Id.getProvider().fromLong(44L));
+            when(reference0.eClass()).thenReturn(eClass);
 
-            objectRef1 = mock(DefaultPersistentEObject.class);
-            when(objectRef1.id()).thenReturn(Id.getProvider().fromLong(45L));
-            when(objectRef1.eClass()).thenReturn(eClass);
+            reference1 = mock(DefaultPersistentEObject.class);
+            when(reference1.id()).thenReturn(Id.getProvider().fromLong(45L));
+            when(reference1.eClass()).thenReturn(eClass);
         }
     }
 
@@ -626,13 +632,16 @@ class StoreAdapterTest extends AbstractTest {
     @ParametersAreNonnullByDefault
     static final class SingleProvider extends AllProvider {
 
-        private static EAttribute singleAttribute;
-        private static EReference singleReference;
+        private final EAttribute singleAttribute;
+        private final EReference singleReference;
 
-        static {
+        SingleProvider() {
+            super();
+
             // Initialize attributes
             final EDataType eDataType = mock(EDataType.class);
             when(eDataType.getInstanceClass()).thenAnswer(new Returns(String.class));
+            when(eDataType.getInstanceClassName()).thenReturn(String.class.getTypeName());
 
             singleAttribute = mock(EAttribute.class);
             when(singleAttribute.isMany()).thenReturn(false);
@@ -648,7 +657,7 @@ class StoreAdapterTest extends AbstractTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     Arguments.of(singleAttribute, value0, value1, "EAttribute"),
-                    Arguments.of(singleReference, objectRef0, objectRef1, "EReference")
+                    Arguments.of(singleReference, reference0, reference1, "EReference")
             );
         }
     }
@@ -659,28 +668,100 @@ class StoreAdapterTest extends AbstractTest {
     @ParametersAreNonnullByDefault
     static final class ManyProvider extends AllProvider {
 
-        private static EAttribute manyAttribute;
-        private static EReference manyReference;
+        private final EAttributeImpl manyAttribute;
+        private final EReferenceImpl manyReference;
 
-        static {
+        private final EAttribute featureMapAttribute;
+
+        private final FeatureMap.Entry featureMapValue0;
+        private final FeatureMap.Entry featureMapValue1;
+
+        private final FeatureMap.Entry featureMapReference0;
+        private final FeatureMap.Entry featureMapReference1;
+
+        ManyProvider() {
+            super();
+
+            final EFactory eFactory = mock(EFactoryImpl.class);
+
+            final EPackage ePackage = mock(EPackage.class);
+            when(ePackage.getEFactoryInstance()).thenReturn(eFactory);
+
             // Initialize attributes
             final EDataType eDataType = mock(EDataType.class);
             when(eDataType.getInstanceClass()).thenAnswer(new Returns(String.class));
+            when(eDataType.getInstanceClassName()).thenReturn(String.class.getTypeName());
+            when(eDataType.getEPackage()).thenReturn(ePackage);
 
-            manyAttribute = mock(EAttribute.class);
+            when(eFactory.convertToString(eq(eDataType), eq(value0))).thenReturn(value0.toString());
+            when(eFactory.convertToString(eq(eDataType), eq(value1))).thenReturn(value1.toString());
+            when(eFactory.createFromString(eq(eDataType), eq(value0.toString()))).thenReturn(value0);
+            when(eFactory.createFromString(eq(eDataType), eq(value1.toString()))).thenReturn(value1);
+
+            // The containing class of the FeatureMap attribute
+            final EClass eContainingClass = mock(EClass.class);
+
+            // The type of features
+            final EClassifier eType = mock(EClassifier.class);
+            when(eType.isInstance(any())).thenReturn(true);
+
+            manyAttribute = mock(EAttributeImpl.class);
+            when(manyAttribute.getName()).thenReturn("attr");
             when(manyAttribute.isMany()).thenReturn(true);
             when(manyAttribute.getEAttributeType()).thenReturn(eDataType);
+            when(eContainingClass.getEStructuralFeature(eq("attr"))).thenReturn(manyAttribute);
 
-            manyReference = mock(EReference.class);
+            // Get around FeatureMapUtil.createEntry()
+            final FeatureMap.Entry.Internal entryProtoValue = new EStructuralFeatureImpl.SimpleFeatureMapEntry(manyAttribute, null);
+            when(manyAttribute.getFeatureMapEntryPrototype()).thenReturn(entryProtoValue);
+            when(manyAttribute.getEType()).thenReturn(eType);
+
+            // Initialize references
+            manyReference = mock(EReferenceImpl.class);
+            when(manyReference.getName()).thenReturn("ref");
             when(manyReference.isMany()).thenReturn(true);
             when(manyReference.isContainment()).thenReturn(false);
+            when(eContainingClass.getEStructuralFeature(eq("ref"))).thenReturn(manyReference);
+
+            // Get around FeatureMapUtil.createEntry()
+            final FeatureMap.Entry.Internal entryProtoReference = new EStructuralFeatureImpl.SimpleFeatureMapEntry(manyReference, null);
+            when(manyReference.getFeatureMapEntryPrototype()).thenReturn(entryProtoReference);
+            when(manyReference.getEType()).thenReturn(eType);
+
+            // Initialize feature maps
+            final EDataType eDataTypeFeatureMap = mock(EDataType.class);
+            when(eDataTypeFeatureMap.getInstanceClass()).thenAnswer(new Returns(FeatureMap.Entry.class));
+            when(eDataTypeFeatureMap.getInstanceClassName()).thenReturn(FeatureMap.Entry.class.getTypeName());
+
+            featureMapAttribute = mock(EAttributeImpl.class);
+            when(featureMapAttribute.isMany()).thenReturn(true);
+            when(featureMapAttribute.getEAttributeType()).thenReturn(eDataTypeFeatureMap);
+            when(featureMapAttribute.getEContainingClass()).thenReturn(eContainingClass);
+
+            featureMapValue0 = mock(FeatureMap.Entry.class);
+            when(featureMapValue0.getEStructuralFeature()).thenReturn(manyAttribute);
+            when(featureMapValue0.getValue()).thenReturn(value0);
+
+            featureMapValue1 = mock(FeatureMap.Entry.class);
+            when(featureMapValue1.getEStructuralFeature()).thenReturn(manyAttribute);
+            when(featureMapValue1.getValue()).thenReturn(value1);
+
+            featureMapReference0 = mock(FeatureMap.Entry.class);
+            when(featureMapReference0.getEStructuralFeature()).thenReturn(manyReference);
+            when(featureMapReference0.getValue()).thenReturn(reference0);
+
+            featureMapReference1 = mock(FeatureMap.Entry.class);
+            when(featureMapReference1.getEStructuralFeature()).thenReturn(manyReference);
+            when(featureMapReference1.getValue()).thenReturn(reference1);
         }
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
                     Arguments.of(manyAttribute, value0, value1, "EAttribute"),
-                    Arguments.of(manyReference, objectRef0, objectRef1, "EReference")
+                    Arguments.of(manyReference, reference0, reference1, "EReference"),
+                    Arguments.of(featureMapAttribute, featureMapValue0, featureMapValue1, "FeatureMap[EAttribute]"),
+                    Arguments.of(featureMapAttribute, featureMapReference0, featureMapReference1, "FeatureMap[EReference]")
             );
         }
     }
