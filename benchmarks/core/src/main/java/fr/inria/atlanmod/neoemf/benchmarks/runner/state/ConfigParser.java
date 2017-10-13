@@ -25,18 +25,6 @@ import javax.annotation.RegEx;
 final class ConfigParser {
 
     /**
-     * The regex of a number argument, as {@code {0189}}.
-     */
-    @RegEx
-    private static final String ARG_NUMBER = "\\{(-?[0-9]+)\\}";
-
-    /**
-     * The regex of a text argument, as {@code {ABYZ}}.
-     */
-    @RegEx
-    private static final String ARG_TEXT = "\\{([A-Z]+)\\}";
-
-    /**
      * The option for caching features.
      */
     private static final String CACHE_FEATURES = "F";
@@ -57,11 +45,6 @@ final class ConfigParser {
     private static final String CACHE_CONTAINERS = "C";
 
     /**
-     * The option for recording stats.
-     */
-    private static final String RECORD_STATS = "R";
-
-    /**
      * The option for logging database calls.
      */
     private static final String LOG = "L";
@@ -70,11 +53,6 @@ final class ConfigParser {
      * The option for auto-saving.
      */
     private static final String AUTO_SAVE = "A";
-
-    /**
-     * The pattern for auto-saving, with a specified chunk.
-     */
-    private static final Pattern AUTO_SAVE_CHUCK = Pattern.compile(AUTO_SAVE + ARG_NUMBER, Pattern.CASE_INSENSITIVE);
 
     /**
      * Parses the given {@code text} and returns the associated {@link Config}.
@@ -86,7 +64,6 @@ final class ConfigParser {
     @Nonnull
     public static Config parse(String text) {
         Config options = BaseConfig.newConfig();
-
         String upperText = text.toUpperCase();
 
         // Cache features
@@ -109,22 +86,13 @@ final class ConfigParser {
             options.cacheContainers();
         }
 
-        // Stats recording
-        if (upperText.contains(ConfigParser.RECORD_STATS)) {
-            options.recordStats();
-        }
-
         // Logging
         if (upperText.contains(ConfigParser.LOG)) {
             options.log();
         }
 
         // Auto-saving
-        Matcher chuckMatcher = ConfigParser.AUTO_SAVE_CHUCK.matcher(upperText);
-        if (chuckMatcher.find()) {
-            options.autoSave(Long.parseLong(chuckMatcher.group(1)));
-        }
-        else if (upperText.contains(AUTO_SAVE)) {
+        if (upperText.contains(AUTO_SAVE)) {
             options.autoSave();
         }
 

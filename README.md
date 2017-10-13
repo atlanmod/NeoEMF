@@ -40,7 +40,8 @@ Additionally NeoEMF can be plugged with several persistence solutions (for the m
 
 In addition, NeoEMF provides a query API to perform optimized OCL queries over models and reify the results as navigable models.
 
-## Use
+
+## Usage
 
 ### Latest release
 
@@ -68,7 +69,7 @@ Then add the dependency of the specific implementation you want to use:
 
 ### Snapshots
 
-Snapshots are automatically build from the `master` and are available throught Maven using `1.0.2-SNAPSHOT`.
+Snapshots are automatically build from the `master` and are available throught Maven using `1.0.3-SNAPSHOT`.
 - Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
 - Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
 
@@ -76,8 +77,8 @@ Snapshots are automatically build from the `master` and are available throught M
 
 ### Update site
 The simplest way to install NeoEMF is to use the update-site that is available [here](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/).
-Install the **Base** component, which provides NeoEMF core classes and utils.
-Select the backend specific implementation(s) you want to plug in NeoEMF (currently Blueprints and MapDB are available).
+Install the **NeoEMF Persistence Framework** component, which provides NeoEMF core classes and utils.
+Select the backend specific implementation(s) you want to plug in NeoEMF.
 
 ### Specific backend setup
 Backend specific implementations may need configuration files or require other plugins to work properly.
@@ -86,6 +87,7 @@ These requirements are available in the root of the related subprojects.
 ### Local build
 You can build locally NeoEMF by following the instructions in the Build section.
 It is then possible to install NeoEMF from the local built update-site, or by importing the generated plugins.
+
 
 ## Build
 
@@ -104,9 +106,8 @@ mvn clean install -f plugins/eclipse
 ```
 NeoEMF plugins and update-site are built and stored in your local m2 repository at (`.m2/fr/inria/atlanmod/neoemf`).
 
-## Opening in your IDE
+## Opening in Eclipse
 
-### Eclipse
 In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
 
  - __EGit__ : v3.4.2 or later
@@ -128,6 +129,10 @@ The projects **project**, **parent**, **core**, **graph**, **graph.blueprints** 
 If you want to import the projects generating Eclipse specific plugins (features, update-site), you have to import them by
 hand using `File > Import > Maven > Existing Maven Projects`, and select the projects under the "plugins" folder in your local repository.
 
+## Benchmarks
+
+A full benchmarks description is available at [here](https://github.com/atlanmod/NeoEMF/tree/backend-abstraction/benchmarks).
+
 ## Issues
 
 If you experience issues installing or using NeoEMF, you can [submit an issue on github](https://github.com/atlanmod/NeoEMF/issues) or contact us at neoemf@googlegroups.com
@@ -137,8 +142,10 @@ If you experience issues installing or using NeoEMF, you can [submit an issue on
  - The Eclipse plugins can not be built if Maven can not access internet (it is needed to fetch Luna p2 repositories) 
  - Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
+
 ## Develop your backend implementation
 If you have developped a specific backend implementation that is not covered by the actual release of NeoEMF, you can submit it as a pull request. _(More information to come about custom backend implementations)_
+
 
 ## Credits
 Performance problems and memory leaks are diagnosed with [Java Profiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
