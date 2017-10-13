@@ -76,7 +76,7 @@ class AllInstancesTest extends AbstractResourceBasedTest {
      * Checks the content.
      */
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; isStrict = {2}")
-    @ArgumentsSource(ContextProvider.WithBiBooleans.class)
+    @ArgumentsSource(ContextProvider.AllWithBiBooleans.class)
     void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             fillResource(resource);
@@ -94,7 +94,7 @@ class AllInstancesTest extends AbstractResourceBasedTest {
      * Checks the content after calling {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}.
      */
     @ParameterizedTest(name = "[{index}] {0}: isStrict = {2}")
-    @ArgumentsSource(ContextProvider.WithBooleans.class)
+    @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     void testAllInstancesLoaded(Context context, Boolean isStrict) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);

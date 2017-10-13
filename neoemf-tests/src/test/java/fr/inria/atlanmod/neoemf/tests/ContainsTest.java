@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ContainsTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
-    @ArgumentsSource(ContextProvider.WithBooleansAndIntegers.class)
+    @ArgumentsSource(ContextProvider.AllWithBooleansAndIntegers.class)
     void testContainsElements(Context context, Boolean isPersistent, Integer count) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             List<TargetObject> content = fillResource(resource, count);

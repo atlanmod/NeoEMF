@@ -73,7 +73,7 @@ public final class ContextProvider {
      * executed with all other contexts {@code (1 -> 1, 1 -> 2, 2 -> 1, 2 -> 2,...)}.
      */
     @ParametersAreNonnullByDefault
-    public static class WithContexts implements ArgumentsProvider {
+    public static class AllWithContexts implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
@@ -86,7 +86,7 @@ public final class ContextProvider {
      * ResourceManager}.
      */
     @ParametersAreNonnullByDefault
-    public static class WithUris implements ArgumentsProvider {
+    public static class AllWithUris implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
@@ -98,7 +98,7 @@ public final class ContextProvider {
      * An {@link ArgumentsProvider} with all {@link Context}s associated with all {@link Boolean} variants.
      */
     @ParametersAreNonnullByDefault
-    public static class WithBooleans implements ArgumentsProvider {
+    public static class AllWithBooleans implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
@@ -110,7 +110,7 @@ public final class ContextProvider {
      * An {@link ArgumentsProvider} with all {@link Context}s associated with all {@link Boolean} variants (x2).
      */
     @ParametersAreNonnullByDefault
-    public static final class WithBiBooleans implements ArgumentsProvider {
+    public static class AllWithBiBooleans implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
@@ -126,7 +126,7 @@ public final class ContextProvider {
      * {@link Integer}s.
      */
     @ParametersAreNonnullByDefault
-    public static final class WithBooleansAndIntegers implements ArgumentsProvider {
+    public static class AllWithBooleansAndIntegers implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {

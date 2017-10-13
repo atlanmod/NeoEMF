@@ -29,21 +29,39 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public final class UriProvider {
 
+    /**
+     * Returns a stream of all declared {@link URI}s.
+     *
+     * @return a stream
+     */
     @Nonnull
     public static Stream<URI> allUris() {
-        return Stream.of(
-                ResourceManager.xmiStandard(),
-                ResourceManager.xmiWithId(),
-                ResourceManager.zxmiStandard(),
-                ResourceManager.zxmiWithId()
-        );
+        return Stream.concat(uncompressedUris(), compressedUris());
     }
 
+    /**
+     * Returns a stream of all declared {@link URI}s that identify uncompressed resources.
+     *
+     * @return a stream
+     */
     @Nonnull
-    public static Stream<URI> distinctUris() {
+    public static Stream<URI> uncompressedUris() {
         return Stream.of(
                 ResourceManager.xmiStandard(),
                 ResourceManager.xmiWithId()
+        );
+    }
+
+    /**
+     * Returns a stream of all declared {@link URI}s that identify compressed resources.
+     *
+     * @return a stream
+     */
+    @Nonnull
+    public static Stream<URI> compressedUris() {
+        return Stream.of(
+                ResourceManager.zxmiStandard(),
+                ResourceManager.zxmiWithId()
         );
     }
 
@@ -68,7 +86,7 @@ public final class UriProvider {
      * It includes compressed resources.
      */
     @ParametersAreNonnullByDefault
-    public static class WithBooleans implements ArgumentsProvider {
+    public static class AllWithBooleans implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
@@ -83,7 +101,7 @@ public final class UriProvider {
      * It includes compressed resources.
      */
     @ParametersAreNonnullByDefault
-    public static class WithTypes implements ArgumentsProvider {
+    public static class AllWithTypes implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
@@ -102,7 +120,7 @@ public final class UriProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return distinctUris().flatMap(u -> Stream.of(false, true).map(b -> Arguments.of(u, b)));
+            return uncompressedUris().flatMap(u -> Stream.of(false, true).map(b -> Arguments.of(u, b)));
         }
     }
 }

@@ -111,7 +111,7 @@ class XmiReaderTest extends AbstractTest {
      * Check that the elements and their children are properly processed.
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
-    @ArgumentsSource(UriProvider.WithTypes.class)
+    @ArgumentsSource(UriProvider.AllWithTypes.class)
     void testElementsAndChildren(URI uri, Boolean withId) throws IOException {
         InMemoryElement root = readResource(uri);
 
@@ -156,7 +156,7 @@ class XmiReaderTest extends AbstractTest {
      * Check that the XPath references are properly processed.
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
-    @ArgumentsSource(UriProvider.WithTypes.class)
+    @ArgumentsSource(UriProvider.AllWithTypes.class)
     void testReferences(URI uri, Boolean withId) throws IOException {
         InMemoryElement root = readResource(uri);
 
@@ -225,7 +225,7 @@ class XmiReaderTest extends AbstractTest {
      * Check that the attributes are properly processed.
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
-    @ArgumentsSource(UriProvider.WithTypes.class)
+    @ArgumentsSource(UriProvider.AllWithTypes.class)
     void testAttributes(URI uri) throws IOException {
         InMemoryElement root = readResource(uri);
 
@@ -288,7 +288,7 @@ class XmiReaderTest extends AbstractTest {
      * Check that the meta-classes ('xsi:type' or 'xmi:type') are properly processed.
      */
     @ParameterizedTest(name = "[{index}] source = {0}")
-    @ArgumentsSource(UriProvider.WithTypes.class)
+    @ArgumentsSource(UriProvider.AllWithTypes.class)
     void testMetaClasses(URI uri) throws IOException {
         InMemoryElement root = readResource(uri);
 

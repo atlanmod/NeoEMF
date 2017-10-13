@@ -46,7 +46,7 @@ class FileCopyTest extends AbstractFileBasedTest {
      * @param useCompression {@code true} if the target file must be compressed
      */
     @ParameterizedTest(name = "[{index}] source = {0} ; useCompression = {1}")
-    @ArgumentsSource(UriProvider.WithBooleans.class)
+    @ArgumentsSource(UriProvider.AllWithBooleans.class)
     void testCopy(URI uri, Boolean useCompression) throws IOException {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to {0}", targetFile);

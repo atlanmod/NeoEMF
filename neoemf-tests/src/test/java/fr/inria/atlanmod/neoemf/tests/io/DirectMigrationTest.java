@@ -55,7 +55,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
      */
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0} <- {1}")
-    @ArgumentsSource(ContextProvider.WithUris.class)
+    @ArgumentsSource(ContextProvider.AllWithUris.class)
     void testDirectImport(Context context, URI uri) throws IOException {
         final File sourceFile = currentTempFile();
         Log.info("Importing from file... [{0}]", sourceFile);
@@ -79,7 +79,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
      */
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: useCompression = {1}")
-    @ArgumentsSource(ContextProvider.WithBooleans.class)
+    @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     void testDirectExport(Context context, Boolean useCompression) throws IOException {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to file... [{0}]", targetFile);
@@ -119,7 +119,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
      */
     @Tag("slowest")
     @ParameterizedTest(name = "[{index}] {0} -> {1}")
-    @ArgumentsSource(ContextProvider.WithContexts.class)
+    @ArgumentsSource(ContextProvider.AllWithContexts.class)
     void testDirectCrossCopy(Context sourceContext, Context targetContext) throws IOException {
         final File sourceFile = currentTempFile();
         final File targetFile = Paths.get(currentTempFile() + "-copy").toFile();

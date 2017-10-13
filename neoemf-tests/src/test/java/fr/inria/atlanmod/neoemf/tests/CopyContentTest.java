@@ -88,7 +88,7 @@ class CopyContentTest extends AbstractResourceBasedTest {
 
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
-    @ArgumentsSource(ContextProvider.WithBooleans.class)
+    @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     void testCopyStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());
