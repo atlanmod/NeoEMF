@@ -96,7 +96,7 @@ public class StatsRecordStore extends AbstractStore {
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         record(() -> super.removeValue(key));
     }
 
@@ -164,14 +164,14 @@ public class StatsRecordStore extends AbstractStore {
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         record(() -> super.removeAllValues(key));
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return record(() -> super.sizeOfValue(key));
     }
 

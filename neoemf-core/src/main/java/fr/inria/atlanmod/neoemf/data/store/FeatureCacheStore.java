@@ -57,7 +57,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         cache.invalidate(key);
 
         super.removeValue(key);
@@ -154,7 +154,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 

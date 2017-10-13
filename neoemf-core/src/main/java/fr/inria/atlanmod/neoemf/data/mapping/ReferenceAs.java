@@ -39,13 +39,13 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
     default Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
         Converter<Id, M> converter = referenceConverter();
 
-        return this.<M>valueFor(key, converter.convert(reference))
+        return this.valueFor(key, converter.convert(reference))
                 .map(converter::revert);
     }
 
     @Override
     default void removeReference(SingleFeatureBean key) {
-        this.<M>removeValue(key);
+        this.removeValue(key);
     }
 
     /**

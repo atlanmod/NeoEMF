@@ -136,14 +136,14 @@ public interface ManyValueWithLists extends ManyValueMapper {
     }
 
     @Override
-    default <V> void removeAllValues(SingleFeatureBean key) {
+    default void removeAllValues(SingleFeatureBean key) {
         removeValue(key);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return this.<List<V>>valueOf(key)
+    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+        return this.<List<Object>>valueOf(key)
                 .map(List::size)
                 .filter(s -> s > 0);
     }

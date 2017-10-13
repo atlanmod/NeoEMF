@@ -53,7 +53,7 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>valueFor(key, converter.convert(reference))
+        return this.valueFor(key, converter.convert(reference))
                 .map(converter::revert);
     }
 
@@ -61,28 +61,28 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     default void addReference(ManyFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.<M>addValue(key, converter.convert(reference));
+        this.addValue(key, converter.convert(reference));
     }
 
     @Override
     default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.<M>addAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
+        this.addAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Override
     default int appendReference(SingleFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>appendValue(key, converter.convert(reference));
+        return this.appendValue(key, converter.convert(reference));
     }
 
     @Override
     default int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>appendAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
+        return this.appendAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Nonnull
@@ -96,13 +96,13 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Override
     default void removeAllReferences(SingleFeatureBean key) {
-        this.<M>removeAllValues(key);
+        this.removeAllValues(key);
     }
 
     @Nonnull
     @Override
     default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return this.<M>sizeOfValue(key);
+        return this.sizeOfValue(key);
     }
 
     /**

@@ -141,15 +141,15 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     }
 
     @Override
-    default <V> void removeAllValues(SingleFeatureBean key) {
-        removeValue(key);
+    default void removeAllValues(SingleFeatureBean key) {
+        this.removeValue(key);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return this.<V[]>valueOf(key)
+    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+        return this.<Object[]>valueOf(key)
                 .map(a -> a.length)
                 .filter(s -> s > 0);
     }

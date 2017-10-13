@@ -79,10 +79,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         checkNotNull(key);
 
-        get(key.owner()).ifPresent(v -> v.<V>removeProperty(formatLabel(key)));
+        get(key.owner()).ifPresent(v -> v.removeProperty(formatLabel(key)));
     }
 
     //endregion
@@ -246,7 +246,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Vertex vertex = getOrCreate(key.owner());
 
         for (int i = size - 1; i >= key.position(); i--) {
-            V movedValue = vertex.<V>getProperty(formatProperty(key, i));
+            V movedValue = vertex.getProperty(formatProperty(key, i));
             vertex.<V>setProperty(formatProperty(key, i + 1), movedValue);
         }
 
@@ -275,7 +275,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         int additionCount = collection.size();
 
         for (int i = size - 1; i >= key.position(); i--) {
-            V movedValue = vertex.<V>getProperty(formatProperty(key, i));
+            V movedValue = vertex.getProperty(formatProperty(key, i));
             vertex.<V>setProperty(formatProperty(key, i + additionCount), movedValue);
         }
 
@@ -306,7 +306,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Optional<V> previousValue = Optional.ofNullable(vertex.get().<V>getProperty(formatProperty(key, key.position())));
 
         for (int i = key.position(); i < size - 1; i++) {
-            V movedValue = vertex.get().<V>getProperty(formatProperty(key, i + 1));
+            V movedValue = vertex.get().getProperty(formatProperty(key, i + 1));
             vertex.get().<V>setProperty(formatProperty(key, i), movedValue);
         }
 
@@ -318,7 +318,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         checkNotNull(key);
 
         Optional<Vertex> vertex = get(key.owner());
@@ -328,7 +328,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         }
 
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> vertex.get().<V>removeProperty(formatProperty(key, i)));
+                .forEach(i -> vertex.get().removeProperty(formatProperty(key, i)));
 
         sizeForValue(key, 0);
     }
@@ -336,7 +336,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         return get(key.owner())
@@ -349,9 +349,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
      *
      * @param key  the key identifying the multi-valued attribute
      * @param size the number of value
-     * @param <V>  the type of value
      */
-    protected <V> void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
+    protected void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
 

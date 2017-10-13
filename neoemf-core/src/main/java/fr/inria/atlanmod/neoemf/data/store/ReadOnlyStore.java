@@ -74,7 +74,7 @@ public class ReadOnlyStore extends AbstractStore {
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 
@@ -124,7 +124,7 @@ public class ReadOnlyStore extends AbstractStore {
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         throw EXCEPTION;
     }
 

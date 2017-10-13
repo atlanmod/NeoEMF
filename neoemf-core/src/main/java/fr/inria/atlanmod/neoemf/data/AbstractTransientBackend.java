@@ -181,7 +181,7 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         checkKey(key);
 
         features().remove(key);

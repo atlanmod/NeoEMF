@@ -38,7 +38,7 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         cacheSize(key, 0);
         super.removeValue(key);
     }
@@ -85,7 +85,7 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         cacheSize(key, 0);
         super.removeAllValues(key);
     }
@@ -94,7 +94,7 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnegative
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return cache.get(key, super::sizeOfValue);
     }
 

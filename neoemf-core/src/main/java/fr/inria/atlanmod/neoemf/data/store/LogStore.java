@@ -124,7 +124,7 @@ public class LogStore extends AbstractStore {
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         call(super::removeValue, key);
     }
 
@@ -192,14 +192,14 @@ public class LogStore extends AbstractStore {
     }
 
     @Override
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         call(super::removeAllValues, key);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return callAndReturn(super::sizeOfValue, key);
     }
 

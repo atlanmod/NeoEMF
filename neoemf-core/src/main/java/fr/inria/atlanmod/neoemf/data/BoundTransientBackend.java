@@ -123,7 +123,7 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        Optional<V> previousValue = super.<V>valueFor(key, value);
+        Optional<V> previousValue = super.valueFor(key, value);
 
         dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())
@@ -133,8 +133,8 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     }
 
     @Override
-    public <V> void removeValue(SingleFeatureBean key) {
-        super.<V>removeValue(key);
+    public void removeValue(SingleFeatureBean key) {
+        super.removeValue(key);
 
         dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())

@@ -145,7 +145,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     }
 
     @Override
-    default <V> void removeAllValues(SingleFeatureBean key) {
+    default void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> innerValueFor(key.withPosition(i), null));
 
@@ -155,7 +155,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key);
 
         return this.<Integer>valueOf(key)
@@ -171,7 +171,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @throws NullPointerException     if the {@code key} is {@code null}
      * @throws IllegalArgumentException if {@code size < 0}
      */
-    default <V> void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
+    default void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
         checkNotNull(key);
         checkArgument(size >= 0);
 

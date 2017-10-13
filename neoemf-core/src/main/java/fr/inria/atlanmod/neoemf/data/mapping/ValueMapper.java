@@ -54,9 +54,8 @@ public interface ValueMapper {
      * Removes the value of the specified {@code key}.
      *
      * @param key the key identifying the value
-     * @param <V> the type of value
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    <V> void removeValue(SingleFeatureBean key);
+    void removeValue(SingleFeatureBean key);
 }

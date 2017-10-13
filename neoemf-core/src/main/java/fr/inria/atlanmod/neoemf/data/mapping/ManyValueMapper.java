@@ -164,17 +164,15 @@ public interface ManyValueMapper extends ValueMapper {
      * Removes all values of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of value
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> void removeAllValues(SingleFeatureBean key);
+    void removeAllValues(SingleFeatureBean key);
 
     /**
      * Returns the number of value of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of value
      *
      * @return an {@link Optional} containing the number of value of the {@code key}, or {@link Optional#empty()} if the
      * {@code key} hasn't any value, or if {@code size == 0}.
@@ -183,5 +181,5 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    <V> Optional<Integer> sizeOfValue(SingleFeatureBean key);
+    Optional<Integer> sizeOfValue(SingleFeatureBean key);
 }

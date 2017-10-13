@@ -138,7 +138,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void removeValue(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean key) {
         next.removeValue(key);
     }
 
@@ -217,7 +217,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean key) {
         next.removeAllValues(key);
     }
 
@@ -225,7 +225,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return next.sizeOfValue(key);
     }
 
